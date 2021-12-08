@@ -182,8 +182,10 @@ class UtilMobileCheckPlugin{
 
 		//PCの場合、念の為、別キャリアのページを見ていないか調べる
 		}else{
-			self::checkCarrier($config->prefix);
-			self::checkCarrier($config->smartPrefix);
+			if(isset($config)){
+				self::checkCarrier($config->prefix);
+				self::checkCarrier($config->smartPrefix);
+			}
 
 			//PC版の場合はprefixはなし
 			$prefix = null;
@@ -253,6 +255,7 @@ class UtilMobileCheckPlugin{
 	 * スマートフォンからのアクセスかどうか
 	 */
 	private function isSmartPhone(){
+		if(is_null($this->config)) return false;
 		$isSmartPhone = false;
 
 		if(

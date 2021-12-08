@@ -5,8 +5,8 @@ class SOYShopAddMailAddress implements SOY2PluginAction{
      * 追加するメールアドレスの配列を取得
      * @return array
      */
-    function getMailAddress(SOYShop_Order $order, $orderFlag){
-
+    function getMailAddress(SOYShop_Order $order, bool $orderFlag=false){
+		return array();
     }
 }
 
@@ -28,10 +28,10 @@ class SOYShopAddMailAddressDeletageAction implements SOY2PluginDelegateAction{
     function getOrder(){
         return $this->order;
     }
-    function setOrder($order) {
+    function setOrder(SOYShop_Order $order) {
         $this->order = $order;
     }
-    function setOrderFlag($orderFlag){
+    function setOrderFlag(bool $orderFlag){
         $this->orderFlag = $orderFlag;
     }
 }

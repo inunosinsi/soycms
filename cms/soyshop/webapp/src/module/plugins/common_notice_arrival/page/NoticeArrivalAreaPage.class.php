@@ -9,9 +9,7 @@ class NoticeArrivalAreaPage extends WebPage{
 	function execute(){
 		parent::__construct();
 
-		$users = array();
-		$noticeLogic = SOY2Logic::createInstance("module.plugins.common_notice_arrival.logic.NoticeLogic");
-		$users = $noticeLogic->getUsersForNewsPage(SOYShop_NoticeArrival::NOT_SENDED, SOYShop_NoticeArrival::NOT_CHECKED);
+		$users = SOY2Logic::createInstance("module.plugins.common_notice_arrival.logic.NoticeLogic")->getUsersForNewsPage(SOYShop_NoticeArrival::NOT_SENDED, SOYShop_NoticeArrival::NOT_CHECKED);
 
 		SOY2::import("util.SOYShopPluginUtil");
 		DisplayPlugin::toggle("notice_arrival", SOYShopPluginUtil::checkIsActive("common_notice_arrival"));

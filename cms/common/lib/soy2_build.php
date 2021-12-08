@@ -5,10 +5,10 @@ class SOY2{
 	/**
 	 * アプリケーションのディレクトリを設定（取得）
 	 */
-	public static function RootDir($dir = null){
+	public static function RootDir(string $dir=""){
 		static $_static;
 		if(!$_static)$_static = new SOY2();
-		if($dir){
+		if(strlen($dir)){
 			if(substr($dir,strlen($dir)-1) != '/'){
 				throw new Exception("[SOY2]RootDir must end by '/'.");
 			}
@@ -21,7 +21,7 @@ class SOY2{
 	 *
 	 * @return クラス名
 	 */
-	public static function import($path,$extension =".class.php"){
+	public static function import(string $path, string $extension =".class.php"){
 		if(class_exists($path)){
 			return $path;
 		}
@@ -43,8 +43,8 @@ class SOY2{
 	/**
 	 * 指定ディレクトリにあるクラスを全てインポート
 	 */
-	public static function imports($dir, $rootDir = null){
-		if(!$rootDir)$rootDir = SOY2::RootDir();
+	public static function imports(string $dir, string $rootDir=""){
+		if(!strlen($rootDir)) $rootDir = SOY2::RootDir();
 		$path = str_replace(".","/",$dir);
 		$dirPath = $rootDir.str_replace("*","",$path);
 		$files = scandir($dirPath);
@@ -64,7 +64,7 @@ class SOY2{
 	 * キャスト元のオブジェクトはgetterがあればそちらを、無ければプロパティを直接。
 	 * ただしプロパティがpublicでない場合はコピーしない（警告なし）
 	 */
-	public static function cast($className,$obj){
+	public static function cast($className, $obj){
 		if(!is_object($className)){
 			if($className != "array" && $className != "object"){
 				$result = self::import($className);
@@ -135,7 +135,7 @@ class SOY2{
 	 * 		"pass"		=> ""
 	 * ));
 	 */
-	public static function config($array){
+	public static function config(array $array){
 		if(isset($array['RootDir'])){
 			SOY2::RootDir($array['RootDir']);
 		}
@@ -176,7 +176,7 @@ interface SOY2_Controller{
  * @package SOY2.controller
  */
 interface SOY2_ClassPathBuilder{
-	function getClassPath($path);
+	function getClassPath(string $path);
 }
 /**
  * @package SOY2.controller
@@ -191,311 +191,295 @@ interface SOY2_PathBuilder{
  *
  * mod_rewriteを使ったフロントコントローラー
  */
-class SOY2ActionController implements SOY2_Controller{
-	/**
-	 * 準備
-	 */
-	public static function init($options = array()){
-	}
-	/**
-	 * 実行
-	 */
-	public static function run(){
-	}
-	/**
-	 * フロントコントローラー取得
-	 */
-	public static function getInstance(){
-	}
-	/**
-	 * 他のURLへ移動
-	 */
-	public static function jump($url){
-	}
-	/**
-	 * 現在のURLを再読込（queryは変更可能）
-	 */
-	public static function reload($query = null){
-	}
-	private $path;
-	private $arguments = array();
-}
+ class SOY2ActionController implements SOY2_Controller{
+ 	/**
+ 	 * 準備
+ 	 */
+ 	public static function init(array $options=array()){}
+ 	/**
+ 	 * 実行
+ 	 */
+ 	public static function run(){}
+ 	/**
+ 	 * フロントコントローラー取得
+ 	 */
+ 	public static function getInstance(){}
+ 	/**
+ 	 * 他のURLへ移動
+ 	 */
+ 	public static function jump(string $url){}
+ 	/**
+ 	 * 現在のURLを再読込（queryは変更可能）
+ 	 */
+ 	public static function reload(string $query=""){}
+
+ 	private $path;
+ 	private $arguments = array();
+ }
 /* SOY2/class/SOY2PageController.php */
 /**
  * @package SOY2.controller
  */
-class SOY2PageController implements SOY2_Controller{
-	var $defaultPath = "Index";
-	var $requestPath = "";
-	var $arguments = array();
-	public static function init($controller = null){
-		static $_controller;
-		if(!$_controller){
-			if($controller){
-				$_controller = new $controller();
-			}else{
-				$_controller = new SOY2PageController();
-			}
-		}
-		return $_controller;
-	}
-	final public static function run(){
-		$controller = self::init();
-		$controller->execute();
-	}
-	final public static function getRequestPath(){
-		$controller = self::init();
-		return $controller->requestPath;
-	}
-	public static function getArguments(){
-		$controller = self::init();
-		return $controller->arguments;
-	}
-	function execute(){
-		$pathBuilder = $this->getPathBuilder();
-		$path = $pathBuilder->getPath();
-		$args = $pathBuilder->getArguments();
-		if(!strlen($path) || substr($path,strlen($path)-1,1) == "."){
-			$path .= $this->getDefaultPath();
-		}
-		$this->requestPath = $path;
-		$this->arguments = $args;
-		$classPathBuilder = $this->getClassPathBuilder();
-		$classPath = $classPathBuilder->getClassPath($path);
-		$classPath .= 'Page';
-		if(!SOY2HTMLFactory::pageExists($classPath)){
-			$path = $pathBuilder->getPath();
-			$classPath = $classPathBuilder->getClassPath($path);
-			if(!preg_match('/.+Page$/',$classPath)){
-				$classPath .= '.IndexPage';
-			}
-		}
-		if(!SOY2HTMLFactory::pageExists($classPath)){
-			$this->onNotFound($path, $args, $classPath);
-		}
-		$webPage = &SOY2HTMLFactory::createInstance($classPath, array(
-			"arguments" => $args
-		));
-		try{
-			$webPage->display();
-		}catch(Exception $e){
-			$this->onError($e);
-		}
-	}
-	function onError(Exception $e){
-		throw $e;
-	}
-	/**
-	 * ページが存在しない場合
-	 * 引数はオーバーロード用
-	 * @param $path
-	 * @param $args
-	 * @param $classPath
-	 */
-	function onNotFound($path = null, $args = null, $classPath = null){
-		header("HTTP/1.1 404 Not Found");
-		header("Content-Type: text/html; charset=utf-8");
-		echo "<h1>404 Not Found</h1><hr>指定のパスへのアクセスは有効でありません。";
-		exit;
-	}
-	function getDefaultPath(){
-		$controller = self::init();
-		return $controller->defaultPath;
-	}
-	function setDefaultPath($path){
-		$controller = self::init();
-		$controller->defaultPath = $path;
-	}
-	public static function jump($path){
-		$url = self::createLink($path, true);
-		header("Location: ".$url);
-		exit;
-	}
-	public static function redirect($path, $permanent = false){
-		if($permanent){
-			header("HTTP/1.1 301 Moved Permanently");
-		}
-		$url = self::createRelativeLink($path, true);
-		header("Location: ".$url);
-		exit;
-	}
-	public static function reload(){
-		$url = self::createLink(self::getRequestPath(), true) ."/". implode("/",self::getArguments());
-		header("Location: ".$url);
-		exit;
-	}
-	function &getPathBuilder(){
-		static $builder;
-		if(!$builder){
-			$builder = new SOY2_PathInfoPathBuilder();
-		}
-		return $builder;
-	}
-	function &getClassPathBuilder(){
-		static $builder;
-		if(!$builder){
-			$builder = new SOY2_DefaultClassPathBuilder();
-		}
-		return $builder;
-	}
-	public static function createLink($path, $isAbsoluteUrl = false){
-		$controller = self::init();
-		$pathBuilder = $controller->getPathBuilder();
-		return $pathBuilder->createLinkFromPath($path, $isAbsoluteUrl);
-	}
-	public static function createRelativeLink($path, $isAbsoluteUrl = false){
-		$controller = self::init();
-		$pathBuilder = $controller->getPathBuilder();
-		return $pathBuilder->createLinkFromRelativePath($path, $isAbsoluteUrl);
-	}
-}
-/**
- * @package SOY2.controller
- * PathInfoから呼び出しパスを作成
- * 後半の数字を含む部分は引数として渡す
- *
- * DOCUMENT_ROOTを仮想的にSOY2_DOCUMENT_ROOTで上書き可能
- */
-class SOY2_PathInfoPathBuilder implements SOY2_PathBuilder{
-	var $path;
-	var $arguments;
-	function __construct(){
-		$pathInfo = (isset($_SERVER['PATH_INFO'])) ? $_SERVER['PATH_INFO'] : "";
-		if(preg_match('/^((\/[a-zA-Z]*)*)(\/-)?((\/[0-9a-zA-Z_\.]*)*)$/',$pathInfo,$tmp)){
-			$path = preg_replace('/^\/|\/$/',"",$tmp[1]);
-			$path = str_replace("/",".",$path);
-			$arguments = preg_replace("/^\//","",$tmp[4]);
-			$arguments = explode("/",$arguments);
-			foreach($arguments as $key => $value){
-				if(!strlen($value)){
-					$arguments[$key] = null;
-					unset($arguments[$key]);
-				}
-			}
-			$this->path = $path;
-			$this->arguments = $arguments;
-		}
-	}
-	function getPath(){
-		return $this->path;
-	}
-	function getArguments(){
-		return $this->arguments;
-	}
-	/**
-	 * パスからURLを生成する
-	 * スクリプトのファイル名を含む（ただし$pathが空の時はスクリプト名を付けない）
-	 */
-	function createLinkFromPath($path, $isAbsoluteUrl = false){
-		$scriptPath = self::getScriptPath();
-		if(strlen($path)>0){
-			$path = $scriptPath . "/" . str_replace(".","/",$path);
-		}else{
-			$path = strrev(strstr(strrev($scriptPath),"/"));
-		}
-		if($isAbsoluteUrl){
-			return self::createAbsoluteURL($path);
-		}else{
-			return $path;
-		}
-	}
-	/**
-	 * 相対パスを解釈してURLを生成する
-	 * @param String $path 相対パス
-	 * @param Boolean $isAbsoluteUrl 返り値を絶対URL（http://example.com/path/to）で返すかルートからの絶対パス（/path/to）で返すか
-	 */
-	function createLinkFromRelativePath($path, $isAbsoluteUrl = false){
-		if(preg_match("/^https?:/",$path)){
-			return $path;
-		}
-		if(preg_match("/^\//",$path)){
-		}else{
-			$scriptPath = self::getScriptPath();
-			$scriptDir = preg_replace("/".basename($scriptPath)."\$/", "", $scriptPath);
-			$path = self::convertRelativePathToAbsolutePath($path, $scriptDir);
-		}
-		if($isAbsoluteUrl){
-			return self::createAbsoluteURL($path);
-		}else{
-			return $path;
-		}
-	}
-	/**
-	 * フロントコントローラーのURLでの絶対パスを取得する
-	 * （ファイルシステムのパスではない）
-	 */
-	protected static function getScriptPath(){
-		static $script;
-		if(!$script){
-			/**
-			 * @TODO ルート的にアクセスされた場合は、フロントコントローラーの設置場所をDocumentRootとみなす。
-			 */
-			$documentRoot = (defined("SOY2_DOCUMENT_ROOT")) ? SOY2_DOCUMENT_ROOT : ((isset($_SERVER["SOY2_DOCUMENT_ROOT"])) ? $_SERVER["SOY2_DOCUMENT_ROOT"] : $_SERVER["DOCUMENT_ROOT"]);
-			$documentRoot = str_replace("\\","/",$documentRoot);
-			if(strlen($documentRoot) >0 && $documentRoot[strlen($documentRoot)-1] != "/") $documentRoot .= "/";
-			$script = str_replace($documentRoot,"/",str_replace("\\","/",$_SERVER["SCRIPT_FILENAME"]));
-			$script = str_replace("\\","/",$_SERVER["SCRIPT_FILENAME"]);
-			$script = str_replace($documentRoot, "/", $script);
-		}
-		return $script;
-	}
-	/**
-	 * 絶対パスにドメインなどを付加して絶対URLに変換する
-	 */
-	protected static function createAbsoluteURL($path){
-		static $scheme, $domain, $port;
-		if(!$scheme){
-			$scheme = (isset($_SERVER["HTTPS"]) || (defined("SOY2_HTTPS") && SOY2_HTTPS)) ? "https" : "http";
-		}
-		if(!$domain && isset($_SERVER["SERVER_NAME"])){
-			$domain = $_SERVER["SERVER_NAME"];
-		}
-		if(!$port){
-			if(!isset($_SERVER["SERVER_PORT"])) $_SERVER["SERVER_PORT"] = 80;
-			if( $_SERVER["SERVER_PORT"] == "80" && !isset($_SERVER["HTTPS"]) || $_SERVER["SERVER_PORT"] == "443" && isset($_SERVER["HTTPS"]) ){
-				$port = "";
-			}elseif(strlen($_SERVER["SERVER_PORT"]) > 0){
-				$port = ":".$_SERVER["SERVER_PORT"];
-			}else{
-				$port = "";
-			}
-		}
-		return $scheme."://".$domain.$port.$path;
-	}
-	/**
-	 * 指定したディレクトリからの相対パスを絶対パスに変換する
-	 */
-	protected static function convertRelativePathToAbsolutePath($relativePath, $base){
-		$base = str_replace("\\","/",$base);
-		$base = preg_replace("/\/+/","/",$base);
-		$relativePath = str_replace("\\","/",$relativePath);
-		$relativePath = preg_replace("/\/+/","/",$relativePath);
-		$dirs = explode("/", $base);
-		if($dirs[0] == "") array_shift($dirs);
-		if(count($dirs) > 0 && $dirs[count($dirs)-1] == "") array_pop($dirs);
-		$paths = explode("/",$relativePath);
-		$pathStack = array();
-		foreach($paths as $path){
-			if($path == ".."){
-				array_pop($dirs);
-			}elseif($path == "."){
-			}else{
-				array_push($pathStack,$path);
-			}
-		}
-		$absolutePath = implode("/",array_merge($dirs,$pathStack));
-		$absolutePath = "/".$absolutePath;
-		return $absolutePath;
-	}
-}
-/**
- * @package SOY2.controller
- */
-class SOY2_DefaultClassPathBuilder implements SOY2_ClassPathBuilder{
-	function getClassPath($path){
-		return $path;
-	}
-}
+ class SOY2PageController implements SOY2_Controller{
+ 	var $defaultPath = "Index";
+ 	var $requestPath = "";
+ 	var $arguments = array();
+ 	public static function init(string $controller=""){
+ 		static $_controller;
+ 		if(is_null($_controller)){
+ 			$_controller = strlen($controller) ? new $controller() : new SOY2PageController();
+ 		}
+ 		return $_controller;
+ 	}
+ 	final public static function run(){
+ 		$controller = self::init();
+ 		$controller->execute();
+ 	}
+ 	final public static function getRequestPath(){
+ 		$controller = self::init();
+ 		return $controller->requestPath;
+ 	}
+ 	public static function getArguments(){
+ 		$controller = self::init();
+ 		return $controller->arguments;
+ 	}
+ 	function execute(){
+ 		$pathBuilder = $this->getPathBuilder();
+ 		$path = $pathBuilder->getPath();
+ 		$args = $pathBuilder->getArguments();
+ 		if(!strlen($path) || substr($path,strlen($path)-1,1) == "."){
+ 			$path .= $this->getDefaultPath();
+ 		}
+ 		$this->requestPath = $path;
+ 		$this->arguments = $args;
+ 		$classPathBuilder = $this->getClassPathBuilder();
+ 		$classPath = $classPathBuilder->getClassPath($path);
+ 		$classPath .= 'Page';
+ 		if(!SOY2HTMLFactory::pageExists($classPath)){
+ 			$path = $pathBuilder->getPath();
+ 			$classPath = $classPathBuilder->getClassPath($path);
+ 			if(!preg_match('/.+Page$/',$classPath)){
+ 				$classPath .= '.IndexPage';
+ 			}
+ 		}
+ 		if(!SOY2HTMLFactory::pageExists($classPath)){
+ 			$this->onNotFound($path, $args, $classPath);
+ 		}
+ 		$webPage = &SOY2HTMLFactory::createInstance($classPath, array(
+ 			"arguments" => $args
+ 		));
+ 		try{
+ 			$webPage->display();
+ 		}catch(Exception $e){
+ 			$this->onError($e);
+ 		}
+ 	}
+ 	function onError(Exception $e){
+ 		throw $e;
+ 	}
+ 	/**
+ 	 * ページが存在しない場合
+ 	 * 引数はオーバーロード用
+ 	 * @param $path
+ 	 * @param $args
+ 	 * @param $classPath
+ 	 */
+ 	function onNotFound(string $path="", array $args=array(), string $classPath=""){
+ 		header("HTTP/1.1 404 Not Found");
+ 		header("Content-Type: text/html; charset=utf-8");
+ 		echo "<h1>404 Not Found</h1><hr>指定のパスへのアクセスは有効でありません。";
+ 		exit;
+ 	}
+ 	function getDefaultPath(){
+ 		$controller = self::init();
+ 		return $controller->defaultPath;
+ 	}
+ 	function setDefaultPath(string $path){
+ 		$controller = self::init();
+ 		$controller->defaultPath = $path;
+ 	}
+ 	public static function jump(string $path){
+ 		$url = self::createLink($path, true);
+ 		header("Location: ".$url);
+ 		exit;
+ 	}
+ 	public static function redirect(string $path, bool $permanent=false){
+ 		if($permanent){
+ 			header("HTTP/1.1 301 Moved Permanently");
+ 		}
+ 		$url = self::createRelativeLink($path, true);
+ 		header("Location: ".$url);
+ 		exit;
+ 	}
+ 	public static function reload(){
+ 		$url = self::createLink(self::getRequestPath(), true) ."/". implode("/",self::getArguments());
+ 		header("Location: ".$url);
+ 		exit;
+ 	}
+ 	function &getPathBuilder(){
+ 		static $builder;
+ 		if(is_null($builder)) $builder = new SOY2_PathInfoPathBuilder();
+ 		return $builder;
+ 	}
+ 	function &getClassPathBuilder(){
+ 		static $builder;
+ 		if(is_null($builder)) $builder = new SOY2_DefaultClassPathBuilder();
+ 		return $builder;
+ 	}
+ 	public static function createLink(string $path, bool $isAbsoluteUrl=false){
+ 		$controller = self::init();
+ 		$pathBuilder = $controller->getPathBuilder();
+ 		return $pathBuilder->createLinkFromPath($path, $isAbsoluteUrl);
+ 	}
+ 	public static function createRelativeLink(string $path, bool $isAbsoluteUrl=false){
+ 		$controller = self::init();
+ 		$pathBuilder = $controller->getPathBuilder();
+ 		return $pathBuilder->createLinkFromRelativePath($path, $isAbsoluteUrl);
+ 	}
+ }
+ /**
+  * @package SOY2.controller
+  * PathInfoから呼び出しパスを作成
+  * 後半の数字を含む部分は引数として渡す
+  *
+  * DOCUMENT_ROOTを仮想的にSOY2_DOCUMENT_ROOTで上書き可能
+  */
+ class SOY2_PathInfoPathBuilder implements SOY2_PathBuilder{
+ 	var $path;
+ 	var $arguments;
+ 	function __construct(){
+ 		$pathInfo = (isset($_SERVER['PATH_INFO'])) ? $_SERVER['PATH_INFO'] : "";
+ 		if(preg_match('/^((\/[a-zA-Z]*)*)(\/-)?((\/[0-9a-zA-Z_\.]*)*)$/',$pathInfo,$tmp)){
+ 			$path = preg_replace('/^\/|\/$/',"",$tmp[1]);
+ 			$path = str_replace("/",".",$path);
+ 			$arguments = preg_replace("/^\//","",$tmp[4]);
+ 			$arguments = explode("/",$arguments);
+ 			foreach($arguments as $key => $value){
+ 				if(!strlen($value)){
+ 					$arguments[$key] = null;
+ 					unset($arguments[$key]);
+ 				}
+ 			}
+ 			$this->path = $path;
+ 			$this->arguments = $arguments;
+ 		}
+ 	}
+ 	function getPath(){
+ 		return $this->path;
+ 	}
+ 	function getArguments(){
+ 		return $this->arguments;
+ 	}
+ 	/**
+ 	 * パスからURLを生成する
+ 	 * スクリプトのファイル名を含む（ただし$pathが空の時はスクリプト名を付けない）
+ 	 */
+ 	function createLinkFromPath(string $path, bool $isAbsoluteUrl=false){
+ 		$scriptPath = self::getScriptPath();
+ 		if(strlen($path)>0){
+ 			$path = $scriptPath . "/" . str_replace(".","/",$path);
+ 		}else{
+ 			$path = strrev(strstr(strrev($scriptPath),"/"));
+ 		}
+ 		if($isAbsoluteUrl){
+ 			return self::createAbsoluteURL($path);
+ 		}else{
+ 			return $path;
+ 		}
+ 	}
+ 	/**
+ 	 * 相対パスを解釈してURLを生成する
+ 	 * @param String $path 相対パス
+ 	 * @param Boolean $isAbsoluteUrl 返り値を絶対URL（http://example.com/path/to）で返すかルートからの絶対パス（/path/to）で返すか
+ 	 */
+ 	function createLinkFromRelativePath(string $path, bool $isAbsoluteUrl=false){
+ 		if(preg_match("/^https?:/",$path)){
+ 			return $path;
+ 		}
+ 		if(preg_match("/^\//",$path)){
+ 		}else{
+ 			$scriptPath = self::getScriptPath();
+ 			$scriptDir = preg_replace("/".basename($scriptPath)."\$/", "", $scriptPath);
+ 			$path = self::convertRelativePathToAbsolutePath($path, $scriptDir);
+ 		}
+ 		if($isAbsoluteUrl){
+ 			return self::createAbsoluteURL($path);
+ 		}else{
+ 			return $path;
+ 		}
+ 	}
+ 	/**
+ 	 * フロントコントローラーのURLでの絶対パスを取得する
+ 	 * （ファイルシステムのパスではない）
+ 	 */
+ 	protected static function getScriptPath(){
+ 		static $script;
+ 		if(is_null($script)){
+ 			/**
+ 			 * @TODO ルート的にアクセスされた場合は、フロントコントローラーの設置場所をDocumentRootとみなす。
+ 			 */
+ 			$documentRoot = (defined("SOY2_DOCUMENT_ROOT")) ? SOY2_DOCUMENT_ROOT : ((isset($_SERVER["SOY2_DOCUMENT_ROOT"])) ? $_SERVER["SOY2_DOCUMENT_ROOT"] : $_SERVER["DOCUMENT_ROOT"]);
+ 			$documentRoot = str_replace("\\","/",$documentRoot);
+ 			if(strlen($documentRoot) >0 && $documentRoot[strlen($documentRoot)-1] != "/") $documentRoot .= "/";
+ 			$script = str_replace($documentRoot,"/",str_replace("\\","/",$_SERVER["SCRIPT_FILENAME"]));
+ 			$script = str_replace("\\","/",$_SERVER["SCRIPT_FILENAME"]);
+ 			$script = str_replace($documentRoot, "/", $script);
+ 		}
+ 		return $script;
+ 	}
+ 	/**
+ 	 * 絶対パスにドメインなどを付加して絶対URLに変換する
+ 	 */
+ 	protected static function createAbsoluteURL(string $path){
+ 		static $scheme, $domain, $port;
+ 		if(is_null($scheme)) $scheme = (isset($_SERVER["HTTPS"]) || defined("SOY2_HTTPS") && SOY2_HTTPS) ? "https" : "http";
+ 		if(is_null($domain) && isset($_SERVER["SERVER_NAME"])) $domain = $_SERVER["SERVER_NAME"];
+ 		if(is_null($port)){
+ 			if(!isset($_SERVER["SERVER_PORT"])) $_SERVER["SERVER_PORT"] = 80;
+ 			if( $_SERVER["SERVER_PORT"] == "80" && !isset($_SERVER["HTTPS"]) || $_SERVER["SERVER_PORT"] == "443" && isset($_SERVER["HTTPS"]) ){
+ 				$port = "";
+ 			}elseif(strlen($_SERVER["SERVER_PORT"]) > 0){
+ 				$port = ":".$_SERVER["SERVER_PORT"];
+ 			}else{
+ 				$port = "";
+ 			}
+ 		}
+ 		return $scheme."://".$domain.$port.$path;
+ 	}
+ 	/**
+ 	 * 指定したディレクトリからの相対パスを絶対パスに変換する
+ 	 */
+ 	protected static function convertRelativePathToAbsolutePath(string $relativePath, string $base){
+ 		$base = str_replace("\\","/",$base);
+ 		$base = preg_replace("/\/+/","/",$base);
+ 		$relativePath = str_replace("\\","/",$relativePath);
+ 		$relativePath = preg_replace("/\/+/","/",$relativePath);
+ 		$dirs = explode("/", $base);
+ 		if($dirs[0] == "") array_shift($dirs);
+ 		if(count($dirs) > 0 && $dirs[count($dirs)-1] == "") array_pop($dirs);
+ 		$paths = explode("/",$relativePath);
+ 		$pathStack = array();
+ 		foreach($paths as $path){
+ 			if($path == ".."){
+ 				array_pop($dirs);
+ 			}elseif($path == "."){
+ 			}else{
+ 				array_push($pathStack,$path);
+ 			}
+ 		}
+ 		$absolutePath = implode("/",array_merge($dirs,$pathStack));
+ 		$absolutePath = "/".$absolutePath;
+ 		return $absolutePath;
+ 	}
+ }
+ /**
+  * @package SOY2.controller
+  */
+ class SOY2_DefaultClassPathBuilder implements SOY2_ClassPathBuilder{
+ 	function getClassPath(string $path){
+ 		return $path;
+ 	}
+ }
 /* SOY2Mail/SOY2Mail.php */
 class SOY2Mail {
 	/**
@@ -4762,7 +4746,7 @@ class SOY2HTMLBase{
 	 * @return 実行された関数の結果
 	 *
 	 */
-	function __call($name,$args){
+	function __call(string $name, array $args){
 		/** PHP7.4対策で廃止
 		if(method_exists($this,"createAdd") && preg_match('/^add([A-Za-z]+)$/',$name,$tmp) && count($args)>0){
 			$class = "HTML" . $tmp[1];
@@ -4800,6 +4784,7 @@ class SOY2HTMLBase{
 		}
 		return eval($variant.$code.";");
 	}
+
 	/**
 	 * 関数を追加登録します
 	 *
@@ -4807,7 +4792,7 @@ class SOY2HTMLBase{
 	 * @param $args パラメータ
 	 * @param $code 実行内容
 	 */
-	function addFunction($name,$args,$code){
+	function addFunction(string $name, array $args, string $code){
 		$this->_soy2_functions[$name]['args'] = $args;
 		$this->_soy2_functions[$name]['code'] = $code;
 	}
@@ -5026,7 +5011,7 @@ abstract class SOY2HTML extends SOY2HTMLBase{
 	 * @param $content HTMLソースコード
 	 */
 	function setContent($content){
-		list($tag,$line,$innerHTML,$outerHTML,$value,$suffix,$skipendtag) = $this->parse("id",$this->_soy2_id,$content);
+		list($tag,$line,$innerHTML,$outerHTML,$value,$suffix,$skipendtag) = $this->parse("id",$this->_soy2_id,(string)$content);
 		$this->tag = $tag;
 		$this->parseAttributes($line);
 		$this->_soy2_innerHTML = $innerHTML;
@@ -5036,7 +5021,7 @@ abstract class SOY2HTML extends SOY2HTMLBase{
 	/**
 	 * @return array(tag,line,innerhtml,outerhtml,value,suffix,skipendtag)
 	 */
-	function parse($suffix,$value,$content){
+	function parse(string $suffix, string $value, string $content){
 		$result = array(
 			"tag" => "",
 			"line" => "",
@@ -5051,7 +5036,7 @@ abstract class SOY2HTML extends SOY2HTMLBase{
 			case SOY2HTML::HTML_BODY:
 				$regex = '/<(('.$this->tag.')[^<>]*\s'.$this->_soy2_prefix.':('.$suffix.')=\"('.$value.')\"\s?[^>]*)>/i';
 				$tmp = array();
-				if(preg_match($regex,$content,$tmp,PREG_OFFSET_CAPTURE)){
+				if(is_string($content) && preg_match($regex,$content,$tmp,PREG_OFFSET_CAPTURE)){
 					$start = $tmp[0][1];
 					$end = 0;
 					$tmpValue = $tmp[4][0];
@@ -5129,7 +5114,7 @@ abstract class SOY2HTML extends SOY2HTMLBase{
 			case SOY2HTML::SKIP_BODY:
 				$regex = '/(<(('.$this->tag.')[^<>]*\s'.$this->_soy2_prefix.':('.$suffix.')=\"('.$value.')\"\s?[^>]*\/?)>)/i';
 				$tmp = array();
-				if(preg_match($regex,$content,$tmp)){
+				if(is_string($content) && preg_match($regex,$content,$tmp)){
 					$result["outerHTML"] = $tmp[1];
 					$result["line"] = $tmp[2];
 					$result["tag"] = $tmp[3];
@@ -5186,7 +5171,7 @@ abstract class SOY2HTML extends SOY2HTMLBase{
 	 *
 	 * @param $line
 	 */
-	function parseAttributes($line){
+	function parseAttributes(string $line){
 		$regex ='/([a-zA-Z_:][a-zA-Z0-9_:.\-]*)\s*=\s*"([^"]*)"/';
 		$tmp = array();
 		if(preg_match_all($regex,$line,$tmp)){
@@ -5216,7 +5201,7 @@ abstract class SOY2HTML extends SOY2HTMLBase{
 	 *
 	 * @return 置換された形のcontent
 	 */
-	function getContent(SOY2HTML $tag,$content){
+	function getContent(SOY2HTML $tag, string $content){
 		$in = $tag->_soy2_outerHTML;
 		$tag->parseMessageProperty();
 		$out = "";
@@ -5312,7 +5297,7 @@ abstract class SOY2HTML extends SOY2HTMLBase{
 	 *
 	 * @return 属性の値
 	 */
-	function getAttribute($key){
+	function getAttribute(string $key){
 		$key = strtolower($key);
 		return (isset($this->_attribute[$key]) && $this->_attribute[$key] !== true) ? $this->_attribute[$key] :
 				 (isset($this->_soy2_attribute[$key]) ? $this->_soy2_attribute[$key] : null);
@@ -5328,7 +5313,7 @@ abstract class SOY2HTML extends SOY2HTMLBase{
 	 * @param $flag 属性が常に存在するかどうか（disabled, readonlyなどはfalse）
 	 *
 	 */
-	function setAttribute($key,$value,$flag = true){
+	function setAttribute(string $key, string $value="", bool $flag=true){
 		$key = strtolower($key);
 		$this->_attribute[$key] = $flag;
 		$this->_soy2_attribute[$key] = $value;
@@ -5336,27 +5321,21 @@ abstract class SOY2HTML extends SOY2HTMLBase{
 	/**
 	 * 属性値を保存する
 	 */
-	function setPermanentAttribute($key,$value){
+	function setPermanentAttribute(string $key,string $value){
 		if(!$this->getIsModified())return;
 		$this->_soy2_permanent_attributes[$key] = $value;
 	}
 	/**
 	 * 保存した属性値を取得する
 	 */
-	function getPermanentAttribute($key = null){
-		if(is_null($key)){
-			return $this->_soy2_permanent_attributes;
-		}
-		if(isset($this->_soy2_permanent_attributes[$key])){
-			return $this->_soy2_permanent_attributes[$key];
-		}else{
-			return null;
-		}
+	function getPermanentAttribute(string $key=""){
+		if(!strlen($key)) return $this->_soy2_permanent_attributes;
+		return (isset($this->_soy2_permanent_attributes[$key])) ? $this->_soy2_permanent_attributes[$key] : null;
 	}
 	/**
 	 * 属性を消去する
 	 */
-	function clearAttribute($key){
+	function clearAttribute(string $key){
 		$key = strtolower($key);
 		$this->_attribute[$key] = null;
 		$this->_soy2_attribute[$key] = null;
@@ -5462,7 +5441,7 @@ abstract class SOY2HTML extends SOY2HTMLBase{
 	/**
 	 * HTMLのタグを除去して実体参照をテキストに戻す
 	 */
-	public static function ToText($html, $encoding = SOY2HTML::ENCODING){
+	public static function ToText(string $html, string $encoding=SOY2HTML::ENCODING){
 		/*
 		 * html_entity_decodeは文字コードの指定が重要
 		 * http://jp2.php.net/manual/ja/function.html-entity-decode.php#function.html-entity-decode.notes
@@ -5498,9 +5477,9 @@ class SOY2HTMLConfig{
 		}
 		return $_static;
 	}
-	public static function CacheDir($dir = null){
+	public static function CacheDir(string $dir=""){
 		$config = self::getInstance();
-		if($dir){
+		if(strlen($dir)){
 			if(substr($dir,strlen($dir)-1) != '/'){
 				throw new SOY2HTMLException("[SOY2HTML]CacheDir must end by '/'.");
 			}
@@ -5508,9 +5487,9 @@ class SOY2HTMLConfig{
 		}
 		return $config->cacheDir;
 	}
-	public static function PageDir($dir = null){
+	public static function PageDir(string $dir=""){
 		$config = self::getInstance();
-		if($dir){
+		if(strlen($dir)){
 			if(substr($dir,strlen($dir)-1) != '/'){
 				throw new SOY2HTMLException("[SOY2HTML]PageDir must end by '/'.");
 			}
@@ -5518,9 +5497,9 @@ class SOY2HTMLConfig{
 		}
 		return $config->pageDir;
 	}
-	public static function TemplateDir($dir = null){
+	public static function TemplateDir(string $dir=""){
 		$config = self::getInstance();
-		if($dir){
+		if(strlen($dir)){
 			if(substr($dir,strlen($dir)-1) != '/'){
 				throw new SOY2HTMLException("[SOY2HTML]TemplateDir must end by '/'.");
 			}
@@ -5528,9 +5507,9 @@ class SOY2HTMLConfig{
 		}
 		return $config->templateDir;
 	}
-	public static function LayoutDir($dir = null){
+	public static function LayoutDir(string $dir=""){
 		$config = self::getInstance();
-		if($dir){
+		if(strlen($dir)){
 			if(substr($dir,strlen($dir)-1) != '/'){
 				throw new SOY2HTMLException("[SOY2HTML]Layout Dir must end with '/'.");
 			}
@@ -5541,9 +5520,9 @@ class SOY2HTMLConfig{
 	/**
 	 * SOY2HTMLの言語を設定する
 	 */
-	public static function Language($lang = null){
+	public static function Language(string $lang=""){
 		$config = self::getInstance();
-		if($lang){
+		if(strlen($lang)){
 			$config->lang = $lang;
 		}
 		return $config->lang;
@@ -5551,7 +5530,7 @@ class SOY2HTMLConfig{
 	/**
 	 * オプション設定
 	 */
-	public static function setOption($key, $value = null){
+	public static function setOption(string $key, $value=null){
 		$config = self::getInstance();
 		if($value)$config->options[$key] = $value;
 		return (isset($config->options[$key]) ) ? $config->options[$key] : null;
@@ -5559,7 +5538,7 @@ class SOY2HTMLConfig{
 	/**
 	 * オプション取得
 	 */
-	public static function getOption($key){
+	public static function getOption(string $key){
 		return self::setOption($key);
 	}
 }
@@ -5578,7 +5557,7 @@ class SOY2HTMLFactory extends SOY2HTMLBase{
 	 *
 	 * @return クラスのインスタンス
 	 */
-	public static function &createInstance($className,$attributes = array()){
+	public static function &createInstance(string $className, array $attributes=array()){
 		if(!class_exists($className)){
 			try{
 				self::importWebPage($className);
@@ -5601,12 +5580,12 @@ class SOY2HTMLFactory extends SOY2HTMLBase{
 		if(is_array($attributes)){
 			foreach($attributes as $key => $value){
 				if($key == "id"){
-					$class->setAttribute($key,$value);
+					$class->setAttribute($key,(string)$value);
 					continue;
 				}
 				if(strpos($key,"attr:") !== false){
 					$key = substr($key,5);
-					$class->setAttribute($key,$value);
+					$class->setAttribute($key,(string)$value);
 					continue;
 				}
 				if(method_exists($class,"set".ucwords($key))  || $class->functionExists("set".ucwords($key))){
@@ -5628,7 +5607,7 @@ class SOY2HTMLFactory extends SOY2HTMLBase{
 					$class->addFunction($funcName,$args,$code);
 					continue;
 				}
-				$class->setAttribute($key,$value);
+				$class->setAttribute($key, (string)$value);
 			}
 		}
 
@@ -5640,7 +5619,7 @@ class SOY2HTMLFactory extends SOY2HTMLBase{
 	 * @param $className クラス名
 	 * @exception SOY2HTMLException ファイルが存在しないとき
 	 */
-	public static function importWebPage($className){
+	public static function importWebPage(string $className){
 		if(self::pageExists($className) == false){
 			throw new SOY2HTMLException();
 		}
@@ -5649,7 +5628,7 @@ class SOY2HTMLFactory extends SOY2HTMLBase{
 		$extension = ".class.php";
 		include_once($pageDir.$path.$extension);
 	}
-	public static function pageExists($className){
+	public static function pageExists(string $className){
 		$pageDir = SOY2HTMLConfig::PageDir();
 		$path = str_replace(".","/",$className);
 		$extension = ".class.php";
@@ -5666,7 +5645,7 @@ class SOY2HTMLFactory extends SOY2HTMLBase{
 		}
 		return $className;
 	}
-	private static function generateWebPage($className,$path){
+	private static function generateWebPage(string $className, string $path){
 		$templatePath = $path . ".html";
 		$fullPath = $path . ".class.php";
 		$dirpath = dirname($fullPath);
@@ -5730,7 +5709,7 @@ class SOY2HTMLFactory extends SOY2HTMLBase{
 		$class[] = implode("\n",$classes);
 		file_put_contents($fullPath,"<?php \n".implode("\n",$docComment) ."\n". implode("\n",$class)."\n?>");
 	}
-	private static function generateCreateAdd($soyIds,$className = "HTMLLabel"){
+	private static function generateCreateAdd(array $soyIds, string $className="HTMLLabel"){
 		$keys = array_keys($soyIds);
 		$script = array();
 		$classes = array();
@@ -5827,7 +5806,7 @@ class SOYBodyComponentBase extends SOY2HTML{
 	protected $_tmpList = array();
 	protected $_childSoy2Prefix  = "soy";
 	const SOY_TYPE = SOY2HTML::SOY_BODY;
-    function add($id,$obj){
+    function add(string $id, $obj){
     	$obj->setId($id);
     	$obj->setParentObject($this);
     	$obj->init();
@@ -5841,7 +5820,7 @@ class SOYBodyComponentBase extends SOY2HTML{
 	 * @param $array = array()　setter injection
 	 * @see HTMLPage.add
 	 */
-	function createAdd($id,$className,$array = array()){
+	function createAdd(string $id, string $className, array $array=array()){
 		if(!isset($array["soy2prefix"]) && $this->_childSoy2Prefix) {
 			if(!is_array($array)) $array = array();
 			$array["soy2prefix"] = $this->_childSoy2Prefix;
@@ -5880,43 +5859,42 @@ class SOYBodyComponentBase extends SOY2HTML{
 		return true;
 	}
 
-	/** PHP7.4対応 SOY2HTMLBaseの__call()の廃止 **/
-	function addForm($id, $array=array()){self::createAdd($id, "HTMLForm", $array);}
-	function addUploadForm($id, $array=array()){self::createAdd($id, "HTMLUploadForm", $array);}
-	function addModel($id, $array=array()){self::createAdd($id, "HTMLModel", $array);}
-	function addLabel($id, $array=array()){self::createAdd($id, "HTMLLabel", $array);}
-	function addImage($id, $array=array()){self::createAdd($id, "HTMLImage", $array);}
-	function addLink($id, $array=array()){self::createAdd($id, "HTMLLink", $array);}
-	function addActionLink($id, $array=array()){self::createAdd($id, "HTMLActionLink", $array);}
-	function addInput($id, $array=array()){
+	/** PHP7.4対応 __call()の廃止 **/
+	function addForm(string $id, array $array=array()){self::createAdd($id, "HTMLForm", $array);}
+	function addUploadForm(string $id, array $array=array()){self::createAdd($id, "HTMLUploadForm", $array);}
+	function addModel(string $id, array $array=array()){self::createAdd($id, "HTMLModel", $array);}
+	function addLabel(string $id, array $array=array()){self::createAdd($id, "HTMLLabel", $array);}
+	function addImage(string $id, array $array=array()){self::createAdd($id, "HTMLImage", $array);}
+	function addLink(string $id, array $array=array()){self::createAdd($id, "HTMLLink", $array);}
+	function addActionLink(string $id, array $array=array()){self::createAdd($id, "HTMLActionLink", $array);}
+	function addInput(string $id, array $array=array()){
 		self::createAdd($id, "HTMLInput", $array);
 		self::addText($id, $array);
 	}
-	function addTextArea($id, $array=array()){
+	function addTextArea(string $id, array $array=array()){
 		self::createAdd($id, "HTMLTextArea", $array);
 		self::addText($id, $array);
 	}
-	function addCheckBox($id, $array=array()){
+	function addCheckBox(string $id, array $array=array()){
 		self::createAdd($id, "HTMLCheckBox", $array);
 		self::addText($id, $array);
 	}
-	function addSelect($id, $array=array()){
+	function addSelect(string $id, array $array=array()){
 		self::createAdd($id, "HTMLSelect", $array);
 		self::addText($id, $array);
 	}
-	function addHidden($id, $array=array()){self::createAdd($id, "HTMLHidden", $array);}
-	function addScript($id, $array=array()){self::createAdd($id, "HTMLScript", $array);}
-	function addCSS($id, $array=array()){self::createAdd($id, "HTMLCSS", $array);}
-	function addCSSLink($id, $array=array()){self::createAdd($id, "HTMLCSSLink", $array);}
-	function addText($id, $array=array()){
+	function addHidden(string $id, array $array=array()){self::createAdd($id, "HTMLHidden", $array);}
+	function addScript(string $id, array $array=array()){self::createAdd($id, "HTMLScript", $array);}
+	function addCSS(string $id, array $array=array()){self::createAdd($id, "HTMLCSS", $array);}
+	function addCSSLink(string $id, array $array=array()){self::createAdd($id, "HTMLCSSLink", $array);}
+	function addText(string $id, array $array=array()){
 		$new = array();
-		if(isset($array["soy2prefix"]) && is_string($array["soy2prefix"]) && strlen($array["soy2prefix"])) $new["soy2prefix"] = $array["soy2prefix"];
-		$new["text"] = (isset($array["value"]) && (is_string($array["value"]) || is_numeric($array["value"]))) ? $array["value"] : "";
+		if(isset($array["soy2prefix"]) && strlen($array["soy2prefix"])) $new["soy2prefix"] = $array["soy2prefix"];
+		$new["text"] = (isset($array["value"])) ? $array["value"] : "";
 		if(!strlen($new["text"]) && isset($array["text"]) && strlen($array["text"])) $new["text"] = $array["text"]; //addTextAreaの場合
-
 		self::createAdd($id. "_text", "HTMLLabel", $new);
 	}
-	function addList($id, $array=array()){self::createAdd($id, "HTMLList", $array);}
+	function addList(string $id, array $array=array()){self::createAdd($id, "HTMLList", $array);}
 }
 /**
  * @package SOY2.SOY2HTML
@@ -5954,7 +5932,7 @@ class SOY2HTMLElement extends SOY2HTML{
 	function getEndTag(){
 		return "";
 	}
-	function setAttribute($key,$value,$flag = true){
+	function setAttribute(string $key, string $value="", bool $flag=true){
 		$this->_attribute[$key] = $value;
 	}
 	function getObject(){
@@ -6066,54 +6044,54 @@ class HTMLCSSLink extends SOY2HTML{
 /**
  * @package SOY2.SOY2HTML
  */
-class HTMLForm extends SOYBodyComponentBase{
-    var $tag = "form";
-    var $action;
-    var $_method = "post";
-	private $disabled;
-    function setTag($tag){
-    	throw new SOY2HTMLException("[HTMLForm]タグの書き換えは不可です。");
-    }
-    function setMethod($method){
-    	$this->_method = $method;
-    }
-    function setAction($action){
-    	$this->action = $action;
-    }
-    function setTarget($target){
-    	$this->setAttribute("target",$target);
-    }
-    function getStartTag(){
-    	if(strtolower($this->_method) == "post"){
-    		$token = '<input type="hidden" name="soy2_token" value="<?php echo soy2_get_token(); ?>" />';
-    		return parent::getStartTag() . $token;
-    	}
-    	return parent::getStartTag();
-    }
-    function execute(){
-		SOYBodyComponentBase::execute();
-		if($this->action){
-			$this->setAttribute("action",$this->action);
-		}else{
-			$this->setAttribute("action",@$_SERVER["REQUEST_URI"]);
-		}
-		$this->setAttribute('method',$this->_method);
-		$disabled = ($this->disabled) ? "disabled" : null;
-		$this->setAttribute("disabled",$disabled, false);
-    }
-    function setOnSubmit($value){
-    	if(!preg_match("/^javascript:/i",$value)){
-    		$value = "javascript:".$value;
-    	}
-    	$this->setAttribute("onsubmit",$value);
-    }
-	function getDisabled() {
-		return $this->disabled;
-	}
-	function setDisabled($disabled) {
-		$this->disabled = $disabled;
-	}
-}
+ class HTMLForm extends SOYBodyComponentBase{
+     var $tag = "form";
+     var $action;
+     var $_method = "post";
+ 	private $disabled;
+     function setTag($tag){
+     	throw new SOY2HTMLException("[HTMLForm]タグの書き換えは不可です。");
+     }
+     function setMethod($method){
+     	$this->_method = $method;
+     }
+     function setAction($action){
+     	$this->action = $action;
+     }
+     function setTarget($target){
+     	$this->setAttribute("target",$target);
+     }
+     function getStartTag(){
+     	if(strtolower($this->_method) == "post"){
+     		$token = '<input type="hidden" name="soy2_token" value="<?php echo soy2_get_token(); ?>" />';
+     		return parent::getStartTag() . $token;
+     	}
+     	return parent::getStartTag();
+     }
+     function execute(){
+ 		SOYBodyComponentBase::execute();
+ 		if(is_string($this->action)){
+ 			$this->setAttribute("action", $this->action);
+ 		}else if(isset($_SERVER["REQUEST_URI"])){
+ 			$this->setAttribute("action", $_SERVER["REQUEST_URI"]);
+ 		}
+ 		$this->setAttribute('method', (string)$this->_method);
+ 		$disabled = ($this->disabled) ? "disabled" : "";
+ 		$this->setAttribute("disabled",$disabled, false);
+     }
+     function setOnSubmit($value){
+     	if(!preg_match("/^javascript:/i",$value)){
+     		$value = "javascript:".$value;
+     	}
+     	$this->setAttribute("onsubmit", (string)$value);
+     }
+ 	function getDisabled() {
+ 		return $this->disabled;
+ 	}
+ 	function setDisabled($disabled) {
+ 		$this->disabled = $disabled;
+ 	}
+ }
 /**
  * @package SOY2.SOY2HTML
  */
@@ -6132,9 +6110,9 @@ abstract class HTMLFormElement extends SOY2HTML{
 	private $readonly;
 	function execute(){
 		parent::execute();
-		$disabled = ($this->disabled) ? "disabled" : null;
+		$disabled = ($this->disabled) ? "disabled" : "";
 		$this->setAttribute("disabled",$disabled, false);
-		$readonly = ($this->readonly) ? "readonly" : null;
+		$readonly = ($this->readonly) ? "readonly" : "";
 		$this->setAttribute("readonly",$readonly, false);
 	}
 	function setName($value){
@@ -6164,7 +6142,7 @@ class HTMLInput extends HTMLFormElement{
 	var $type;
 	function setValue($value){
 		$this->value = $value;
-		$this->setAttribute("value",$this->value);
+		$this->setAttribute("value", (string)$this->value);
 	}
 	function execute(){
 		parent::execute();
@@ -6287,7 +6265,7 @@ class HTMLSelect extends HTMLFormElement {
 		$innerHTML  = $this->getInnerHTML();
 		parent::execute();
 		$this->setInnerHTML($innerHTML.$this->getInnerHTML());
-		$multiple = ($this->multiple) ? "multiple" : null;
+		$multiple = ($this->multiple) ? "multiple" : "";
 		$this->setAttribute("multiple",$multiple, false);
 	}
 	function getObject(){
@@ -6414,9 +6392,9 @@ class HTMLCheckBox extends HTMLInput {
 	}
 	function execute(){
 		parent::execute();
-		if(!$this->elementId) $this->elementId = "label_" . md5((string)$this->value.(string)$this->name.(string)rand(0,1));
+		if(!is_string($this->elementId)) $this->elementId = "label_" . md5((string)$this->value.(string)$this->name.(string)rand(0,1));
 		$this->setAttribute("id",$this->elementId);
-		$checked = ($this->selected) ? "checked" : null;
+		$checked = ($this->selected) ? "checked" : "";
 		$this->setAttribute("checked",$checked, false);
 	}
 	function getLabel(){
@@ -6593,13 +6571,13 @@ class HTMLImage extends SOY2HTML{
     	$this->setSrc($path);
     }
     function execute(){
-    	$this->setAttribute("src",$this->src);
+    	$this->setAttribute("src", (string)$this->src);
     }
     function getObject(){
     	return $this->src;
     }
     function setAlt($alt){
-    	$this->setAttribute("alt",$alt);
+    	$this->setAttribute("alt", (string)$alt);
     }
 }
 /* SOY2HTML/SOY2HTMLComponents/HTMLLabel.class.php */
@@ -6702,10 +6680,9 @@ class HTMLLink extends HTMLLabel{
 			parent::execute();
 		}
 		$suffix = $this->getAttribute($this->_soy2_prefix . ":suffix");
-		if($suffix){
-			$this->link .= $suffix;
-		}
-		$this->setAttribute("href",$this->link);
+		if($suffix) $this->link .= $suffix;
+
+		$this->setAttribute("href", (string)$this->link);
 		if(is_string($this->target) && strlen($this->target)){
 			$this->setAttribute("target",$this->target);
 		}elseif(isset($this->target)){
@@ -6780,12 +6757,12 @@ class HTMLList extends SOYBodyComponentBase{
 		$innerHTML = $this->getInnerHTML();
 		$old = error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING);
 		$this->populateItemImpl(new HTMLList_DummyObject(),null,-1,count($this->list));
-		$this->createAdd("index","HTMLLabel",array("text" => ""));
+		$this->addLabel("index", array("text" => ""));
 		$this->createAdd("loop","HTMLList_LoopModel",array("counter" => -1));
-		$this->createAdd("at_first","HTMLModel",array("visible" => false));
-		$this->createAdd("not_first","HTMLModel",array("visible" => false));
-		$this->createAdd("at_last","HTMLModel",array("visible" => false));
-		$this->createAdd("not_last","HTMLModel",array("visible" => false));
+		$this->addModel("at_first", array("visible" => false));
+		$this->addModel("not_first", array("visible" => false));
+		$this->addModel("at_last", array("visible" => false));
+		$this->addModel("not_last", array("visible" => false));
 		error_reporting($old);
 		parent::execute();
 		$counter = 0;
@@ -6794,12 +6771,12 @@ class HTMLList extends SOYBodyComponentBase{
 			$counter++;
 			$tmpList = array();
 			$res = $this->populateItemImpl($listObj,$listKey,$counter,$length);
-			$this->createAdd("index","HTMLLabel",array("text" => $counter));
+			$this->addLabel("index", array("text" => $counter));
 			$this->createAdd("loop","HTMLList_LoopModel",array("counter" => $counter));
-			$this->createAdd("at_first","HTMLModel",array("visible" => $counter == 1));
-			$this->createAdd("not_first","HTMLModel",array("visible" => $counter != 1));
-			$this->createAdd("at_last","HTMLModel",array("visible" => $counter == $length));
-			$this->createAdd("not_last","HTMLModel",array("visible" => $counter != $length));
+			$this->addModel("at_first", array("visible" => $counter == 1));
+			$this->addModel("not_first", array("visible" => $counter != 1));
+			$this->addModel("at_last", array("visible" => $counter == $length));
+			$this->addModel("not_last", array("visible" => $counter != $length));
 			if($res === false)continue;
 			foreach($this->_components as $key => $obj){
 				$obj->setContent($innerHTML);
@@ -6913,7 +6890,7 @@ class HTMLPage extends SOYBodyComponentBase{
 		$this->init();
 		$this->_soy2_page = array();
 		$content = $this->getTemplate();
-		if($content !== false && strlen($content)){
+		if(is_string($content) && strlen($content)){
 			/*
 			 * PHPを許可しないときは<?と?>をエスケープする
 			 * ただしXML宣言は残す
@@ -6955,7 +6932,7 @@ class HTMLPage extends SOYBodyComponentBase{
 	 * @param クラス名
 	 * @param 初期値
 	 */
-	function create($id,$className,$array = array()){
+	function create(string $id, $className, array $array=array()){
 		if(is_object($className)){
 			$obj = $className;
 			$obj->setId($id);
@@ -7001,7 +6978,7 @@ class HTMLPage extends SOYBodyComponentBase{
 	 * 	)));
 	 *
 	 */
-	function add($id,$obj){
+	function add(string $id, $obj){
 		if(!$obj instanceof SOY2HTML){
 			return;
 		}
@@ -7025,7 +7002,7 @@ class HTMLPage extends SOYBodyComponentBase{
 	 * @param $array = array()　setter injection
 	 * @see HTMLPage.add
 	 */
-	function createAdd($id,$className,$array = array()){
+	function createAdd(string $id, string $className, array $array=array()){
 		$this->add($id,$this->create($id,$className,$array));
 	}
 	/**
@@ -7170,7 +7147,7 @@ class HTMLPage extends SOYBodyComponentBase{
 	 *
 	 * @return キャッシュファイルのパス
 	 */
-	function getCacheFilePath($extension = ".html.php"){
+	function getCacheFilePath(string $extension=".html.php"){
 		return
 			SOY2HTMLConfig::CacheDir()
 			.SOY2HTMLConfig::getOption("cache_prefix") .
@@ -7546,30 +7523,30 @@ class HTMLPager extends SOYBodyComponentBase{
 	private $query = "";
 	private $pagerCount = 10;
 	private $limit = 0;
-    function execute(){
+	function execute(){
     	if($this->_soy2_parent){
-			$this->_soy2_parent->createAdd("count_start","HTMLLabel",array(
+			$this->_soy2_parent->addLabel("count_start", array(
 				"text" => $this->getStart()
 			));
-			$this->_soy2_parent->createAdd("count_end","HTMLLabel",array(
+			$this->_soy2_parent->addLabel("count_end", array(
 				"text" => $this->getEnd()
 			));
-			$this->_soy2_parent->createAdd("count_max","HTMLLabel",array(
+			$this->_soy2_parent->addLabel("count_max", array(
 				"text" => $this->getTotal()
 			));
     	}
 		$next = $this->getNextParam();
-		$this->createAdd("next_link","HTMLLink",$next);
-		$this->createAdd("next_link_wrap","HTMLModel",array("visible" => $next["visible"]));
+		$this->addLink("next_link", $next);
+		$this->addLink("next_link_wrap", array("visible" => $next["visible"]));
 		$prev = $this->getPrevParam();
-		$this->createAdd("prev_link","HTMLLink",$prev);
-		$this->createAdd("prev_link_wrap","HTMLModel",array("visible" => $prev["visible"]));
+		$this->addLink("prev_link", $prev);
+		$this->addModel("prev_link_wrap", array("visible" => $prev["visible"]));
 		$this->createAdd("pager_list","SOY2HTMLPager_List",$this->getPagerParam());
-		$this->createAdd("pager_jump","HTMLForm",array(
+		$this->addForm("pager_jump", array(
 			"method" => "get",
 			"action" => $this->getLink()
 		));
-		$this->createAdd("pager_select","HTMLSelect",array(
+		$this->addSelect("pager_select", array(
 			"name" => "page",
 			"options" => $this->getSelectArray(),
 			"selected" => $this->getPage(),
@@ -7694,20 +7671,20 @@ class SOY2HTMLPager_List extends HTMLList{
 			$text= $bean;
 		}
 		$url = $this->url . $link;
-		$this->createAdd("page_link","HTMLLink",array(
+		$this->addLink("page_link", array(
 			"text" => $text,
 			"link" => ($this->current != $link)?$url : ""
 		));
-		$this->createAdd("page_link_only","HTMLLink",array(
+		$this->addLink("page_link_only", array(
 			"link" => $url
 		));
-		$this->createAdd("page_text","HTMLLabel",array(
+		$this->addLabel("page_text", array(
 			"text" => $text
 		));
-		$this->createAdd("current_page","HTMLModel",array(
+		$this->addModel("current_page", array(
 			"visible" => ($this->current == $link)
 		));
-		$this->createAdd("other_page","HTMLModel",array(
+		$this->addModel("other_page", array(
 			"visible" => ($this->current != $link)
 		));
 	}
@@ -7737,17 +7714,17 @@ class HTMLScript extends SOY2HTML{
     	$this->script = $script;
     }
     function setSrc($src){
-    	$this->setAttribute("src",$src);
+    	$this->setAttribute("src", (string)$src);
     }
     function execute(){
-    	$this->setAttribute("type",$this->type);
+    	$this->setAttribute("type", (string)$this->type);
     	parent::execute();
     }
     function setType($type){
     	$this->type = $type;
     }
     function getObject(){
-    	if(strlen($this->script)){
+    	if(is_string($this->script) && strlen($this->script)){
     		return "<!--\n".$this->script."\n-->";//htmlspecialchars((string)$this->script,ENT_QUOTES,SOY2HTML::ENCODING)
     	}else{
     		return $this->script;
@@ -8213,13 +8190,13 @@ function soy2html_layout_get($file){
  * @package SOY2.SOY2Logic
  */
 interface SOY2LogicInterface{
-	public static function getInstance($className,$args);
+	public static function getInstance(string $className, array $args);
 }
 /**
  * @package SOY2.SOY2Logic
  */
 abstract class SOY2LogicBase implements SOY2LogicInterface{
-	public static function getInstance($className,$args){
+	public static function getInstance(string $className, array $args){
 		$obj = new $className();
 		foreach($args as $key => $value){
 			$method = "set".ucwords($key);
@@ -8234,7 +8211,7 @@ abstract class SOY2LogicBase implements SOY2LogicInterface{
  * @package SOY2.SOY2Logic
  */
 class SOY2Logic{
-	public static function createInstance($classPath,$array = array()){
+	public static function createInstance(string $classPath, array $array=array()){
 		if(!class_exists($classPath)){
 			if(SOY2::import($classPath) == false){
 				throw new Exception("Failed to include ".$classPath);
@@ -8270,14 +8247,14 @@ class SOY2LogicContainer {
 	private $logics = array();
 	private function __construct(){
 	}
-	public static function get($name,$array = array()){
+	public static function get(string $name, array $array=array()){
 		static $instance;
 		if(!$instance){
 			$instance = new SOY2LogicContainer;
 		}
 		return $instance->_get($name,$array);
 	}
-    private function _get($name,$array = array()){
+    private function _get(string $name, array $array=array()){
     	if(isset($this->logics[$name])){
     		$obj = $this->logics[$name];
     	}else{

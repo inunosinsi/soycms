@@ -3,7 +3,7 @@
 		<div class="panel panel-default">
 			<div class="panel-heading">商品詳細 - <!-- soy:id="item_name_text"  /-->
 				<small class="pull-right">
-					<!-- soy:display="notice_arrival" --><a href="javascript:void(0);" onclick="return OptionWindow.popup('Arrival');" class="btn btn-default btn-xs">入荷通知希望<!-- soy:id="user_label" /--></a><!-- /soy:display="notice_arrival" -->
+					<!-- soy:display="notice_arrival" --><a href="javascript:void(0);" class="btn btn-default btn-xs" data-toggle="modal" data-target="#arrivalModal">入荷通知希望<!-- soy:id="user_label" /--></a><!-- /soy:display="notice_arrival" -->
 					<!-- soy:display="favorite" --><a href="javascript:void(0);" onclick="return OptionWindow.popup('Favorite');" class="btn btn-default btn-xs">お気に入り登録</a><!-- /soy:display="favorite" -->
 				</small>
 			</div>
@@ -276,6 +276,22 @@
 	</div>
 </div>
 <!-- /image_select -->
+
+<div class="modal" tabindex="-1" role="dialog" id="arrivalModal">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">入荷待ち顧客一覧</h5>
+			</div>
+			<div class="modal-body">
+				<iframe src="<!-- soy:id="arrival_url" /-->" style="width:100%;height:400px;"></iframe>
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="storageModalClose" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
 
 <script type="text/javascript" soy:src="../soycms/js/tinymce/tinymce.min.js"></script>
 <script type="text/javascript">

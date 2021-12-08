@@ -4,7 +4,7 @@ class SOYShopOrderDetailMailBase implements SOY2PluginAction{
 	/**
 	 * @return array(array("id" => string, "title" => ""))
 	 */
-	function getMailType($mode){}
+	function getMailType(string $mode){}
 
 	/**
 	 * メール種別でメール文面編集画面のGETパラメータと一致すればtrueにする文字列

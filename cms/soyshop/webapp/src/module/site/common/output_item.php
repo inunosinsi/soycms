@@ -360,6 +360,27 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
         "defaultFormat" => "Y.m.d"
     ));
 
+	//プラグイン関連
+	$isPurchased = false;
+	if(is_numeric($item->getId())){
+		if(SOYShopPluginUtil::checkIsActive("common_purchase_check")){
+			SOY2::import("module.plugins.common_purchase_check.util.PurchaseCheckUtil");
+			$isPurchased = PurchaseCheckUtil::checkPurchasedByItemId($item->getId());
+		}else if(SOYShopPluginUtil::checkIsActive("common_favorite_item")){
+			SOY2::import("module.plugins.common_favorite_item.util.FavoriteUtil");
+			$isPurchased = FavoriteUtil::checkPurchasedByItemId($item->getId());
+		}
+	}
+	$htmlObj->addModel("is_purchased", array(
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"visible" => ($isPurchased)
+	));
+
+	$htmlObj->addModel("no_purchased", array(
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"visible" => (!$isPurchased)
+	));
+
     /* event SOY CMSから読み込んだ時はカスタムフィールドは表示できない様にする*/
     if(defined("DISPLAY_SOYSHOP_SITE") && DISPLAY_SOYSHOP_SITE){
         SOYShopPlugin::invoke("soyshop.item.customfield", array(

@@ -245,7 +245,7 @@ class DetailPage extends WebPage{
 
 		self::_buildForm($this->id);
 		//入荷通知周り
-		self::buildNoticeButton();
+		self::buildNoticeButton($this->id);
 		self::buildFavoriteButton();
 	}
 
@@ -575,19 +575,20 @@ class DetailPage extends WebPage{
 	}
 
 	//入荷通知周り
-	private function buildNoticeButton(){
-
-		$isNoticeArrival = (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_notice_arrival")));
-
-		//プラグインがアクティブでないと、顧客数を取得しにいかない
-		if($isNoticeArrival){
-			$noticeLogic = SOY2Logic::createInstance("module.plugins.common_notice_arrival.logic.NoticeLogic");
-			$users = $noticeLogic->getUsersByItemId($this->id, SOYShop_NoticeArrival::NOT_SENDED, SOYShop_NoticeArrival::NOT_CHECKED);
-			$isNoticeArrival = (count($users));
-		}
-
+	private function buildNoticeButton(int $itemId){
 		//プラグインがアクティブになっていること、顧客数が一人以上いる場合に表示する
-		DisplayPlugin::toggle("notice_arrival", $isNoticeArrival);
+		DisplayPlugin::toggle("notice_arrival", self::_isNoticeArrival($itemId));
+
+		$this->addLabel("arrival_url", array(
+			"text" => SOY2PageController::createLink("Item.Arrival." . $itemId)
+		));
+	}
+
+	private function _isNoticeArrival(int $itemId){
+		if(!SOYShopPluginUtil::checkIsActive("common_notice_arrival")) return false;
+		if(soyshop_get_item_object($itemId)->getStock() > 0) return false;
+		$users = SOY2Logic::createInstance("module.plugins.common_notice_arrival.logic.NoticeLogic")->getUsersByItemId($itemId, SOYShop_NoticeArrival::NOT_SENDED);
+		return (count($users) > 0);
 	}
 
 	//入荷通知周り
@@ -597,8 +598,7 @@ class DetailPage extends WebPage{
 
 		//プラグインがアクティブでないと、顧客数を取得しにいかない
 		if($isFavorite){
-			$favoriteLogic = SOY2Logic::createInstance("module.plugins.common_favorite_item.logic.FavoriteLogic");
-			$users = $favoriteLogic->getUsersByFavoriteItemId($this->id);
+			$users = SOY2Logic::createInstance("module.plugins.common_favorite_item.logic.FavoriteLogic")->getUsersByFavoriteItemId($this->id);
 			$isFavorite = (count($users));
 		}
 

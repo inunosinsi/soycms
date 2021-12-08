@@ -1,122 +1,99 @@
 <?php
 
 class FavoriteLogic extends SOY2LogicBase{
-	
-	private $favoriteDao;
-	
+
 	function __construct(){
-		SOY2::imports("module.plugins.common_favorite_item.domain.*");
-		$this->favoriteDao = SOY2DAOFactory::create("SOYShop_FavoriteItemDAO");
+		SOY2::import("module.plugins.common_favorite_item.domain.SOYShop_FavoriteItemDAO");
 	}
-	
+
 	//お気に入りに登録する
-	function registerFavorite($itemId, $userId){
-		
+	function register(int $itemId, int $userId){
 		//すでにお気に入りに登録していないかをチェックする。すでに登録されている場合は処理を終了する
-		if($this->checkFavorite($itemId, $userId)) return;
-		
+		if(self::_check($itemId, $userId)) return;
+
 		//ここから登録を開始する
-		$obj = new SOYShop_FavoriteItem();
-		$obj->setItemId($itemId);
-		$obj->setUserId($userId);
-		
+		$fav = new SOYShop_FavoriteItem();
+		$fav->setItemId($itemId);
+		$fav->setUserId($userId);
+
 		try{
-			$this->favoriteDao->insert($obj);
+			self::_dao()->insert($fav);
 		}catch(Exception $e){
 			//
 		}
 	}
-	
+
 	//お気に入りを解除する
-	function cancelFavorite($itemId, $userId){
+	function cancel(int $itemId, int $userId){
 		try{
-			$this->favoriteDao->deleteByItemIdAndUserId($itemId, $userId);
+			self::_dao()->deleteByItemIdAndUserId($itemId, $userId);
 		}catch(Exception $e){
 			//
 		}
 	}
-	
+
 	//お気に入り商品の情報を更新する
-	function updateFavorite($itemId, $userId){
-		$favoriteItem = $this->getFavoriteItem($itemId, $userId);
-		
-		$favoriteItem->setPurchased(SOYShop_FavoriteItem::PURCHASED);
+	function update(int $itemId, int $userId){
+		$fav = self::_get($itemId, $userId);
+		$fav->setPurchased(SOYShop_FavoriteItem::PURCHASED);
 		try{
-			$this->favoriteDao->update($favoriteItem);
+			self::_dao()->update($fav);
 		}catch(Exception $e){
 			//
 		}
 	}
-	
-	/**
-	 * @return userId
-	 */
-	function getUserId(){
-		$mypage = MyPageLogic::getMyPage();
-		return $mypage->getUserId();
-	}
-	
+
 	/**
 	 * 登録されている商品を選択しているか。登録されていればtrue
 	 * @param itemId
 	 * @return boolean
 	 */
-	function checkItem($itemId){
-		$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-		try{
-			$item = $itemDao->getById($itemId);
-		}catch(Exception $e){
-			return false;
-		}
-		
-		return (strlen($item->getName()));
+	function checkItem(int $itemId){
+		return (strlen((string)soyshop_get_item_object($itemId)->getName()));
 	}
-	
-	/**
-	 * ログインしていればtrue
-	 * return boolean
-	 */
-	function checkLogin(){
-		$mypage = MyPageLogic::getMyPage();
-		return $mypage->getIsLoggedIn();
-	}
-	
+
+
 	/**
 	 * お気に入りに登録済みか調べる。既に登録済みの場合はtrue
 	 * @param itemId, userId
 	 * @return boolean
 	 */
-	function checkFavorite($itemId, $userId = null){
-		
-		$favoriteItem = $this->getFavoriteItem($itemId, $userId);
-		return (!is_null($favoriteItem->getId()));
+	function checkFavorite(int $itemId, int $userId=0){
+		return self::_check($itemId, $userId);
 	}
-	
+
+	function _check(int $itemId, int $userId=0){
+		return (is_numeric(self::_get($itemId, $userId)->getId()));
+	}
+
 	/**
 	 * 購入済みフラグが立っていたらtrue
 	 * @param itemId, userId
 	 * @return boolean
 	 */
-	function checkPurchased($itemId, $userId = null){
-		$favoriteItem = $this->getFavoriteItem($itemId, $userId);
-		return ($favoriteItem->getPurchased());
+	function checkPurchased(int $itemId, int $userId=0){
+		return (self::_get($itemId, $userId)->getPurchased());
 	}
-	
-	function getUsersByFavoriteItemId($itemId){
-		$users = $this->favoriteDao->getUsersByFavoriteItemId($itemId);
-		return $users;
+
+	function getUsersByFavoriteItemId(int $itemId){
+		return self::_dao()->getUsersByFavoriteItemId($itemId);
 	}
-	
-	function getFavoriteItem($itemId, $userId = null){
-		if(!$userId) $userId = $this->getUserId();
-		
+
+	function getFavoriteItem(int $itemId, int $userId=0){
+		return self::_get($itemId, $userId);
+	}
+
+	private function _get(int $itemId, int $userId=0){
 		try{
-			$favoriteItem = $this->favoriteDao->getByItemIdAndUserId($itemId, $userId);
+			return self::_dao()->getByItemIdAndUserId($itemId, $userId);
 		}catch(Exception $e){
-			$favoriteItem = new SOYShop_FavoriteItem();
+			return new SOYShop_FavoriteItem();
 		}
-		
-		return $favoriteItem;
+	}
+
+	private function _dao(){
+		static $dao;
+		if(is_null($dao)) $dao = SOY2DAOFactory::create("SOYShop_FavoriteItemDAO");
+		return $dao;
 	}
 }
-?>

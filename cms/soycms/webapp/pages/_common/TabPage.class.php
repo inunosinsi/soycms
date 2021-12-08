@@ -139,11 +139,11 @@ class TabPage extends CMSHTMLPageBase {
 		));
 
 		//CMS管理へのリンク
-		$this->createAdd("admin_link","HTMLLink",array(
+		$this->addLink("admin_link", array(
 				"link" => SOY2PageController::createRelativeLink("../admin/"),
 		));
-		$this->addModel("show_admin_link","HTMLLink",array(
-				"visible" => !defined("SOYCMS_ASP_MODE") && !UserInfoUtil::hasOnlyOneRole()
+		$this->addModel("show_admin_link", array(
+				"visible" => (!defined("SOYCMS_ASP_MODE") && !UserInfoUtil::hasOnlyOneRole())
 		));
 
 		//キャッシュ削除（処理はUpperMenuPage）

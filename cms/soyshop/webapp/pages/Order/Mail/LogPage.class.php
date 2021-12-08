@@ -29,6 +29,8 @@ class LogPage extends WebPage{
 
 		$mails = array();
 		foreach($recipients as $recipient){
+			$recipient = trim($recipient);
+			if(!strlen($recipient)) continue;
 			$mails[] = "<a href=\"mailto:" . $recipient . "\">" . $recipient . "</a>";
 		}
 

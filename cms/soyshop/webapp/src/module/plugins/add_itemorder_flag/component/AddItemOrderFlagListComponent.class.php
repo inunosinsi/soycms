@@ -5,14 +5,14 @@ class AddItemOrderFlagListComponent extends HTMLList {
 	protected function populateItem($entity, $key){
 		$this->addInput("number", array(
 			"name" => "number[]",
-			"value" => (isset($key)) ? $key : 0
+			"value" => $key
 		));
 
 		$this->addInput("label", array(
 			"name" => "label[]",
-			"value" => (isset($entity)) ? $entity : ""
+			"value" => (is_string($entity)) ? $entity : ""
 		));
 
-		if(!is_numeric($key)) return false;
+		return (is_string($entity));
 	}
 }

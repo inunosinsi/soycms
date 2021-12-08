@@ -22,17 +22,17 @@ abstract class SOYShop_FavoriteItemDAO extends SOY2DAO{
 	 * @return object
 	 * @query item_id = :itemId AND user_id = :userId
 	 */
-	abstract function getByItemIdAndUserId($itemId, $userId);
+	abstract function getByItemIdAndUserId(int $itemId, int $userId);
 
 	/**
 	 * @query item_id = :itemId AND user_id = :userId
 	 */
-	abstract function deleteByItemIdAndUserId($itemId, $userId);
+	abstract function deleteByItemIdAndUserId(int $itemId, int $userId);
 
 	/**
 	 * @final
 	 */
-	function getFavoriteItems($userId){
+	function getFavoriteItems(int $userId){
 		$sql = "SELECT i.* FROM soyshop_item i ".
 				"JOIN soyshop_favorite_item f ".
 				"ON i.id = f.item_id ".
@@ -64,7 +64,7 @@ abstract class SOYShop_FavoriteItemDAO extends SOY2DAO{
 	/**
 	 * @final
 	 */
-	function getUsersByFavoriteItemId($itemId){
+	function getUsersByFavoriteItemId(int $itemId){
 		$sql = "SELECT u.* FROM soyshop_user u ".
 				"JOIN soyshop_favorite_item f ".
 				"ON u.id = f.user_id ".
@@ -98,7 +98,6 @@ abstract class SOYShop_FavoriteItemDAO extends SOY2DAO{
 		$binds[":purchased"] = 0;
 		$binds[":createDate"] = time();
 		$binds[":updateDate"] = time();
-
 		return array($query, $binds);
 	}
 
@@ -107,7 +106,6 @@ abstract class SOYShop_FavoriteItemDAO extends SOY2DAO{
 	 */
 	function onUpdate($query, $binds){
 		$binds[":updateDate"] = time();
-
 		return array($query, $binds);
 	}
 }

@@ -26,10 +26,11 @@ class EntryListComponent extends HTMLList{
 			"visible" => strlen($popupText)
 		));
 
+		$content = (is_string($entity->getContent())) ? $entity->getContent() : "";
 		$this->addLabel("content", array(
-			"text"  => SOY2HTML::ToText($entity->getContent()),
+			"text"  => SOY2HTML::ToText($content),
 			"width" => 60,
-			"title" => mb_strimwidth(SOY2HTML::ToText($entity->getContent()), 0, 1000, "..."),
+			"title" => mb_strimwidth(SOY2HTML::ToText($content), 0, 1000, "..."),
 		));
 
 

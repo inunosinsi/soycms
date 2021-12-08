@@ -2,35 +2,24 @@
 
 class IndexPage extends MainMyPagePageBase{
 
-	private $noticeDao;
-
 	function __construct(){
 		$this->checkIsLoggedIn(); //ログインチェック
-		
+
 		//お気に入り登録プラグインがアクティブでない場合はトップページに飛ばす
 		SOY2::import("util.SOYShopPluginUtil");
 		if(!SOYShopPluginUtil::checkIsActive("common_notice_arrival")) $this->jumpToTop();
 
 		parent::__construct();
 
-		SOY2::imports("module.plugins.common_notice_arrival.domain.*");
-		$this->noticeDao = SOY2DAOFactory::create("SOYShop_NoticeArrivalDAO");
-
-		$user = $this->getUser();
-
 		$this->addLabel("user_name", array(
-			"text" => $user->getName()
+			"text" => $this->getUser()->getName()
 		));
 
-		$items = $this->noticeDao->getItems($user->getId(), null, SOYShop_NoticeArrival::NOT_CHECKED);
+		SOY2::import("module.plugins.common_notice_arrival.domain.SOYShop_NoticeArrivalDAO");
+		$items = SOY2DAOFactory::create("SOYShop_NoticeArrivalDAO")->getItems($this->getUser()->getId(), -1, SOYShop_NoticeArrival::NOT_CHECKED);
 
-		$this->addModel("no_notice", array(
-			"visible" => (count($items) === 0)
-		));
-
-		$this->addModel("is_notice", array(
-			"visible" => (count($items) > 0)
-		));
+		DisplayPlugin::toggle("no_notice", !count($items));
+		DisplayPlugin::toggle("is_notice", count($items));
 
 		//注.SOYShop_ItemListComponentで出力するタグはすべてcms:idになります。
 		SOY2::import("base.site.classes.SOYShop_ItemListComponent");
@@ -43,4 +32,3 @@ class IndexPage extends MainMyPagePageBase{
 		));
 	}
 }
-?>

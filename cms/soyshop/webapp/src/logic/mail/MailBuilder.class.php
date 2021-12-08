@@ -3,7 +3,7 @@ SOY2::import("logic.mail.SOYShop_MailBuilder");
 
 class MailBuilder implements SOY2LogicInterface,SOYShop_MailBuilder{
 
-	public static function getInstance($className,$args){
+	public static function getInstance($className, $args){
 
 		SOYShopPlugin::load("soyshop.order.mailbuilder");
 		$delegate = SOYShopPlugin::invoke("soyshop.order.mailbuilder");
@@ -14,7 +14,7 @@ class MailBuilder implements SOY2LogicInterface,SOYShop_MailBuilder{
 		}
 
 		$className = "MailBuilder";
-		return SOY2LogicBase::getInstance($className,$args);
+		return SOY2LogicBase::getInstance($className, $args);
 	}
 
 	/**
@@ -65,7 +65,7 @@ class MailBuilder implements SOY2LogicInterface,SOYShop_MailBuilder{
 	 * 注文内容
 	 * @return Array
 	 */
-	private function buildOrderInfo($order, $orderItems){
+	private function buildOrderInfo(SOYShop_Order $order, array $orderItems){
 
 		$mail = array();
 
@@ -128,7 +128,7 @@ class MailBuilder implements SOY2LogicInterface,SOYShop_MailBuilder{
 	 * お届け先情報
 	 * @return Array
 	 */
-	private function buildDeliveryInfo($order){
+	private function buildDeliveryInfo(SOYShop_Order $order){
 		$mail = array();
 
 		$address = $order->getAddressArray();
@@ -154,7 +154,7 @@ class MailBuilder implements SOY2LogicInterface,SOYShop_MailBuilder{
 	 * @param user
 	 * @return string
 	 */
-	private function buildUserInfoMailBody($order,$user){
+	private function buildUserInfoMailBody(SOYShop_Order $order, SOYShop_User $user){
 
 		$mail = array();
 
@@ -179,7 +179,7 @@ class MailBuilder implements SOY2LogicInterface,SOYShop_MailBuilder{
 	 * 備考
 	 * @return Array
 	 */
-	private function buildMemo($order){
+	private function buildMemo(SOYShop_Order $order){
 		$mail = array();
 
 		$attr = $order->getAttributeList();
@@ -196,7 +196,7 @@ class MailBuilder implements SOY2LogicInterface,SOYShop_MailBuilder{
 		return $mail;
 	}
 
-	private function printColumn($str,$pos = "right",$width = 10){
+	private function printColumn(string $str, string $pos="right", int $width=10){
 
 		$strWidth = mb_strwidth($str);
 

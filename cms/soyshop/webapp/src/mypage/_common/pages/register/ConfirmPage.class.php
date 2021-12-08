@@ -92,7 +92,7 @@ class ConfirmPage extends IndexPage{
 		if($mypage->getIsLoggedin()) $this->jumpToTop();
 
 		$user = $mypage->getUserInfo();
-		
+
 		//直接URLを入力したら入力フォームに戻す
 		if(is_null($user)) $this->jump("register");
 
@@ -108,7 +108,7 @@ class ConfirmPage extends IndexPage{
 	 * @param string $token
 	 * @param integer $limit 有効期限がtimestamp
 	 */
-	private function _sendTmpRegisterMail(SOYShop_User $user, $token, $limit){
+	private function _sendTmpRegisterMail(SOYShop_User $user, string $token, int $limit){
 
 		$mailLogic = SOY2Logic::createInstance("logic.mail.MailLogic");
 		$config = $mailLogic->getMyPageMailConfig("tmp_register");

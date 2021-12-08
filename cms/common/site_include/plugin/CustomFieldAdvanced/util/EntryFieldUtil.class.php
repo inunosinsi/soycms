@@ -15,8 +15,7 @@ class EntryFieldUtil {
 		$v = explode("-", $fieldValue);
 		if(!isset($v[0]) || !is_numeric($v[0])) return array("caption" => "", "alias" => "");
 
-		$labelLogic = SOY2Logic::createInstance("logic.site.Label.LabelLogic");
-		$label = $labelLogic->getById($v[0]);
+		$label = SOY2Logic::createInstance("logic.site.Label.LabelLogic")->getById($v[0]);
 		$arr = array();
 		$arr["caption"] = $label->getCaption();
 		$arr["alias"] = $label->getAlias();

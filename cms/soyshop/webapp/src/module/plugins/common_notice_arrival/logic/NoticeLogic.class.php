@@ -2,26 +2,22 @@
 
 class NoticeLogic extends SOY2LogicBase{
 
-	private $noticeDao;
 	private $shopConfig;
 
 	function __construct(){
-		SOY2::imports("module.plugins.common_notice_arrival.domain.*");
-		$this->noticeDao = SOY2DAOFactory::create("SOYShop_NoticeArrivalDAO");
-		$this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+		SOY2::import("module.plugins.common_notice_arrival.domain.SOYShop_NoticeArrivalDAO");
 	}
 
 	/**
 	 * 入荷通知登録
 	 * @params itemId, userId
 	 */
-	function registerNotice(int $itemId, int $userId){
-
+	function register(int $itemId, int $userId){
 		$obj = new SOYShop_NoticeArrival();
 		$obj->setItemId($itemId);
 		$obj->setUserId($userId);
 		try{
-			$this->noticeDao->insert($obj);
+			self::_dao()->insert($obj);
 		}catch(Exception $e){
 			//
 		}
@@ -32,21 +28,20 @@ class NoticeLogic extends SOY2LogicBase{
 	 * @params itemId, userId
 	 */
 	function sended(int $itemId, int $userId){
-		$noticeItem = $this->getNoticeItem($itemId, $userId, SOYShop_NoticeArrival::NOT_SENDED, SOYShop_NoticeArrival::NOT_CHECKED);
-		$noticeItem->setSended(SOYShop_NoticeArrival::SENDED);
+		$obj = self::_get($itemId, $userId);
+		$obj->setSended(SOYShop_NoticeArrival::SENDED);
 		try{
-			$this->noticeDao->update($noticeItem);
+			self::_dao()->update($obj);
 		}catch(Exception $e){
 			//
 		}
 	}
 
-	function update(SOYShop_NoticeArrival $noticeItem, $sended = null, $checked = null){
-		if(!is_null($sended) && is_numeric($sended)) $noticeItem->setSended($sended);
-		if(!is_null($checked) && is_numeric($checked)) $noticeItem->setChecked($checked);
-
+	function update(SOYShop_NoticeArrival $obj, int $sended=SOYShop_NoticeArrival::NOT_SENDED, int $checked=SOYShop_NoticeArrival::NOT_CHECKED){
+		$obj->setSended($sended);
+		$obj->setChecked($checked);
 		try{
-			$this->noticeDao->update($noticeItem);
+			self::_dao()->update($obj);
 		}catch(Exception $e){
 			//
 		}
@@ -56,45 +51,20 @@ class NoticeLogic extends SOY2LogicBase{
 	 * @params
 	 * @return array(SOYShop_User)
 	 */
-	function getUsers($sended = null, $checked = null){
-		return $this->noticeDao->getUsers($sended, $checked);
+	function getUsers(int $sended=SOYShop_NoticeArrival::NOT_SENDED, int $checked=SOYShop_NoticeArrival::NOT_CHECKED){
+		return self::_dao()->getUsers($sended, $checked);
 	}
 
 	/**
 	 * @params itemId
 	 * @return array(SOYShop_User)
 	 */
-	function getUsersByItemId($itemId, $sended = null, $checked = null){
-		return $this->noticeDao->getUsersByItemId($itemId, $sended, $checked);
+	function getUsersByItemId(int $itemId, int $sended=SOYShop_NoticeArrival::NOT_SENDED, int $checked=SOYShop_NoticeArrival::NOT_CHECKED){
+		return self::_dao()->getUsersByItemId($itemId, $sended, $checked);
 	}
 
-	function getUsersForNewsPage($sended = null, $checked = null){
-		return $this->noticeDao->getUsersForNewsPage($sended, $checked);
-	}
-
-	function checkStock($itemId){
-		try{
-			$item = $this->itemDao->getById($itemId);
-		}catch(Exception $e){
-			return false;
-		}
-
-		//公開且つ在庫0の場合
-		return ($item->isPublished() && (int)$item->getStock() === 0);
-	}
-
-	/**
-	 * ログインしていればtrue
-	 * return boolean
-	 */
-	function checkLogin(){
-		$mypage = MyPageLogic::getMyPage();
-		return $mypage->getIsLoggedIn();
-	}
-
-	function getUserId(){
-		$mypage = MyPageLogic::getMyPage();
-		return $mypage->getUserId();
+	function getUsersForNewsPage(int $sended=SOYShop_NoticeArrival::NOT_SENDED, int $checked=SOYShop_NoticeArrival::NOT_CHECKED){
+		return self::_dao()->getUsersForNewsPage($sended, $checked);
 	}
 
 	/**
@@ -102,84 +72,38 @@ class NoticeLogic extends SOY2LogicBase{
 	 * @param itemId, userId
 	 * @return boolean
 	 */
-	function checkRegisterNotice($itemId, $userId = null){
-		$noticeItem = $this->getNoticeItem($itemId, $userId, SOYShop_NoticeArrival::NOT_SENDED);
-		return (!is_null($noticeItem->getId()));
+	function checkRegistered(int $itemId, int $userId=0){
+		return (is_numeric(self::_get($itemId, $userId, SOYShop_NoticeArrival::NOT_SENDED)->getId()));
 	}
 
-	function checkNotice($itemId, $userId = null){
-		$noticeItem = $this->getNoticeItem($itemId, $userId);
-		return (!is_null($noticeItem->getSended()) && $noticeItem->getSended() == SOYShop_NoticeArrival::SENDED);
+	function checkSended(int $itemId, int $userId=0){
+		return (self::_get($itemId, $userId)->getSended() == SOYShop_NoticeArrival::SENDED);
 	}
 
-	function convertMailTitle($title, SOYShop_Item $item){
-		$title = $this->convertItemInformation($title, $item);
-		$title = $this->convertCompanyInfomation($title);
-
-		return trim($title);
-	}
-
-	/**
-	 * @params String content, object SOYShop_User, object SOYShop_Item item
-	 * @return String body
-	 */
-	function convertMailContent($content, SOYShop_User $user, SOYShop_Item $item){
-		//ユーザー情報
-		$content = str_replace("#NAME#", $user->getName(), $content);
-		$content = str_replace("#READING#", $user->getReading(), $content);
-		$content = str_replace("#MAILADDRESS#", $user->getMailAddress(), $content);
-		$content = str_replace("#BIRTH_YEAR#", $user->getBirthdayYear(), $content);
-		$content = str_replace("#BIRTH_MONTH#", $user->getBirthdayMonth(), $content);
-		$content = str_replace("#BIRTH_DAY#", $user->getBirthdayDay(), $content);
-
-		$content = $this->convertItemInformation($content, $item);
-		$content = $this->convertCompanyInfomation($content);
-
-		$content = str_replace("#SITE_URL#", soyshop_get_site_url(true), $content);
-
-		//最初に改行が存在した場合は改行を削除する
-		return trim($content);
-	}
-
-	function convertItemInformation($content, SOYShop_Item $item){
-		//商品情報
-		$content = str_replace("#ITEM_CODE#", $item->getCode(), $content);
-		$content = str_replace("#ITEM_NAME#", $item->getName(), $content);
-
-		return $content;
-	}
-
-	function convertCompanyInfomation($content){
-
-		if(!$this->shopConfig){
-			SOY2::import("domain.config.SOYShop_ShopConfig");
-			$this->shopConfig = SOYShop_ShopConfig::load();
-		}
-		$config = $this->shopConfig;
-
-		$content = str_replace("#SHOP_NAME#", $config->getShopName(), $content);
-
-		$company = $config->getCompanyInformation();
-		foreach($company as $key => $value){
-			$content = str_replace(strtoupper("#COMPANY_" . $key ."#"), $value, $content);
-		}
-
-		return $content;
+	function getNoticeItem(int $itemId, int $userId=0, int $sended=-1, int $checked=-1){
+		return self::_get($itemId, $userId, $sended, $checked);
 	}
 
 	/**
 	 * @params itemId, userId
 	 * @return SOYShop_NoticeItem
 	 */
-	function getNoticeItem($itemId, $userId = null, $sended = null, $checked = null){
-		if(!$userId) $userId = $this->getUserId();
-
+	private function _get(int $itemId, int $userId=0, int $sended=-1, int $checked=-1){
 		try{
-			$noticeItem = $this->noticeDao->getByItemIdAndUserId($itemId, $userId, $sended, $checked);
+			return self::_dao()->getByItemIdAndUserId($itemId, $userId, $sended, $checked);
 		}catch(Exception $e){
-			$noticeItem = new SOYShop_NoticeArrival();
+			$obj = new SOYShop_NoticeArrival();
+			$obj->setItemId($itemId);
+			$obj->setUserId($userId);
+			$obj->setSended($sended);
+			$obj->setChecked($checked);
+			return $obj;
 		}
+	}
 
-		return $noticeItem;
+	private function _dao(){
+		static $dao;
+		if(is_null($dao)) $dao = SOY2DAOFactory::create("SOYShop_NoticeArrivalDAO");
+		return $dao;
 	}
 }

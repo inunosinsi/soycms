@@ -2,78 +2,34 @@
 
 class CommonNoticeArrivalCustomField extends SOYShopItemCustomFieldBase{
 
-	private $noticeLogic;
-	private $isLoggedIn;
-	private $checkRegister;
-	private $checkStock;
-	private $checkNotice;	//通知済みかどうか
-
-	function doPost(SOYShop_Item $item){
-
-	}
-
-	function getForm(SOYShop_Item $item){
-
-	}
-
 	/**
 	 * onOutput
 	 */
 	function onOutput($htmlObj, SOYShop_Item $item){
+		//マイページにログインしているか？ ログインしていれば0より大きい整数になる
+		$loggedInUserId = MyPageLogic::getMyPage()->getUserId();
 
-		$this->prepare((int)$item->getId());
-
-//		$htmlObj->addActionLink("notice_arrival_register_link", array(
-//			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-//			"link" => "?notice=" . $item->getId() ."&a=add",
-//			"onclick" => "return confirm('入荷通知登録をしますか？');",
-//			"visible" => ($this->isLoggedIn && $this->checkStock && !$this->checkRegister)
-//		));
+		//該当する商品が入荷通知希望に登録されているか？
+		$isRegistered = (is_numeric($item->getId()) && $item->getStock() <= 0) ? self::_logic()->checkRegistered((int)$item->getId(), $loggedInUserId) : false;
 
 		$htmlObj->addActionLink("notice_arrival_register_link", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"link" => "?notice=" . $item->getId() ."&a=add",
 			"attr:onclick" => "return confirm('入荷通知登録をしますか？');",
-			"visible" => ($this->checkStock && !$this->checkRegister)
+			"visible" => (!$isRegistered)
 		));
-
 
 		//マイページの時だけ使用予定
 		$htmlObj->addModel("is_notice", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"visible" => ($this->checkNotice)
+			"visible" => (is_numeric($item->getId()) && $loggedInUserId > 0 && SOYSHOP_MYPAGE_MODE) ? self::_logic()->checkSended($item->getId(), $loggedInUserId) : false
 		));
 	}
 
-	function prepare(int $itemId){
-		if(!$this->noticeLogic) $this->noticeLogic = SOY2Logic::createInstance("module.plugins.common_notice_arrival.logic.NoticeLogic");
-
-		$this->checkRegister = $this->noticeLogic->checkRegisterNotice($itemId);
-		$this->checkStock = $this->noticeLogic->checkStock($itemId);
-
-		//マイページのみ動かす
-		if(isset($_SERVER["PATH_INFO"]) && $_SERVER["PATH_INFO"] == "/" . soyshop_get_mypage_uri() . "/notice"){
-			$this->checkNotice = $this->noticeLogic->checkNotice($itemId);
-		}
-
-/**
-		//１ページで一回だけ調べる
-		if(!$this->noticeLogic && isset($itemId)){
-			$this->noticeLogic = SOY2Logic::createInstance("module.plugins.common_notice_arrival.logic.NoticeLogic");
-			$this->isLoggedIn = $this->noticeLogic->checkLogin();
-		}
-
-		//商品ごとに調べる
-		if($this->isLoggedIn){
-			$this->checkRegister = $this->noticeLogic->checkRegisterNotice($itemId);
-			$this->checkStock = $this->noticeLogic->checkStock($itemId);
-
-			//マイページのみ動かす
-			if(isset($_SERVER["PATH_INFO"]) && $_SERVER["PATH_INFO"] == "/" . soyshop_get_mypage_uri() . "/notice"){
-				$this->checkNotice = $this->noticeLogic->checkNotice($itemId);
-			}
-		}
-**/
+	private function _logic(){
+		static $logic;
+		if(is_null($logic)) $logic = SOY2Logic::createInstance("module.plugins.common_notice_arrival.logic.NoticeLogic");
+		return $logic;
 	}
 }
 

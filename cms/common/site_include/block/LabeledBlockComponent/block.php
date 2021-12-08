@@ -300,7 +300,7 @@ class LabeledBlockComponent_FormPage extends HTMLPage{
 			"elementId" => "display_order_desc",
 		));
 
-		$this->addHidden("no_stick_url","HTMLHidden",array(
+		$this->addHidden("no_stick_url", array(
 			"name" => "object[isStickUrl]",
 			"value" => 0,
 		));

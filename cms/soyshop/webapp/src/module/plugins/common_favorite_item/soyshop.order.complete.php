@@ -2,19 +2,17 @@
 class CommonFavoriteItemOrderComplete extends SOYShopOrderComplete{
 
 	function execute(SOYShop_Order $order){
-		$userId = $order->getUserId();
-		$favoriteLogic = SOY2Logic::createInstance("module.plugins.common_favorite_item.logic.FavoriteLogic");
+		$favLogic = SOY2Logic::createInstance("module.plugins.common_favorite_item.logic.FavoriteLogic");
 
-		$orderLogic = SOY2Logic::createInstance("logic.order.OrderLogic");
-		$itemOrders = $orderLogic->getItemsByOrderId($order->getId());
+		$itemOrders = SOY2Logic::createInstance("logic.order.OrderLogic")->getItemsByOrderId($order->getId());
+		if(count($itemOrders)){
+			foreach($itemOrders as $itemOrder){
+				$favId = $favLogic->getFavoriteItem((int)$itemOrder->getItemId(), $order->getUserId())->getId();
 
-		foreach($itemOrders as $itemOrder){
-			$itemId = $itemOrder->getItemId();
-			$favorite = $favoriteLogic->getFavoriteItem($itemId, $userId);
-
-			//IDがあった場合は処理を続ける
-			if(!is_null($favorite->getId())){
-				$favoriteLogic->updateFavorite($itemId, $userId);
+				//IDがあった場合は処理を続ける
+				if(is_numeric($favId)){
+					$favLogic->update((int)$itemOrder->getItemId(), $order->getUserId());
+				}
 			}
 		}
 	}

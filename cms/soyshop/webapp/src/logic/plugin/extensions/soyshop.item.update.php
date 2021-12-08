@@ -4,7 +4,7 @@ class SOYShopItemUpdateBase implements SOY2PluginAction{
 
 	private $isFirst = false;
 
-	function addHistory(SOYShop_Item $item,$old){
+	function addHistory(SOYShop_Item $item, int $old){
 
 	}
 
@@ -30,11 +30,10 @@ class SOYShopItemUpdateDeletageAction implements SOY2PluginDelegateAction{
 
 		if(is_numeric($this->old)){
 			$action->setIsFirst($this->isFirst);
-			$action->addHistory($this->item, $this->old);
+			$action->addHistory($this->item, (int)$this->old);
 		}else{
 			$this->_list[$moduleId] = $action->display($this->item);
 		}
-
 	}
 
 	function getList(){

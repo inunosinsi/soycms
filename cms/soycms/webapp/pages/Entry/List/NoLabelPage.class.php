@@ -8,7 +8,7 @@ class NoLabelPage extends ListPage{
     	parent::__construct(array("NoLabel"));
 
     	DisplayPlugin::hide("no_label");
-    	$this->addLabel("label_state","HTMLLabel",array(
+    	$this->addLabel("label_state", array(
     		"text"=>CMSMessageManager::get("SOYCMS_NO_LABELED_ENTRY_LIST")
     	));
     }

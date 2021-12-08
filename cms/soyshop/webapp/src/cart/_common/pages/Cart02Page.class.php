@@ -38,7 +38,7 @@ class Cart02Page extends MainCartPageBase{
 					SOYShopPlugin::invoke("soyshop.user.customfield",array(
 						"mode" => "post",
 						"app" => $cart,
-						"param" => $_POST["user_customfield"]
+						"param" => (isset($_POST["user_customfield"]) && is_array($_POST["user_customfield"])) ? $_POST["user_customfield"] : array()
 					));
 				}
 

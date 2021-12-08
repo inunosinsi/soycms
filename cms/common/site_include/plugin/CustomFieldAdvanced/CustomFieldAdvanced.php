@@ -184,7 +184,7 @@ class CustomFieldPluginAdvanced{
 							$attr["html"] = $entry->getContent();
 
 							$labelArr = EntryFieldUtil::getLabelCaptionAndAlias($fieldValue);
-							$blogArr = EntryFieldUtil::getBlogTitleAndUri($fieldValue, $labelArr["caption"]);
+							$blogArr = EntryFieldUtil::getBlogTitleAndUri($fieldValue, (string)$labelArr["caption"]);
 							unset($fieldValue);
 						}else{
 							$entry = new Entry();

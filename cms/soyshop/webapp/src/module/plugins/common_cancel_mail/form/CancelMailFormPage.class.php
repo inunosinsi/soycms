@@ -14,7 +14,7 @@ class CancelMailFormPage extends WebPage{
 
         $this->addInput("email", array(
             "name" => "CancelMail",
-            "value" => CancelMailUtil::get($this->itemId, CancelMailUtil::MODE_EMAIL)
+            "value" => soyshop_get_item_attribute_value($this->itemId, CancelMailUtil::PLUGIN_ID . "_" . CancelMailUtil::MODE_EMAIL, "string")
         ));
     }
 

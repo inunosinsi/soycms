@@ -134,13 +134,19 @@ class LabelLogic extends SOY2LogicBase{
 	}
 
     function getById($id){
-    	$dao = self::getLabelDAO();
-    	return $dao->getById($id);
+		try{
+			return self::getLabelDAO()->getById($id);
+		}catch(Exception $e){
+			return new Label();
+		}
     }
 
     function getByCaption($caption){
-    	$dao = self::getLabelDAO();
-    	return $dao->getByCaption($caption);
+		try{
+			return self::getLabelDAO()->getByCaption($caption);
+		}catch(Exception $e){
+			return new Label();
+		}
     }
 
     function update($bean){

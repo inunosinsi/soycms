@@ -68,11 +68,11 @@ class UpperMenuPage extends CMSHTMLPageBase{
 		));
 
 		//CMS管理へのリンク
-		$this->createAdd("admin_link","HTMLLink",array(
-				"link" => SOY2PageController::createRelativeLink("../admin/"),
+		$this->addLink("admin_link", array(
+			"link" => SOY2PageController::createRelativeLink("../admin/"),
 		));
-		$this->addModel("show_admin_link","HTMLLink",array(
-				"visible" => !defined("SOYCMS_ASP_MODE") && !UserInfoUtil::hasOnlyOneRole()
+		$this->addModel("show_admin_link", array(
+			"visible" => (!defined("SOYCMS_ASP_MODE") && !UserInfoUtil::hasOnlyOneRole())
 		));
 
 		/* サイドバーの表示・非表示 */
@@ -102,6 +102,5 @@ class UpperMenuPage extends CMSHTMLPageBase{
 
 			SOY2PageController::jump($current.$param);
 		}
-
 	}
 }

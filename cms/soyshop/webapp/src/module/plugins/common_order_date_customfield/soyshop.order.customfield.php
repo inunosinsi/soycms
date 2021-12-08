@@ -27,7 +27,8 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 		if(is_null($this->list) || !count($this->list)) return;
 
 		foreach($this->list as $config){
-			$cart->removeModule($cart->getAttribute("order_date_customfield_" . $config->getFieldId()));
+			$moduleId = $cart->getAttribute("order_date_customfield_" . $config->getFieldId());
+			if(is_string($moduleId)) $cart->removeModule($moduleId);
 			$cart->clearAttribute("order_date_customfield_" . $config->getFieldId() . ".value");
 			$cart->clearOrderAttribute("order_date_customfield_" . $config->getFieldId());
 		}
@@ -284,7 +285,7 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 					$name = $name . "[date]";
 					$v = (is_numeric($attr->getValue1())) ? (int)$attr->getValue1() : 0;
 					$dateArr = soyshop_convert_date_array_by_timestamp($v);
-					
+
 					$html[] = DateSelectBoxComponent::build((int)$dateArr["year"], $name, "year") . "年";
 					$html[] = DateSelectBoxComponent::build((int)$dateArr["month"], $name, "month") . "月";
 					$html[] = DateSelectBoxComponent::build((int)$dateArr["day"], $name, "day") . "日";

@@ -2,14 +2,8 @@
 
 class DeliveryEachProductAddMailAddress extends SOYShopAddMailAddress{
 
-    function getMailAddress(SOYShop_Order $order, $orderFlag){
-
-        try{
-            $itemOrders = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO")->getByOrderId($order->getId());
-        }catch(Exception $e){
-            return array();
-        }
-
+    function getMailAddress(SOYShop_Order $order, bool $orderFlag=false){
+		$itemOrders = SOY2Logic::createInstance("logic.order.OrderLogic")->getItemsByOrderId($order->getId());
         if(!count($itemOrders)) return array();
 
         $list = array();
@@ -17,10 +11,7 @@ class DeliveryEachProductAddMailAddress extends SOYShopAddMailAddress{
         SOY2::import("module.plugins.delivery_each_product.util.DeliveryEachProductUtil");
         foreach($itemOrders as $itemOrder){
             $mailAddress = DeliveryEachProductUtil::get($itemOrder->getItemId(), DeliveryEachProductUtil::MODE_EMAIL);
-            if(!strlen($mailAddress)) continue;
-            /**
-             * @ToDo メールアドレスであるかチェックしておきたい
-             */
+            if(!strlen($mailAddress) || !(bool)filter_var($mailAddress, FILTER_VALIDATE_EMAIL)) continue;
             $list[] = $mailAddress;
         }
 

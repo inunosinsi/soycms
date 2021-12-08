@@ -1,5 +1,8 @@
 <?php
-
+SOY2::import("module.plugins.common_notice_arrival.domain.SOYShop_NoticeArrival");
+/**
+ * @entity SOYShop_NoticeArrival
+ */
 abstract class SOYShop_NoticeArrivalDAO extends SOY2DAO{
 
 	/**
@@ -14,19 +17,19 @@ abstract class SOYShop_NoticeArrivalDAO extends SOY2DAO{
 	abstract function update(SOYShop_NoticeArrival $bean);
 
 	//条件に応じてオブジェクトを取得できる
-	function getByItemIdAndUserId($itemId, $userId, $sended = null, $checked = null){
+	function getByItemIdAndUserId(int $itemId, int $userId, int $sended=-1, int $checked=-1){
 		$binds = array("itemId" => $itemId, "userId" => $userId);
 
 		$sql = "SELECT * FROM soyshop_notice_arrival ".
 				"WHERE item_id = :itemId ".
 				"AND user_id = :userId ";
 
-		if(!is_null($sended) && is_numeric($sended)){
+		if($sended >= 0){
 			$sql .=	"AND sended = :sended ";
 			$binds["sended"] = $sended;
 		}
 
-		if(!is_null($checked) && is_numeric($checked)){
+		if($checked >= 0){
 			$sql .= "AND checked = :checked ";
 			$binds["checked"] = $checked;
 		}
@@ -46,7 +49,7 @@ abstract class SOYShop_NoticeArrivalDAO extends SOY2DAO{
 	}
 
 	//全商品の入庫通知希望の顧客のアドレスリストを取得する
-	function getUsers($sended = null, $checked = null){
+	function getUsers(int $sended=-1, int $checked=-1){
 		$binds = array();
 
 		$sql = "SELECT user.* FROM soyshop_user user ".
@@ -54,12 +57,12 @@ abstract class SOYShop_NoticeArrivalDAO extends SOY2DAO{
 				"ON user.id = notice.user_id ".
 				"WHERE user.is_disabled = 0 ";
 
-		if(!is_null($sended) && is_numeric($sended)){
+		if($sended >= 0){
 			$sql .=	"AND notice.sended = :sended ";
 			$binds["sended"] = $sended;
 		}
 
-		if(!is_null($checked) && is_numeric($checked)){
+		if($checked >= 0){
 			$sql .= "AND notice.checked = :checked ";
 			$binds["checked"] = $checked;
 		}
@@ -82,7 +85,7 @@ abstract class SOYShop_NoticeArrivalDAO extends SOY2DAO{
 	}
 
 	//商品ごとの入庫通知希望の顧客のアドレスリストを取得する
-	function getUsersByItemId($itemId, $sended = null, $checked = null){
+	function getUsersByItemId(int $itemId, int $sended=-1, int $checked=-1){
 		$binds = array("itemId" => $itemId);
 
 		$sql = "SELECT user.* FROM soyshop_user user ".
@@ -90,12 +93,12 @@ abstract class SOYShop_NoticeArrivalDAO extends SOY2DAO{
 				"ON user.id = notice.user_id ".
 				"WHERE notice.item_id = :itemId ";
 
-		if(!is_null($sended) && is_numeric($sended)){
+		if($sended >= 0){
 			$sql .=	"AND notice.sended = :sended ";
 			$binds["sended"] = $sended;
 		}
 
-		if(!is_null($checked) && is_numeric($checked)){
+		if($checked >= 0){
 			$sql .= "AND notice.checked = :checked ";
 			$binds["checked"] = $checked;
 		}
@@ -120,7 +123,7 @@ abstract class SOYShop_NoticeArrivalDAO extends SOY2DAO{
 		return $users;
 	}
 
-	function getItems($userId, $sended = null, $checked = null){
+	function getItems(int $userId, int $sended=-1, int $checked=-1){
 
 		$now = time();
 		$binds = array("userId" => $userId);
@@ -130,12 +133,12 @@ abstract class SOYShop_NoticeArrivalDAO extends SOY2DAO{
 				"ON item.id = notice.item_id ".
 				"WHERE notice.user_id = :userId ";
 
-		if(!is_null($sended) && is_numeric($sended)){
+		if($sended >= 0){
 			$sql .=	"AND notice.sended = :sended ";
 			$binds["sended"] = $sended;
 		}
 
-		if(!is_null($checked) && is_numeric($checked)){
+		if($checked >= 0){
 			$sql .= "AND notice.checked = :checked ";
 			$binds["checked"] = $checked;
 		}
@@ -163,7 +166,7 @@ abstract class SOYShop_NoticeArrivalDAO extends SOY2DAO{
 	}
 
 	//新着情報用、登録日と商品名も表示したい時に利用
-	function getUsersForNewsPage($sended = null, $checked = null){
+	function getUsersForNewsPage(int $sended=-1, int $checked=-1){
 		$binds = array();
 
 		$sql = "SELECT user.id, user.mail_address, user.name, notice.create_date, notice.item_id, item.item_name " .
@@ -175,12 +178,12 @@ abstract class SOYShop_NoticeArrivalDAO extends SOY2DAO{
 				"WHERE user.is_disabled = 0 ";
 				"AND item.item_is_open = 1";
 
-		if(!is_null($sended) && is_numeric($sended)){
+		if($sended >= 0){
 			$sql .=	"AND notice.sended = :sended ";
 			$binds["sended"] = $sended;
 		}
 
-		if(!is_null($checked) && is_numeric($checked)){
+		if($checked >= 0){
 			$sql .= "AND notice.checked = :checked ";
 			$binds["checked"] = $checked;
 		}
@@ -214,7 +217,6 @@ abstract class SOYShop_NoticeArrivalDAO extends SOY2DAO{
 	 */
 	function onUpdate($query, $binds){
 		$binds[":updateDate"] = time();
-
 		return array($query, $binds);
 	}
 }

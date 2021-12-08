@@ -10,7 +10,7 @@ class AddItemOrderStatusUtil {
 		return $config;
 	}
 
-	public static function saveConfig($values){
+	public static function saveConfig(array $values){
 		SOYShop_DataSets::put("add_itemorder_status.config", $values);
 	}
 }

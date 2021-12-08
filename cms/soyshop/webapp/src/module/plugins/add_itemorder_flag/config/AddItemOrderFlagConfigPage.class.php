@@ -46,24 +46,27 @@ class AddItemOrderFlagConfigPage extends WebPage{
 
 
 		//現在の注文状態の設定状況
+		$this->addLabel("config_detail", array(
+			"html" => self::_buildConfigCondition()
+		));
+	}
+
+	private function _buildConfigCondition(){
 		SOY2::import("domain.order.SOYShop_ItemOrder");
-		$FlagList = SOYShop_ItemOrder::getFlagList();
+		$flagList = SOYShop_ItemOrder::getFlagList();
+		if(!count($flagList)) return "";
 
 		$html = array();
-		if(count($FlagList)){
-			$html[] = "<table class=\"table table-striped\" style=\"width:50%;\">";
-			$html[] = "<caption>フラグの設定状況</caption>";
-			$html[] = "<tr><th class=\"col-lg-2\">フラグID</th><th>ラベル</th></tr>";
-			foreach($FlagList as $key => $label){
-				$html[] = "<tr><td>" . $key . "</td><td>" . $label . "</td></tr>";
-			}
-			$html[] = "</table>";
-			$html[] = "<br style=\"clear:left;\">";
+		$html[] = "<table class=\"table table-striped\" style=\"width:50%;\">";
+		$html[] = "<caption>フラグの設定状況</caption>";
+		$html[] = "<tr><th class=\"col-lg-2\">フラグID</th><th>ラベル</th></tr>";
+		foreach($flagList as $key => $label){
+			if($key === 0 || !strlen($label)) continue;
+			$html[] = "<tr><td>" . $key . "</td><td>" . $label . "</td></tr>";
 		}
-
-		$this->addLabel("config_detail", array(
-			"html" => implode("\n", $html)
-		));
+		$html[] = "</table>";
+		$html[] = "<br style=\"clear:left;\">";
+		return implode("\n", $html);
 	}
 
 	function setConfigObj($configObj){

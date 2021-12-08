@@ -95,7 +95,8 @@ class MailLogic extends SOY2LogicBase{
 	 * 一通送信する
 	 * @隠しモード sendToにadminを指定すると管理者のみにメールを送信する
 	 */
-	function sendMail($sendTo="admin", $title="", $body="", $sendToName = "", $order = null, $orderFlag = false){
+	function sendMail(string $sendTo="admin", string $title="", string $body="", string $sendToName="", $order=null, bool $orderFlag=false){
+		if(is_null($order)) $order = soyshop_get_order_object(0);
 
 		if(is_null($this->send)){
 			$this->prepareSend();
@@ -177,19 +178,18 @@ class MailLogic extends SOY2LogicBase{
 	}
 
 	//メールの送信状況を記録する
-	private function saveLog($isSuccess, $isAdmin, $mails, $title, $body, $order = null){
+	private function saveLog(bool $isSuccess, bool $isAdmin, array $mails, string $title, string $body, SOYShop_Order $order){
 
 		$logDao = SOY2DAOFactory::create("logging.SOYShop_MailLogDAO");
 
 		$log = new SOYShop_MailLog();
-		$orderId = (!is_null($order)) ? $order->getId() : null;
-		$userId = (!is_null($order) && $isAdmin === false) ? $order->getUserId() : null;
+		$orderId = (is_numeric($order->getId()) && $order->getId() > 0) ? $order->getId() : null;
+		$userId = (is_numeric($orderId) && $isAdmin === false) ? $order->getUserId() : null;
 
 		//マイページの方で、メールアドレスからユーザIDの取得を一度だけ試してみる
 		if(is_null($orderId) && is_null($userId)){
-			$userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 			try{
-				$userId = $userDao->getByMailAddress($mails[0])->getId();
+				$userId = SOY2DAOFactory::create("user.SOYShop_UserDAO")->getByMailAddress($mails[0])->getId();
 			}catch(Exception $e){
 				//
 			}
@@ -230,7 +230,7 @@ class MailLogic extends SOY2LogicBase{
 	/**
 	 * @return boolean
 	 */
-	public function isValidEmail($email){
+	public function isValidEmail(string $email){
 		$ascii  = '[a-zA-Z0-9!#$%&\'*+\-\/=?^_`{|}~.]';//'[\x01-\x7F]';
 		$domain = '(?:[-a-z0-9]+\.)+[a-z]{2,10}';//'([-a-z0-9]+\.)*[a-z]+';
 		$d3     = '\d{1,3}';
@@ -250,7 +250,7 @@ class MailLogic extends SOY2LogicBase{
 	 * @param boolean 管理者宛かどうか
 	 * @return String
 	 */
-	public function getMailTypeName($type, $isAdmin = false){
+	public function getMailTypeName(string $type, bool $isAdmin=false){
 		if($isAdmin){
 			switch($type){
 				case self::TYPE_ORDER:
@@ -282,8 +282,8 @@ class MailLogic extends SOY2LogicBase{
 	/**
 	 * ユーザに送信するメール設定の取得
 	 */
-	function getUserMailConfig($type = null){
-		if(is_null($type) || strlen($type) < 1) $type = "order";
+	function getUserMailConfig(string $type=""){
+		if(strlen($type) < 1) $type = "order";
 
 		SOYShopPlugin::load("soyshop.mail.config");
 		$config = SOYShopPlugin::invoke("soyshop.mail.config",array(
@@ -307,8 +307,8 @@ class MailLogic extends SOY2LogicBase{
 	 * 管理者に送信するメール設定の取得
 	 * 互換性維持のため、order以外のメールはなければorderを取るようにしておく
 	 */
-	function getAdminMailConfig($type = null){
-		if(is_null($type) || strlen($type) < 1) $type = "order";
+	function getAdminMailConfig(string $type=""){
+		if(strlen($type) < 1) $type = "order";
 
 		SOYShopPlugin::load("soyshop.mail.config");
 		$config = SOYShopPlugin::invoke("soyshop.mail.config",array(
@@ -337,8 +337,8 @@ class MailLogic extends SOY2LogicBase{
 	/**
 	 * マイページで送信するメール設定の取得
 	 */
-	function getMyPageMailConfig($type = null){
-		if(is_null($type) || strlen($type) < 1) $type = "remind";
+	function getMyPageMailConfig(string $type=""){
+		if(strlen($type) < 1) $type = "remind";
 
 		SOYShopPlugin::load("soyshop.mail.config");
 		$config = SOYShopPlugin::invoke("soyshop.mail.config",array(
@@ -362,8 +362,8 @@ class MailLogic extends SOY2LogicBase{
 	/**
 	 * ユーザに送信するメール設定の保存
 	 */
-	function setUserMailConfig($mail, $type = null){
-		if(is_null($type) || strlen($type) < 1) $type = "order";
+	function setUserMailConfig(array $mail, string $type=""){
+		if(strlen($type) < 1) $type = "order";
 
 		foreach(self::MAIL_CONFIG_TYPES as $t => $v){
 			if(isset($mail[$t])) SOYShop_DataSets::put("mail.user.$type." . $t, $mail[$t]);
@@ -372,8 +372,8 @@ class MailLogic extends SOY2LogicBase{
 	/**
 	 * 管理者に送信するメール設定の保存
 	 */
-	function setAdminMailConfig($mail, $type = null){
-		if(is_null($type) || strlen($type) < 1) $type = "order";
+	function setAdminMailConfig(array $mail, string $type=""){
+		if(strlen($type) < 1) $type = "order";
 		if("order" == $type){
 			foreach(self::MAIL_CONFIG_TYPES as $t => $v){
 				if(isset($mail[$t])) SOYShop_DataSets::put("mail.admin." . $t, $mail[$t]);
@@ -388,8 +388,8 @@ class MailLogic extends SOY2LogicBase{
 	/**
 	 * マイページのメール設定の保存
 	 */
-	function setMyPageMailConfig($mail, $type = null){
-		if(is_null($type) || strlen($type) < 1) $type = "remind";
+	function setMyPageMailConfig(array $mail, string $type=""){
+		if(strlen($type) < 1) $type = "remind";
 		foreach(self::MAIL_CONFIG_TYPES as $t => $v){
 			if(isset($mail[$t])) SOYShop_DataSets::put("mail.mypage.$type." . $t, $mail[$t]);
 		}
@@ -400,16 +400,22 @@ class MailLogic extends SOY2LogicBase{
 	 */
 	function convertMailContent($content, SOYShop_User $user, SOYShop_Order $order){
 		//ユーザー情報
-		$content = str_replace("#NAME#", (string)$user->getName(), $content);
-		$content = str_replace("#READING#", (string)$user->getReading(), $content);
-		$content = str_replace("#MAILADDRESS#", (string)$user->getMailAddress(), $content);
-		$content = str_replace("#BIRTH_YEAR#", (string)$user->getBirthdayYear(), $content);
-		$content = str_replace("#BIRTH_MONTH#", (string)$user->getBirthdayMonth(), $content);
-		$content = str_replace("#BIRTH_DAY#", (string)$user->getBirthdayDay(), $content);
+		if(is_numeric($user->getId())){
+			$content = str_replace("#NAME#", (string)$user->getName(), $content);
+			$content = str_replace("#READING#", (string)$user->getReading(), $content);
+			$content = str_replace("#MAILADDRESS#", (string)$user->getMailAddress(), $content);
+			$content = str_replace("#BIRTH_YEAR#", (string)$user->getBirthdayYear(), $content);
+			$content = str_replace("#BIRTH_MONTH#", (string)$user->getBirthdayMonth(), $content);
+			$content = str_replace("#BIRTH_DAY#", (string)$user->getBirthdayDay(), $content);
+		}
+
 
 		//注文情報
-		$content = str_replace("#ORDER_RAWID#", (string)$order->getId(), $content);
-		$content = str_replace("#ORDER_ID#", (string)$order->getTrackingNumber(), $content);
+		if(is_numeric($order->getId())){
+			$content = str_replace("#ORDER_RAWID#", (string)$order->getId(), $content);
+			$content = str_replace("#ORDER_ID#", (string)$order->getTrackingNumber(), $content);
+		}
+
 		$config = $this->getShopConfig();
 		if(!$config){
 			SOY2::import("domain.config.SOYShop_ShopConfig");
@@ -443,24 +449,15 @@ class MailLogic extends SOY2LogicBase{
 		))->getContent();
 
 		//最初に改行が存在した場合は改行を削除する
-		return trim($content);
+		return trim((string)$content);
 	}
 
-	function buildMailBodyAndTitle(SOYShop_Order $order, $mailType, $mode = self::MODE_USER){
+	function buildMailBodyAndTitle(SOYShop_Order $order, $mailType, string $mode=self::MODE_USER){
 		static $builder;
 		if(is_null($builder)) $builder = SOY2Logic::createInstance("logic.mail.MailBuilder");
-		try{
-			$user = SOY2DAOFactory::create("user.SOYShop_UserDAO")->getById($order->getUserId());
-		}catch(Exception $e){
-			$user = new SOYShop_User();
-		}
+		$user = soyshop_get_user_object((int)$order->getUserId());
 
-		if($mode == self::MODE_USER){
-			$mailConfig = self::getUserMailConfig($mailType);
-		}else{
-			$mailConfig = self::getAdminMailConfig($mailType);
-		}
-
+		$mailConfig = ($mode == self::MODE_USER) ? self::getUserMailConfig($mailType) : self::getAdminMailConfig($mailType);
 		$isOutput = (isset($mailConfig["output"]) && (int)$mailConfig["output"] === 1);	//システムからの内容を出力するか？
 
 		//プラグインを実行してメール本文の取得
@@ -500,7 +497,7 @@ class MailLogic extends SOY2LogicBase{
 		return array($mailBody, $title);
 	}
 
-	function getOrderMailExtension($type){
+	function getOrderMailExtension(string $type){
 		if($type == "order") return "soyshop.order.mail.user";
 		$id = "soyshop.order.mail." . $type;
 

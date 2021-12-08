@@ -46,24 +46,27 @@ class AddItemOrderStatusConfigPage extends WebPage{
 
 
 		//現在の注文状態の設定状況
+		$this->addLabel("config_detail", array(
+			"html" => self::_buildConfigCondition()
+		));
+	}
+
+	private function _buildConfigCondition(){
 		SOY2::import("domain.order.SOYShop_ItemOrder");
 		$statusList = SOYShop_ItemOrder::getStatusList();
+		if(!count($statusList)) return "";
 
 		$html = array();
-		if(count($statusList)){
-			$html[] = "<table class=\"table table-striped\" style=\"width:50%;\">";
-			$html[] = "<caption>状態の設定状況</caption>";
-			$html[] = "<tr><th class=\"col-lg-2\">状態ID</th><th>ラベル</th></tr>";
-			foreach($statusList as $key => $label){
-				$html[] = "<tr><td>" . $key . "</td><td>" . $label . "</td></tr>";
-			}
-			$html[] = "</table>";
-			$html[] = "<br style=\"clear:left;\">";
+		$html[] = "<table class=\"table table-striped\" style=\"width:50%;\">";
+		$html[] = "<caption>状態の設定状況</caption>";
+		$html[] = "<tr><th class=\"col-lg-2\">状態ID</th><th>ラベル</th></tr>";
+		foreach($statusList as $key => $label){
+			if($key === 0 || !strlen($label)) continue;
+			$html[] = "<tr><td>" . $key . "</td><td>" . $label . "</td></tr>";
 		}
-
-		$this->addLabel("config_detail", array(
-			"html" => implode("\n", $html)
-		));
+		$html[] = "</table>";
+		$html[] = "<br style=\"clear:left;\">";
+		return implode("\n", $html);
 	}
 
 	function setConfigObj($configObj){

@@ -5,7 +5,6 @@ class CommonNoticeArrivalConfig extends SOYShopConfigPageBase{
 	 * @return string
 	 */
 	function getConfigPage(){
-
 		include_once(dirname(__FILE__) . "/config/NoticeArrivalConfigFormPage.class.php");
 		$form = SOY2HTMLFactory::createInstance("NoticeArrivalConfigFormPage");
 		$form->setConfigObj($this);

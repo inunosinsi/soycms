@@ -98,6 +98,17 @@ class CMSApplication {
 		}
 	}
 
+	public static function buildScript(){
+		$self = CMSApplication::getInstance();
+
+		$html = array();
+		$scripts = $self->scripts;
+		foreach($scripts as $script){
+			$html[] = $script;
+		}
+		return implode("\n", $html);
+	}
+
 	/**
 	 * CSSを表示
 	 */
@@ -108,6 +119,17 @@ class CMSApplication {
 		foreach($links as $link){
 			echo $link . "\n";
 		}
+	}
+
+	public static function buildLink(){
+		$self = CMSApplication::getInstance();
+
+		$html = array();
+		$links = $self->links;
+		foreach($links as $link){
+			$html[] = $link;
+		}
+		return implode("\n", $html);
 	}
 
 	/**
@@ -244,6 +266,11 @@ class CMSApplication {
 	public static function printApplication(){
 		$self = CMSApplication::getInstance();
 		echo $self->application;
+	}
+
+	public static function buildApplication(){
+		$self = CMSApplication::getInstance();
+		return $self->application;
 	}
 
 	/**
@@ -429,7 +456,7 @@ class CMSApplication {
 			}
 
 			$paths = ($self->mode == "three") ? self::_paths() : array();
-			
+
 			include_once(dirname(__FILE__) . "/" . $self->mode . ".php");
 		}
 	}

@@ -2,55 +2,18 @@
 
 <form soy:id="form">
 	<div class="form-group">
-		<label>送信設定</label><br>
-		<input type="checkbox" soy:id="send_mail">
-	</div>
-
-	<div class="form-group">
-		<label>件名</label>
-		<input soy:id="mail_title" class="form-control">
-		※#ITEM_NAME#、#ITEM_CODE#と#SHOP_NAME#が使用できます。
-	</div>
-
-	<div class="table-responsive">
-		<table class="table table-striped" style="table-layout:auto;">
-			<caption>本文</caption>
-			<tr class="last_row">
-				<td>
-					<textarea id="mail_content" soy:id="mail_content" class="editor form-control" style="height:400px;"></textarea>
-				</td>
-				<td class="mail_replace_word_panel">
-					<a href="javascript:void(0);" class="btn btn-default" onclick="$(this).parent().addClass('actived');$(this).hide();">&lt;&lt;</a>
-					<div class="word_list">
-						<h5>置換文字列</h5>
-						<ul>
-							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#ITEM_CODE#');">商品コード</a></li>
-							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#ITEM_NAME#');">商品名</a></li>
-							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#NAME#');">氏名</a></li>
-							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#READING#');">フリガナ</a></li>
-							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#MAILADDRESS#');">メールアドレス</a></li>
-							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#BIRTH_YEAR#');">誕生日(年)</a></li>
-							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#BIRTH_MONTH#');">誕生日(月)</a></li>
-							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#BIRTH_DAY#');">誕生日(日)</a></li>
-							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#SHOP_NAME#');">ショップ名</a></li>
-							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#COMPANY_NAME#');">会社名</a></li>
-							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#COMPANY_ADDRESS1#');">会社郵便番号</a></li>
-							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#COMPANY_ADDRESS2#');">会社住所</a></li>
-							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#COMPANY_TELEPHONE#');">会社電話番号</a></li>
-							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#COMPANY_FAX#');">会社FAX番号</a></li>
-							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#COMPANY_MAILADDRESS#');">会社メールアドレス</a></li>
-							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#SITE_URL#');">サイトURL</a></li>
-						</ul>
-					</div>
-				</td>
-			</tr>
-		</table>
-	</div>
-
-	<div class="text-center">
-		<input type="submit" class="btn btn-primary btn-lg" value="更新">
+		<label>送信設定</label>
+		<div class="form-inline">
+			<input type="checkbox" soy:id="send_mail">&nbsp;
+			<input type="submit" class="btn btn-primary btn-sm" value="更新">
+		</div>
 	</div>
 </form>
+<div>
+	<a soy:link="Config.Mail.User?type=arrival&u_plg" class="btn btn-info">メール文面の設定画面を開く</a>
+</div>
+
+<br>
 
 <h4>テンプレートへの記述</h4>
 <pre>

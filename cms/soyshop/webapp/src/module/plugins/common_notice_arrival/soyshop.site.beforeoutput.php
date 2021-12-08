@@ -7,58 +7,53 @@
 class CommonNoticeArrivalBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
 	private $uri;
-	private $itemId;
 
     function beforeOutput($page){
 
         //これらの条件を満たさないと処理は開始しない
-        if(isset($_GET["notice"]) && isset($_GET["a"]) && soy2_check_token()){
+        if(isset($_GET["notice"]) && isset($_GET["notice"]) && isset($_GET["a"]) && soy2_check_token()){
 
-			$this->uri = $page->getPageObject()->getUri();	//リダイレクト時に使用
+			$uri = $page->getPageObject()->getUri();	//リダイレクト時に使用
 
-            $noticeLogic = SOY2Logic::createInstance("module.plugins.common_notice_arrival.logic.NoticeLogic");
-            $this->itemId = (int)$_GET["notice"];
+            $item = soyshop_get_item_object((int)$_GET["notice"]);
+			$url = soyshop_get_page_url($uri) . "/" . $item->getAlias();
 
             //現時点で在庫切れ商品であるかを確認する
-            if(!$noticeLogic->checkStock($this->itemId)) $this->redirect();
+            if($item->getStock() > 0) self::_redirect($url);
 
             //ログインしているかを調べる
-            $userId = $noticeLogic->getUserId();
-            if(!is_numeric($userId) || $userId === 0) $this->jumpLoginPage($this->itemId);
+            $loggedInUserId = MyPageLogic::getMyPage()->getUserId();	//ログインしていれば1以上の整数
+            if($loggedInUserId === 0) self::_jumpLoginPage($item->getId());
 
+			$noticeLogic = SOY2Logic::createInstance("module.plugins.common_notice_arrival.logic.NoticeLogic");
+			$noticeMailLogic = SOY2Logic::createInstance("module.plugins.common_notice_arrival.logic.NoticeMailLogic");
             switch($_GET["a"]){
                 case "add":
-                    $noticeLogic->registerNotice($this->itemId, $userId);
+                    $noticeLogic->register($item->getId(), $loggedInUserId);
 
                     //管理側にメールを送信するか？
                     SOY2::import("module.plugins.common_notice_arrival.util.NoticeArrivalUtil");
-                    $config = NoticeArrivalUtil::getConfig();
-                    if(isset($config["send_mail"]) && $config["send_mail"]){
+                    $cnf = NoticeArrivalUtil::getConfig();
+                    if(isset($cnf["send_mail"]) && $cnf["send_mail"]){
 
                         //MailLogicの呼び出し
                         SOY2::import("domain.config.SOYShop_ServerConfig");
-                        $serverConfig = SOYShop_ServerConfig::load();
-
-                        $adminMailAddress = $serverConfig->getAdministratorMailAddress();
+                        $adminMailAddress = SOYShop_ServerConfig::load()->getAdministratorMailAddress();
 
                         if(strlen($adminMailAddress)){
                             $mailLogic = SOY2Logic::createInstance("logic.mail.MailLogic");
-							$item = soyshop_get_item_object($this->itemId);
-
-                            SOY2::import("domain.user.SOYShop_User");
-                            $user = new SOYShop_User();
 
                             /**
                              * @ToDo 文面の設定
                              */
                             $title = "[#SHOP_NAME#] #ITEM_NAME#の入荷通知登録がありました。";
                             $content = "#ITEM_NAME#の入荷通知登録がありました。";
-                            $title = $noticeLogic->convertMailTitle($title, $item);
-                            $body = $noticeLogic->convertMailContent($content, $user, $item);
+                            $title = $noticeMailLogic->convertMailContent($title, $item);
+                            $body = $noticeMailLogic->convertMailContent($content, $item);
 
                             $mailLogic->sendMail($adminMailAddress, $title, $body);
 
-                            $this->redirect(array("notice" => "successed"));
+                            self::_redirect($url, array("notice" => "successed"));
                         }
                     }
 
@@ -67,7 +62,7 @@ class CommonNoticeArrivalBeforeOutput extends SOYShopSiteBeforeOutputAction{
                     break;
             }
 
-            $this->redirect();
+            self::_redirect($url);
         }
 
 		//ログイン後に戻ってきた時の処理
@@ -81,10 +76,8 @@ class CommonNoticeArrivalBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		}
     }
 
-    function redirect(array $params = array()){
-		$url = soyshop_get_page_url($this->uri) . "/" . soyshop_get_item_object($this->itemId)->getAlias();
-
-        $q = "";
+    private function _redirect(string $url, array $params=array()){
+		$q = "";
         if(count($params)){
             foreach($params as $key => $p){
                 $q .= (!strlen($q)) ? "?" : "&";
@@ -95,8 +88,8 @@ class CommonNoticeArrivalBeforeOutput extends SOYShopSiteBeforeOutputAction{
         exit;
     }
 
-    function jumpLoginPage(int $itemId){
-        header("Location:" . soyshop_get_mypage_url(true) . "/login?r=" . $_SERVER["REDIRECT_URL"] . "&notice_register=" . $this->itemId);
+    private function _jumpLoginPage(int $itemId){
+        header("Location:" . soyshop_get_mypage_url(true) . "/login?r=" . $_SERVER["REDIRECT_URL"] . "&notice_register=" . $itemId);
         exit;
     }
 }

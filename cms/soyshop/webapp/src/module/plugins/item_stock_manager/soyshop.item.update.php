@@ -1,7 +1,7 @@
 <?php
 class ItemStockManagerUpdate extends SOYShopItemUpdateBase{
 
-	function addHistory(SOYShop_Item $item, $oldStock){
+	function addHistory(SOYShop_Item $item, int $oldStock){
 
 		$newStock = (isset($_POST["Item"]["stock"])) ? (int)$_POST["Item"]["stock"] : (int)$item->getStock();
 		if($oldStock != $newStock){

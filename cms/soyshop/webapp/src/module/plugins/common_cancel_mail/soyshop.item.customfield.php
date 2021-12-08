@@ -4,31 +4,11 @@
 class CancelMailCustomField extends SOYShopItemCustomFieldBase{
 
     function doPost(SOYShop_Item $item){
-
-        SOY2::import("module.plugins.common_cancel_mail.util.CancelMailUtil");
-        $attrDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-
-		$mode = CancelMailUtil::MODE_EMAIL;
-
-        try{
-            $attr = $attrDao->get($item->getId(), CancelMailUtil::PLUGIN_ID . "_" . $mode);
-        }catch(Exception $e){
-            $attr = new SOYShop_ItemAttribute();
-            $attr->setItemId($item->getId());
-            $attr->setFieldId(CancelMailUtil::PLUGIN_ID . "_" . $mode);
-        }
-
-		$attr->setValue(trim($_POST["CancelMail"]));
-
-        try{
-            $attrDao->insert($attr);
-        }catch(Exception $e){
-            try{
-                $attrDao->update($attr);
-            }catch(Exception $e){
-                //
-            }
-        }
+		$v = (isset($_POST["CancelMail"]) && is_string($_POST["CancelMail"])) ? trim($_POST["CancelMail"]) : null;
+		SOY2::import("module.plugins.common_cancel_mail.util.CancelMailUtil");
+	    $attr = soyshop_get_item_attribute_object($item->getId(), CancelMailUtil::PLUGIN_ID . "_" . CancelMailUtil::MODE_EMAIL);
+		$attr->setValue($v);
+		soyshop_save_item_attribute_object($attr);
     }
 
     function getForm(SOYShop_Item $item){
@@ -40,17 +20,8 @@ class CancelMailCustomField extends SOYShopItemCustomFieldBase{
         return $form->getObject();
     }
 
-    /**
-     * onOutput
-     */
-    function onOutput($htmlObj, SOYShop_Item $item){}
-
     function onDelete($id){
-        try{
-            SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO")->deleteByItemId($id);
-        }catch(Exception $e){
-            //
-        }
+        SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO")->deleteByItemId($id);
     }
 }
 
