@@ -314,52 +314,66 @@ class CustomField{
  				}
  				$body .= '</div>';
  				break;
- 			case "entry":	//出力する記事を指定 カスタムフィールドアドバンスドのみ使用可
- 				$values = (strlen($fieldValue)) ? explode("-", $fieldValue) : array();
- 				$selectedLabelId = (isset($values[0]) && is_numeric($values[0])) ? (int)$values[0] : null;
- 				$selectedEntryId = (isset($values[1]) && is_numeric($values[1])) ? (int)$values[1] : 0;
+			case "entry":	//出力する記事を指定 カスタムフィールドアドバンスドのみ使用可
+				if(!class_exists("EntryFieldUtil")) SOY2::import("site_include.plugin.CustomFieldAdvanced.util.EntryFieldUtil");
+				list($selectedSiteId, $selectedLabelId, $selectedEntryId) = EntryFieldUtil::divideIds((string)$fieldValue);
 
- 				//ラベルの固定設定
- 				if(is_null($selectedLabelId) && strlen($this->getFixedLabelId()) && is_numeric($this->getFixedLabelId())){
- 					$selectedLabelId = $this->getFixedLabelId();
- 				}
+				//ラベルの固定設定
+				if($selectedLabelId === 0 && is_numeric($this->getFixedLabelId())) $selectedLabelId = $this->getFixedLabelId();
 
- 				$html = array();
- 				//ラベル一覧
- 				$labels = self::_getLabels();
- 				if(count($labels)){
- 					$html[] = "\t<select id=\"" . $this->getFormId() . "_select\" onchange='CustomFieldEntryField.change(this, \"" . $this->getFormId() . "\", \"" . $h_formName . "\", 0);'>";
- 					$html[] = "\t\t<option></option>";
- 					foreach($labels as $labelId => $caption){
- 						if($selectedLabelId == $labelId){
- 							$html[] = "\t\t<option value=\"" . $labelId . "\" selected>" . $caption . "</option>";
- 						}else{
- 							$html[] = "\t\t<option value=\"" . $labelId . "\">" . $caption . "</option>";
- 						}
- 					}
- 					$html[] = "\t</select>";
- 					$html[] = "<input type=\"hidden\" name=\"" . $h_formName . "\" value=\"\">";
- 					$html[] = "<span id=\"" . $this->getFormId() . "\">";
- 					if(isset($selectedLabelId) || $selectedEntryId > 0){
- 						$entries = SOY2Logic::createInstance("site_include.plugin.CustomField.logic.EntryFieldLogic")->getEntriesByLabelId($selectedLabelId);
- 						if(count($entries)){
- 							$html[] = "<select name=\"" . $h_formName . "\">";
- 							$html[] = "<option></option>";
- 							foreach($entries as $entry){
- 								$v = $selectedLabelId . "-" . $entry["id"];
- 								if($entry["id"] == $selectedEntryId){
- 									$html[] = "<option value=\"" . $v . "\" selected>" . $entry["title"] . "</option>";
- 								}else{
- 									$html[] = "<option value=\"" . $v . "\">" . $entry["title"] . "</option>";
- 								}
- 							}
- 							$html[] = "</select>";
- 						}
- 					}
- 					$html[] = "</span>";
- 				}
- 				$body = implode("\n", $html);
- 				break;
+				$html = array();
+
+				//サイト一覧
+				$siteIdList = CMSUtil::getSiteIdList();
+				$html[] = "\t<select id=\"" . $this->getFormId() . "_site_select\" onchange='CustomFieldEntryField.changeSite(this, \"" . $this->getFormId() . "\", \"" . $h_formName . "\", 0);'>";
+				foreach($siteIdList as $siteId => $siteName){
+					if($selectedSiteId == $siteId){
+						$html[] = "\t\t<option value=\"" . $siteId . "\" selected>" . $siteName . "</option>";
+					}else{
+						$html[] = "\t\t<option value=\"" . $siteId . "\">" . $siteName . "</option>";
+					}
+				}
+				$html[] = "\t</select>";
+
+				//ラベル一覧
+				$old = ($selectedSiteId !== CMSUtil::getCurrentSiteId()) ? CMSUtil::switchOtherSite($selectedSiteId) : array();
+				$labels = self::_getLabels();
+				if(count($labels)){
+					$html[] = "<span id=\"" . $this->getFormId() . "_label\">";
+					$html[] = "\t<select id=\"" . $this->getFormId() . "_select\" onchange='CustomFieldEntryField.change(this, " . $selectedSiteId . ", \"" . $this->getFormId() . "\", \"" . $h_formName . "\", 0);'>";
+					$html[] = "\t\t<option></option>";
+					foreach($labels as $labelId => $caption){
+						if($selectedLabelId == $labelId){
+							$html[] = "\t\t<option value=\"" . $labelId . "\" selected>" . $caption . "</option>";
+						}else{
+							$html[] = "\t\t<option value=\"" . $labelId . "\">" . $caption . "</option>";
+						}
+					}
+					$html[] = "\t</select>";
+					$html[] = "</span>";
+					$html[] = "<input type=\"hidden\" name=\"" . $h_formName . "\" value=\"\">";
+					$html[] = "<span id=\"" . $this->getFormId() . "\">";
+					if(isset($selectedLabelId) || $selectedEntryId > 0){
+						$entries = SOY2Logic::createInstance("site_include.plugin.CustomField.logic.EntryFieldLogic")->getEntriesByLabelId($selectedLabelId);
+						if(count($entries)){
+							$html[] = "<select name=\"" . $h_formName . "\">";
+							$html[] = "<option></option>";
+							foreach($entries as $entry){
+								$v = $selectedSiteId . "-" . $selectedLabelId . "-" . $entry["id"];
+								if($entry["id"] == $selectedEntryId){
+									$html[] = "<option value=\"" . $v . "\" selected>" . $entry["title"] . "</option>";
+								}else{
+									$html[] = "<option value=\"" . $v . "\">" . $entry["title"] . "</option>";
+								}
+							}
+							$html[] = "</select>";
+						}
+					}
+					$html[] = "</span>";
+				}
+				$body = implode("\n", $html);
+				if(count($old)) CMSUtil::resetOtherSite($old);
+				break;
 			case "list":
 				$values = (is_string($fieldValue) && strlen($fieldValue)) ? soy2_unserialize($fieldValue) : array();
 

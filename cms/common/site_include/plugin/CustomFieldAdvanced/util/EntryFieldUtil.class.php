@@ -2,32 +2,45 @@
 
 class EntryFieldUtil {
 
-	public static function getEntryObject(string $fieldValue){
-		SOY2::import("domain.cms.Entry");
-		if(!strlen($fieldValue) || !is_numeric(strpos($fieldValue, "-"))) return new Entry();
+	/**
+	 * @param string
+	 * @return array(siteId, labelId, entryId)
+ 	 */
+	public static function divideIds(string $fieldValue){
+		if(!strlen($fieldValue) || !is_numeric(strpos($fieldValue, "-"))) return array(CMSUtil::getCurrentSiteId(), 0, 0);
 		$v = explode("-", $fieldValue);
-		if(!isset($v[1]) || !is_numeric($v[1])) return new Entry();
-	 	return SOY2Logic::createInstance("site_include.plugin.CustomField.logic.EntryFieldLogic")->getTitleAndContentByEntryId($v[1]);
+		$cnt = count($v);
+		if($cnt < 2) return array(CMSUtil::getCurrentSiteId(), 0, 0);
+		return ($cnt == 2) ? array(CMSUtil::getCurrentSiteId(), (int)$v[0], (int)$v[1]) : array((int)$v[0], (int)$v[1], (int)$v[2]);
 	}
 
-	public static function getLabelCaptionAndAlias(string $fieldValue){
-		if(!strlen($fieldValue) || !is_numeric(strpos($fieldValue, "-"))) return array("caption" => "", "alias" => "");
-		$v = explode("-", $fieldValue);
-		if(!isset($v[0]) || !is_numeric($v[0])) return array("caption" => "", "alias" => "");
+	/**
+	 * @param int entryId, int siteId(現在のサイトと異なる時)
+	 * @return Entry
+	 */
+	public static function getEntryObjectById(int $entryId){
+		SOY2::import("domain.cms.Entry");
+		if($entryId === 0) return new Entry();
+		$entry = SOY2Logic::createInstance("site_include.plugin.CustomField.logic.EntryFieldLogic")->getTitleAndContentByEntryId($entryId);
+		return $entry;
+	}
 
-		$label = SOY2Logic::createInstance("logic.site.Label.LabelLogic")->getById($v[0]);
+	/**
+	 * @param int labelId
+	 * @return array(caption, alias)
+	 */
+	public static function getLabelCaptionAndAliasById(int $labelId){
+		if($labelId === 0) return array("caption" => "", "alias" => "");
+
+		$label = SOY2Logic::createInstance("logic.site.Label.LabelLogic")->getById($labelId);
 		$arr = array();
 		$arr["caption"] = $label->getCaption();
 		$arr["alias"] = $label->getAlias();
 		return $arr;
 	}
 
-	public static function getBlogTitleAndUri(string $fieldValue, string $labelCaption){
-		if(!strlen($fieldValue) || !is_numeric(strpos($fieldValue, "-"))) return array("title" => "", "title" => "");
-		$v = explode("-", $fieldValue);
-		if(!isset($v[0]) || !is_numeric($v[0])) return array("title" => "", "uri" => "");
-
-		$selectedLabelId = (int)$v[0];
+	public static function getBlogTitleAndUri(int $labelId, string $labelCaption){
+		if($labelId === 0) return array("title" => "", "uri" => "");
 
 		//ラベル名にスラッシュがある場合、親ラベルと分離する
 		if(is_numeric(strpos($labelCaption, "/"))){
@@ -35,10 +48,11 @@ class EntryFieldUtil {
 			//親カテゴリ一つの場合
 			$labelCaption = $caps[1];
 			$parentLabelId = SOY2Logic::createInstance("logic.site.Label.LabelLogic")->getByCaption(trim($caps[0]))->getId();
-			if(is_numeric($parentLabelId)) $selectedLabelId = $parentLabelId;
+
+			if(is_numeric($parentLabelId)) $labelId = $parentLabelId;
 			unset($parentLabelId);
 		}
 
-		return SOY2Logic::createInstance("logic.site.Page.BlogPageLogic")->getBlogPageTitleAndUriByLabelId($selectedLabelId);
+		return SOY2Logic::createInstance("logic.site.Page.BlogPageLogic")->getBlogPageTitleAndUriByLabelId($labelId);
 	}
 }

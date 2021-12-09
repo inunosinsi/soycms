@@ -161,7 +161,7 @@ class CMSPageController extends SOY2PageController{
 		}
 	}
 
-	private function _getPage($uri){
+	private function _getPage(string $uri){
 		try{
 			return SOY2DAOFactory::create("cms.PageDAO")->getActivePageByUri($uri);
 		}catch(Exception $e){
@@ -207,7 +207,7 @@ class CMSPageController extends SOY2PageController{
 		return $html;
 	}
 
-	function onNotFound($path = NULL, $args = NULL, $classPath = NULL){
+	function onNotFound(string $path="", array $args=array(), string $classPath=""){
 
 		$page = SOY2DAOFactory::create("cms.PageDAO")->getErrorPage();
 		$this->pageType = $page->getPageType();

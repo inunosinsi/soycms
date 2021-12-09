@@ -260,6 +260,11 @@ class CMSApplication {
 		echo $html;
 	}
 
+	public static function getTabs(){
+		$self = CMSApplication::getInstance();
+		return $self->tabs;
+	}
+
 	/**
 	 * Applicationのメインを表示
 	 */

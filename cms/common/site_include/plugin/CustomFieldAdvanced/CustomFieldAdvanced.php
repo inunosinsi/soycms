@@ -41,7 +41,7 @@ class CustomFieldPluginAdvanced{
 			"author" => "日本情報化農業研究所",
 			"url" => "http://www.n-i-agroinformatics.com/",
 			"mail" => "soycms@soycms.net",
-			"version"=>"1.13.4"
+			"version"=>"1.14"
 		));
 
 		//プラグイン アクティブ
@@ -179,13 +179,18 @@ class CustomFieldPluginAdvanced{
 
 						if($master->getType() == "entry"){
 							if(!class_exists("EntryFieldUtil")) SOY2::import("site_include.plugin.CustomFieldAdvanced.util.EntryFieldUtil");
-							$fieldValue = (is_string($field->getValue())) ? $field->getValue() : "";
-							$entry = EntryFieldUtil::getEntryObject($fieldValue);
+							list($selectedSiteId, $labelId, $entryId) = EntryFieldUtil::divideIds((string)$field->getValue());
+
+							//$selectedSiteIdとcurrentSiteIdが異なる場合はDSNの切り替え
+							$old = ($selectedSiteId > 0 && $selectedSiteId !== CMSUtil::getCurrentSiteId()) ? CMSUtil::switchOtherSite($selectedSiteId) : array();
+
+							$entry = EntryFieldUtil::getEntryObjectById($entryId);
 							$attr["html"] = $entry->getContent();
 
-							$labelArr = EntryFieldUtil::getLabelCaptionAndAlias($fieldValue);
-							$blogArr = EntryFieldUtil::getBlogTitleAndUri($fieldValue, (string)$labelArr["caption"]);
-							unset($fieldValue);
+							$labelArr = ($labelId > 0) ? EntryFieldUtil::getLabelCaptionAndAliasById($labelId) : array("caption" => "", "alias" => "");
+							$blogArr = ($labelId > 0) ? EntryFieldUtil::getBlogTitleAndUri($labelId, (string)$labelArr["caption"]) : array("title" => "", "uri" => "");
+
+							if(count($old)) CMSUtil::resetOtherSite($old);
 						}else{
 							$entry = new Entry();
 							$labelArr = array("caption" => "", "alias" => "");
@@ -247,7 +252,7 @@ class CustomFieldPluginAdvanced{
 								$tmb = (isset($tmbObjects["soycms_thumbnail_plugin_" . $label])) ? $tmbObjects["soycms_thumbnail_plugin_" . $label] : new EntryAttribute();
 								if($label == "resize") $label = "thumbnail";
 
-								$imagePath = trim($tmb->getValue());
+								$imagePath = trim((string)$tmb->getValue());
 								//if($label == "thumbnail" && !strlen($imagePath)) $imagePath = $this->no_thumbnail_path;
 
 								$htmlObj->addModel($field->getId() . "_is_" . $label, array(

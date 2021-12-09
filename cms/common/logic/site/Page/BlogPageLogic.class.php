@@ -29,7 +29,7 @@ class BlogPageLogic extends SOY2LogicBase{
 
 	function getBlogPageTitleAndUriByLabelId(int $labelId){
 		$list = self::_getBlogPageTitleAndUriListCorrespondingToBlogLabelId();
-		if(!isset($list[$labelId])) return "";
+		if(!isset($list[$labelId])) return array("title" => "", "uri" => "");
 		$arr = $list[$labelId];
 		return (isset($arr[0])) ? $arr[0] : array("title" => "", "uri" => "");	//一番最初の値を返す
 	}

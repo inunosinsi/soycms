@@ -314,20 +314,32 @@ class CustomField{
 				$body .= '</div>';
 				break;
 			case "entry":	//出力する記事を指定 カスタムフィールドアドバンスドのみ使用可
-				$values = (strlen($fieldValue)) ? explode("-", $fieldValue) : array();
-				$selectedLabelId = (isset($values[0]) && is_numeric($values[0])) ? (int)$values[0] : null;
-				$selectedEntryId = (isset($values[1]) && is_numeric($values[1])) ? (int)$values[1] : 0;
+				if(!class_exists("EntryFieldUtil")) SOY2::import("site_include.plugin.CustomFieldAdvanced.util.EntryFieldUtil");
+				list($selectedSiteId, $selectedLabelId, $selectedEntryId) = EntryFieldUtil::divideIds((string)$fieldValue);
 
 				//ラベルの固定設定
-				if(is_null($selectedLabelId) && strlen($this->getFixedLabelId()) && is_numeric($this->getFixedLabelId())){
-					$selectedLabelId = $this->getFixedLabelId();
-				}
+				if($selectedLabelId === 0 && is_numeric($this->getFixedLabelId())) $selectedLabelId = $this->getFixedLabelId();
 
 				$html = array();
+
+				//サイト一覧
+				$siteIdList = CMSUtil::getSiteIdList();
+				$html[] = "\t<select id=\"" . $this->getFormId() . "_site_select\" onchange='CustomFieldEntryField.changeSite(this, \"" . $this->getFormId() . "\", \"" . $h_formName . "\", 0);'>";
+				foreach($siteIdList as $siteId => $siteName){
+					if($selectedSiteId == $siteId){
+						$html[] = "\t\t<option value=\"" . $siteId . "\" selected>" . $siteName . "</option>";
+					}else{
+						$html[] = "\t\t<option value=\"" . $siteId . "\">" . $siteName . "</option>";
+					}
+				}
+				$html[] = "\t</select>";
+
 				//ラベル一覧
+				$old = ($selectedSiteId !== CMSUtil::getCurrentSiteId()) ? CMSUtil::switchOtherSite($selectedSiteId) : array();
 				$labels = self::_getLabels();
 				if(count($labels)){
-					$html[] = "\t<select id=\"" . $this->getFormId() . "_select\" onchange='CustomFieldEntryField.change(this, \"" . $this->getFormId() . "\", \"" . $h_formName . "\", 0);'>";
+					$html[] = "<span id=\"" . $this->getFormId() . "_label\">";
+					$html[] = "\t<select id=\"" . $this->getFormId() . "_select\" onchange='CustomFieldEntryField.change(this, " . $selectedSiteId . ", \"" . $this->getFormId() . "\", \"" . $h_formName . "\", 0);'>";
 					$html[] = "\t\t<option></option>";
 					foreach($labels as $labelId => $caption){
 						if($selectedLabelId == $labelId){
@@ -337,6 +349,7 @@ class CustomField{
 						}
 					}
 					$html[] = "\t</select>";
+					$html[] = "</span>";
 					$html[] = "<input type=\"hidden\" name=\"" . $h_formName . "\" value=\"\">";
 					$html[] = "<span id=\"" . $this->getFormId() . "\">";
 					if(isset($selectedLabelId) || $selectedEntryId > 0){
@@ -345,7 +358,7 @@ class CustomField{
 							$html[] = "<select name=\"" . $h_formName . "\">";
 							$html[] = "<option></option>";
 							foreach($entries as $entry){
-								$v = $selectedLabelId . "-" . $entry["id"];
+								$v = $selectedSiteId . "-" . $selectedLabelId . "-" . $entry["id"];
 								if($entry["id"] == $selectedEntryId){
 									$html[] = "<option value=\"" . $v . "\" selected>" . $entry["title"] . "</option>";
 								}else{
@@ -358,6 +371,7 @@ class CustomField{
 					$html[] = "</span>";
 				}
 				$body = implode("\n", $html);
+				if(count($old)) CMSUtil::resetOtherSite($old);
 				break;
 			case "label":	//出力する記事を指定 カスタムフィールドアドバンスドのみ使用可
 				$selectedLabelId = (isset($fieldValue) && is_numeric($fieldValue)) ? (int)$fieldValue : null;
@@ -487,23 +501,26 @@ class CustomField{
 		return self::_getLabels();
 	}
 
-	private function _getLabels(){
+	private function _getLabels(int $selectedSiteId=0){
 		static $list;
-		if(is_null($list)) {
-			$list = array();
-			try{
-				$labels = SOY2DAOFactory::create("cms.LabelDAO")->get();
-			}catch(Exception $e){
-				$labels = array();
-			}
+		if($selectedSiteId == 0) $selectedSiteId = CMSUtil::getCurrentSiteId();
+		if(isset($list[$selectedSiteId])) return $list[$selectedSiteId];
 
-			if(count($labels)){
-				foreach($labels as $label){
-					$list[$label->getId()] = $label->getCaption();
-				}
+		if(is_null($list)) $list = array();
+		if(!isset($list[$selectedSiteId])) $list[$selectedSiteId] = array();
+
+		try{
+			$labels = SOY2DAOFactory::create("cms.LabelDAO")->get();
+		}catch(Exception $e){
+			$labels = array();
+		}
+
+		if(count($labels)){
+			foreach($labels as $label){
+				$list[$selectedSiteId][$label->getId()] = $label->getCaption();
 			}
 		}
-		return $list;
+		return $list[$selectedSiteId];
 	}
 
 	function getPairForm(){

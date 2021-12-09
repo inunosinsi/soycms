@@ -266,17 +266,56 @@ class CMSUtil {
 		return (defined("SOYCMS_DEVELOPER_NAME")) ? SOYCMS_DEVELOPER_NAME : "Brassica, Inc.";
 	}
 
+	//公開側で現在表示中のサイトのIDを取得する
+	public static function getCurrentSiteId(){
+		static $id;
+		if(is_numeric($id)) return $id;
+
+		$old = self::switchDsn();
+		$siteId = (defined("_SITE_ROOT_")) ? (int)trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/") : UserInfoUtil::getSite()->getSiteId();
+
+		try{
+			$id = (int)SOY2DAOFactory::create("admin.SiteDAO")->getBySiteId($siteId)->getId();
+		}catch(Exception $e){
+			$id = 0;
+		}
+		self::resetDsn($old);
+		return $id;
+	}
+
+	public static function getSiteIdList(bool $isAll=false){
+		static $list;
+		if(is_array($list)) return $list;
+		$list = array();
+
+		$old = self::switchDsn();
+		try{
+			if($isAll){
+				$sites = SOY2DAOFactory::create("admin.SiteDAO")->get();
+			}else{
+				$sites = SOY2DAOFactory::create("admin.SiteDAO")->getBySiteType(Site::TYPE_SOY_CMS);
+			}
+		}catch(Exception $e){
+			$sites = array();;
+		}
+		self::resetDsn($old);
+		if(!count($sites)) return $list;
+
+		foreach($sites as $site){
+			$list[(int)$site->getId()] = $site->getSiteName();
+		}
+		return $list;
+	}
+
 
 	/* 以下使わなくなったメソッド */
 
 	/**
 	 * 翻訳ファイルを設定する
 	 */
-	public static function Text($lang = null){
+	public static function Text(string $lang=""){
 		static $_lang;
-
 		if($lang)$_lang = $lang;
-
 		return $_lang;
 	}
 
@@ -379,10 +418,25 @@ class CMSUtil {
 		return $old;
 	}
 
-	public static function resetDsn($old){
+	public static function resetDsn(array $old){
 		SOY2DAOConfig::Dsn($old["dsn"]);
 		SOY2DAOConfig::User($old["user"]);
 		SOY2DAOConfig::Pass($old["pass"]);
+	}
+
+	public static function switchOtherSite(int $siteId){
+		$old = self::switchDsn();
+		try{
+			$dsn = SOY2DAOFactory::create("admin.SiteDAO")->getById($siteId)->getDataSourceName();
+			SOY2DAOConfig::Dsn($dsn);
+		}catch(Exception $e){
+			//何もしない
+		}
+		return $old;
+	}
+
+	public static function resetOtherSite(array $old){
+		self::resetDsn($old);
 	}
 
 	/**
