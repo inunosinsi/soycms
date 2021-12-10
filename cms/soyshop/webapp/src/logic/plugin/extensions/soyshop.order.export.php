@@ -19,7 +19,7 @@ class SOYShopOrderExportBase implements SOY2PluginAction{
 	/**
 	 * export エクスポート実行
 	 */
-	function export($orders){
+	function export(array $orders){
 
 	}
 
@@ -59,7 +59,7 @@ class SOYShopOrderExportDeletageAction implements SOY2PluginDelegateAction{
 	function setMode($mode) {
 		$this->mode = $mode;
 	}
-	function export($orders){
+	function export(array $orders){
 		if($this->action){
 			return $this->action->export($orders);
 		}

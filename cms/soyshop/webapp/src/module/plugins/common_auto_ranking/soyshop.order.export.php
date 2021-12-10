@@ -29,7 +29,7 @@ class CommonAutoRankingExport extends SOYShopOrderExportBase{
 	/**
 	 * export エクスポート実行
 	 */
-	function export($orders){
+	function export(array $orders){
 		$calcLogic = SOY2Logic::createInstance("module.plugins.common_auto_ranking.logic.CalculateRankingLogic");
 		
 		$res = $calcLogic->execute();

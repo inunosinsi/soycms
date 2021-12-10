@@ -21,7 +21,7 @@ class YayoiOrderCSV extends SOYShopOrderExportBase{
 	/**
 	 * export エクスポート実行
 	 */
-	function export($orders){
+	function export(array $orders){
 		//何もしない
 	}
 }

@@ -29,7 +29,7 @@ class EhidenOrderCSV extends SOYShopOrderExportBase{
 	/**
 	 * export エクスポート実行
 	 */
-	function export($orders){
+	function export(array $orders){
 		
 		if(!$this->csvLogic)$this->csvLogic = new EhidenOutputCSV();
 		

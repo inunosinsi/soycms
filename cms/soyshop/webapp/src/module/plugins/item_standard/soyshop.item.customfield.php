@@ -124,8 +124,10 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 		SOY2::import("module.plugins.item_standard.util.ItemStandardUtil");
 		self::prepare();
 
+		$itemId = (is_numeric($item->getId())) ? (int)$item->getId() : 0;
+
 		foreach(ItemStandardUtil::getConfig() as $values){
-			$v = soyshop_get_item_attribute_value($item->getId(), $values["id"], "string");
+			$v = soyshop_get_item_attribute_value($itemId, $values["id"], "string");
 
 			$htmlObj->addModel("item_standard_" . $values["id"] . "_show", array(
 				"soy2prefix" => SOYSHOP_SITE_PREFIX,
@@ -142,7 +144,7 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 				"soy2prefix" => SOYSHOP_SITE_PREFIX,
 				"name" => "Standard[" . $values["id"] . "]",
 				"options" => $list,
-				"id" => "item_standard_" . $values["id"] . "_" . $item->getId()
+				"id" => "item_standard_" . $values["id"] . "_" . $itemId
 			));
 
 		}
@@ -150,7 +152,7 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 		//小商品に在庫切れのものがあるか？
 		$htmlObj->addModel("has_no_stock_child", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"visible" => (self::checkIsChildItemStock($item->getId(), $item->getType()))
+			"visible" => (self::_checkIsChildItemStock($itemId, $item->getType()))
 		));
 
 		//小商品の価格の最小値
@@ -218,7 +220,7 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 
 	function onDelete($id){}
 
-	private function checkIsChildItemStock($parentId, $type){
+	private function _checkIsChildItemStock(int $parentId, string $type){
 		if($type != "group") return false;
 
 		$sql = "SELECT COUNT(*) FROM soyshop_item ".

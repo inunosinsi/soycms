@@ -24,7 +24,7 @@ class PrintShippingLabelExport extends SOYShopOrderExportBase{
 	/**
 	 * export エクスポート実行
 	 */
-	function export($orders){
+	function export(array $orders){
 		SOY2::import("module.plugins.print_shipping_label.util.ShippingLabelUtil");
 		
 		$tmp = $_POST["ShippingLabel"]["company"];

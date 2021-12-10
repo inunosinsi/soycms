@@ -26,7 +26,7 @@ class AggregateExport extends SOYShopOrderExportBase{
 	/**
 	 * export エクスポート実行
 	 */
-	function export($orders){
+	function export(array $orders){
 
 		set_time_limit(0);
 		SOY2::import("module.plugins.common_aggregate.util.AggregateUtil");

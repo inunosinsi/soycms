@@ -1,7 +1,7 @@
 <?php
 
 class AttributeSetAfterUserSearchExport extends SOYShopOrderExportBase{
-	
+
 	/**
 	 * 検索結果一覧に表示するメニューの表示文言
 	 */
@@ -23,7 +23,7 @@ class AttributeSetAfterUserSearchExport extends SOYShopOrderExportBase{
 	/**
 	 * export エクスポート実行
 	 */
-	function export($orders){
+	function export(array $orders){
 		$logic = SOY2Logic::createInstance("module.plugins.attribute_set_after_search.logic.RegisterLogic");
 		$users = $logic->getUserIdListByOrders($orders);
 		$logic->setUserAttribute($users);
@@ -33,4 +33,3 @@ class AttributeSetAfterUserSearchExport extends SOYShopOrderExportBase{
 }
 
 SOYShopPlugin::extension("soyshop.order.export","attribute_set_after_search","AttributeSetAfterUserSearchExport");
-?>

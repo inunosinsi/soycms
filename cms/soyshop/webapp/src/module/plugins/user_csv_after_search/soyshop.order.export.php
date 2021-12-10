@@ -23,7 +23,7 @@ class UserCSVAfterSearchOrderExport extends SOYShopOrderExportBase{
 	/**
 	 * export エクスポート実行
 	 */
-	function export($orders){
+	function export(array $orders){
 		$logic = SOY2Logic::createInstance("module.plugins.user_csv_after_search.logic.ExportCSVLogic");
 		$users = $logic->getUserIdListByOrders($orders);
 		$logic->export($users);

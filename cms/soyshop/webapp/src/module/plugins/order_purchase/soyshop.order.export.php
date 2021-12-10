@@ -20,7 +20,7 @@ class OrderPurchaseExport extends SOYShopOrderExportBase{
 	/**
 	 * export エクスポート実行
 	 */
-	function export($orders){
+	function export(array $orders){
 		if(!defined("ORDER_DOCUMENT_LABEL")) define("ORDER_DOCUMENT_LABEL", "発注書");
 		
 		//SOY2::import("module.plugins.order_purchase.util.OrderPurchaseUtil");

@@ -184,7 +184,7 @@ class SimplePager extends HTMLList{
 
 	protected function populateItem($bean){
 		$url = $this->url . $bean;
-		if(strlen($this->query)) $url .= "?" . $this->query;
+		if(is_string($this->query) && strlen($this->query)) $url .= "?" . $this->query;
 
 		$this->addLink("target_link", array(
 			"text" => $bean,

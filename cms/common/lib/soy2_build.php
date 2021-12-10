@@ -3026,10 +3026,8 @@ class SOY2DAO{
 	 *
 	 * @return bind配列
 	 */
-	function buildBinds($sql,$binds){
-		if($sql instanceof SOY2DAO_Query){
-			$sql = $sql->getQuery();
-		}
+	function buildBinds($sql, array $binds){
+		if($sql instanceof SOY2DAO_Query) $sql = $sql->getQuery();
 		$sql = preg_replace("/'[^']*'/","",$sql);
 		$regex = ":([a-zA-Z0-9_]*)";
 		$tmp = array();
@@ -3070,7 +3068,7 @@ class SOY2DAO{
 	 * @param カラム名(省略可能)
 	 * @return SQL文
 	 */
-	function &buildQuery($method,$noPersistents = array(),$columns = array(),$queryType = null){
+	function &buildQuery(string $method, array $noPersistents=array(), array $columns=array(), string $queryType=""){
 		if(!isset($this->_query[$method])){
 			$this->_query[$method] =
 				SOY2DAO_QueryBuilder::buildQuery($method,$this->getEntityInfo(),$noPersistents,$columns,$queryType);
@@ -3084,7 +3082,7 @@ class SOY2DAO{
 	 * @param PDOより帰ってきた配列
 	 * @return Entityオブジェクト
 	 */
-	function getObject($row){
+	function getObject(array $row){
 		$entityInfo = $this->getEntityInfo();
 		$objName = $entityInfo->name;
 		$obj = new $objName();
@@ -3114,7 +3112,7 @@ class SOY2DAO{
 	 * @return PDOオブジェクト
 	 */
 	function &getDataSource(){
-		return SOY2DAO::_getDataSource($this->getDsn(),$this->getDbUser(),$this->getDbPass());
+		return SOY2DAO::_getDataSource((string)$this->getDsn(), (string)$this->getDbUser(), (string)$this->getDbPass());
 	}
 	function releaseDataSource(){
 		SOY2DAO::_releaseDataSource();
@@ -3122,15 +3120,13 @@ class SOY2DAO{
 	function clearStatementCache(){
 		$this->_statementCache = array();
 	}
-	public static function &_getDataSource($dsn = null,$user = null, $pass = null){
+	public static function &_getDataSource(string $dsn="",  string $user="", string $pass=""){
 		static $pdo;
-		if(is_null($pdo)){
-			$pdo = array();
-		}
-		$dsn = (is_null($dsn)) ? SOY2DAOConfig::Dsn() : $dsn;
+		if(is_null($pdo)) $pdo = array();
+		if(!strlen($dsn)) $dsn = SOY2DAOConfig::Dsn();
 		if(!isset($pdo[$dsn])){
-			$user = (is_null($user)) ? SOY2DAOConfig::user() : $user;
-			$pass = (is_null($pass)) ? SOY2DAOConfig::pass() : $pass;
+			if(!strlen($user)) $user = SOY2DAOConfig::user();
+			if(!strlen($pass)) $pass = SOY2DAOConfig::pass();
 			$pdoOptions = array(
 				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 			);
@@ -3166,7 +3162,7 @@ class SOY2DAO{
 	/**
 	 * find
 	 */
-    public static function find($className,$arguments = array()){
+    public static function find(string $className, array $arguments=array()){
 		if(!is_array($arguments))$arguments = array("id" => $arguments);
 		SOY2DAOFactory::importEntity($className);
 		$daoName = $className . "DAO";
@@ -3192,7 +3188,7 @@ class SOY2DAO{
 	 *
 	 * @return 結果配列
 	 */
-	function executeQuery($query,$binds = array(),$keepStatement = false){
+	function executeQuery($query, array $binds=array(), bool $keepStatement=false){
 		if($query instanceof SOY2DAO_Query){
 			if(is_string($this->getOrder()) && strlen($this->getOrder())){
 				$query->setOrder($this->getOrder());
@@ -3321,7 +3317,7 @@ class SOY2DAO{
 	 *
 	 * @return 結果
 	 */
-	function executeUpdateQuery($sql,$binds = array(),$keepStatement = false){
+	function executeUpdateQuery($sql, array $binds=array(), bool $keepStatement=false){
 		if($sql instanceof SOY2DAO_Query){
 			if(is_string($this->getOrder()) && strlen($this->getOrder())){
 				$sql->setOrder($this->getOrder());
@@ -3507,7 +3503,7 @@ class SOY2DAO{
 class SOY2DAOException extends Exception{
 	private $pdoException;
 	private $query;
-	function __construct($msg, Exception $e = null){
+	function __construct(string $msg, Exception $e=null){
 		$this->pdoException = $e;
 		parent::__construct($msg);
 	}
@@ -3540,14 +3536,12 @@ class SOY2DAOContainer{
 	private $daos = array();
 	private function __construct(){
 	}
-	public static function get($name,$arguments = array()){
+	public static function get(string $name, array $arguments=array()){
 		static $instance;
-		if(!$instance){
-			$instance = new SOY2DAOContainer;
-		}
+		if(is_null($instance)) $instance = new SOY2DAOContainer;
 		return $instance->_get($name,$arguments);
 	}
-    public static function _get($name,$arguments = array()){
+    public static function _get(string $name, array $arguments=array()){
 		if(isset($this->daos[$name])){
 			$dao  = $this->daos[$name];
 		}else{
@@ -3579,7 +3573,7 @@ class SOY2DAOFactory{
 	 * @param $className DAOImplを生成したいDAOクラス名
 	 * @return DAOImplクラスオブジェクト
 	 */
-	public static function create($className,$arguments = array()){
+	public static function create(string $className, array $arguments=array()){
 		$className = SOY2DAOFactory::importDAO($className);
 		$obj = SOY2DAOFactoryImpl::build($className);
 		foreach($arguments as $key => $value){
@@ -3619,7 +3613,7 @@ class SOY2DAOFactory{
 	 *
 	 * @return $keyに対応するAnnotationが存在すればその値、なければfalse
 	 */
-	public static function getAnnotation($key,$str){
+	public static function getAnnotation(string $key, string $str){
 		$regex = '@'.$key.'\s+(.+)';
 		$tmp = array();
 		if(!preg_match("/$regex/",$str,$tmp)){
@@ -3637,7 +3631,7 @@ class SOY2DAOFactory{
 	 *
 	 * @param $className クラス名（パッケージ含む）
 	 */
-	public static function importDAO($className){
+	public static function importDAO(string $className){
 		if(!class_exists($className)){
 			$path = $className;
 			$tmp = array();
@@ -3656,7 +3650,7 @@ class SOY2DAOFactory{
 	 *
 	 * @param $className クラス名（パッケージ含む）
 	 */
-	public static function importEntity($className){
+	public static function importEntity(string $className){
 		if(!class_exists($className)){
 			$path = $className;
 			$tmp = array();
@@ -3686,7 +3680,7 @@ class SOY2DAOFactoryImpl extends SOY2DAOFactory {
 	 * @param $className DAOクラス名
 	 * @return DAOImplクラスオブジェクト
 	 */
-	public static function build($className){
+	public static function build(string $className){
 		$implClassName = self::getImplClassName($className);
 		if(class_exists($implClassName)){
 			return new $implClassName();
@@ -3955,13 +3949,13 @@ class SOY2DAOFactoryImpl extends SOY2DAOFactory {
 	/**
 	 * DAOImplのクラス名を返す
 	 */
-	private static function getImplClassName($className){
+	private static function getImplClassName(string $className){
 		return $className."Impl";
 	}
 	/**
 	 * DAOImplのキャッシュファイル名を返す
 	 */
-	private static function getDaoCacheFilePath($className, $extension = ".class.php"){
+	private static function getDaoCacheFilePath(string $className, string $extension=".class.php"){
 		$reflection = new ReflectionClass($className);
 		return SOY2DAOConfig::DaoCacheDir()
 		       .SOY2DAOConfig::getOption("cache_prefix")."dao_cache_".self::getImplClassName($className)
@@ -3976,7 +3970,7 @@ class SOY2DAOFactoryImpl extends SOY2DAOFactory {
 	 *
 	 * @return Entityクラス名
 	 */
-	public static function getEntityClassName($className,$daoComment){
+	public static function getEntityClassName(string $className, string $daoComment){
 		$result = self::getAnnotation(SOY2DAOFactory::ANNOTATION_ENTITY,$daoComment);
 		if($result !== false){
 			$entity = $result;
@@ -4048,6 +4042,7 @@ class SOY2DAOFactoryImpl extends SOY2DAOFactory {
 		return $entityInfo;
 	}
 }
+
 /* SOY2DAO/soy2dao/SOY2DAO_Entity.class.php */
 /**
  * SOY2DAO Entity Class
@@ -4066,7 +4061,7 @@ class SOY2DAO_Entity{
 	 * @return EntityClassのProperty名を連想配列のキーとし、値にカラム名が入ったArrayを返す
 	 * @param readOnlyな属性も取得するかどうか
 	 */
-	function getColumns($flag = false){
+	function getColumns(bool $flag=false){
 		$array = array();
 		foreach($this->columns as $column){
 			 if(!$flag && $column->readOnly)continue;
@@ -4086,7 +4081,7 @@ class SOY2DAO_Entity{
 	 * カラム名からSOY2DAO_EntityColumnオブジェクトを取得
 	 * @param $name カラム名
 	 */
-	function getColumnByName($name,$isThrow = true){
+	function getColumnByName(string $name, bool $isThrow=true){
 		$name = strtolower($name);
 		if(!isset($this->reverseColumns[$name])){
 			if($isThrow){
@@ -4144,8 +4139,8 @@ class SOY2DAO_EntityBase {
 	/**
      * get by id
      */
-    final function get($id = null){
-    	if($id){
+    final function get(int $id=0){
+    	if($id > 0){
     		$res = $this->getDAO()->getById($id);
     	}else{
     		$res = $this->getDAO()->getById($this->getId());
@@ -4345,7 +4340,7 @@ class SOY2DAO_Query{
 		if(is_string($this->where))	$this->where = preg_replace_callback('/([a-zA-Z_0-9]+)\?/',array($this,'replaceTableName'),$this->where);
 		if(is_string($this->having)) $this->having = preg_replace_callback('/([a-zA-Z_0-9]+)\?/',array($this,'replaceTableName'),$this->having);
 	}
-	function replaceTableName($key){
+	function replaceTableName(string $key){
 		return SOY2DAOConfig::getTableMapping($key[1]);
 	}
 	/**
@@ -4353,7 +4348,7 @@ class SOY2DAO_Query{
 	 * MySQL: ` バッククォート
 	 * SQLite, PostgreSQL: " ダブルクォート
 	 */
-	public function quoteIdentifier($identifier){
+	public function quoteIdentifier(string $identifier){
 		if(strlen(preg_replace("/[a-zA-Z0-9_]+/","",$identifier))>0){
 			/*
 			 * @table table1 join table2 on (table1.id=table2.subid)
@@ -4378,7 +4373,7 @@ class SOY2DAO_Query{
 	/**
 	 * 識別子の引用符を外す
 	 */
-	public function unquote($value){
+	public function unquote(string $value){
 		$quote = "";
 		switch(SOY2DAOConfig::type()){
 			case SOY2DAOConfig::DB_TYPE_MYSQL :
@@ -4485,7 +4480,7 @@ class SOY2DAO_QueryBuilder{
 	 * @param $queryType タイプ
 	 * @return SOY2DAO_Query
 	 */
-	public static function buildQuery($methodName,$entityInfo,$noPersistents = array(),$columns = array(),$queryType = null){
+	public static function buildQuery(string $methodName, $entityInfo, array $noPersistents=array(), array $columns=array(), string $queryType=""){
 		if(preg_match("/^insert|^create/",$methodName) || $queryType == "insert"){
 			return SOY2DAO_InsertQueryBuilder::build($methodName,$entityInfo,$noPersistents,$columns);
 		}
@@ -4500,7 +4495,7 @@ class SOY2DAO_QueryBuilder{
 	/**
 	 * @return SOY2DAO_Query
 	 */
-	protected static function build($methodName,$entityInfo,$noPersistents,$columns){
+	protected static function build(string $methodName, $entityInfo, array $noPersistents, array $columns){
 		return new SOY2DAO_Query();
 	}
 }
@@ -4521,7 +4516,7 @@ class SOY2DAO_DeleteQueryBuilder extends SOY2DAO_QueryBuilder{
 	 *
 	 * @return SOY2DAO_Query
 	 */
-	protected static function build($methodName,$entityInfo,$noPersistents,$columns){
+	protected static function build(string $methodName, $entityInfo, array $noPersistents, array $columns){
 		$query = new SOY2DAO_Query();
 		$query->prefix = "delete";
 		$query->table = $entityInfo->table;
@@ -4560,7 +4555,7 @@ class SOY2DAO_InsertQueryBuilder extends SOY2DAO_QueryBuilder{
 	 *
 	 * @return SOY2DAO_Query
 	 */
-	protected static function build($methodName,$entityInfo,$noPersistents,$columns){
+	protected static function build(string $methodName, $entityInfo, array $noPersistents, array $columns){
 		$query = new SOY2DAO_Query();
 		$query->prefix = "insert";
 		$query->table = $entityInfo->table;
@@ -4611,7 +4606,7 @@ class SOY2DAO_SelectQueryBuilder extends SOY2DAO_QueryBuilder{
 	 *
 	 * @return SOY2DAO_Query
 	 */
-	protected static function build($methodName,$entityInfo,$noPersistents,$columns){
+	protected static function build(string $methodName, $entityInfo, array $noPersistents, array $columns){
 		$query = new SOY2DAO_Query();
 		$query->prefix = "select";
 		$query->table = $entityInfo->table;
@@ -4648,7 +4643,7 @@ class SOY2DAO_UpdateQueryBuilder extends SOY2DAO_QueryBuilder{
 	 *
 	 * @return SOY2DAO_Query
 	 */
-	protected static function build($methodName,$entityInfo,$noPersistents,$columns){
+	protected static function build(string $methodName, $entityInfo, array $noPersistents, array $columns){
 		$query = new SOY2DAO_Query();
 		$query->prefix = "update";
 		$query->table = $entityInfo->table;
@@ -4747,28 +4742,6 @@ class SOY2HTMLBase{
 	 *
 	 */
 	function __call(string $name, array $args){
-		/** PHP7.4対策で廃止
-		if(method_exists($this,"createAdd") && preg_match('/^add([A-Za-z]+)$/',$name,$tmp) && count($args)>0){
-			$class = "HTML" . $tmp[1];
-			if(class_exists($class)){
-				$id = array_shift($args);
-				$arguments  = (count($args)>0 && is_array($args[0])) ? @$args[0] : array();
-				$this->createAdd($id,$class,$arguments);
-				if(isset($arguments["value"])){
-					$this->createAdd($id . "_text","HTMLLabel",array(
-						"text" => $arguments["value"]
-					));
-				}
-				if(($name == "addTextarea") && isset($args["text"])){
-					$this->createAdd($id . "_text","HTMLLabel",array(
-						"text" => $arguments["text"]
-					));
-				}
-				return;
-			}
-		}
-		**/
-
 		if(!$this->functionExists($name) && $name != "HTMLPage" && $name != "WebPage"){
 			throw new SOY2HTMLException("Method not found: ".$name);
 		}

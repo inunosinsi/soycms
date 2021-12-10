@@ -24,7 +24,7 @@ class OrderCSV extends SOYShopOrderExportBase{
 	/**
 	 * export エクスポート実行
 	 */
-	function export($orders){
+	function export(array $orders){
 
 		set_time_limit(0);
 		$lines = array();

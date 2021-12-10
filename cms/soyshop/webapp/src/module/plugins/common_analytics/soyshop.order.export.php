@@ -27,7 +27,7 @@ class CommonAnalyticsExport extends SOYShopOrderExportBase{
 	/**
 	 * export エクスポート実行
 	 */
-	function export($orders){
+	function export(array $orders){
 		
 		$mode = (isset($_POST["AnalyticsPlugin"]["type"])) ? $_POST["AnalyticsPlugin"]["type"] : "month";
 		$class = "Analytics_" . ucfirst($mode) . "Page";

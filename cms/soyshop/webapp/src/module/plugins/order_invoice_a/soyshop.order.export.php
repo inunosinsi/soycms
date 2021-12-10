@@ -20,7 +20,7 @@ class SOYShopATypeInvoiceExport extends SOYShopOrderExportBase{
 	/**
 	 * export エクスポート実行
 	 */
-	function export($orders){
+	function export(array $orders){
 		$html = file_get_contents(dirname(__FILE__) . "/template.html");
 		
 		SOY2DAOFactory::create("order.SOYShop_ItemModule");
