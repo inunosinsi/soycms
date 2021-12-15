@@ -3,7 +3,7 @@
 class DeliveryEachProductAddMailAddress extends SOYShopAddMailAddress{
 
     function getMailAddress(SOYShop_Order $order, bool $orderFlag=false){
-		$itemOrders = SOY2Logic::createInstance("logic.order.OrderLogic")->getItemsByOrderId($order->getId());
+		$itemOrders = soyshop_get_item_orders($order->getId());
         if(!count($itemOrders)) return array();
 
         $list = array();

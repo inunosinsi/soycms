@@ -49,13 +49,8 @@ class ResetPage extends MainMyPagePageBase{
 
 		$form_visible = false;
 
-    	$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
-		try{
-			$this->user = $userDAO->getByMailAddress($this->mail);
-			$form_visible = $this->checkQuery($this->user);
-		}catch(Exception $e){
-			$this->user = new SOYShop_User();
-		}
+    	$this->user = soyshop_get_user_object_by_mailaddress((string)$this->mail);
+		if(is_numeric($this->user->getId())) $form_visible = $this->checkQuery($this->user);
 
     	parent::__construct();
 

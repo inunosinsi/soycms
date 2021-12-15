@@ -222,11 +222,7 @@ class PointBaseLogic extends SOY2LogicBase{
 
 		//クレジット支払からの結果通知の場合はCartLogicのitemsは消えているので、再度取得する
 		if($orderId > 0 && is_null($itemOrders) || !is_array($itemOrders) || !count($itemOrders)){
-			try{
-				$itemOrders = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO")->getByOrderId($orderId);
-			}catch(Exception $e){
-				$itemOrders = array();
-			}
+			$itemOrders = soyshop_get_item_orders($orderId);
 		}
 
 		if(!count($itemOrders)) return 0;
@@ -315,7 +311,7 @@ class PointBaseLogic extends SOY2LogicBase{
 
 	//指定のメールアドレスのユーザがポイントを持っているかチェックする
 	function hasPointByUserMailAddress(string $mailaddress){
-		$userId = self::_getUserIdByMailAddress($mailaddress);
+		$userId = soyshop_get_user_object_by_mailaddress($mailaddress)->getId();
 		if(!is_numeric($userId)) return false;
 
 		try{
@@ -333,14 +329,6 @@ class PointBaseLogic extends SOY2LogicBase{
 		if(!is_null($timeLimit) && $timeLimit < time()) return false;
 
 		return true;
-	}
-
-	private function _getUserIdByMailAddress($mailaddress){
-		try{
-			return SOY2DAOFactory::create("user.SOYShop_UserDAO")->getByMailAddress($mailaddress)->getId();
-		}catch(Exception $e){
-			return 0;
-		}
 	}
 
 	function getPointObjByUserId(int $userId){

@@ -456,7 +456,7 @@ class SOYCMSThumbnailPlugin{
 			$config = new EntryAttribute();
 		}
 
-		if(!is_null($config->getValue())){
+		if(is_string($config->getValue())){
 			$configArray = soy2_unserialize($config->getValue());
 		}else{
 			$configArray = array(

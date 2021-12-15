@@ -44,9 +44,7 @@ class SOYShop_ComplexPage extends SOYShop_PageBase{
 	}
 
 	function getBlocks(){
-		$blocks = (is_string($this->complexPageBlocks)) ? soy2_unserialize($this->complexPageBlocks) : array();
-		if(!is_array($blocks))$blocks = array();
-		return $blocks;
+		return (is_string($this->complexPageBlocks)) ? soy2_unserialize($this->complexPageBlocks) : array();
 	}
 	function setBlocks($blocks){
 		$this->setComplexPageBlocks(soy2_serialize($blocks));

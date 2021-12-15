@@ -20,10 +20,7 @@ class ItemOptionUtil {
 
 	private static function _getOptions(){
 		static $opts;
-		if(is_null($opts)){
-			$options = SOYShop_DataSets::get("item_option", null);
-			$opts = (isset($options)) ? soy2_unserialize($options) : array();
-		}
+		if(is_null($opts)) $opts = soy2_unserialize(SOYShop_DataSets::get("item_option", ""));
 		return $opts;
 	}
 

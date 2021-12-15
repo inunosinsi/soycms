@@ -319,8 +319,7 @@ class SOYShop_Order {
     	$this->modules = $modules;
     }
     function getModuleList(){
-    	$res = soy2_unserialize($this->modules);
-    	return (is_array($res)) ? $res : array();
+    	return (is_string($this->modules)) ? soy2_unserialize($this->modules) : array();
     }
     function getAddress() {
     	return $this->address;
@@ -343,8 +342,7 @@ class SOYShop_Order {
 		return self::_address($this->claimedAddress);
     }
 	private function _address($str){
-		$addr = (is_string($str) && strlen($str)) ? soy2_unserialize($str) : array();
-		if(!is_array($addr)) $addr = array();
+		$addr = (is_string($str)) ? soy2_unserialize($str) : array();
 		foreach(array("name", "zipCode", "area", "address1", "address2", "address3") as $l){
 			if(!isset($addr[$l])) $addr[$l] = "";
 		}
@@ -361,7 +359,7 @@ class SOYShop_Order {
     }
     function getAttributeList(){
     	if(is_array($this->attributes) && count($this->attributes) === 0) return array();
-    	$res = soy2_unserialize($this->attributes);
+    	$res = soy2_unserialize((string)$this->attributes);
 		if(!is_array($res)) return array();
 
 		//表記名を変更する
@@ -401,11 +399,10 @@ class SOYShop_Order {
     }
     function getMailStatusList(){
     	if(empty($this->mailStatus)) return array();
-    	$status = @soy2_unserialize($this->mailStatus);
-    	return (is_array($status)) ? $status : array();
+    	return soy2_unserialize((string)$this->mailStatus);
     }
     function getMailStatusByType($type){
-    	$status = soy2_unserialize($this->mailStatus);
+    	$status = soy2_unserialize((string)$this->mailStatus);
     	return (isset($status[$type])) ? $status[$type] : null;
     }
     function setMailStatusByType($type, $value){

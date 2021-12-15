@@ -10,7 +10,7 @@ class AspRegisterLogic extends SOY2LogicBase {
 		$obj = self::_getByToken($token);
 		if(is_null($obj->getToken())) return false;
 
-		$data = soy2_unserialize($obj->getData());
+		$data = soy2_unserialize((string)$obj->getData());
 		$admin = self::castAdmin($data);
 
 		//管理者の作成、サイトの作成、権限の付与

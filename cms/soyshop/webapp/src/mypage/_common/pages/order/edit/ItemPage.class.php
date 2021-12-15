@@ -34,12 +34,8 @@ class ItemPage extends MainMyPagePageBase{
 				$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 				$itemOrderDao = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
 				$itemOrderDao->begin();
-				try{
-					$oldItemOrders = $itemOrderDao->getByOrderId($this->orderId);
-				}catch(Exception $e){
-					$oldItemOrders = array();
-				}
-
+				$oldItemOrders = soyshop_get_item_orders($this->orderId);
+				
 				$change = array();
 				$itemChange = array();
 
@@ -127,8 +123,8 @@ class ItemPage extends MainMyPagePageBase{
 					//注文履歴の編集
 					$orderLogic = SOY2Logic::createInstance("logic.order.OrderLogic");
 					$author = "顧客:" . $this->getUser()->getName();
-					$orderLogic->addHistory($this->orderId, implode("\n", $itemChange), null, $author);
-					if(count($change)) $orderLogic->addHistory($this->orderId, implode("\n", $change), null, $author);
+					$orderLogic->addHistory($this->orderId, implode("\n", $itemChange), "", $author);
+					if(count($change)) $orderLogic->addHistory($this->orderId, implode("\n", $change), "", $author);
 
 					//変更履歴のメールを送信する
 					$mailLogic = SOY2Logic::createInstance("module.plugins.order_edit_on_mypage.logic.NoticeSendMailLogic", array("order" => $order, "user" => $this->getUser()));

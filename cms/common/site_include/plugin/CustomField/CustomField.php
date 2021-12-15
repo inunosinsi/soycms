@@ -436,9 +436,9 @@ class CustomFieldPlugin{
 		if(is_array($result) && count($result) && is_array($result[0]) && isset($result[0]['custom_field'])){
 			if(strpos($result[0]['custom_field'], "\0CustomField\0") !== false){
 				//ただのserializeのころのデータのための後方互換
-				$db_arr = @unserialize($result[0]['custom_field']);
+				$db_arr = @unserialize((string)$result[0]['custom_field']);
 			}elseif(strlen($result[0]['custom_field'])){
-				$db_arr = @soy2_unserialize($result[0]['custom_field']);
+				$db_arr = @soy2_unserialize((string)$result[0]['custom_field']);
 			}
 		}else{
 			$db_arr = null;

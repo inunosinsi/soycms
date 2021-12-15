@@ -40,7 +40,7 @@ class CheckLogic extends SOY2LogicBase {
 			if(!count($res)) break;
 			foreach($res as $v){
 				$fieldV = null;
-				if(isset($v["custom_field"]) && strlen($v["custom_field"])){
+				if(isset($v["custom_field"]) && is_string($v["custom_field"])){
 					$fieldValues = soy2_unserialize($v["custom_field"]);
 					if(count($fieldValues)){
 						foreach($fieldValues as $fV){

@@ -35,7 +35,7 @@ class ItemCodeStringWithStockPage extends WebPage{
 				if(!is_numeric($stock)) continue;
 
 				$code = trim($v[0]);
-				$item = self::getItemObjectByItemCode($code);
+				$item = soyshop_get_item_object_by_code($code);
 				if(is_null($item->getId())) continue;
 
 				//登録されている在庫数と同じ場合は次へ
@@ -59,13 +59,6 @@ class ItemCodeStringWithStockPage extends WebPage{
 		));
 	}
 
-	private function getItemObjectByItemCode($code){
-		try{
-			return self::dao()->getByCode($code);
-		}catch(Exception $e){
-			return new SOYShop_Item();
-		}
-	}
 
 	private function dao(){
 		static $dao;

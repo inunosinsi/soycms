@@ -131,11 +131,7 @@ class UtilMultiLanguagePlugin{
 	}
 
 	function getConfig(){
-		if(strlen($this->config)){
-			return soy2_unserialize($this->config);
-		}else{
-			return $this->config;
-		}
+		return (is_string($this->config)) ? soy2_unserialize($this->config) : $this->config;
 	}
 
 	function setConfig($config){

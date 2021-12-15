@@ -354,12 +354,9 @@ class Cart01Page extends MainCartPageBase{
 	 * メールアドレスとパスワードでログイン
 	 * @return SOYShop_User
 	 */
-	private function _login($userArray){
-		$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
-
+	private function _login(array $userArray){
 		try{
-			$user = $userDAO->getByMailAddress($userArray["mailAddress"]);
-
+			$user = soyshop_get_user_object_by_mailaddress($userArray["mailAddress"]);
 			if($user->checkPassword($userArray["password"])){
 				//ログイン成功
 		    	return $user;

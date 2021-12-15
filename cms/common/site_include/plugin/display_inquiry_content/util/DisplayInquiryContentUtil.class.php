@@ -155,7 +155,7 @@ class DisplayInquiryContentUtil {
 		$dates = array();
 		if(count($results)){
 			foreach($results as $v){
-				if(!isset($v["data"]) || !strlen($v["data"])) continue;
+				if(!isset($v["data"]) || !is_string($v["data"])) continue;
 				$data = soy2_unserialize($v["data"]);
 				if(!count($data)) continue;
 				$trackingNumbers[] = $v["tracking_number"];

@@ -11,40 +11,19 @@ class DownloadAssitantOrderComplete extends SOYShopOrderComplete{
 
 			$registerLogic = SOY2Logic::createInstance("module.plugins.download_assistant.logic.DownloadRegisterLogic");
 
-			$orderId = $order->getId();
-
 			//すでに登録されている場合は処理を止める
-			$res = $registerLogic->checkRegister($orderId);
-			if($res){
-				$userId = $order->getUserId();
-
-				$itemOrdersDao = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
-				try{
-					$orderItems = $itemOrdersDao->getByOrderId($orderId);
-				}catch(Exception $e){
-					return false;
-				}
+			if($registerLogic->checkRegister($order->getId())){
+				$itemOrders = soyshop_get_item_orders((int)$order->getId());
 
 				$commonLogic = SOY2Logic::createInstance("module.plugins.download_assistant.logic.DownloadCommonLogic");
-				foreach($orderItems as $orderItem){
-					$itemId = $orderItem->getItemId();
-					$item = self::getItem($itemId);
+				foreach($itemOrders as $itemOrder){
+					$item = soyshop_get_item_object((int)$itemOrder->getItemId());
 
 					if($commonLogic->checkItemType($item)){
-						$registerLogic->register($orderId, $item, $userId, $paymentStatus);
+						$registerLogic->register($order->getId(), $item, $order->getUserId(), $paymentStatus);
 					}
 				}
 			}
-		}
-	}
-
-	private function getItem($itemId){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-		try{
-			return $dao->getById($itemId);
-		}catch(Exception $e){
-			return new SOYShop_Item();
 		}
 	}
 }

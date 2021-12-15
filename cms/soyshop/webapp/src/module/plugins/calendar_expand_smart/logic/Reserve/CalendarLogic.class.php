@@ -9,7 +9,7 @@ class CalendarLogic extends CalendarBaseComponent{
 	private $reservedScheduleList = array();
 	private $labelList;
 
-	function build($y, $m, $dspOtherMD = false, $dspCaption = false, $dspRegHol = true, $dspMonthLink = false, $isBefore = false, $isNextMonth = false){
+	function build(int $y, int $m, bool $dspOtherMD=false, bool $dspCaption=false, bool $dspRegHol=true, bool $dspMonthLink=false, bool $isBefore=false, bool $isNextMonth=false){
 		$this->year = $y;
 		$this->month = $m;
 
@@ -21,7 +21,7 @@ class CalendarLogic extends CalendarBaseComponent{
 		return parent::build($y, $m, $dspOtherMD, $dspCaption, $dspRegHol, $dspMonthLink, $isBefore, $isNextMonth);
 	}
 
-	function handleFunc($i, $cd, $wc, $da, $isOtherMonth){
+	function handleFunc(int $i, int $cd, int $wc, string $da, bool $isOtherMonth){
 		$res = self::getReserveArray($i);
 
 		$html = array();

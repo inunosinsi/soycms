@@ -8,16 +8,13 @@ class CommonItemOptionMail extends SOYShopOrderMail{
 	function getMailBody(SOYShop_Order $order){
 		SOY2::import("module.plugins.common_item_option.util.ItemOptionUtil");
 		$opts = ItemOptionUtil::getOptions();
-		if(!count($opts)) return null;
+		if(!count($opts)) return "";
+
+
+		$itemOrders = soyshop_get_item_orders($order->getId());
+		if(!count($itemOrders)) return "";
 
 		$res = array();
-
-		$dao = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
-		try{
-			$itemOrders = $dao->getByOrderId($order->getId());
-		}catch(Exception $e){
-			return null;
-		}
 
 		$res[] = "";
 		$res[] = MessageManager::get("ITEM_OPTION");
@@ -29,15 +26,15 @@ class CommonItemOptionMail extends SOYShopOrderMail{
 				if(isset($obj)) $flag = true;
 			}
 
-			if($flag){
-				$res[] = $item->getOpenItemName() . ":";
-				foreach($attributes as $key => $value){
-					if(strlen($value) > 0){
-						$res[] = self::getOptionName($opts[$key]) . ":" . $value;
-					}
+			if(!$flag) continue;
+
+			$res[] = $item->getOpenItemName() . ":";
+			foreach($attributes as $key => $value){
+				if(strlen($value) > 0){
+					$res[] = self::getOptionName($opts[$key]) . ":" . $value;
 				}
-				$res[] = "";
 			}
+			$res[] = "";
 		}
 
 		$res[] = "";

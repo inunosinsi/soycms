@@ -6,46 +6,29 @@ class AdditionOptionMail extends SOYShopOrderMail{
 	 * @return string
 	 */
 	function getMailBody(SOYShop_Order $order){
+		$itemOrders = soyshop_get_item_orders($order->getId());
+		if(!count($itemOrders)) return "";
 
 		$res = array();
+		$res[] = "";
+		$res[] = "加算対象商品";
+		$res[] = "-----------------------------------------";
 
-		$dao = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
-		try{
-			$itemOrders = $dao->getByOrderId($order->getId());
-		}catch(Exception $e){
-			$itemOrders = array();
-		}
+		foreach($itemOrders as $item){
+			//加算対象商品だった場合
+			if($item->getIsAddition() != 1) continue;
 
-		if(count($itemOrders) > 0){
-			$res[] = "";
-			$res[] = "加算対象商品";
-			$res[] = "-----------------------------------------";
-			foreach($itemOrders as $item){
+			$res[] = $item->getItemName() . ":";
 
-				//加算フラグ
-				$isAddition = ($item->getIsAddition()==1)?true:false;
+			//加算項目と金額を取得
+			$name = soyshop_get_item_attribute_value((int)$item->getItemId(), "addition_option_name", "string");
+			$name = (strlen($name)) ? $name : "加算";
+			$price = soyshop_get_item_attribute_value((int)$item->getItemId(), "addition_option_price", "int");
+			$res[] = $name . "：" . $price  . "円" . "*" . $item->getItemCount() . "個";
 
-				//加算対象商品だった場合
-				if($isAddition){
-					$res[] = $item->getItemName() . ":";
-
-					//加算項目と金額を取得
-					$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-					try{
-						$array = $dao->getByItemId($item->getItemId());
-					}catch(Exception $e){
-						echo $e->getPDOExceptionMessage();
-					}
-
-					$name = (isset($array["addition_option_name"]))?$array["addition_option_name"]->getValue():"加算";
-					$price = (isset($array["addition_option_price"]))?$array["addition_option_price"]->getValue():0;
-					$res[] = $name . "：" . $price  . "円" . "*" . $item->getItemCount() . "個";
-
-					$res[] = "";
-				}
-			}
 			$res[] = "";
 		}
+		$res[] = "";
 		return implode("\n", $res);
 	}
 

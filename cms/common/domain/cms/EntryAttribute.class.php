@@ -58,12 +58,8 @@ class EntryAttribute {
 	}
 
 	public function getExtraValuesArray() {
-		$res = soy2_unserialize($this->extraValues);
-		if(is_array($res)){
-			return $res;
-		}else{
-			return array();
-		}
+		$res = soy2_unserialize((string)$this->extraValues);
+		return (is_array($res)) ? $res : array();
 	}
 	public function setExtraValuesArray($extraValues) {
 		if(is_array($extraValues)){
@@ -81,7 +77,7 @@ class EntryAttribute {
 	}
 
 	public function getCustomFieldObjectArray() {
-		$res = soy2_unserialize($this->customFieldObject);
+		$res = soy2_unserialize((string)$this->customFieldObject);
 		if($res instanceof CustomField){
 			return $res;
 		}else{

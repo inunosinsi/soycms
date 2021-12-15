@@ -18,7 +18,7 @@ abstract class SOYShopReserveCalendar_ScheduleDAO extends SOY2DAO{
      */
     abstract function getById($id);
 
-    function getScheduleList($itemId, $year, $month){
+    function getScheduleList(int $itemId, int $year, int $month){
 
         SOY2::import("domain.shop.SOYShop_Item");
         $now = time();
@@ -37,7 +37,7 @@ abstract class SOYShopReserveCalendar_ScheduleDAO extends SOY2DAO{
                 "AND item.is_disabled != " . SOYShop_Item::IS_DISABLED . " ";
         $binds = array(":y" => $year, ":m" => $month);
 
-        if(isset($itemId) && is_numeric($itemId)){
+        if($itemId > 0){
             $sql .= "AND sch.item_id = :itemId ";
             $binds[":itemId"] = $itemId;
         }

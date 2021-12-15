@@ -32,12 +32,10 @@ class RegisterPage extends WebPage{
 		/*
 		 * すでに利用されていれば不可
 		 */
-		try{
-			$dao->getByMailAddress($user->getMailAddress());
+		$oldUser = soyshop_get_user_object_by_mailaddress($user->getMailAddress());
+		if(is_numeric($oldUser->getId())) {
 			$this->errorType = "used_email";
 			return;
-		}catch(Exception $e){
-			//OK
 		}
 
 		try{
@@ -52,7 +50,6 @@ class RegisterPage extends WebPage{
 		 * 登録
 		 */
 		try{
-			$dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 			$userId = $dao->insert($user);
 		}catch(Exception $e){
 			$this->errorType = "failed";

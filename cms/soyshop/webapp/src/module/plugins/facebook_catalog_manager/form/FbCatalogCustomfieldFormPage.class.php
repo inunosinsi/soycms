@@ -16,12 +16,12 @@ class FbCatalogCustomfieldFormPage extends WebPage {
 		$this->addCheckBox("exhibition", array(
 			"name" => "FbCatalogManager[" . FbCatalogManagerUtil::FIELD_ID_EXHIBITATION . "]",
 			"value" => 1,
-			"selected" => (FbCatalogManagerUtil::get($this->itemId, FbCatalogManagerUtil::FIELD_ID_EXHIBITATION)->getValue() == 1),
+			"selected" => (soyshop_get_item_attribute_value($this->itemId, FbCatalogManagerUtil::FIELD_ID_EXHIBITATION, "int") === 1),
 			"label" => "出品する"
 		));
 
 		//カテゴリを読み込む
-		$values = self::_getTaxonomyFirstValues($this->itemId);
+		$values = self::_getTaxonomyFirstValues((int)$this->itemId);
 		$this->addSelect("taxonomy_first", array(
 			"name" => "FbCatalogManager[" . FbCatalogManagerUtil::FIELD_ID_TAXONOMY . "][first]",
 			"options" => $tanLogic->getTaxonomy(),
@@ -37,8 +37,7 @@ class FbCatalogCustomfieldFormPage extends WebPage {
 
 		$cnf = FbCatalogManagerUtil::getConfig();
 
-		$v = FbCatalogManagerUtil::get($this->itemId, FbCatalogManagerUtil::FIELD_ID_ITEM_INFO)->getValue();
-		$itemCnf = (strlen($v)) ? soy2_unserialize($v) : array();
+		$itemCnf = soy2_unserialize(soyshop_get_item_attribute_value($this->itemId, FbCatalogManagerUtil::FIELD_ID_ITEM_INFO, "string"));
 
 		//画像
 		$this->createAdd("fb_catalog_image","_common.Item.ImageSelectComponent", array(
@@ -81,9 +80,8 @@ class FbCatalogCustomfieldFormPage extends WebPage {
 	}
 
 	// array("first" => "", "second" => "", "third" => "", "fourth" => "")
-	private function _getTaxonomyFirstValues($itemId){
-		$value = FbCatalogManagerUtil::get($this->itemId, FbCatalogManagerUtil::FIELD_ID_TAXONOMY)->getValue();
-		return (strlen($value)) ? soy2_unserialize($value) : array();
+	private function _getTaxonomyFirstValues(int $itemId){
+		return soy2_unserialize(soyshop_get_item_attribute_value($itemId, FbCatalogManagerUtil::FIELD_ID_TAXONOMY, "string"));
 	}
 
 	private function _getShippingPrice($itemCnf, $cnf){

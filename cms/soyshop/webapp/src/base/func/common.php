@@ -350,6 +350,20 @@ function soyshop_trim($str){
 }
 
 /**
+ * 配列内の各値をtrimする
+ * @param array
+ * @return array
+ */
+function soyshop_trim_values_on_array(array $arr){
+	if(!count($arr)) return array();
+
+	foreach($arr as $idx => $v){
+		if(is_string($v)) $arr[$idx] = trim($v);
+	}
+	return $arr;
+}
+
+/**
  * カタカナの変換
  * @param string $str
  * @return string カナ変換後
@@ -662,64 +676,6 @@ function soyshop_get_zip_2_address_js_filepath(){
 		copy(SOYSHOP_WEBAPP. "/src/logic/init/theme/bryon/common/js/zip2address.js", $zipJsPath);
 	}
 	return "/" . SOYSHOP_ID . "/themes/common/js/zip2address.js";
-}
-
-//ダミーのメールアドレスを取得する
-function soyshop_dummy_mail_address(){
-    $userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
-
-    //ランダムなメールアドレスを取得する。一応重複チェックも行う
-    for(;;){
-        $mailAddress = soyshop_create_random_string(10) . "@" . DUMMY_MAIL_ADDRESS_DOMAIN;
-        try{
-            $user = $userDao->getByMailAddress($mailAddress);
-        }catch(Exception $e){
-            break;
-        }
-    }
-    return $mailAddress;
-}
-
-
-
-//ダミーの商品コードを取得する
-function soyshop_dummy_item_code(){
-	SOY2::import("domain.config.SOYShop_ShopConfig");
-	$config = SOYShop_ShopConfig::load();
-	if((int)$config->getInsertDummyItemCode() !== 1) return "";
-
-	$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-	$rule = $config->getDummyItemCodeRule();
-
-	for(;;){
-		if(is_null($rule) || !strlen($rule)){
-			$code = soyshop_create_random_string(8);
-		}else{
-			try{
-				$res = $itemDao->executeQuery("SELECT item_code FROM soyshop_item WHERE item_code LIKE :code ORDER BY item_code DESC LIMIT 1", array(":code" => $rule . "%"));
-			}catch(Exception $e){
-				$res = array();
-			}
-
-			if(isset($res[0]["item_code"])){
-				preg_match('/^' . $rule . '(.*)/', $res[0]["item_code"], $tmp);
-				$n = (int)$tmp[1] + 1;
-			}else{
-				$n = 1;
-			}
-
-			if(strlen($n) < 3) $n = "00" . $n;
-			$code = $rule . $n;
-		}
-
-		try{
-			$item = $itemDao->getByCode($code);
-		}catch(Exception $e){
-			break;
-		}
-	}
-
-	return $code;
 }
 
 function soyshop_create_random_string(int $n = 10, bool $isIncludeSymbol=false){

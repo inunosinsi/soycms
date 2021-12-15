@@ -111,7 +111,7 @@ class BlogPageDAO{
 
 		$list = array();
 		foreach($res as $v){
-			$cnf = soy2_unserialize($v["page_config"]);
+			$cnf = (is_string($v["page_config"])) ? soy2_unserialize($v["page_config"]) : array();
 			if(!property_exists($cnf, "blogLabelId")) continue;
 
 			if(!isset($list[$cnf->blogLabelId])) $list[$cnf->blogLabelId] = array();
@@ -135,7 +135,7 @@ class BlogPageDAO{
 
 		$list = array();
 		foreach($res as $v){
-			$cnf = soy2_unserialize($v["page_config"]);
+			$cnf = (is_string($v["page_config"])) ? soy2_unserialize($v["page_config"]) : array();
 			if(!property_exists($cnf, "blogLabelId")) continue;
 
 			if(!isset($list[$cnf->blogLabelId])) $list[$cnf->blogLabelId] = array();

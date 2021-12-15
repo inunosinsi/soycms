@@ -16,11 +16,7 @@ class RelativeItemUtil{
 	}
 
 	public static function getCodesByItemId(int $itemId){
-		$v = soyshop_get_item_attribute_value($itemId, self::FIELD_ID, "string");
-		if(!strlen($v)) return array();
-
-		$codes = soy2_unserialize($v);
-		return (is_array($codes)) ? $codes : array();
+		return soy2_unserialize(soyshop_get_item_attribute_value($itemId, self::FIELD_ID, "string"));
 	}
 
 	public static function save(int $itemId, array $arr){

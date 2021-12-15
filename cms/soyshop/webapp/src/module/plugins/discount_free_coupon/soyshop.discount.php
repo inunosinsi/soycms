@@ -66,7 +66,7 @@ class SOYShopDiscountFreeCouponModule extends SOYShopDiscount{
 
 			//ユーザIDが取得できなかった場合、念の為、ユーザテーブルからオブジェクトを取得
 			$userId = $cart->getAttribute("logined_userid");
-			if(is_null($userId)) $userId = self::_getUserIdByMailAddress($cart->getCustomerInformation()->getMailAddress());
+			if(is_null($userId)) $userId = (int)soyshop_get_user_object_by_mailaddress((string)$cart->getCustomerInformation()->getMailAddress())->getId();
 
 			$logic = SOY2Logic::createInstance("module.plugins.discount_free_coupon.logic.DiscountFreeCouponLogic");
 			if(!isset($param["coupon_codes"]) || !is_array($param["coupon_codes"]) || count($param["coupon_codes"]) === 0){
@@ -105,15 +105,6 @@ class SOYShopDiscountFreeCouponModule extends SOYShopDiscount{
 		}else{
 			//使用可能金額の範囲外ならこのモジュールは表示しない
 			return "";
-		}
-	}
-
-	private function _getUserIdByMailAddress(string $mailAddress){
-		//userIdを取得する
-		try{
-			return (int)SOY2DAOFactory::create("user.SOYShop_UserDAO")->getByMailAddress($mailAddress)->getId();
-		}catch(Exception $e){
-			return 0;
 		}
 	}
 

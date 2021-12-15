@@ -13,7 +13,7 @@ class CommonItemOptionExImportPage extends WebPage{
 			$value = trim($_POST["configure"]);
 			$value = base64_decode($value);
 
-			$opts = soy2_unserialize($value);
+			$opts = soy2_unserialize((string)$value);
 			if(!is_array($opts)) SOY2PageController::jump("Config.Detail?plugin=common_item_option&import&failed");
 
 			ItemOptionUtil::saveOptions($opts);

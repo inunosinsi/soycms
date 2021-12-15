@@ -29,15 +29,7 @@ class CommonCustomerCategoryVoiceBeforeOutput extends SOYShopSiteBeforeOutputAct
 		}
 		$category = $current;
 
-		$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO");
-		try{
-			$obj = $dao->get($category->getId(), "customer_category_voice_plugin");
-		}catch(Exception $e){
-			$obj = new SOYShop_CategoryAttribute();
-		}
-
-		$values = soy2_unserialize($obj->getValue());
-		if(!$values) $values = array();
+		$values = soy2_unserialize(soyshop_get_category_attribute_value($category->getId(), "customer_category_voice_plugin", "string"));
 
 		$page->addModel("is_category_voice_list", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,

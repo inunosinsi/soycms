@@ -52,7 +52,7 @@ class CustomfieldMigrationUtil {
 		}
 		if(!count($res) || is_null($res[0]["custom_field"])) return array();
 
-		$customfields = soy2_unserialize($res[0]["custom_field"]);
+		$customfields = soy2_unserialize((string)$res[0]["custom_field"]);
 		if(!count($customfields)) return array();
 
 		$values = array();

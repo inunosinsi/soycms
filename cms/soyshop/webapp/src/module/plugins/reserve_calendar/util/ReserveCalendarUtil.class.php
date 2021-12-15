@@ -65,7 +65,7 @@ class ReserveCalendarUtil{
 		SOYShop_DataSets::put("reserve_calendar.config", $values);
 	}
 
-	public static function getAutoConfig($itemId){
+	public static function getAutoConfig(int $itemId){
 		$v = SOYShop_DataSets::get("reserve_calendar.auto_" . $itemId, array(
 			"register" => 0,
 			"seat" => 0
@@ -74,14 +74,14 @@ class ReserveCalendarUtil{
 		return $v;
 	}
 
-	public static function saveAutoConfig($itemId, $values){
+	public static function saveAutoConfig(int $itemId, array $values){
 		SOYShop_DataSets::put("reserve_calendar.auto_" . $itemId, $values);
 	}
 
-	public static function getWeekConfig($itemId){
+	public static function getWeekConfig(int $itemId){
 		return SOYShop_DataSets::get("reserve_calendar.week_" . $itemId, array(0, 6));
 	}
-	public static function saveWeekConfig($itemId, $values){
+	public static function saveWeekConfig(int $itemId, array $values){
 		SOYShop_DataSets::put("reserve_calendar.week_" . $itemId, $values);
 	}
 
@@ -97,91 +97,85 @@ class ReserveCalendarUtil{
 
 	}
 
-	public static function checkIsDayOfWeekConfig($itemId){
+	public static function checkIsDayOfWeekConfig(int $itemId){
 		return (!is_null(SOYShop_DataSets::get("reserve_calendar.day_of_week_" . $itemId, null)));
 	}
 
-	public static function getDayOfWeekConfig($itemId){
-
+	public static function getDayOfWeekConfig(int $itemId){
 		$dow = SOYShop_DataSets::get("reserve_calendar.day_of_week_" . $itemId, array());
 		if(!count($dow)){
 			for($i = 1; $i < 6; $i++){
 				$dow[$i] = array();
 			}
 		}
-
 		return $dow;
 	}
 
-	public static function saveDayOfWeekConfig($itemId, $values){
+	public static function saveDayOfWeekConfig(int $itemId, array $values){
 		SOYShop_DataSets::put("reserve_calendar.day_of_week_" . $itemId, $values);
 	}
 
 	/**
 	 * 月日での設定
 	 */
-	public static function getMdConfig($itemId, $isText = false){
+	public static function getMdConfig(int $itemId, bool $isText=false){
 		$config = SOYShop_DataSets::get("reserve_calendar.md_" . $itemId, array());
 		if($isText) $config = implode("\n", $config);
 
 		return $config;
 	}
 
-	public static function saveMdConfig($itemId, $values){
+	public static function saveMdConfig(int $itemId, array $values){
 		SOYShop_DataSets::put("reserve_calendar.md_" . $itemId, $values);
 	}
 
 	/**
 	 * 年月日での設定
 	 */
-	public static function getYmdConfig($itemId, $isText = false){
+	public static function getYmdConfig(int $itemId, bool $isText=false){
 		$config = SOYShop_DataSets::get("reserve_calendar.ymd_" . $itemId, array());
 		if($isText)$config = implode("\n", $config);
-
 		return $config;
 	}
 
-	public static function saveYmdConfig($itemId, $values){
+	public static function saveYmdConfig(int $itemId, array $values){
 		SOYShop_DataSets::put("reserve_calendar.ymd_" . $itemId, $values);
 	}
 
 	/**
 	 * 営業日
 	 */
-	public static function getBDConfig($itemId, $isText = false){
+	public static function getBDConfig(int $itemId, bool $isText=false){
 		$config = SOYShop_DataSets::get("reserve_calendar.business_day_" . $itemId, array());
 		if($isText)$config = implode("\n", $config);
-
 		return $config;
 	}
 
-	public static function saveBDConfig($itemId, $values){
+	public static function saveBDConfig(int $itemId, array $values){
 		SOYShop_DataSets::put("reserve_calendar.business_day_" . $itemId, $values);
 	}
 
 	/**
 	 * その他の日
 	 */
-	public static function getOtherConfig($itemId, $isText = false){
+	public static function getOtherConfig(int $itemId, bool $isText=false){
 		$config = SOYShop_DataSets::get("reserve_calendar.other_day_" . $itemId, array());
 		if($isText)$config = implode("\n", $config);
 
 		return $config;
 	}
 
-	public static function saveOtherConfig($itemId, $values){
+	public static function saveOtherConfig(int $itemId, array $values){
 		SOYShop_DataSets::put("reserve_calendar.other_day_" . $itemId, $values);
 	}
 
 	/** 文字列から時間帯を取得してカレンダーにスケジュールを表示するか決める **/
-	public static function checkLabelString($label, $y, $m, $d){
+	public static function checkLabelString(string $label, int $y, int $m, int $d){
 		$now = time();
 		if(soyshop_convert_timestamp_on_array(array("year" => $y, "month" => $m, "day" => $d)) > $now) return true;	//明日以降は必ずtrue
 
 		$label = trim($label);
-		if($label == "午前"){
-			$label = "11:00";
-		}
+		if($label == "午前") $label = "11:00";
 
 		//半角に変換
 		$old = array("０", "１", "２", "３", "４", "５", "６", "７", "８", "９", "：", "ー");
@@ -222,10 +216,10 @@ class ReserveCalendarUtil{
 	}
 
 	//定員数が0でないか？
-	public static function checkIsUnsoldSeatByScheduleId($scheduleId){
+	public static function checkIsUnsoldSeatByScheduleId(int $scheduleId){
 		static $results;
 		if(is_null($results)) $results = array();
-		if(!is_numeric($scheduleId) || (int)$scheduleId < 1) return false;
+		if($scheduleId < 1) return false;
 
 		if(isset($results[$scheduleId])) return $results[$scheduleId];
 
@@ -251,11 +245,11 @@ class ReserveCalendarUtil{
 	}
 
 	/** セッション **/
-	public static function getSessionValue($key){
+	public static function getSessionValue(string $key){
 		return SOY2ActionSession::getUserSession()->getAttribute("reserve_calender_session_" . $key);
 	}
 
-	public static function saveSessionValue($key, $value){
+	public static function saveSessionValue(string $key, $value){
 		SOY2ActionSession::getUserSession()->setAttribute("reserve_calender_session_" . $key, $value);
 	}
 }

@@ -13,30 +13,28 @@ class UserLogic extends SOY2LogicBase{
     	if(isset($mailAddress)){
 			$userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 			$i = 0;
-			do{
-				try{
-					$deleteAddress = $mailAddress . "_delete_" . $i;
-					$userDao->getByMailAddress($deleteAddress);
-					$i++;
-				}catch(Exception $e){
-					$res = true;
-				}
-			}while(!$res);
+			for(;;){
+				$deleteAddress = $mailAddress . "_delete_" . $i;
+				$tmpUser = soyshop_get_user_object_by_mailaddress($deleteAddress);
+				if(!is_numeric($tmpUser->getId())) break;
+
+				$i++;
+			}
 
 			$accountId = $user->getAccountId();
 			$deleteAccountId = null;
 			if(!is_null($accountId)){
 				$i = 0;
 				$res = false;
-				do{
+				for(;;){
+					$deleteAccountId = $accountId . "_delete_" . $i;
 					try{
-						$deleteAccountId = $accountId . "_delete_" . $i;
 						$userDao->getByAccountId($deleteAccountId);
-						$i++;
 					}catch(Exception $e){
-						$res = true;
+						break;
 					}
-				}while(!$res);
+					$i++;
+				};
 			}
 
     		$user->setName("(削除)" . $user->getName());

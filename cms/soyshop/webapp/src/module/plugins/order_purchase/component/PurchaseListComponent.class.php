@@ -286,7 +286,7 @@ class PurchaseListComponent extends HTMLList{
 		if(count($itemOrders) === 0){
 			try{
 				//一件しか取得できないのがちらほらあるので、再度コンストラクトすることにした
-				$itemOrders = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO")->getByOrderId($orderId);
+				$itemOrders = soyshop_get_item_orders($orderId);
 			}catch(Exception $e){
 				$itemOrders = array();
 			}

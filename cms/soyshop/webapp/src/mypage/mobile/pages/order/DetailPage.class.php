@@ -1,57 +1,57 @@
-<?php 
+<?php
 class DetailPage extends MobileMyPagePageBase{
-	
+
 	function doPost(){
 
 	}
-	
+
 	private $id;
-	
+
 	function __construct($args){
 		parent::__construct();
-		
+
 		$mypage = MyPageLogic::getMyPage();
 		if(!$mypage->getIsLoggedin())$this->jump("login");//ログインチェック
-		
+
 		if(!isset($args[0]))$this->jump("order");
 		$this->id = $args[0];
-		
+
 		$this->addLink("return_link", array(
 			"link" => soyshop_get_mypage_url() . "/top"
 		));
-		
-		$this->buildOrder();		
+
+		$this->buildOrder();
 	}
-	
+
 	function buildOrder(){
-		
+
 		$orderDAO = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
 		$order = array();
 		try{
 			$order = $orderDAO->getForOrderDisplay($this->id,$this->getUserId());
 			$logic = SOY2Logic::createInstance("logic.order.OrderLogic");
-			
+
 			if(!$order->isOrderDisplay())throw new Exception;
-			
+
 		}catch(Exception $e){
 			$this->jump("order");
 		}
-		
+
 		//注文番号
 		$this->addLabel("order_number", array(
 			"text" => $order->getTrackingNumber()
 		));
-		
+
 		//注文日時
 		$this->addLabel("order_date", array(
 			"text" => date("Y年m月d日 H時i分s秒", $order->getOrderDate())
 		));
-		
+
 		//合計金額
 		$this->addLabel("order_price", array(
 			"text" => number_format($order->getPrice())
 		));
-		
+
 		//備考、支払方法、配送方法、配達時間
     	$this->createAdd("attribute_list","AttributeList", array(
     		"list" => $order->getAttributeList()
@@ -74,16 +74,16 @@ class DetailPage extends MobileMyPagePageBase{
     	$this->addLabel("order_memo", array(
     		"html" => nl2br(htmlspecialchars($customerHTML, ENT_QUOTES, "UTF-8"))
     	));
-		
+
 		//注文の内訳
     	$this->createAdd("item_list","OrderItemList", array(
-    		"list" => $logic->getItemsByOrderId($this->id)
+    		"list" => soyshop_get_item_orders($this->id)
     	));
-    	
+
     	$this->createAdd("module_list", "ModuleList", array(
     		"list" => $order->getModuleList()
     	));
-    	
+
     	//送料も含めたトータルの金額
     	$this->createAdd("order_total_price","HTMLLabel", array(
     		"text" => number_format($order->getPrice())
@@ -177,7 +177,7 @@ class ModuleList extends HTMLList {
 		$this->createAdd("module_name","HTMLLabel", array(
 			"text" => $item->getName()
 		));
-		
+
 		$this->createAdd("module_price","HTMLLabel", array(
 			"text" => number_format($item->getPrice())
 		));

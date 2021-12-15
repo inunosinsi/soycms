@@ -120,8 +120,7 @@ class CustomConfigFormPage extends WebPage{
             "html" => (count($this->fieldTable)) ? self::buildForm() : ""
         ));
 
-        $options = SOYShop_DataSets::get("item_option", null);
-        if(isset($options)) $this->options = soy2_unserialize($options);
+        $this->options = soy2_unserialize((string)SOYShop_DataSets::get("item_option", ""));
 
         DisplayPlugin::toggle("option", count($this->options));
         $this->addLabel("option", array(

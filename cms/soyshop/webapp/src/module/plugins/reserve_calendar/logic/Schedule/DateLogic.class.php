@@ -6,10 +6,10 @@ class DateLogic extends SOY2LogicBase {
 		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ScheduleSearchDAO");
 	}
 
-	function getSchedulePeriodByItemId($itemId){
+	function getSchedulePeriodByItemId(int $itemId){
 		static $list;
 		if(is_null($list)) $list = array();
-		if(is_null($itemId) || !is_numeric($itemId)) return array(null, null);
+		if($itemId === 0) return array(null, null);
 		if(isset($list[$itemId])) return $list[$itemId];
 
 		$start = null;

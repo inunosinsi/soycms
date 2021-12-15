@@ -49,8 +49,7 @@ class CommonItemOption extends SOYShopItemOptionBase{
 
 			//管理画面側では商品一覧のセッションの中にオプションが格納されている
 			if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE){
-				$attrs = $itemOrder->getAttributes();
-				$currentOptions = (isset($attrs)) ? soy2_unserialize($attrs) : array();
+				$currentOptions = soy2_unserialize((string)$itemOrder->getAttributes());
 				$currentOptions["itemId"] = $itemOrder->getItemId();
 			//公開側の場合はカートのセッション内にオプションが格納されている
 			}else{

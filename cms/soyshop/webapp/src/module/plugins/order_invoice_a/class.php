@@ -3,7 +3,7 @@ class Invoice_IndexPage extends HTMLTemplatePage{
 
 	protected $id;
 	protected $logic;
-	
+
 	function setOrderId($id){
 		$this->id = $id;
 	}
@@ -21,11 +21,11 @@ class Invoice_IndexPage extends HTMLTemplatePage{
 		$this->createAdd("order_date","HTMLLabel", array(
 			"text" => date('Y-m-d', $order->getOrderDate())
 		));
-		
+
 		$this->createAdd("create_date","HTMLLabel", array(
 			"text" => date('Y-m-d', time())
 		));
-		
+
 		$this->createAdd("subtotal_price","HTMLLabel", array(
 			"text" => number_format($this->logic->getTotalPrice($this->id))
 		));
@@ -83,14 +83,14 @@ class Invoice_IndexPage extends HTMLTemplatePage{
 		));
 
         /*** 顧客情報 ***/
-		
+
 		$claimedAddress = $order->getClaimedAddressArray();
-		
+
 		//注文者住所の郵便番号
 		$this->createAdd("zip_code","HTMLLabel", array(
 			"text" => $claimedAddress["zipCode"]
 		));
-		
+
 		//注文者住所の都道府県
 		$this->createAdd("area","HTMLLabel", array(
 			"text" => SOYShop_Area::getAreaText($claimedAddress["area"])
@@ -117,12 +117,12 @@ class Invoice_IndexPage extends HTMLTemplatePage{
 		));
 
 
-		
+
         /*** 注文商品 ***/
     	$this->createAdd("item_detail","Invoice_ItemList", array(
     		"list" => $this->getItems()
     	));
-    	
+
 		/*** ショップ情報 ***/
 		// shop_xx
 	   	$config = SOYShop_ShopConfig::load();
@@ -168,19 +168,18 @@ class Invoice_IndexPage extends HTMLTemplatePage{
     		"text" => $company["mailaddress"]
     	));
 
-    	
-    	
+
+
     }
-    
+
     protected function getOrder(){
-    	$order = $this->logic->getById($this->id);
-		return $order;    	
+    	return soyshop_get_order_object($this->id);
     }
-    
+
     protected function getItems(){
-    	return $this->logic->getItemsByOrderId($this->id);
+    	return soyshop_get_item_orders($this->id);
     }
-    
+
     protected function getCustomer($id){
         SOY2DAOFactory::importEntity("user.SOYShop_User");
         SOY2DAOFactory::importEntity("config.SOYShop_Area");
@@ -191,10 +190,10 @@ class Invoice_IndexPage extends HTMLTemplatePage{
 			$customer = new SOYShop_User();
 			$customer->setName("[deleted]");
 		}
-		
+
 		return $customer;
     }
-    
+
 }
 
 class Invoice_ItemList extends HTMLList {
@@ -204,7 +203,7 @@ class Invoice_ItemList extends HTMLList {
 	protected function populateItem($itemOrder) {
 
 
-		$item = $this->getItem($itemOrder->getItemId());
+		$item = soyshop_get_item_object($itemOrder->getItemId());
 
 
 		$this->createAdd("item_id","HTMLLink", array(
@@ -219,13 +218,13 @@ class Invoice_ItemList extends HTMLList {
 		$this->createAdd("item_name","HTMLLabel", array(
 			"text" => $itemOrder->getItemName()
 		));
-		
+
 		SOYShopPlugin::load("soyshop.item.option");
 		$delegate = SOYShopPlugin::invoke("soyshop.item.option", array(
 			"mode" => "display",
 			"item" => $itemOrder,
 		));
-		
+
 		$this->createAdd("item_option","HTMLLabel", array(
 			"text" => $delegate->getHtmls()
 		));

@@ -27,8 +27,10 @@ class ReserveCalendarCustomField extends SOYShopItemCustomFieldBase{
 	 * @param object htmlObj, object SOYShop_Item
 	 */
 	function onOutput($htmlObj, SOYShop_Item $item){
+		$itemId = (is_numeric($item->getId())) ? (int)$item->getId() : 0;
+
 		//最安値と最高値
-		list($low, $high) = self::logic()->getLowPriceAndHighPriceByItemId($item->getId());
+		list($low, $high) = self::logic()->getLowPriceAndHighPriceByItemId($itemId);
 
 		$htmlObj->addLabel("schedule_price_min", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
@@ -41,23 +43,17 @@ class ReserveCalendarCustomField extends SOYShopItemCustomFieldBase{
 		));
 
 		//スケジュールの日付の範囲
-		list($start, $end) = self::dateLogic()->getSchedulePeriodByItemId($item->getId());
+		list($start, $end) = self::dateLogic()->getSchedulePeriodByItemId($itemId);
 		$htmlObj->addLabel("schedule_date_start", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"text" => (isset($start) && is_numeric($start)) ? date("Y-m-d", $start) : ""
+			"text" => (is_numeric($start)) ? date("Y-m-d", $start) : ""
 		));
 
 		$htmlObj->addLabel("schedule_date_end", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"text" => (isset($end) && is_numeric($end)) ? date("Y-m-d", $end) : ""
+			"text" => (is_numeric($end)) ? date("Y-m-d", $end) : ""
 		));
 	}
-
-	/**
-	 * 管理画面側で商品情報を削除した時にオプション設定も一緒に削除する
-	 * @param integer id
-	 */
-	function onDelete($id){}
 
 	private function logic(){
 		static $logic;

@@ -24,7 +24,7 @@ class ItemPage extends WebPage{
 			//商品の差し替え
 			if(isset($_POST["Change"]) && strlen($_POST["Change"]["index"]) && strlen($_POST["Change"]["code"])){
 				if(isset($items[$_POST["Change"]["index"]])){
-					$itemObj = self::getItemByCode($_POST["Change"]["code"]);
+					$itemObj = soyshop_get_item_object_by_code($_POST["Change"]["code"]);
 					if(!is_null($itemObj->getId())){
 						//itemId, itemPrice, itemNameを入れ替える
 						$idx = $_POST["Change"]["index"];
@@ -152,21 +152,18 @@ class ItemPage extends WebPage{
 				 && isset($_POST["AddItemByCode"]["code"]) && isset($_POST["AddItemByCode"]["count"])
 				 && is_array($_POST["AddItemByCode"]["code"]) && is_array($_POST["AddItemByCode"]["count"])
 			){
-				$dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 				foreach($_POST["AddItemByCode"]["code"] as $key => $value){
 					$code = isset($_POST["AddItemByCode"]["code"][$key]) && strlen($_POST["AddItemByCode"]["code"][$key])
 					       ? trim($_POST["AddItemByCode"]["code"][$key]) : "" ;
 					$count = isset($_POST["AddItemByCode"]["count"][$key]) && strlen($_POST["AddItemByCode"]["count"][$key])
 					       ? trim($_POST["AddItemByCode"]["count"][$key]) : 1 ;
-					if(strlen($code)>0 && $count > 0){
-						try{
-							$item = $dao->getByCode($code);
-							$this->cart->addItem($item->getId(), $count);
-							$this->cart->setAttribute("add_mode_on_admin_order", 1);
-							$this->cart->save();
-						}catch(Exception $e){
-							continue;
-						}
+					if(strlen($code) > 0 && $count > 0){
+						$item = soyshop_get_item_object_by_code($code);
+						if(!is_numeric($item->getId())) continue;
+
+						$this->cart->addItem($item->getId(), $count);
+						$this->cart->setAttribute("add_mode_on_admin_order", 1);
+						$this->cart->save();
 					}
 				}
 			}
@@ -241,14 +238,6 @@ class ItemPage extends WebPage{
 		$this->addLabel("item_edit_add_func", array(
 			"html" => SOYShopPlugin::invoke("soyshop.order.edit", array("mode" => "order"))->getHTML()
 		));
-	}
-
-	private function getItemByCode($code){
-		try{
-			return SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getByCode($code);
-		}catch(Exception $e){
-			return new SOYShop_Item();
-		}
 	}
 
 	function getBreadcrumb(){

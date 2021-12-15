@@ -225,12 +225,12 @@ class ImportPage extends WebPage{
         if(isset($obj["id"]))unset($obj["id"]);
         $item = SOY2::cast("SOYShop_Item", (object)$obj);
 
-        try{
-            $item = $this->dao->getByCode($item->getCode());
-            SOY2::cast($item, (object)$obj);
-        }catch(Exception $e){
-            //
-        }
+		$tmp = soyshop_get_item_object_by_code((string)$item->getCode());
+		if(is_numeric($tmp->getId())){
+			$item = SOY2::cast($tmp, (object)$obj);
+		}
+		unset($tmp);
+
 
         if(isset($obj["orderPeriodStart"])) $item->setOrderPeriodStart(soyshop_convert_timestamp($obj["orderPeriodStart"], "start"));
         if(isset($obj["orderPeriodEnd"])) $item->setOrderPeriodEnd(soyshop_convert_timestamp($obj["orderPeriodEnd"], "end"));

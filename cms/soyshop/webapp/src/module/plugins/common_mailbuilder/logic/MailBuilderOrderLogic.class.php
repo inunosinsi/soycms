@@ -2,7 +2,7 @@
 
 class MailBuilderOrderLogic extends SOY2LogicBase{
 
-    function getItemsByOrderId($orderId) {
+    function getItemsByOrderId(int $orderId) {
     	SOY2::import("module.plugins.common_mailbuilder.common.CommonMailbuilderCommon");
     	$sortConfig = CommonMailbuilderCommon::getSortConfig();
 

@@ -212,14 +212,9 @@ class InvoiceListComponent extends HTMLList{
 	protected function getItemOrders($itemOrders, $orderId){
 		//ordersが空の時は再度取得する
 		if(count($itemOrders) === 0){
-			try{
-				//一件しか取得できないのがちらほらあるので、再度コンストラクトすることにした
-				$itemOrders = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO")->getByOrderId($orderId);
-			}catch(Exception $e){
-				$itemOrders = array();
-			}
+			//一件しか取得できないのがちらほらあるので、再度コンストラクトすることにした
+			$itemOrders = soyshop_get_item_orders($orderId);
 		}
-
 		return $itemOrders;
 	}
 

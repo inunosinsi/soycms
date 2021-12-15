@@ -86,7 +86,7 @@ class OutputLabeledEntriesUtil {
 		$hash = substr(md5($entryId . $postfix), 0, 3);
 		if(!isset($cnfs[$hash])){
 			$v = trim(self::_get($entryId, self::FIELD_ID . "_" . $postfix . "_config")->getValue());
-			$cnfs[$hash] = (strlen($v)) ? soy2_unserialize($v) : array();
+			$cnfs[$hash] = (is_string($v)) ? soy2_unserialize($v) : array();
 		}
 		return $cnfs[$hash];
 	}

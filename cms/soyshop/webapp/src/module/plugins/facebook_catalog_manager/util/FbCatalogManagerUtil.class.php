@@ -24,54 +24,27 @@ class FbCatalogManagerUtil {
 		SOYShop_DataSets::put("facebook_catalog_manager.config", $values);
 	}
 
-	public static function save($itemId, $fieldId, $value){
+	public static function save(int $itemId, string $fieldId, $value){
+		$attr = soyshop_get_item_attribute_object($itemId, $fieldId);
 		//削除
 		if(!strlen($value) || (is_array($value) && !count($value)) || (is_numeric($value) && (int)$value === 0)){
-			self::_delete($itemId, $fieldId);
+			$attr->setValue(null);
 		}else{
-			$dao = self::_attrDao();
-			$attr = self::_get($itemId, $fieldId);
 			if(is_array($value)) $value = soy2_serialize($value);
 			$attr->setValue($value);
-
-			try{
-				$dao->insert($attr);
-			}catch(Exception $e){
-				try{
-					$dao->update($attr);
-				}catch(Exception $e){
-					return false;
-				}
-			}
 		}
+		soyshop_save_item_attribute_object($attr);
 		return true;
 	}
 
-	public static function get($itemId, $fieldId){
-		return self::_get($itemId, $fieldId);
+	public static function get(int $itemId, string $fieldId){
+		return soyshop_get_item_attribute_object($itemId, $fieldId);
 	}
 
-	public static function delete($itemId, $fieldId){
-		self::_delete($itemId, $fieldId);
-	}
-
-	private static function _get($itemId, $fieldId){
-		try{
-			return self::_attrDao()->get($itemId, $fieldId);
-		}catch(Exception $e){
-			$attr = new SOYShop_ItemAttribute();
-			$attr->setItemId($itemId);
-			$attr->setFieldId($fieldId);
-			return $attr;
-		}
-	}
-
-	private static function _delete($itemId, $fieldId){
-		try{
-			self::_attrDao()->delete($itemId, $fieldId);
-		}catch(Exception $e){
-			//
-		}
+	public static function delete(int $itemId, string $fieldId){
+		$attr = soyshop_get_item_attribute_object($itemId, $fieldId);
+		$attr->setValue(null);
+		soyshop_save_item_attribute_object($attr);
 	}
 
 	public static function getExhibitionItemInfoList(){
@@ -89,7 +62,7 @@ class FbCatalogManagerUtil {
 
 		$infos = array();
 		foreach($res as $v){
-			$infos[(int)$v["item_id"]][$v["item_field_id"]] = (strlen($v["item_value"])) ? soy2_unserialize($v["item_value"]) : array();
+			$infos[(int)$v["item_id"]][$v["item_field_id"]] = soy2_unserialize((string)$v["item_value"]);
 		}
 
 		//値の設定がないものがないか？調べる

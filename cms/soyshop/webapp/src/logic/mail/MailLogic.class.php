@@ -188,11 +188,7 @@ class MailLogic extends SOY2LogicBase{
 
 		//マイページの方で、メールアドレスからユーザIDの取得を一度だけ試してみる
 		if(is_null($orderId) && is_null($userId)){
-			try{
-				$userId = SOY2DAOFactory::create("user.SOYShop_UserDAO")->getByMailAddress($mails[0])->getId();
-			}catch(Exception $e){
-				//
-			}
+			$userId = soyshop_get_user_object_by_mailaddress($mails[0])->getId();
 		}
 
 		if(count($mails) > 0){

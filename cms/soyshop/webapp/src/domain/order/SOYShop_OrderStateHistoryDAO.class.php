@@ -54,6 +54,7 @@ abstract class SOYShop_OrderStateHistoryDAO extends SOY2DAO{
 		static $i;
 		if(is_null($i)) $i = 0;
     	if(!isset($binds[":date"])) $binds[":date"] = time();
+		if(is_string($binds[":more"]) && !strlen($binds[":more"])) $binds[":more"] = null;
 		for(;;){
 			$i++;
 			try{

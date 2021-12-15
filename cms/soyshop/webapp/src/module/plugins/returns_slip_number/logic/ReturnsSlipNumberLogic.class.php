@@ -10,71 +10,68 @@ class ReturnsSlipNumberLogic extends SOY2LogicBase{
 	}
 
 	function getSlipNumberByOrderId(int $orderId){
-		try{
-			$slips = self::_dao()->getByOrderId($orderId);
-		}catch(Exception $e){
-			$slips = array();
-		}
-		if(!count($slips)) return "";
+		$slipNumbers = self::_getSlipNumberListByOrderId($orderId);
+		if(!count($slipNumbers)) return "";
+
 		$txt = "";
-		foreach($slips as $slip){
-			$txt .= $slip->getSlipNumber() . ",";
+		foreach($slipNumbers as $num){
+			$txt .= $num . ",";
 		}
 		return trim($txt, ",");
 	}
 
-	function save(int $orderId, string $value){
-		//既に登録されているもの
-		$oldList = self::_dao()->getRegisteredNumberListByOrderId($orderId);
-
-		//伝票番号の記録テーブルの記録する
-		$numbers = explode(",", $value);
-		foreach($numbers as $number){
-			$number = trim($number);
-			if(!strlen($number)) continue;
-
-			//登録がなければ登録する
-			if(!isset($oldList[$number])){
-				$obj = new SOYShop_ReturnsSlipNumber();
-				$obj->setSlipNumber($number);
-				$obj->setOrderId($orderId);
-				try{
-					self::_dao()->insert($obj);
-				}catch(Exception $e){
-					//
-				}
-			}else if(isset($oldList[$number])){
-				$oldList[$number] = 1;	//登録があればフラグを立てる
-			}
+	private function _getSlipNumberListByOrderId(int $orderId){
+		try{
+			$slips = self::_dao()->getByOrderId($orderId);
+		}catch(Exception $e){
+			return array();
 		}
 
-		//最後までフラグが立たなかったものはこの場で削除する
-		if(count($oldList)){
-			foreach($oldList as $number => $flag){
-				if($flag != 1){
-					try{
-						self::_dao()->deleteBySlipNumber($number);
-					}catch(Exception $e){
-						//var_dump($e);
-					}
-				}
+		if(!count($slips)) return array();
+
+		$list = array();
+		foreach($slips as $slip){
+			$list[] = $slip->getSlipNumber();
+		}
+		return $list;
+	}
+
+	function save(int $orderId, string $chain){
+		//既に登録されている伝票番号
+		$registeredSlipNumbers = self::_getSlipNumberListByOrderId($orderId);
+
+		//伝票番号の記録テーブルの記録する
+		$numbers = soyshop_trim_values_on_array(explode(",", $chain));
+
+		$removeDiff = array_diff($registeredSlipNumbers, $numbers);
+		$addDiff = array_diff($numbers, $registeredSlipNumbers);
+		if(count($removeDiff)){
+			foreach($removeDiff as $number){
+				self::remove($orderId, $number);
+			}
+		}
+		if(count($addDiff)){
+			foreach($addDiff as $number){
+				self::add($orderId, $number);
 			}
 		}
 	}
 
 	//新しい伝票番号を加える
 	function add(int $orderId, string $new){
-		$new = trim($new);
-		$slipNumberChain = self::getSlipNumberByOrderId($orderId);
-
-		//同じ文字列があった場合はスルーする
-		if(is_bool(strpos($slipNumberChain, $new))){
-			self::save($orderId, $slipNumberChain . "," . $new);
+		$dao = self::_dao();
+		$obj = new SOYShop_ReturnsSlipNumber();
+		$obj->setOrderId($orderId);
+		$obj->setSlipNumber(trim($new));
+		try{
+			$dao->insert($obj);
+		}catch(Exception $e){
+			//
 		}
 	}
 
 	function delete(int $orderId){
-		$slipNumbers = explode(",", self::getSlipNumberByOrderId($orderId));
+		$slipNumbers = self::_getSlipNumberListByOrderId($orderId);
 		if(!count($slipNumbers)) return;
 
 		foreach($slipNumbers as $slipNumber){
@@ -92,6 +89,15 @@ class ReturnsSlipNumberLogic extends SOY2LogicBase{
 		}
 	}
 
+	//一つだけ取り除く
+	function remove(int $orderId, string $number){
+		try{
+			self::_dao()->deleteBySlipNumberWithOrderId($number, $orderId);
+		}catch(Exception $e){
+			//
+		}
+	}
+
 	function convert(string $str){
 		return self::_convert($str);
 	}
@@ -104,7 +110,7 @@ class ReturnsSlipNumberLogic extends SOY2LogicBase{
 		return trim($str);
 	}
 
-	function changeStatus($slipId, $mode=self::MODE_RETURN){
+	function changeStatus(int $slipId, string $mode=self::MODE_RETURN){
 		$slipNumber = self::getSlipNumberById($slipId);
 		if($mode == self::MODE_RETURN){
 			$slipNumber->setIsReturn(SOYShop_ReturnsSlipNumber::IS_RETURN);
@@ -134,7 +140,7 @@ class ReturnsSlipNumberLogic extends SOY2LogicBase{
 		return true;
 	}
 
-	private function getSlipNumberById($slipId){
+	private function getSlipNumberById(int $slipId){
 		try{
 			return self::_dao()->getById($slipId);
 		}catch(Exception $e){

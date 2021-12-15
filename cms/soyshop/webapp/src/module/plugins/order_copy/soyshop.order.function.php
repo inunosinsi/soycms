@@ -17,9 +17,9 @@ class OrderCopyFunction extends SOYShopOrderFunction{
 	 * @return html
 	 */
 	function getPage(){
-		$orderId = $this->getOrderId();
-		$order = self::getOrderById($orderId);
-		if(is_null($order->getId())) return;	//@ToDo エラー
+		$oldOrderId = $this->getOrderId();
+		$order = soyshop_get_order_object($this->getOrderId());
+		if(!is_numeric($order->getId())) return "";	//@ToDo エラー
 		$order->setId(null);
 		$order->setOrderDate(time());
 
@@ -33,11 +33,8 @@ class OrderCopyFunction extends SOYShopOrderFunction{
 			return;	//エラー
 		}
 
-		try{
-			$itemOrders = self::itemOrderDao()->getByOrderId($orderId);
-		}catch(Exception $e){
-			return;	//エラー
-		}
+		$itemOrders = soyshop_get_item_orders($oldOrderId);
+		if(!count($itemOrders)) return "";
 
 		SOYShopPlugin::load("soyshop.item.order");
 		foreach($itemOrders as $itemOrder){
@@ -56,14 +53,6 @@ class OrderCopyFunction extends SOYShopOrderFunction{
 		}
 
 		SOY2PageController::jump("Order.Detail." . $newOrderId . "?copy");
-	}
-
-	private function getOrderById($orderId){
-		try{
-			return self::orderDao()->getById($orderId);
-		}catch(Exception $e){
-			return new SOYShop_Order();
-		}
 	}
 
 	private function orderDao(){

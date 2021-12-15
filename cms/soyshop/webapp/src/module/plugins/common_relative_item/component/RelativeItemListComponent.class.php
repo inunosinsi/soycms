@@ -15,21 +15,12 @@ class RelativeItemListComponent extends HTMLList{
 		));
 
 		$this->addLabel("item_name", array(
-			"text" => (isset($entity) && strlen($entity)) ? self::_getItemName($entity) : ""
+			"text" => (isset($entity) && is_string($entity)) ? self::_getItemName($entity) : ""
 		));
 	}
 
 	private function _getItemName(string $code){
-		try{
-			return self::_dao()->getByCode($code)->getName();
-		}catch(Exception $e){
-			return "該当の商品が見付かりません";
-		}
-	}
-
-	private function _dao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-		return $dao;
+		$item = soyshop_get_item_object_by_code($code);
+		return (is_numeric($item->getId())) ? $item->getName() : "該当の商品が見付かりません";
 	}
 }

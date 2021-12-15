@@ -78,7 +78,7 @@ class AppRole{
 
 	/* serialize */
 	function getUnserializeConfig() {
-		return soy2_unserialize($this->appRoleConfig);
+		return soy2_unserialize((string)$this->appRoleConfig);
 	}
 	function setSerializeConfig($appRoleConfig) {
 		$this->appRoleConfig = soy2_serialize($appRoleConfig);

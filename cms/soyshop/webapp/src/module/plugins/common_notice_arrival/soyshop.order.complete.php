@@ -5,7 +5,7 @@ class CommonNoticeArrivalOrderComplete extends SOYShopOrderComplete{
 		$noticeLogic = SOY2Logic::createInstance("module.plugins.common_notice_arrival.logic.NoticeLogic");
 		SOY2::import("module.plugins.common_notice_arrival.domain.SOYShop_NoticeArrival");
 
-		$itemOrders = SOY2Logic::createInstance("logic.order.OrderLogic")->getItemsByOrderId($order->getId());
+		$itemOrders = soyshop_get_item_orders($order->getId());
 		foreach($itemOrders as $itemOrder){
 			$noticeItem = $noticeLogic->getNoticeItem((int)$itemOrder->getItemId(), (int)$order->getUserId(), SOYShop_NoticeArrival::SENDED, SOYShop_NoticeArrival::NOT_CHECKED);
 

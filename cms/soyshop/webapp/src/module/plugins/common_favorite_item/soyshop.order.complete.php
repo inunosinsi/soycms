@@ -2,18 +2,16 @@
 class CommonFavoriteItemOrderComplete extends SOYShopOrderComplete{
 
 	function execute(SOYShop_Order $order){
+		$itemOrders = soyshop_get_item_orders($order->getId());
+		if(!count($itemOrders)) return;
+
 		$favLogic = SOY2Logic::createInstance("module.plugins.common_favorite_item.logic.FavoriteLogic");
+		foreach($itemOrders as $itemOrder){
+			$favId = $favLogic->getFavoriteItem((int)$itemOrder->getItemId(), $order->getUserId())->getId();
+			if(!is_numeric($favId)) continue;
 
-		$itemOrders = SOY2Logic::createInstance("logic.order.OrderLogic")->getItemsByOrderId($order->getId());
-		if(count($itemOrders)){
-			foreach($itemOrders as $itemOrder){
-				$favId = $favLogic->getFavoriteItem((int)$itemOrder->getItemId(), $order->getUserId())->getId();
-
-				//IDがあった場合は処理を続ける
-				if(is_numeric($favId)){
-					$favLogic->update((int)$itemOrder->getItemId(), $order->getUserId());
-				}
-			}
+			//IDがあった場合は処理を続ける
+			$favLogic->update((int)$itemOrder->getItemId(), $order->getUserId());
 		}
 	}
 }

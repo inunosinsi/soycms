@@ -1,8 +1,5 @@
 <?php
-/*
- * soyshop.site.beforeoutput.php
- * Created: 2010/03/11
- */
+
 class TwitterProductCardsBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
 	function beforeOutput($page){
@@ -24,9 +21,8 @@ class TwitterProductCardsBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		include_once(dirname(__FILE__) . "/common.php");
 		$config = TwitterProductCardsCommon::getConfig();
 
-		list($label, $value) = $this->getFieldValues($item);
-		$smallImagePath = $item->getAttribute("image_small");
-		$thumbnailPath = (is_string($smallImagePath)) ? soyshop_get_image_full_path($smallImagePath) : "";
+		list($label, $value) = self::_getFieldValues($item);
+		$thumbnailPath = soyshop_get_image_full_path((string)$item->getAttribute("image_small"));
 
 		$html = array();
 		$html[] = "<meta name=\"twitter:card\" content=\"product\">";
@@ -35,7 +31,7 @@ class TwitterProductCardsBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		$html[] = "<meta name=\"twitter:site\" content=\"@" . $config["site"] . "\">";
 		$html[] = "<meta name=\"twitter:creator\" content=\"@" . $config["creater"] . "\">";
 		$html[] = "<meta name=\"twitter:title\" content=\"" . $item->getName() . "\">";
-		$html[] = "<meta name=\"twitter:description\" content=\"" . $item->getAttribute("description") . "\">";
+		$html[] = "<meta name=\"twitter:description\" content=\"" . (string)$item->getAttribute("description") . "\">";
 		$html[] = "<meta name=\"twitter:image\" content=\"" . $thumbnailPath . "\">";
 		$html[] = "<meta name=\"twitter:data1\" content=\"" . $item->getSellingPrice() . "円\">";
 		$html[] = "<meta name=\"twitter:label1\" content=\"Price\">";
@@ -50,13 +46,8 @@ class TwitterProductCardsBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		return implode("\n", $html);
 	}
 
-	function getFieldValues(SOYShop_Item $item){
-		try{
-			$v = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO")->get($item->getId(), "twitter_product_cards")->getValue();
-		}catch(Exception $e){
-			return array("", "");
-		}
-		$values = (is_string($v) && strlen($v)) ? soy2_unserialize($v) : array();
+	private function _getFieldValues(SOYShop_Item $item){
+		$values = soy2_unserialize(soyshop_get_item_attribute_value($item->getId(), "twitter_product_cards", "string"));
 		$label = (isset($values["label"])) ? $values["label"] : "";
 		$value = (isset($values["value"])) ? $values["value"] : "";
 

@@ -835,8 +835,8 @@ class BackwardUserComponent {
 
 		//メールアドレスの重複チェック
 		$dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
-		try{
-			$oldUser = $dao->getByMailAddress($user->getMailAddress());
+		$oldUser = soyshop_get_user_object_by_mailaddress((string)$user->getMailAddress());
+		if(is_numeric($oldUser->getId())){	//指定のメールアドレスは既に登録されている
 			$tmpUser = SOYShop_DataSets::get("config.mypage.tmp_user_register", 1);
 
 			//仮登録ユーザだった場合は上書き
@@ -852,9 +852,6 @@ class BackwardUserComponent {
 				$mypage->addErrorMessage("mail_address", MessageManager::get("MAIL_ADDRESS_REGISTERED_ALREADY"));
 				$res = false;
 			}
-
-		}catch(Exception $e){
-
 		}
 
 		$mypage->save();
@@ -927,13 +924,10 @@ class BackwardUserComponent {
 
 		//すでに登録されているアドレスと入力したアドレスが異なる場合は重複チェックを開始する
 		if($oldAddress != $newAddress){
-			$userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
-			try{
-				$duplication = $userDao->getByMailAddress($newAddress);
+			$oldUser = soyshop_get_user_object_by_mailaddress($newAddress);
+			if(is_numeric($oldUser->getId())){
 				$mypage->addErrorMessage("mail_address", MessageManager::get("MAIL_ADDRESS_REGISTERED_ALREADY"));
 				$res = false;
-			}catch(Exception $e){
-				//問題なし
 			}
 		}
 
@@ -955,7 +949,6 @@ class BackwardUserComponent {
 		}
 
 		return $res;
-
 	}
 
 	/**

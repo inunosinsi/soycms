@@ -184,11 +184,11 @@ class ImportPage extends WebPage{
 	 * @param Array $properties
 	 * @return SOYShop_User
 	 */
-	function import($obj){
+	function import(array $obj){
 		if(isset($obj["id"])) unset($obj["id"]);
 		//既に登録されている顧客か調べる
 		try{
-			$user = $this->dao->getByMailAddress(trim($obj["mailAddress"]));
+			$user = soyshop_get_user_object_by_mailaddress(trim($obj["mailAddress"]));
 			if((int)$user->getId() > 0) $obj["id"] = (int)$user->getId();
 		}catch(Exception $e){
 
@@ -257,10 +257,10 @@ class ImportPage extends WebPage{
 	 * @param SOYShop_User $user
 	 * @param Array $attributes
 	 */
-	function delete(SOYShop_User $user, $attributes = array()){
+	function delete(SOYShop_User $user, array $attributes=array()){
 
 		try{
-			$user = $this->dao->getByMailAddress($user->getMailAddress());
+			$user = soyshop_get_user_object_by_mailaddress($user->getMailAddress());
 			$this->dao->delete($user);
 
 			//ユーザーカスタムフィールドも削除する
@@ -270,7 +270,7 @@ class ImportPage extends WebPage{
 		}
 	}
 
-    function getCustomFieldList($flag = false){
+    function getCustomFieldList(bool $flag=false){
 		$dao = SOY2DAOFactory::create("user.SOYShop_UserAttributeDAO");
 		$config = SOYShop_UserAttributeConfig::load($flag);
 		return $config;

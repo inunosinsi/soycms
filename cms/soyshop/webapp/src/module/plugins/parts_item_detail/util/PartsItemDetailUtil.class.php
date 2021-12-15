@@ -5,7 +5,7 @@ class PartsItemDetailUtil {
 	const FIELD_ID = "breadcrumb_change";
 	const PARENT_FIELD_ID = "breadcrumb_change_parent";
 
-	public static function getItemByAlias($alias){
+	public static function getItemByAlias(string $alias){
 		static $item;
 		if(isset($item)) return $item;
 
@@ -55,42 +55,12 @@ class PartsItemDetailUtil {
 		return $item;
 	}
 
-	public static function getAttr($itemId, $fieldId){
-
-		try{
-			$attr = self::_dao()->get($itemId, $fieldId);
-		}catch(Exception $e){
-			$attr = new SOYShop_ItemAttribute();
-			$attr->setItemId($itemId);
-			$attr->setFieldId($fieldId);
-		}
-		return $attr;
+	public static function getAttr(int $itemId, string $fieldId){
+		return soyshop_get_item_attribute_object($itemId, $fieldId);
 	}
 
 	public static function saveAttr(SOYShop_ItemAttribute $attr, $fieldId){
-		if(is_numeric($attr->getValue()) && $attr->getValue() > 0){
-			try{
-				self::_dao()->insert($attr);
-			}catch(Exception $e){
-				try{
-					self::_dao()->update($attr);
-				}catch(Exception $e){
-					//
-				}
-			}
-		}else{
-			try{
-				self::_dao()->delete($attr->getItemId(), $fieldId);
-			}catch(Exception $e){
-
-			}
-		}
-	}
-
-	private static function _dao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		return $dao;
+		soyshop_save_item_attribute_object($attr);
 	}
 
 	private static function _getNoExistItem($name="商品が存在していません"){

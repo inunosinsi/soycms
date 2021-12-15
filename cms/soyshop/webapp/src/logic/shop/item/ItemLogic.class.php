@@ -4,38 +4,34 @@ class ItemLogic extends SOY2LogicBase{
 
 	private $errors = array();
 
-    function validate(SOYShop_Item $obj){
+    function validate(SOYShop_Item $item){
 
 		$dao = self::getItemDAO();
 		$errors = array();
 
-		if(strlen($obj->getName()) < 1){
+		if(strlen($item->getName()) < 1){
 			$errors["name"] = MessageManager::get("ERROR_REQUIRE");
 		}
 
-		if(strlen($obj->getCode()) < 1){
+		if(strlen($item->getCode()) < 1){
 			$errors["code"] = MessageManager::get("ERROR_REQUIRE");
 		}else{
 			//重複チェック
-			try{
-				$tmp = $dao->getByCode($obj->getCode());
-				if($tmp->getId() !== $obj->getId()){
-					$errors["code"] = MessageManager::get("ERROR_DUPLICATED");
-				}
-			}catch(Exception $e){
-				//ok
+			$tmp = soyshop_get_item_object_by_code($item->getCode());
+			if(is_numeric($tmp->getId()) && $tmp->getId() !== $item->getId()){
+				$errors["code"] = MessageManager::get("ERROR_DUPLICATED");
 			}
 		}
 
-		if(strlen($obj->getAlias()) > 0){
+		if(strlen($item->getAlias()) > 0){
 
 			//重複チェック
-			$tmp = $dao->checkAlias($obj->getAlias());
+			$tmp = $dao->checkAlias($item->getAlias());
 
 			if(count($tmp) > 0){
 				if(count($tmp) > 1){
 					$errors["alias"] = MessageManager::get("ERROR_DUPLICATED");
-				}else if($tmp[0]->getId() !== $obj->getId()){
+				}else if($tmp[0]->getId() !== $item->getId()){
 					$errors["alias"] = MessageManager::get("ERROR_DUPLICATED");
 				}
 			}
@@ -46,30 +42,23 @@ class ItemLogic extends SOY2LogicBase{
 		return (empty($errors));
     }
 
-    function update(SOYShop_Item $obj, $alias = null){
-		$dao = self::getItemDAO();
-
+    function update(SOYShop_Item $item, string $alias=""){
 		//設定しない限りaliasはそのまま
-		$obj->setAlias($alias);
+		if(!strlen($alias)) $alias = null;
+		$item->setAlias($alias);
 
 		try{
-			$dao->update($obj);
+			self::getItemDAO()->update($item);
 		}catch(Exception $e){
 			var_dump($e);
 		}
 
     }
 
-    function setAttribute($id, $key, $value){
-    	$dao = $this->getItemAttributeDAO();
-    	$dao->delete($id,$key);
-
-    	$obj = new SOYShop_ItemAttribute();
-		$obj->setItemId($id);
-		$obj->setFieldId($key);
-		$obj->setValue($value);
-
-		$dao->insert($obj);
+    function setAttribute(int $itemId, string $fieldId, $value=null){
+		$attr = soyshop_get_item_attribute_object($itemId, $fieldId);
+    	$attr->setValue($value);
+		soyshop_save_item_attribute_object($attr);
     }
 
     function delete($ids){
@@ -88,31 +77,29 @@ class ItemLogic extends SOY2LogicBase{
 				SOYShop_DataSets::put("item.recommend_items", $recommend);
 			}
 
-			try{
-				$item = $dao->getById($id);
-			}catch(Exception $e){
-				continue;
-			}
+			$item = soyshop_get_item_object($id);
+			if(!is_numeric($item->getId())) continue;
 
 			//削除用のデータを作成
-			$itemCode = $item->getCode();
-			for($i=0; $i<=100; $i++){
-    			try{
-    				$checkItemCode = $dao->getByCode($itemCode . "_delete_" . $i);
-    			}catch(Exception $e){
-    				$deleteItemCode = $itemCode . "_delete_" . $i;
-    				break;
-    			}
+			$deleteItemCode = null;
+			$i = 0;
+			for(;;){
+				$deleteItemCode = $item->getCode() . "_delete_" . $i;
+				$tmp = soyshop_get_item_object_by_code($deleteItemCode);
+				if(!is_numeric($tmp->getId())) break;
+    			$i++;
     		}
 
-    		$itemAlias = $item->getAlias();
-			for($j = 0; $j <= 100; $j++){
+			$deleteItemAlias = null;
+    		$i = 0;
+			for(;;){
+				$deleteItemAlias = $item->getAlias() . "_delete_" . $i;
     			try{
-    				$checkItemAlias = $dao->getByAlias($itemAlias . "_delete_" . $i);
+    				$_dust = $dao->getByAlias($deleteItemAlias);
     			}catch(Exception $e){
-    				$deleteItemAlias = $itemAlias . "_delete_" . $i;
     				break;
     			}
+				$i++;
     		}
 
 			$itemName = $item->getName();
@@ -130,17 +117,17 @@ class ItemLogic extends SOY2LogicBase{
     	$dao->commit();
     }
 
-    function create(SOYShop_Item $obj){
+    function create(SOYShop_Item $item){
 		$dao = self::getItemDAO();
 
 		//一番IDの小さい詳細ページを紐付ける
 		$detailPageId = SOY2Logic::createInstance("logic.site.page.PageLogic")->getOldestDetailPageId();
-		if(is_numeric($detailPageId)) $obj->setDetailPageId($detailPageId);
+		if(is_numeric($detailPageId)) $item->setDetailPageId($detailPageId);
 
-		$obj->setAttribute("image_small", soyshop_get_item_sample_image());
-		$obj->setAttribute("image_large", soyshop_get_item_sample_image());
+		$item->setAttribute("image_small", soyshop_get_item_sample_image());
+		$item->setAttribute("image_large", soyshop_get_item_sample_image());
 
-		return $dao->insert($obj);
+		return $dao->insert($item);
     }
 
     function getErrors() {
@@ -167,12 +154,6 @@ class ItemLogic extends SOY2LogicBase{
     	$dao->commit();
     }
 
-    function getItemAttributeDAO(){
-    	static $dao;
-    	if(!$dao) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-    	return $dao;
-    }
-
     private function getItemDAO(){
     	static $dao;
     	if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
@@ -189,11 +170,11 @@ class ItemLogic extends SOY2LogicBase{
     	}
 
     	foreach($categories as $categoryId){
-    		$obj = new SOYShop_Categories();
-    		$obj->setItemId($itemId);
-    		$obj->setCategoryId($categoryId);
+    		$item = new SOYShop_Categories();
+    		$item->setItemId($itemId);
+    		$item->setCategoryId($categoryId);
     		try{
-    			$dao->insert($obj);
+    			$dao->insert($item);
     		}catch(Exception $e){
     			//
     		}
@@ -206,13 +187,13 @@ class ItemLogic extends SOY2LogicBase{
 
     	for($i = 0; $i < $count; $i++){
     		$code = self::createDummyCode();
-    		$obj = new SOYShop_Item();
-    		$obj->setName("ダミー" . $code);
-    		$obj->setCode("dummy-" . $code);
-			$obj->setStock(100);
-			$obj->setPrice(100);
+    		$item = new SOYShop_Item();
+    		$item->setName("ダミー" . $code);
+    		$item->setCode("dummy-" . $code);
+			$item->setStock(100);
+			$item->setPrice(100);
 			try{
-				$dao->insert($obj);
+				$dao->insert($item);
 			}catch(Exception $e){
 				//
 			}
@@ -223,14 +204,11 @@ class ItemLogic extends SOY2LogicBase{
     const RAND_MAX = 99999;
 
     private function createDummyCode(){
-    	$dao = self::getItemDAO();
-
     	//被らない値を取得するまで何度も取得する
     	for(;;){
     		$code = mt_rand(self::RAND_MIN, self::RAND_MAX);
     		try{
-	    		$item = $dao->getByCode("dummy-" . $code);
-	    		if(is_null($item->getId())) return $code;
+	    		if(is_null(soyshop_get_item_object_by_code("dummy-" . $code)->getId())) return $code;
 	    	}catch(Exception $e){
 	    		return $code;
 	    	}

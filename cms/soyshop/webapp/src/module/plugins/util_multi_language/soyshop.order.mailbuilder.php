@@ -21,8 +21,7 @@ class UtilMultiLanguageMailBuilder extends SOYShopOrderMailBuilder{
 	 * 注文情報を作る
 	 */
 	private function buildOrderMailBody(SOYShop_Order $order, SOYShop_User $user){
-		$logic = SOY2Logic::createInstance("logic.order.OrderLogic");
-		$orderItems = $logic->getItemsByOrderId($order->getId());
+		$itemOrders = soyshop_get_item_orders($order->getId());
 
 		$mail = array();
 
@@ -33,7 +32,7 @@ class UtilMultiLanguageMailBuilder extends SOYShopOrderMailBuilder{
 
 		//注文商品
 		$mail[] = "";
-		$mail = array_merge($mail, self::buildOrderInfo($order, $orderItems));
+		$mail = array_merge($mail, self::buildOrderInfo($order, $itemOrders));
 
 		//配送先、備考
 		$mail[] = "";
@@ -51,7 +50,7 @@ class UtilMultiLanguageMailBuilder extends SOYShopOrderMailBuilder{
 	 * 注文内容
 	 * @return Array
 	 */
-	private function buildOrderInfo($order, $orderItems){
+	private function buildOrderInfo(SOYShop_Order $order, array $itemOrders){
 
 		$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 
@@ -61,8 +60,8 @@ class UtilMultiLanguageMailBuilder extends SOYShopOrderMailBuilder{
 		$itemPrice = 0;
 
 		$itemColumnSize = 0;
-		foreach($orderItems as $orderItem){
-			$itemColumnSize = max($itemColumnSize,mb_strwidth($orderItem->getItemName()));
+		foreach($itemOrders as $itemOrder){
+			$itemColumnSize = max($itemColumnSize,mb_strwidth($itemOrder->getItemName()));
 		}
 		$itemColumnSize += "5";
 
@@ -74,21 +73,21 @@ class UtilMultiLanguageMailBuilder extends SOYShopOrderMailBuilder{
 
 		$mail[] = str_repeat("-", $itemColumnSize + 30);
 
-		foreach($orderItems as $orderItem){
+		foreach($itemOrders as $itemOrder){
 			try{
-				$item = $itemDAO->getById($orderItem->getItemId());
+				$item = $itemDAO->getById($itemOrder->getItemId());
 			}catch(Exception $e){
 				$item = new SOYShop_Item();
-				$item->setName($orderItem->getItemName());
+				$item->setName($itemOrder->getItemName());
 				$item->setCode("-");
 			}
 
 			$str  = $this->printColumn($item->getOpenItemName(), "left", $itemColumnSize);
 			$str .= $this->printColumn($item->getCode(), "left");
-			$str .= $this->printColumn(number_format($orderItem->getItemCount()) . " " . UtilMultiLanguageUtil::translate("pcs"));
-			$str .= $this->printColumn(number_format($orderItem->getItemPrice() * $orderItem->getItemCount()) . " " . UtilMultiLanguageUtil::translate("yen"));
+			$str .= $this->printColumn(number_format($itemOrder->getItemCount()) . " " . UtilMultiLanguageUtil::translate("pcs"));
+			$str .= $this->printColumn(number_format($itemOrder->getItemPrice() * $itemOrder->getItemCount()) . " " . UtilMultiLanguageUtil::translate("yen"));
 
-			$itemPrice += $orderItem->getTotalPrice();
+			$itemPrice += $itemOrder->getTotalPrice();
 
 			$mail[] = $str;
 		}
@@ -119,7 +118,7 @@ class UtilMultiLanguageMailBuilder extends SOYShopOrderMailBuilder{
 	 * お届け先情報
 	 * @return Array
 	 */
-	private function buildDeliveryInfo($order){
+	private function buildDeliveryInfo(SOYShop_Order $order){
 		$mail = array();
 
 		$address = $order->getAddressArray();
@@ -147,7 +146,7 @@ class UtilMultiLanguageMailBuilder extends SOYShopOrderMailBuilder{
 	 * @param user
 	 * @return string
 	 */
-	private function buildUserInfoMailBody($order,$user){
+	private function buildUserInfoMailBody(SOYShop_Order $order, SOYShop_User $user){
 
 		$mail = array();
 
@@ -171,7 +170,7 @@ class UtilMultiLanguageMailBuilder extends SOYShopOrderMailBuilder{
 	 * 備考
 	 * @return Array
 	 */
-	private function buildMemo($order){
+	private function buildMemo(SOYShop_Order $order){
 		$mail = array();
 
 		$attr = $order->getAttributeList();
@@ -188,7 +187,7 @@ class UtilMultiLanguageMailBuilder extends SOYShopOrderMailBuilder{
 		return $mail;
 	}
 
-	function printColumn($str, $pos = "right", $width = 10){
+	function printColumn(string $str, string $pos="right", int $width=10){
 
 		$strWidth = mb_strwidth($str);
 

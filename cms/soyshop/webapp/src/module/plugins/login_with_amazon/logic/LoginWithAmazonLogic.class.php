@@ -6,7 +6,7 @@ class LoginWithAmazonLogic extends SOY2LogicBase {
 		SOY2::import("module.plugins.login_with_amazon.util.LoginWithAmazonUtil");
 	}
 
-	function access($token){
+	function access(string $token){
 		$c = curl_init('https://api.amazon.com/auth/o2/tokeninfo?access_token=' . urlencode($token));
 		curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
 
@@ -22,7 +22,7 @@ class LoginWithAmazonLogic extends SOY2LogicBase {
 		return $d;
 	}
 
-	function getProfile($token){
+	function getProfile(string $token){
 		// アクセストークンをユーザープロファイルと交換する
 		$c = curl_init('https://api.amazon.com/user/profile');
 		curl_setopt($c, CURLOPT_HTTPHEADER, array('Authorization: bearer ' . $token));
@@ -34,13 +34,9 @@ class LoginWithAmazonLogic extends SOY2LogicBase {
 	}
 
 	/** ログイン周り **/
-	function register($amazonId, $name, $mailAddress){
+	function register(string $amazonId, string $name, string $mailAddress){
 		$dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
-		try{
-			$user = $dao->getByMailAddress($mailAddress);
-		}catch(Exception $e){
-			$user = new SOYShop_User();
-		}
+		$user = soyshop_get_user_object_by_mailaddress($mailAddress);
 
 		//新規登録の場合
 		if(is_null($user->getId())){
@@ -65,7 +61,7 @@ class LoginWithAmazonLogic extends SOY2LogicBase {
 		return $user->getId();
 	}
 
-	function getUserIdByAmazonId($amazonId){
+	function getUserIdByAmazonId(string $amazonId){
 		$attrDao = SOY2DAOFactory::create("user.SOYShop_UserAttributeDAO");
 		$sql = "SELECT user_id FROM soyshop_user_attribute ".
 				"WHERE user_field_id = '" . LoginWithAmazonUtil::FIELD_ID . "' ".

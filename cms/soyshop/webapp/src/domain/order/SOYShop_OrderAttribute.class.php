@@ -90,12 +90,7 @@ class SOYShop_OrderAttribute {
 	}
 
 	function getExtraValuesArray() {
-		$res = soy2_unserialize($this->extraValues);
-		if(is_array($res)){
-			return $res;
-		}else{
-			return array();
-		}
+		return soy2_unserialize((string)$this->extraValues);
 	}
 	function setExtraValuesArray($extraValues) {
 		if(is_array($extraValues)){

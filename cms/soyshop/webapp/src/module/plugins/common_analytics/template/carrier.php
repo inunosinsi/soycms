@@ -1,16 +1,16 @@
 <?php
 
 class Analytics_CarrierPage extends Analytics_CommonPage{
-	
+
 	private $orderDao;
-	
+
 	function build_print(){
-		
+
 		$this->orderDao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
-		
+
 		//共通部分の表示
 		$this->buildCommon();
-		
+
 		$start = AnalyticsPluginUtil::convertTitmeStamp("start");
 		$end = AnalyticsPluginUtil::convertTitmeStamp("end");
 
@@ -18,16 +18,16 @@ class Analytics_CarrierPage extends Analytics_CommonPage{
 			"list" => $this->calc($start, $end)
 		));
 	}
-	
+
 	function calc($start, $end){
-		
+
 		try{
 			$results = $this->orderDao->executeQuery($this->buildSql(), array(":start" => $start, ":end" => $end));
 			if(count($results) === 0) return array();
 		}catch(Exception $e){
 			return array();
 		}
-		
+
 		$array = array(
 			"pc" => array("occurrences" => 0),
 			"mobile" => array("occurrences" => 0),
@@ -35,10 +35,10 @@ class Analytics_CarrierPage extends Analytics_CommonPage{
 			"smartphone" => array("occurrences" => 0)
 		);
 		foreach($results as $result){
-			$attrs = soy2_unserialize($result["attributes"]);
+			$attrs = soy2_unserialize((string)$result["attributes"]);
 			if(!isset($attrs["order_check_carrier"]["value"])) continue;
 			$agent = $attrs["order_check_carrier"]["value"];
-			
+
 			/**
 			 * キャリア判定
 			 */
@@ -47,7 +47,7 @@ class Analytics_CarrierPage extends Analytics_CommonPage{
 				$array["mobile"]["occurrences"]++;
 			//DoCoMo FOMA
 			}elseif(preg_match("/^DoCoMo\/2.0/i", $agent)){
-				$array["mobile"]["occurrences"]++;	
+				$array["mobile"]["occurrences"]++;
 			//SoftBank
 			}elseif(preg_match("/^(J-PHONE|Vodafone|MOT-[CV]|SoftBank)/i", $agent)){
 				$array["mobile"]["occurrences"]++;
@@ -86,7 +86,7 @@ class Analytics_CarrierPage extends Analytics_CommonPage{
 				$array["pc"]["occurrences"]++;
 			}
 		}
-		
+
 		foreach($array as $key => $values){
 			if($values["occurrences"] > 0){
 				$r = rand(0,255);
@@ -98,10 +98,10 @@ class Analytics_CarrierPage extends Analytics_CommonPage{
 				unset($array[$key]);
 			}
 		}
-						
+
 		return $array;
 	}
-	
+
 	function buildSql(){
 		$sql = "SELECT attributes ".
 				"FROM soyshop_order ".
@@ -109,26 +109,26 @@ class Analytics_CarrierPage extends Analytics_CommonPage{
 				"AND order_status < " . SOYShop_Order::ORDER_STATUS_CANCELED . " ".
 				"AND order_date >= :start ".
 				"AND order_date <= :end";
-		
+
 		if(isset($_POST["AnalyticsPlugin"]["limit"]) && strlen($_POST["AnalyticsPlugin"]["limit"]) > 0 && is_numeric($_POST["AnalyticsPlugin"]["limit"])){
 			$sql .= " LIMIT " . (int)$_POST["AnalyticsPlugin"]["limit"];
 		}
-		
+
 		return $sql;
 	}
 }
 
 class CarrierGraphListComponent extends HTMLList{
-	
+
 	protected function populateItem($entity, $key) {
 		$this->addLabel("label", array(
 			"text" => (isset($key)) ? $key : ""
 		));
-		
+
 		$this->addLabel("color", array(
 			"text" => (isset($entity["color"])) ? $entity["color"] : "#FFFFFF"
 		));
-				
+
 		$this->addLabel("occurrences", array(
 			"text" => (isset($entity["occurrences"])) ? $entity["occurrences"] : 0
 		));

@@ -14,7 +14,7 @@ class FixedPointGrantLogic extends SOY2LogicBase {
 		//クレジット支払からの結果通知の場合はCartLogicのitemsは消えているので、再度取得する
 		if(isset($orderId) && is_null($itemOrders) || !is_array($itemOrders) || !count($itemOrders)){
 			try{
-				$itemOrders = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO")->getByOrderId($orderId);
+				$itemOrders = soyshop_get_item_orders($orderId);
 			}catch(Exception $e){
 				$itemOrders = array();
 			}

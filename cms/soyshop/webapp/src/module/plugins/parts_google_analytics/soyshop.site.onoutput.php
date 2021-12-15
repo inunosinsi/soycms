@@ -175,25 +175,20 @@ class GoogleAnalyticsOnOutput extends SOYShopSiteOnOutputAction{
 		//注文情報を取得できたか？
 		if(is_null($order->getId())) return $code;
 
-		$itemOrderDao = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
-		try{
-			$items = $itemOrderDao->getByOrderId($order->getId());
-		}catch(Exception $e){
-			$items = array();
-		}
+		$itemOrders = soyshop_get_item_orders($order->getId());
 
 		//注文された商品が一つでもあったか？
-		if(count($items) === 0) return $code;
+		if(count($itemOrders) === 0) return $code;
 
-		$insertCode = self::_buildInsertCode($order, $items);
+		$insertCode = self::_buildInsertCode($order, $itemOrders);
 		$changeCode = $query . "\n" . $insertCode;
 
 		return str_replace($query, "$changeCode", $code);
 	}
 
-	private function _buildInsertCode(SOYShop_Order $order, $items){
+	private function _buildInsertCode(SOYShop_Order $order, array $itemOrders){
 		return self::_buildInsertOrderCode($order) . "\n\n" .
-				self::_buildInsertItemCode($items, $order->getTrackingNumber()) . "\n\n" .
+				self::_buildInsertItemCode($itemOrders, $order->getTrackingNumber()) . "\n\n" .
 				"  _gaq.push(['_trackTrans']);";
 	}
 
@@ -246,15 +241,15 @@ class GoogleAnalyticsOnOutput extends SOYShopSiteOnOutputAction{
 	}
 
 	//各商品の情報
-	private function _buildInsertItemCode($items, $trackingNumber){
+	private function _buildInsertItemCode(array $itemOrders, string $trackingNumber){
 
 		$s = "  ";	//表示の調整用
 
 		$html = array();
 
 		$categoryList = soyshop_get_category_list();
-		foreach($items as $orderItem){
-			$item = soyshop_get_item_object($orderItem->getItemId());
+		foreach($itemOrders as $itemOrder){
+			$item = soyshop_get_item_object($itemOrder->getItemId());
 			if(is_null($item->getId())) continue;
 
 			$html[] = $s . "_gaq.push(['_addItem',";
@@ -266,8 +261,8 @@ class GoogleAnalyticsOnOutput extends SOYShopSiteOnOutputAction{
 			$categoryName = (isset($categoryList[$item->getCategory()])) ? $categoryList[$item->getCategory()] : "";
 
 			$html[] = $s . $s . "'" . $categoryName . "',";			//カテゴリー
-			$html[] = $s . $s . "'" . $orderItem->getItemPrice() . "',";	//商品単価
-			$html[] = $s . $s . "'" . $orderItem->getItemCount() . "'";	//注文個数
+			$html[] = $s . $s . "'" . $itemOrder->getItemPrice() . "',";	//商品単価
+			$html[] = $s . $s . "'" . $itemOrder->getItemCount() . "'";	//注文個数
 
 			$html[] = $s . "]);";
 		}

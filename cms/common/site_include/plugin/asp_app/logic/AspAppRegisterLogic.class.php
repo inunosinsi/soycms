@@ -13,7 +13,7 @@ class AspAppRegisterLogic extends SOY2LogicBase {
 		$obj = self::_getByToken($token);
 		if(is_null($obj->getToken())) return false;
 
-		$data = soy2_unserialize($obj->getData());
+		$data = soy2_unserialize((string)$obj->getData());
 		$admin = self::castAdmin($data);
 
 		//管理者の作成権限の付与
@@ -58,7 +58,7 @@ class AspAppRegisterLogic extends SOY2LogicBase {
 	}
 
 	function getAdminByToken($token){
-		return self::castAdmin(soy2_unserialize(self::_getByToken($token)->getData()));
+		return self::castAdmin(soy2_unserialize((string)self::_getByToken($token)->getData()));
 	}
 
 	private function _getByToken($token){

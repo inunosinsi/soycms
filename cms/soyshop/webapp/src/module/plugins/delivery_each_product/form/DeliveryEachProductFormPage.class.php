@@ -39,10 +39,7 @@ class DeliveryEachProductFormPage extends WebPage{
     }
 
     private function getPrices(){
-        $v = DeliveryEachProductUtil::get($this->itemId, DeliveryEachProductUtil::MODE_FEE);
-        if(!isset($v) || is_null($v) || !strlen($v)) return array();
-
-        return soy2_unserialize($v);
+        return soy2_unserialize((string)DeliveryEachProductUtil::get($this->itemId, DeliveryEachProductUtil::MODE_FEE));
     }
 
     function setConfigObj($configObj){

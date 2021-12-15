@@ -238,7 +238,7 @@ class SOYShop_Item {
      */
     function getConfigObject(){
         if(!$this->_config){
-            $obj = soy2_unserialize($this->getConfig());
+            $obj = soy2_unserialize((string)$this->getConfig());
             $this->_config = $obj;
         }
 

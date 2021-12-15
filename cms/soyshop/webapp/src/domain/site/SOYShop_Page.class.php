@@ -117,8 +117,7 @@ class SOYShop_Page {
 	 * unserilze config object
 	 */
 	function getConfigObject(){
-		$obj = soy2_unserialize($this->getConfig());
-		return $obj;
+		return soy2_unserialize((string)$this->getConfig());
 	}
 
 	/* config method */

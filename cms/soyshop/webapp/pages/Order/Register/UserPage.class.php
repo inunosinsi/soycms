@@ -23,8 +23,8 @@ class UserPage extends WebPage{
 
 		if(isset($_POST["search_by_id"])){
 			if(strlen($_POST["search_by_id"])){
-				$user = self::getUserById($_POST["search_by_id"]);
-				if(strlen($user->getId())){
+				$user = soyshop_get_user_object($_POST["search_by_id"]);
+				if(is_numeric($user->getId())){
 					//OK
 					$cart->setCustomerInformation($user);
 					$next = true;
@@ -57,8 +57,8 @@ class UserPage extends WebPage{
 			}
 		}else if(isset($_POST["search_by_email"])){
 			if(strlen($_POST["search_by_email"])){
-				$user = self::getUserByEmail($_POST["search_by_email"]);
-				if(strlen($user->getId())){
+				$user = soyshop_get_user_object_by_mailaddress($_POST["search_by_email"]);
+				if(is_numeric($user->getId())){
 					//OK
 					$cart->setCustomerInformation($user);
 					$next = true;
@@ -75,7 +75,7 @@ class UserPage extends WebPage{
 		}else if(isset($_POST["search_by_tell"])){
 			if(strlen($_POST["search_by_tell"])){
 				$user = self::getUserByTell($_POST["search_by_tell"]);
-				if(strlen($user->getId())){
+				if(is_numeric($user->getId())){
 					//OK
 					$cart->setCustomerInformation($user);
 					$next = true;
@@ -92,7 +92,7 @@ class UserPage extends WebPage{
 		}else if(isset($_POST["search_by_name"])){
 			if(strlen($_POST["search_by_name"])){
 				$user = self::getUserByName($_POST["search_by_name"]);
-				if(strlen($user->getId())){
+				if(is_numeric($user->getId())){
 					//OK
 					$cart->setCustomerInformation($user);
 					$next = true;
@@ -109,7 +109,7 @@ class UserPage extends WebPage{
 		}else if(isset($_POST["search_by_reading"])){
 			if(strlen($_POST["search_by_reading"])){
 				$user = self::getUserByReading($_POST["search_by_reading"]);
-				if(strlen($user->getId())){
+				if(is_numeric($user->getId())){
 					//OK
 					$cart->setCustomerInformation($user);
 					$next = true;
@@ -175,22 +175,19 @@ class UserPage extends WebPage{
 		$this->component = new UserComponent();
 
 		//パラメータからユーザIDの取得
-		$userId = (isset($args[0])) ? (int)$args[0] : null;
-		if(isset($args[0]) && strlen($args[0])){
-			$userId = (int)$args[0];
-			try{
-				$user = self::getUserById($userId);
+		if(isset($args[0]) && is_numeric($args[0])){
+			$user = soyshop_get_user_object((int)$args[0]);
+			if(is_numeric($user->getId())){
 				$this->cart->setCustomerInformation($user);
 				$this->cart->save();
 				SOY2PageController::jump("Order.Register");
-			}catch(Exception $e){
 			}
 		}
 
 
 		//入力値を呼び出す
 		$user = $this->session->getAttribute("order_register.input.user");
-		if(is_string($user) && strlen($user)) $user = soy2_unserialize($user);
+		if(is_string($user)) $user = soy2_unserialize($user);
 		if(!$user instanceof SOYShop_User) $user = new SOYShop_User();
 
 		parent::__construct();
@@ -285,16 +282,7 @@ class UserPage extends WebPage{
     	));
 	}
 
-
-	private function getUserById($userId){
-		try{
-			return $this->dao->getById($userId);
-		}catch(Exception $e){
-			return new SOYShop_User();
-		}
-	}
-
-	private function getUserByUserCode($userCode){
+	private function getUserByUserCode(string $userCode){
 		try{
 			return $this->dao->getByUserCode($userCode);
 		}catch(Exception $e){
@@ -302,14 +290,7 @@ class UserPage extends WebPage{
 		}
 	}
 
-	private function getUserByEmail($email){
-		try{
-			return $this->dao->getByMailAddress($email);
-		}catch(Exception $e){
-			return new SOYShop_User();
-		}
-	}
-	private function getUserByTell($tell){
+	private function getUserByTell(string $tell){
 		$tell = str_replace(array("-", "ー", "−"), "", $tell);
 
 		//すべての顧客IDと電話番号を取得
@@ -337,7 +318,7 @@ class UserPage extends WebPage{
 		return new SOYShop_User();
 	}
 
-	private function getUserByName($name){
+	private function getUserByName(string $name){
 		$strings = self::str2array($name);
 		if(!count($strings)) return new SOYShop_User();
 

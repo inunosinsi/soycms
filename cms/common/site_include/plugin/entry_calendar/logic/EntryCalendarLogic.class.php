@@ -81,7 +81,7 @@ var_dump($e);
 
 			if(isset($res[0])){
 				$uri = $res[0]["uri"];
-				$pageConfig = soy2_unserialize($res[0]["page_config"]);
+				$pageConfig = soy2_unserialize((string)$res[0]["page_config"]);
 			}else{
 				$pageConfig = new StdClass();
 			}

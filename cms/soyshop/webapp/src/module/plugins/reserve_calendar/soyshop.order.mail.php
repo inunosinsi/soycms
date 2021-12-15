@@ -11,7 +11,7 @@ class ReserveCalendarOrderMail extends SOYShopOrderMail{
 		$bodies = array();
 
 		try{
-			$itemOrders = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO")->getByOrderId($order->getId());
+			$itemOrders = soyshop_get_item_orders($order->getId());
 		}catch(Exception $e){
 			$itemOrders = array();
 		}

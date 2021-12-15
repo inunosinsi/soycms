@@ -43,10 +43,10 @@ class PayJpRecurringPayment extends SOYShopPayment{
 		self::prepare();
 
 		//カートを表示している顧客の情報で、カードのトークンが登録されているか？調べる(メールアドレスから顧客情報をたどる)
-		$mailAddress = $this->getCart()->getCustomerInformation()->getMailAddress();
-		$token = $this->recurringLogic->getCustomerTokenByMailAddress($mailAddress);
+		$mailAddress = (string)$this->getCart()->getCustomerInformation()->getMailAddress();
+		$token = (strlen($mailAddress)) ? $this->recurringLogic->getCustomerTokenByMailAddress($mailAddress) : null;
 
-		if(isset($token) && strlen($token)){
+		if(is_string($token) && strlen($token)){
 			$config = PayJpRecurringUtil::getConfig();
 			$isRepeatCharge = $this->getCart()->getAttribute("payment_pay_jp_repeat_recurring");
 			if(is_null($isRepeatCharge)) $isRepeatCharge = 1;
@@ -85,8 +85,8 @@ class PayJpRecurringPayment extends SOYShopPayment{
 		}
 
 		// トークンを保持していれば、ここで注文を終わらせてしまう
-		$userId = $cart->getCustomerInformation()->getId();
-		$token = $this->recurringLogic->getCustomerTokenByUserId($userId);
+		$userId = (int)$cart->getCustomerInformation()->getId();
+		$token = ($userId > 0) ? $this->recurringLogic->getCustomerTokenByUserId($userId) : null;
 
 		if(isset($token)){
 			//二回目の購入のチェックがあるか？

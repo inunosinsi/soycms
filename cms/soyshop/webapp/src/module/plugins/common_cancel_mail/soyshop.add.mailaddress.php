@@ -7,7 +7,7 @@ class CommonCancelMailAddMailAddress extends SOYShopAddMailAddress{
 		//ステータスがキャンセルでない時は動作しない
 		if($order->getStatus() != SOYShop_Order::ORDER_STATUS_CANCELED) return array();
 
-		$itemOrders = SOY2Logic::createInstance("logic.order.OrderLogic")->getItemsByOrderId($order->getId());
+		$itemOrders = soyshop_get_item_orders($order->getId());
         if(!count($itemOrders)) return array();
 
         $list = array();
@@ -18,7 +18,6 @@ class CommonCancelMailAddMailAddress extends SOYShopAddMailAddress{
             if(!strlen($mailAddress) || !(bool)filter_var($mailAddress, FILTER_VALIDATE_EMAIL)) continue;
 			$list[] = $mailAddress;
         }
-		var_dump($list);exit;
 
         return $list;
     }

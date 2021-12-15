@@ -469,11 +469,7 @@ class MyPageLogic extends SOY2LogicBase{
 				}
 			//メールアドレスでログインにを試みる
 			}elseif($config->getAllowMailAddressLogin()){
-				try{
-					$user = $userDAO->getByMailAddress($loginId);
-				}catch(Exception $e){
-					$user = new SOYShop_User();
-				}
+				$user = soyshop_get_user_object_by_mailaddress($loginId);
 			//ログインを許可していない
 			}else{
 				$user = new SOYShop_User();
@@ -618,7 +614,7 @@ class MyPageLogic extends SOY2LogicBase{
 	 * @return String token
 	 * @return String time_limit
 	 */
-	function createToken($mail){
+	function createToken(string $mail){
 
 		$tokenDAO = SOY2DAOFactory::create("user.SOYShop_UserTokenDAO");
 
@@ -631,32 +627,25 @@ class MyPageLogic extends SOY2LogicBase{
 		$limit = mktime(0, 0, 0, $month, $day, $year);
 		$limit = $limit + 60 * 60 * 24 -1;
 
-		try{
-			$user = SOY2DAOFactory::create("user.SOYShop_UserDAO")->getByMailAddress($mail);
-			$query = $this->createQuery($user->getMailAddress());
-
-		}catch(Exception $e){
-			$user = new SOYShop_User();
-			$query = "";
-
-		}
+		$user = soyshop_get_user_object_by_mailaddress($mail);
+		$tk = (is_numeric($user->getId())) ? $this->createQuery($user->getMailAddress()) : "";
 
 		try{
 			$token = $tokenDAO->getByUserId($user->getId());
-			$token->setToken($query);
+			$token->setToken($tk);
 			$token->setLimit($limit);
 			$tokenDAO->update($token);
 
 		}catch(Exception $e){
 			$token = new SOYShop_UserToken();
 			$token->setUserId($user->getId());
-			$token->setToken($query);
+			$token->setToken($tk);
 			$token->setLimit($limit);
 
 			$tokenDAO->insert($token);
 		}
 
-		return array($query, $limit);
+		return array($tk, $limit);
 	}
 
 	/**

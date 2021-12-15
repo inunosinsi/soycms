@@ -107,7 +107,7 @@ class TrackLogic extends SOY2LogicBase {
 	}
 
 	//webhook用に伝票番号を登録する
-	function registSlipNumbers(){
+	function registerSlipNumbers(){
 		$career = "taqbin-jp";	//クロネコヤマトのこと @ToDo いずれは他の配送業者でも確認できるようにしたい
 		$list = self::getSlipNumberListForRegstration();
 		if(!count($list)) return;

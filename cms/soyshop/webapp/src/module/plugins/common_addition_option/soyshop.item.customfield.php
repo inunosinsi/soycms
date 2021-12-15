@@ -4,122 +4,28 @@
 include(dirname(__FILE__) . "/common/common.php");
 class CommonAdditionOptionCustomField extends SOYShopItemCustomFieldBase{
 
-	private $dao;
-	private $item;
-
 	function doPost(SOYShop_Item $item){
-
-		$this->item = $item;
-
-		$this->dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		$array = $this->dao->getByItemId($item->getId());
-
-		if(isset($_POST["addition_option_price"])){
-
-			//表示設定を行う
-			$key = "addition_option_flag";
-			$publishFlag = (isset($_POST[$key])) ? 1 : 0;
-
-			try{
-				if(isset($array[$key])){
-					$obj = $array[$key];
-					$obj->setValue($publishFlag);
-					$this->dao->update($obj);
-				}else{
-					$obj = new SOYShop_ItemAttribute();
-					$obj->setItemId($item->getId());
-					$obj->setFieldId($key);
-					$obj->setValue($publishFlag);
-
-					$this->dao->insert($obj);
-				}
-			}catch(Exception $e){
-				//
+		foreach(array("flag", "price", "name", "text") as $typ){
+			$fieldId = "addition_option_" . $typ;
+			$attr = soyshop_get_item_attribute_object($item->getId(), $fieldId);
+			switch($typ){
+				case "flag":
+					$v = (isset($_POST[$fieldId])) ? 1 : null;
+					break;
+				case "price":
+					$v = soyshop_convert_number($_POST[$fieldId], 0);
+					break;
+				default:
+					$v = (isset($_POST[$fieldId]) && is_string($_POST[$fieldId])) ? trim($_POST[$fieldId]) : null;
 			}
-
-			//加算額の設定を行う
-			$key = "addition_option_price";
-			$price = soyshop_convert_number($_POST[$key], 0);
-
-			try{
-				if(isset($array[$key])){
-					$obj = $array[$key];
-					$obj->setValue($price);
-					$this->dao->update($obj);
-				}else{
-					$obj = new SOYShop_ItemAttribute();
-					$obj->setItemId($item->getId());
-					$obj->setFieldId($key);
-					$obj->setValue($price);
-					$this->dao->insert($obj);
-				}
-			}catch(Exception $e){
-				//
-			}
-
-			//加算項目の設定
-			$key = "addition_option_name";
-			$name = $_POST[$key];
-
-			try{
-				if(isset($array[$key])){
-					$obj = $array[$key];
-					$obj->setValue($name);
-					$this->dao->update($obj);
-				}else{
-					$obj = new SOYShop_ItemAttribute();
-					$obj->setItemId($item->getId());
-					$obj->setFieldId($key);
-					$obj->setValue($name);
-					$this->dao->insert($obj);
-				}
-			}catch(Exception $e){
-				//
-			}
-
-			//加算時の文言設定を行う
-			$key = "addition_option_text";
-			$text = $_POST[$key];
-
-			try{
-				if(isset($array[$key])){
-					$obj = $array[$key];
-					$obj->setValue($text);
-					$this->dao->update($obj);
-				}else{
-					$obj = new SOYShop_ItemAttribute();
-					$obj->setItemId($item->getId());
-					$obj->setFieldId($key);
-					$obj->setValue($text);
-					$this->dao->insert($obj);
-				}
-			}catch(Exception $e){
-				//
-			}
+			$attr->setValue($v);
+			soyshop_save_item_attribute_object($attr);
 		}
 	}
 
 	function getForm(SOYShop_Item $item){
-
-		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		try{
-			$array = $dao->getByItemId($item->getId());
-		}catch(Exception $e){
-			echo $e->getPDOExceptionMessage();
-		}
-
-		if(isset($array["addition_option_price"])){
-			$flag = (isset($array["addition_option_flag"]) && strlen($array["addition_option_flag"]->getValue()));
-			$name = (isset($array["addition_option_name"])) ? $array["addition_option_name"]->getValue() : "";
-			$price = (isset($array["addition_option_price"])) ? $array["addition_option_price"]->getValue() : "";
-			$text = (isset($array["addition_option_text"]))?  $array["addition_option_text"]->getValue() : "";
-		}else{
-			$config = CommonAdditionCommon::getConfig();
-			$flag = false;
-			$name = $config["name"];
-			$price = $config["price"];
-			$text = $config["text"];
-		}
+		$itemId = (is_numeric($item->getId())) ? (int)$item->getId() : 0;
+		list($flag, $price, $name, $text) = self::_get($itemId);
 
 		$style = "style=\"text-align:right;ime-mode:inactive;\"";
 
@@ -162,37 +68,23 @@ class CommonAdditionOptionCustomField extends SOYShopItemCustomFieldBase{
 	}
 
 	function onOutput($htmlObj, SOYShop_Item $item){
+		$itemId = (is_numeric($item->getId())) ? (int)$item->getId() : 0;
+		list($flag, $price, $name, $text) = self::_get($itemId);
 
-		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		try{
-			$array = $dao->getByItemId($item->getId());
-		}catch(Exception $e){
-			echo $e->getPDOExceptionMessage();
-		}
-
-		if(isset($array["addition_option_price"])){
-			$visible = (isset($array["addition_option_flag"]) && strlen($array["addition_option_flag"]->getValue()));
-			$price = $array["addition_option_price"]->getValue();
-			$text = (isset($array["addition_option_text"])) ? $array["addition_option_text"]->getValue() : "";
-			$text = str_replace("##PRICE##", $price, $text);
-		}else{
-			$visible = false;
-			$price = "";
-			$text = "";
-		}
+		if(strlen($text)) $text = str_replace("##PRICE##", $price, $text);
 
 		$html = array();
 
-		if($visible){
+		if($flag){
 			//valueには商品IDを入れておく
 			$html[] = "<input type=\"hidden\" name=\"item_option[addition_option]\" value=\"0\" />";
-			$html[] = "<input type=\"checkbox\" name=\"item_option[addition_option]\" value=\"" . $item->getId() . "\" id=\"addition_option\">";
+			$html[] = "<input type=\"checkbox\" name=\"item_option[addition_option]\" value=\"" . $itemId . "\" id=\"addition_option\">";
 			$html[] = "<label for=\"addition_option\">" . nl2br(htmlspecialchars($text, ENT_QUOTES, "UTF-8")) . "</label>";
 		}
 
 		$htmlObj->addModel("addition_option_visible", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"visible" => $visible
+			"visible" => $flag
 		));
 
 		$htmlObj->addLabel("addition_option", array(
@@ -201,12 +93,38 @@ class CommonAdditionOptionCustomField extends SOYShopItemCustomFieldBase{
 		));
 	}
 
-	function onDelete($id){
-		try{
-			SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO")->deleteByItemId($id);
-		}catch(Exception $e){
-			//
+	private function _get(int $itemId){
+		$values = array();
+		$isFirst = true;
+		//はじめての登録だということがわかることはすべての値がnullであるということ
+		foreach(array("flag", "price", "name", "text") as $typ){
+			$fieldId = "addition_option_" . $typ;
+			$values[$typ] = ($itemId > 0) ? soyshop_get_item_attribute_value($itemId, $fieldId) : null;
+			if(!is_null($values[$typ])) $isFirst = false;
 		}
+
+		//値を整形する
+		$cnf = ($isFirst) ? CommonAdditionCommon::getConfig() : array();
+		if(count($cnf)) $cnf["flag"] = false;
+		foreach(array("flag", "price", "name", "text") as $typ){
+			switch($typ){
+				case "flag":
+					if(isset($cnf[$typ])){
+						$values[$typ] = false;
+					}else{
+						$values[$typ] = (isset($values[$typ]) && $values[$typ] == 1);
+					}
+					break;
+				case "price":
+					$values[$typ] = (isset($cnf[$typ])) ? $cnf[$typ] : (int)$values[$typ];
+					break;
+				default:
+					$values[$typ] = (isset($cnf[$typ])) ? $cnf[$typ] : (string)$values[$typ];
+					break;
+			}
+		}
+
+		return array($values["flag"], $values["price"], $values["name"], $values["text"]);
 	}
 }
 

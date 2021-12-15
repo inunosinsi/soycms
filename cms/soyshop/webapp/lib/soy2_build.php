@@ -2733,7 +2733,7 @@ class SOY2ActionSessionBase{
 		}
 	}
 	function getAttribute($key){
-		return (isset($this->_hash[$key])) ? soy2_unserialize($this->_hash[$key]) : null;
+		return (isset($this->_hash[$key]) && is_string($this->_hash[$key])) ? soy2_unserialize($this->_hash[$key]) : null;
 	}
 	function clearAttributes(){
 		$this->_hash = array();
@@ -8973,22 +8973,16 @@ function soy2_realurl($url){
  * @param when true do not return boolean value
  * @return boolean
  */
-function soy2_require($file,$isThrowException = false){
+function soy2_require(string $file, bool $isThrowException=false){
 	$res = (boolean)@include_once($file);
 	if($isThrowException && !$res)throw new Exception("File Not Found:" . $file);
 	return $res;
 }
 /* function/function.soy2_resizeimage.php */
-/*
- * Created on 2010/04/28
- *
- * To change the template for this generated file go to
- * Window - Preferences - PHPeclipse - PHP - Code Templates
- */
 /**
  * 縦横の最大の大きさ指定してリサイズ
  */
-function soy2_resizeimage_maxsize($filepath,$savepath,$max){
+function soy2_resizeimage_maxsize(string $filepath, string $savepath, int $max){
 	if(function_exists("getimagesize")){
 		list($width, $height, $type, $attr) = getimagesize($filepath);
 	}
@@ -9017,7 +9011,7 @@ function soy2_resizeimage_maxsize($filepath,$savepath,$max){
 		$width = null;
 		$height = $max;
 	}
-	return soy2_resizeimage($filepath,$savepath,$width,$height);
+	return soy2_resizeimage($filepath, $savepath, $width, $height);
 }
 /**
  * 縦横の大きさ指定してリサイズ
@@ -9027,16 +9021,16 @@ function soy2_resizeimage_maxsize($filepath,$savepath,$max){
  * @param $width
  * @param $height
  */
-function soy2_resizeimage($filepath,$savepath,$width = null,$height = null){
+function soy2_resizeimage(string $filepath, string $savepath, int $width=-1, int $height=-1){
 	if(class_exists("Imagick")){
 		$thumb = new Imagick($filepath);
 		$imageSize = array($thumb->getImageWidth(),$thumb->getImageHeight());
-		if(is_null($width) && is_null($height)){
+		if($width < 0 && $height < 0){
 			$width = $imageSize[0];
 			$height = $imageSize[1];
-		}else if(is_null($width)){
+		}else if($width < 0){
 			$width = $imageSize[0] * $height / $imageSize[1];
-		}else if(is_null($height)){
+		}else if($height < 0){
 			$height = $imageSize[1] * $width / $imageSize[0];
 		}
 		$thumb->thumbnailImage($width,$height);
@@ -9067,7 +9061,7 @@ function soy2_resizeimage($filepath,$savepath,$width = null,$height = null){
 	}
 	return soy2_image_resizeimage_gd($filepath,$savepath,$width,$height);
 }
-function soy2_image_resizeimage_gd($filepath,$savepath,$width = null,$height = null){
+function soy2_image_resizeimage_gd(string $filepath, string $savepath, int $width=-1, int $height=-1){
 	$info = pathinfo($filepath); //php version is 5.2.0 use pathinfo($filepath,PATHINFO_EXTENSION);
 	if(!isset($info["extension"])) {
 		trigger_error("Failed [Type is empty] " . __FILE__ . ":" . __LINE__,E_USER_ERROR);
@@ -9082,12 +9076,12 @@ function soy2_image_resizeimage_gd($filepath,$savepath,$width = null,$height = n
 	}
 	$srcImage = $from($filepath);
 	$imageSize = getimagesize($filepath);
-	if(is_null($width) && is_null($height)){
+	if($width < 0 && $height < 0){
 		$width = $imageSize[0];
 		$height = $imageSize[1];
-	}else if(is_null($width)){
+	}else if($width < 0){
 		$width = $imageSize[0] * $height / $imageSize[1];
-	}else if(is_null($height)){
+	}else if($height < 0){
 		$height = $imageSize[1] * $width / $imageSize[0];
 	}
 	$dstImage = imagecreatetruecolor($width,$height);
@@ -9117,7 +9111,7 @@ function soy2_image_resizeimage_gd($filepath,$savepath,$width = null,$height = n
  *
  * @param $dir ディレクトリ
  */
-function soy2_scandir($dir){
+function soy2_scandir(string $dir){
 	$res = array();
 	$files = scandir($dir);
 	foreach($files as $row){
@@ -9131,7 +9125,7 @@ function soy2_scandir($dir){
  * soy2_scanfiles
  * 特定のディレクトリの下にあるファイルを全て列挙
  */
-function soy2_scanfiles($dir,$depth = -1){
+function soy2_scanfiles(string $dir, int $depth=-1){
 	$res = array();
 	$dir = soy2_realpath($dir);
 	if($depth == 0)return $res;
@@ -9159,8 +9153,13 @@ function soy2_serialize($var){
  *
  * @param $string soy2_serializeの出力する文字列
  */
-function soy2_unserialize($string){
-	return (is_string($string)) ? unserialize(stripslashes($string)) : null;
+function soy2_unserialize(string $string){
+	$string = trim($string);
+	if(!strlen($string)) return array();
+	$string = stripslashes($string);
+	if(!strlen($string)) return array();
+	$res = @unserialize($string);
+	return (!is_null($res)) ? $res : array();
 }
 /* function/function.soy2_token.php */
 /*
@@ -9221,7 +9220,7 @@ function soy2_check_referer(){
 /*
  * PHPのバージョンによってsetcookieのオプションの値を変える
  */
-function soy2_setcookie($key, $value=null, $opts=array()){
+function soy2_setcookie(string $key, string $value="", array $opts=array()){
 	if(!count($opts)) $opts = session_get_cookie_params();	//optsが空の場合はセッションの設定を用いる
 	if(is_null($value))	$opts["expires"] = time()-1;	//valueがnullの場合はクッキーを削除する
 	if(isset($opts["lifetime"])) unset($opts["lifetime"]);	//lifetimeがある場合は削除

@@ -9,7 +9,7 @@ class OrderMailInsertTemplateOrderMail extends SOYShopOrderMail{
 	function getMailBody(SOYShop_Order $order){
 		//商品に紐付いたメールテンプレートを取得
 		try{
-			$itemOrders = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO")->getByOrderId($order->getId());
+			$itemOrders = soyshop_get_item_orders($order->getId());
 		}catch(Exception $e){
 			$itemOrders = array();
 		}

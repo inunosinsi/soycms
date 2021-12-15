@@ -101,7 +101,7 @@ class CustomField{
 	}
 	/** 関連するラベル複数 **/
 	function getLabelIds(){
-		if(strlen($this->labelIds)){
+		if(is_string($this->labelIds) && strlen($this->labelIds)){
 			return soy2_unserialize($this->labelIds);
 		}else{
 			$arr = array();
@@ -394,7 +394,7 @@ class CustomField{
 				$body = implode("\n", $html);
 				break;
 			case "list":
-				$values = (is_string($fieldValue) && strlen($fieldValue)) ? soy2_unserialize($fieldValue) : array();
+				$values = (is_string($fieldValue)) ? soy2_unserialize($fieldValue) : array();
 
 				$html = array();
 				if(count($values)){
@@ -530,7 +530,7 @@ class CustomField{
 		$html = array();
 
 		$opts = explode("\n", $v);
-		$pairConf = (strlen($this->extraValues)) ? soy2_unserialize($this->extraValues) : array();
+		$pairConf = (is_string($this->extraValues)) ? soy2_unserialize($this->extraValues) : array();
 
 		if(isset($pairConf["pair"])){
 			$values = (isset($pairConf["pair"]) && is_array($pairConf["pair"])) ? $pairConf["pair"] : array();

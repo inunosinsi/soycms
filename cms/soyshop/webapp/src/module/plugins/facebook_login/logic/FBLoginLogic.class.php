@@ -5,14 +5,7 @@ class FbLoginLogic extends SOY2LogicBase {
 	function __construct(){}
 
 	function getUserByMailAddress(string $mailAddress){
-		try{
-			return SOY2DAOFactory::create("user.SOYShop_UserDAO")->getByMailAddress($mailAddress);
-		}catch(Exception $e){
-			$user = new SOYShop_User();
-			$user->setMailAddress($mailAddress);
-			$user->setUserType(SOYShop_User::USERTYPE_REGISTER);
-			return $user;
-		}
+		return soyshop_get_user_object_by_mailaddress($mailAddress);
 	}
 
 	function registerUser(SOYShop_User $user){

@@ -20,19 +20,20 @@ class InputPage extends MainMyPagePageBase{
 			$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 
 			//get user
-			try{
-				$user = $userDAO->getByMailAddress($mail);
-
+			$user = soyshop_get_user_object_by_mailaddress($mail);
+			if(is_numeric($user->getId())){
 				$query = $this->mypage->createQuery($mail);
 				$limit  = time() + 60 * 60 * 24;
 
 				$user->setAttribute("remind_query", $query);
 				$user->setAttribute("remind_limit", $limit);
 
-				$userDAO->update($user);
-				$this->doRemind = true;
-			}catch(Exception $e){
-				//
+				try{
+					$userDAO->update($user);
+					$this->doRemind = true;
+				}catch(Exception $e){
+					//
+				}
 			}
 
 			if($this->doRemind){

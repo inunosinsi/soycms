@@ -9,17 +9,12 @@ class OrderLogic extends SOY2LogicBase{
 	 * 商品情報を詳細つきで取得
 	 * @return SOYShop_Order
 	 */
-    function getById($id){
-		try{
-			//Orderを取得
-			$order = SOY2DAOFactory::create("order.SOYShop_OrderDAO")->getById($id);
-		}catch(Exception $e){
-			return new SOYShop_Order();
-		}
+    function getById(int $orderId){
+		$order = soyshop_get_order_object($orderId);
+		if(!is_numeric($order->getId())) return $order;
 
     	//ItemOrderを取得（してないし…）
-    	$items = array();
-    	$order->setItems($items);
+    	$order->setItems(array());
 
     	return $order;
     }
@@ -29,31 +24,27 @@ class OrderLogic extends SOY2LogicBase{
 	 * @param integer $id
 	 * @return SOYShop_Order
 	 */
-	function getFullOrderById($id){
-		$order = $this->getById($id);
-    	$items = $this->getItemsByOrderId($id);
-    	$order->setItems($items);
+	function getFullOrderById(int $orderId){
+		$order = soyshop_get_order_object($orderId);
+		if(is_numeric($order->getId())) return $order;
 
+    	$order->setItems(soyshop_get_item_orders($order->getId()));
     	return $order;
 	}
 
-    function getTotalPrice($orderId) {
+    function getTotalPrice(int $orderId) {
     	try{
     		return self::itemOrderDao()->getTotalPriceByOrderId($orderId);
     	}catch(Exception $e){
-    		return null;
+    		return 0;
     	}
     }
-
-	function getItemsByOrderId($orderId){
-		return self::_getItemsByOrderId($orderId);
-	}
 
 	/**
 	 * @param integer $itemId
 	 * @return integer 商品の個数
 	 */
-    function getOrderCountByItemId($itemId){
+    function getOrderCountByItemId(int $itemId){
     	try{
 			return self::itemOrderDao()->countByItemId($itemId);
     	}catch(Exception $e){
@@ -66,7 +57,7 @@ class OrderLogic extends SOY2LogicBase{
 	 * @param integer $orderId
 	 * @return integer 商品の個数の合計
 	 */
-    function getTotalOrderItemCountByItemId($orderId){
+    function getTotalOrderItemCountByItemId(int $orderId){
     	try{
 			return self::itemOrderDao()->getTotalItemCountByOrderId($orderId);
     	}catch(Exception $e){
@@ -78,18 +69,18 @@ class OrderLogic extends SOY2LogicBase{
 	 * @param integer $orderId
 	 * @return integer 商品の個数
 	 */
-    function getItemCountById($orderId){
-    	return count(self::_getItemsByOrderId($orderId));
+    function getItemCountById(int $orderId){
+    	return count(soyshop_get_item_orders($orderId));
     }
 
     /**
      * 変更履歴を取得する
      */
-    function getOrderHistories($id){
+    function getOrderHistories(int $orderId){
     	try{
     		$dao = SOY2DAOFactory::create("order.SOYShop_OrderStateHistoryDAO");
     		$dao->setOrder("id asc");
-    		return $dao->getByOrderId($id);
+    		return $dao->getByOrderId($orderId);
     	}catch(Exception $e){
     		return array();
     	}
@@ -98,33 +89,30 @@ class OrderLogic extends SOY2LogicBase{
     /**
      * メールのステータスを設定する
      */
-    function setMailStatus($id, $type, $value){
-    	$orderDAO = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
-
-    	$order = $orderDAO->getById($id);
-    	$order->setMailStatusByType($type, $value);
-
-    	$orderDAO->updateMailStatus($order);
+    function setMailStatus(int $orderId, string $type, int $time){
+    	$order = soyshop_get_order_object($orderId);
+    	$order->setMailStatusByType($type, $time);
+    	SOY2DAOFactory::create("order.SOYShop_OrderDAO")->updateMailStatus($order);
     }
 
 	//マイページで使用する為のメソッド
-	function addHistory($id, $content, $more = null, $author = null){
-		self::_addHistory($id, $content, $more, $author);
+	function addHistory(int $orderId, string $content, string $more="", string $author=""){
+		self::_addHistory($orderId, $content, $more, $author);
 	}
 
     /**
      * ヒストリーに追加
      */
-    private function _addHistory($id, $content, $more = null, $author = null){
+    private function _addHistory(int $orderId, string $content, string $more="", string $author=""){
 		static $dao;
 		if(is_null($dao)) $dao = SOY2DAOFactory::create("order.SOYShop_OrderStateHistoryDAO");
     	$history = new SOYShop_OrderStateHistory();
 
-    	$history->setOrderId($id);
+    	$history->setOrderId($orderId);
     	$history->setContent($content);
-    	$history->setMore($more);
+		$history->setMore($more);
 
-		if(isset($author) && strlen($author)) $history->setAuthor($author);
+		if(strlen($author)) $history->setAuthor($author);
     	$dao->insert($history);
     }
 
@@ -173,7 +161,7 @@ class OrderLogic extends SOY2LogicBase{
     /**
 	 * 注文状態を変更する マイページで実行した場合はauthorに何らかの値がある
 	 */
-    function changeOrderStatus($orderIds, $status, $author=null){
+    function changeOrderStatus($orderIds, int $status, string $author=""){
     	if(!is_array($orderIds)) $orderIds = array($orderIds);
     	$status = (int)$status;
 
@@ -185,8 +173,8 @@ class OrderLogic extends SOY2LogicBase{
     	$dao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
     	$dao->begin();
 
-    	foreach($orderIds as $id){
-			$order = soyshop_get_order_object($id);
+    	foreach($orderIds as $orderId){
+			$order = soyshop_get_order_object($orderId);
 			if(is_null($order->getId())) continue;
 
 			//ステータスが異なる場合
@@ -247,7 +235,7 @@ class OrderLogic extends SOY2LogicBase{
 		return "d" . $order->getId() . "-" . substr(md5($order->getTrackingNumber(). mt_rand(100, 999)), 0, 10);
 	}
 
-	private function _sendMailOnChangeDeliveryStatus(SOYShop_Order $order, $newStatus, $oldStatus){
+	private function _sendMailOnChangeDeliveryStatus(SOYShop_Order $order, int $newStatus, int $oldStatus){
 		//送信前に念の為に確認
 		if((int)$newStatus === (int)$oldStatus) return false;
 
@@ -263,7 +251,7 @@ class OrderLogic extends SOY2LogicBase{
 		if(!isset($mailConfig["active"]) || (int)$mailConfig["active"] !== 1) return false;
 
 		list($mailBody, $title) = $mailLogic->buildMailBodyAndTitle($order, $sendMailType);
-		
+
 		//宛名
 		$user = soyshop_get_user_object($order->getUserId());
 		$userName = $user->getName();
@@ -275,7 +263,7 @@ class OrderLogic extends SOY2LogicBase{
 		return true;
 	}
 
-	private function _getMailStatus($status){
+	private function _getMailStatus(int $status){
 		static $sendMailType;
 		if(is_null($sendMailType)){
 			switch($status){
@@ -303,7 +291,7 @@ class OrderLogic extends SOY2LogicBase{
     /**
 	 * 支払状態を変更する
 	 */
-    function changePaymentStatus($orderIds,$status){
+    function changePaymentStatus($orderIds, int $status){
     	if(!is_array($orderIds)) $orderIds = array($orderIds);
     	$status = (int)$status;
 
@@ -330,7 +318,7 @@ class OrderLogic extends SOY2LogicBase{
     	$dao->commit();
     }
 
-	private function _compareStatus($newStatus, $oldStatus, $mode=self::CHANGE_STOCK_MODE_CANCEL){
+	private function _compareStatus(int $newStatus, int $oldStatus, string $mode=self::CHANGE_STOCK_MODE_CANCEL){
 		switch($mode){
 			case self::CHANGE_STOCK_MODE_CANCEL:
 				//キャンセルにする場合 無効注文も含む
@@ -362,17 +350,14 @@ class OrderLogic extends SOY2LogicBase{
 		return false;
 	}
 
-	private function _changeItemStock($orderId, $mode){
-		$itemOrders = self::_getItemsByOrderId($orderId);
+	private function _changeItemStock(int $orderId, string $mode){
+		$itemOrders = soyshop_get_item_orders($orderId);
 		if(!count($itemOrders)) return false;
 
 		$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		foreach($itemOrders as $itemOrder){
-			try{
-				$item = $itemDao->getById($itemOrder->getItemId());
-			}catch(Exception $e){
-				continue;
-			}
+			$item = soyshop_get_item_object($itemOrder->getItemId());
+			if(is_null($item->getId())) continue;
 
 			//在庫数を戻す
 			if($mode == self::CHANGE_STOCK_MODE_CANCEL){
@@ -381,7 +366,7 @@ class OrderLogic extends SOY2LogicBase{
 			}else if($mode == self::CHANGE_STOCK_MODE_RETURN){
 				$item->setStock((int)$item->getStock() - (int)$itemOrder->getItemCount());
 			}else{
-				//何もしない
+				continue;
 			}
 
 			try{
@@ -392,8 +377,8 @@ class OrderLogic extends SOY2LogicBase{
 		}
 	}
 
-	function changeItemOrdersIsConfirm($orderId, $isConfirmItemOrderIds){
-		$itemOrders = self::_getItemsByOrderId($orderId);
+	function changeItemOrdersIsConfirm(int $orderId, array $isConfirmItemOrderIds){
+		$itemOrders = soyshop_get_item_orders($orderId);
 		if(!count($itemOrders)) return array();
 
 		$changes = array();
@@ -426,9 +411,9 @@ class OrderLogic extends SOY2LogicBase{
 		return $changes;
 	}
 
-	function changeItemOrdersStatus($orderId, $statuses){
-		if(!is_array($statuses) || !count($statuses)) return array();
-		$itemOrders = self::_getItemsByOrderId($orderId);
+	function changeItemOrdersStatus(int $orderId, array $statuses){
+		if(!count($statuses)) return array();
+		$itemOrders = soyshop_get_item_orders($orderId);
 		if(!count($itemOrders)) return array();
 
 		$changes = array();
@@ -446,9 +431,9 @@ class OrderLogic extends SOY2LogicBase{
 		return $changes;
 	}
 
-	function changeItemOrdersFlag($orderId, $flags){
-		if(!is_array($flags) || !count($flags)) return array();
-		$itemOrders = self::_getItemsByOrderId($orderId);
+	function changeItemOrdersFlag(int $orderId, array $flags){
+		if(!count($flags)) return array();
+		$itemOrders = soyshop_get_item_orders($orderId);
 		if(!count($itemOrders)) return array();
 
 		$changes = array();
@@ -466,7 +451,7 @@ class OrderLogic extends SOY2LogicBase{
 		return $changes;
 	}
 
-	function getOrderCountListByItemIds($itemIds){
+	function getOrderCountListByItemIds(array $itemIds){
 		if(!count($itemIds)) return array();
 
 		//予約カレンダーの場合は保留
@@ -503,29 +488,21 @@ class OrderLogic extends SOY2LogicBase{
 		return $orders;
 	}
 
-	function getTrackingNumberListByIds($ids){
-		if(!is_array($ids) || !count($ids)) return array();
+	function getTrackingNumberListByIds(array $ids){
+		if(!count($ids)) return array();
 		return SOY2DAOFactory::create("order.SOYShop_OrderDAO")->getTrackingNumberListByIds($ids);
 	}
 
 	//orderIdとuserIdの対応一覧
-	function getOrderIdAndUserIdPairList($orderIds){
-		if(!is_array($orderIds) || !count($orderIds)) return array();
+	function getOrderIdAndUserIdPairList(array $orderIds){
+		if(!count($orderIds)) return array();
 		return SOY2DAOFactory::create("order.SOYShop_OrderDAO")->getOrderIdAndUserIdPairList($orderIds);
 	}
 
-	function getOrderDateListByIds($ids){
-		if(!is_array($ids) || !count($ids)) return array();
+	function getOrderDateListByIds(array $ids){
+		if(!count($ids)) return array();
 		return SOY2DAOFactory::create("order.SOYShop_OrderDAO")->getOrderDateListByIds($ids);
 	}
-
-	private function _getItemsByOrderId($orderId) {
-    	try{
-			return self::itemOrderDao()->getByOrderId($orderId);
-    	}catch(Exception $e){
-    		return array();
-    	}
-    }
 
 	private function itemOrderDao(){
 		static $dao;

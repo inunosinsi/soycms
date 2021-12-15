@@ -68,11 +68,11 @@ class ImportOrderInfoLogic extends ExImportLogicBase{
 			if(!self::checkExistedOrder($odate)) continue;
 
 			//商品が登録されているか調べる
-			$itemId = self::getItemIdByCode($values[$this->factors[self::CODE]]);
+			$itemId = soyshop_get_item_object_by_code($values[$this->factors[self::CODE]])->getId();
 			if(is_null($itemId)) continue;
 
 			//顧客情報を調べる。なければ登録
-			$userId = self::getUserIdByMailAddress($values[$this->factors[self::MAILADRS]]);
+			$userId = soyshop_get_user_object_by_mailaddress($values[$this->factors[self::MAILADRS]])->getId();
 			if(is_null($userId)) $userId = self::registerUser($values);
 			if(is_null($userId)) continue;
 
@@ -142,32 +142,9 @@ class ImportOrderInfoLogic extends ExImportLogicBase{
 	}
 
 	/**
-	 * @登録されている商品か調べる。登録されていればtrueを返す
-	 * @param String code
-	 * @return boolean
-	 */
-	private function getItemIdByCode($code){
-		if(is_null($code)) return null;
-
-		try{
-			return $this->itemDao->getByCode($code)->getId();
-		}catch(Exception $e){
-			return null;
-		}
-	}
-
-	private function getUserIdByMailAddress($email){
-		try{
-			return $this->userDao->getByMailAddress($email)->getId();
-		}catch(Exception $e){
-			return null;
-		}
-	}
-
-	/**
 	 * @受注管理ですでに登録されていないか調べる。なければtrueを返す
 	 */
-	private function checkExistedOrder($odate){
+	private function checkExistedOrder(int $odate){
 		try{
 			$res = $this->orderDao->executeQuery("SELECT id FROM soyshop_order WHERE user_id = :uid AND order_date = :date LIMIT 1", array(":uid" => $res[0]["id"], ":date" => $odate));
 		}catch(Exception $e){

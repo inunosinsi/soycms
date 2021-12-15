@@ -24,13 +24,7 @@ function soyshop_shipping_schedule_notice_each_items($html, $page){
 					if(strpos($code, ".html")) $code = str_replace(".html", "", $code);
 				}
 
-				if(strlen($code)){
-					try{
-						$itemId = (int)SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getByCode($code)->getId();
-					}catch(Exception $e){
-						//
-					}
-				}
+				if(strlen($code)) $itemId = soyshop_get_item_object_by_code($code)->getId();
 			}
 		}
 

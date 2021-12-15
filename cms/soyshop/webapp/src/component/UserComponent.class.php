@@ -648,9 +648,7 @@ class UserComponent {
 							$new = (isset($_POST["new_password"]["new"])) ? $_POST["new_password"]["new"] : "";
 
 							try{
-								$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
-								$oldUser = $userDAO->getById($app->getAttribute("logined_userid"));
-
+								$oldUser = soyshop_get_user_object((int)$app->getAttribute("logined_userid"));
 								if( $user->checkPassword($oldUser) ){
 									if( strlen($new) < $passCnt ){
 										//新しいパスワード設定で文字数が足りない場合
@@ -729,14 +727,11 @@ class UserComponent {
 				//メールアドレスの重複チェック
 				$userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 
-				try{
-					$oldUser = $userDao->getByMailAddress($user->getMailAddress());
-				}catch(Exception $e){
-					break;
-				}
+				$oldUser = soyshop_get_user_object_by_mailaddress((string)$user->getMailAddress());
+				if(!is_numeric($oldUser->getId())) break;	//idがなければ登録なし
 
 				//パスワードが空の時はユーザ登録していないものと見做す
-				if(is_null($oldUser->getPassword()) || strlen($oldUser->getPassword()) === 0) break;
+				if(strlen((string)$oldUser->getPassword()) === 0) break;
 
 				$tmpUser = SOYShop_DataSets::get("config.mypage.tmp_user_register", 1);
 
@@ -766,14 +761,11 @@ class UserComponent {
 
 				//すでに登録されているアドレスと入力したアドレスが異なる場合は重複チェックを開始する
 				if($oldAddress != $newAddress){
-					$userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
-					try{
-						$duplication = $userDao->getByMailAddress($newAddress);
-						$app->addErrorMessage("mail_address", MessageManager::get("MAIL_ADDRESS_REGISTERED_ALREADY"));
-						$res = false;
-					}catch(Exception $e){
-						//問題なし
-					}
+					$oldUser = soyshop_get_user_object_by_mailaddress((string)$newAddress);
+					if(!is_numeric($oldUser->getId())) break;	//idなければ登録なし
+
+					$app->addErrorMessage("mail_address", MessageManager::get("MAIL_ADDRESS_REGISTERED_ALREADY"));
+					$res = false;
 				}
 
 				break;

@@ -35,6 +35,42 @@ abstract class SOYShop_OrderDateAttributeDAO extends SOY2DAO{
 	abstract function getByOrderIdAndFieldId($orderId, $fieldId);
 
 	/**
+	 * @final
+	 * @param int OrderId, array $fieldIds
+	 * @return array
+	 */
+	function getByOrderIdAndFieldIds(int $orderId, array $fieldIds){
+		if(!count($fieldIds)) return array();
+
+		try{
+			$res = $this->executeQuery(
+				"SELECT * ".
+				"FROM soyshop_order_date_attribute ".
+				"WHERE order_id = :orderId ".
+				"AND order_field_id IN (\"" . implode("\",\"", $fieldIds) . "\")",
+				array(":orderId" => $orderId)
+			);
+		}catch(Exception $e){
+			$res = array();
+		}
+
+		$list = array();
+		if(count($res)){
+			foreach($res as $v){
+				$list[$v["order_field_id"]] = $this->getObject($v);
+			}
+		}
+
+		foreach($fieldIds as $fieldId){
+			if(!isset($list[$fieldId])){
+				$list[$fieldId] = new SOYShop_OrderDateAttribute();
+			}
+		}
+
+		return $list;
+	}
+
+	/**
      * @query #orderId# = :orderId AND #fieldId# = :fieldId
      */
     abstract function delete($orderId, $fieldId);

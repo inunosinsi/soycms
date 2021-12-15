@@ -35,8 +35,7 @@ class MailBuilder implements SOY2LogicInterface,SOYShop_MailBuilder{
 	 * 注文情報を作る
 	 */
 	private function buildOrderMailBody(SOYShop_Order $order, SOYShop_User $user){
-		$logic = SOY2Logic::createInstance("logic.order.OrderLogic");
-		$orderItems = $logic->getItemsByOrderId($order->getId());
+		$itemOrders = soyshop_get_item_orders($order->getId());
 
 		$mail = array();
 
@@ -47,7 +46,7 @@ class MailBuilder implements SOY2LogicInterface,SOYShop_MailBuilder{
 
 		//注文商品
 		$mail[] = "";
-		$mail = array_merge($mail, $this->buildOrderInfo($order, $orderItems));
+		$mail = array_merge($mail, $this->buildOrderInfo($order, $itemOrders));
 
 		//配送先、備考
 		$mail[] = "";
@@ -65,7 +64,7 @@ class MailBuilder implements SOY2LogicInterface,SOYShop_MailBuilder{
 	 * 注文内容
 	 * @return Array
 	 */
-	private function buildOrderInfo(SOYShop_Order $order, array $orderItems){
+	private function buildOrderInfo(SOYShop_Order $order, array $itemOrders){
 
 		$mail = array();
 
@@ -73,8 +72,8 @@ class MailBuilder implements SOY2LogicInterface,SOYShop_MailBuilder{
 		$itemPrice = 0;
 
 		$itemColumnSize = 0;
-		foreach($orderItems as $orderItem){
-			$itemColumnSize = max($itemColumnSize,mb_strwidth($orderItem->getItemName()));
+		foreach($itemOrders as $itemOrder){
+			$itemColumnSize = max($itemColumnSize,mb_strwidth($itemOrder->getItemName()));
 		}
 		$itemColumnSize += "5";
 
@@ -86,19 +85,19 @@ class MailBuilder implements SOY2LogicInterface,SOYShop_MailBuilder{
 
 		$mail[] = str_repeat("-",$itemColumnSize + 30);
 
-		foreach($orderItems as $orderItem){
-			$item = soyshop_get_item_object($orderItem->getItemId());
+		foreach($itemOrders as $itemOrder){
+			$item = soyshop_get_item_object($itemOrder->getItemId());
 			if(!strlen($item->getName())){
-				$item->setName($orderItem->getItemName());
+				$item->setName($itemOrder->getItemName());
 				$item->setCode("-");
 			}
 
 			$str  = self::printColumn($item->getOpenItemName(),"left",$itemColumnSize);
 			$str .= self::printColumn($item->getCode(),"left");
-			$str .= self::printColumn(number_format($orderItem->getItemCount())." 点");
-			$str .= self::printColumn(number_format($orderItem->getItemPrice())." 円");
+			$str .= self::printColumn(number_format($itemOrder->getItemCount())." 点");
+			$str .= self::printColumn(number_format($itemOrder->getItemPrice())." 円");
 
-			$itemPrice += $orderItem->getTotalPrice();
+			$itemPrice += $itemOrder->getTotalPrice();
 
 			$mail[] = $str;
 		}

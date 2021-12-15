@@ -11,7 +11,7 @@ class MultiUploaderUtil {
 		$attr = self::_getAttr($entryId);
 		$v = $attr->getValue();
 
-		$pathes = (strlen($v)) ? soy2_unserialize($v) : array();
+		$pathes = (is_string($v)) ? soy2_unserialize($v) : array();
 		$pathes[] = $path;
 
 		$attr->setValue(soy2_serialize(array_unique($pathes)));	//画像が重複している場合は一つにする
@@ -53,7 +53,7 @@ class MultiUploaderUtil {
 
 	public static function getImagePathes(int $entryId){
 		$v = self::_getAttr($entryId)->getValue();
-		return (strlen($v)) ? soy2_unserialize($v) : array();
+		return (is_string($v)) ? soy2_unserialize($v) : array();
 	}
 
 	public static function updateAlt(int $entryId, string $hash, string $alt){

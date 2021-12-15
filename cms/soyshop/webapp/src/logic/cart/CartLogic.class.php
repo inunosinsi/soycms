@@ -58,7 +58,7 @@ class CartLogic extends SOY2LogicBase{
 	public static function getCart(string $cartId=""){
 		if(!strlen($cartId)) $cartId = (defined("SOYSHOP_CURRENT_CART_ID")) ? SOYSHOP_CURRENT_CART_ID : soyshop_get_cart_id();
 		$cart = SOY2ActionSession::getUserSession()->getAttribute("soyshop_" . SOYSHOP_ID . $cartId);
-		if(is_string($cart) && strlen($cart)) $cart = soy2_unserialize($cart);
+		if(is_string($cart)) $cart = soy2_unserialize($cart);
 		return ($cart instanceof CartLogic) ? $cart : new CartLogic($cartId);
 	}
 
@@ -893,7 +893,7 @@ class CartLogic extends SOY2LogicBase{
 			//完了したらメールの送信
 			$this->sendMail("payment");
 
-			$orderLogic->setMailStatus($this->getAttribute("order_id"), "payment", time());
+			$orderLogic->setMailStatus((int)$this->getAttribute("order_id"), "payment", time());
 		}catch(Exception $e){
 			//メール送信に失敗した場合
 			$orderLogic->addHistory($this->getAttribute("order_id"), "支払い確認メールの送信に失敗しました。");
@@ -1047,19 +1047,15 @@ class CartLogic extends SOY2LogicBase{
 		$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 
 		//登録済みユーザーかどうか
-		try{
-			$tmpUser = $userDAO->getByMailAddress($user->getMailAddress());
-		}catch(Exception $e){
-			$tmpUser = null;
-		}
+		$tmpUser = soyshop_get_user_object_by_mailaddress((string)$user->getMailAddress());
 
 		//二回目以降のユーザ
-		if($tmpUser instanceof SOYShop_User){
+		if(is_numeric($tmpUser->getId())){
 
 			//ログインしていてもuser_idを持っていないことがある。→ soyshop.mypage.loginの拡張機能の影響
 			if( $this->getAttribute("logined") && !is_null($this->getAttribute("logined_userid"))){
-				$id = $this->getAttribute("logined_userid");
-				$newPassword = $this->getAttribute("new_password");
+				$id = (int)$this->getAttribute("logined_userid");
+				$newPassword = (string)$this->getAttribute("new_password");
 
 				$user->setId($id);
 
@@ -1295,7 +1291,7 @@ class CartLogic extends SOY2LogicBase{
 			$logic->sendMail($this->getCustomerInformation()->getMailAddress(), $title, $mailBody, $userName, $this->order);
 
 			//メール送信フラグ
-			$orderLogic->setMailStatus($this->getAttribute("order_id"), "order", time());
+			$orderLogic->setMailStatus((int)$this->getAttribute("order_id"), "order", time());
 
 			//ログ
 			$orderLogic->addHistory($this->getAttribute("order_id"), "注文者宛の".$logic->getMailTypeName($type, false)."を送信しました。");

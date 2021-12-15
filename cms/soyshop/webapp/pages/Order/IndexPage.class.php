@@ -27,7 +27,7 @@ class IndexPage extends WebPage{
 
 	function __construct($args){
 		parent::__construct();
-
+		
 		//一覧ページを開いた時に何らかの処理をする
 		SOYShopPlugin::load("soyshop.order");
 		SOYShopPlugin::invoke("soyshop.order", array(

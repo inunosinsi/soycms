@@ -17,7 +17,7 @@ class CustomfieldReplacementStringMailReplace extends SOYShopOrderMailReplace{
 		if(is_null($content)){
 			$content = "";
 			try{
-				$itemOrders = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO")->getByOrderId($orderId);
+				$itemOrders = soyshop_get_item_orders($orderId);
 			}catch(Exception $e){
 				return "";
 			}

@@ -4,36 +4,36 @@
  * @table URLShortener
  */
 class URLShortener extends SOY2DAO_EntityBase {
-	
+
 	const TYPE_ENTRY = 1; //entry
 	const TYPE_PAGE = 2;//page
-	
+
 	/**
 	 * @id
 	 */
     private $id;
-    
+
     /**
      * @column url_from
      */
     private $from;
-    
+
     /**
      * @column url_to
      */
     private $to;
-    
+
     /**
      * @column target_type
      */
     private $targetType;
-    
+
     /**
      * @column target_id
      */
     private $targetId;
 
-    
+
    	private $title;
    	private $memo;
 
@@ -43,16 +43,15 @@ class URLShortener extends SOY2DAO_EntityBase {
    	private $attr;
    	private $cdate;
    	private $udate;
- 
+
 	function check(){
-		
 		if(empty($this->from) || empty($this->to)){
 			return false;
 		}
 
 		return true;
 	}
-	
+
    	public function getId() {
    		return $this->id;
    	}
@@ -120,17 +119,12 @@ class URLShortener extends SOY2DAO_EntityBase {
    	public function setUdate($udate) {
    		$this->udate = $udate;
    	}
-   	
+
    	/* Util */
    	public function getAttrArray() {
-   		if(!soy2_unserialise($this->attr)){
-   			return array();
-   		}
-   		return soy2_unserialise($this->attr);
+   		return soy2_unserialise((string)$this->attr);
    	}
    	public function setAttrArray($attr) {
    		$this->attr = soy2_serialize($attr);
    	}
-
 }
-?>

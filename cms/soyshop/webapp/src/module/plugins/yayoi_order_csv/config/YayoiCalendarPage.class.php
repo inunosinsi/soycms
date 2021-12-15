@@ -75,7 +75,7 @@ class YayoiCalendarPage extends WebPage{
 					if(!self::checkBeforeChange($v["id"], $start)) continue;
 
 					//どちらでも使用する項目
-					$claimed = soy2_unserialize($v["claimed_address"]);
+					$claimed = soy2_unserialize((string)$v["claimed_address"]);
 					$tel = self::removeHyphen($claimed["telephoneNumber"]);
 
 					//卸
@@ -138,7 +138,7 @@ class YayoiCalendarPage extends WebPage{
 						if(!count($itemOrders)) continue;
 
 						//手数料を追加
-						$mods = soy2_unserialize($v["modules"]);
+						$mods = soy2_unserialize((string)$v["modules"]);
 						foreach($mods as $mod){
 							if((int)$mod->getPrice() === 0) continue;
 

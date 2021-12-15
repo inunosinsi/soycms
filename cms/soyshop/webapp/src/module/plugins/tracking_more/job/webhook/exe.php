@@ -10,5 +10,5 @@ if(isset($argv[1])){
 
 	soyshop_load_db_config();
 
-	SOY2Logic::createInstance("module.plugins.tracking_more.logic.TrackLogic")->registSlipNumbers();
+	SOY2Logic::createInstance("module.plugins.tracking_more.logic.TrackLogic")->registSliperNumbers();
 }

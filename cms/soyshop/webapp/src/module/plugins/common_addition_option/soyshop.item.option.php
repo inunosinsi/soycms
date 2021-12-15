@@ -61,8 +61,6 @@ class AdditionOption extends SOYShopItemOptionBase{
 		}
 
 		return $checkOptionId;
-
-
 	}
 
 	function doPost(int $index, CartLogic $cart){
@@ -79,32 +77,19 @@ class AdditionOption extends SOYShopItemOptionBase{
 
 			if(isset($isAddition) && $isAddition > 0){
 
-				$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-				try{
-					$array = $dao->getByItemId($itemId);
-				}catch(Exception $e){
-					echo $e->getPDOExceptionMessage();
-				}
-
 				//加算を許可しているか調べる
-				if($array["addition_option_flag"]->getValue() > 0){
+				if(soyshop_get_item_attribute_value($itemId, "addition_option_flag", "bool")){
+					$add = soyshop_get_item_attribute_value($itemId, "addition_option_price", "int");
+					$addPrice = (int)$items[$index]->getItemPrice() + $add;
 
-					//加算額を設定していない場合は、加算処理を終了する
-					if(isset($array["addition_option_price"])){
+					//加算した値をセットする
+					$items[$index]->setItemPrice($addPrice);
 
-						$price = $items[$index]->getItemPrice();
+					//合計金額の変更を行う
+					$count = $items[$index]->getItemCount();
+					$items[$index]->setTotalPrice($addPrice * $count);
 
-						$addPrice = (int)$price + (int)$array["addition_option_price"]->getValue();
-
-						//加算した値をセットする
-						$items[$index]->setItemPrice($addPrice);
-
-						//合計金額の変更を行う
-						$count = $items[$index]->getItemCount();
-						$items[$index]->setTotalPrice($addPrice * $count);
-
-						$checkAddition = true;
-					}
+					$checkAddition = true;
 				}
 			}
 		}else{
@@ -132,14 +117,8 @@ class AdditionOption extends SOYShopItemOptionBase{
 
 		//属性フラグがtrueだった場合、設定からテキストを取得する？
 		if($attributeFlag){
-			$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-			try{
-				$array = $dao->getByItemId($itemId);
-			}catch(Exception $e){
-				echo $e->getPDOExceptionMessage();
-			}
-
-			$html[] = (isset($array["addition_option_name"])) ? $array["addition_option_name"]->getValue() : "加算";
+			$name = soyshop_get_item_attribute_value($itemId, "addition_option_name", "string");
+			$html[] = (strlen($name)) ? $name : "加算";
 		}
 
 		return implode("<br />", $html);
@@ -163,28 +142,10 @@ class AdditionOption extends SOYShopItemOptionBase{
 
 	function display(SOYShop_ItemOrder $item){
 		//加算されている場合は、加算内容を表示
-		$isAddition = ($item->getIsAddition() == 1);
+		if($item->getIsAddition() != 1) return "";
 
-		$html = array();
-
-		if($isAddition){
-
-			$itemId = $item->getItemId();
-
-			$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-			try{
-				$array = $dao->getByItemId($itemId);
-			}catch(Exception $e){
-//				echo $e->getPDOExceptionMessage();
-			}
-
-			$html[] = (isset($array["addition_option_name"])) ? $array["addition_option_name"]->getValue() : "加算";
-		}
-
-		return implode("<br />", $html);
-	}
-
-	function edit($key){
+		$name = soyshop_get_item_attribute_value((int)$item->getItemId(), "addition_option_name", "string");
+		return (strlen($name)) ? $name : "加算";
 	}
 }
 

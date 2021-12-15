@@ -36,7 +36,7 @@ class CalendarBaseComponent extends SOY2LogicBase{
 
 	function __construct(){}
 
-	function build($y, $m, $dspOtherMD = true, $dspCaption = true, $dspRegHol = false, $dspMonthLink = false, $isBefore = false, $isNextMonth = false){
+	function build(int $y, int $m, bool $dspOtherMD=true, bool $dspCaption=true, bool $dspRegHol=false, bool $dspMonthLink=false, bool $isBefore=false, bool $isNextMonth=false){
 
 		//週のカウントを初期化する
 		$this->wc = 0;
@@ -70,7 +70,7 @@ class CalendarBaseComponent extends SOY2LogicBase{
 		return self::create(mktime(0, 0, 0, $m, 1, $y));
 	}
 
-	private function useGoogleCalendarDataAPI($y, $m){
+	private function useGoogleCalendarDataAPI(int $y, int $m){
 /**
 		$calendar_id = urlencode('japanese__ja@holiday.calendar.google.com');
 		// 取得期間
@@ -106,7 +106,7 @@ class CalendarBaseComponent extends SOY2LogicBase{
 	//定休日を取得する
 	function getRegularHolidayList(){}
 
-	private function create($t){
+	private function create(int $t){
 		//その月の日付の数
 		$last = date("t", $t);
 
@@ -266,7 +266,7 @@ class CalendarBaseComponent extends SOY2LogicBase{
 		return implode("\n", $html);
 	}
 
-	private function createDayColumn($i, $m, $w, $d, $last, $isOtherMonth = false, $t = null){
+	private function createDayColumn(int $i, int $m, int $w, int $d, int $last, bool $isOtherMonth = false, $t = null){
 
 		//定休日リスト
 		$rhList = (isset($this->regularHolidayList[$m])) ? $this->regularHolidayList[$m] : array();
@@ -350,7 +350,7 @@ class CalendarBaseComponent extends SOY2LogicBase{
 	/**
 	 * override
 	 */
-	function handleFunc($i, $cd, $wc, $da, $isOtherMonth){
+	function handleFunc(int $i, int $cd, int $wc, string $da, bool $isOtherMonth){
 		return $i;
 	}
 

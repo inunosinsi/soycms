@@ -228,7 +228,7 @@ class TicketBaseLogic extends SOY2LogicBase{
 		//クレジット支払からの結果通知の場合はCartLogicのitemsは消えているので、再度取得する
 		if(is_null($itemOrders) || is_array($itemOrders)){
 			try{
-				$itemOrders = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO")->getByOrderId($order->getId());
+				$itemOrders = soyshop_get_item_orders($order->getId());
 			}catch(Exception $e){
 				$itemOrders = array();
 			}
@@ -242,41 +242,25 @@ class TicketBaseLogic extends SOY2LogicBase{
 	}
 
 	//商品ごとに設定したチケット枚数付与の割合
-	function getTicketCountConfig($itemId, $itemCount){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+	function getTicketCountConfig(int $itemId, int $itemCount){
 
 		//親商品がないか調べる
-		try{
-			$item = $dao->getById($itemId);
-			if(is_numeric($item->getType())) $itemId = $item->getType();
-		}catch(Exception $e){
-			//
-		}
+		$item = soyshop_get_item_object($itemId);
+		if(is_numeric($item->getType())) $itemId = (int)$item->getType();
 
 		$count = self::getTicketCountByItemId($itemId);
 		return $count * $itemCount;
 	}
 
-	function getUser($userId){
-		if(!$this->userDao) $this->userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
-		try{
-			return $this->userDao->getById($userId);
-		}catch(Exception $e){
-			return new SOYShop_User();
-		}
+	function getUser(int $userId){
+		return soyshop_get_user_object($userId);
 	}
 
-	private function getUserIdByMailAddress($mailaddress){
-		if(!$this->userDao) $this->userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
-		try{
-			return $this->userDao->getByMailAddress($mailaddress)->getId();
-		}catch(Exception $e){
-			return null;
-		}
+	private function getUserIdByMailAddress(string $mailaddress){
+		return soyshop_get_user_object_by_mailaddress($mailaddress)->getId();
 	}
 
-	function getTicketObjByUserId($userId){
+	function getTicketObjByUserId(int $userId){
 		try{
 			return $this->ticketDao->getByUserId($userId);
 		}catch(Exception $e){
@@ -284,15 +268,13 @@ class TicketBaseLogic extends SOY2LogicBase{
 		}
 	}
 
-	function getTicketCountByItemId($itemId){
-		try{
-			return (int)$this->itemAttributeDao->get($itemId, TicketBaseUtil::PLUGIN_ID)->getValue();
-		}catch(Exception $e){
-			return 1;
-		}
+	function getTicketCountByItemId(int $itemId){
+		$cnt = soyshop_get_item_attribute_value($itemId, TicketBaseUtil::PLUGIN_ID, "int");
+		if(!$cnt) $cnt = 1;
+		return $cnt;
 	}
 
-	function getTotalCountByOrderId($orderId){
+	function getTotalCountByOrderId(int $orderId){
 		try{
 			$histories = SOY2DAOFactory::create("SOYShop_TicketHistoryDAO")->getByOrderId($orderId);
 		}catch(Exception $e){

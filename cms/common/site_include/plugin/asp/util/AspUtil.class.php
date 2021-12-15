@@ -21,7 +21,7 @@ class AspUtil {
 	//セッション内の値を取得
 	public static function get($row=false){
 		$v = SOY2ActionSession::getUserSession()->getAttribute("soycms_asp");
-		$values = (isset($v) && strlen($v)) ? soy2_unserialize($v) : array();
+		$values = (isset($v) && is_string($v)) ? soy2_unserialize($v) : array();
 
 		//オブジェクトにしないで配列のままで取得
 		if($row) return $values;

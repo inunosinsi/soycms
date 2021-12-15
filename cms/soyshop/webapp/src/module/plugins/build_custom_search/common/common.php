@@ -8,14 +8,14 @@ class CustomSearchCommon{
 	const SEARCH_TYPE_CHECKBOX = "checkbox";
 	const SEARCH_TYPE_RADIO = "radio";
 
-	public static function getFieldConfig($flag=true){
+	public static function getFieldConfig(bool $flag=true){
 		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 		return SOYShop_ItemAttributeConfig::load($flag);
 	}
 
 	public static function getConfig(){
-		$config = SOYShop_DataSets::get("build_custom_search", null);
-		$list = (isset($config)) ? soy2_unserialize($config) : array();
+		$config = SOYShop_DataSets::get("build_custom_search", "");
+		$list = (is_string($config)) ? soy2_unserialize($config) : array();
 		if(count($list) > 0){
 			$list["range_price"]["type"] = self::SEARCH_TYPE_RANGE;
 			$list["range_price"]["value"] = "";

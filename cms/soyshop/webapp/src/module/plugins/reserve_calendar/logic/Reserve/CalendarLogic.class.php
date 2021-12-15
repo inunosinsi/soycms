@@ -13,7 +13,7 @@ class CalendarLogic extends CalendarBaseComponent{
 	private $schList;
 	private $labelList;
 
-	function build($y, $m, $dspOtherMD = false, $dspCaption = true, $dspRegHol = true, $dspMonthLink = false, $isBefore = false, $isNextMonth = false){
+	function build(int $y, int $m, bool $dspOtherMD=false, bool $dspCaption=true, bool $dspRegHol=true, bool $dspMonthLink=false, bool $isBefore=false, bool $isNextMonth=false){
 		$this->year = $y;
 		$this->month = $m;
 
@@ -21,8 +21,8 @@ class CalendarLogic extends CalendarBaseComponent{
 
 		$this->reservedList = $resLogic->getReservedSchedulesByPeriod($y, $m);
 		$this->tmpReservedList = $resLogic->getReservedSchedulesByPeriod($y, $m, true);
-		$this->schList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Schedule.ScheduleLogic")->getScheduleList($this->itemId, $y, $m);
-		$this->labelList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getLabelList($this->itemId);
+		$this->schList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Schedule.ScheduleLogic")->getScheduleList((int)$this->itemId, $y, $m);
+		$this->labelList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getLabelList((int)$this->itemId);
 
 		//金額の拡張があるか？調べる
 		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_SchedulePriceDAO");
@@ -48,7 +48,7 @@ class CalendarLogic extends CalendarBaseComponent{
 		parent::setRegularHolidays(array($this->month => $array));
 	}
 
-	function handleFunc($i, $cd, $wc, $da, $isOtherMonth){
+	function handleFunc(int $i, int $cd, int $wc, string $da, bool $isOtherMonth){
 		$sch = self::getScheduleArray($i);
 
 		$html = array();

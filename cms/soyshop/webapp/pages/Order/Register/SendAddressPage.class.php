@@ -46,9 +46,8 @@ class SendAddressPage extends WebPage{
 
 		//入力値を呼び出す
 		$address = $this->session->getAttribute("order_register.input.send_address");
-		if(is_string($address) && strlen($address)){
-			$address = soy2_unserialize($address);
-		}
+		if(is_string($address) && strlen($address)) $address = soy2_unserialize($address);
+		
 		if( ! is_array($address)){
 	    	$user = new SOYShop_User();
 	    	$address = $user->getEmptyAddressArray();

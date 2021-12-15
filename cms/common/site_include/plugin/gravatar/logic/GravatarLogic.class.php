@@ -64,16 +64,16 @@ class GravatarLogic extends SOY2LogicBase{
 		return $values;
 	}
 
-	private function createHashByMailAddress($mailAddress){
+	private function createHashByMailAddress(string $mailAddress){
 		return md5( strtolower( trim( $mailAddress ) ) );
 	}
 
-	function isCacheFile($fileName="profile"){
+	function isCacheFile(string $fileName="profile"){
 		return (file_exists(self::getCacheFilePath($fileName)));
 	}
 
-	function readCacheFile($fileName="profile"){
-		return soy2_unserialize(file_get_contents(self::getCacheFilePath($fileName)));
+	function readCacheFile(string $fileName="profile"){
+		return soy2_unserialize(string file_get_contents(self::getCacheFilePath($fileName)));
 	}
 
 	function generateCacheFile($values, $fileName="profile"){

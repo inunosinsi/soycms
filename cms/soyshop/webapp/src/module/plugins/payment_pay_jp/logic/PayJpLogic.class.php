@@ -129,48 +129,29 @@ class PayJpLogic extends SOY2LogicBase {
 		return array($res, $err);
 	}
 
-	function getCustomerTokenByMailAddress($mailAddress){
-		try{
-			$userId = SOY2DAOFactory::create("user.SOYShop_UserDAO")->getByMailAddress($mailAddress)->getId();
-		}catch(Exception $e){
-			return null;
-		}
+	function getCustomerTokenByMailAddress(string $mailAddress){
+		$userId = soyshop_get_user_object_by_mailaddress($mailAddress)->getId();
+		if(!is_numeric($userId)) return null;
 		return self::getCustomerTokenByUserId($userId);
 	}
 
-	function getCustomerTokenByUserId($userId){
+	function getCustomerTokenByUserId(int $userId){
 		return self::getTokenAttributeByUserId($userId)->getValue();
 	}
 
-	function getTokenAttributeByUserId($userId){
-		try{
-			return self::userAttrDao()->get($userId, self::FIELD_KEY);
-		}catch(Exception $e){
-			$attr = new SOYShop_UserAttribute();
-			$attr->setUserId($userId);
-			$attr->setFieldId(self::FIELD_KEY);
-			return $attr;
-		}
+	function getTokenAttributeByUserId(int $userId){
+		return soyshop_get_user_attribute_object($userId, self::FIELD_KEY);
 	}
 
-	function saveCustomerTokenByUserId($token, $userId){
-		$attr = $this->getTokenAttributeByUserId($userId);
+	function saveCustomerTokenByUserId(string $token, int $userId){
+		$attr = soyshop_get_user_attribute_object($userId, self::FIELD_KEY);
 		$attr->setValue($token);
-
-		try{
-			self::userAttrDao()->insert($attr);
-		}catch(Exception $e){
-			try{
-				self::userAttrDao()->update($attr);
-			}catch(Exception $e){
-				var_dump($e);
-			}
-		}
+		soyshop_save_user_attribute_object($attr);
 	}
 
 	function deleteCustomerTokenByUserId($userId){
 		try{
-			self::userAttrDao()->delete($userId, self::FIELD_KEY);
+			SOY2DAOFactory::create("user.SOYShop_UserAttributeDAO")->delete($userId, self::FIELD_KEY);
 		}catch(Exception $e){
 			//
 		}
@@ -188,11 +169,5 @@ class PayJpLogic extends SOY2LogicBase {
 		$script[] = "};";
 
 		return implode("\n", $script);
-	}
-
-	private function userAttrDao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("user.SOYShop_UserAttributeDAO");
-		return $dao;
 	}
 }

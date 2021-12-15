@@ -85,7 +85,7 @@ class B2OutputCSV{
 		$company = B2OrderCsvUtil::getCompanyInfomation();
 
 		//使ってない？
-		// $itemOrders = B2OrderCsvUtil::getOrderItemsByOrderId($orderId);
+		// $itemOrders = soyshop_get_item_orders($orderId);
 		// $itemOrder = array_shift($itemOrders);
 
 		//代引きか？

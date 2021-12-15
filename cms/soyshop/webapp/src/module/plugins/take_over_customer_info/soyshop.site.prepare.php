@@ -47,14 +47,10 @@ class TakeOverCustomerInfoPrepare extends SOYShopSitePrepareAction{
 		$user->setId(null);	//当ショップの顧客ではないため、IDをnullにする
 
 		//取得したメールアドレスで検索をする
-		try{
-			$tmp = SOY2DAOFactory::create("user.SOYShop_UserDAO")->getByMailAddress($user->getMailAddress());
-			if(is_numeric($tmp->getId())){
-				$user = $tmp;
-				unset($tmp);
-			}
-		}catch(Exception $e){
-			//
+		$tmp = soyshop_get_user_object_by_mailaddress($user->getMailAddress());
+		if(is_numeric($tmp->getId())) {
+			$user = $tmp;
+			unset($tmp);
 		}
 
 		//カートに顧客情報を登録する

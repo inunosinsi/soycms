@@ -6,7 +6,7 @@ class AddMailAddressEachItemAddMailAddress extends SOYShopAddMailAddress{
 		//取り急ぎ、注文受け付け時のみ
 		if(!$orderFlag) return array();
 
-		$itemOrders = SOY2Logic::createInstance("logic.order.OrderLogic")->getItemsByOrderId($order->getId());
+		$itemOrders = soyshop_get_item_orders($order->getId());
 		if(!count($itemOrders)) return array();
 
         $list = array();

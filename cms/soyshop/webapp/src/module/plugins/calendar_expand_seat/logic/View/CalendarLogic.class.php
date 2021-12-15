@@ -14,7 +14,7 @@ class CalendarLogic extends CalendarBaseComponent{
 
 	private $config;
 
-	function build($y, $m, $dspOtherMD = true, $dspCaption = false, $dspRegHol = true, $dspMonthLink = false, $isBefore = true, $isNextMonth = false){
+	function build(int $y, int $m, bool $dspOtherMD=true, bool $dspCaption=false, bool $dspRegHol=true, bool $dspMonthLink=false, bool $isBefore=true, bool $isNextMonth=false){
 		$this->year = $y;
 		$this->month = $m;
 
@@ -54,7 +54,7 @@ class CalendarLogic extends CalendarBaseComponent{
 		parent::setRegularHolidays(array($this->month => $array));
 	}
 
-	function handleFunc($i, $cd, $wc, $da, $isOtherMonth){
+	function handleFunc(int $i, int $cd, int $wc, string $da, bool $isOtherMonth){
 		if(is_numeric($isOtherMonth)) $isOtherMonth = true;
 		$sch = self::getScheduleArray($i);
 

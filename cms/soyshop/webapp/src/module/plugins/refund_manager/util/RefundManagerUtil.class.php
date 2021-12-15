@@ -9,30 +9,16 @@ class RefundManagerUtil {
 	const ACCOUNT_TYPE_NORMAL = 1;
 	const ACCOUNT_TYPE_CURRENT = 2;
 
-	public static function save($params, $isProcessed, $orderId){
-
-		//値の確認 種別がある場合は保存
-		if(isset($params["type"])){
-			$dao = self::dao();
-			$obj = new SOYShop_OrderAttribute();
-			$obj->setOrderId($orderId);
-			$obj->setFieldId(self::FIELD_ID);
-			$obj->setValue1(soy2_serialize($params));
-			$obj->setValue2($isProcessed);	//処理済みか？
-
-			try{
-				$dao->insert($obj);
-			}catch(Exception $e){
-				try{
-					$dao->update($obj);
-				}catch(Exception $e){
-					var_dump($e);
-				}
-			}
-		}
+	public static function save(array $params, bool $isProcessed, int $orderId){
+		$attr = soyshop_get_order_attribute_object($orderId, self::FIELD_ID);
+		$v = (isset($params["type"])) ? soy2_serialize($params) : null;
+		$v2 = ($isProcessed) ? 1 : null;
+		$attr->setValue1($v);
+		$attr->setValue2($v2);
+		soyshop_save_order_attribute_object($attr);
 	}
 
-	public static function get($orderId, $everytime=false){
+	public static function get(int $orderId, bool $everytime=false){
 		if($everytime){	//隠しモード
 			return self::_get2($orderId);
 		}else{
@@ -40,7 +26,7 @@ class RefundManagerUtil {
 		}
 	}
 
-	public static function getTypeTextByOrderId($orderId, $everytime=false){
+	public static function getTypeTextByOrderId(int $orderId, bool $everytime=false){
 		if($everytime){		//隠しモード
 			list($values, $isProcessed) = self::_get2($orderId);
 		}else{
@@ -60,7 +46,7 @@ class RefundManagerUtil {
 		return self::_getAccountTypeList();
 	}
 
-	public static function getAccountTypeText($type){
+	public static function getAccountTypeText(int $type){
 		$types = self::_getAccountTypeList();
 		return (isset($types[$type])) ? $types[$type] : "普通";
 	}
@@ -72,14 +58,14 @@ class RefundManagerUtil {
 		);
 	}
 
-	private static function _get($orderId){
+	private static function _get(int $orderId){
 		static $values, $isProcessed;
 		if(is_null($values)){
 			try{
-				$obj = self::dao()->get($orderId, self::FIELD_ID);
+				$attr = soyshop_get_order_attribute_object($orderId, self::FIELD_ID);
 				//設置値と処理済みかどうかを返す
-				$values = soy2_unserialize($obj->getValue1());
-				$isProcessed = (int)$obj->getValue2();
+				$values = soy2_unserialize((string)$attr->getValue1());
+				$isProcessed = (int)$attr->getValue2();
 			}catch(Exception $e){
 				$values = array();
 				$isProcessed = 0;
@@ -89,24 +75,16 @@ class RefundManagerUtil {
 	}
 
 	//値のみ取得	隠し機能
-	private static function _get2($orderId){
+	private static function _get2(int $orderId){
 		try{
-			$obj = self::dao()->get($orderId, self::FIELD_ID);
+			$attr = soyshop_get_order_attribute_object($orderId, self::FIELD_ID);
 			//設置値と処理済みかどうかを返す
-			$values = soy2_unserialize($obj->getValue1());
-			$isProcessed = (int)$obj->getValue2();
+			$values = soy2_unserialize((string)$attr->getValue1());
+			$isProcessed = (int)$attr->getValue2();
 		}catch(Exception $e){
 			$values = array();
 			$isProcessed = 0;
 		}
 		return array($values, $isProcessed);
-	}
-
-
-
-	private static function dao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("order.SOYShop_OrderAttributeDAO");
-		return $dao;
 	}
 }

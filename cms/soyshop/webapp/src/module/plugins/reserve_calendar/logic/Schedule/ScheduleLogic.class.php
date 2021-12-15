@@ -6,7 +6,7 @@ class ScheduleLogic extends SOY2LogicBase{
         SOY2::imports("module.plugins.reserve_calendar.domain.*");
     }
 
-    function getScheduleById($scheduleId){
+    function getScheduleById(int $scheduleId){
         try{
             return self::dao()->getById($scheduleId);
         }catch(Exception $e){
@@ -14,7 +14,7 @@ class ScheduleLogic extends SOY2LogicBase{
         }
     }
 
-    function getScheduleList($itemId, $year, $month){
+    function getScheduleList(int $itemId, int $year, int $month){
         $list = self::dao()->getScheduleList($itemId, $year, $month);
 
 		$nextY = $year;
@@ -33,7 +33,7 @@ class ScheduleLogic extends SOY2LogicBase{
         return $list;
 	}
 
-    private function _autoInsert($itemId, $year, $month){
+    private function _autoInsert(int $itemId, int $year, int $month){
 		SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
 		$cnf = ReserveCalendarUtil::getAutoConfig($itemId);
 		if(!isset($cnf["register"]) || (int)$cnf["register"] != 1 && (int)$cnf["seat"] === 0) return true;
@@ -71,13 +71,13 @@ class ScheduleLogic extends SOY2LogicBase{
         return true;
     }
 
-	function findLatestScheduleDate($year, $month){
+	function findLatestScheduleDate(int $year, int $month){
 		return self::dao()->findLatestScheduleDate($year, $month);
 	}
 
 	//指定の日から○日分の予定を取得する
-	function getScheduleListFromDays($itemId, $now=null, $days=30, $deadline=0){
-		if(is_null($now)) $now = time();
+	function getScheduleListFromDays(int $itemId, int $now=0, int $days=30, int $deadline=0){
+		if($now === 0) $now = time();
 		$now = soyshop_shape_timestamp($now);	//整形
 		$list = self::dao()->getScheduleListFromDays($itemId, $now, $days, $deadline);
 

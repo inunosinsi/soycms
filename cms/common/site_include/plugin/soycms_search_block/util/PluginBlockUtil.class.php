@@ -78,7 +78,7 @@ class PluginBlockUtil {
 
 		if(!class_exists("PluginBlockComponent")) SOY2::import("site_include.block.PluginBlockComponent.block", ".php");
 		foreach($blocks as $block){
-			$pageObj = soy2_unserialize($block->getObject());
+			$pageObj = soy2_unserialize((string)$block->getObject());
 			if($pageObj->getPluginId() == $pluginId){
 				return $block->getSoyId();
 			}

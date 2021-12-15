@@ -14,9 +14,8 @@ class EditPage extends WebPage{
 
 		if(soy2_check_token()){
 
-			$logic = SOY2Logic::createInstance("logic.order.OrderLogic");
-			$order = $logic->getById($this->id);
-			$itemOrders = $logic->getItemsByOrderId($this->id);
+			$order = soyshop_get_order_object($this->id);
+			$itemOrders = soyshop_get_item_orders($order->getId());
 
 			$change = array();
 
@@ -696,7 +695,7 @@ class EditPage extends WebPage{
 		));
 
 		$this->createAdd("item_list", "_common.Order.ItemOrderFormListComponent", array(
-			"list" => $logic->getItemsByOrderId($this->id),
+			"list" => soyshop_get_item_orders($this->id),
 			"htmlObj" => $this
 		));
 

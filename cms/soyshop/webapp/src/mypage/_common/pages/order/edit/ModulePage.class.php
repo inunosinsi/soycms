@@ -23,7 +23,7 @@ class ModulePage extends MainMyPagePageBase{
 				if(!count($values)) continue;
 				foreach($values as $v){
 					$historyText = $this->getHistoryText($v["label"], $v["old"], $v["new"]);
-					$orderLogic->addHistory($this->orderId, $historyText, null, $author);
+					$orderLogic->addHistory($this->orderId, $historyText, "", $author);
 					$histories[] = $historyText;
 				}
 			}
@@ -98,12 +98,12 @@ class ModulePage extends MainMyPagePageBase{
 						case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_SELECT:
 							if($newValue1 != $obj["value1"]){
 								$historyText = $this->getHistoryText($obj["label"], $obj["value1"], $newValue1);
-								$orderLogic->addHistory($this->orderId, $historyText, null, $author);
+								$orderLogic->addHistory($this->orderId, $historyText, "", $author);
 								$histories[] = $historyText;
 							}
 							if(isset($newValue2) && $newValue2 != $obj["value2"]){
 								$historyText = $this->getHistoryText($obj["label"], $obj["value2"], $newValue2);
-								$orderLogic->addHistory($this->orderId, $historyText, null, $author);
+								$orderLogic->addHistory($this->orderId, $historyText, "", $author);
 								$histories[] = $historyText;
 							}
 							//ここで配列を入れてしまう。
@@ -135,7 +135,7 @@ class ModulePage extends MainMyPagePageBase{
 							if(is_null($newValue2)){
 								if($newValue1 !== (int)$obj["value1"]){
 									$historyText = $this->getHistoryText($obj["label"], $this->convertDateText($obj["value1"]), $this->convertDateText($newValue1));
-									$orderLogic->addHistory($this->orderId, $historyText, null, $author);
+									$orderLogic->addHistory($this->orderId, $historyText, "", $author);
 									$histories[] = $historyText;
 								}
 
@@ -143,7 +143,7 @@ class ModulePage extends MainMyPagePageBase{
 							}else{
 								if($newValue1 !== (int)$obj["value1"] || $newValue2 !== (int)$obj["value2"]){
 									$historyText = $this->getHistoryText($obj["label"], $this->convertDateText($obj["value1"]) . " ～ " . $this->convertDateText($obj["value1"]), $this->convertDateText($newValue1) . " ～ " . $this->convertDateText($newValue2));
-									$orderLogic->addHistory($this->orderId, $historyText, null, $author);
+									$orderLogic->addHistory($this->orderId, $historyText, "", $author);
 									$histories[] = $historyText;
 								}
 							}

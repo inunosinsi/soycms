@@ -13,7 +13,7 @@ if(count($pages)){
 
 	foreach($pages as $page){
 		$blocks = $page->getObject()->getComplexPageBlocks();
-		if(is_null($blocks)) continue;
+		if(!is_string($blocks)) continue;
 
 		$blocks = soy2_unserialize($blocks);
 		if(!is_array($blocks) || !count($blocks)) continue;

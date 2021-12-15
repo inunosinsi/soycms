@@ -16,8 +16,7 @@ class SOYShop_RelativeItem_CSV extends SOYShopItemCSVBase{
 	 * export
 	 */
 	function export($itemId){
-		$attr = soyshop_get_item_attribute_object($itemId, self::PLUGIN_ID);
-		$arr = soy2_unserialize($attr->getValue());
+		$arr = soy2_unserialize(soyshop_get_item_attribute_value($itemId, self::PLUGIN_ID, "string"));
 		return (is_array($arr)) ? implode(" ",$arr) : "";
 	}
 

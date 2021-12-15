@@ -57,7 +57,7 @@ class TableOfContentsPlugin{
 				$res = array();
 			}
 
-			if(isset($res[0]["entry_value"]) && strlen($res[0]["entry_value"])) {
+			if(isset($res[0]["entry_value"]) && is_string($res[0]["entry_value"])) {
 				$array = soy2_unserialize($res[0]["entry_value"]);
 				$logic = SOY2Logic::createInstance("site_include.plugin.table_of_contents.logic.CreateHeadingLogic");
 				$heading = $logic->createHeading($array);

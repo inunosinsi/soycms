@@ -112,11 +112,8 @@ class SOYMailConnectorOrderCustomfield extends SOYShopOrderCustomfield{
 	}
 
 	private function _checkNoRegisterMailAdress(string $mailAddress){
-		try{
-			return ((int)SOY2DAOFactory::create("user.SOYShop_UserDAO")->getByMailAddress($mailAddress)->getId() > 0);
-		}catch(Exception $e){
-			return false;
-		}
+		$userId = soyshop_get_user_object_by_mailaddress($mailAddress)->getId();
+		return (is_numeric($userId) && $userId > 0);
 	}
 }
 SOYShopPlugin::extension("soyshop.order.customfield", "soymail_connector", "SOYMailConnectorOrderCustomfield");

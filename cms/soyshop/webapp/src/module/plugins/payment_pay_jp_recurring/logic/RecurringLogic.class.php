@@ -223,9 +223,9 @@ class RecurringLogic extends SOY2LogicBase {
 		return $list;
 	}
 
-	function getCustomerTokenByMailAddress($mailAddress){
+	function getCustomerTokenByMailAddress(string $mailAddress){
 		try{
-			$userId = (int)SOY2DAOFactory::create("user.SOYShop_UserDAO")->getByMailAddress($mailAddress)->getId();
+			$userId = (int)soyshop_get_user_object_by_mailaddress($mailAddress)->getId();
 		}catch(Exception $e){
 			return null;
 		}
@@ -236,7 +236,7 @@ class RecurringLogic extends SOY2LogicBase {
 		return soyshop_get_user_attribute_value($userId, self::FIELD_KEY, "string");
 	}
 
-	function checkCardExpirationDateByUserId($userId){
+	function checkCardExpirationDateByUserId(int $userId){
 		$token = self::getCustomerTokenByUserId($userId);
 		if(!strlen($token)) return null;
 

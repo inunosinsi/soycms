@@ -164,13 +164,7 @@ class ReserveCalendarDetailPage extends WebPage{
 	}
 
 	private function getUserIdAfterRegister(array $values){
-		try{
-			$old = $this->userDao->getByMailAddress($values["mailAddress"]);
-			}catch(Exception $e){
-			$old = new SOYShop_User();
-		}
-
-		$user = SOY2::cast($old, $values);
+		$user = SOY2::cast(soyshop_get_user_object_by_mailaddress($values["mailAddress"]), $values);
 		$user->setUserType(SOYShop_User::USERTYPE_REGISTER);
 
 		try{

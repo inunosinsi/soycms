@@ -6,7 +6,7 @@ class OrderPage extends WebPage{
 
 	function doPost(){
 		if(soy2_check_token()){
-			$itemOrders = SOY2Logic::createInstance("logic.order.OrderLogic")->getItemsByOrderId($this->id);
+			$itemOrders = soyshop_get_item_orders($this->id);
 			$itemOrderDao = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
 
 			$cnt = 0;
@@ -27,12 +27,8 @@ class OrderPage extends WebPage{
 		$this->id = (isset($args[0])) ? (int)$args[0] : "";
 		parent::__construct();
 
-		$logic = SOY2Logic::createInstance("logic.order.OrderLogic");
-		try{
-			$order = $logic->getById($this->id);
-		}catch(Exception $e){
-			SOY2PageController::jump("Order.Detail." . $this->id);
-		}
+		$order = soyshop_get_order_object($this->id);
+		if(!is_numeric($order->getId()) SOY2PageController::jump("Order.Detail." . $this->id);
 
 		$this->addLabel("order_name_text", array(
 			"text" => $order->getTrackingNumber()
@@ -49,7 +45,7 @@ class OrderPage extends WebPage{
 		$this->addForm("form");
 
 		$this->createAdd("item_list", "_common.Order.ItemOrderListComponent", array(
-			"list" => $logic->getItemsByOrderId($this->id)
+			"list" => soyshop_get_item_orders($order->getId())
 		));
 	}
 

@@ -295,7 +295,7 @@ class DetailPage extends WebPage{
 			"style" => "font-weight:normal !important;"
 		));
 
-		$itemOrders = SOY2Logic::createInstance("logic.order.OrderLogic")->getItemsByOrderId($this->id);
+		$itemOrders = soyshop_get_item_orders($this->id);
 
         /*** 注文商品 ***/
 		$this->addForm("confirm_form");

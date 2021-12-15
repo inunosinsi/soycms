@@ -166,7 +166,7 @@ class AdminCartLogic extends CartLogic{
 
 		if(!$cartId) $cartId = SOYSHOP_CURRENT_CART_ID;
 		$userSession = SOY2ActionSession::getUserSession();
-		$cart = soy2_unserialize($userSession->getAttribute("soyshop_" . SOYSHOP_ID . $cartId));
+		$cart = soy2_unserialize((string)$userSession->getAttribute("soyshop_" . SOYSHOP_ID . $cartId));
 
 		return ($cart instanceof AdminCartLogic) ? $cart : new AdminCartLogic($cartId);
 	}

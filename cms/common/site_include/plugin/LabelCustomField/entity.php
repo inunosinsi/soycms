@@ -434,7 +434,7 @@ class LabelCustomField{
 		$html = array();
 
 		$opts = explode("\n", $v);
-		$pairConf = (strlen($this->extraValues)) ? soy2_unserialize($this->extraValues) : array();
+		$pairConf = (is_string($this->extraValues)) ? soy2_unserialize($this->extraValues) : array();
 
 		if(isset($pairConf["pair"])){
 			$values = (isset($pairConf["pair"]) && is_array($pairConf["pair"])) ? $pairConf["pair"] : array();

@@ -31,7 +31,7 @@ class addressPage extends MainMyPagePageBase{
 				$orderDao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
 				$orderDao->begin();
 
-				if(count($change)) SOY2Logic::createInstance("logic.order.OrderLogic")->addHistory($this->orderId, implode("\n", $change), null, "顧客:" . $this->getUser()->getName());
+				if(count($change)) SOY2Logic::createInstance("logic.order.OrderLogic")->addHistory($this->orderId, implode("\n", $change), "", "顧客:" . $this->getUser()->getName());
 
 				try{
 					$orderDao->update($order);

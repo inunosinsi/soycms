@@ -51,7 +51,7 @@ class SOYShop_OrderDateAttribute {
 	function getValue() {
 		return $this->value1;
 	}
-	function setValue($value) {
+	function setValue($value1) {
 		$this->value1 = $value1;
 	}
 	function getValue1() {

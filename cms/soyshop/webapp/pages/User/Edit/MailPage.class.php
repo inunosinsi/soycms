@@ -35,28 +35,23 @@ class MailPage extends WebPage{
 		/*
 		 * 元のデータを読み込む
 		 */
-		try{
-			$user = soyshop_get_user_object($this->id);
-			$user->setMailAddress($new_email);
-		}catch(Exception $e){
+	 	$user = soyshop_get_user_object($this->id);
+		if(!is_numeric($user->getId())){
 			SOY2PageController::jump("User.Edit.Mail." . $this->id."?failed");
 		}
+
+		$oldUser = soyshop_get_user_object_by_mailaddress($new_email);
+		if(!is_numeric($oldUser->getId())) {
+			SOY2PageController::jump("User.Edit.Mail." . $this->id . "?used_email");
+		}
+
+		$user->setMailAddress($new_email);
 
 		/*
 		 * 書式チェック
 		 */
 		if(!$user->isValidEmail()){
 			SOY2PageController::jump("User.Edit.Mail." . $this->id . "?wrong_email");
-		}
-
-		/*
-		 * すでに利用されていれば不可
-		 */
-		try{
-			$dao->getByMailAddress($new_email);
-			SOY2PageController::jump("User.Edit.Mail." . $this->id . "?used_email");
-		}catch(Exception $e){
-			//OK
 		}
 
 		/*
@@ -68,7 +63,6 @@ class MailPage extends WebPage{
 		}catch(Exception $e){
 			SOY2PageController::jump("User.Edit.Mail." . $this->id."?failed");
 		}
-
 	}
 
 	private function _buildForm(SOYShop_User $user){

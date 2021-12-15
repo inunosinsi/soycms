@@ -25,9 +25,7 @@ class SampleMailBuilder2 extends SOYShopOrderMailBuilder{
 	 * 注文者と管理者に同じ文面を送る
 	 */
     protected function buildOrderMailBody(SOYShop_Order $order, SOYShop_User $user){
-
-    	$logic = SOY2Logic::createInstance("logic.order.OrderLogic");
-    	$orderItems = $logic->getItemsByOrderId($order->getId());
+    	$itemOrders = soyshop_get_item_orders($order->getId());
 
     	//支払い方法を取ってくる
     	$payment = null;
@@ -55,7 +53,7 @@ class SampleMailBuilder2 extends SOYShopOrderMailBuilder{
     	$mail[] = "";
 
 		//注文された商品
-		$mail = array_merge($mail, $this->buildOrderInfo($order, $orderItems));
+		$mail = array_merge($mail, $this->buildOrderInfo($order, $itemOrders));
 		$mail[] = "";
 		//配送先
 		$mail = array_merge($mail, $this->buildDeliveryInfo($order));
@@ -73,7 +71,7 @@ class SampleMailBuilder2 extends SOYShopOrderMailBuilder{
      * 注文内容
      * @return Array
      */
-    protected function buildOrderInfo($order, $orderItems){
+    protected function buildOrderInfo($order, $itemOrders){
 
     	$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 
@@ -85,17 +83,17 @@ class SampleMailBuilder2 extends SOYShopOrderMailBuilder{
     	$mail[] = "   ================================================================";
 
 		$count = 0;
-    	foreach($orderItems as $orderItem){
-			$mail[] = "   [品名] " . $orderItem->getItemName();
-			$str   = "            税込単価:" . $this->printColumn(number_format($orderItem->getItemPrice()),"right",10)."円"
-			        ."    数量:" . $this->printColumn(number_format($orderItem->getItemCount()),"right",4)
-			        ."    小計:" . $this->printColumn(number_format($orderItem->getTotalPrice()),"right",10)."円";
+    	foreach($itemOrders as $itemOrder){
+			$mail[] = "   [品名] " . $itemOrder->getItemName();
+			$str   = "            税込単価:" . $this->printColumn(number_format($itemOrder->getItemPrice()),"right",10)."円"
+			        ."    数量:" . $this->printColumn(number_format($itemOrder->getItemCount()),"right",4)
+			        ."    小計:" . $this->printColumn(number_format($itemOrder->getTotalPrice()),"right",10)."円";
 			$mail[] = $str;
 
-    		$itemPrice += $orderItem->getTotalPrice();
+    		$itemPrice += $itemOrder->getTotalPrice();
 
 			$count++;
-			if($count < count($orderItems)){
+			if($count < count($itemOrders)){
 				$mail[] = "   ----------------------------------------------------------------";
 			}
     	}

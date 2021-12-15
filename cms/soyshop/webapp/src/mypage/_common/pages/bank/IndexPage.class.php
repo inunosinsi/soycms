@@ -72,10 +72,7 @@ class IndexPage extends MainMyPagePageBase{
 		static $v;
 		if(is_null($v)){
 			$v = $this->getMypage()->getAttribute(TransferInfoUtil::BANK_INFO);
-			if(is_null($v)){
-				$attr = TransferInfoUtil::getUserAttr($this->getUser()->getId(), TransferInfoUtil::BANK_INFO);
-				$v = (strlen($attr->getValue())) ? soy2_unserialize($attr->getValue()) : array();
-			}
+			if(is_null($v)) $v = soy2_unserialize(soyshop_get_user_attribute_value($this->getUser()->getId(), TransferInfoUtil::BANK_INFO, "string"));
 		}
 		return (isset($v[$t])) ? $v[$t] : "";
 	}

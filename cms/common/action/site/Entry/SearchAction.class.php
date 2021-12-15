@@ -150,7 +150,7 @@ class SearchActionForm extends SOY2ActionForm{
 		if(!isset($_GET["label"]) && isset($_GET["labelOperator"])){
 			$this->label = array();
 		} else if(!count($this->label) && isset($_COOKIE["ENTRY_SEARCH_LABELS"])){
-			$this->label = soy2_unserialize($_COOKIE["ENTRY_SEARCH_LABELS"]);
+			$this->label = soy2_unserialize((string)$_COOKIE["ENTRY_SEARCH_LABELS"]);
 			if(!is_array($this->label)) $this->label = array();
 		}
 		return $this->label;

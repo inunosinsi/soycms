@@ -6,10 +6,10 @@ class PriceLogic extends SOY2LogicBase {
 		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ScheduleDAO");
 	}
 
-	function getLowPriceAndHighPriceByItemId($itemId){
+	function getLowPriceAndHighPriceByItemId(int $itemId){
 		static $list;
 		if(is_null($list)) $list = array();
-		if(is_null($itemId) || !is_numeric($itemId)) return array(0, 0);
+		if($itemId === 0) return array(0, 0);
 		if(isset($list[$itemId])) return $list[$itemId];
 
 		$start = null;

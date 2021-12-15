@@ -158,7 +158,7 @@ class MainMyPagePageBase extends WebPage{
 		static $itemOrders;
 		if(is_null($itemOrders)){
 			try{
-	            $itemOrders = SOY2Logic::createInstance("logic.order.OrderLogic")->getItemsByOrderId($orderId);
+	            $itemOrders = soyshop_get_item_orders($orderId);
 	        }catch(Exception $e){
 	            $itemOrders = array();
 	        }

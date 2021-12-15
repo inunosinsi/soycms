@@ -15,8 +15,7 @@ class Analytics_ItemratePage extends Analytics_CommonPage{
 		$end = AnalyticsPluginUtil::convertTitmeStamp("end");
 
 		$this->createAdd("item_graph_list", "ItemGraphListComponent", array(
-			"list" => $this->calc($start, $end),
-			"itemDao" => SOY2DAOFactory::create("shop.SOYShop_ItemDAO")
+			"list" => $this->calc($start, $end)
 		));
 	}
 
@@ -69,11 +68,9 @@ class Analytics_ItemratePage extends Analytics_CommonPage{
 
 class ItemGraphListComponent extends HTMLList{
 
-	private $itemDao;
-
 	protected function populateItem($entity) {
-		$itemId = (isset($entity["item_id"])) ? (int)$entity["item_id"] : null;
-		$item = $this->getItem($itemId);
+		$itemId = (isset($entity["item_id"])) ? (int)$entity["item_id"] : 0;
+		$item = soyshop_get_item_object($itemId);
 
 		$this->addLabel("label", array(
 			"text" => $item->getName()
@@ -86,18 +83,5 @@ class ItemGraphListComponent extends HTMLList{
 		$this->addLabel("itemcount", array(
 			"text" => (isset($entity["SUM(item_count)"])) ? $entity["SUM(item_count)"] : 0
 		));
-	}
-
-	function getItem($itemId){
-		try{
-			$item = $this->itemDao->getById($itemId);
-		}catch(Exception $e){
-			$item = new SOYShop_Item();
-		}
-		return $item;
-	}
-
-	function setItemDao($itemDao){
-		$this->itemDao = $itemDao;
 	}
 }

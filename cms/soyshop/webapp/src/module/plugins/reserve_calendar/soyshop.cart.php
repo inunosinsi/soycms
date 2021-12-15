@@ -91,7 +91,7 @@ class ReserveCalendarCart extends SOYShopCartBase{
 
 			//価格の更新
 			foreach($items as $index => $itemOrder){
-				$schId = $cart->getAttribute(ReserveCalendarUtil::getCartAttributeId("schedule_id", $index, $itemOrder->getItemId()));
+				$schId = (int)$cart->getAttribute(ReserveCalendarUtil::getCartAttributeId("schedule_id", $index, $itemOrder->getItemId()));
 				$schPrice = (int)$schLogic->getScheduleById($schId)->getPrice();
 				$itemOrder->setItemPrice($schPrice);
 				$itemOrder->setTotalPrice($schPrice * $itemOrder->getItemCount());

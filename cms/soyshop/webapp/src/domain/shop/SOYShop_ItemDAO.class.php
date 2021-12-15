@@ -344,7 +344,7 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
 		if(!defined("SOYSHOP_ADMIN_PAGE") || !SOYSHOP_ADMIN_PAGE) $query->where .= " AND detail_page_id > 0 ";
 
 		$result = $this->executeOpenItemQuery($query, $binds);
-		
+
 		if(count($result) > 0){
 			return $result[0]["item_count"];
 		}
@@ -504,8 +504,7 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
 	function deleteByCode($code){
 		try{
 			$item = $this->getByCode($code);
-			$id = $item->getId();
-			$this->delete($id);
+			$this->delete($item->getId());
 		}catch(Exception $e){
 
 		}

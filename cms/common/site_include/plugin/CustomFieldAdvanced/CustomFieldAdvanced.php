@@ -306,7 +306,7 @@ class CustomFieldPluginAdvanced{
 						if(!class_exists("ListFieldListComponent")) SOY2::import("site_include.plugin.CustomFieldAdvanced.component.ListFieldListComponent");
 						$htmlObj->createAdd($field->getId() . "_list", "ListFieldListComponent", array(
 							"soy2prefix" => "cms",
-							"list" => ($master->getType() == "list" && is_string($attr["html"]) && strlen($attr["html"])) ? soy2_unserialize($attr["html"]) : array()
+							"list" => ($master->getType() == "list" && is_string($attr["html"])) ? soy2_unserialize($attr["html"]) : array()
 						));
 					}
 
@@ -351,7 +351,7 @@ class CustomFieldPluginAdvanced{
 					}
 
 					//ペアフィールド
-					if($master->getType() == "pair" && strlen($master->getExtraValues())){
+					if($master->getType() == "pair" && is_string($master->getExtraValues())){
 						$extraValues = soy2_unserialize($master->getExtraValues());
 
 						//後方互換

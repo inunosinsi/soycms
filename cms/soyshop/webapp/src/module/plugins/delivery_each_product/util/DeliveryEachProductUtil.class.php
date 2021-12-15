@@ -12,8 +12,7 @@ class DeliveryEachProductUtil{
       if($mode != self::MODE_FEE) return $v;
 
       // modeがfeeの場合は初期設定を取得
-	  $cnf = (strlen($v)) ? soy2_unserialize($v) : array();
-
+	  $cnf = soy2_unserialize($v);
       if(isset($cnf[1]) && is_numeric($cnf[1])) return soy2_serialize($cnf);
 
       SOY2::import("module.plugins.delivery_normal.util.DeliveryNormalUtil");

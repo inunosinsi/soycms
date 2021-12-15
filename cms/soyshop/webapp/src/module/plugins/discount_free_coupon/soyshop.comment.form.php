@@ -46,7 +46,7 @@ class DiscountFreeCouponComment extends SOYShopCommentFormBase{
 
 	private function getItemTotalPriceByOrderId($orderId){
 		try{
-			$itemOrders = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO")->getByOrderId($orderId);
+			$itemOrders = soyshop_get_item_orders($orderId);
 		}catch(Exception $e){
 			$itemOrders = array();
 		}

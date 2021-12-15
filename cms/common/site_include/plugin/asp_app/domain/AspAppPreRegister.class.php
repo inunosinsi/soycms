@@ -28,7 +28,7 @@ class AspAppPreRegister {
 	}
 
 	function getDataArray(){
-		return soy2_unserialize($this->data);
+		return soy2_unserialize((string)$this->data);
 	}
 	function setDataArray($array){
 		//パスワードはハッシュで保持
