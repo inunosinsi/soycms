@@ -27,8 +27,7 @@ class ModuleListComponent extends HTMLList{
 			"link" => $detailLink
 		));
 
-		return (strlen($entity->getName()) > 0);
+		return (strlen((string)$entity->getName()) > 0);
 	}
 
 }
-

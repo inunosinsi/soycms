@@ -5,13 +5,10 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 
 	const PLUGIN_ID = "item_standard_plugin";
 
-	private $attrDao;
-
 	function doPost(SOYShop_Item $item){
-		$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+		$itemDao = soyshop_get_hash_table_dao("item");
 
 		if(isset($_POST["Standard"])){
-			self::prepare();
 			foreach($_POST["Standard"] as $cnfId => $value){
 				if(!strlen($value)) $value = "";
 
@@ -122,8 +119,7 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 	 */
 	function onOutput($htmlObj, SOYShop_Item $item){
 		SOY2::import("module.plugins.item_standard.util.ItemStandardUtil");
-		self::prepare();
-
+		
 		$itemId = (is_numeric($item->getId())) ? (int)$item->getId() : 0;
 
 		foreach(ItemStandardUtil::getConfig() as $values){
@@ -222,14 +218,14 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 
 	private function _checkIsChildItemStock(int $parentId, string $type){
 		if($type != "group") return false;
-
+		$dao = new SOY2DAO();
 		$sql = "SELECT COUNT(*) FROM soyshop_item ".
 				"WHERE item_type = :parentId ".
 				"AND item_stock = 0 ".
 				"AND is_disabled != 1";
 
 		try{
-			$res = $this->attrDao->executeQuery($sql, array(":parentId" => $parentId));
+			$res = $dao->executeQuery($sql, array(":parentId" => $parentId));
 		}catch(Exception $e){
 			$res = array();
 		}
@@ -240,6 +236,7 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 	private function _getItemStandardPrice(SOYShop_Item $item, string $mode = "min"){
 		if($item->getType() != SOYShop_Item::TYPE_GROUP) return array(0, 0, 0);
 
+		$dao = new SOY2DAO();
 		$sql = "SELECT item_price, item_sale_price, item_selling_price FROM soyshop_item ".
 				"WHERE item_type = :t ".
 				"AND item_is_open = " . SOYShop_Item::IS_OPEN . " ".
@@ -248,7 +245,7 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 				"AND order_period_end > " . time();
 
 		try{
-			$res = $this->attrDao->executeQuery($sql, array(":t" => $item->getId()));
+			$res = $dao->executeQuery($sql, array(":t" => $item->getId()));
 		}catch(Exception $e){
 			return array(0, 0, 0);
 		}
@@ -285,10 +282,6 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 		if(!is_numeric($item->getType())) return "";
 		$parent = soyshop_get_item_object($item->getType());
 		return trim(str_replace($parent->getName(), "", $item->getName()));
-	}
-
-	private function prepare(){
-		if(!$this->attrDao) $this->attrDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 	}
 }
 

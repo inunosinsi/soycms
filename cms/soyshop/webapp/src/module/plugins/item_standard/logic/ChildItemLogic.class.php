@@ -8,7 +8,7 @@ class ChildItemLogic extends SOY2LogicBase{
 		$this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 	}
 
-	function getChildItem($parentId, $keys){
+	function getChildItem(int $parentId, array $keys){
 		$sql = "SELECT * FROM soyshop_item ".
 				"WHERE item_type = :parentId ".
 				"AND is_disabled != " . SOYShop_Item::IS_DISABLED . " ".
@@ -47,7 +47,7 @@ class ChildItemLogic extends SOY2LogicBase{
 		return $child;
 	}
 
-	function setChildItemName($child, $parent, $keys){
+	function setChildItemName(SOYShop_Item $child, SOYShop_Item $parent, array $keys){
 		//名前のセット
 		$pname = $parent->getName();
 		foreach($keys as $key){
@@ -58,7 +58,7 @@ class ChildItemLogic extends SOY2LogicBase{
 		return $child;
 	}
 
-	function setParentInfo($child, $parent){
+	function setParentInfo(SOYShop_Item $child, SOYShop_Item $parent){
 
 		//商品コードのセット
 		$pcode = $parent->getCode();

@@ -5,9 +5,6 @@ class BuildFormLogic extends SOY2LogicBase{
 	const PLUGIN_ID = "item_standard_plugin";
 
 	private $parentId;	//コンストラクト時に商品IDを指定しておく
-
-	private $attrDao;
-	private $itemDao;
 	private $childLogic;
 	private $parentItem;
 
@@ -15,14 +12,13 @@ class BuildFormLogic extends SOY2LogicBase{
 
 	function __construct(){
 		SOY2::import("module.plugins.item_standard.util.ItemStandardUtil");
-		if(!$this->attrDao) $this->attrDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 		$this->childLogic = SOY2Logic::createInstance("module.plugins.item_standard.logic.ChildItemLogic");
 	}
 
 	function buildCustomFieldArea(){
-		$configs = ItemStandardUtil::getConfig();
+		$cnfs = ItemStandardUtil::getConfig();
 
-		if(!count($configs)) return "";
+		if(!count($cnfs)) return "";
 
 		$html = array();
 		$html[] = "<section>";
@@ -30,11 +26,10 @@ class BuildFormLogic extends SOY2LogicBase{
 		$html[] = "<div style=\"float:left;margin-right:5px;\">※規格を改行区切りで入力してください</div>";
 		$html[] = "<div style=\"float:left;\"><a href=\"" . SOY2PageController::createLink("Config.Detail") . "?plugin=item_standard&item_id=" . $this->parentId . "\" class=\"btn btn-success\">規格毎の料金設定</a></div>";
 		$html[] = "<br style=\"clear:both;\">";
-		foreach($configs as $conf){
-			$obj = self::get($this->parentId, $conf["id"]);
+		foreach($cnfs as $cnf){
 			$html[] = "<div class=\"form-group\">";
-			$html[] = "<label>" . $conf["standard"] . "(" . $conf["id"] . ")</label>";
-			$html[] = "<textarea name=\"Standard[" . $conf["id"] . "]\" class=\"form-control\" style=\"height:100px;\">" . $obj->getValue() . "</textarea>";
+			$html[] = "<label>" . $cnf["standard"] . "(" . $cnf["id"] . ")</label>";
+			$html[] = "<textarea name=\"Standard[" . $cnf["id"] . "]\" class=\"form-control\" style=\"height:100px;\">" . soyshop_get_item_attribute_value($this->parentId, $cnf["id"], "string") . "</textarea>";
 			$html[] = "</div>";
 		}
 
@@ -49,18 +44,16 @@ class BuildFormLogic extends SOY2LogicBase{
 	}
 
 	function buildCollectiveFormArea(){
-		$configs = ItemStandardUtil::getConfig();
+		$cnfs = ItemStandardUtil::getConfig();
 
-		if(!count($configs)) return "";
+		if(!count($cnfs)) return "";
 
 		$html = array();
 		$html[] = "<dl>";
-		foreach($configs as $conf){
-
-			$html[] = "<dt>" . $conf["standard"] . "(" . $conf["id"] . ")</dt>";
-			$html[] = "<dd><textarea name=\"Standard[" . $conf["id"] . "]\" class=\"form-control\" style=\"height:200px;\"></textarea>";
+		foreach($cnfs as $cnf){
+			$html[] = "<dt>" . $cnf["standard"] . "(" . $cnf["id"] . ")</dt>";
+			$html[] = "<dd><textarea name=\"Standard[" . $cnf["id"] . "]\" class=\"form-control\" style=\"height:200px;\"></textarea>";
 		}
-
 		$html[] = "</dl>";
 
 		return implode("\n", $html);
@@ -69,7 +62,7 @@ class BuildFormLogic extends SOY2LogicBase{
 	function buildStandardListArea(){
 		$list = array();	//使用する規格を保持しておく配列
 
-		$configs = ItemStandardUtil::getConfig();
+		$cnfs = ItemStandardUtil::getConfig();
 
 		$html = array();
 
@@ -79,10 +72,10 @@ class BuildFormLogic extends SOY2LogicBase{
 		$html[] = "	<thead>";
 		$html[] = "		<tr>";
 
-		foreach($configs as $conf){
-			if(isset($conf["id"]) && self::checkFieldValue($conf["id"])){
-				$html[] = "<th nowrap>" . $conf["standard"] . "</th>";
-				$list[] = $conf["id"];		//使用する規格を保持しておく
+		foreach($cnfs as $cnf){
+			if(isset($cnf["id"]) && self::checkFieldValue($cnf["id"])){
+				$html[] = "<th nowrap>" . $cnf["standard"] . "</th>";
+				$list[] = $cnf["id"];		//使用する規格を保持しておく
 			}
 		}
 		$html[] = "<th nowrap>在庫数</th>";
@@ -112,9 +105,9 @@ class BuildFormLogic extends SOY2LogicBase{
 	function getCandidate(){
 		$list = array();	//使用する規格を保持しておく配列
 
-		foreach(ItemStandardUtil::getConfig() as $conf){
-			if(isset($conf["id"]) && self::checkFieldValue($conf["id"])){
-				$list[] = $conf["id"];		//使用する規格を保持しておく
+		foreach(ItemStandardUtil::getConfig() as $cnf){
+			if(isset($cnf["id"]) && self::checkFieldValue($cnf["id"])){
+				$list[] = $cnf["id"];		//使用する規格を保持しておく
 			}
 		}
 
@@ -130,15 +123,16 @@ class BuildFormLogic extends SOY2LogicBase{
 		return $list;
 	}
 
-	private function _getCandidate($list){
+	private function _getCandidate(array $list){
 		$array = array();
 		$cmb = 1;	//組み合わせの数
 		$cnt = array();	//各々の要素数
 
-		foreach($list as $confId){
-			$obj = self::get($this->parentId, $confId);
-			if(!strlen($obj->getValue())) continue;
-			$values = explode("\n", $obj->getValue());
+		foreach($list as $cnfId){
+			$attrValue = soyshop_get_item_attribute_value($this->parentId, $cnfId, "string");
+			if(!strlen($attrValue)) continue;
+
+			$values = explode("\n", $attrValue);
 			$new = array();
 			foreach($values as $value){
 				$new[] = trim($value);
@@ -155,11 +149,10 @@ class BuildFormLogic extends SOY2LogicBase{
 				if(!isset($array[$i + 1])) break;
 			}
 		}
-
 		return $cands;
 	}
 
-	private function direct_product($array1, $array2) {
+	private function direct_product(array $array1, array $array2) {
 		$new = array();
 
 		foreach ($array1 as $v0) {
@@ -210,28 +203,12 @@ class BuildFormLogic extends SOY2LogicBase{
 		return implode("\n", $html);
 	}
 
-	private function checkFieldValue($confId){
-		return (strlen(self::get($this->parentId, $confId)->getValue()));
-	}
-
-	private function get($itemId, $confId){
-		try{
-			return $this->attrDao->get($itemId, self::PLUGIN_ID . "_" . $confId);
-		}catch(Exception $e){
-			return new SOYShop_ItemAttribute();
-		}
+	private function checkFieldValue($cnfId){
+		return (strlen(soyshop_get_item_attribute_value($this->parentId, $cnfId, "string")));
 	}
 
 	private function getParentItem(){
-		if(!$this->parentItem){
-			if(!$this->itemDao) $this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-			try{
-				$this->parentItem = $this->itemDao->getById($this->parentId);
-			}catch(Exception $e){
-				$this->parentItem = new SOYShop_Item();
-			}
-		}
-
+		if(!$this->parentItem) $this->parentItem = soyshop_get_item_object($this->parentId);
 		return $this->parentItem;
 	}
 
