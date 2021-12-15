@@ -5,7 +5,7 @@ function soyshop_output_user($htmlObj, SOYShop_User $user, $obj=null){
 	//メールアドレス
 	$htmlObj->addLabel("mail_address", array(
 		"soy2prefix" => SOYSHOP_SITE_PREFIX,
-		"text" => (strpos($user->getMailAddress(), DUMMY_MAIL_ADDRESS_DOMAIN) === false) ? $user->getMailAddress() : ""
+		"text" => (is_string($user->getMailAddress()) && strpos($user->getMailAddress(), DUMMY_MAIL_ADDRESS_DOMAIN) === false) ? $user->getMailAddress() : ""
 	));
 
 	$htmlObj->addLabel("name", array(

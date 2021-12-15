@@ -270,7 +270,7 @@ class SOYShop_User {
 		$this->profileId = $profileId;
 	}
 	function getImagePath(){
-		return $this->imagePath;
+		return (is_string($this->imagePath)) ? $this->imagePath : "";
 	}
 	function setImagePath($imagePath){
 		$this->imagePath = $imagePath;
@@ -401,7 +401,7 @@ class SOYShop_User {
 		$this->cellphoneNumber = $cellphoneNumber;
 	}
 	function getUrl(){
-		return $this->url;
+		return (is_string($this->url)) ? $this->url : "";
 	}
 	function setUrl($url){
 		$this->url = $url;
@@ -456,7 +456,7 @@ class SOYShop_User {
 		$this->jobFaxNumber = $jobFaxNumber;
 	}
 	function getMemo() {
-		return $this->memo;
+		return (is_string($this->memo)) ? $this->memo : "";
 	}
 	function setMemo($memo) {
 		$this->memo = $memo;

@@ -299,12 +299,9 @@ class OrderLogic extends SOY2LogicBase{
     	$dao->begin();
 
     	foreach($orderIds as $id){
-    		try{
-    			$order = $dao->getById($id);
-    		}catch(Exception $e){
-    			continue;
-    		}
-
+			$order = soyshop_get_order_object($id);
+			if(!is_numeric($order->getId())) continue;
+    		
     		$order->setPaymentStatus($status);
     		$historyContent = "支払い状態を<strong>「" . $order->getPaymentStatusText() ."」</strong>に変更しました。";
     		try{

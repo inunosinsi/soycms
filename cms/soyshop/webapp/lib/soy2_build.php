@@ -8896,7 +8896,7 @@ function soy2_stripslashes($value){
  * @return Array("width" => int, "height" => int)
  * 指定した画像の幅と高さを返す
  */
-function soy2_image_info($filepath){
+function soy2_image_info(string $filepath){
 	if(!is_readable($filepath) || is_dir($filepath)){
 		return false;
 	}
@@ -8939,7 +8939,7 @@ function soy2_image_info($filepath){
 /**
  * PathをURLに変換
  */
-function soy2_path2url($path){
+function soy2_path2url(string $path){
 	$path = soy2_realpath($path);
 	$root = soy2_realpath($_SERVER["DOCUMENT_ROOT"]);
 	$url = str_replace($root,"/",$path);
@@ -8949,7 +8949,7 @@ function soy2_path2url($path){
 /**
  * realpath 末尾が必ず「/」で返値
  */
-function soy2_realpath($dir){
+function soy2_realpath(string $dir){
 	$path = realpath($dir);
 	if(!$path)return $path;
 	$path = str_replace("\\","/",$path);
@@ -8959,7 +8959,7 @@ function soy2_realpath($dir){
 /**
  * URLの末尾をスラッシュで終わらせるか
  */
-function soy2_realurl($url){
+function soy2_realurl(string $url){
 	//末尾が拡張子の場合はそのまま
 	$arg = substr($url, strrpos($url, "/") + 1);
 	if(!strlen($arg) || $arg == "_notfound") return $url;
