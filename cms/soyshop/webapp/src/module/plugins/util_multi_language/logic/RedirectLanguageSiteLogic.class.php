@@ -266,13 +266,12 @@ class RedirectLanguageSiteLogic extends SOY2LogicBase{
 	 */
 	private function getPathInfo(){
 		if(isset($_SERVER['PATH_INFO'])){
-			$pathInfo = $_SERVER['PATH_INFO'];
-		}elseif(isset($_GET['pathinfo'])){
-			$pathInfo = $_GET['pathinfo'];
+			return $_SERVER['PATH_INFO'];
+		}else if(isset($_GET['pathinfo'])){
+			return $_GET['pathinfo'];
 		}else{
-			$pathInfo = null;
+			return "";
 		}
-		return $pathInfo;
 	}
 
 	private function isMobile(){

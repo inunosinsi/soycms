@@ -1,10 +1,13 @@
 # PAY.JP for PHP
 
-[![Build Status](https://travis-ci.org/payjp/payjp-php.svg?branch=master)](https://travis-ci.org/payjp/payjp-php)
+[![Build Status](https://github.com/payjp/payjp-php/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/payjp/payjp-php/actions)
 
 ## Requirements
 
-PHP 5.3.3 and later.
+PHP 5.6 and later.
+
+> Even if it is not a corresponding version, it may work, but it does not support it.
+  Due to the PHP [END OF LIFE](http://php.net/supported-versions.php) cycle. 
 
 ## Composer
 
@@ -12,7 +15,7 @@ You can install the bindings via [Composer](http://getcomposer.org/). Add this t
 
     {
       "require": {
-        "payjp/payjp-php": "0.0.x"
+        "payjp/payjp-php": "~1.0"
       }
     }
 
@@ -32,17 +35,48 @@ If you do not wish to use Composer, you can download the [latest release](https:
 
 ## Getting Started
 
-Simple usage looks like:
+In advance, you need to get a token by [Checkout](https://pay.jp/docs/checkout) or [payjp.js](https://pay.jp/docs/payjs).
 
-    \Payjp\Payjp::setApiKey('sk_test_c62fade9d045b54cd76d7036');
-    $myCard = array('number' => '4242424242424242', 'exp_month' => 5, 'exp_year' => 2020);
-    $charge = \Payjp\Charge::create(array('card' => $myCard, 'amount' => 2000, 'currency' => 'jpy'));
-    echo $charge;
+```php
+\Payjp\Payjp::setApiKey('sk_test_c62fade9d045b54cd76d7036');
+$charge = \Payjp\Charge::create(array(
+  'card' => 'token_id_by_Checkout_or_payjp-js',
+  'amount' => 2000,
+  'currency' => 'jpy'
+));
+echo $charge->amount; // 2000
+```
 
 ## Documentation
 
 - [Request Example](https://github.com/payjp/payjp-php/blob/master/RequestExample.md)
 - Please see our official [documentation](https://pay.jp/docs/started).
+
+## Retry on HTTP Status Code 429
+
+- See [Rate Limit Guideline](https://pay.jp/docs/guideline-rate-limit#2-%E3%83%AA%E3%83%88%E3%83%A9%E3%82%A4)
+- When you exceeded rate-limit, you can retry request by setting `$maxRetry`  
+  like `\Payjp\Payjp::setMaxRetry(3);` .
+- The retry interval base value is `$retryInitialDelay`  
+  Adjust the value like `\Payjp\Payjp::setRetryInitialDelay(4);`  
+  The smaller is shorter.
+- The retry interval calcurating is based on "Exponential backoff with equal jitter" algorithm.  
+  See https://aws.amazon.com/jp/blogs/architecture/exponential-backoff-and-jitter/
+
+## Logging
+
+- This library provides simple log output using `error_log` . You can set any logger that is compatible [PSR-3](https://www.php-fig.org/psr/psr-3/) logger interface. Like below
+- `\Payjp\Payjp::setLogger($logger);`
+- As the default behavior, this library output only error level information to stderr.
+
+### Logging Case
+#### info
+
+- Every retry on HTTP Status Code 429
+
+#### error
+
+- When you access inaccessible or non-existing property
 
 ## Tests
 

@@ -282,7 +282,7 @@ class Cart04Page extends MainCartPageBase{
 		));
 
 		$this->addLabel("send_address3", array(
-			"text" => $send["address3"]
+			"text" => (isset($send["address3"])) ? $send["address3"] : ""
 		));
 
 		$this->addLabel("send_tel", array(

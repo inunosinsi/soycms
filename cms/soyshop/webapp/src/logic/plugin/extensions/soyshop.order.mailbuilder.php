@@ -15,7 +15,7 @@ class SOYShopOrderMailBuilder implements SOY2PluginAction,SOYShop_MailBuilder{
 		return null;
 	}
 
-	function printColumn($str, $pos = "right", $width = 10){
+	function printColumn(string $str, string $pos="right", int $width=10){
 
     	$strWidth = mb_strwidth($str);
 

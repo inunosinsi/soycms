@@ -187,8 +187,8 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 					$value = (is_string($value)) ? soyshop_convert_file_path($value, $item) : null;
 
 					$extraValues = (isset($this->fieldTable[$config->getFieldId()])) ? $this->fieldTable[$config->getFieldId()]->getExtraValuesArray() : array();
-					if(!count($extraValues) && strlen($config->getExtraOutputs())){	//追加属性があるかだけ調べておく
-						$outputs = explode("\n", $config->getExtraOutputs());
+					if(!count($extraValues) && strlen((string)$config->getExtraOutputs())){	//追加属性があるかだけ調べておく
+						$outputs = explode("\n", (string)$config->getExtraOutputs());
 						if(count($outputs)){
 							foreach($outputs as $out){
 								$out = trim($out);

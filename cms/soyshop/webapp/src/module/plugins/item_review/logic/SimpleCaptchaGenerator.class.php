@@ -85,7 +85,7 @@ class SimpleCaptchaGenerator{
 		/*
 		 * 文字の大きさとかの準備
 		 */
-		for($i=0; $i<strlen($text); $i++) {
+		for($i = 0; $i < strlen($text); $i++) {
 			$char = substr($text, $i, 1);
 			$size = mt_rand($height * $self->sizeRange[0], $height * $self->sizeRange[1]);
 			$angle = mt_rand($self->rotRange[0], $self->rotRange[1]);
@@ -116,7 +116,7 @@ class SimpleCaptchaGenerator{
 				'color'	=> 0,
 			);
 
-			for($j=0; $j<$self->blurCount; $j++) {
+			for($j = 0; $j < $self->blurCount; $j++) {
 				$data[$i]['blur'][$j] = array (
 					'size'		=> $size*(1+(mt_rand(-$self->blurLevel[0],$self->blurLevel[0])/100)),
 					'angle'	=> $angle+mt_rand(-$self->blurLevel[1],$self->blurLevel[1]),
@@ -211,7 +211,9 @@ class SimpleCaptchaGenerator{
 				$line_data[$l][4] = $line_data[$l][2] + $thick;
 				$line_data[$l][6] = $line_data[$l][0] + $thick;
 			}
-			imagefilledpolygon($im, $line_data[$l], 4, $line_color[$l]);
+
+			//imagefilledpolygon($im, $line_data[$l], 4, $line_color[$l]);
+			imagefilledpolygon($im, $line_data[$l], $line_color[$l]);	// PHP8.1で引数4個を非推奨にした
 		}
 	}
 

@@ -37,7 +37,7 @@ class InquiryLogic extends SOY2LogicBase {
 		}catch(Exception $e){
 			return null;
 		}
-		
+
 		$mailLogId = self::send($inquiry);
 		$inquiry->setMailLogId($mailLogId);
 
@@ -91,7 +91,7 @@ class InquiryLogic extends SOY2LogicBase {
 		return $this->mailLogic->sendMail($this->user->getMailAddress(), $title, $body, $userName);
 	}
 
-	private function printColumn($str, $pos = "right",$width = 10){
+	function printColumn(string $str, string $pos="right", int $width=10){
 
 		$strWidth = mb_strwidth($str);
 

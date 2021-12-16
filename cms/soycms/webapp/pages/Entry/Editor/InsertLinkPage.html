@@ -188,10 +188,8 @@
 	}
 
 	function filemanager_ondblclick(url){
+		$('#foreignLink').val(url);
 		toggle_Filemanager();
-		var image = new Image;
-		image.src = url;
-		$('#foreignLink').val(image.src);
 	}
 
 </script>

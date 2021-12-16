@@ -62,6 +62,6 @@ class AmazonPayCardSelectPage extends WebPage{
 			$cart->save();
 			return $err;
 		}
-		return null;
+		return "";
 	}
 }
