@@ -105,7 +105,7 @@ class ItemOrderListComponent extends HTMLList{
 
 		$html = array();
 		foreach($htmls as $h){
-			if(!strlen($h)) continue;
+			if(!is_string($h) || !strlen($h)) continue;
 			$html[] = $h;
 		}
 
