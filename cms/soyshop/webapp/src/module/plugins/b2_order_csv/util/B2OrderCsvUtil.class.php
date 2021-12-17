@@ -20,7 +20,7 @@ class B2OrderCsvUtil {
 		return $cnf;
 	}
 
-	public static function saveConfig($values){
+	public static function saveConfig(array $values){
 		SOYShop_DataSets::put("b2_order_csv", $values);
 	}
 
@@ -37,7 +37,7 @@ class B2OrderCsvUtil {
 		return $info;
 	}
 
-	public static function getSelectedDeliveryMethod($orderId){
+	public static function getSelectedDeliveryMethod(int $orderId){
 		$attrs = soyshop_get_order_object($orderId)->getAttributeList();
 		if(!count($attrs)) return "";
 
@@ -50,11 +50,11 @@ class B2OrderCsvUtil {
 		return "";
 	}
 
-	public static function isDaibiki($orderId){
+	public static function isDaibiki(int $orderId){
 		return self::_isDaibiki($orderId);
 	}
 
-	private static function _isDaibiki($orderId){
+	private static function _isDaibiki(int $orderId){
 		$attrs = soyshop_get_order_object($orderId)->getAttributeList();
 		if(!count($attrs)) return false;
 
@@ -67,7 +67,7 @@ class B2OrderCsvUtil {
 		return false;
 	}
 
-	public static function getInvoiceType($orderId){
+	public static function getInvoiceType(int $orderId){
 
 		//隠し機能 $_POST["invoice"]がある場合はそれを利用する
 		if(isset($_POST["invoice"]) && is_numeric($_POST["invoice"])) return (int)$_POST["invoice"];
@@ -93,29 +93,18 @@ class B2OrderCsvUtil {
 		}
 	}
 
-	public static function mbConvertKana($str){
+	public static function mbConvertKana(string $str){
 		$str = mb_convert_kana($str, "a");
 		return str_replace(array("ー","－","ｰ"),"-",$str);
 	}
 
-	public static function removeHyphen($str){
+	public static function removeHyphen(string $str){
 		$str = mb_convert_kana($str, "a");
 		return str_replace(array("ー","－","ｰ"),"",$str);
 	}
 
-	public static function convertSpace($str){
+	public static function convertSpace(string $str){
 		return str_replace("　"," ",$str);
-	}
-
-	public static function getOrderItemsByOrderId($orderId){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
-
-		try{
-			return $dao->getByOrderId($orderId);
-		}catch(Exception $e){
-			return array();
-		}
 	}
 
 	/** 隠しモードの拡張機能 **/

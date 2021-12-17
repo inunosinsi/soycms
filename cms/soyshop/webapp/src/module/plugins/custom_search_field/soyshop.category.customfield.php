@@ -6,15 +6,15 @@ class CustomSearchFieldCategory extends SOYShopCategoryCustomFieldBase{
 	const FIELD_ID = "custom_search_field";
 	private $dbLogic;
 
-	function doPost($category){
+	function doPost(SOYShop_Category $category){
 
 		if(isset($_POST["custom_search"])){
-				self::prepare();
-				$this->dbLogic->save($category->getId(), $_POST["custom_search"]);
+			self::prepare();
+			$this->dbLogic->save($category->getId(), $_POST["custom_search"]);
 		}
 	}
 
-	function getForm($category){
+	function getForm(SOYShop_Category $category){
 		self::prepare();
 
 		$values = $this->dbLogic->getByCategoryId($category->getId());
@@ -32,16 +32,16 @@ class CustomSearchFieldCategory extends SOYShopCategoryCustomFieldBase{
 		return implode("\n", $html);
 	}
 
-	function onDelete($id){}
+	function onDelete(int $id){}
 
 	private function prepare(){
-    if(!$this->dbLogic){
-      $this->dbLogic = SOY2Logic::createInstance("module.plugins.custom_search_field.logic.DataBaseLogic", array("mode" => "category"));
-      SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
-  	}
+		if(!$this->dbLogic){
+			$this->dbLogic = SOY2Logic::createInstance("module.plugins.custom_search_field.logic.DataBaseLogic", array("mode" => "category"));
+			SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
+		}
 
-  	//多言語の方も念のため
-  	if(!defined("SOYSHOP_PUBLISH_LANGUAGE")) define("SOYSHOP_PUBLISH_LANGUAGE", "jp");
+  		//多言語の方も念のため
+		if(!defined("SOYSHOP_PUBLISH_LANGUAGE")) define("SOYSHOP_PUBLISH_LANGUAGE", "jp");
   }
 }
 

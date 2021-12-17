@@ -5,7 +5,6 @@ class ItemOptionFormListComponent extends HTMLList{
 	private $itemOrderId;
 
 	protected function populateItem($entity, $key) {
-
 		$label = SOYShopPlugin::invoke("soyshop.item.option", array(
 			"mode" => "edit",
 			"key" => $key
@@ -15,24 +14,23 @@ class ItemOptionFormListComponent extends HTMLList{
 			"text" => $label
 		));
 
+		$selected = (is_string($entity)) ? $entity : "";
 		$this->addLabel("option", array(
-			"html" => self::buildForm($key, $entity)
+			"html" => (is_string($key)) ? self::_buildForm($key, $selected) : ""
 		));
 	}
 
-	private function buildForm($key, $selected){
+	private function _buildForm(string $key, string $selected=""){
 		$selected = trim(htmlspecialchars($selected, ENT_QUOTES, "UTF-8"));
 
-		$form = self::getItemOptionHtml($key, $selected);
+		$form = self::_getItemOptionHtml($key, $selected);
 		if(isset($form) && strlen($form)) return $form;
 
 		$name = "Item[" . $this->itemOrderId . "][attributes][" . $key . "]";
 		return "<input type=\"text\" name=\"" . $name . "\" value=\"" . $selected . "\">";
 	}
 
-	private function getItemOptionHtml($key, $selected){
-		if(is_null($key)) return "";
-
+	private function _getItemOptionHtml(string $key, string $selected=""){
 		$htmls = SOYShopPlugin::invoke("soyshop.item.option", array(
 			"mode" => "build",
 			"itemOrderId" => $this->itemOrderId,
@@ -44,7 +42,7 @@ class ItemOptionFormListComponent extends HTMLList{
 
 		$html = array();
 		foreach($htmls as $h){
-			if(!strlen($h)) continue;
+			if(!is_string($h) || !strlen($h)) continue;
 			$html[] = $h;
 		}
 

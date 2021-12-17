@@ -7,7 +7,7 @@ class SOYShopOrderBase implements SOY2PluginAction{
 	}
 
 	//管理画面の注文詳細で何かしたい時
-	function executeOnDetailPage($orderId){
+	function executeOnDetailPage(int $orderId){
 
 	}
 }

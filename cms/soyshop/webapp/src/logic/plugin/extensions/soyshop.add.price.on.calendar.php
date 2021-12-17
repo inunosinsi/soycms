@@ -6,17 +6,21 @@ class SOYShopAddPriceOnCalendarBase implements SOY2PluginAction{
 	 */
 	function getForm(){}
 
-	function doPost($scheduleId){}
+	function doPost(int $scheduleId){}
 
 	/**
 	 * @return array("label" => string, "price" => integer)
 	 */
-	function list($scheduleId){}
+	function list(int $scheduleId){
+		return array();
+	}
 
 	/**
 	 * @return array("key" => string, "label" => string)
 	 */
-	function getCsvItems(){}
+	function getCsvItems(){
+		return array();
+	}
 }
 
 class SOYShopAddPriceOnCalendarDeletageAction implements SOY2PluginDelegateAction{

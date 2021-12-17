@@ -9,7 +9,7 @@ class NewOrderAreaPage extends WebPage{
 	function execute(){
 		parent::__construct();
 
-		$orderDao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
+		$orderDao = soyshop_get_hash_table_dao("order");
 		$orderDao->setLimit(16);
 		try{
 			$orders = $orderDao->getByStatus(SOYShop_Order::ORDER_STATUS_REGISTERED);
@@ -26,7 +26,7 @@ class NewOrderAreaPage extends WebPage{
 
 		$this->createAdd("order_list", "_common.Order.OrderListComponent", array(
 			"list" => $orders,
-			"userNameList" => SOY2Logic::createInstance("logic.user.UserLogic")->getUserNameListByUserIds(soyshop_get_user_ids_by_orders($orders))
+			"userNameList" => ($cnt > 0 ) ? SOY2Logic::createInstance("logic.user.UserLogic")->getUserNameListByUserIds(soyshop_get_user_ids_by_orders($orders)) : array()
 		));
 	}
 

@@ -3,7 +3,7 @@
  */
 class CommonCategoryCustomfield extends SOYShopCategoryCustomFieldBase{
 
-	function doPost($category){
+	function doPost(SOYShop_Category $category){
 
 		$list = (isset($_POST["custom_field"])) ? $_POST["custom_field"] : array();
 
@@ -63,7 +63,7 @@ class CommonCategoryCustomfield extends SOYShopCategoryCustomFieldBase{
 		}
 	}
 
-	function getForm($category){
+	function getForm(SOYShop_Category $category){
 
 		$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO");
 		try{
@@ -85,7 +85,7 @@ class CommonCategoryCustomfield extends SOYShopCategoryCustomFieldBase{
 		return implode("\n", $html);
 	}
 
-	function onDelete($id){
+	function onDelete(int $id){
 		SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO")->deleteByCategoryId($id);
 	}
 

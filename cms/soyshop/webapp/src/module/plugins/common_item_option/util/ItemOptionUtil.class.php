@@ -169,7 +169,7 @@ class ItemOptionUtil {
 		}
 
 		//多言語化の方の値を取得できなかった場合
-		return trim(self::_getByItemOrderId($itemOrderId, $key)->getValue());
+		return trim((string)self::_getByItemOrderId($itemOrderId, $key)->getValue());
 	}
 
 	private static function _getByItemOrderId(int $itemOrderId, string $key){

@@ -64,4 +64,3 @@ class DaibikiPaymentModule extends SOYShopPayment{
 
 }
 SOYShopPlugin::extension("soyshop.payment","payment_daibiki","DaibikiPaymentModule");
-?>

@@ -2,7 +2,7 @@
 class ShoppingMallOrder extends SOYShopOrderBase{
 
 	// 商品登録をしたアカウントと異なる場合は詳細ページを表示しない
-	function executeOnDetailPage($orderId){
+	function executeOnDetailPage(int $orderId){
 		if(SOYMALL_SELLER_ACCOUNT){
 			$adminId = (int)SOY2ActionSession::getUserSession()->getAttribute("userid");
 

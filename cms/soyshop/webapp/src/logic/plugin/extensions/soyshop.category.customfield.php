@@ -5,20 +5,20 @@ class SOYShopCategoryCustomFieldBase implements SOY2PluginAction{
 	/**
 	 * @return string
 	 */
-	function getForm($category){
+	function getForm(SOYShop_Category $category){
 	}
 
 	/**
 	 * doPost
 	 */
-	function doPost($category){
+	function doPost(SOYShop_Category $category){
 
 	}
 
 	/**
 	 * @onDelete
 	 */
-	function onDelete($id){
+	function onDelete(int $id){
 
 
 	}
@@ -66,4 +66,3 @@ class SOYShopCategoryCustomFieldDeletageAction implements SOY2PluginDelegateActi
 	}
 }
 SOYShopPlugin::registerExtension("soyshop.category.customfield","SOYShopCategoryCustomFieldDeletageAction");
-?>

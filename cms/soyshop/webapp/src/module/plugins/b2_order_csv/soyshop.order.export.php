@@ -37,8 +37,8 @@ class SOYShopB2OrderCSV extends SOYShopOrderExportBase{
 		foreach($orders as $order){
 			$orderId = $order->getId();
 			//伝票番号登録分だけCSVを出力する
-			$slipNumbers = explode(",", self::_slipLogic()->getAttribute($orderId)->getValue1());
-			if(!count($slipNumbers)) $slipNumbers[] = null;
+			$slipNumbers = explode(",", self::_slipLogic()->getSlipNumberByOrderId($orderId));
+			if(!count($slipNumbers)) $slipNumbers[] = "";
 			foreach($slipNumbers as $slipNumber){
 				$line = $this->csvLogic->getCSVLine($orderId, $slipNumber);
 				if(!is_null($line)) $lines[] = $line;

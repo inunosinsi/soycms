@@ -118,7 +118,7 @@ class SimpleCaptchaGenerator{
 
 			for($j = 0; $j < $self->blurCount; $j++) {
 				$data[$i]['blur'][$j] = array (
-					'size'		=> $size*(1+(mt_rand(-$self->blurLevel[0],$self->blurLevel[0])/100)),
+					'size'		=> $size*(1+(mt_rand(-(int)$self->blurLevel[0],(int)$self->blurLevel[0])/100)),
 					'angle'	=> $angle+mt_rand(-$self->blurLevel[1],$self->blurLevel[1]),
 					'pos_x'	=> $pos_x+mt_rand(-$self->blurLevel[2],$self->blurLevel[2]),
 					'pos_y'	=> $pos_y+mt_rand(-$self->blurLevel[3],$self->blurLevel[3]),
@@ -178,10 +178,10 @@ class SimpleCaptchaGenerator{
 	function drawWords($im, $data){
 		$l=0;
 		foreach($data as $d) {
-			imagettftext($im, $d['size'], $d['angle'], $d['pos_x'], $d['pos_y'], $d['color'], $d['font'], $d['char'] );
+			imagettftext($im, $d['size'], $d['angle'], (int)$d['pos_x'], (int)$d['pos_y'], $d['color'], $d['font'], $d['char'] );
 
 			for($j=0; $j<$this->blurCount; $j++) {
-				imagettftext($im, $d['blur'][$j]['size'], $d['blur'][$j]['angle'], $d['blur'][$j]['pos_x'], $d['blur'][$j]['pos_y'], $d['color'], $d['font'], $d['char'] );
+				imagettftext($im, $d['blur'][$j]['size'], $d['blur'][$j]['angle'], (int)$d['blur'][$j]['pos_x'], (int)$d['blur'][$j]['pos_y'], $d['color'], $d['font'], $d['char'] );
 			}
 		}
 	}

@@ -13,22 +13,22 @@ class SOYShopOrderEditBase implements SOY2PluginAction{
 		return "";
 	}
 
-	function addFunc($orderId){
+	function addFunc(int $orderId){
 		return "";
 	}
 
-	function addFuncOnAdminOrder($orderId){
+	function addFuncOnAdminOrder(int $orderId){
 		return "";
 	}
 
-	function update($orderId, $isChange){}
+	function update(int $orderId, bool $isChange){}
 
-	function error($orderId){}
+	function error(int $orderId){}
 
 	/**
 	 * @return array("message" => "", "alert" => "danger or success") // bootstrap's alerts
 	 */
-	function message($orderId){
+	function message(int $orderId){
 		return array();
 	}
 

@@ -67,7 +67,7 @@ class B2OutputCSV{
 		SOY2::import("module.plugins.b2_order_csv.util.B2OrderCsvUtil");
 	}
 
-	function getCSVLine($orderId, $slipNumber = null){
+	function getCSVLine(int $orderId, string $slipNumber=""){
 
 		$order = soyshop_get_order_object($orderId);
 		if(is_null($order->getId())) return;

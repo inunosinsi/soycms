@@ -13,7 +13,7 @@ class SavePage extends WebPage {
 
 		//内容が一緒の場合は更新しない
 		$newMemo = trim($_POST["memo"]);
-		if(md5($latest->getContent()) == md5($newMemo)) self::_printFinished(0);
+		if(md5((string)$latest->getContent()) == md5($newMemo)) self::_printFinished(0);
 		$latest->setContent($newMemo);
 
 		if(is_null($latest->getId())){	//新規登録

@@ -1094,10 +1094,10 @@ class CartLogic extends SOY2LogicBase{
 					$user->setAddressList($tmpUser->getAddressList());
 
 					//旧ユーザのパスワードが空なら登録する
-					if(strlen($tmpUser->getPassword()) < 1 && strlen($user->getPassword()) > 0){
+					if(strlen((string)$tmpUser->getPassword()) < 1 && strlen((string)$user->getPassword()) > 0){
 						$user->setPassword($user->hashPassword($user->getPassword()));
 					}else{
-						$user->setPassword($tmpUser->getPassword());
+						$user->setPassword((string)$tmpUser->getPassword());
 					}
 
 					//本登録にしておく

@@ -5,9 +5,6 @@ class SendmailLogic extends SOY2LogicBase{
 	private $config;
 	private $userDao;
 	private $orderDao;
-	private $itemOrderDao;
-	private $itemDao;
-	private $pageDao;
 
 	function __construct(){
 		SOY2::imports("module.plugins.order_later_sendmail.util.*");
@@ -105,26 +102,17 @@ class SendmailLogic extends SOY2LogicBase{
 		$itemOrders = soyshop_get_item_orders($orderId);
 		if(count($itemOrders)){
 			foreach($itemOrders as $itemOrder){
-				try{
-					$items[] = soyshop_get_item_object((int)$itemOrder->getItemId());
-				}catch(Exception $e){
-					continue;
-				}
+				$item = soyshop_get_item_object((int)$itemOrder->getItemId());
+				if(is_numeric($item->getId())) $items[] = $item;
 			}
 		}
 
 		return $items;
 	}
 
-	function getDetailPageUrl($item){
-		if(!$this->pageDao) $this->pageDao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
-		try{
-			$page = $this->pageDao->getById($item->getDetailPageId());
-		}catch(Exception $e){
-			return null;
-		}
-
-		return soyshop_get_site_url(true) . $page->getUri() . "/" . $item->getAlias();
+	function getDetailPageUrl(SOYShop_Item $item){
+		$page = soyshop_get_page_object($item->getDetailPageId());
+		return (is_numeric($page->getId()) ? soyshop_get_site_url(true) . $page->getUri() . "/" . $item->getAlias() : "";
 	}
 
 	function convertCompanyInfomation($content){
@@ -273,4 +261,3 @@ class SendmailLogic extends SOY2LogicBase{
 		return mktime(0, 0, 0, $dateArray[1], $dateArray[2], $dateArray[0]);
 	}
 }
-?>

@@ -829,7 +829,7 @@ class SOYShop_User {
 	 * @param String 保存されているハッシュを含む文字列（algo/salt/hash）
 	 */
 	function checkPassword($input){
-		$stored = $this->getPassword();
+		$stored = (string)$this->getPassword();
 		$array = explode("/", $stored);
 		if(count($array) == 3){
 			list($algo, $salt, $hash) = $array;

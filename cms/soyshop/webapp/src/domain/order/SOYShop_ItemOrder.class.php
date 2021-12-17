@@ -192,16 +192,10 @@ class SOYShop_ItemOrder {
     /** 便利なメソッド **/
     //多言語化プラグインを考慮した商品名の取得
 	function getOpenItemName(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 		if(!defined("SOYSHOP_MAIL_LANGUAGE")) define("SOYSHOP_MAIL_LANGUAGE", SOYSHOP_PUBLISH_LANGUAGE);
 
 		if(SOYSHOP_MAIL_LANGUAGE != "jp"){
-			try{
-				return $dao->get($this->itemId, "item_name_" . SOYSHOP_MAIL_LANGUAGE)->getValue();
-			}catch(Exception $e){
-				return null;
-			}
+			return soyshop_get_item_attribute_value($this->itemId, "item_name_" . SOYSHOP_MAIL_LANGUAGE, "string");
 		}else{
 			return $this->itemName;
 		}

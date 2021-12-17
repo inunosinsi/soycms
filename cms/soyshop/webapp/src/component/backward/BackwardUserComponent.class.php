@@ -283,9 +283,8 @@ class BackwardUserComponent {
 				$new = (isset($_POST["new_password"]["new"])) ? $_POST["new_password"]["new"] : "";
 
 				try{
-					$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
-					$user = $cart->getCustomerInformation();
-					$user = $userDAO->getById($cart->getAttribute("logined_userid"));
+					//$user = $cart->getCustomerInformation();	?
+					$user = soyshop_get_user_object((int)$cart->getAttribute("logined_userid"));
 
 					if( $user->checkPassword($old) ){
 						if( strlen($new) < $passCnt ){

@@ -22,13 +22,12 @@ class SOYShopB2OrderFunction extends SOYShopOrderFunction{
 		set_time_limit(0);
 
 		$orderId = $this->getOrderId();
-		$slipNumbers = explode(",", self::_slipLogic()->getAttribute($orderId)->getValue1());
-		if(!count($slipNumbers)) $slipNumbers[] = null;
+		$slipNumbers = explode(",", self::_slipLogic()->getSlipNumberByOrderId($orderId));
+		if(!count($slipNumbers)) $slipNumbers[] = "";
 		foreach($slipNumbers as $slipNumber){
 			$line = $this->csvLogic->getCSVLine($orderId, $slipNumber);
 		}
-		$user = soyshop_get_user_object(soyshop_get_order_object($orderId)->getUserId());
-
+		
 		$charset = (isset($_REQUEST["charset"])) ? $_REQUEST["charset"] : "Shift-JIS";
 		$line = mb_convert_encoding($line, $charset, "UTF-8");
 

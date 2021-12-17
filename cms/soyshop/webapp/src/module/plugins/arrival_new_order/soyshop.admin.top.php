@@ -27,7 +27,7 @@ class ArrivalNewOrderAdminTop extends SOYShopAdminTopBase{
 	}
 
 	function error(){
-		$dao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
+		$dao = soyshop_get_hash_table_dao("order");
 		$sql = "SELECT tracking_number, order_date FROM soyshop_order WHERE order_status = " . SOYShop_Order::ORDER_STATUS_INTERIM . " AND payment_status = " . SOYShop_Order::PAYMENT_STATUS_CONFIRMED;
 		try{
 			$res = $dao->executeQuery($sql);

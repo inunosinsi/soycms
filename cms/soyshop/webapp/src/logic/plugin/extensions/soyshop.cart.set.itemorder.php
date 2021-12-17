@@ -1,7 +1,7 @@
 <?php
 class SOYShopCartSetItemOrderBase implements SOY2PluginAction{
 
-	function setItemOrder(SOYShop_Item $item, $count){
+	function setItemOrder(SOYShop_Item $item, int $count){
 
 	}
 }

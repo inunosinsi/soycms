@@ -31,7 +31,7 @@ class DaibikiLogic extends SOY2LogicBase{
 		return self::calcReturnValue($price);
 	}
 
-	function calcReturnValue($total){
+	function calcReturnValue(int $total){
 		$prices = array();
 
 		//地域ごとの代引き手数料が設定されているか調べる
@@ -65,13 +65,13 @@ class DaibikiLogic extends SOY2LogicBase{
 		return self::checkNoFobiddenItem($this->cart->getItems());
 	}
 
-	function checkNoFobiddenItem($items){
+	function checkNoFobiddenItem(array $itemOrders){
 		$forbidden = PaymentDaibikiUtil::getForbiddenConfig();
 
 		//代引き不可商品があったらこのモジュール自体を表示しない
 		if(count($forbidden) > 0){
-			foreach($items as $itemOrder){
-				$code = soyshop_get_item_object($itemOrder->getItemId())->getCode();
+			foreach($itemOrders as $itemOrder){
+				$code = (string)soyshop_get_item_object($itemOrder->getItemId())->getCode();
 				if(strlen($code) && in_array($code, $forbidden)) return false;
 			}
 		}

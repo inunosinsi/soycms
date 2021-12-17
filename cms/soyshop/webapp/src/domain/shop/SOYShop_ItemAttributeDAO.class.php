@@ -24,6 +24,42 @@ abstract class SOYShop_ItemAttributeDAO extends SOY2DAO{
 
 	/**
 	 * @final
+	 * @param int itemId, array $fieldIds
+	 * @return array
+	 */
+	function getByItemIdAndFieldIds(int $itemId, array $fieldIds){
+		if(!count($fieldIds)) return array();
+
+		try{
+			$res = $this->executeQuery(
+				"SELECT * ".
+				"FROM soyshop_item_attribute ".
+				"WHERE item_id = :itemId ".
+				"AND item_field_id IN (\"" . implode("\",\"", $fieldIds) . "\")",
+				array(":itemId" => $itemId)
+			);
+		}catch(Exception $e){
+			$res = array();
+		}
+
+		$list = array();
+		if(count($res)){
+			foreach($res as $v){
+				$list[$v["item_field_id"]] = $this->getObject($v);
+			}
+		}
+
+		foreach($fieldIds as $fieldId){
+			if(!isset($list[$fieldId])){
+				$list[$fieldId] = new SOYShop_ItemAttribute();
+			}
+		}
+
+		return $list;
+	}
+
+	/**
+	 * @final
 	 */
 	function getAll($limit=null, $offset=null){
 		$sql = "SELECT * FROM soyshop_item_attribute";

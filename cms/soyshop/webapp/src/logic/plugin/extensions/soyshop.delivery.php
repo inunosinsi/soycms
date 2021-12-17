@@ -49,7 +49,7 @@ class SOYShopDelivery implements SOY2PluginAction{
 	 * @return boolen
 	 * Cartの支払い方法選択画面で選択項目として表示するか？
 	 */
-	function getMethod(CartLogic $cart, $moduleId){
+	function getMethod(CartLogic $cart, string $moduleId){
 		return true;
 	}
 
@@ -121,7 +121,7 @@ class SOYShopDeliveryDeletageAction implements SOY2PluginDelegateAction{
 				}
 				break;
 			case "method":	//支払い方法のリストの表示のルールを決める
-				$this->_method = $action->getMethod($this->getCart(), $this->getModuleId());
+				$this->_method = (is_string($this->getModuleId())) ? $action->getMethod($this->getCart(), $this->getModuleId()) : false;
 				break;
 			case "select":
 				//念の為、ここでも再度調べる

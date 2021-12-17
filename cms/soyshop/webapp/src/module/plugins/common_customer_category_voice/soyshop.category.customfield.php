@@ -69,11 +69,9 @@ class CommonCustomerCategoryVoiceCustomfield extends SOYShopCategoryCustomFieldB
 		return implode("\n", $html);
 	}
 
-	function onDelete($id){
-		$attributeDAO = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO");
-		$attributeDAO->deleteByCategoryId($id);
+	function onDelete(int $id){
+		SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO")->deleteByCategoryId($id);
 	}
 }
 
 SOYShopPlugin::extension("soyshop.category.customfield","common_category_customfield","CommonCustomerCategoryVoiceCustomfield");
-?>

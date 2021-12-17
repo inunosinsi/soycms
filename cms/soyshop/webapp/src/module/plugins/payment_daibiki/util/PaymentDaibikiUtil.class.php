@@ -13,7 +13,7 @@ class PaymentDaibikiUtil {
 		return SOYShop_DataSets::put("payment_daibiki.config", $values);
 	}
 
-	public static function getPricesConfig($appendBlank = false){
+	public static function getPricesConfig(bool $appendBlank=false){
 		$config = SOYShop_DataSets::get("payment_daibiki.price", array(
 			0 => 300
 		));
@@ -29,7 +29,7 @@ class PaymentDaibikiUtil {
 		SOYShop_DataSets::put("payment_daibiki.price",$values);
 	}
 
-	public static function getForbiddenConfig($appendBlank = false){
+	public static function getForbiddenConfig(bool $appendBlank=false){
 		$items = SOYShop_DataSets::get("payment_daibiki.forbidden", array());
 		if($appendBlank){
 			$items[] = "";
@@ -76,4 +76,3 @@ class PaymentDaibikiUtil {
 		SOYShop_DataSets::put("payment_daibiki.mail",$value);
 	}
 }
-?>

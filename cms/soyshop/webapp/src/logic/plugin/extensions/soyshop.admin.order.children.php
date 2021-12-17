@@ -6,7 +6,7 @@ class SOYShopAdminOrderChildren implements SOY2PluginAction{
 	 * @param array 商品情報
 	 * @return string
 	 */
-	function html($items){
+	function html(array $items){
 		return "";
 	}
 }

@@ -81,6 +81,18 @@ function soyshop_get_hash_table_dao(string $fnName){
 	return $daos[$idx];
 }
 
+/**
+ * 配列から指定の値を除き、間を詰める
+ */
+function soyshop_remove_value_on_array(string $fieldId, array $fieldIds){
+	if(!count($fieldIds)) return array($fieldIds);
+	$idx = array_search($fieldId, $fieldIds);
+	if(!is_numeric($idx)) return $fieldIds;
+
+	unset($fieldIds[$idx]);
+	return array_values($fieldIds);
+}
+
 /** 各種オブジェクトを取得する関数群 **/
 /**
  * 各attribute値を$dataTypeに従って変換する
@@ -153,6 +165,32 @@ function soyshop_get_item_attribute_object(int $itemId, string $fieldId){
 	}
 
 	return $GLOBALS["soyshop_item_attribute_hash_table"][$idx];
+}
+
+function soyshop_get_item_attribute_objects(int $itemId, array $fieldIds){
+	$dao = soyshop_get_hash_table_dao(__FUNCTION__);
+	if(!count($fieldIds)) return array();
+
+	$attrs = array();
+	foreach($fieldIds as $fieldId){
+		$idx = soyshop_get_hash_index(((string)$itemId . $fieldId), __FUNCTION__);
+		if(!isset($GLOBALS["soyshop_item_attribute_hash_table"][$idx])) continue;
+		$attrs[$fieldId] = $GLOBALS["soyshop_item_attribute_hash_table"][$idx];
+	}
+	if(count($attrs)){
+		foreach($attrs as $fieldId => $_dust){
+			$fieldIds = soyshop_remove_value_on_array($fieldId, $fieldIds);
+		}
+		unset($_dust);
+	}
+	if(!count($fieldIds)) return $attrs;
+
+	$attrs = $dao->getByItemIdAndFieldIds($itemId, $fieldIds);
+	foreach($attrs as $fieldId => $attr){
+		$idx = soyshop_get_hash_index(((string)$itemId . $fieldId), __FUNCTION__);
+		if(!isset($GLOBALS["soyshop_item_attribute_hash_table"][$idx])) $GLOBALS["soyshop_item_attribute_hash_table"][$idx] = $attr;
+	}
+	return $attrs;
 }
 
 function soyshop_get_item_attribute_value(int $itemId, string $fieldId, string $dataType=""){
@@ -441,6 +479,21 @@ function soyshop_get_order_date_attribute_object(int $orderId, string $fieldId){
 function soyshop_get_order_date_attribute_objects(int $orderId, array $fieldIds){
 	$dao = soyshop_get_hash_table_dao(__FUNCTION__);
 	if(!count($fieldIds)) return array();
+
+	$attrs = array();
+	foreach($fieldIds as $fieldId){
+		$idx = soyshop_get_hash_index(((string)$orderId . $fieldId), __FUNCTION__);
+		if(!isset($GLOBALS["soyshop_order_date_attribute_hash_table"][$idx])) continue;
+		$attrs[$fieldId] = $GLOBALS["soyshop_order_date_attribute_hash_table"][$idx];
+	}
+	if(count($attrs)){
+		foreach($attrs as $fieldId => $_dust){
+			$fieldIds = soyshop_remove_value_on_array($fieldId, $fieldIds);
+		}
+		unset($_dust);
+	}
+
+	if(!count($fieldIds)) return $attrs;
 
 	$attrs = $dao->getByOrderIdAndFieldIds($orderId, $fieldIds);
 	foreach($attrs as $fieldId => $attr){
