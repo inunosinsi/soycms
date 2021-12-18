@@ -13,7 +13,7 @@ class ItemReviewSitemapUtil {
 		return (isset($cnf["review_count"]) && is_numeric($cnf["review_count"]) && $cnf["review_count"] > 0) ? (int)$cnf["review_count"] : null;
 	}
 
-	public static function checkReviewPageId($pageId){
+	public static function checkReviewPageId(int $pageId){
 		$reviewPageId = self::_getReviewPageId();
 		if($reviewPageId == $pageId) return true;
 
@@ -22,7 +22,7 @@ class ItemReviewSitemapUtil {
 		if(SOYShopPluginUtil::checkIsActive("util_mobile_check")){
 			SOY2::import("module.plugins.util_mobile_check.util.UtilMobileCheckUtil");
 			$mbCnf = UtilMobileCheckUtil::getConfig();
-			if(isset($mbCnf["prefix_i"]) && strlen($mbCnf["prefix_i"])){
+			if(isset($mbCnf["prefix_i"]) && is_string($mbCnf["prefix_i"]) && strlen($mbCnf["prefix_i"])){
 				return (self::_getMbReviewPageId($mbCnf["prefix_i"]) == $pageId);
 			}
 		}
@@ -39,17 +39,12 @@ class ItemReviewSitemapUtil {
 		return $id;
 	}
 
-	private function _getMbReviewPageId($prefix){
-		static $ids, $pageDao;
+	private function _getMbReviewPageId(string $prefix){
+		static $ids;
 		if(isset($ids[$prefix])) return $ids[$prefix];
-		if(is_null($pageDao)) $pageDao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
 
-		$mbPageUri = $prefix . "/" . soyshop_get_page_object(self::_getReviewPageId())->getUri();
-		try{
-			$ids[$prefix] = $pageDao->getByUri($mbPageUri)->getId();
-		}catch(Exception $e){
-			$ids[$prefix] = null;
-		}
+		$mbPageUri = $prefix . "/" . (string)soyshop_get_page_object(self::_getReviewPageId())->getUri();
+		$ids[$prefix] = soyshop_get_page_object_by_uri($mbPageUri)->getId();
 		return $ids[$prefix];
 	}
 

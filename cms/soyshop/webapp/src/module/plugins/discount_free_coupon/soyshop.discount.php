@@ -24,9 +24,9 @@ class SOYShopDiscountFreeCouponModule extends SOYShopDiscount{
 		$cart->clearOrderAttribute("discount_free_coupon.code");
 	}
 
-	function doPost($param){
+	function doPost(array $params){
 		$cart = $this->getCart();
-		$code = (isset($param["coupon_codes"][0])) ? trim($param["coupon_codes"][0]) : null;
+		$code = (isset($params["coupon_codes"][0])) ? trim($params["coupon_codes"][0]) : "";
 
 		if(strlen($code)){
 			$logic = SOY2Logic::createInstance("module.plugins.discount_free_coupon.logic.DiscountFreeCouponLogic", array("cart" => $cart));
@@ -55,21 +55,21 @@ class SOYShopDiscountFreeCouponModule extends SOYShopDiscount{
 	/**
 	 * クーポンが使用可能か？調べる
 	 */
-	function hasError($param){
+	function hasError(array $params){
 
 		$cart = $this->getCart();
 		$error = "";
 
 		//クーポンが入力されなかった場合は何もしない
-		if(isset($param["coupon_codes"][0]) && strlen($param["coupon_codes"][0]) > 0){
-			$code = trim($param["coupon_codes"][0]);
+		if(isset($params["coupon_codes"][0]) && strlen($params["coupon_codes"][0]) > 0){
+			$code = trim($params["coupon_codes"][0]);
 
 			//ユーザIDが取得できなかった場合、念の為、ユーザテーブルからオブジェクトを取得
 			$userId = $cart->getAttribute("logined_userid");
 			if(is_null($userId)) $userId = (int)soyshop_get_user_object_by_mailaddress((string)$cart->getCustomerInformation()->getMailAddress())->getId();
 
 			$logic = SOY2Logic::createInstance("module.plugins.discount_free_coupon.logic.DiscountFreeCouponLogic");
-			if(!isset($param["coupon_codes"]) || !is_array($param["coupon_codes"]) || count($param["coupon_codes"]) === 0){
+			if(!isset($params["coupon_codes"]) || !is_array($params["coupon_codes"]) || count($params["coupon_codes"]) === 0){
 				//$error = "クーポンコードを入力してください。";
 			}elseif(!$logic->checkItemPrice($this->getCart()->getItemPrice())){
 				$error = MessageManager::get("NOT_USE_COUPON_CODE_OUT_OF_TERM");

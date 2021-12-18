@@ -21,12 +21,8 @@ class AccessRestrictionSiteOnLoad extends SOYShopSiteOnLoadAction{
 	}
 
 	private function _get404NotFoundPageUrl(){
-		try{
-			$page = SOY2DAOFactory::create("site.SOYShop_PageDAO")->getByUri(SOYSHOP_404_PAGE_MARKER);
-		}catch(Exception $e){
-			//404NotFoundページがなければ、何処かのページの遷移させる　@ToDo アクセス制限をかけたいページがトップページだった場合は機能しない
-			$page = new SOYShop_Page();
-		}
+		//404NotFoundページがなければ、何処かのページの遷移させる　@ToDo アクセス制限をかけたいページがトップページだった場合は機能しない
+		$page = soyshop_get_page_object_by_uri(SOYSHOP_404_PAGE_MARKER);
 		return soyshop_get_page_url($page->getUri());
 	}
 }

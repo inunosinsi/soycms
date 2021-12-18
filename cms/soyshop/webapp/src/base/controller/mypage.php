@@ -23,9 +23,9 @@ function purchase_proxy_login(){
 /**
  * ダウンロード販売
  */
-function execute_download_action($pluginId){
+function execute_download_action(string $pluginId){
 	$downloadModule = soyshop_get_plugin_object($pluginId);
-	if(!is_null($downloadModule->getId())){
+	if(is_numeric($downloadModule->getId())){
 		SOYShopPlugin::load("soyshop.download",$downloadModule);
 		SOYShopPlugin::invoke("soyshop.download");
 	}
@@ -34,7 +34,7 @@ function execute_download_action($pluginId){
 /**
  * マイページ実行
  */
-function execute_mypage_application($args){
+function execute_mypage_application(array $args){
 	SOY2::import("base.site.pages.SOYShop_UserPage");
 	$webPage = SOY2HTMLFactory::createInstance("SOYShop_UserPage", array(
 		"arguments" => array(SOYSHOP_CURRENT_MYPAGE_ID, $args)

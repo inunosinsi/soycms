@@ -101,8 +101,8 @@ class SOYShopSiteController extends SOY2PageController{
 		header("HTTP/1.0 404 Not Found");
 
 		// 404ページを取得し直す
-		$page = SOY2DAOFactory::create("site.SOYShop_PageDAO")->getByUri(SOYSHOP_404_PAGE_MARKER);
-
+		$page = soyshop_get_page_object_by_uri(SOYSHOP_404_PAGE_MARKER);
+		
 		include_page_class($page->getType());
 		include_once("controller/output.php");
 		output_page(SOYShop_Page::NOT_FOUND, array(), $page);

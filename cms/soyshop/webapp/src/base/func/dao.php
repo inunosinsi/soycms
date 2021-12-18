@@ -591,6 +591,21 @@ function soyshop_get_page_object(int $pageId){
 	return $GLOBALS["soyshop_page_hash_table"][$idx];
 }
 
+function soyshop_get_page_object_by_uri(string $uri){
+	$dao = soyshop_get_hash_table_dao(__FUNCTION__);
+	if(!strlen($uri)) return new SOYShop_Page();
+
+	try{
+		$page = $dao->getByUri($uri);
+	}catch(Exception $e){
+		return new SOYShop_Page();
+	}
+
+	$idx = soyshop_get_hash_index((string)$page->getId(), __FUNCTION__);
+	if(!isset($GLOBALS["soyshop_page_hash_table"][$idx])) $GLOBALS["soyshop_page_hash_table"][$idx] = $page;
+	return $page;
+}
+
 /** IDもしくはプラグインIDからプラグインオブジェクトを取得する **/
 function soyshop_get_plugin_object($pluginId){
 	$dao = soyshop_get_hash_table_dao(__FUNCTION__);

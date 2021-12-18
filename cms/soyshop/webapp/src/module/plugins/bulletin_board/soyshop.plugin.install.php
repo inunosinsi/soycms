@@ -82,20 +82,15 @@ class BulletinBoardInstall extends SOYShopPluginInstallerBase{
 		SOYShop_DataSets::put("config.mypage.url", "bulletin");
 		SOYShop_DataSets::put("config.mypage.top", "board");
 
-		//ページの作成
-		$pageDao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
-
 		//トップページ
 		//マイページへのログインページへのリダイレクト
 		if(!file_exists(SOYSHOP_SITE_DIRECTORY . ".template/complex/home.html")){
 			copy(dirname(__FILE__) . "/template/complex/home.html", SOYSHOP_SITE_DIRECTORY . ".template/complex/home.html");
 			copy(dirname(__FILE__) . "/template/complex/home.ini", SOYSHOP_SITE_DIRECTORY . ".template/complex/home.ini");
 
-			//ページの作成
-			try{
-				$page = $pageDao->getByUri(SOYShop_Page::URI_HOME);
-			}catch(Exception $e){
-				$page = new SOYShop_Page();
+			SOY2::import("domain.site.SOYShop_Page");
+			$page = soyshop_get_page_object_by_uri(SOYShop_Page::URI_HOME);
+			if(!is_numeric($page->getId())){
 				$page->setName("リダイレクト");
 				$page->setUri(SOYShop_Page::URI_HOME);
 				$page->setType(SOYShop_Page::TYPE_COMPLEX);
@@ -109,9 +104,8 @@ class BulletinBoardInstall extends SOYShopPluginInstallerBase{
 			copy(dirname(__FILE__) . "/template/free/sitemap.html", SOYSHOP_SITE_DIRECTORY . ".template/free/sitemap.html");
 			copy(dirname(__FILE__) . "/template/free/sitemap.ini", SOYSHOP_SITE_DIRECTORY . ".template/free/sitemap.ini");
 
-			try{
-				$page = $pageDao->getByUri("sitemap.xml");
-			}catch(Exception $e){
+			$page = soyshop_get_page_object_by_uri("sitemap.xml");
+			if(!is_numeric($page->getId())){
 				$page = new SOYShop_Page();
 				$page->setName("サイトマップ");
 				$page->setUri("sitemap.xml");
@@ -126,9 +120,8 @@ class BulletinBoardInstall extends SOYShopPluginInstallerBase{
 			copy(dirname(__FILE__) . "/template/free/news_xml.html", SOYSHOP_SITE_DIRECTORY . ".template/free/news_xml.html");
 			copy(dirname(__FILE__) . "/template/free/news_xml.ini", SOYSHOP_SITE_DIRECTORY . ".template/free/news_xml.ini");
 
-			try{
-				$page = $pageDao->getByUri("news.xml");
-			}catch(Exception $e){
+			$page = soyshop_get_page_object_by_uri("news.xml");
+			if(!is_numeric($page->getId())){
 				$page = new SOYShop_Page();
 				$page->setName("新着情報XML");
 				$page->setUri("news.xml");

@@ -3,7 +3,7 @@
  * タイマーに記録する（デバッグモードのみ）
  * @param String $label
  */
-function count_timer($label){
+function count_timer(string $label){
 	if(DEBUG_MODE){
 		$GLOBALS["debug_timer"][$label] = microtime(true);
 		if(!isset($GLOBALS["debug_timer_start_time"])){

@@ -6,7 +6,7 @@
  * @param Array $args
  * @return Boolean
  */
-function do_application($uri, $args){
+function do_application(string $uri, array $args){
 	//非同期でカートもしくはマイページの状況を返す
 	if(isset($args[0]) && $args[0] == "async"){
 		generate_application_page_situation_json();

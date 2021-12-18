@@ -5,7 +5,7 @@
  * @param Array $args
  * @param WebPage $page
  */
-function output_page($uri, $args, $page){
+function output_page(string $uri, array $args, $page){
     if(DEBUG_MODE) count_timer("Search");
 
     $webPage = $page->getWebPageObject($args);

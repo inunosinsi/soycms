@@ -95,37 +95,26 @@ function get_uri_and_args(){
 	return array($uri, $args);
 }
 
-function get_page_object_on_controller($uri){
-	$dao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
+function get_page_object_on_controller(string $uri){
 	//ルートでページャ対策
 	if(strpos($uri, "page-") === 0) {
-		try{
-			$page = $dao->getByUri(SOYShop_Page::URI_HOME);
+		$page = soyshop_get_page_object_by_uri(SOYShop_Page::URI_HOME);
+		if(is_numric($page->getId())){
 			//ページのタイプが一覧もしくは検索結果ページの場合は返す
 			switch($page->getType()){
 				case SOYShop_Page::TYPE_LIST:
 				case SOYShop_Page::TYPE_SEARCH:
 					return $page;
 			}
-		}catch(Exception $e){
-			//
 		}
 	}else{
-		try{
-			return $dao->getByUri($uri);
-		}catch(Exception $e){
-			//
-		}
+		$page = soyshop_get_page_object_by_uri($uri);
+		if(is_numeric($page->getId())) return $page;
 	}
 
-	//ページを取得できなければ404
-	try{
-		return $dao->getByUri(SOYSHOP_404_PAGE_MARKER);
-	}catch(Exception $e){
-		$page = new SOYShop_Page();
-		$page->setUri(SOYShop_Page::NOT_FOUND);
-		return $page;
-	}
+	$page = soyshop_get_page_object_by_uri(SOYSHOP_404_PAGE_MARKER);
+	$page->setUri(SOYShop_Page::NOT_FOUND);
+	return $page;
 }
 
 function include_page_class($pageType){

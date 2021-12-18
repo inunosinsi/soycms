@@ -4,7 +4,7 @@
  * 通知イベント(決済など)
  * @param string $pluginId $_GET["soyshop_notification"]
  */
-function execute_notification_action($pluginId){
+function execute_notification_action(string $pluginId){
 	$paymentModule = soyshop_get_plugin_object($pluginId);
 	if(!is_null($paymentModule->getId())){
 		SOYShopPlugin::load("soyshop.notification", $paymentModule);
@@ -16,7 +16,7 @@ function execute_notification_action($pluginId){
  * カートの禁止イベント
  * @param string $pluginId $_GET["soyshop_ban"]
  */
-function execute_ban_action($pluginId){
+function execute_ban_action(string $pluginId){
 	CartLogic::getCart()->banIPAddress($pluginId);
 	return "OK";
 }
@@ -24,7 +24,7 @@ function execute_ban_action($pluginId){
 /**
  * カート実行
  */
-function execute_cart_application($args){
+function execute_cart_application(array $args){
 	SOY2::import("base.site.pages.SOYShop_CartPage");
 	$webPage = SOY2HTMLFactory::createInstance("SOYShop_CartPage", array(
 		"arguments" => array(SOYSHOP_CURRENT_CART_ID)

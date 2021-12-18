@@ -62,7 +62,7 @@ function define_check_access_device(){
 }
 
 //アプリケーションページに関する定数を定義する
-function define_application_page_constant($uri){
+function define_application_page_constant(string $uri){
 	$isApp = false;
     $isCart = false;
     $isMypage = false;

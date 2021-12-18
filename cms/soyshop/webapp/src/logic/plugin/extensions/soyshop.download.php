@@ -1,9 +1,10 @@
 <?php
 class SOYShopDownload implements SOY2PluginAction{
 
-	function execute(){
-
-	}
+	/**
+	 * $_GET["soyshop_download"] or $_GET["soyshop_action"]がある場合に実行される
+	 */
+	function execute(){}
 
 }
 class SOYShopDownloadDeletageAction implements SOY2PluginDelegateAction{

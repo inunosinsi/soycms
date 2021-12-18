@@ -3,7 +3,7 @@
 /**
  * ページのURLを取得する
  */
-function soyshop_get_page_url(string $uri, string $suffix = null){
+function soyshop_get_page_url(string $uri, string $suffix=""){
 	SOY2::import("domain.site.SOYShop_Page");
 	if($uri == SOYShop_Page::URI_HOME) $uri = "";
 
@@ -27,7 +27,7 @@ function soyshop_shape_page_url(string $url){
 /**
  * サイトのURLを取得する
  */
-function soyshop_get_site_url(bool $isAbsolute = false){
+function soyshop_get_site_url(bool $isAbsolute=false){
 	$url = SOYSHOP_SITE_URL;
 
 	//portがある場合は$_SERVER["SERVER_PORT"]をチェック
@@ -161,7 +161,7 @@ function soyshop_get_item_list_link(SOYShop_Item $item, SOYShop_Category $catego
         }
     }
 
-    return (isset($uri)) ? soyshop_get_page_url($uri, $category->getAlias()) : "";
+    return (isset($uri)) ? soyshop_get_page_url($uri, (string)$category->getAlias()) : "";
 }
 
 /**

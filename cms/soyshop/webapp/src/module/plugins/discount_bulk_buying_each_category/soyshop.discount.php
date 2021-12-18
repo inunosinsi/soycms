@@ -15,7 +15,7 @@ class DiscountBulkBuyingEachCategoryDiscountModule extends SOYShopDiscount{
 	/**
 	 *
 	 */
-	function doPost($param){
+	function doPost(array $params){
 		$cart = $this->getCart();
 		$discountLogic = SOY2Logic::createInstance("module.plugins.discount_bulk_buying_each_category.logic.DiscountBulkBuyingLogic", array("items" => $cart->getItems()));
 
@@ -47,11 +47,6 @@ class DiscountBulkBuyingEachCategoryDiscountModule extends SOYShopDiscount{
 			}
 		}
 	}
-
-	function order(){}
-
-
-	function hasError($param){}
 
 	function getError(){
 		return false;

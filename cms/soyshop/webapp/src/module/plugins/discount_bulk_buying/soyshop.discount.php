@@ -1,10 +1,4 @@
 <?php
-/*
- * Created on 2009/07/28
- *
- * To change the template for this generated file go to
- * Window - Preferences - PHPeclipse - PHP - Code Templates
- */
 
 class SOYShopDiscountBulkBuyingModule extends SOYShopDiscount{
 	private $discount;
@@ -24,7 +18,7 @@ class SOYShopDiscountBulkBuyingModule extends SOYShopDiscount{
 	/**
 	 *
 	 */
-	function doPost($param){
+	function doPost(array $params){
 		$cart = $this->getCart();
 
 		//割引対象
@@ -43,17 +37,7 @@ class SOYShopDiscountBulkBuyingModule extends SOYShopDiscount{
 
 			//注文属性にも入れておく
 			$cart->setOrderAttribute("discount_bulk_buying", $this->discount["name"], (int)$amount. "円割引");
-
 		}
-	}
-
-	function order(){
-
-	}
-
-
-	function hasError($param){
-
 	}
 
 	function getError(){
@@ -100,9 +84,7 @@ class SOYShopDiscountBulkBuyingModule extends SOYShopDiscount{
 	 * @return boolean
 	 */
 	function checkAddList(){
-		$cart = $this->getCart();
-		$res = DiscountBulkBuyingConditionUtil::hasDiscountByCart($cart);
-		return $res;
+		return DiscountBulkBuyingConditionUtil::hasDiscountByCart($this->getCart());
 	}
 
 }

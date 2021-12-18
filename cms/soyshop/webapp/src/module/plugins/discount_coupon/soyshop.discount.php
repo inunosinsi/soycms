@@ -11,26 +11,26 @@ include_once(dirname(__FILE__) . "/classes.php");
 
 class SOYShopDiscountCouponModule extends SOYShopDiscount{
 	private $config;
-	
+
 	function SOYShopDiscountCouponModule(){
 		$this->config = SOYShopCouponUtil::getConfig();
 	}
 
-	function doPost($param){
+	function doPost(array $params){
 		$cart = $this->getCart();
 
-		$couponCodes = SOYShopCouponUtil::clean($param["coupon_codes"]);
-		
+		$couponCodes = SOYShopCouponUtil::clean($params["coupon_codes"]);
+
 		$module = new SOYShop_ItemModule();
 		$module->setId("discount_coupon");
 		$module->setName("クーポン");
 		$module->setType("discount_module");	//typeを指定すると同じtypeのモジュールは同時使用できなくなる
-		
+
 		//割引金額：商品合計より大きくはならない。
 		$discount = SOYShopCouponUtil::getDiscount($couponCodes);
 		$discount = min($discount, $cart->getItemPrice());
 		$module->setPrice(0 - $discount);//負の値
-		
+
 		if($discount > 0){
 			$cart->addModule($module);
 		}else{
@@ -43,7 +43,7 @@ class SOYShopDiscountCouponModule extends SOYShopDiscount{
 		$cart->setOrderAttribute("discount_coupon.code","クーポンコード",implode(", ",$couponCodes));
 
 	}
-	
+
 	function order(){
 		$cart = $this->getCart();
 
@@ -54,17 +54,17 @@ class SOYShopDiscountCouponModule extends SOYShopDiscount{
 		SOYShopCouponUtil::useCoupons($codes,$orderId,$userId);
 	}
 
-	function hasError($param){
+	function hasError(array $params){
 		$cart = $this->getCart();
 
 		$error = "";
-		if(!isset($param["coupon_codes"]) OR !is_array($param["coupon_codes"]) OR count($param["coupon_codes"]) == 0){
+		if(!isset($params["coupon_codes"]) OR !is_array($params["coupon_codes"]) OR count($params["coupon_codes"]) == 0){
 			//$error = "クーポンコードを入力してください。";
 		}elseif(!$this->checkItemPrice()){
 			$error = "商品合計金額がクーポンの利用範囲外のためクーポンは使えません。";
 		}else{
 			$couponCodes = SOYShopCouponUtil::clean($param["coupon_codes"]);
-			
+
 			if(count($couponCodes) > $this->config->getAcceptNumber()){
 				$error = "一度に利用可能なクーポンコードは" . $this->config->getAcceptNumber() . "つまでです。";
 			}
@@ -74,7 +74,7 @@ class SOYShopDiscountCouponModule extends SOYShopDiscount{
 					break;
 				}
 			}
-			
+
 			$cart->setAttribute("discount_coupon.codes",$couponCodes);
 		}
 
@@ -86,7 +86,7 @@ class SOYShopDiscountCouponModule extends SOYShopDiscount{
 			return false;
 		}
 	}
-	
+
 	function getError(){
 		$cart = $this->getCart();
 		return $cart->getAttribute("discount_coupon.error");
@@ -100,7 +100,7 @@ class SOYShopDiscountCouponModule extends SOYShopDiscount{
 			return "";
 		}
 	}
-	
+
 	/**
 	 * 使用可能金額の範囲内におさまっているかどうかを返す
 	 * @return Boolean
@@ -110,9 +110,9 @@ class SOYShopDiscountCouponModule extends SOYShopDiscount{
 
 		$min = $this->config->getEnableAmountMin();
 		$max = $this->config->getEnableAmountMax();
-		
+
 		$itemPrice = $cart->getItemPrice();
-		
+
 		if(
 			strlen($min)>0 && is_numeric($min) && $itemPrice < $min
 			OR
@@ -122,12 +122,12 @@ class SOYShopDiscountCouponModule extends SOYShopDiscount{
 		}else{
 			return true;
 		}
-		
+
 	}
 
 	function getDescription(){
 		$cart = $this->getCart();
-		
+
 		$acceptNumber = $this->config->getAcceptNumber();
 		$couponCodes  = $cart->getAttribute("discount_coupon.codes");
 

@@ -4,13 +4,8 @@ class MaintenancePageUtil {
 
 	//メンテナンスページは既に作成されているか？
 	public static function isMaintenancePage(){
-		$dao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
-		try{
-			$page = $dao->getByUri(SOYShop_Page::MAINTENANCE);
-			return (!is_null($page->getId()));
-		}catch(Exception $e){
-			return false;
-		}
+		SOY2::import("domain.site.SOYShop_Page");
+		return (is_numeric(soyshop_get_page_object_by_uri(SOYShop_Page::MAINTENANCE)->getId()));
 	}
 
 	//メンテナンスページを有効にしているか？

@@ -6,26 +6,20 @@ class SOYShopDiscount implements SOY2PluginAction{
 	/**
 	 * 割引金額の計算とモジュールの登録
 	 */
-	function doPost($param){
+	function doPost(array $params){}
 
-	}
-
-	function clear(){
-
-	}
+	function clear(){}
 
 	/**
 	 * 注文処理時にクーポンコードを使用済にする
 	 */
-	function order(){
-
-	}
+	function order(){}
 
 	/**
 	 * エラーチェック
 	 * @return Boolean
 	 */
-	function hasError($param){
+	function hasError(array $params){
 		return false;
 	}
 
@@ -108,7 +102,9 @@ class SOYShopDiscountDeletageAction implements SOY2PluginDelegateAction{
 
 			//ページのdoPost内で
 			case "checkError":
-				if(isset($this->param[$moduleId]) && $action->hasError($this->param[$moduleId])){
+				$params = (isset($this->param[$moduleId])) ? $this->param[$moduleId] : array();
+				if(is_string($params)) $params = array($params);
+				if(is_array($params) && $action->hasError($params)){
 					$this->hasError = true;
 				}else{
 					//do nothing
@@ -117,7 +113,9 @@ class SOYShopDiscountDeletageAction implements SOY2PluginDelegateAction{
 
 			//ページのdoPost内でエラーのないとき
 			case "select":
-				if(isset($this->param[$moduleId])) $action->doPost($this->param[$moduleId]);
+				$params = (isset($this->param[$moduleId])) ? $this->param[$moduleId] : array();
+				if(is_string($params)) $params = array($params);
+				if(is_array($params)) $action->doPost($params);
 				break;
 
 			//注文処理後：クーポンコードを使用済にする

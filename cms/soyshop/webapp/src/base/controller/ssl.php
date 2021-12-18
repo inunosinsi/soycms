@@ -5,7 +5,7 @@
  * @param String $uri
  * @param Array $args
  */
-function check_ssl($uri, $args){
+function check_ssl(string $uri="", array $args=array()){
 	switch(SOYShop_ShopConfig::load()->getSSLConfig()){
 		case SOYShop_ShopConfig::SSL_CONFIG_HTTPS:
 			redirect_to_ssl_url($uri, $args);
@@ -32,7 +32,7 @@ function check_ssl($uri, $args){
  * @param String $uri
  * @param Array $args
  */
-function redirect_to_ssl_url($uri, $args){
+function redirect_to_ssl_url(string $uri="", array $args=array()){
 	if(!isset($_SERVER["HTTPS"])){
 		if($uri != SOYSHOP_TOP_PAGE_MARKER) array_unshift($args, $uri);
 		$uri = (is_array($args) && count($args)) ? implode("/", $args) : "";
@@ -47,7 +47,7 @@ function redirect_to_ssl_url($uri, $args){
  * @param String $uri
  * @param Array $args
  */
-function redirect_to_non_ssl_url($uri, $args){
+function redirect_to_non_ssl_url(string $uri="", array $args=array()){
 	if(isset($_SERVER["HTTPS"])){
 		if($uri != SOYSHOP_TOP_PAGE_MARKER) array_unshift($args, $uri);
 		$uri = (is_array($args) && count($args)) ? implode("/", $args) : "";
