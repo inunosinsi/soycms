@@ -1,17 +1,17 @@
 <?php
 
 class SOYShop_SearchPage extends SOYShop_PageBase{
-	
+
 	private $module;
 	private $displayCount;
 	private $getOption = 0;	//0 - normal 1 - redirect
 	private $redirectTo = "";
-	
+
 	/* sort */
 	private $defaultSort = "name";
 	private $customSort = "";
 	private $isReverse = false;
-	 
+
 	function getModule() {
 		return $this->module;
 	}
@@ -36,7 +36,7 @@ class SOYShop_SearchPage extends SOYShop_PageBase{
 	function setRedirectTo($redirectTo) {
 		$this->redirectTo = $redirectTo;
 	}
-	
+
 	function getDefaultSort() {
 		return $this->defaultSort;
 	}
@@ -55,37 +55,28 @@ class SOYShop_SearchPage extends SOYShop_PageBase{
 	function setIsReverse($isReverse) {
 		$this->isReverse = $isReverse;
 	}
-	
+
 	function getTitleFormatDescription(){
-    	$html = array();
-
-    	$html[] = "検索ワード:%SEARCH_WORD%";
-
-    	return implode(" ", $html);
+		return self::_getCommonFormat();
     }
-    
+
     function getKeywordFormatDescription(){
-    	$html = array();
-    	$html[] = "ショップ名:%SHOP_NAME%";
-    	$html[] = "検索ワード:%SEARCH_WORD%";
-    	return implode("<br />", $html);
-    }
-    
-    function getDescriptionFormatDescription(){
-    	$html = array();
-    	$html[] = "ショップ名:%SHOP_NAME%";
-    	$html[] = "検索ワード:%SEARCH_WORD%";
-    	return implode("<br />", $html);
+		return self::_getCommonFormat();
     }
 
-    function convertPageTitle($title){
-    	$q = "";
-    	if(isset($_GET["q"])){
-    		$q = htmlspecialchars($_GET["q"], ENT_QUOTES, "UTF-8");
-    	}else if(isset($_GET["c_search"]["item_name"])){
-    		$q = htmlspecialchars($_GET["c_search"]["item_name"], ENT_QUOTES, "UTF-8");
-    	}
-    	return str_replace("%SEARCH_WORD%", $q, $title);
+    function getDescriptionFormatDescription(){
+		return self::_getCommonFormat();
     }
+
+	private function _getCommonFormat(){
+		$tags = parent::getCommonFormat();
+
+		$html = array();
+		$html[] = "<table style=\"margin-top:5px;\">";
+		foreach($tags as $tag){
+			$html[] = "<tr><td>" . $tag["label"] . "：</td><td><strong>" . $tag["format"] . "</strong></td></tr>";
+		}
+		$html[] = "</table>";
+    	return implode("\n", $html);
+	}
 }
-?>

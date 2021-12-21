@@ -14,15 +14,17 @@ class InquiryTopPage extends WebPage {
 		DisplayPlugin::toggle("no_inquiry", !$cnt);
 		DisplayPlugin::toggle("has_inquiry", $cnt);
 
+		if($cnt > 15) $inqs = array_slice($inqs, 0, 15);
+
 		SOY2::import("module.plugins.inquiry_on_mypage.component.InquiryListComponent");
 		$this->createAdd("inquiry_list", "InquiryListComponent", array(
-			"list" => array_slice($inqs, 0, 15),
+			"list" => $inqs,
 			"userNameList" => SOY2Logic::createInstance("logic.user.UserLogic")->getUserNameListByUserIds(self::_getUserIds($inqs))
 		));
 	}
 
-	private function _getUserIds($inqs){
-		if(!is_array($inqs) || !count($inqs)) return array();
+	private function _getUserIds(array $inqs){
+		if(!count($inqs)) return array();
 
 		$ids = array();
 		foreach($inqs as $inq){

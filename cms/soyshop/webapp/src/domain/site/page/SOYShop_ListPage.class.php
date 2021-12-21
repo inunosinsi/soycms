@@ -129,22 +129,24 @@ class SOYShop_ListPage extends SOYShop_PageBase{
         return self::_getCommonFormat();
     }
 
-    function convertPageTitle($title){
-        if($this->currentCategory){
-            return str_replace("%CATEGORY_NAME%", $this->currentCategory->getOpenCategoryName(), $title);
-        }
-        return $title;
+    function convertPageTitle(string $title){
+		$title = parent::convertPageTitle($title);
+		if(!$this->currentCategory instanceof SOYShop_Category) return $title;
+     	return str_replace("%CATEGORY_NAME%", $this->currentCategory->getOpenCategoryName(), $title);
     }
 
 	/**
 	 * フォーマットが共通の時
 	 */
 	private function _getCommonFormat(){
+		$tags = parent::getCommonFormat();
+		$tags[] = array("label" => "カテゴリー名", "format" => "%CATEGORY_NAME%");
+
 		$html = array();
 		$html[] = "<table style=\"margin-top:5px;\">";
-    	$html[] = "<tr><td>ショップ名：</td><td><strong>%SHOP_NAME%</strong></td></tr>";
-    	$html[] = "<tr><td>ページ名：</td><td><strong>%PAGE_NAME%</strong></td></tr>";
-		$html[] = "<tr><td>カテゴリー名：</td><td><strong>%CATEGORY_NAME%</strong></td></tr>";
+		foreach($tags as $tag){
+			$html[] = "<tr><td>" . $tag["label"] . "：</td><td><strong>" . $tag["format"] . "</strong></td></tr>";
+		}
 		$html[] = "</table>";
     	return implode("\n", $html);
 	}

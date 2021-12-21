@@ -159,11 +159,11 @@ class TagCloudUtil {
 
 	public static function getTagCloudAlias(){
 		$args = soyshop_get_arguments();
-		if(!isset($args[0])) return null;
+		if(!isset($args[0])) return "";
 
 		//第一引数の値がタグクラウドのワードであるか？を確認する
 		$tagObj = self::_getWordObjectByAlias($args[0]);
-		return (is_numeric($tagObj->getId())) ? $tagObj->getWord() : null;
+		return (is_numeric($tagObj->getId())) ? $tagObj->getWord() : "";
 	}
 
 	public static function getWordIdByAlias(string $tag){

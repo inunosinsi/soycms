@@ -14,13 +14,12 @@ class ListPage extends WebPage{
 			$logic = SOY2Logic::createInstance("logic.site.page.PageLogic");
 			$dao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
 
-			try{
-				$page = $dao->getById($this->id);
-			}catch(Exception $e){
+			$page = soyshop_get_page_object($this->id);
+			if(!is_numeric($page->getId())){
 				SOY2PageController::jump("Site.Pages");
 				exit;
 			}
-
+			
 			$obj = $page->getPageObject();
 			SOY2::cast($obj,(object)$array);
 

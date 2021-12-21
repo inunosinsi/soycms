@@ -117,7 +117,7 @@ function soyshop_get_category_objects(){
 }
 
 // array(categoryId => categoryName)
-function soyshop_get_category_list($isOnlyOpen=false){
+function soyshop_get_category_list(bool $isOnlyOpen=false){
 	static $list;
 	if(is_null($list)){
 		$list = array();
@@ -135,8 +135,8 @@ function soyshop_get_category_list($isOnlyOpen=false){
 }
 
 // array(user_id...)
-function soyshop_get_user_ids_by_orders($orders){
-	if(!is_array($orders) || !count($orders)) return array();
+function soyshop_get_user_ids_by_orders(array $orders){
+	if(!count($orders)) return array();
 
 	$ids = array();
 	foreach($orders as $order){

@@ -90,9 +90,18 @@ class SOYShopPageBase extends WebPage{
     /**
      * keywordsの置換文字列を変換する
      */
-    function convertMeta($string){
+    function convertMeta(string $string){
 		$page = $this->getPageObject();
 		if(!$page instanceof SOYShop_Page) throw new Exception("failed SOYShop_Page Object on SOYShopPageBase");
+
+		SOYShopPlugin::load("soyshop.title.format");
+		$res = SOYShopPlugin::invoke("soyshop.title.format", array(
+			"mode" => $page->getType(),
+			"format" => $string
+		))->getFormat();
+
+		if(is_string($res) && strlen($res)) $string = $res;
+
         switch($page->getType()){
             case "list":
 				$obj = $page->getObject();
@@ -126,7 +135,7 @@ class SOYShopPageBase extends WebPage{
                 return str_replace("%PAGE_NAME%", $page->getName(), $string);
         }
 
-        return "";
+        return $string;
     }
 
     /**

@@ -9,13 +9,7 @@ class NewOrderAreaPage extends WebPage{
 	function execute(){
 		parent::__construct();
 
-		$orderDao = soyshop_get_hash_table_dao("order");
-		$orderDao->setLimit(16);
-		try{
-			$orders = $orderDao->getByStatus(SOYShop_Order::ORDER_STATUS_REGISTERED);
-		}catch(Exception $e){
-			$orders = array();
-		}
+		$orders = self::_get();
 
 		$cnt = count($orders);
 		DisplayPlugin::toggle("more_order", $cnt > 15);
@@ -28,6 +22,16 @@ class NewOrderAreaPage extends WebPage{
 			"list" => $orders,
 			"userNameList" => ($cnt > 0 ) ? SOY2Logic::createInstance("logic.user.UserLogic")->getUserNameListByUserIds(soyshop_get_user_ids_by_orders($orders)) : array()
 		));
+	}
+
+	private function _get(){
+		$orderDao = soyshop_get_hash_table_dao("order");
+		$orderDao->setLimit(16);
+		try{
+			return $orderDao->getByStatus(SOYShop_Order::ORDER_STATUS_REGISTERED);
+		}catch(Exception $e){
+			return array();
+		}
 	}
 
 	function setConfigObj($configObj){

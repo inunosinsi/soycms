@@ -15,8 +15,7 @@ class DiscountFreeCouponLogic extends SOY2LogicBase{
 	private $cart;
 
 	function __construct(){
-
-		SOY2::imports("module.plugins.discount_free_coupon.domain.*");
+		SOY2::import("module.plugins.discount_free_coupon.domain.SOYShop_CouponDAO");
 	}
 
 	/**
@@ -165,7 +164,6 @@ class DiscountFreeCouponLogic extends SOY2LogicBase{
 		static $coupons, $dao;	//複数個のクーポンコードに対応できるように
 		if(!is_array($coupons)) {
 			$coupons = array();
-			SOY2::import("module.plugins.discount_free_coupon.domain.SOYShop_CouponDAO");
 			$dao = SOY2DAOFactory::create("SOYShop_CouponDAO");
 		}
 

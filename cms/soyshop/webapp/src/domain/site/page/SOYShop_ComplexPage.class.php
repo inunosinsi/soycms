@@ -58,16 +58,28 @@ class SOYShop_ComplexPage extends SOYShop_PageBase{
 	}
 
 	function getTitleFormatDescription(){
-		return parent::getCommonFormat();
+		return self::_getCommonFormat();
 	}
 
 	function getKeywordFormatDescription(){
-		return parent::getCommonFormat();
+		return self::_getCommonFormat();
     }
 
     function getDescriptionFormatDescription(){
-    	return parent::getCommonFormat();
+    	return self::_getCommonFormat();
     }
+
+	private function _getCommonFormat(){
+		$tags = parent::getCommonFormat();
+
+		$html = array();
+		$html[] = "<table style=\"margin-top:5px;\">";
+		foreach($tags as $tag){
+			$html[] = "<tr><td>" . $tag["label"] . "：</td><td><strong>" . $tag["format"] . "</strong></td></tr>";
+		}
+		$html[] = "</table>";
+    	return implode("\n", $html);
+	}
 }
 
 

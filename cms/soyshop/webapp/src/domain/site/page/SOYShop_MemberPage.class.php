@@ -14,7 +14,7 @@ class SOYShop_MemberPage extends SOYShop_PageBase{
     	return implode(" ", $html);
 **/
     }
-    
+
     function getKeywordFormatDescription(){
 /**
     	$html = array();
@@ -25,7 +25,7 @@ class SOYShop_MemberPage extends SOYShop_PageBase{
     	return implode("<br />", $html);
 **/
     }
-    
+
     function getDescriptionFormatDescription(){
 /**
     	$html = array();
@@ -37,7 +37,7 @@ class SOYShop_MemberPage extends SOYShop_PageBase{
 **/
     }
 
-    function convertPageTitle($title){
+    function convertPageTitle(string $title){
 /**
     	if($this->currentUser){
     		$title = str_replace("%ITEM_NAME%", $this->currentUser->getName(), $title);
@@ -47,7 +47,7 @@ class SOYShop_MemberPage extends SOYShop_PageBase{
     	return $title;
 **/
     }
-    
+
     function getCurrentUser() {
     	return $this->currentUser;
     }
@@ -55,4 +55,3 @@ class SOYShop_MemberPage extends SOYShop_PageBase{
     	$this->currentUser = $currentUser;
     }
 }
-?>

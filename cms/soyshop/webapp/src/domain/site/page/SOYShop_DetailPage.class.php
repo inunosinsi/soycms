@@ -20,26 +20,26 @@ class SOYShop_DetailPage extends SOYShop_PageBase{
         return self::_getCommonFormat();
     }
 
-    function convertPageTitle($title){
-        if($this->currentItem){
-            $title = str_replace("%ITEM_NAME%", $this->currentItem->getOpenItemName(), $title);
-            $title = str_replace("%ITEM_CODE%", $this->currentItem->getCode(), $title);
-            return str_replace("%CATEGORY_NAME%", soyshop_get_category_name($this->currentItem->getCategory()), $title);
-        }
-        return $title;
+    function convertPageTitle(string $title){
+		$title = parent::convertPageTitle($title);
+        if(!$this->currentItem instanceof SOYShop_Item) return $title;
+		
+        $title = str_replace("%ITEM_NAME%", $this->currentItem->getOpenItemName(), $title);
+        $title = str_replace("%ITEM_CODE%", $this->currentItem->getCode(), $title);
+        return str_replace("%CATEGORY_NAME%", soyshop_get_category_name($this->currentItem->getCategory()), $title);
     }
 
-	/**
-	 * フォーマットが共通の時
-	 */
 	private function _getCommonFormat(){
+		$tags = parent::getCommonFormat();
+		$tags[] = array("label" => "商品名", "format" => "%ITEM_NAME%");
+		$tags[] = array("label" => "商品コード", "format" => "%ITEM_CODE%");
+		$tags[] = array("label" => "カテゴリー名", "format" => "%CATEGORY_NAME%");
+
 		$html = array();
 		$html[] = "<table style=\"margin-top:5px;\">";
-    	$html[] = "<tr><td>ショップ名：</td><td><strong>%SHOP_NAME%</strong></td></tr>";
-    	$html[] = "<tr><td>ページ名：</td><td><strong>%PAGE_NAME%</strong></td></tr>";
-		$html[] = "<tr><td>商品名：</td><td><strong>%ITEM_NAME%</strong></td></tr>";
-        $html[] = "<tr><td>商品コード：</td><td><strong>%ITEM_CODE%</strong></td></tr>";
-		$html[] = "<tr><td>カテゴリー名：</td><td><strong>%CATEGORY_NAME%</strong></td></tr>";
+		foreach($tags as $tag){
+			$html[] = "<tr><td>" . $tag["label"] . "：</td><td><strong>" . $tag["format"] . "</strong></td></tr>";
+		}
 		$html[] = "</table>";
     	return implode("\n", $html);
 	}

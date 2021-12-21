@@ -417,8 +417,12 @@ class SOYShop_PageBase{
 		return $this->convertPageTitle($this->page->getTitleFormat());
 	}
 
-	function convertPageTitle($title){
-		return $title;
+	function convertPageTitle(string $title){
+		SOYShopPlugin::load("soyshop.title.format");
+		return SOYShopPlugin::invoke("soyshop.title.format", array(
+			"mode" => $this->page->getType(),
+			"format" => $title
+		))->getFormat();
 	}
 
 	function getTitleFormat() {
@@ -464,11 +468,25 @@ class SOYShop_PageBase{
 	 * フォーマットが共通の時
 	 */
 	function getCommonFormat(){
-		$html = array();
-		$html[] = "<table style=\"margin-top:5px;\">";
-    	$html[] = "<tr><td>ショップ名：</td><td><strong>%SHOP_NAME%</strong></td></tr>";
-    	$html[] = "<tr><td>ページ名：</td><td><strong>%PAGE_NAME%</strong></td></tr>";
-		$html[] = "</table>";
-    	return implode("\n", $html);
+		$tags = array(
+			array("label" => "ショップ名", "format" => "%SHOP_NAME%"),
+			array("label" => "ページ名", "format" => "%PAGE_NAME%")
+		);
+
+		//拡張機能
+		SOYShopPlugin::load("soyshop.title.format");
+		$fmts = SOYShopPlugin::invoke("soyshop.title.format", array(
+			"mode" => $this->page->getType()
+		))->getFormats();
+
+		if(!count($fmts)) return $tags;
+
+		foreach($fmts as $moduleId => $fmtArr){
+			if(!is_array($fmtArr) || !count($fmtArr)) continue;
+			foreach($fmtArr as $fmt){
+				$tags[] = $fmt;
+			}
+		}
+		return $tags;
 	}
 }

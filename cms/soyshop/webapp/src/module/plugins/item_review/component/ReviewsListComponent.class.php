@@ -7,7 +7,7 @@ class ReviewsListComponent extends HTMLList{
 
 		$this->addLabel("nickname", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"html" => ($entity instanceof SOYShop_ItemReview) ? self::_getNickname($entity->getNickname(), $entity->getUserId()) : ""
+			"html" => ($entity instanceof SOYShop_ItemReview) ? self::_getNickname((string)$entity->getNickname(), (int)$entity->getUserId()) : ""
 		));
 
 		$this->addLabel("evaluation", array(
@@ -17,12 +17,12 @@ class ReviewsListComponent extends HTMLList{
 
 		$this->addLabel("title", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"text" => (strlen($entity->getTitle()) > 0) ? $entity->getTitle() : "無題"
+			"text" => (is_string($entity->getTitle()) && strlen($entity->getTitle()) > 0) ? $entity->getTitle() : "無題"
 		));
 
 		$this->addLabel("content", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"html" => nl2br(htmlspecialchars($entity->getContent(), ENT_QUOTES))
+			"html" => (is_string($entity->getContent())) ? nl2br(htmlspecialchars($entity->getContent(), ENT_QUOTES)) : ""
 		));
 
 		$this->addLabel("update_date", array(
@@ -36,7 +36,7 @@ class ReviewsListComponent extends HTMLList{
 		));
 	}
 
-	private function _getNickname($nickname, $userId){
+	private function _getNickname(string $nickname, int $userId){
 		$nickname = (strlen($nickname) > 0) ? $nickname : self::_getNicknameConfig();
 		if(!is_numeric($userId)) return $nickname;
 

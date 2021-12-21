@@ -41,25 +41,41 @@ class SOYShop_FreePage extends SOYShop_PageBase{
 
     /* method */
 
-    function getTitleFormatDescription(){
+    function getKeywordFormatDescription(){
+    	return self::_getCommonFormat();
+    }
+
+    function getDescriptionFormatDescription(){
+    	return self::_getCommonFormat();
+    }
+
+	function getTitleFormatDescription(){
+		$tags = parent::getCommonFormat();
+		$tags[] = array("label" => "コンテンツのタイトル", "format" => "%CONTENTS_TITLE%");
+
 		$html = array();
 		$html[] = "<table style=\"margin-top:5px;\">";
-    	$html[] = "<tr><td>ショップ名：</td><td><strong>%SHOP_NAME%</strong></td></tr>";
-    	$html[] = "<tr><td>ページ名：</td><td><strong>%PAGE_NAME%</strong></td></tr>";
-		$html[] = "<tr><td>コンテンツのタイトル：</td><td><strong>%CONTENTS_TITLE%</strong></td></tr>";
+		foreach($tags as $tag){
+			$html[] = "<tr><td>" . $tag["label"] . "：</td><td><strong>" . $tag["format"] . "</strong></td></tr>";
+		}
 		$html[] = "</table>";
     	return implode("\n", $html);
     }
 
-    function getKeywordFormatDescription(){
-    	return parent::getCommonFormat();
-    }
+	private function _getCommonFormat(){
+		$tags = parent::getCommonFormat();
 
-    function getDescriptionFormatDescription(){
-    	return parent::getCommonFormat();
-    }
+		$html = array();
+		$html[] = "<table style=\"margin-top:5px;\">";
+		foreach($tags as $tag){
+			$html[] = "<tr><td>" . $tag["label"] . "：</td><td><strong>" . $tag["format"] . "</strong></td></tr>";
+		}
+		$html[] = "</table>";
+    	return implode("\n", $html);
+	}
 
-    function convertPageTitle($title){
+    function convertPageTitle(string $title){
+		$title = parent::convertPageTitle($title);
     	return str_replace("%CONTENTS_TITLE%", $this->getTitle(), $title);
     }
 }

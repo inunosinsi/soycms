@@ -20,11 +20,14 @@ class OrderHistoryOnMyPage extends WebPage{
 		$cacheLogic = SOY2Logic::createInstance("module.plugins.order_edit_on_mypage.logic.HistoryIdCacheLogic");
 		$ids = $cacheLogic->readCache();
 		if(count($ids)) return $ids;
+
+		$dao = new SOY2DAO();
 		try{
-			$results = SOY2DAOFactory::create("order.SOYShop_OrderStateHistoryDAO")->executeQuery("SELECT id FROM soyshop_order_state_history WHERE author LIKE '顧客%' AND (content LIKE '注文合計%' OR content LIKE '注文番号%') ORDER BY order_date DESC LIMIT 15");
+			$results = $dao->executeQuery("SELECT id FROM soyshop_order_state_history WHERE author LIKE '顧客%' AND (content LIKE '注文合計%' OR content LIKE '注文番号%') ORDER BY order_date DESC LIMIT 15");
 		}catch(Exception $e){
 			$results = array();
 		}
+		unset($dao);
 		if(!count($results)) return array();
 
 		$ids = array();
@@ -36,7 +39,7 @@ class OrderHistoryOnMyPage extends WebPage{
 		return $ids;
 	}
 
-	private function _getUserIds($histories){
+	private function _getUserIds(array $histories){
 		$orderIds = array();
 		foreach($histories as $hist){
 			$orderIds[] = (int)$hist->getOrderId();

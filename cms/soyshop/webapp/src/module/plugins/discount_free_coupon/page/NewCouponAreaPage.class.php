@@ -9,36 +9,38 @@ class NewCouponAreaPage extends WebPage{
 	function execute(){
 		parent::__construct();
 
-		SOY2::imports("module.plugins.discount_free_coupon.domain.*");
-		//SOY2::imports("module.plugins.discount_free_coupon.logic.*");
+		$histories = self::_get();
 
-		$couponDao = SOY2DAOFactory::create("SOYShop_CouponDAO");
-		$couponHistoryDao = SOY2DAOFactory::create("SOYShop_CouponHistoryDAO");
-		$couponHistoryDao->setLimit(6);
+		$cnt = count($histories);
+		DisplayPlugin::toggle("more_coupon_history", ($cnt > 5));
+		DisplayPlugin::toggle("has_coupon_history", ($cnt > 0));
+		DisplayPlugin::toggle("no_coupon_history", ($cnt === 0));
 
-		try{
-			$histories = $couponHistoryDao->get();
-		}catch(Exception $e){
-			$histories = array();
-		}
-
-		DisplayPlugin::toggle("more_coupon_history", (count($histories) > 5));
-		DisplayPlugin::toggle("has_coupon_history", (count($histories) > 0));
-		DisplayPlugin::toggle("no_coupon_history", (count($histories) === 0));
-
-		$histories = array_slice($histories, 0, 5);
+		if($cnt > 5) $histories = array_slice($histories, 0, 5);
 
 		list($couponIds, $userIds, $orderIds) = self::_getCouponIdsAndUserIdsAndOrderIds($histories);
 		$this->createAdd("coupon_history_list", "_common.Coupon.CouponHistoryComponent", array(
 			"list" => $histories,
-			"userNameList" => SOY2Logic::createInstance("logic.user.UserLogic")->getUserNameListByUserIds($userIds),
-			"trackingNumberList" => SOY2Logic::createInstance("logic.order.OrderLogic")->getTrackingNumberListByIds($orderIds),
-			"couponNameList" => SOY2Logic::createInstance("module.plugins.discount_free_coupon.logic.DiscountFreeCouponLogic")->getCouponNameListByIds($couponIds)
+			"userNameList" => ($cnt > 0) ? SOY2Logic::createInstance("logic.user.UserLogic")->getUserNameListByUserIds($userIds) : array(),
+			"trackingNumberList" => ($cnt > 0) ? SOY2Logic::createInstance("logic.order.OrderLogic")->getTrackingNumberListByIds($orderIds) : array(),
+			"couponNameList" => ($cnt > 0) ? SOY2Logic::createInstance("module.plugins.discount_free_coupon.logic.DiscountFreeCouponLogic")->getCouponNameListByIds($couponIds) : array()
 		));
 	}
 
-	private function _getCouponIdsAndUserIdsAndOrderIds($histories){
-		if(!is_array($histories) || !count($histories)) return array(array(), array(), array());
+	private function _get(){
+		SOY2::import("module.plugins.discount_free_coupon.domain.SOYShop_CouponHistoryDAO");
+		$dao = SOY2DAOFactory::create("SOYShop_CouponHistoryDAO");
+		$dao->setLimit(6);
+
+		try{
+			return $dao->get();
+		}catch(Exception $e){
+			return array();
+		}
+	}
+
+	private function _getCouponIdsAndUserIdsAndOrderIds(array $histories){
+		if(!count($histories)) return array(array(), array(), array());
 
 		$couponIds = array();
 		$userIds = array();

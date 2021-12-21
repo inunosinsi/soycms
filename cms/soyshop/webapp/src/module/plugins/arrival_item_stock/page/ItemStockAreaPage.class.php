@@ -9,11 +9,10 @@ class ItemStockAreaPage extends WebPage{
 	function execute(){
 		parent::__construct();
 
-		$shopConfig = SOYShop_ShopConfig::load();
-		$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+		$itemDao = soyshop_get_hash_table_dao("item");
 		$itemDao->setLimit(6);
 
-		if($shopConfig->getIgnoreStock()){
+		if(SOYShop_ShopConfig::load()->getIgnoreStock()){
 			$items = array();
 		}else{
 			try{
