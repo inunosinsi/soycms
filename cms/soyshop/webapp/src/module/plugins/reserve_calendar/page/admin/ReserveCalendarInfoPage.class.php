@@ -18,6 +18,8 @@ class ReserveCalendarInfoPage extends WebPage{
 		DisplayPlugin::toggle("more_reserve", ($resCnt > 15));
 		DisplayPlugin::toggle("no_reserve", ($resCnt === 0));
 
+		if($resCnt > 15) $reserves = array_slice($reserves, 0, 15);
+
 		$this->createAdd("reserve_list", "NewReserveInfoListComponent", array(
 			"list" => $reserves,
 			"labels" => SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getLabelListAll()

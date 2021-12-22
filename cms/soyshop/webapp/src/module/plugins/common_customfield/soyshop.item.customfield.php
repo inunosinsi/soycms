@@ -73,6 +73,13 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 
 		self::prepare();
 
+		$list = SOYShop_ItemAttributeConfig::load(true);
+		if(!count($list)) return "";
+
+		// 開発中
+		//SOY2::import("module.plugins.common_customfield.util.CustomfieldUtil");
+		//$array = (is_numeric($item->getId())) ? CustomfieldUtil::getFieldValues($item->getId()) : array();
+
 		try{
 			$array = $this->itemAttributeDao->getByItemId($item->getId());
 		}catch(Exception $e){
@@ -80,12 +87,10 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 		}
 
 		$html = array();
-		$list = SOYShop_ItemAttributeConfig::load();
-		if(!count($list)) return "";
 
 		$associationMode = false;	//カテゴリとの関連付けモード
 
-		foreach($list as $config){
+		foreach($list as $fieldId => $config){
 			$value = (isset($array[$config->getFieldId()])) ? $array[$config->getFieldId()]->getValue() : null;
 			$extraValues = (isset($array[$config->getFieldId()])) ? $array[$config->getFieldId()]->getExtraValuesArray() : null;
 
@@ -306,8 +311,7 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 	}
 
 	function onDelete($id){
-		$attributeDAO = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		$attributeDAO->deleteByItemId($id);
+		SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO")->deleteByItemId($id);
 	}
 
 	private function prepare(){

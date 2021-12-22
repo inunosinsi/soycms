@@ -15,7 +15,7 @@ class TagCloudItemList extends SOYShopItemListBase{
 	 */
 	function getItems($pageObj, $offset, $limit){
 		$wordId = self::_getWordIdFromParam();
-		if(is_null($wordId) || (is_string($wordId) && !strlen($wordId))) return array();
+		if(is_null($wordId) || !is_numeric($wordId)) return array();
 
 		return self::_logic()->search($wordId, $limit);
 	}
@@ -25,7 +25,7 @@ class TagCloudItemList extends SOYShopItemListBase{
 	 */
 	function getTotal($pageObj){
 		$wordId = self::_getWordIdFromParam();
-		if(is_null($wordId) || (is_string($wordId) && !strlen($wordId))) return 0;
+		if(is_null($wordId) || !is_numeric($wordId)) return 0;
 		return self::_logic()->getTotal($wordId);
 	}
 

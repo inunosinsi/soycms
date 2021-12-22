@@ -24,20 +24,31 @@ abstract class SOYShop_ItemAttributeDAO extends SOY2DAO{
 
 	/**
 	 * @final
-	 * @param int itemId, array $fieldIds
+	 * isBackwardMatchにすることでfieldId_多言語化のpostfixも検索対象にする
+	 * @param int itemId, array $fieldIds, bool $isBackwardMatch
 	 * @return array
 	 */
-	function getByItemIdAndFieldIds(int $itemId, array $fieldIds){
+	function getByItemIdAndFieldIds(int $itemId, array $fieldIds, bool $isBackwardMatch=false){
 		if(!count($fieldIds)) return array();
 
+		if($isBackwardMatch){
+			$sql = "SELECT * ".
+					"FROM soyshop_item_attribute ".
+					"WHERE item_id = :itemId ";
+			$q = array();
+			foreach($fieldIds as $fieldId){
+				$q[] = "item_field_id LIKE '" . htmlspecialchars($fieldId, ENT_QUOTES, "UTF-8") . "%'";
+			}
+			$sql .=	"AND (" . implode(" OR ", $q) . ")";
+		}else{
+			$sql = "SELECT * ".
+					"FROM soyshop_item_attribute ".
+					"WHERE item_id = :itemId ".
+					"AND item_field_id IN (\"" . implode("\",\"", $fieldIds) . "\")";
+		}
+
 		try{
-			$res = $this->executeQuery(
-				"SELECT * ".
-				"FROM soyshop_item_attribute ".
-				"WHERE item_id = :itemId ".
-				"AND item_field_id IN (\"" . implode("\",\"", $fieldIds) . "\")",
-				array(":itemId" => $itemId)
-			);
+			$res = $this->executeQuery($sql, array(":itemId" => $itemId));
 		}catch(Exception $e){
 			$res = array();
 		}
@@ -48,6 +59,8 @@ abstract class SOYShop_ItemAttributeDAO extends SOY2DAO{
 				$list[$v["item_field_id"]] = $this->getObject($v);
 			}
 		}
+
+		if($isBackwardMatch) return $list;	//後方一致モードの場合は値がない場合の穴埋めはしない
 
 		foreach($fieldIds as $fieldId){
 			if(!isset($list[$fieldId])){

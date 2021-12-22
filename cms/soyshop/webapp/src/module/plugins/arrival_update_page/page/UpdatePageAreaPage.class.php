@@ -9,17 +9,19 @@ class UpdatePageAreaPage extends WebPage{
 	function execute(){
 		parent::__construct();
 
-		$pageDao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
-		$pageDao->setLimit(5);
-		try{
-			$pages = $pageDao->newPages();
-		}catch(Exception $e){
-			$pages = array();
-		}
-
 		$this->createAdd("page_list", "_common.PageListComponent", array(
-			"list" => $pages
+			"list" => self::_get()
 		));
+	}
+
+	private function _get(){
+		$dao = soyshop_get_hash_table_dao("page");
+		$dao->setLimit(5);
+		try{
+			return $dao->newPages();
+		}catch(Exception $e){
+			return array();
+		}
 	}
 
 	function setConfigObj($configObj){

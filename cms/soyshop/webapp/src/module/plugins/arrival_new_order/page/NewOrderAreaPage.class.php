@@ -25,10 +25,10 @@ class NewOrderAreaPage extends WebPage{
 	}
 
 	private function _get(){
-		$orderDao = soyshop_get_hash_table_dao("order");
-		$orderDao->setLimit(16);
+		$dao = soyshop_get_hash_table_dao("order");
+		$dao->setLimit(16);
 		try{
-			return $orderDao->getByStatus(SOYShop_Order::ORDER_STATUS_REGISTERED);
+			return $dao->getByStatus(SOYShop_Order::ORDER_STATUS_REGISTERED);
 		}catch(Exception $e){
 			return array();
 		}
