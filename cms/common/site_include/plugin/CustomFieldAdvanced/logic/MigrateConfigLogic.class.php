@@ -4,9 +4,7 @@ class MigrateConfigLogic extends SOY2LogicBase{
 
 	private $pluginObj;
 
-	function __construct(){
-
-	}
+	function __construct(){}
 
 	function import(){
 		set_time_limit(0);
@@ -31,12 +29,14 @@ class MigrateConfigLogic extends SOY2LogicBase{
 
 		$dao = SOY2DAOFactory::create("cms.EntryAttributeDAO");
 		foreach($entries as $entry){
-			$entryId = $entry->getId();
 			$fields = $obj->getCustomFields($entry->getId());
+			if(!count($fields)) continue;
 
 			foreach($fields as $field){
+				if(is_null($field->getValue()) && !count($field->getExtraValuesArray())) continue;	//処理の節約
+
 				$attr = new EntryAttribute();
-				$attr->setEntryId($entryId);
+				$attr->setEntryId($entry->getId());
 				$attr->setFieldId($field->getId());
 				$attr->setValue($field->getValue());
 				$attr->setExtraValuesArray($field->getExtraValues());
