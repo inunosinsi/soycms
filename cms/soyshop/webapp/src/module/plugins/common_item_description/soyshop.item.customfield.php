@@ -7,12 +7,12 @@ class CommonItemDescriptionField extends SOYShopItemCustomFieldBase{
 
 	function doPost(SOYShop_Item $item){
 		$attr = soyshop_get_item_attribute_object($item->getId(), self::FIELD_ID);
-		if(isset($_POST[self::FIELD_ID]) is_array($_POST[self::FIELD_ID]) && count($_POST[self::FIELD_ID])){
+		if(isset($_POST[self::FIELD_ID]) && is_array($_POST[self::FIELD_ID]) && count($_POST[self::FIELD_ID])){
 			$arr = array();
-			foreach($_POST[self::FIELD_ID] as $key => $value){
+			foreach($_POST[self::FIELD_ID] as $key => $_dust){
 				$arr[] = array("id" => $key);
 			}
-			$v = soy2_serialize($array);
+			$v = soy2_serialize($arr);
 		}else{
 			$v = null;
 		}
@@ -26,30 +26,30 @@ class CommonItemDescriptionField extends SOYShopItemCustomFieldBase{
 
 		$html = array();
 
-		$html[] = "<h1>詳細情報の表示設定</h1>";
-		$html[] = "<dd>";
-		$html[] = "<p>表示したい内容にチェックをしてください。</p>";
+		$html[] = "<div class=\"alert alert-success\">詳細情報の表示設定</div>";
+		$html[] = "<strong>表示したい内容にチェックをしてください。</strong><br>";
 
 		$values = soy2_unserialize(SOYShop_DataSets::get("item_description", ""));
 		$ids = soy2_unserialize(soyshop_get_item_attribute_value($item->getId(), self::FIELD_ID, "string"));
-
-		if(count($values) && count($ids)){
+		
+		if(count($values)){
 			for($i = 0; $i < count($values); $i++){
-				$flag = false;
-				if($ids){
+				$flg = false;
+				if(count($ids)){
 					foreach($ids as $id){
 						if($values[$i]["column"] == $id["id"]){
-							$flag =true;
+							$flg =true;
 							break;
 						}
 					}
 				}
-				$html[] = $class->buildCheckBox($values[$i]["name"],$values[$i]["column"],$flag);
+				
+				$html[] = $class->buildCheckBox($values[$i]["name"],$values[$i]["column"], $flg);
 			}
 		}
 
-		$html[] = "<p><a href=\"".SOY2PageController::createLink("Config.Detail?plugin=common_item_description")."\">説明文の追加</a>";
-		$html[] = "</dd>";
+		$html[] = "<p><a href=\"".SOY2PageController::createLink("Config.Detail?plugin=common_item_description")."\" class=\"btn btn-info btn-sm\">説明文の追加</a></p>";
+		$html[] = "<div class=\"alert alert-success\">詳細情報の表示設定ここまで</div><br>";
 
 		return implode("\n", $html);
 	}
@@ -58,22 +58,18 @@ class CommonItemDescriptionField extends SOYShopItemCustomFieldBase{
 	 * onOutput
 	 */
 	function onOutput($htmlObj, SOYShop_Item $item){
-
-		$class = new ItemDescriptionClass();
-
 		$ids = soy2_unserialize(soyshop_get_item_attribute_value($item->getId(), self::FIELD_ID, "string"));
 
-		$htmlObj->createAdd("is_item_description","HTMLModel", array(
+		$htmlObj->addModel("is_item_description", array(
 			"soy2prefix" => "block",
 			"visible" => (count($ids) > 0)
 		));
 
-		$values = soy2_unserialize(SOYShop_DataSets::get("item_description", ""));
-		$html = array();
+		$values = (count($ids)) ? soy2_unserialize(SOYShop_DataSets::get("item_description", "")) : array();
 
+		$html = array();
 		if(count($values) && count($ids)){
 			for($i = 0; $i < count($values); $i++){
-				$flag = false;
 				foreach($ids as $id){
 					if($values[$i]["column"]==$id["id"]){
 						$html[] = $values[$i]["value"];
@@ -83,17 +79,16 @@ class CommonItemDescriptionField extends SOYShopItemCustomFieldBase{
 			}
 		}
 
-		$htmlObj->createAdd("item_description","HTMLLabel", array(
+		$htmlObj->addLabel("item_description", array(
 			"soy2prefix" => "cms",
 			"html" => implode("\n", $html)
 		));
 	}
 
-	function onDelete($id){
-		$attributeDAO = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		$attributeDAO->deleteByItemId($id);
+	function onDelete(int $itemId){
+		SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO")->deleteByItemId($itemId);
 	}
-
 }
 
 SOYShopPlugin::extension("soyshop.item.customfield","common_item_description","CommonItemDescriptionField");
+
