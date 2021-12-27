@@ -2,8 +2,8 @@
 
 class CustomAliasConfirmUrlComponent {
 
-	public static function buildForm($entryId, $entryPageUri=null){
-		$alias = CustomAliasUtil::getAliasById($entryId);
+	public static function buildForm(int $entryId, string $entryPageUri=""){
+		$alias = ($entryId > 0) ? CustomAliasUtil::getAliasById($entryId) : "";
 		if(!strlen($alias)) return "";
 
 		//確認用のURLだけ表示しておく

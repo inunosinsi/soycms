@@ -33,6 +33,7 @@ class LabelListComponent extends HTMLList{
 		$this->addActionLink("remove_link", array(
 			"link" => SOY2PageController::createLink("Label.Remove.".$id),
 			"visible" => UserInfoUtil::hasEntryPublisherRole(),
+			"attr:id" => "remove_label_" . $id
 		));
 
 		$this->addLabel("description", array(

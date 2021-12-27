@@ -11,39 +11,9 @@ class CustomAliasUtil {
 	const INCLUDE_LOWER = "lower";	//半角小文字を含む
 	const INCLUDE_UPPER = "upper";	//半角大文字を含む
 
-
-	public static function getBlogPageById($pageId){
-		try{
-    		return SOY2DAOFactory::create("cms.BlogPageDAO")->getById($pageId);
-    	}catch(Exception $e){
-    		return new BlogPage();
-    	}
-	}
-
-	public static function getEntryById($entryId){
-		return self::_getEntryById($entryId);
-	}
-
-	public static function getAliasById($entryId){
-		$entry = self::_getEntryById($entryId);
-		if(is_numeric($entry->getId())){
-			return $entry->getAlias();
-		}else{
-			return $entryId;
-		}
-	}
-
-	private static function _getEntryById($entryId){
-		static $entries;
-		if(is_null($entries)) $entries = array();
-		if(!isset($entries[$entryId])){
-			try{
-				$entries[$entryId] = SOY2DAOFactory::create("cms.EntryDAO")->getById($entryId);
-			}catch(Exception $e){
-				$entries[$entryId] = new Entry();
-			}
-		}
-		return $entries[$entryId];
+	public static function getAliasById(int $entryId){
+		$entry = soycms_get_entry_object($entryId);
+		return (is_numeric($entry->getId())) ? $entry->getAlias() : $entryId;
 	}
 
 	public static function generateRandomString(){
@@ -66,26 +36,23 @@ class CustomAliasUtil {
 	        }
 
 			//生成したエイリアスが既に使用されていないか？確認する
-			try{
-				$entry = SOY2DAOFactory::create("cms.EntryDAO")->getByAlias($str);
-			}catch(Exception $e){
-				break;
-			}
+			$entry = soycms_get_entry_object_by_alias($str);
+			if(!is_numeric($entry->getId())) break;
 		}
 
         return $str;
 	}
 
-	public static function getAdvancedConfig($mode){
+	public static function getAdvancedConfig(string $mode){
 		return self::_getAdvancedConfig($mode);
 	}
 
-	private static function _getAdvancedConfig($mode){
+	private static function _getAdvancedConfig(string $mode){
 		SOY2::import("domain.cms.DataSets");
 		return DataSets::get("custom_alias." . $mode . ".config", array());
 	}
 
-	public static function saveAdvancedConfig($mode, $values){
+	public static function saveAdvancedConfig(string $mode, array $values){
 		SOY2::import("domain.cms.DataSets");
 		DataSets::put("custom_alias." . $mode . ".config", $values);
 	}

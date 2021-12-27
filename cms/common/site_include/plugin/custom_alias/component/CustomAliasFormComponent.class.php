@@ -2,8 +2,8 @@
 
 class CustomAliasFormComponent {
 
-	public static function buildForm($mode, $entryId, $entryPageUri=null){
-		$alias = CustomAliasUtil::getAliasById($entryId);
+	public static function buildForm(int $mode, int $entryId, string $entryPageUri=""){
+		$alias = ($entryId > 0) ? CustomAliasUtil::getAliasById($entryId) : "";
 
 		$isBlogPage = (strlen($entryPageUri));
 		$label = "カスタムエイリアス";
@@ -39,7 +39,7 @@ class CustomAliasFormComponent {
 				$html[] = "<script>";
 				$html[] = file_get_contents(dirname(dirname(__FILE__)) . "/js/generate.js");
 				$html[] = "</script>";
-				$html[] = "<input type=\"button\" class=\"btn btn-primary\" value=\"ランダムな値を挿入\" onclick=\"cusotm_alias_insert_generated_random_value('" . CustomAliasUtil::generateRandomString() . "');\">";
+				$html[] = "<input type=\"button\" id=\"rebuild_random_alias\" class=\"btn btn-primary\" value=\"ランダムな値を挿入\" onclick=\"cusotm_alias_insert_generated_random_value('" . CustomAliasUtil::generateRandomString() . "');\">";
 
 				break;
 			default:
@@ -48,7 +48,7 @@ class CustomAliasFormComponent {
 
 
 		$detailPageUrl = htmlspecialchars($entryPageUri.rawurlencode($alias), ENT_QUOTES, "UTF-8");
-		if($isBlogPage && CustomAliasUtil::getEntryById($entryId)->isActive() > 0){
+		if($isBlogPage && soycms_get_entry_object($entryId)->isActive() > 0){
 			$html[] = "<a href=\"".$detailPageUrl."\" target=\"_blank\" rel=\"noopener\" class=\"btn btn-primary\">確認</a>";
 		}
 

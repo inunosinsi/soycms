@@ -21,7 +21,7 @@ class CustomAliasPlugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.12.1"
+			"version"=>"1.12.2"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID, array(
@@ -48,7 +48,7 @@ class CustomAliasPlugin{
 			case CustomAliasUtil::MODE_ID:
 			case CustomAliasUtil::MODE_HASH:
 				$newId = $ids[1];
-				$entry = CustomAliasUtil::getEntryById($newId);
+				$entry = soycms_get_entry_object($newId);
 				$alias = self::_generateAlias($entry, $mode, $newId);
 				if(strlen($alias)){
 					$entry->setAlias($alias);
@@ -63,30 +63,31 @@ class CustomAliasPlugin{
 
 	function onEntryUpdate($arg){
 		$mode = self::_mode();
-		$alias = null;
+		$newAlias = null;
 		$entry = &$arg["entry"];
 		switch($mode){
 			case CustomAliasUtil::MODE_ID:
 			case CustomAliasUtil::MODE_HASH:
-				$alias = self::_generateAlias($entry, $mode);
+				$newAlias = self::_generateAlias($entry, $mode);
 				break;
 			default:
-				if(isset($_POST["alias"]) && strlen($_POST["alias"])) $alias = trim($_POST["alias"]);
+				if(isset($_POST["alias"]) && strlen($_POST["alias"])) $newAlias = trim($_POST["alias"]);
 		}
 
-		if(isset($alias) && strlen($alias)){
-			$entry->setAlias($alias);
-			$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
-			$logic->update($entry);
+		if(isset($newAlias) && is_string($newAlias) && strlen($newAlias)){
+			if($entry->getAlias() != $newAlias){	// エイリアスが異なっている時のみ記事の更新を行う
+				$entry->setAlias($newAlias);
+				SOY2Logic::createInstance("logic.site.Entry.EntryLogic")->update($entry);
+			}
 		}
 	}
 
-	private function _generateAlias(Entry $entry, $mode, $newId=null){
+	private function _generateAlias(Entry $entry, int $mode, int $newId=0){
 		switch($mode){
 			case CustomAliasUtil::MODE_ID:
 				$cnf = CustomAliasUtil::getAdvancedConfig(CustomAliasUtil::MODE_ID);
 				//記事複製時を加味
-				$alias = (is_numeric($newId) && $newId > 0) ? $newId : $entry->getId();
+				$alias = ($newId > 0) ? $newId : $entry->getId();
 				if(isset($cnf["prefix"]) && strlen($cnf["prefix"])){
 					$alias = $cnf["prefix"] . $alias;
 				}
@@ -98,21 +99,27 @@ class CustomAliasPlugin{
 
 			case CustomAliasUtil::MODE_HASH:
 				// @ToDo ハッシュ関数を選択できるようにしたい
-				return md5($entry->getTitle());
+				if($newId > 0){
+					$title = (string)$newId . $entry->getTitle();
+				}else{
+					$title = (string)$entry->getId() . $entry->getTitle();
+				}
+				return md5($title);
 		}
 		return null;
 	}
 
 	function onCallCustomField(){
+		$arg = SOY2PageController::getArguments();
+		$entryId = (isset($arg[0]) && is_numeric($arg[0])) ? (int)$arg[0] : 0;
+
 		$mode = self::_mode();
 		switch($mode){
 			case CustomAliasUtil::MODE_ID:
 			case CustomAliasUtil::MODE_HASH:
-				return "";
+				SOY2::import("site_include.plugin.custom_alias.component.CustomAliasHiddenFormComponent");
+				return CustomAliasHiddenFormComponent::buildForm($entryId);
 			default:
-				$arg = SOY2PageController::getArguments();
-				$entryId = (isset($arg[0]) && is_numeric($arg[0])) ? (int)$arg[0] : null;
-
 				SOY2::import("site_include.plugin.custom_alias.component.CustomAliasFormComponent");
 				return CustomAliasFormComponent::buildForm($mode, $entryId);
 		}
@@ -120,12 +127,12 @@ class CustomAliasPlugin{
 
 	function onCallCustomField_inBlog(){
 		$arg = SOY2PageController::getArguments();
-		$pageId = (isset($arg[0]) && is_numeric($arg[0])) ? (int)$arg[0] : null;
-		$page = CustomAliasUtil::getBlogPageById($pageId);
+		$pageId = (isset($arg[0]) && is_numeric($arg[0])) ? (int)$arg[0] : 0;
+		$page = soycms_get_page_object($pageId);
 		if(is_null($page->getId())) return "";
 
 		$entryPageUri = CMSUtil::getSiteUrl().$page->getEntryPageURL();
-		$entryId = (isset($arg[1]) && is_numeric($arg[1])) ? (int)$arg[1] : null;
+		$entryId = (isset($arg[1]) && is_numeric($arg[1])) ? (int)$arg[1] : 0;
 
 		$mode = self::_mode();
 		switch($mode){

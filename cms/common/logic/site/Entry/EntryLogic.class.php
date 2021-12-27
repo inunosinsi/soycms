@@ -52,14 +52,15 @@ class EntryLogic extends SOY2LogicBase{
  		}
 
  		//仮で今の時間を入れておく カスタムエイリアス　SQLite対策
- 		if($bean->getId() == $bean->getAlias()) $bean->setAlias(time());
- 		$id = $dao->insert($bean);
-
- 		//if($bean->isEmptyAlias()){	//ここのif文は必要ない
- 			$bean->setId($id);//updateを実行するため
- 			$bean->setAlias($this->getUniqueAlias($id,$bean->getTitle()));
- 			$dao->update($bean);
- 		//}
+ 		if($bean->getId() == $bean->getAlias()) $bean->setAlias((string)time());
+		$id = $dao->insert($bean);
+		
+		$newAlias = $this->getUniqueAlias($id,$bean->getTitle());		
+		if($bean->getAlias() != $newAlias){
+			$bean->setId($id);//updateを実行するため
+			$bean->setAlias($newAlias);
+			$dao->update($bean);
+		}
 
  		return $id;
  	}
@@ -75,7 +76,7 @@ class EntryLogic extends SOY2LogicBase{
 		if(!is_numeric($bean->getCdate())){
 			$bean->setCdate(SOYCMS_NOW);
 		}
-
+		
 		if($bean->isEmptyAlias()){
 			$bean->setAlias($this->getUniqueAlias($bean->getId(),$bean->getTitle()));
 		}
@@ -94,7 +95,7 @@ class EntryLogic extends SOY2LogicBase{
 			$bean->setOpenPeriodEnd(CMSUtil::encodeDate($bean->getOpenPeriodEnd(),false));
 			$bean->setOpenPeriodStart(CMSUtil::encodeDate($bean->getOpenPeriodStart(),true));
 		}
-
+		
 		$dao->update($bean);
 
 		return $bean->getId();

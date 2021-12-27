@@ -1,6 +1,6 @@
 <?php
 
-<?php
+use function Complex\ln;
 
 /** 共通且つ効率化する関数群 **/
 //ハッシュテーブル用のハッシュ値を作成する
@@ -11,7 +11,7 @@ function soycms_generate_hash_value(string $str, int $length=12){
 
 function soycms_get_hash_table_types(){
 	static $types;
-	if(is_null($types)) $types = array("entry", "entry_attribute");
+	if(is_null($types)) $types = array("entry", "entry_attribute", "page");
 	return $types;
 }
 
@@ -44,8 +44,11 @@ function soycms_get_hash_table_dao(string $fnName){
 		case 0:	//entry
 			$path = "cms.EntryDAO";
 			break;
-		case 2:	//entry_attribute
+		case 1:	//entry_attribute
 			$path = "cms.EntryAttributeDAO";
+			break;
+		case 2:	//page
+			$path = "cms.PageDAO";
 			break;
 	}
 	$daos[$idx] = SOY2DAOFactory::create($path);
@@ -87,7 +90,7 @@ function soycms_get_attribute_value($v=null, $dataType=""){
 	return $v;
 }
 
-/** 商品IDから商品オブジェクト **/
+/** 記事IDから記事オブジェクト **/
 function soycms_get_entry_object(int $entryId){
 	$dao = soycms_get_hash_table_dao(__FUNCTION__);
 	if((int)$entryId <= 0) return new Entry();
@@ -166,7 +169,7 @@ function soycms_get_entry_attribute_objects(int $entryId, array $fieldIds){
 }
 **/
 function soycms_get_entry_attribute_value(int $entryId, string $fieldId, string $dataType=""){
-	return soycms_get_attribute_value(soycms_get_item_attribute_object($entryId, $fieldId)->getValue(), $dataType);
+	return soycms_get_attribute_value(soycms_get_entry_attribute_object($entryId, $fieldId)->getValue(), $dataType);
 }
 
 function soycms_save_entry_attribute_object(EntryAttribute $attr){
@@ -192,4 +195,20 @@ function soycms_save_entry_attribute_object(EntryAttribute $attr){
 			//
 		}
 	}
+}
+
+/** ページIDからページオブジェクト **/
+function soycms_get_page_object(int $pageId){
+	$dao = soycms_get_hash_table_dao(__FUNCTION__);
+	if((int)$pageId <= 0) return new Page();
+
+	$idx = soycms_get_hash_index((string)$pageId, __FUNCTION__);
+	if(isset($GLOBALS["soycms_page_hash_table"][$idx])) return $GLOBALS["soycms_page_hash_table"][$idx];
+
+	try{
+        $GLOBALS["soycms_page_hash_table"][$idx] = $dao->getById($pageId);
+    }catch(Exception $e){
+        $GLOBALS["soycms_page_hash_table"][$idx] = new Page();
+    }
+	return $GLOBALS["soycms_page_hash_table"][$idx];
 }

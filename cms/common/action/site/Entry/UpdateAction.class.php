@@ -60,13 +60,13 @@ class UpdateAction extends SOY2Action{
 		$entity->setOpenPeriodEnd(CMSUtil::encodeDate($entity->getOpenPeriodEnd(),false));
 		$entity->setOpenPeriodStart(CMSUtil::encodeDate($entity->getOpenPeriodStart(),true));
 		$entity->setId($this->id);
-
+		
 		try{
 			$logic->update($entity);
-
+			
 			//CMS:PLUGIN callEventFunction
 			CMSPlugin::callEventFunc('onEntryUpdate',array("entry"=>$entity));
-
+			
 			//history
 			$historyLogic->onUpdate($entity);
 

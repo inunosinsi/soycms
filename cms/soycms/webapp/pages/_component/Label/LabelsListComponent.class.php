@@ -14,6 +14,14 @@ class LabelsListComponent extends HTMLList{
 			"text" => $cnt,
 		));
 
+		$this->addLink("parent_category_count_href", array(
+			"link" => "#panel_" . $cnt
+		));
+
+		$this->addModel("parent_category_count_prop", array(
+			"attr:id" => "panel_" . $cnt
+		));
+
 		$this->createAdd("list", "LabelListComponent", array(
 			"list" => $entity
 		));
