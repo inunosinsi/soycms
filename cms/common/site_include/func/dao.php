@@ -11,7 +11,7 @@ function soycms_generate_hash_value(string $str, int $length=12){
 
 function soycms_get_hash_table_types(){
 	static $types;
-	if(is_null($types)) $types = array("entry", "entry_attribute", "page");
+	if(is_null($types)) $types = array("entry", "entry_attribute", "page", "blog_page");
 	return $types;
 }
 
@@ -49,6 +49,9 @@ function soycms_get_hash_table_dao(string $fnName){
 			break;
 		case 2:	//page
 			$path = "cms.PageDAO";
+			break;
+		case 3:
+			$path = "cms.BlogPageDAO";
 			break;
 	}
 	$daos[$idx] = SOY2DAOFactory::create($path);
@@ -197,18 +200,34 @@ function soycms_save_entry_attribute_object(EntryAttribute $attr){
 	}
 }
 
-/** ページIDからページオブジェクト **/
-function soycms_get_page_object(int $pageId){
+/** 
+ * ページIDからページオブジェクト 
+ * isPriorityBlogPageModeをtrueにすると、ブログページを優先的に検索する
+ * @param int pageId, bool isPriorityBlogPageMode
+ * @return Page()|BlogPage()
+ **/
+function soycms_get_page_object(int $pageId, bool $isPriorityBlogPageMode=true){
 	$dao = soycms_get_hash_table_dao(__FUNCTION__);
 	if((int)$pageId <= 0) return new Page();
 
 	$idx = soycms_get_hash_index((string)$pageId, __FUNCTION__);
 	if(isset($GLOBALS["soycms_page_hash_table"][$idx])) return $GLOBALS["soycms_page_hash_table"][$idx];
 
+	//ブログページの方の取得を優先する
+	if($isPriorityBlogPageMode){
+		try{
+			$blogPage = soycms_get_hash_table_dao("blog_page")->getById($pageId);
+			if(is_numeric($blogPage->getId())) $GLOBALS["soycms_page_hash_table"][$idx] = $blogPage;
+		}catch(Exception $e){
+			//
+		}
+		if(isset($GLOBALS["soycms_page_hash_table"][$idx])) return $GLOBALS["soycms_page_hash_table"][$idx];
+	}
+
 	try{
-        $GLOBALS["soycms_page_hash_table"][$idx] = $dao->getById($pageId);
-    }catch(Exception $e){
-        $GLOBALS["soycms_page_hash_table"][$idx] = new Page();
-    }
+		$GLOBALS["soycms_page_hash_table"][$idx] = $dao->getById($pageId);
+	}catch(Exception $e){
+		$GLOBALS["soycms_page_hash_table"][$idx] = new Page();
+	}
 	return $GLOBALS["soycms_page_hash_table"][$idx];
 }
