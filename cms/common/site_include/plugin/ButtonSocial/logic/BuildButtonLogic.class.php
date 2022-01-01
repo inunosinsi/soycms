@@ -6,13 +6,13 @@ class BuildButtonLogic extends SOY2LogicBase {
 		SOY2::import("site_include.plugin.ButtonSocial.util.ButtonSocialUtil");
 	}
 
-	function buildFbButton($appId, $entryLink=null){
-		if(!isset($entryLink)) $entryLink = ButtonSocialUtil::getPageUrl();
+	function buildFbButton(string $entryLink=""){
+		if(!strlen($entryLink)) $entryLink = ButtonSocialUtil::getPageUrl();
 		return "<div class=\"fb-like fb-like-comment\" data-href=\"" . htmlspecialchars($entryLink, ENT_QUOTES,"UTF-8") . "\" data-send=\"false\" data-layout=\"button_count\" data-width=\"450\" data-show-faces=\"false\"></div>";
 	}
 
-	function buildHatenaButton($entryLink=null){
-		if(!isset($entryLink)) $entryLink = ButtonSocialUtil::getPageUrl();
+	function buildHatenaButton(string $entryLink=""){
+		if(!strlen($entryLink)) $entryLink = ButtonSocialUtil::getPageUrl();
 		return "<a href=\"https://b.hatena.ne.jp/entry/" . htmlspecialchars($entryLink,ENT_QUOTES,"UTF-8"). "\" " .
 				"class=\"hatena-bookmark-button\" " .
 				"data-hatena-bookmark-layout=\"standard\" " .
@@ -24,8 +24,8 @@ class BuildButtonLogic extends SOY2LogicBase {
 				"src=\"https://b.st-hatena.com/js/bookmark_button.js\" charset=\"utf-8\" async=\"async\"></script>";
 	}
 
-	function buildTwitterButton($entryLink=null){
-		if(!isset($entryLink)) $entryLink = ButtonSocialUtil::getPageUrl();
+	function buildTwitterButton(string $entryLink=""){
+		if(!strlen($entryLink)) $entryLink = ButtonSocialUtil::getPageUrl();
 		return "<a href=\"https://twitter.com/share\" " .
 				"class=\"twitter-share-button\" " .
 				"data-url=\"".htmlspecialchars($entryLink,ENT_QUOTES,"UTF-8")."\" " .
@@ -38,7 +38,7 @@ class BuildButtonLogic extends SOY2LogicBase {
 		return "<script type=\"text/javascript\" src=\"https://static.mixi.jp/js/share.js\"></script>";
 	}
 
-	function buildMixiLikeButton($key){
+	function buildMixiLikeButton(string $key=""){
 		return "<div data-plugins-type=\"mixi-favorite\" data-service-key=\"".$key."\" data-size=\"medium\" data-href=\"\" data-show-faces=\"true\" data-show-count=\"true\" data-show-comment=\"true\" data-width=\"450\"></div>".
 				"<script type=\"text/javascript\">(function(d) {var s = d.createElement('script'); s.type = 'text/javascript'; s.async = true;s.src = '//static.mixi.jp/js/plugins.js#lang=ja';d.getElementsByTagName('head')[0].appendChild(s);})(document);</script>";
 	}

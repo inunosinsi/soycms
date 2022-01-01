@@ -2,7 +2,7 @@
 
 class SocialCustomFieldForm {
 
-	public static function buildForm($entryId){
+	public static function buildForm(int $entryId){
 		SOY2::import("site_include.plugin.ButtonSocial.util.ButtonSocialUtil");
 		$imgPath = ButtonSocialUtil::getAttr($entryId)->getValue();
 

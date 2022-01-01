@@ -4,7 +4,6 @@
  */
 class ButtonSocialPlugin{
 
-	private $logic;
 	private $app_id;
 	private $mixi_check_key;
 	private $mixi_like_key;
@@ -72,11 +71,15 @@ class ButtonSocialPlugin{
 		$entryId = $arg["entryId"];
 		$htmlObj = $arg["SOY2HTMLObject"];
 
-		list($url,$title) = ButtonSocialUtil::getDetailUrlAndTitle($htmlObj, $entryId);
+		list($url,$title) = ButtonSocialUtil::getDetailUrlAndTitle($htmlObj, (int)$entryId);
+		unset($title);
+
+		$appId = (is_string($this->app_id)) ? $this->app_id : "";
+		$mixiLikeKey = (is_string($this->mixi_like_key)) ? $this->mixi_like_key : "";
 
 		$btnLogic = SOY2Logic::createInstance("site_include.plugin.ButtonSocial.logic.BuildButtonLogic");
 
-		$fbBtn = (strlen($this->app_id)) ? $btnLogic->buildFbButton($this->app_id,$url) : "";
+		$fbBtn = (strlen($appId)) ? $btnLogic->buildFbButton($url) : "";
 		$htmlObj->addLabel("facebook_like_button", array(
 			"soy2prefix" => "cms",
 			"html" => $fbBtn
@@ -96,18 +99,18 @@ class ButtonSocialPlugin{
 			"soy2prefix" => "cms",
 			"link" => "http://mixi.jp/share.pl",
 			"attr:class" => "mixi-check-button",
-			"attr:data-key" => $this->mixi_check_key,
+			"attr:data-key" => (is_string($this->mixi_check_key)) ? $this->mixi_check_key : "",
 			"attr:data-url" => $url
 		));
 
 		$htmlObj->addLabel("mixi_check_script", array(
 			"soy2prefix" => "cms",
-			"html" => (strlen($this->mixi_like_key)) ? $btnLogic->buildMixiCheckScript() : ""
+			"html" => (strlen($mixiLikeKey)) ? $btnLogic->buildMixiCheckScript() : ""
 		));
 
 		$htmlObj->addLabel("mixi_like_button", array(
 			"soy2prefix" => "cms",
-			"html" => (strlen($this->mixi_like_key)) ? $btnLogic->buildMixiLikeButton($this->mixi_like_key) : ""
+			"html" => (strlen($mixiLikeKey)) ? $btnLogic->buildMixiLikeButton($mixiLikeKey) : ""
 		));
 
 		$htmlObj->addLabel("pocket_button", array(
@@ -122,11 +125,17 @@ class ButtonSocialPlugin{
 	}
 
 	function onPageOutput($obj){
-		$entryId = (get_class($obj) == "CMSBlogPage" && isset($obj->entry) && !is_null($obj->entry->getId())) ? (int)$obj->entry->getId() : null;
+		$entryId = (get_class($obj) == "CMSBlogPage" && isset($obj->entry)) ? $obj->entry->getId() : 0;
+		$dsp = (is_string($this->description)) ? $this->description : "";
+		$imgPath = (is_string($this->image)) ? $this->image : "";
+		$appId = (is_string($this->app_id)) ? $this->app_id : "";
+		$admins = (is_string($this->admins)) ? $this->admins : "";
+		$twCard = (is_string($this->tw_card)) ? $this->tw_card : "";
+		$twId = (is_string($this->tw_id)) ? $this->tw_id : "";
 
 		$metaLogic = SOY2Logic::createInstance("site_include.plugin.ButtonSocial.logic.BuildMetaLogic");
 
-		$ogMeta = $metaLogic->buildOgMeta($obj, $this->description, $this->image, $entryId);
+		$ogMeta = $metaLogic->buildOgMeta($obj, $dsp, $imgPath, $entryId);
 		$obj->addLabel("og_meta", array(
 			"soy2prefix" => "sns",
 			"html" => $ogMeta
@@ -134,17 +143,17 @@ class ButtonSocialPlugin{
 
 		$obj->addLabel("twitter_card_meta", array(
 			"soy2prefix" => "sns",
-			"html" => (strlen($this->tw_card)) ? $metaLogic->buildTwitterCardMeta($obj, $this->tw_card, $this->tw_id, $this->description, $this->image, $entryId) : ""
+			"html" => (strlen($twCard)) ? $metaLogic->buildTwitterCardMeta($obj, $twCard, $twId, $dsp, $imgPath, $entryId) : ""
 		));
 
-		$fbMeta = (strlen($this->app_id) && strlen($this->admins)) ? $metaLogic->buildFbMeta($this->app_id, $this->admins) : "";
+		$fbMeta = (strlen($appId) && strlen($admins)) ? $metaLogic->buildFbMeta($appId, $admins) : "";
 		$obj->addLabel("facebook_meta", array(
 			"soy2prefix" => "sns",
 			"html" => $fbMeta
 		));
 
 		$btnLogic = SOY2Logic::createInstance("site_include.plugin.ButtonSocial.logic.BuildButtonLogic");
-		$fbBtn = (strlen($this->app_id)) ? $btnLogic->buildFbButton($this->app_id) : "";
+		$fbBtn = (strlen($appId)) ? $btnLogic->buildFbButton() : "";
 		$obj->addLabel("facebook_like_button", array(
 			"soy2prefix" => "sns",
 			"html" => $fbBtn
@@ -206,20 +215,9 @@ class ButtonSocialPlugin{
 	function onOutput($arg){
 		$html = &$arg["html"];
 
-		//ダイナミック編集では挿入しない
-		if(defined("CMS_PREVIEW_MODE") && CMS_PREVIEW_MODE){
-			return $html;
-		}
-
-		//app_idが入力されていない場合は表示しない
-		if(is_null($this->app_id) || strlen($this->app_id) === 0){
-			return $html;
-		}
-
-		//ページの時のチェック
-		if(isset($this->config_per_page[$arg["page"]->getId()]) && $this->config_per_page[$arg["page"]->getId()] != 1){
-			return $html;
-		}
+		if(defined("CMS_PREVIEW_MODE") && CMS_PREVIEW_MODE) return $html;	//ダイナミック編集では挿入しない
+		if(!is_string($this->app_id) || strlen($this->app_id) === 0) return $html;	//app_idが入力されていない場合は表示しない
+		if(isset($this->config_per_page[$arg["page"]->getId()]) && $this->config_per_page[$arg["page"]->getId()] != 1) return $html;	//ページの時のチェック
 
 		//ブログページの時のチェック
 		if($arg["page"]->getPageType() == Page::PAGE_TYPE_BLOG){
@@ -230,14 +228,12 @@ class ButtonSocialPlugin{
 
 		$metaLogic = SOY2Logic::createInstance("site_include.plugin.ButtonSocial.logic.BuildMetaLogic");
 		if(stripos($html,'<body>') !== false){
-			$html = str_ireplace('<body>', '<body>' . "\n" . $metaLogic->buildFbRoot($this->app_id), $html);
+			return str_ireplace('<body>', '<body>' . "\n" . $metaLogic->buildFbRoot($this->app_id), $html);
 		}elseif(preg_match('/<body\\s[^>]+>/',$html)){
-			$html = preg_replace('/(<body\\s[^>]+>)/', "\$0\n" . $metaLogic->buildFbRoot($this->app_id), $html);
-		}else{
-			//何もしない
+			return preg_replace('/(<body\\s[^>]+>)/', "\$0\n" . $metaLogic->buildFbRoot($this->app_id), $html);
+		}else{	//何もしない
+			return $html;
 		}
-
-		return $html;
 	}
 
 	function onEntryUpdate($arg){
@@ -259,13 +255,10 @@ class ButtonSocialPlugin{
 	}
 
 	function onEntryRemove($args){
-		$dao = SOY2DAOFactory::create("cms.EntryAttributeDAO");
 		foreach($args as $entryId){
-			try{
-				$dao->deleteByEntryId($entryId);
-			}catch(Exception $e){
-				//
-			}
+			$attr = ButtonSocialUtil::getAttr($entryId);
+			$attr->setValue(null);
+			ButtonSocialUtil::saveAttr($attr);
 		}
 
 		return true;
@@ -273,13 +266,13 @@ class ButtonSocialPlugin{
 
 	function onCallCustomField(){
 		$arg = SOY2PageController::getArguments();
-		$entryId = (isset($arg[0])) ? (int)$arg[0] : null;
+		$entryId = (isset($arg[0])) ? (int)$arg[0] : 0;
 		return SocialCustomFieldForm::buildForm($entryId);
 	}
 
 	function onCallCustomField_inBlog(){
 		$arg = SOY2PageController::getArguments();
-		$entryId = (isset($arg[1])) ? (int)$arg[1] : null;
+		$entryId = (isset($arg[1])) ? (int)$arg[1] : 0;
 		return SocialCustomFieldForm::buildForm($entryId);
 	}
 
@@ -358,9 +351,7 @@ class ButtonSocialPlugin{
 	public static function register(){
 		SOY2::import("site_include.plugin.ButtonSocial.util.ButtonSocialUtil");
 		$obj = CMSPlugin::loadPluginConfig(ButtonSocialUtil::PLUGIN_ID);
-		if(is_null($obj)){
-			$obj = new ButtonSocialPlugin();
-		}
+		if(is_null($obj)) $obj = new ButtonSocialPlugin();
 		CMSPlugin::addPlugin(ButtonSocialUtil::PLUGIN_ID,array($obj,"init"));
 	}
 }

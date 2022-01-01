@@ -5,7 +5,7 @@ class ButtonSocialUtil{
 	const PLUGIN_ID = "ButtonSocial";
 	const PLUGIN_KEY = "ogimage_field";
 
-	public static function getDetailUrlAndTitle($obj,$entryId){
+	public static function getDetailUrlAndTitle($obj, int $entryId){
 
 		//ブログページだった場合
 		//$objはBlogPage_EntryListなど
@@ -18,14 +18,9 @@ class ButtonSocialUtil{
 		SOY2::import("util.UserInfoUtil");
 		$url = UserInfoUtil::getSiteURLBySiteId("") . $uri;
 
-		if(!isset($entryId) || !is_numeric($entryId)) return array($url, "");
+		if(!is_numeric($entryId)) return array($url, "");
 
-		try{
-			$entry = SOY2DAOFactory::create("cms.EntryDAO")->getById($entryId);
-		}catch(Exception $e){
-			$entry = new Entry();
-		}
-
+		$entry = soycms_get_entry_object($entryId);
 		$url .= rawurlencode($entry->getAlias());
 		return array($url, $entry->getTitle());
 	}
@@ -48,7 +43,7 @@ class ButtonSocialUtil{
 		return $title;
 	}
 
-	private static function _convertTitle($obj, $format){
+	private static function _convertTitle($obj, string $format=""){
 		//ページのタイトルを取得
 		$title = $obj->page->getTitle();
 
@@ -104,41 +99,11 @@ class ButtonSocialUtil{
 		return "";
 	}
 
-	public static function getAttr($entryId){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("cms.EntryAttributeDAO");
-		if(!is_numeric($entryId)) return new EntryAttribute();
-
-		try{
-			return $dao->get($entryId, self::PLUGIN_KEY);
-		}catch(Exception $e){
-			$attr = new EntryAttribute();
-			$attr->setEntryId($entryId);
-			$attr->setFieldId(self::PLUGIN_KEY);
-			return $attr;
-		}
+	public static function getAttr(int $entryId){
+		return soycms_get_entry_attribute_object($entryId, self::PLUGIN_KEY);
 	}
 
 	public static function saveAttr(EntryAttribute $attr){
-		$dao = SOY2DAOFactory::create("cms.EntryAttributeDAO");
-
-		if(strlen($attr->getValue())){
-			try{
-				$dao->insert($attr);
-			}catch(Exception $e){
-				try{
-					$dao->update($attr);
-				}catch(Exception $e){
-					//
-				}
-			}
-		//高速化をはかる為、オブジェクトを削除
-		}else{
-			try{
-				$dao->delete($attr->getEntryId(), ButtonSocialUtil::PLUGIN_KEY);
-			}catch(Exception $e){
-				//
-			}
-		}
+		soycms_save_entry_attribute_object(($attr));		
 	}
 }
