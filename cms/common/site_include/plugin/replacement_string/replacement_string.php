@@ -42,7 +42,6 @@ class ReplacementStringPlugin{
 	}
 
 	function config_page(){
-
 		SOY2::import("site_include.plugin.replacement_string.config.ReplacementStringConfigPage");
 		$form = SOY2HTMLFactory::createInstance("ReplacementStringConfigPage");
 		$form->setPluginObj($this);

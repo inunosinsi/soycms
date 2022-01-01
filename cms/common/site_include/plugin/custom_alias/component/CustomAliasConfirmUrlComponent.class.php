@@ -12,7 +12,9 @@ class CustomAliasConfirmUrlComponent {
 		$html[] = "<label for=\"custom_alias_input\">カスタムエイリアス</label><br>";
 		$html[] = $entryPageUri . $alias . " ";
 		$detailPageUrl = htmlspecialchars($entryPageUri.rawurlencode($alias), ENT_QUOTES, "UTF-8");
-		$html[] = "<a href=\"".$detailPageUrl."\" target=\"_blank\" rel=\"noopener\" class=\"btn btn-primary\">確認</a>";
+		if($entryId > 0 && soycms_get_entry_object($entryId)->getIsPublished()){
+			$html[] = "<a href=\"".$detailPageUrl."\" target=\"_blank\" rel=\"noopener\" class=\"btn btn-primary\">確認</a>";
+		}
 		$html[] = "<input type=\"hidden\" id=\"custom_alias_confirm_url\" value=\"" . $detailPageUrl . "\">";
 		$html[] = "<a href=\"javascript:void(0);\" class=\"btn btn-warning\" onclick=\"custom_alias_copy_url();\">コピー</a>";
 		$html[] = "<script>" . file_get_contents(dirname(dirname(__FILE__)) . "/js/script.js") . "</script>";

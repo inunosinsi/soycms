@@ -76,7 +76,7 @@ class CustomFieldPlugin{
 				}
 
 				//空の時の動作
-				if(strlen($field->getValue()) == 0 ){
+				if(strlen((string)$field->getValue()) == 0 ){
 					if($master->getHideIfEmpty()){
 						//空の時は表示しない
 						$attr["visible"] = false;
@@ -122,7 +122,7 @@ class CustomFieldPlugin{
 				}
 
 				//属性に出力
-				if(strlen($master->getOutput()) > 0){
+				if(strlen((string)$master->getOutput()) > 0){
 
 					//リンクタイプ以外でhrefを使う場合
 					if($master->getOutput() == "href" && $master->getType() != "link"){
@@ -149,7 +149,7 @@ class CustomFieldPlugin{
 				}
 
 				//追加属性を出力
-				if(strlen($master->getExtraOutputs()) > 0){
+				if(strlen((string)$master->getExtraOutputs()) > 0){
 					$extraOutputs = explode("\n", str_replace(array("\r\n", "\r"), "\n", $master->getExtraOutputs()));
 					$extraValues = $field->getExtraValues();
 					foreach($extraOutputs as $key => $extraOutput){
@@ -162,17 +162,17 @@ class CustomFieldPlugin{
 
 			$htmlObj->addModel($field->getId() . "_visible", array(
 				"soy2prefix" => "cms",
-				"visible" => (strlen($field->getValue()) > 0)
+				"visible" => (strlen((string)$field->getValue()) > 0)
 			));
 
 			$htmlObj->addModel($field->getId() . "_is_not_empty", array(
 				"soy2prefix" => "cms",
-				"visible" => (strlen($field->getValue()) > 0)
+				"visible" => (strlen((string)$field->getValue()) > 0)
 			));
 
 			$htmlObj->addModel($field->getId() . "_is_empty", array(
 				"soy2prefix" => "cms",
-				"visible" => (strlen($field->getValue()) === 0)
+				"visible" => (strlen((string)$field->getValue()) === 0)
 			));
 
 			//SOY2HTMLのデフォルトの _visibleがあるので、$field->getId()."_visible"より後にこれをやらないと表示されなくなる

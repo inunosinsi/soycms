@@ -1,0 +1,23 @@
+<div class="alert alert-info">ブログページの記事毎ページに表示されるキーワードと概要を記事投稿時に設定することが出来ます。</div>
+<p>
+    ブログページの記事毎ページテンプレートのヘッダ部分にある<br />
+    メタキーワードタグとメタディスクリプションタグに下記のタグを上書きしてください。<br />
+    (ただし、記事毎ページ以外のページでは、このプラグインは動作しません)
+</p>
+
+<p>
+<form soy:id="form">
+    <input type="checkbox" soy:id="mode">&nbsp;
+    <input type="submit" class="btn btn-primary" name="update" value="更新">
+</form>
+</p>
+
+<pre>
+&lt;!-- b_block:id="is_entry_description" --&gt;
+&lt;meta name="description" b_block:id="entry_description"&gt;
+&lt;!-- /b_block:id="is_entry_description" --&gt;
+
+&lt;!-- b_block:id="is_entry_keyword" --&gt;
+&lt;meta name="keyword" b_block:id="entry_keyword"&gt;
+&lt;!-- /b_block:id="is_entry_keyword" --&gt;
+</pre>
