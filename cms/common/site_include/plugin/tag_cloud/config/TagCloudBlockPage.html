@@ -19,7 +19,7 @@
 			<textarea class="form-control" soy:id="tags" placeholder="カンマ(,)区切りで使用するタグを登録します。例：大豆,コンテンツ"></textarea>
 		</div>
 		<div class="text-center">
-			<input type="submit" class="btn btn-primary btn-lg" value="更新">
+			<input type="submit" class="btn btn-primary btn-lg" id="update_btn" value="更新">
 		</div>
 	</form>
 </div>
@@ -28,12 +28,12 @@
 
 <h4>設定方法</h4>
 <p>テンプレートのブロック設定でプラグインブロックを選び、プラグインのセレクトボックスで<strong>TagCloud</strong>を選びます。<br>
-※TagCloudのブロックを設置するページは一つだけになります
+	※TagCloudのブロックを設置するページは一つだけになります
 </p>
 
 <h4>タグの記述例</h4>
 <p>他のブロックの時と同じですが、block:id="***"の記述の時に、ラベルIDと表示件数を指定することができます<br>
-※ブロックの外側でcms:id="tag_cloud_tag"で表示中のタグ一覧ページのタグ名を出力します。</p>
+	※ブロックの外側でcms:id="tag_cloud_tag"で表示中のタグ一覧ページのタグ名を出力します。</p>
 
 <pre>&lt;!-- cms:id="tag_cloud_tag" --&gt;タグ名&lt;!-- /cms:id="tag_cloud_tag" --&gt;
 
@@ -41,13 +41,13 @@
 表示したい内容のcms:idを追加
 &lt;!-- /block:id="***" --&gt;</pre>
 <p>
-    ***の箇所は任意の値です。<br>
-    cms:labelでどのラベルが設定されている記事一覧を取得するかを決めることができます。<br>
-    ※cms:labelは必ず指定してください。ブログで使用するラベルのIDを指定します<br>
+	***の箇所は任意の値です。<br>
+	cms:labelでどのラベルが設定されている記事一覧を取得するかを決めることができます。<br>
+	※cms:labelは必ず指定してください。ブログで使用するラベルのIDを指定します<br>
 	ラベルIDは管理画面でラベルの詳細を開き、ブラウザのアドレスバーに入力されているURLの末尾の数字になります。<br>
 	例："http://example/cms/soycms/index.php/Label/Detail/2"の場合のラベルIDは<strong>2</strong>になります。<br><br>
-    cms:countで記事を何件表示するか決めることができます。<br>
-    ※cms:countの指定がなくても動作します。
+	cms:countで記事を何件表示するか決めることができます。<br>
+	※cms:countの指定がなくても動作します。
 </p>
 <br>
 <h4>タグクラウドモジュールの設置(TagCloudブロックを設置したページへのタグのリンク一覧)</h4>
@@ -57,10 +57,10 @@
 <strong>&lt;!-- /p_block:id="tag_cloud_word_list" --&gt;</strong>
 <strong>&lt;!-- /cms:module="common.tag_cloud" --&gt;</strong></pre>
 <p>cms:countでタグを何個表示するか決めることができます。<br>
-※cms:countの指定がなくても動作します。<br>
-cms:random="on"でタグの表示順をランダムにします。<br>
-※cms:randomがない場合はタグが付いた記事が多い順になります<br>
-※cms:id="tag_link"を<strong>cms:id="tag_hash_link"</strong>に代えるとハッシュ値版のパラメータに代わります</p>
+	※cms:countの指定がなくても動作します。<br>
+	cms:random="on"でタグの表示順をランダムにします。<br>
+	※cms:randomがない場合はタグが付いた記事が多い順になります<br>
+	※cms:id="tag_link"を<strong>cms:id="tag_hash_link"</strong>に代えるとハッシュ値版のパラメータに代わります</p>
 <br>
 <h4>ブロック内でのタグ一覧の出力の記述例</h4>
 <pre>&lt;!-- b_block:id="entry" --&gt;

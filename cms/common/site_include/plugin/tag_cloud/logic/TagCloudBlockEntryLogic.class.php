@@ -6,7 +6,7 @@ class TagCloudBlockEntryLogic extends SOY2LogicBase {
 
     }
 
-    function search($labelId, $wordId, $count = null){
+    function search(int $labelId, int $wordId, int $count=0){
         static $entries;
         if(is_null($entries)){
             $entries = array();
@@ -25,7 +25,7 @@ class TagCloudBlockEntryLogic extends SOY2LogicBase {
 				"ORDER BY ent.cdate DESC ";
 
 
-            if(isset($count) && $count > 0){
+            if($count > 0){
                 $sql .= "LIMIT " . $count;
 
                 //ページャ
@@ -55,7 +55,7 @@ class TagCloudBlockEntryLogic extends SOY2LogicBase {
 
             if(!count($results)) return array();
 
-            foreach($results as $key => $row){
+            foreach($results as $row){
                 if(isset($row["id"]) && (int)$row["id"]){
                     $entries[$row["id"]] = $dao->getObject($row);
                 }
@@ -65,8 +65,8 @@ class TagCloudBlockEntryLogic extends SOY2LogicBase {
         return $entries;
     }
 
-    function getTotal($labelId, $wordId){
-        if(is_null($wordId) || is_null($labelId)) return 0;
+    function getTotal(int $labelId=0, int $wordId=0){
+        if($labelId === 0 || $wordId === 0) return 0;
 
 		$sql = "SELECT COUNT(ent.id) AS TOTAL FROM Entry ent ".
 			"JOIN EntryLabel lab ".

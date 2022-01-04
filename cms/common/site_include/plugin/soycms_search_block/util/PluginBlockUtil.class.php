@@ -2,16 +2,16 @@
 
 class PluginBlockUtil {
 
-	public static function getTemplateByPageId($pageId){
+	public static function getTemplateByPageId(int $pageId){
 		return self::__getTemplateByPageId($pageId);
 	}
 
-	private static function __getTemplateByPageId($pageId=null){
+	private static function __getTemplateByPageId(int $pageId=0){
 		static $templates;
 		if(is_null($templates)) $templates = array();
 		if(isset($templates[$pageId])) return $templates[$pageId];
 
-		$blog = self::getBlogPageById($pageId);
+		$blog = soycms_get_blog_page_object($pageId);
 
 		//ブログページを取得できた場合
 		if(!is_null($blog) && !is_null($blog->getId())){
@@ -62,7 +62,7 @@ class PluginBlockUtil {
 
 		//ブログページ以外
 		}else{
-			$templates[$pageId] = self::getPageById($pageId)->getTemplate();
+			$templates[$pageId] = soycms_get_page_object($pageId, false)->getTemplate();
 		}
 
 		return (isset($templates[$pageId])) ? $templates[$pageId] : null;
@@ -110,10 +110,6 @@ class PluginBlockUtil {
 		return $plugBlocks[$pageId];
 	}
 
-	public static function getBlogPageByPageId($pageId){
-		return self::getBlogPageById($pageId);
-	}
-
 	public static function getLimitByPageId(int $pageId, string $soyId=""){
 		$template = self::__getTemplateByPageId($pageId);
 		if(is_null($template)) return null;
@@ -135,7 +131,7 @@ class PluginBlockUtil {
 		return null;
 	}
 
-	public static function getSortRandomMode($pageId){
+	public static function getSortRandomMode(int $pageId){
 		$template = self::__getTemplateByPageId($pageId);
 		if(is_null($template)) return false;
 
@@ -174,7 +170,7 @@ class PluginBlockUtil {
 		return null;
 	}
 
-	public static function getLabelIdsByPageId($pageId){
+	public static function getLabelIdsByPageId(int $pageId){
 		$template = self::__getTemplateByPageId($pageId);
 		if(is_null($template)) return null;
 
@@ -203,33 +199,5 @@ class PluginBlockUtil {
 		}
 
 		return array();
-	}
-
-	private static function getBlogPageById($pageId){
-		static $pages;
-		if(is_null($pages)) $pages = array();
-		if(isset($pages[$pageId])) return $pages[$pageId];
-
-		try{
-			$pages[$pageId] = SOY2DAOFactory::create("cms.BlogPageDAO")->getById($pageId);
-		}catch(Exception $e){
-			$pages[$pageId] = new BlogPage();
-		}
-
-		return $pages[$pageId];
-	}
-
-	private static function getPageById($pageId){
-		static $pages;
-		if(is_null($pages)) $pages = array();
-		if(isset($pages[$pageId])) return $pages[$pageId];
-
-		try{
-			$pages[$pageId] = SOY2DAOFactory::create("cms.PageDAO")->getById($pageId);
-		}catch(Exception $e){
-			$pages[$pageId] = new Page();
-		}
-
-		return (isset($pages[$pageId])) ? $pages[$pageId] : new Page();
 	}
 }

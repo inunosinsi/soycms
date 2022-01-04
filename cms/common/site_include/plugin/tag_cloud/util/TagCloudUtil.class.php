@@ -14,13 +14,13 @@ class TagCloudUtil {
 		));
 	}
 
-	public static function saveConfig($values){
+	public static function saveConfig(array $values){
 		if(isset($values["tags"]) && strlen($values["tags"])) $values["tags"] = self::_shapeTags($values["tags"]);
 		SOY2::import("domain.cms.DataSets");
 		DataSets::put("tag_cloud.config", $values);
 	}
 
-	public static function getDisplayCount($tmp){
+	public static function getDisplayCount(string $tmp){
 		if(preg_match('/(<[^>]*[^\/]p_block:id=\"tag_cloud_word_list\"[^>]*>)/', $tmp, $tm)){
 			if(preg_match('/cms:count=\"(.*?)\"/', $tm[1], $t)){
 				if(isset($t[1]) && is_numeric($t[1])) return (int)$t[1];
@@ -29,7 +29,7 @@ class TagCloudUtil {
 		return null;
 	}
 
-	public static function isRandomMode($tmp){
+	public static function isRandomMode(string $tmp){
 		if(preg_match('/(<[^>]*[^\/]p_block:id=\"tag_cloud_word_list\"[^>]*>)/', $tmp, $tm)){
 			if(preg_match('/cms:random=\"(.*?)\"/', $tm[1], $t)){
 				if(isset($t[1]) && $t[1] = "on") return true;
@@ -38,7 +38,7 @@ class TagCloudUtil {
 		return false;
 	}
 
-	public static function getRank($i){
+	public static function getRank(int $i){
 		static $div, $rank;
 		if(is_null($rank)) $rank = 0;
 		if(is_null($div)){
@@ -49,14 +49,14 @@ class TagCloudUtil {
 		return $rank;
 	}
 
-	private static function _shapeTags($tags){
-		$tags = trim($tags);
-		if(!strlen($tags)) return "";
-		$tags = trim(str_replace("、", ",", $tags));
+	private static function _shapeTags(string $tagsChain){
+		$tagsChain = trim($tagsChain);
+		if(!strlen($tagsChain)) return "";
+		$tagsChain = trim(str_replace("、", ",", $tagsChain));
 
-		$tagsArray = explode(",", $tags);
+		$tags = explode(",", $tagsChain);
 		$list = array();
-		foreach($tagsArray as $tag){
+		foreach($tags as $tag){
 			$tag = trim($tag);
 			if(!strlen($tag)) continue;
 			$list[] = $tag;
@@ -64,7 +64,7 @@ class TagCloudUtil {
 		return implode(",", $list);
 	}
 
-	public static function getRegisterdTagsByEntryId($entryId){
+	public static function getRegisterdTagsByEntryId(int $entryId){
 		static $tags;
 		if(!is_numeric($entryId)) return array();
 		if(is_null($tags)) $tags = array();
@@ -107,7 +107,7 @@ class TagCloudUtil {
 		}
 	}
 
-	public static function generateHash($str){
+	public static function generateHash(string $str){
 		return substr(md5($str), 0, 16);
 	}
 
@@ -160,20 +160,13 @@ class TagCloudUtil {
 		return $pageId;
 	}
 
-	public static function getUrlByPageId($pageId){
+	public static function getUrlByPageId(int $pageId){
 		return self::_getUrlByPageId($pageId);
 	}
 
-	private static function _getUrlByPageId($pageId){
+	private static function _getUrlByPageId(int $pageId){
 		$url = SOY2DAOFactory::create("cms.SiteConfigDAO")->get()->getConfigValue("url");
 		if(is_null($url)) $url = CMSPageController::createLink("", true);
-
-		try{
-			$uri = SOY2DAOFactory::create("cms.PageDAO")->getById($pageId)->getUri();
-			$url .= $uri;
-		}catch(Exception $e){
-			//
-		}
-		return $url;
+		return $url . soycms_get_page_object($pageId)->getUri();
 	}
 }

@@ -64,7 +64,7 @@ class TagCloudPlugin{
 		$htmlObj = $arg["SOY2HTMLObject"];
 
 		SOY2::import("site_include.plugin.tag_cloud.util.TagCloudUtil");
-		$tags = TagCloudUtil::getRegisterdTagsByEntryId($entryId);
+		$tags = (is_numeric($entryId) && $entryId > 0) ? TagCloudUtil::getRegisterdTagsByEntryId($entryId) : array();
 
 		$cnt = count($tags);
 		$htmlObj->addModel("no_tag_cloud", array(
@@ -137,13 +137,13 @@ class TagCloudPlugin{
 
 	function onCallCustomField(){
 		$arg = SOY2PageController::getArguments();
-		$entryId = (isset($arg[0])) ? (int)$arg[0] : null;
+		$entryId = (isset($arg[0])) ? (int)$arg[0] : 0;
 		return TagCloudCustomFieldForm::buildForm($entryId);
 	}
 
 	function onCallCustomField_inBlog(){
 		$arg = SOY2PageController::getArguments();
-		$entryId = (isset($arg[1])) ? (int)$arg[1] : null;
+		$entryId = (isset($arg[1])) ? (int)$arg[1] : 0;
 		return TagCloudCustomFieldForm::buildForm($entryId);
 	}
 
@@ -156,14 +156,13 @@ class TagCloudPlugin{
 		$pageId = (int)$_SERVER["SOYCMS_PAGE_ID"];
 
 		$soyId = PluginBlockUtil::getSoyIdByPageIdAndPluginId($pageId, self::PLUGIN_ID);
-		if(!isset($soyId)) return array();
+		if(!is_string($soyId)) return array();
 
 		//ラベルIDを取得とデータベースから記事の取得件数指定
 		$labelId = PluginBlockUtil::getLabelIdByPageId($pageId, $soyId);
 		if(is_null($labelId)) return array();
 
-		$count = PluginBlockUtil::getLimitByPageId($pageId, $soyId);
-		return SOY2Logic::createInstance("site_include.plugin.tag_cloud.logic.TagCloudBlockEntryLogic")->search($labelId, $wordId, $count);
+		return SOY2Logic::createInstance("site_include.plugin.tag_cloud.logic.TagCloudBlockEntryLogic")->search($labelId, $wordId, PluginBlockUtil::getLimitByPageId($pageId, $soyId));
 	}
 
 	function returnPluginId(){
@@ -285,6 +284,10 @@ class TagCloudPlugin{
 		return null;
 	}
 
+	/**
+	 * @param int|string
+	 * @return string
+	 */
 	private function _getTagByWordId($wordId){
 		SOY2::import("site_include.plugin.tag_cloud.domain.TagCloudDictionaryDAO");
 		try{
@@ -306,7 +309,7 @@ class TagCloudPlugin{
 		$dao = new SOY2DAO();
 
 		try{
-			$exist = $dao->executeQuery("SELECT * FROM TagCloudDictionary", array());
+			$_exist = $dao->executeQuery("SELECT * FROM TagCloudDictionary", array());
 			return;//テーブル作成済み
 		}catch(Exception $e){
 			//

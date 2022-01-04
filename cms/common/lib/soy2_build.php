@@ -6740,23 +6740,25 @@ class HTMLList extends SOYBodyComponentBase{
 		parent::execute();
 		$counter = 0;
 		$length = count($this->list);
-		foreach($this->list as $listKey => $listObj){
-			$counter++;
-			$tmpList = array();
-			$res = $this->populateItemImpl($listObj,$listKey,$counter,$length);
-			$this->addLabel("index", array("text" => $counter));
-			$this->createAdd("loop","HTMLList_LoopModel",array("counter" => $counter));
-			$this->addModel("at_first", array("visible" => $counter == 1));
-			$this->addModel("not_first", array("visible" => $counter != 1));
-			$this->addModel("at_last", array("visible" => $counter == $length));
-			$this->addModel("not_last", array("visible" => $counter != $length));
-			if($res === false)continue;
-			foreach($this->_components as $key => $obj){
-				$obj->setContent($innerHTML);
-				$obj->execute();
-				$this->set($key,$obj,$tmpList);
+		if($length > 0){
+			foreach($this->list as $listKey => $listObj){
+				$counter++;
+				$tmpList = array();
+				$res = $this->populateItemImpl($listObj,$listKey,$counter,$length);
+				$this->addLabel("index", array("text" => $counter));
+				$this->createAdd("loop","HTMLList_LoopModel",array("counter" => $counter));
+				$this->addModel("at_first", array("visible" => $counter == 1));
+				$this->addModel("not_first", array("visible" => $counter != 1));
+				$this->addModel("at_last", array("visible" => $counter == $length));
+				$this->addModel("not_last", array("visible" => $counter != $length));
+				if($res === false)continue;
+				foreach($this->_components as $key => $obj){
+					$obj->setContent($innerHTML);
+					$obj->execute();
+					$this->set($key,$obj,$tmpList);
+				}
+				$this->_list[$listKey] = $tmpList;//WebPage::getPage($this->getParentId());
 			}
-			$this->_list[$listKey] = $tmpList;//WebPage::getPage($this->getParentId());
 		}
 	}
 	function isMerge(){

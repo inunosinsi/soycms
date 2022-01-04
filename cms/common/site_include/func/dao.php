@@ -231,3 +231,9 @@ function soycms_get_page_object(int $pageId, bool $isPriorityBlogPageMode=true){
 	}
 	return $GLOBALS["soycms_page_hash_table"][$idx];
 }
+
+/** Pageオブジェクトのラッパー関数 */
+function soycms_get_blog_page_object(int $pageId){
+	$page = soycms_get_page_object($pageId);
+	return ($page instanceof BlogPage) ? $page : new BlogPage();
+}

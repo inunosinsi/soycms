@@ -5,22 +5,22 @@ class TagCloudWordListComponent extends HTMLList {
 	private $url;
 	private $ranks; //タグの使用頻度が何位でクラスのrank01を次の数字にするか？
 
-	protected function populateItem($entity, $key, $int){
-		$wordId = (isset($entity["word_id"]) && is_numeric($entity["word_id"])) ? (int)$entity["word_id"] : null;
+	protected function populateItem($entity){
+		$wordId = (isset($entity["word_id"]) && is_numeric($entity["word_id"])) ? (int)$entity["word_id"] : 0;
 
 		$this->addLabel("tag_word_id", array(
 			"soy2prefix" => "cms",
 			"text" => $wordId
 		));
 
-		$rank = (isset($entity["word_id"]) && isset($this->ranks[$entity["word_id"]])) ? $this->ranks[$entity["word_id"]] : 1;
+		$rank = (isset($this->ranks[$wordId]) && is_numeric($this->ranks[$wordId])) ? $this->ranks[$wordId] : 1;
 		$this->addLink("tag_link", array(
 			"soy2prefix" => "cms",
 			"link" => (is_numeric($wordId)) ? $this->url . "?tagcloud=" . $wordId : "",
 			"attr:class" => self::_buildClass($rank)
 		));
 
-		$hash = (isset($entity["hash"]) && is_string($entity["hash"])) ? $entity["hash"] : null;
+		$hash = (isset($entity["hash"]) && is_string($entity["hash"])) ? $entity["hash"] : "";
 
 		$this->addLabel("tag_word_hash", array(
 			"soy2prefix" => "cms",
@@ -39,7 +39,8 @@ class TagCloudWordListComponent extends HTMLList {
 		));
 	}
 
-	private function _buildClass($rank){
+	private function _buildClass(int $rank){
+		$rank = (string)$rank;
 		if(strlen($rank) === 1) $rank = "0" . $rank;
 		return "tagcloud rank" . $rank;
 	}

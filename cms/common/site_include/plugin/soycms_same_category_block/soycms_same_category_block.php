@@ -97,19 +97,19 @@ class SOYCMSSameCategoryBlockPlugin{
 	}
 
 	//詳細ページを開いているか？
-	private function _checkIsBlogEntryPage($pageId){
-		$page = PluginBlockUtil::getBlogPageByPageId($pageId);
-		if(is_null($page->getId())) return false;
+	private function _checkIsBlogEntryPage(int $pageId){
+		$blogPage = soycms_get_blog_page_object($pageId);
+		if(is_null($blogPage->getId())) return false;
 
-		$uri = (strlen($page->getUri())) ? "/" . $page->getUri() : "";
+		$uri = (strlen($blogPage->getUri())) ? "/" . $blogPage->getUri() : "";
 		if(isset($_SERVER["PATH_INFO"])){
-			return (is_numeric(strpos($_SERVER["PATH_INFO"], $uri . "/" . $page->getEntryPageUri() . "/")));
+			return (is_numeric(strpos($_SERVER["PATH_INFO"], $uri . "/" . $blogPage->getEntryPageUri() . "/")));
 		}else{
-			return (is_numeric(strpos($_SERVER["REQUEST_URI"], $uri . "/" . $page->getEntryPageUri() . "/")));
+			return (is_numeric(strpos($_SERVER["REQUEST_URI"], $uri . "/" . $blogPage->getEntryPageUri() . "/")));
 		}
 	}
 
-	private function _getLabelIds($pageId){
+	private function _getLabelIds(int $pageId){
 		if(isset($_SERVER["PATH_INFO"])){
 			$alias = trim(substr($_SERVER["PATH_INFO"], strrpos($_SERVER["PATH_INFO"], "/") + 1), "/");
 		}else{	//xampp対策でPATH_INFOではなく、REQUEST_URIを使う
@@ -134,7 +134,7 @@ class SOYCMSSameCategoryBlockPlugin{
 		if(!count($res)) return null;
 
 		//ブログで指定されているラベルIDは除く
-		$blogLabelId = (int)PluginBlockUtil::getBlogPageByPageId($pageId)->getBlogLabelId();
+		$blogLabelId = (int)soycms_get_blog_page_object($pageId)->getBlogLabelId();
 
 		$list = array();
 
@@ -178,9 +178,7 @@ class SOYCMSSameCategoryBlockPlugin{
 	 */
 	public static function registerPlugin(){
 		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
-		if(is_null($obj)){
-			$obj = new SOYCMSSameCategoryBlockPlugin();
-		}
+		if(is_null($obj)) $obj = new SOYCMSSameCategoryBlockPlugin();
 		CMSPlugin::addPlugin(self::PLUGIN_ID,array($obj,"init"));
 	}
 }
