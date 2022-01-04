@@ -43,14 +43,8 @@ class CMSBlogPage extends CMSPage{
 			$entryComment->setSubmitDate(time());
 
 			//公開設定（自動公開/許可制）
-			$blogdao = SOY2DAOFactory::create("cms.BlogPageDAO");
-			try{
-				$accept = $blogdao->getById($this->page->getId())->getDefaultAcceptComment();
-			}catch(Exception $e){
-				$accept = 0;
-			}
 			//$entryComment->setIsApproved((boolean)$accept);
-			$entryComment->setIsApproved($accept);	//型はinteger
+			$entryComment->setIsApproved((int)soycms_get_blog_page_object($this->page->getId())->getDefaultAcceptComment());	//型はinteger
 
 			$this->entryComment = $entryComment;
 
@@ -106,14 +100,8 @@ class CMSBlogPage extends CMSPage{
 			$trackback->setSubmitdate(time());
 
 			//公開設定（自動公開/許可制）
-			$blogdao = SOY2DAOFactory::create("cms.BlogPageDAO");
-			try{
-				$accept = $blogdao->getById($this->page->getId())->getDefaultAcceptTrackback();
-			}catch(Exception $e){
-				$accept = 0;
-			}
 			//$trackback->setCertification((boolean)$accept);
-			$trackback->setCertification($accept);	//型はinteger
+			$trackback->setCertification((int)soycms_get_blog_page_object($this->page->getId())->getDefaultAcceptTrackback());	//型はinteger
 			try{
 				//CMS:PLUGIN callEventFunction
 				$res = CMSPlugin::callEventFunc('onSubmitTrackback',array("trackback"=>$trackback,"page" => $this),true);
@@ -146,7 +134,7 @@ class CMSBlogPage extends CMSPage{
 		$this->arguments = $args[1];
 		$this->siteConfig = $args[2];
 
-		$this->page = SOY2DAOFactory::create("cms.BlogPageDAO")->getById($this->id);
+		$this->page = soycms_get_blog_page_object((int)$this->id);
 
 		//サイトのURL
 		$this->siteUrl = $this->getSiteUrl();
@@ -698,6 +686,14 @@ class CMSBlogPage extends CMSPage{
 
 		parent::main();
 
+		$onLoads = CMSPlugin::getEvent('onPageTitleFormat');
+		if(count($onLoads)){
+			foreach($onLoads as $plugin){
+				$func = $plugin[0];
+				$res = call_user_func($func, array('format' => $this->title));
+				if(is_string($res)) $this->title = $res;
+			}
+		}
 		$this->setTitle($this->title);
 
 	}

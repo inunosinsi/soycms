@@ -234,6 +234,7 @@ function soycms_get_page_object(int $pageId, bool $isPriorityBlogPageMode=true){
 
 /** Pageオブジェクトのラッパー関数 */
 function soycms_get_blog_page_object(int $pageId){
-	$page = soycms_get_page_object($pageId);
+	$page = soycms_get_page_object($pageId, true);
+	if(!class_exists("BlogPage")) SOY2::import("domain.cms.BlogPage");
 	return ($page instanceof BlogPage) ? $page : new BlogPage();
 }

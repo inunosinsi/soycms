@@ -1,6 +1,6 @@
-<div class="alert alert-info">記事投稿画面でタグを登録するフォームが出力されています。</div>
+<div class="alert alert-success">記事投稿画面でタグを登録するフォームが出力されています。</div>
 
-<h3>設定</h3>
+<div class="alert alert-info">設定</div>
 <div class="mt-3 mb-3">
 	<form soy:id="form">
 		<div class="form-group">
@@ -24,14 +24,15 @@
 	</form>
 </div>
 
-<div class="alert alert-info" style="margin-top:15px;">プラグインブロックでランダムな記事一覧を表示できるブロックを使用できます</div>
+<div class="alert alert-success" style="margin-top:15px;">プラグインブロックでランダムな記事一覧を表示できるブロックを使用できます</div>
 
-<h4>設定方法</h4>
+<div class="alert alert-info">設定方法</div>
 <p>テンプレートのブロック設定でプラグインブロックを選び、プラグインのセレクトボックスで<strong>TagCloud</strong>を選びます。<br>
-	※TagCloudのブロックを設置するページは一つだけになります
+	※TagCloudのブロックを設置するページは一つだけになります<br>
+	※ページのタイトルフォーマットで<strong>%TAG_CLOUD%</strong>の置換文字列が使用可です
 </p>
 
-<h4>タグの記述例</h4>
+<div class="alert alert-info">タグの記述例</div>
 <p>他のブロックの時と同じですが、block:id="***"の記述の時に、ラベルIDと表示件数を指定することができます<br>
 	※ブロックの外側でcms:id="tag_cloud_tag"で表示中のタグ一覧ページのタグ名を出力します。</p>
 
@@ -50,7 +51,7 @@
 	※cms:countの指定がなくても動作します。
 </p>
 <br>
-<h4>タグクラウドモジュールの設置(TagCloudブロックを設置したページへのタグのリンク一覧)</h4>
+<div class="alert alert-info">タグクラウドモジュールの設置(TagCloudブロックを設置したページへのタグのリンク一覧)</div>
 <pre><strong>&lt;!-- cms:module="common.tag_cloud" --&gt;</strong>
 <strong>&lt;!-- p_block:id="tag_cloud_word_list" cms:count="10" cms:random="on" --&gt;</strong>
 &lt;a <strong>cms:id="tag_link"</strong>&gt;&lt;!-- <strong>cms:id="tag"</strong> --&gt;タグ&lt;!-- /<strong>cms:id="tag"</strong> --&gt;&lt;/a&gt;
@@ -62,7 +63,7 @@
 	※cms:randomがない場合はタグが付いた記事が多い順になります<br>
 	※cms:id="tag_link"を<strong>cms:id="tag_hash_link"</strong>に代えるとハッシュ値版のパラメータに代わります</p>
 <br>
-<h4>ブロック内でのタグ一覧の出力の記述例</h4>
+<div class="alert alert-info">ブロック内でのタグ一覧の出力の記述例</div>
 <pre>&lt;!-- b_block:id="entry" --&gt;
 
 <strong>&lt;!-- cms:id="tag_cloud_tag_list" --&gt;</strong>
@@ -77,7 +78,7 @@
 
 <br>
 
-<h4>ページャの設置</h4>
+<div class="alert alert-info">ページャの設置</div>
 <p>下記のコードをプラグインブロックの外に記述します。</p>
 <pre>&lt;a p_block:id="s_first_page"&gt;最初のページへ&lt;/a&gt;
 

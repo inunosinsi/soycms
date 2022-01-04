@@ -24,6 +24,7 @@ class CMSPlugin {
 		"onRecover"=>array(),			//ページがゴミ箱から復元されたとき	array(pageId)
 		"onPageOutput" => array(),		//ページが出力される前				array($pageObject)
 		"onPageEdit" => array(),		//ページの編集画面が呼び出される直前	array(page)
+		"onPageTitleFormat" => array(),	//タイトルフォーマットの変換 	array(format) @return string
 
 		//管理画面の拡張
 		"onAdminTop" => array(),		//管理画面トップページの拡張	@params array()、@return array("title" => "", "content" => "")

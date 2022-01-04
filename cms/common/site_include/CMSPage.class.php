@@ -23,8 +23,7 @@ class CMSPage extends WebPage{
 		$this->arguments = $args[1];
 		$this->siteConfig = $args[2];
 
-		$pageDao = SOY2DAOFactory::create("cms.PageDAO");
-		$this->page = $pageDao->getById($id);
+		$this->page = soycms_get_page_object($id, false);
 		$this->id = $id;
 
 		//サイトのURL
@@ -39,8 +38,7 @@ class CMSPage extends WebPage{
 	function main(){
 
 		$dao = SOY2DAOFactory::create("cms.BlockDAO");
-		$entryDAO = SOY2DAOFactory::create("cms.EntryDAO");
-
+		
 		$blocks = $dao->getByPageId($this->id);
 
 		foreach($blocks as $block){
@@ -81,6 +79,15 @@ class CMSPage extends WebPage{
 		}
 		$pageFormat = preg_replace('/%SITE%/',$this->siteConfig->getName(),$pageFormat);
 		$pageFormat = preg_replace('/%PAGE%/',$this->page->getTitle(),$pageFormat);
+		$onLoads = CMSPlugin::getEvent('onPageTitleFormat');
+		if(count($onLoads)){
+			foreach($onLoads as $plugin){
+				$func = $plugin[0];
+				$res = call_user_func($func, array('format' => $pageFormat));
+				if(is_string($res)) $pageFormat = $res;
+			}
+		}
+		
 		$this->setTitle($pageFormat);
 
 		$this->addLink("site_url_link", array(

@@ -13,7 +13,7 @@ class TagCloudPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.7"
+			"version"=>"1.8"
 		));
 
 		//active or non active
@@ -40,6 +40,7 @@ class TagCloudPlugin{
 
 				//公開側のページを表示させたときに、メタデータを表示する
 				CMSPlugin::setEvent('onPageOutput',self::PLUGIN_ID,array($this,"onPageOutput"));
+				CMSPlugin::setEvent('onPageTitleFormat',self::PLUGIN_ID,array($this,"onPageTitleFormat"));
 
 				CMSPlugin::setEvent('onPluginBlockLoad',self::PLUGIN_ID, array($this, "onLoad"));
 			}
@@ -171,7 +172,7 @@ class TagCloudPlugin{
 
 	function onPageOutput($obj){
 		$wordId = self::_getWordIdFromGetParam();
-		$tag = (strlen($wordId)) ? self::_getTagByWordId($wordId) : "";
+		$tag = ((is_string($wordId) && strlen($wordId)) || (is_numeric($wordId) && $wordId > 0)) ? self::_getTagByWordId($wordId) : "";
 
 		$obj->addLabel("tag_cloud_tag", array(
 			"soy2prefix" => "cms",
@@ -266,6 +267,15 @@ class TagCloudPlugin{
 			"soy2prefix" => "p_block",
 			"link" => $url . "page-" . ($current - 1) . "?tagcloud=" . $wordId,
 		));
+	}
+
+	function onPageTitleFormat($args){
+		$fmt = $args["format"];
+		if(!strlen($fmt) || is_bool(strpos($fmt, "%TAG_CLOUD%"))) return $fmt;
+		
+		$wordId = self::_getWordIdFromGetParam();
+		$tag = ((is_string($wordId) && strlen($wordId)) || (is_numeric($wordId) && $wordId > 0)) ? htmlspecialchars((string)self::_getTagByWordId($wordId), ENT_QUOTES, "UTF-8") : "";
+		return str_replace("%TAG_CLOUD%", $tag, $fmt);
 	}
 
 	private function _getWordIdFromGetParam(){
