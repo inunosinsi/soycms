@@ -42,14 +42,14 @@ class SOYShop_ItemAttribute {
 		$this->fieldId = $fieldId;
 	}
 	function getValue() {
-		return (is_string($this->value) || is_numeric($this->value) || is_bool($this->value)) ? (string)$this->value : "";
+		return $this->value;
 	}
 	function setValue($value) {
 		$this->value = $value;
 	}
 
 	function getExtraValues() {
-		return (is_string($this->extraValues)) ? $this->extraValues : "";
+		return $this->extraValues;
 	}
 	function setExtraValues($extraValues) {
 		$this->extraValues = $extraValues;
