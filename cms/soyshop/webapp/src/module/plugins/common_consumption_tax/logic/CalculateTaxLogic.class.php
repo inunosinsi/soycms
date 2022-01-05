@@ -131,16 +131,17 @@ class CalculateTaxLogic extends SOY2LogicBase {
 		static $list;
 		if(is_null($list)){
 			$list = array();
-			$sql = "SELECT item_id FROM soyshop_item_attribute WHERE item_field_id = :fieldId";
+			$sql = "SELECT item_id, item_value FROM soyshop_item_attribute WHERE item_field_id = :fieldId";
 			$dao = new SOY2DAO();
 			try{
 				$res = $dao->executeQuery($sql, array(":fieldId" => ConsumptionTaxUtil::FIELD_REDUCED_TAX_RATE));
 			}catch(Exception $e){
 				$res = array();
 			}
-
+			
 			if(count($res)){
 				foreach($res as $v){
+					if(!is_string($v["item_value"]) || !strlen($v["item_value"])) continue;
 					if(isset($v["item_id"]) && is_numeric($v["item_id"])) $list[] = (int)$v["item_id"];
 				}
 			}

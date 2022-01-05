@@ -41,13 +41,13 @@ class SOYShop_CategoryAttribute {
         $this->fieldId = $fieldId;
     }
     function getValue() {
-        return (is_string($this->value)) ? $this->value : "";
+        return (is_string($this->value) || is_numeric($this->value) || is_bool($this->value)) ? (string)$this->value : "";
     }
     function setValue($value) {
         $this->value = $value;
     }
     function getValue2(){
-        return (is_string($this->value2)) ? $this->value2 : "";
+        return (is_string($this->value2) || is_numeric($this->value2) || is_bool($this->value2)) ? (string)$this->value2 : "";
     }
     function setValue2($value2){
         $this->value2 = $value2;

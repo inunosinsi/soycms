@@ -19,7 +19,7 @@ class CommonConsumptionTaxCalculation extends SOYShopTaxCalculationBase{
 
 		$tax = $taxLogic->calculateTaxTotal($total, $reducedRateTotal);
 		$mod = self::_setTaxModule($tax);
-
+		
 		if($mod instanceof SOYShop_ItemModule){
 			$cart->addModule($mod);
 		}

@@ -42,7 +42,7 @@ class SOYShop_ItemAttribute {
 		$this->fieldId = $fieldId;
 	}
 	function getValue() {
-		return (is_string($this->value)) ? $this->value : "";
+		return (is_string($this->value) || is_numeric($this->value) || is_bool($this->value)) ? (string)$this->value : "";
 	}
 	function setValue($value) {
 		$this->value = $value;
