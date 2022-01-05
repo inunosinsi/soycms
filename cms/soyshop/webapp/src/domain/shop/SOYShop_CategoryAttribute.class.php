@@ -41,13 +41,13 @@ class SOYShop_CategoryAttribute {
         $this->fieldId = $fieldId;
     }
     function getValue() {
-        return $this->value;
+        return (is_string($this->value)) ? $this->value : "";
     }
     function setValue($value) {
         $this->value = $value;
     }
     function getValue2(){
-        return $this->value2;
+        return (is_string($this->value2)) ? $this->value2 : "";
     }
     function setValue2($value2){
         $this->value2 = $value2;
@@ -197,25 +197,25 @@ class SOYShop_CategoryAttributeConfig{
     /* config method */
 
     function getOutput() {
-        return (isset($this->config["output"])) ? $this->config["output"] : null;
+        return (isset($this->config["output"])) ? (string)$this->config["output"] : "";
     }
     function setOutput($output) {
         $this->config["output"] = $output;
     }
     function getDescription(){
-        return (isset($this->config["description"])) ? $this->config["description"] : null;
+        return (isset($this->config["description"])) ? (string)$this->config["description"] : "";
     }
     function setDescription($description){
         $this->config["description"] = $description;
     }
     function getDefaultValue() {
-        return (isset($this->config["defaultValue"])) ? $this->config["defaultValue"] : null;
+        return (isset($this->config["defaultValue"])) ? (string)$this->config["defaultValue"] : "";
     }
     function setDefaultValue($defaultValue) {
         $this->config["defaultValue"] = $defaultValue;
     }
     function getEmptyValue() {
-        return (isset($this->config["emptyValue"])) ? $this->config["emptyValue"] : null;
+        return (isset($this->config["emptyValue"])) ? (string)$this->config["emptyValue"] : "";
     }
     function setEmptyValue($emptyValue) {
         $this->config["emptyValue"] = $emptyValue;
@@ -227,7 +227,7 @@ class SOYShop_CategoryAttributeConfig{
         $this->config["hideIfEmpty"] = $hideIfEmpty;
     }
     function getOption() {
-        return (isset($this->config["option"])) ? $this->config["option"] : null;
+        return (isset($this->config["option"])) ? (string)$this->config["option"] : "";
     }
     function setOption($option) {
         $this->config["option"] = $option;
@@ -246,7 +246,7 @@ class SOYShop_CategoryAttributeConfig{
         return (isset($this->config["isIndex"])) ? (boolean)$this->config["isIndex"] : false;
     }
 
-    function getForm($value,$value2){
+    function getForm(string $value="", string $value2=""){
 
         $h_formName = htmlspecialchars($this->getFormName(), ENT_QUOTES, "UTF-8");
         $h_formNameOption = str_replace("]","_option]",$h_formName);
@@ -274,7 +274,7 @@ class SOYShop_CategoryAttributeConfig{
 			case "checkboxes":
 				$options = explode("\n",str_replace(array("\r\n","\r"),"\n",$this->getOption()));
 				//$value = (is_null($value)) ? $this->getDefaultValue() : $value ;
-				if(isset($value) && strlen($value)){
+				if(is_string($value) && strlen($value)){
 					$values = explode(",", $value);
 				}else{
 					//カンマ区切りの初期値
@@ -402,6 +402,7 @@ class SOYShop_CategoryAttributeConfig{
             case "file":
             case "input":
             default:
+                if(!is_string($value)) $value = "";
                 $h_value = htmlspecialchars($value, ENT_QUOTES, "UTF-8");
                 $body = '<input type="text" class="custom_field_input" style="width:100%"'
                        .' id="'.$h_formID.'"'
@@ -411,8 +412,6 @@ class SOYShop_CategoryAttributeConfig{
                 break;
         }
 
-        $return = "<div class=\"form-group\">" . $title .  $body . "</div>\n";
-
-        return $return;
+        return "<div class=\"form-group\">" . $title .  $body . "</div>\n";
     }
 }

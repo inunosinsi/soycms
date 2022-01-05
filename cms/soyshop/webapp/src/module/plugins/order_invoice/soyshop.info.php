@@ -3,7 +3,7 @@
  */
 class OrderInvoiceInfo extends SOYShopInfoPageBase{
 
-	function getPage($active = false){
+	function getPage(bool $active=false){
 		if($active){
 			return '<a href="'.SOY2PageController::createLink("Config.Detail?plugin=order_invoice").'">印刷用納品書作成プラグインの設定</a>';
 		}else{

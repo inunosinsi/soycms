@@ -5,7 +5,7 @@ class TagCloudCustomFieldForm {
 	public static function buildForm(int $itemId){
 		SOY2::import("module.plugins.tag_cloud.util.TagCloudUtil");
 		$tags = TagCloudUtil::getRegisterdTagsByItemId($itemId);
-
+		
 		$tagValue = (count($tags)) ? self::_tagValue($tags) : "";
 
 		$html = array();
@@ -29,7 +29,7 @@ class TagCloudCustomFieldForm {
 			foreach($tagsWithCategory as $categoryId => $tags){
 				$html[] = "tag_cloud_plugin_word_list.push({\"category_id\":" . $categoryId . ",\"tags\":[\"" . implode("\",\"", $tags) . "\"]});";
 			}
-			$list = self::_categoryList();
+			$list = TagCloudUtil::getTagCategoryList();
 			$html[] = "var tag_cloud_plugin_category_list = [];";
 			foreach($list as $categoryId => $label){
 				$html[] = "tag_cloud_plugin_category_list[" . $categoryId . "] = \"" . $label . "\";";
@@ -59,6 +59,9 @@ class TagCloudCustomFieldForm {
 	}
 
 	private static function _tagWithCategory(array $tags){
+		// タグカテゴリに登録されていないタグをカテゴライズする
+		TagCloudUtil::prepareCategory(TagCloudUtil::getTagCategoryList());
+
 		$dao = new SOY2DAO();
 		try{
 			$res = $dao->executeQuery("SELECT word, category_id FROM soyshop_tag_cloud_dictionary WHERE word IN ('" . implode("','", $tags) . "')");
@@ -66,7 +69,7 @@ class TagCloudCustomFieldForm {
 			$res = array();
 		}
 		if(!count($res)) return array();
-
+		
 		$tags = array();
 		foreach($res as $v){
 			$id = (isset($v["category_id"])) ? (int)$v["category_id"] : 0;
@@ -75,22 +78,5 @@ class TagCloudCustomFieldForm {
 		}
 
 		return $tags;
-	}
-
-	private static function _categoryList(){
-		SOY2::import("module.plugins.tag_cloud.domain.SOYShop_TagCloudCategoryDAO");
-		try{
-			$categories = SOY2DAOFactory::create("SOYShop_TagCloudCategoryDAO")->get();
-		}catch(Exception $e){
-			$categories = array();
-		}
-		$list = array();
-		if(count($categories)){
-			foreach($categories as $cat){
-				$list[$cat->getId()] = $cat->getLabel();
-			}
-		}
-		$list[0] = "未分類";
-		return $list;
 	}
 }

@@ -3,7 +3,7 @@
  */
 class ItemPriceNoNumberFormatInfo extends SOYShopInfoPageBase{
 
-    function getPage($active = false){
+    function getPage(bool $active=false){
 
         if($active){
             return '<a href="' . SOY2PageController::createLink("Config.Detail?plugin=item_price_no_number_format") . '">カンマなし商品価格表示プラグイン</a>';

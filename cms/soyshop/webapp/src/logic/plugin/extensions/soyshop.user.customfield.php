@@ -17,7 +17,9 @@ class SOYShopUserCustomfield implements SOY2PluginAction{
 	 * @param integer $userId
 	 * @return array(["name"], ["description"], ["error"])
 	 */
-	function getForm($app, int $userId){}
+	function getForm($app, int $userId){
+		return array();
+	}
 
 	/**
 	 * 各項目ごとに、createAdd()を行う。
@@ -44,7 +46,9 @@ class SOYShopUserCustomfield implements SOY2PluginAction{
 	 * 管理画面の注文の追加で表示できるエリア
 	* @return Array array(array("name" => "", "value" => "", "style" => "")) ※styleはなしで良い
 	 */
-	function order(int $userId){}
+	function order(int $userId){
+		return array();
+	}
 
 	/**
 	 * UserAttributeに登録する

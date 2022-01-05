@@ -24,30 +24,11 @@ class CustomConfigFormPage extends WebPage{
             //カスタムフィールド、カスタムオプション
             if(isset($_POST["LanguageConfig"])){
                 $indexes = array("LanguageConfig", "custom_field");
-                foreach($indexes as $index){
-                    foreach($_POST[$index] as $key => $value) {
-                        if(strlen($value)){
-                            $attr = new SOYShop_ItemAttribute();
-                            $attr->setItemId($this->itemId);
-                            $attr->setFieldId($key);
-                            $attr->setValue($value);
-
-                            try{
-                                $this->attrDao->insert($attr);
-                            }catch(Exception $e){
-                                try{
-                                    $this->attrDao->update($attr);
-                                }catch(Exception $e){
-                                    //
-                                }
-                            }
-                        }else{	//削除
-							try{
-								$this->attrDao->delete($this->itemId, $key);
-							}catch(Exception $e){
-								//
-							}
-						}
+                foreach($indexes as $idx){
+                    foreach($_POST[$idx] as $key => $value) {
+						$attr = soyshop_get_item_attribute_object($this->itemId, $key);
+						$attr->setValue($value);
+                        soyshop_save_item_attribute_object($attr);
                     }
                 }
             }
@@ -89,10 +70,8 @@ class CustomConfigFormPage extends WebPage{
         $this->lang = $_GET["language"];
 
         //商品を取得
-        $item = self::getById($this->itemId);
-
-        //商品情報を取得できない場合は商品一覧に遷移
-        if(is_null($item->getId())) SOY2PageController::jump("Item");
+        $item = soyshop_get_item_object($this->itemId);
+        if(!is_numeric($item->getId())) SOY2PageController::jump("Item");	//商品情報を取得できない場合は商品一覧に遷移
 
         //日本語用のものだけ集める
         self::setLangFieldList();
@@ -150,9 +129,7 @@ class CustomConfigFormPage extends WebPage{
                 }
             }
             //一致してないfieldIdを集める
-            if(!$accord){
-                $this->fieldTable[] = $field;
-            }
+            if(!$accord) $this->fieldTable[] = $field;
         }
 
         //カスタムサーチフィールド
@@ -162,29 +139,14 @@ class CustomConfigFormPage extends WebPage{
         }
     }
 
-    private function getById($itemId){
-        $itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-        try{
-            return $itemDao->getById($itemId);
-        }catch(Exception $e){
-            return new SOYShop_Item();
-        }
-    }
-
     private function getConfirmLink(){
-        try{
-            $item = SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getById($this->itemId);
-        }catch(Exception $e){
-            return null;
-        }
+		$item = soyshop_get_item_object($this->itemId);
+		if(!is_numeric($item->getId())) return null;
 
-        try{
-            $page = SOY2DAOFactory::create("site.SOYShop_PageDAO")->getById($item->getDetailPageId());
-        }catch(Exception $e){
-            return null;
-        }
+		$page = soyshop_get_page_object((int)$item->getDetailPageId());
+        if(!is_numeric($page->getId())) return null;
 
-        return soyshop_get_page_url($page->getUri(), $item->getAlias()) . "?language=" . $this->lang;
+        return soyshop_get_page_url((string)$page->getUri(), (string)$item->getAlias()) . "?language=" . $this->lang;
     }
 
     private function buildForm(){
@@ -193,33 +155,21 @@ class CustomConfigFormPage extends WebPage{
         $key = "item_name_" . $this->lang;
 
         //先頭に商品名(多言語)のフォームを追加
-        $html[] = "<dt>商品名(" . $this->lang . ")</dt>";
-        $html[] = "<dd>";
-        try{
-            $field = $this->attrDao->get($this->itemId, $key);
-        }catch(Exception $e){
-            $field = new SOYShop_ItemAttribute();
-        }
+		$html[] = "<div class=\"form-group\">";
+        $html[] = "<label>商品名(" . $this->lang . ")</label>";
+		$field = soyshop_get_item_attribute_object($this->itemId, $key);
         $html[] = "<input name=\"LanguageConfig[" . $key . "]\" value=\"" . $field->getValue() . "\" type=\"text\" class=\"form-control\">";
-        $html[] = "</dd>";
+		$html[] = "</div>";
 
         $config = UtilMultiLanguageUtil::getConfig();
         $langConf = $config[$this->lang];
 
         if(count($this->fieldTable) > 0 && strlen($langConf["prefix"])){
             foreach($this->fieldTable as $field){
-                try{
-                    $obj = $this->attrDao->get($this->itemId, $field->getFieldId() . "_" . $langConf["prefix"]);
-                }catch(Exception $e){
-                    $obj = new SOYShop_ItemAttribute();
-                }
+                $obj = soyshop_get_item_attribute_object($this->itemId, $field->getFieldId() . "_" . $langConf["prefix"]);
 
-                if(is_null($obj->getFieldId()) || strlen($obj->getValue()) === 0){
-                    try{
-                        $obj = $this->attrDao->get($this->itemId, $field->getFieldId() . "_" . $this->lang);
-                    }catch(Exception $e){
-                        $obj = new SOYShop_ItemAttribute();
-                    }
+                if(is_null($obj->getValue()) || strlen((string)$obj->getValue()) === 0){
+                    $obj = soyshop_get_item_attribute_object($this->itemId, $field->getFieldId() . "_" . $this->lang);
                 }
 
                 $field->setFieldId($field->getFieldId() . "_" . $this->lang);
@@ -255,18 +205,10 @@ class CustomConfigFormPage extends WebPage{
             $prefix = "item_option_";
 
             foreach($this->optionTable as $key => $option){
-                try{
-                    $obj = $this->attrDao->get($this->itemId, $prefix . $key . "_" . $langConf["prefix"]);
-                }catch(Exception $e){
-                    $obj = new SOYShop_ItemAttribute();
-                }
+                $obj = soyshop_get_item_attribute_object($this->itemId, $prefix . $key . "_" . $langConf["prefix"]);
 
-                if(is_null($obj->getFieldId()) || strlen($obj->getValue()) === 0){
-                    try{
-                        $obj = $this->attrDao->get($this->itemId, $prefix . $key . "_" . $this->lang);
-                    }catch(Exception $e){
-                        $obj = new SOYShop_ItemAttribute();
-                    }
+                if(is_null($obj->getValue()) || strlen((string)$obj->getValue()) === 0){
+                    $obj = soyshop_get_item_attribute_object($this->itemId, $prefix . $key . "_" . $this->lang);
                 }
                 $obj->setFieldId($prefix . $key . "_" . $langConf["prefix"]);
                 $html[] = self::buildTextArea($obj, $key);
@@ -276,7 +218,7 @@ class CustomConfigFormPage extends WebPage{
         return implode("\n", $html);
     }
 
-    private function buildTextArea($obj, $key){
+    private function buildTextArea(SOYShop_ItemAttribute $attr, $key){
 
         //古いバージョンから使用していて、typeの値がない場合はselectにする
 //        $type = (isset($value["type"])) ? $value["type"] : "select";
@@ -285,14 +227,10 @@ class CustomConfigFormPage extends WebPage{
         $optionName = (isset($this->optionTable[$key]["name_" . $this->lang])) ? $this->optionTable[$key]["name_" . $this->lang] : $this->optionTable[$key]["name"];
 
         $html = array();
-
-        $html[] = "<dt>";
-        $html[] = "<label for=\"" . $obj->getFieldId() . "\">オプション名：" . $optionName . "&nbsp;&nbsp;タイプ：" . $type . "</label>";
-        $html[] = "</dt>";
-        $html[] = "<dd>";
-        $html[] = "<textarea name=\"custom_field[" . $obj->getFieldId() . "]\">" . $obj->getValue() . "</textarea>";
-        $html[] = "</dd>";
-
+		$html[] = "<div class=\"form-group\">";
+        $html[] = "<label for=\"" . $attr->getFieldId() . "\">オプション名：" . $optionName . "&nbsp;&nbsp;タイプ：" . $type . "</label>";
+        $html[] = "<textarea name=\"custom_field[" . $attr->getFieldId() . "]\" class=\"form-control\">" . $attr->getValue() . "</textarea>";
+		$html[] = "</div>";
         return implode("\n", $html);
     }
 
@@ -306,12 +244,9 @@ class CustomConfigFormPage extends WebPage{
 
             // @ToDo HTMLを組み立てる
             foreach($this->customTable as $key => $field){
-                $html[] = "<dt>" . $field["label"] . " (" . CustomSearchFieldUtil::PLUGIN_PREFIX . ":id=\"" . $key . "\")</dt>";
-                $html[] = "<dd>";
-
+                $html[] = "<label>" . $field["label"] . " (" . CustomSearchFieldUtil::PLUGIN_PREFIX . ":id=\"" . $key . "\")</label>";
                 $value = (isset($values[$key])) ? $values[$key] : null;
                 $html[] = FieldFormComponent::buildForm($key, $field, $value, $this->lang);
-                $html[] = "</dd>";
             }
         }
 
@@ -329,8 +264,7 @@ class CustomConfigFormPage extends WebPage{
      * 失敗時には false
      */
     function uploadImage(){
-        $dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-        $item = $dao->getById($this->itemId);
+        $item = soyshop_get_item_object($this->itemId);
 
         $urls = array();
 
@@ -350,9 +284,7 @@ class CustomConfigFormPage extends WebPage{
                     $name = ($counter > 0) ? $pathinfo["filename"] . "_" . $counter . "." . $pathinfo["extension"] : $pathinfo["filename"] . "." . $pathinfo["extension"];
                     $filepath = $item->getAttachmentsPath() . $name;
 
-                    if(!file_exists($filepath)){
-                        break;
-                    }
+                    if(!file_exists($filepath)) break;
                     $counter++;
                 }
 

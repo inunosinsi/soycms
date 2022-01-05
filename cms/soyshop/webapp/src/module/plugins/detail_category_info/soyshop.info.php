@@ -3,7 +3,7 @@
  */
 class DetailCategoryInfoInfo extends SOYShopInfoPageBase{
 
-	function getPage($active = false){
+	function getPage(bool $active=false){
 		if($active){
 			$html = array();
 			$html[] = "商品のカスタムフィールドのフィールドIDとカテゴリカスタムフィールドのフィールドIDが被らないようにしてください<br />";

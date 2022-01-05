@@ -46,7 +46,7 @@ class FixedFormModuleCustomField extends SOYShopItemCustomFieldBase{
 	 * onOutput
 	 */
 	function onOutput($htmlObj, SOYShop_Item $item){}
-	function onDelete($id){}
+	function onDelete(int $itemId){}
 }
 
 SOYShopPlugin::extension("soyshop.item.customfield", "fixed_form_module", "FixedFormModuleCustomField");

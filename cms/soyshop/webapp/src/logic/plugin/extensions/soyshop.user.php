@@ -2,14 +2,13 @@
 class SOYShopUserBase implements SOY2PluginAction{
 
 	//管理画面の注文一覧で何かしたい時
-	function executeOnListPage(){
+	function executeOnListPage(){}
 
-	}
-
-	//管理画面の注文詳細で何かしたい時
-	function executeOnDetailPage($userId){
-
-	}
+	/**
+	 * 管理画面の注文詳細で何かしたい時
+	 * @param int userId
+	 */
+	function executeOnDetailPage(int $userId){}
 }
 
 class SOYShopUserDeletageAction implements SOY2PluginDelegateAction{

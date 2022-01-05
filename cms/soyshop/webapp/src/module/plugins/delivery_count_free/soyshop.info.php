@@ -3,7 +3,7 @@
  */
 class DeliveryCountFreeModuleInfo extends SOYShopInfoPageBase{
 
-	function getPage($active = false){
+	function getPage(bool $active=false){
 		if($active){
 			return '<a href="'.SOY2PageController::createLink("Config.Detail?plugin=delivery_count_free").'">配送料の設定</a>';
 		}else{

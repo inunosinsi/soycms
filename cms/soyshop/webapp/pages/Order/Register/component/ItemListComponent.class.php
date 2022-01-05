@@ -130,12 +130,15 @@ class ItemListComponent extends HTMLList {
 	}
 
 	private function getOptionConfig(){
-		static $configs;
-		if(is_null($configs)) $configs = ItemOptionUtil::getOptions();
-		return $configs;
+		static $cnfs;
+		if(is_null($cnfs)) {
+			SOY2::import("module.plugins.common_item_option.util.ItemOptionUtil");
+			$cnfs = ItemOptionUtil::getOptions();
+		}
+		return $cnfs;
 	}
 
-	private function buildOptionList($opts){
+	private function buildOptionList(array $opts){
 		SOY2::import("module.plugins.common_item_option.util.ItemOptionUtil");
 		$list = ItemOptionUtil::getOptions();
 		if(!count($list)) return null;
@@ -151,11 +154,7 @@ class ItemListComponent extends HTMLList {
 
 	private function getItemOptionAttributeById(int $itemId){
 		static $dao, $list;
-		if(is_null($dao)){
-			$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-			$list = array();
-		}
-
+		if(is_null($list)) $list = array();
 		if(isset($list[$itemId])) return $list[$itemId];
 
 		//今見ている商品が子商品であるか調べる
@@ -163,16 +162,12 @@ class ItemListComponent extends HTMLList {
 		if(is_numeric($typ)) $itemId = (int)$typ;
 
 		$list[$itemId] = array();
-		try{
-			$attrs = $dao->getByItemId($itemId);
-		}catch(Exception $e){
-			$attrs = array();
-		}
+		$attrs = soyshop_get_hash_table_dao("item_attribute")->getByItemIdAndFieldIds($itemId, array("item_option_"), true);
 
 		if(count($attrs)){
 			$values = array();
 			foreach($attrs as $key => $attr){
-				if(strpos($key, "item_option_") !== 0 || !strlen($attr->getValue())) continue;
+				if(strpos($key, "item_option_") !== 0 || !strlen((string)$attr->getValue())) continue;
 				$values[$key] = $attr->getValue();
 			}
 			$list[$itemId] = $values;

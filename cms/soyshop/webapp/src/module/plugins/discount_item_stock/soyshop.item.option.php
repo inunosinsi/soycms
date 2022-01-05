@@ -8,7 +8,7 @@ class DiscountItemStockOption extends SOYShopItemOptionBase{
 	 * @param htmlObj, integer index
 	 * @return string html
 	 */
-	function onOutput($htmlObj, $index){
+	function onOutput($htmlObj, int $index){
 
 		$cart = CartLogic::getCart();
 
@@ -26,12 +26,13 @@ class DiscountItemStockOption extends SOYShopItemOptionBase{
 	 * @param object SOYShop_ItemOrder
 	 * @return string html
 	 */
-	function display($item){
+	function display(SOYShop_ItemOrder $item){
 		//管理画面側で割引率を表示したい場合は、割引率をデータベースに保持しておく必要がある
 //		return $this->getHtml($item->getItemId());
+		return "";
 	}
 
-	function getHtml($itemId){
+	function getHtml(int $itemId){
 		$html = "";
 
 		if(isset($itemId)){

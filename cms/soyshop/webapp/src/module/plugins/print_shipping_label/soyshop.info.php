@@ -3,7 +3,7 @@
  */
 class PrintShippingLabelInfo extends SOYShopInfoPageBase{
 
-	function getPage($active = false){
+	function getPage(bool $active=false){
 		if($active){
 			return '<a href="'.SOY2PageController::createLink("Config.Detail?plugin=print_shipping_label").'">配送伝票印刷プラグインの設定</a>';
 		}else{

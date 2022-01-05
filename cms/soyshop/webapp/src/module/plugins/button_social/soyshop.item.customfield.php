@@ -44,7 +44,7 @@ class ButtonSocialCustomField extends SOYShopItemCustomFieldBase{
 		));
 	}
 
-	function onDelete($id){}
+	function onDelete(int $itemId){}
 
 	function getFbButton(SOYShop_Item $item){
 		return "<div class=\"fb-like fb-like-comment\" data-href=\"" . self::_getPageUrl($item) . "\" data-send=\"false\" data-layout=\"button_count\" data-width=\"450\" data-show-faces=\"false\"></div>";

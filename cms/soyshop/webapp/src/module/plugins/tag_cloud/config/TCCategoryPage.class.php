@@ -5,6 +5,7 @@ class TCCategoryPage extends WebPage {
 	private $configObj;
 
 	function __construct(){
+		SOY2::import("module.plugins.tag_cloud.util.TagCloudUtil");
 		SOY2::import("module.plugins.tag_cloud.component.TagCloudCategoryDivListComponent");
 		SOY2::import("module.plugins.tag_cloud.domain.SOYShop_TagCloudCategoryDAO");
 		SOY2::import("module.plugins.tag_cloud.domain.SOYShop_TagCloudDictionaryDAO");
@@ -46,8 +47,8 @@ class TCCategoryPage extends WebPage {
 			self::_remove($_GET["category_id"]);
 		}
 
-		$catList = self::_getCategoryList();
-		self::_prepare($catList);
+		$catList = TagCloudUtil::getTagCategoryList();
+		TagCloudUtil::prepareCategory($catList);
 
 		$this->createAdd("category_div_list", "TagCloudCategoryDivListComponent", array(
 			"list" => $catList
@@ -70,65 +71,6 @@ class TCCategoryPage extends WebPage {
 			//
 		}
 		$this->configObj->redirect("category&update");
-	}
-
-	// soyshop_tag_cloud_dictionaryに格納していないタグも格納しておく
-	private function _prepare(array $categoryList){
-		SOY2::import("module.plugins.tag_cloud.util.TagCloudUtil");
-		$cnf = TagCloudUtil::getConfig();
-		$tags = explode(",", $cnf["tags"]);
-
-		$dicDao = SOY2DAOFactory::create("SOYShop_TagCloudDictionaryDAO");
-		foreach($tags as $tag){
-			$tag = trim($tag);
-			try{
-				$tagObj = $dicDao->getByWord($tag);
-			}catch(Exception $e){
-				$tagObj = new SOYShop_TagCloudDictionary();
-				$tagObj->setWord($tag);
-				try{
-					$dicDao->insert($tagObj);
-				}catch(Exception $e){
-					var_dump($e);
-					//
-				}
-			}
-		}
-
-		$categoryIds = array_keys($categoryList);
-		try{
-			$res = $dicDao->executeQuery("SELECT id FROM soyshop_tag_cloud_dictionary WHERE category_id NOT IN (" . implode(",", $categoryIds) . ")");
-		}catch(Exception $e){
-			$res = array();
-		}
-		if(!count($res)) return;
-
-		//該当するタグは未分類にする
-		$wordIds = array();
-		foreach($res as $v){
-			$wordIds[] = (int)$v["id"];
-		}
-		try{
-			$dicDao->executeUpdateQuery("UPDATE soyshop_tag_cloud_dictionary SET category_id = 0 WHERE id IN (" . implode(",", $wordIds) . ")");
-		}catch(Exception $e){
-			//
-		}
-	}
-
-	private function _getCategoryList(){
-		try{
-			$categories = SOY2DAOFactory::create("SOYShop_TagCloudCategoryDAO")->get();
-		}catch(Exception $e){
-			$categories = array();
-		}
-		$list = array();
-		if(count($categories)){
-			foreach($categories as $cat){
-				$list[$cat->getId()] = $cat->getLabel();
-			}
-		}
-		$list[0] = "未分類";
-		return $list;
 	}
 
 	function setConfigObj($configObj){

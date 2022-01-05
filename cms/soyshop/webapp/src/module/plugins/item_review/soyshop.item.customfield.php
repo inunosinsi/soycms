@@ -40,6 +40,6 @@ class ItemReviewCustomField extends SOYShopItemCustomFieldBase{
 
     function getForm(SOYShop_Item $item){}
 
-    function onDelete($id){}
+    function onDelete(int $itemId){}
 }
 SOYShopPlugin::extension("soyshop.item.customfield", "item_review", "ItemReviewCustomField");

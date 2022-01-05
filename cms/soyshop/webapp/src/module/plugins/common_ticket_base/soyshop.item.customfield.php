@@ -52,7 +52,7 @@ class CommonTicketBaseCustomField extends SOYShopItemCustomFieldBase{
 		//何もしない
 	}
 
-	function onDelete($id){
+	function onDelete(int $itemId){
 		SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO")->delete($id, TicketBaseUtil::PLUGIN_ID);
 	}
 }

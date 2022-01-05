@@ -202,7 +202,7 @@ function soyshop_save_item_attribute_object(SOYShop_ItemAttribute $attr){
 
 	if(is_string($attr->getValue())) $attr->setValue(trim($attr->getValue()));
 	if(is_string($attr->getValue()) && !strlen($attr->getValue())) $attr->setValue(null);
-
+	
 	if(!is_null($attr->getValue()) || !is_null($attr->getExtraValues())){
 		try{
 			$dao->insert($attr);

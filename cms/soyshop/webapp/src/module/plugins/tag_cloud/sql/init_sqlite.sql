@@ -6,9 +6,9 @@ CREATE TABLE soyshop_tag_cloud_dictionary(
 );
 
 CREATE TABLE soyshop_tag_cloud_linking(
-	entry_id INTEGER NOT NULL,
+	item_id INTEGER NOT NULL,
 	word_id INTEGER NOT NULL,
-	UNIQUE(entry_id, word_id)
+	UNIQUE(item_id, word_id)
 );
 
 CREATE TABLE soyshop_tag_cloud_category(

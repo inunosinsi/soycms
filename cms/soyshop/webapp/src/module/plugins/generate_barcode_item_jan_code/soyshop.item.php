@@ -2,7 +2,7 @@
 class GenerateBarcodeItemJanCodeItem extends SOYShopItemBase{
 
 	//詳細ページを開いた時、商品詳細で設定したJANコードを元にバーコードを生成
-	function executeOnDetailPage($itemId){
+	function executeOnDetailPage(int $itemId){
 		SOY2::import("module.plugins.generate_barcode_item_jan_code.util.GenerateJancodeUtil");
 		$jancode = GenerateJancodeUtil::getJancode($itemId);
 		if(!strlen($jancode)) return;

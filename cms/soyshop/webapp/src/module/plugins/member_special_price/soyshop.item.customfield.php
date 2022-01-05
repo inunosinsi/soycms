@@ -9,6 +9,6 @@ class MemberSpecialPriceItemCustomField extends SOYShopItemCustomFieldBase{
 		));
 	}
 
-	function onDelete($id){}
+	function onDelete(int $itemId){}
 }
 SOYShopPlugin::extension("soyshop.item.customfield", "common_favorite_item", "MemberSpecialPriceItemCustomField");

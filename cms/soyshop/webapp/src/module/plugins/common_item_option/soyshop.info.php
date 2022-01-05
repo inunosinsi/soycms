@@ -3,7 +3,7 @@
  */
 class CommonItemOptionInfo extends SOYShopInfoPageBase{
 
-	function getPage($active = false){
+	function getPage(bool $active=false){
 		if($active){
 			return '<a href="' . SOY2PageController::createLink("Config.Detail?plugin=common_item_option") . '">商品オプションプラグインの設定</a>';
 		}else{

@@ -3,7 +3,7 @@
  */
 class GoogleAnalyticsPluginInfo extends SOYShopInfoPageBase{
 
-	function getPage($active = false){
+	function getPage(bool $active=false){
 
 		if($active){
 			return '<a href="' . SOY2PageController::createLink("Config.Detail?plugin=parts_google_analytics") . '">トラッキングコードの設定</a>';

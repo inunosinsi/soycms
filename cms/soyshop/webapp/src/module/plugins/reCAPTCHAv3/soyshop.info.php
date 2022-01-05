@@ -3,7 +3,7 @@
  */
 class reCAPTCHAv3Info extends SOYShopInfoPageBase{
 
-	function getPage($active = false){
+	function getPage(bool $active=false){
 		if($active){
 			return '<a href="'.SOY2PageController::createLink("Config.Detail?plugin=reCAPTCHAv3").'">Google reCAPTCHA v3の設定</a>';
 		}else{

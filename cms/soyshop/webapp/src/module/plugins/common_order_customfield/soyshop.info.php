@@ -3,7 +3,7 @@
  */
 class CommonOrderCustomfieldInfo extends SOYShopInfoPageBase{
 
-	function getPage($active = false){
+	function getPage(bool $active=false){
 		if($active){
 			return '<a href="' . SOY2PageController::createLink("Config.Detail?plugin=common_order_customfield") . '">オーダーカスタムフィールドの設定</a>';
 		}else{

@@ -3,7 +3,7 @@
  */
 class YupackOrderCSVInfo extends SOYShopInfoPageBase{
 
-	function getPage($active = false){
+	function getPage(bool $active=false){
 		if($active){
 			return '<a href="'.SOY2PageController::createLink("Config.Detail?plugin=yupack_order_csv").'">ゆうパックプリントRの設定</a>';
 		}else{

@@ -3,18 +3,17 @@
 class SOYShopItemNameBase implements SOY2PluginAction{
 
 	/**
+	 * @param SOYShop_Item
 	 * @return string
 	 */
 	function getForm(SOYShop_Item $item){
-
+		return "";
 	}
 
 	/**
 	 * doPost
 	 */
-	function doPost(SOYShop_Item $item){
-
-	}
+	function doPost(SOYShop_Item $item){}
 }
 class SOYShopItemNameDeletageAction implements SOY2PluginDelegateAction{
 

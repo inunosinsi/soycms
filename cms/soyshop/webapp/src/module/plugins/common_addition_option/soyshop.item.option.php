@@ -1,7 +1,7 @@
 <?php
 class AdditionOption extends SOYShopItemOptionBase{
 
-	function getCartAttributeId($itemIndex, $itemId){
+	function getCartAttributeId(int $itemIndex, int $itemId){
 		return "addition_option_{$itemIndex}_{$itemId}";
 	}
 
@@ -100,7 +100,7 @@ class AdditionOption extends SOYShopItemOptionBase{
 		$cart->setAttribute($obj, $checkAddition);
 	}
 
-	function onOutput($htmlObj, $index){
+	function onOutput($htmlObj, int $index){
 
 		$cart = CartLogic::getCart();
 
@@ -124,7 +124,7 @@ class AdditionOption extends SOYShopItemOptionBase{
 		return implode("<br />", $html);
 	}
 
-	function addition($index){
+	function addition(int $index){
 		$cart = CartLogic::getCart();
 
 		$items = $cart->getItems();

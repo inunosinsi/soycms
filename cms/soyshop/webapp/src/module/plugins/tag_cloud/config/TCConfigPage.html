@@ -20,7 +20,7 @@
 		<textarea class="form-control" soy:id="tags" placeholder="カンマ(,)区切りで使用するタグを登録します。例：大豆,コンテンツ"></textarea>
 	</div>
 	<div class="text-center">
-		<input type="submit" class="btn btn-primary btn-lg" value="更新">
+		<input type="submit" class="btn btn-primary btn-lg" id="update_btn" value="更新">
 	</div>
 </form>
 
@@ -33,8 +33,8 @@
 
 <h4>設定方法</h4>
 <ul style="list-style-type: decimal;margin-bottom:10px;">
-    <li>商品一覧用のページを新たに作成し、商品一覧ページの設定でその他を選び、<strong>TagCloudItemList</strong>を選びます。</li>
-    <li>タグクラウドで商品を選択する場合は<strong>http://ドメイン/{ショップID}/{URI}/{タグクラウドのワードID}</strong>になります。</li>
+	<li>商品一覧用のページを新たに作成し、商品一覧ページの設定でその他を選び、<strong>TagCloudItemList</strong>を選びます。</li>
+	<li>タグクラウドで商品を選択する場合は<strong>http://ドメイン/{ショップID}/{URI}/{タグクラウドのワードID}</strong>になります。</li>
 </ul>
 
 <br>
@@ -46,10 +46,10 @@
 <strong>&lt;!-- /block:id="tag_cloud_word_list" --&gt;</strong>
 <strong>&lt;!-- /shop:module="common.tag_cloud" --&gt;</strong></pre>
 <p>cms:countでタグを何個表示するか決めることができます。<br>
-※cms:countの指定がなくても動作します。<br>
-cms:random="on"でタグの表示順をランダムにします。<br>
-※cms:randomがない場合はタグが付いた記事が多い順になります<br>
-※cms:id="tag_link"を<strong>cms:id="tag_hash_link"</strong>に代えるとハッシュ値版のパラメータに代わります</p>
+	※cms:countの指定がなくても動作します。<br>
+	cms:random="on"でタグの表示順をランダムにします。<br>
+	※cms:randomがない場合はタグが付いた記事が多い順になります<br>
+	※cms:id="tag_link"を<strong>cms:id="tag_hash_link"</strong>に代えるとハッシュ値版のパラメータに代わります</p>
 
 <br>
 <h4>ブロック内でのタグ一覧の出力の記述例</h4>

@@ -2,7 +2,7 @@
 
 class CommonAnalyticsInfo extends SOYShopInfoPageBase{
 
-	function getPage($active = false){
+	function getPage(bool $active=false){
 		if($active){
 			$html = array();
 			$html[] = '注文一覧の検索結果をエクスポートするのところに統計ボタンが追加されます。<br>';

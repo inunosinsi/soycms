@@ -1,9 +1,9 @@
 <?php
 class CommonBreadcrumbPageUpdate extends SOYShopPageUpdate{
 
-	function onDelete($id){
-		$logic = SOY2Logic::createInstance("module.plugins.common_breadcrumb.logic.BreadcrumbLogic");
-		$res = $logic->deletePage($id);
+	function onDelete(int $pageId){
+		$_dust = SOY2Logic::createInstance("module.plugins.common_breadcrumb.logic.BreadcrumbLogic")->deletePage($pageId);
+		unset($_dust);
 	}
 }
 

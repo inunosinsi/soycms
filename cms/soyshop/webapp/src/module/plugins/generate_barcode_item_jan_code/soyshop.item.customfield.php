@@ -34,7 +34,7 @@ class GenerateBarcodeItemJanCodeItemCustomField extends SOYShopItemCustomFieldBa
 	}
 
 	function onOutput($htmlObj, SOYShop_Item $item){}
-	function onDelete($id){}
+	function onDelete(int $itemId){}
 }
 
 SOYShopPlugin::extension("soyshop.item.customfield", "generate_barcode_item_jan_code", "GenerateBarcodeItemJanCodeItemCustomField");

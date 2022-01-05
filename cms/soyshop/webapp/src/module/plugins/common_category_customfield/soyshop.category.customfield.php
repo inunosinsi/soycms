@@ -7,59 +7,40 @@ class CommonCategoryCustomfield extends SOYShopCategoryCustomFieldBase{
 
 		$list = (isset($_POST["custom_field"])) ? $_POST["custom_field"] : array();
 
-		$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO");
 		$categoryDAO = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-		$array = $dao->getByCategoryId($category->getId());
+		$array = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO")->getByCategoryId($category->getId());
 
 		$configs = SOYShop_CategoryAttributeConfig::load(true);
 
-		foreach($list as $key => $value){
+		foreach($list as $fieldId => $value){
 
-			if(!isset($configs[$key]))continue;
+			if(!isset($configs[$fieldId])) continue;
 
 			//type=checkboxesの時
-			if($configs[$key]->getType() === "checkboxes"){
+			if($configs[$fieldId]->getType() === "checkboxes"){
 				$value = (isset($value) && count($value)) ? implode(",", $value) : null;
 			}
 
-			$value2 = (isset($list[$key."_option"]) && strlen($list[$key."_option"]) > 0) ? $list[$key."_option"] : "";
+			$value2 = (isset($list[$fieldId."_option"]) && strlen($list[$fieldId."_option"]) > 0) ? $list[$fieldId."_option"] : null;
+			
+			$attr = (isset($array[$fieldId])) ? $array[$fieldId] : soyshop_get_category_attribute_object($category->getId(), $fieldId);
+			$attr->setValue($value);
+			$attr->setValue2($value2);
+			soyshop_save_category_attribute_object($attr);
 
-			try{
-				if(isset($array[$key])){
-					$obj = $array[$key];
-					$obj->setValue($value);
-					$obj->setValue2($value2);
-					$dao->update($obj);
-				}else{
-					$obj = new SOYShop_CategoryAttribute();
-					$obj->setCategoryId($category->getId());
-					$obj->setFieldId($key);
-					$obj->setValue($value);
-					$obj->setValue2($value2);
-
-					$dao->insert($obj);
-				}
-			}catch(Exception $e){
+			if($configs[$fieldId]->isIndex()){
+				$$categoryDAO->updateSortValue($catogory->getId(), $fieldId, $value);
 			}
-
-			if($configs[$key]->isIndex()){
-				$$categoryDAO->updateSortValue($catogory->getId(),$key,$value);
-			}
-
 		}
 
 		//チェックボックスが非選択時の処理
-		foreach($configs as $key => $value){
-
-			try{
-				if(!isset($list[$key]) && isset($array[$key])){
-					$obj = $array[$key];
-					$obj->setValue("");
-					$obj->setValue2("");
-					$dao->update($obj);
-				}
-			}catch(Exception $e){
-			}
+		foreach($configs as $fieldId => $cnf){
+			if(isset($list[$fieldId])) continue;
+			if($cnf->getType() != "checkbox" && $cnf->getType() != "checkboxes" && $cnf->getType() != "radio") continue;
+			$attr = soyshop_get_category_attribute_object($category->getId(), $fieldId);
+			$attr->setValue(null);
+			$attr->setValue2(null);
+			soyshop_save_category_attribute_object($attr);
 		}
 	}
 
@@ -73,22 +54,20 @@ class CommonCategoryCustomfield extends SOYShopCategoryCustomFieldBase{
 		}
 
 		$html = array();
-		$list = SOYShop_CategoryAttributeConfig::load();
+		$list = SOYShop_CategoryAttributeConfig::load(true);
 
-		foreach($list as $config){
-			$value = (isset($array[$config->getFieldId()])) ? $array[$config->getFieldId()]->getValue() : null;
-			$value2 = (isset($array[$config->getFieldId()])) ? $array[$config->getFieldId()]->getValue2() : null;
-
-			$html[] = $config->getForm($value,$value2);
+		foreach($list as $fieldId => $config){
+			$value = (isset($array[$fieldId])) ? (string)$array[$fieldId]->getValue() : "";
+			$value2 = (isset($array[$fieldId])) ? (string)$array[$fieldId]->getValue2() : "";
+			$html[] = $config->getForm($value, $value2);
 		}
 
 		return implode("\n", $html);
 	}
 
-	function onDelete(int $id){
-		SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO")->deleteByCategoryId($id);
+	function onDelete(int $categoryId){
+		SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO")->deleteByCategoryId($categoryId);
 	}
-
 }
 
 SOYShopPlugin::extension("soyshop.category.customfield","common_category_customfield","CommonCategoryCustomfield");

@@ -3,7 +3,7 @@
  */
 class AsyncCartButtonInfo extends SOYShopInfoPageBase{
 
-	function getPage($active = false){
+	function getPage(bool $active=false){
 		if($active){
 			return '<a href="'.SOY2PageController::createLink("Config.Detail?plugin=async_cart_button").'">非同期カートボタンの設定方法</a>';
 		}else{

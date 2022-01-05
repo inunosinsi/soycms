@@ -3,7 +3,7 @@
  */
 class SOYShopDiscountCouponModuleInfo extends SOYShopInfoPageBase{
 
-	function getPage($active = false){
+	function getPage(bool $active=false){
 		if($active){
 			$html = "";
 			$html .= '<li><a href="'.SOY2PageController::createLink("Config.Detail?plugin=discount_coupon").'">クーポンの設定</a></li>';

@@ -172,7 +172,7 @@ class CommonItemOptionCustomField extends SOYShopItemCustomFieldBase{
 	 * 管理画面側で商品情報を削除した時にオプション設定も一緒に削除する
 	 * @param integer id
 	 */
-	function onDelete($id){
+	function onDelete(int $itemId){
 		SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO")->deleteByItemId($id);
 	}
 
@@ -190,6 +190,8 @@ class CommonItemOptionCustomField extends SOYShopItemCustomFieldBase{
 				$this->prefix = (isset($config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"])) ? trim($config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"]) : SOYSHOP_PUBLISH_LANGUAGE;
 			}
 		}
+		
+		if(is_null($this->prefix)) $this->prefix = SOYSHOP_PUBLISH_LANGUAGE;
 	}
 }
 

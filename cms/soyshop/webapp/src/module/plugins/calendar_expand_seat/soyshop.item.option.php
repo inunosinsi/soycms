@@ -6,7 +6,7 @@ class CalendarExpandSeatItemOption extends SOYShopItemOptionBase{
 	 * @param htmlObj, integer index
 	 * @return string html
 	 */
-	function onOutput($htmlObj, $index){
+	function onOutput($htmlObj, int $index){
 		$cart = CartLogic::getCart();
 		$items = $cart->getItems();
 		if(!count($items)) return "";
@@ -24,12 +24,6 @@ class CalendarExpandSeatItemOption extends SOYShopItemOptionBase{
 
 		return implode("<br>", $html);
 	}
-
-	/**
-	 * 注文確定時に商品とオプション内容を紐づける
-	 * @param integer index
-	 */
-	function order($index){}
 
 	/**
 	 * 注文確定後の注文詳細の商品情報の下に表示される
@@ -51,14 +45,6 @@ class CalendarExpandSeatItemOption extends SOYShopItemOptionBase{
 
 		return implode("<br />", $html);
 	}
-
-	function form(SOYShop_ItemOrder $itemOrder){}
-	function change($itemOrders){}
-	function history($newItemOrder, $oldItemOrder){}
-	function add(){}
-	function edit($key){}
-	function build($itemOrderId, $key, $selected){}
-	function buildOnAdmin($index, $fieldValue, $key, $selected){}
 }
 
 SOYShopPlugin::extension("soyshop.item.option", "calendar_expand_seat", "CalendarExpandSeatItemOption");

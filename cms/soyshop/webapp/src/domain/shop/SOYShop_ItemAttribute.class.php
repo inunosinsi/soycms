@@ -42,14 +42,14 @@ class SOYShop_ItemAttribute {
 		$this->fieldId = $fieldId;
 	}
 	function getValue() {
-		return $this->value;
+		return (is_string($this->value)) ? $this->value : "";
 	}
 	function setValue($value) {
 		$this->value = $value;
 	}
 
 	function getExtraValues() {
-		return $this->extraValues;
+		return (is_string($this->extraValues)) ? $this->extraValues : "";
 	}
 	function setExtraValues($extraValues) {
 		$this->extraValues = $extraValues;
@@ -59,10 +59,17 @@ class SOYShop_ItemAttribute {
 		return soy2_unserialize((string)$this->extraValues);
 	}
 	function setExtraValuesArray($extraValues) {
-		if(is_array($extraValues)){
-			$this->extraValues = soy2_serialize($extraValues);
+		if(
+			(is_string($extraValues) && strlen($extraValues)) ||
+			is_null($extraValues)
+		){
+			$this->extraValues = null;
 		}else{
-			$this->extraValues = soy2_serialize(array());
+			if(is_array($extraValues)){
+				$this->extraValues = soy2_serialize($extraValues);
+			}else{
+				$this->extraValues = soy2_serialize(array());
+			}
 		}
 	}
 }
@@ -221,31 +228,31 @@ class SOYShop_ItemAttributeConfig{
 	/* config method */
 
 	function getOutput() {
-		return (isset($this->config["output"])) ? $this->config["output"] : null;
+		return (isset($this->config["output"])) ? (string)$this->config["output"] : "";
 	}
 	function setOutput($output) {
 		$this->config["output"] = $output;
 	}
 	function getDescription(){
-		return (isset($this->config["description"])) ? $this->config["description"] : null;
+		return (isset($this->config["description"])) ? (string)$this->config["description"] : "";
 	}
 	function setDescription($description){
 		$this->config["description"] = $description;
 	}
 	function getShowInput(){
-		return (isset($this->config["showInput"])) ? $this->config["showInput"] : null;
+		return (isset($this->config["showInput"])) ? (string)$this->config["showInput"] : "";
 	}
 	function setShowInput($showInput){
 		$this->config["showInput"] = $showInput;
 	}
 	function getDefaultValue() {
-		return (isset($this->config["defaultValue"])) ? $this->config["defaultValue"] : null;
+		return (isset($this->config["defaultValue"])) ? (string)$this->config["defaultValue"] : "";
 	}
 	function setDefaultValue($defaultValue) {
 		$this->config["defaultValue"] = $defaultValue;
 	}
 	function getEmptyValue() {
-		return (isset($this->config["emptyValue"])) ? $this->config["emptyValue"] : null;
+		return (isset($this->config["emptyValue"])) ? (string)$this->config["emptyValue"] : "";
 	}
 	function setEmptyValue($emptyValue) {
 		$this->config["emptyValue"] = $emptyValue;
@@ -257,7 +264,7 @@ class SOYShop_ItemAttributeConfig{
 		$this->config["hideIfEmpty"] = $hideIfEmpty;
 	}
 	function getExtraOutputs() {
-		return (isset($this->config["extraOutputs"])) ? $this->config["extraOutputs"] : null;
+		return (isset($this->config["extraOutputs"])) ? (string)$this->config["extraOutputs"] : "";
 	}
 	function setExtraOutputs($extraOutputs) {
 		$this->config["extraOutputs"] = $extraOutputs;
@@ -269,7 +276,7 @@ class SOYShop_ItemAttributeConfig{
 		$this->extraValues = $extraValues;
 	}
 	function getOption() {
-		return (isset($this->config["option"])) ? $this->config["option"] : null;
+		return (isset($this->config["option"])) ? (string)$this->config["option"] : "";
 	}
 	function setOption($option) {
 		$this->config["option"] = $option;

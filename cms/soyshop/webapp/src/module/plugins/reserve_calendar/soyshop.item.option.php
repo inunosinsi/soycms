@@ -13,7 +13,7 @@ class ReserveCalendarOption extends SOYShopItemOptionBase{
         $cart->clearAttribute(ReserveCalendarUtil::getCartAttributeId("schedule_id", $index, $itemOrders[$index]->getItemId()));
     }
 
-    function compare(array $postedOption, CartLogic $cart){
+    function compare(array $postedOptions, CartLogic $cart){
         $checkOptionId = null;
 
         $itemOrders = $cart->getItems();
@@ -25,7 +25,7 @@ class ReserveCalendarOption extends SOYShopItemOptionBase{
 
             $currentOptions = array_diff($attrs[$index], array(null));
 
-            if($postedOption == $currentOptions){
+            if($postedOptions == $currentOptions){
                 $checkOptionId = $index;
                 break;
             }
@@ -51,7 +51,7 @@ class ReserveCalendarOption extends SOYShopItemOptionBase{
      * @param htmlObj, integer index
      * @return string html
      */
-    function onOutput($htmlObj, $index){
+    function onOutput($htmlObj, int $index){
         $cart = CartLogic::getCart();
 
         $items = $cart->getItems();
@@ -72,7 +72,7 @@ class ReserveCalendarOption extends SOYShopItemOptionBase{
         return "";
     }
 
-    function order($index){
+    function order(int $index){
         $cart = CartLogic::getCart();
 
         $items = $cart->getItems();
@@ -128,9 +128,7 @@ class ReserveCalendarOption extends SOYShopItemOptionBase{
         }
     }
 
-    function edit($key){}
-
-    private function getScheduleById($schId){
+    private function getScheduleById(int $schId){
         try{
             return self::schDao()->getById($schId);
         }catch(Exception $e){

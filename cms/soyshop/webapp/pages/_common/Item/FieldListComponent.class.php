@@ -17,7 +17,7 @@ class FieldListComponent extends HTMLList{
 		//ID
 		$this->addLabel("label", array(
 			"text"=>$entity->getLabel(),
-			"attr:id" => "label_text_" . $key,
+			"attr:id" => "label_text_" . $entity->getFieldId(),
 		));
 
 		//フィールド名
@@ -28,7 +28,7 @@ class FieldListComponent extends HTMLList{
 		//タイプ
 		$this->addLabel("type", array(
 			"text"=> (isset($this->types[$fieldType])) ? $this->types[$fieldType] : "",
-			"attr:id" => "type_text_" . $key,
+			"attr:id" => "type_text_" . $entity->getFieldId(),
 		));
 
 		$this->addLabel("display_form", array(
@@ -39,19 +39,19 @@ class FieldListComponent extends HTMLList{
 		/* 設定変更用 */
 		$this->addLink("toggle_update", array(
 			"link" => "javascript:void(0)",
-			"onclick" => '$(\'#label_input_' . $key . '\').show();' .
-						'$(\'#label_text_' . $key . '\').hide();' .
-						'$(\'#type_select_' . $key . '\').show();' .
-						'$(\'#type_text_' . $key . '\').hide();' .
-						'$(\'#update_link_' . $key . '\').show();' .
+			"onclick" => '$(\'#label_input_' . $entity->getFieldId() . '\').show();' .
+						'$(\'#label_text_' . $entity->getFieldId() . '\').hide();' .
+						'$(\'#type_select_' . $entity->getFieldId() . '\').show();' .
+						'$(\'#type_text_' . $entity->getFieldId() . '\').hide();' .
+						'$(\'#update_link_' . $entity->getFieldId() . '\').show();' .
 						'$(this).hide();'
 		));
 
 		//設定変更 リンク
 		$this->addLink("update_link", array(
 			"link" => "javascript:void(0)",
-			"attr:id" => "update_link_" . $key,
-			"onclick" => '$(\'#update_submit_' . $key . '\').click();' .
+			"attr:id" => "update_link_" . $entity->getFieldId(),
+			"onclick" => '$(\'#update_submit_' . $entity->getFieldId() . '\').click();' .
 						'return false;'
 		));
 
@@ -59,13 +59,13 @@ class FieldListComponent extends HTMLList{
 		$this->addInput("update_submit", array(
 			"name" => "update_submit",
 			"value" => $entity->getFieldId(),
-			"attr:id" => "update_submit_" . $key
+			"attr:id" => "update_submit_" . $entity->getFieldId()
 		));
 
 		//タイプ
 		$this->addInput("label_input", array(
 			"name" => "obj[label]",
-			"attr:id" => "label_input_" . $key,
+			"attr:id" => "label_input_" . $entity->getFieldId(),
 			"value" => $entity->getLabel(),
 		));
 
@@ -73,7 +73,7 @@ class FieldListComponent extends HTMLList{
 		$this->addSelect("type_select", array(
 			"name" => "obj[type]",
 			"options" => $this->types,
-			"attr:id" => "type_select_" . $key,
+			"attr:id" => "type_select_" . $entity->getFieldId(),
 			"selected" => $fieldType,
 		));
 
@@ -88,13 +88,14 @@ class FieldListComponent extends HTMLList{
 		$this->addInput("delete_submit", array(
 			"name" => "delete_submit",
 			"value" => $entity->getFieldId(),
-			"attr:id" => "delete_submit_" . $key
+			"attr:id" => "delete_submit_" . $entity->getFieldId()
 		));
 
 		$this->addLink("delete", array(
 			"text"=>"削除",
 			"link"=>"javascript:void(0);",
-			"onclick"=>'if(confirm("delete \"' . $entity->getLabel() . '\"?")){$(\'#delete_submit_' . $key . '\').click();}return false;'
+			"onclick"=>'if(confirm("delete \"' . $entity->getLabel() . '\"?")){$(\'#delete_submit_' . $entity->getFieldId() . '\').click();}return false;',
+			"attr:id" => "delete_btn_" . $entity->getFieldId()
 		));
 
 		/* 高度な設定 */
@@ -103,13 +104,14 @@ class FieldListComponent extends HTMLList{
 		$this->addLink("toggle_config", array(
 			"link" => "javascript:void(0)",
 			"text" => "高度な設定",
-			"onclick" => '$(\'#field_config_' . $key . '\').toggle();',
-			"style" => ($entity->getShowInput() || $entity->getDefaultValue() || $entity->getEmptyValue() || $entity->getHideIfEmpty() || $entity->getOutput() || $entity->getDescription() || $entity->getExtraOutputs()) ? "background-color:yellow;" : ""
+			"onclick" => '$(\'#field_config_' . $entity->getFieldId() . '\').toggle();',
+			"style" => ($entity->getShowInput() || $entity->getDefaultValue() || $entity->getEmptyValue() || $entity->getHideIfEmpty() || $entity->getOutput() || $entity->getDescription() || $entity->getExtraOutputs()) ? "background-color:yellow;" : "",
+			"attr:id" => "toggle_config_" . $entity->getFieldId()
 		));
 
 		//高度な設定 入力行
 		$this->addModel("field_config", array(
-			"attr:id" => "field_config_" . $key
+			"attr:id" => "field_config_" . $entity->getFieldId()
 		));
 
 		//カテゴリとの連動
@@ -175,7 +177,8 @@ class FieldListComponent extends HTMLList{
 		//選択項目
 		$this->addTextArea("option", array(
 			"name" => "config[option]",
-			"value" => $entity->getOption()
+			"value" => $entity->getOption(),
+			"attr:id" => "option_form_" . $entity->getFieldId()
 		));
 
 		//選択項目 表示
@@ -195,14 +198,15 @@ class FieldListComponent extends HTMLList{
 		//設定保存 ボタン
 		$this->addInput("update_advance", array(
 			"value"=>"設定保存",
-			"onclick"=>'$(\'#update_advance_submit_' . $key . '\').click();return false;'
+			"onclick"=>'$(\'#update_advance_submit_' . $entity->getFieldId() . '\').click();return false;',
+			"attr:id" => "update_advance_submit_btn_" . $entity->getFieldId()
 		));
 
 		//設定保存 submit ボタンで押される
 		$this->addInput("update_advance_submit", array(
 			"name" => "update_advance",
 			"value" => $entity->getFieldId(),
-			"attr:id" => "update_advance_submit_" . $key
+			"attr:id" => "update_advance_submit_" . $entity->getFieldId()
 		));
 
 	}

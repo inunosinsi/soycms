@@ -3,7 +3,7 @@
  */
 class GenerateBarcodeItemJanCodeInfo extends SOYShopInfoPageBase{
 
-	function getPage($active = false){
+	function getPage(bool $active=false){
 		if($active){
 			return '<a href="' . SOY2PageController::createLink("Config.Detail?plugin=generate_barcode_item_jan_code") . '">商品JANコード用バーコード生成</a>';
 		}else{

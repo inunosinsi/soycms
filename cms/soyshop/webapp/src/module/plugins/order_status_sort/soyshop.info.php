@@ -3,7 +3,7 @@
  */
 class OrderStatusSortInfo extends SOYShopInfoPageBase{
 
-	function getPage($active = false){
+	function getPage(bool $active=false){
 		if($active){
 			return '<a href="' . SOY2PageController::createLink("Config.Detail?plugin=order_status_sort") . '">注文状態並び順の設定</a>';
 		}else{

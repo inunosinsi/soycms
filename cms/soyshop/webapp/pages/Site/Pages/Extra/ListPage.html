@@ -22,7 +22,8 @@
 							<label for="">特定のカテゴリのみこの商品一覧ページを使用</label>
 							<p class="mb" soy:id="categories_choice"></p>
 							<input type="hidden" soy:id="categories" />
-							<a class="btn btn-default" href="javascript:void(0);" onclick="$(this).hide();$('#category_tree').show();">選択する</a>
+							<a class="btn btn-default" href="javascript:void(0);"
+								onclick="$(this).hide();$('#category_tree').show();">選択する</a>
 							<ul id="category_tree" soy:id="category_tree" style="display:none;"></ul>
 						</div>
 
@@ -30,8 +31,10 @@
 							<label for="">初期状態で表示するカテゴリ</label>
 							<p class="mb" soy:id="default_categories_choice"></p>
 							<input type="hidden" soy:id="default_categories" />
-							<a class="btn btn-default" href="javascript:void(0);" onclick="$(this).hide();$('#default_category_tree').show();">選択する</a>
-							<ul id="default_category_tree" class="category_tree" soy:id="default_category_tree" style="display:none;"></ul>
+							<a class="btn btn-default" href="javascript:void(0);"
+								onclick="$(this).hide();$('#default_category_tree').show();">選択する</a>
+							<ul id="default_category_tree" class="category_tree" soy:id="default_category_tree"
+								style="display:none;"></ul>
 						</div>
 					</div soy:id="config_type_category">
 
@@ -76,7 +79,9 @@
 
 						<br />
 						<input type="radio" soy:id="sort_custom" />
-						<select soy:id="sort_custom_field_list"><option value="">----</option></select><br>
+						<select soy:id="sort_custom_field_list">
+							<option value="">----</option>
+						</select><br>
 						<br>
 						<label for="">昇順・降順</label><br>
 						<input type="radio" soy:id="sort_normal" />
@@ -84,50 +89,50 @@
 					</div>
 
 					<div class="text-center">
-						<input type="submit" class="btn btn-primary btn-lg" value="更新">
+						<input type="submit" id="update_btn" class="btn btn-primary btn-lg" value="更新">
 					</div>
 				</form>
 			</div>
 		</div>
 	</div>
 
-<script type="text/javascript">
-function onClickLeaf(id,ele){
-	if($(ele).hasClass("selected_category")){
-		$("#categories_input").val($("#categories_input").val().replace(id,""));
-		$("#categories_text").text($("#categories_text").text().replace($(ele).text(),""));
+	<script type="text/javascript">
+		function onClickLeaf(id, ele) {
+			if ($(ele).hasClass("selected_category")) {
+				$("#categories_input").val($("#categories_input").val().replace(id, ""));
+				$("#categories_text").text($("#categories_text").text().replace($(ele).text(), ""));
 
-		$(ele).removeClass("selected_category");
-	}else{
-		$("#categories_input").val($("#categories_input").val() + "," + id);
-		$("#categories_text").text($("#categories_text").text() + "," + $(ele).text());
+				$(ele).removeClass("selected_category");
+			} else {
+				$("#categories_input").val($("#categories_input").val() + "," + id);
+				$("#categories_text").text($("#categories_text").text() + "," + $(ele).text());
 
-		$(ele).addClass("selected_category");
-	}
-}
-function onClickDefaultLeaf(id,ele){
-	if($(ele).hasClass("selected_category")){
-		$("#default_categories_input").val("");
-		$("#default_categories_text").text("");
+				$(ele).addClass("selected_category");
+			}
+		}
+		function onClickDefaultLeaf(id, ele) {
+			if ($(ele).hasClass("selected_category")) {
+				$("#default_categories_input").val("");
+				$("#default_categories_text").text("");
 
-		$(ele).removeClass("selected_category");
-	}else{
-		$("#default_categories_input").val(id);
-		$("#default_categories_text").text($(ele).text());
+				$(ele).removeClass("selected_category");
+			} else {
+				$("#default_categories_input").val(id);
+				$("#default_categories_text").text($(ele).text());
 
-		$("#default_category_tree .selected_category").removeClass("selected_category");
+				$("#default_category_tree .selected_category").removeClass("selected_category");
 
-		$(ele).addClass("selected_category");
-	}
-}
-var swap_config = function(value){
-	$(".config").hide();
-	$("#config_type_" + value).show();
-};
-</script>
+				$(ele).addClass("selected_category");
+			}
+		}
+		var swap_config = function (value) {
+			$(".config").hide();
+			$("#config_type_" + value).show();
+		};
+	</script>
 
-<style type="text/css">
-.selected_category{
-	background-color:yellow;
-}
-</style>
+	<style type="text/css">
+		.selected_category {
+			background-color: yellow;
+		}
+	</style>

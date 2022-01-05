@@ -40,7 +40,7 @@ class LazyLoadCustomField extends SOYShopItemCustomFieldBase{
 		return $c;
 	}
 
-	function onDelete($id){}
+	function onDelete(int $itemId){}
 }
 
 SOYShopPlugin::extension("soyshop.item.customfield", "x_lazy_load", "LazyLoadCustomField");

@@ -4,7 +4,7 @@
  */
 class EntryImportModuleInfo extends SOYShopInfoPageBase{
 
-	function getPage($active = false){
+	function getPage(bool $active=false){
 		if($active){
 			return '<a href="'.SOY2PageController::createLink("Config.Detail?plugin=parts_entry_import").'">ブログ記事表示設定</a>';
 		}else{

@@ -4,7 +4,7 @@
  */
 class BonusDownloadInfo extends SOYShopInfoPageBase{
 
-	function getPage($active = false){
+	function getPage(bool $active=false){
 		if($active){
 			return '<a href="'.SOY2PageController::createLink("Config.Detail?plugin=bonus_download").'">設定画面へ</a>';
 		}else{

@@ -35,7 +35,7 @@ class ItemOptionUtil {
 	/**
 	 * 設定に従いフォームを組み立てる
 	 */
-	public static function buildOptions($key, $conf, $itemId, $prefix="jp"){
+	public static function buildOptions(string $key, array $conf, int $itemId, string $prefix="jp"){
 		$v = self::_getFieldValue($key, $itemId, $prefix);
 		if(!strlen($v)) return "";
 
@@ -45,7 +45,7 @@ class ItemOptionUtil {
 		return self::_buildOpt($name, $type, $v);
 	}
 
-	public static function buildOptionsWithSelected(string $key, array $conf, SOYShop_ItemOrder $itemOrder, $selected, string $prefix = "jp", $isBr = true){
+	public static function buildOptionsWithSelected(string $key, array $conf, SOYShop_ItemOrder $itemOrder, string $selected, string $prefix="jp", bool $isBr=true){
 		$v = self::_getFieldValue($key, $itemOrder->getItemId(), $prefix);
 		if(!strlen($v)) return "";
 
@@ -55,11 +55,11 @@ class ItemOptionUtil {
 		return self::_buildOpt($name, $type, $v, $selected, $isBr);
 	}
 
-	public static function buildOption($name, $type, $fieldValue, $selected, $isBr = true, $editMode = false){
+	public static function buildOption(string $name, string $type, string $fieldValue, string $selected, bool $isBr=true, bool $editMode=false){
 		return self::_buildOpt($name, $type, $fieldValue, $selected, $isBr, $editMode);
 	}
 
-	private static function _buildOpt($name, $type, $fieldValue, $selected = null, $isBr = true, $editMode = false){
+	private static function _buildOpt(string $name, string $type, string $fieldValue, string $selected="", bool $isBr=true, bool $editMode=false){
 		$opts = explode("\n", trim($fieldValue));
 		$selected = self::escapeString($selected);
 		if(!strlen($selected)) $selected = null;
@@ -117,7 +117,7 @@ class ItemOptionUtil {
 	 * @param string key, integer itemId, string prefix
 	 * @return object SOYShop_ItemAttribute
 	 */
-	private static function _getFieldValue($k, $itemId, $prefix = "jp"){
+	private static function _getFieldValue(string $k, int $itemId, string $prefix="jp"){
 		static $v;
 		if(is_null($v)) $v = array();
 		if(isset($v[$prefix][$itemId][$k])) return $v[$prefix][$itemId][$k];
@@ -146,7 +146,7 @@ class ItemOptionUtil {
 		return $v[$prefix][$itemId][$k];
 	}
 
-	private static function _getFieldValueByItemOrderId($key, $itemOrderId, $prefix = "jp"){
+	private static function _getFieldValueByItemOrderId(string $key, int $itemOrderId, string $prefix="jp"){
 
 		//管理画面での多言語化 管理画面優先
 		if(defined("SOYSHOP_ADMIN_LANGUAGE") && SOYSHOP_ADMIN_LANGUAGE != "jp"){
@@ -195,7 +195,7 @@ class ItemOptionUtil {
 	}
 
 	//多言語のプレフィックスでプラグイン側で決めたプレフィックスに変換する 例：zhをcnに変換
-	private static function convertConfigPrefix($prefix = "jp"){
+	private static function convertConfigPrefix(string $prefix="jp"){
 		static $cnf;
 		if(is_null($cnf)){
 			SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
@@ -205,7 +205,7 @@ class ItemOptionUtil {
 	}
 
 	//文字列エスケープしつつ、エスケープしてはいけない文字列を元に戻す
-	private static function escapeString($str){
+	private static function escapeString(string $str){
 		$str = trim($str);
 		if(!strlen($str)) return "";
 		$str = htmlspecialchars($str, ENT_QUOTES, "UTF-8");

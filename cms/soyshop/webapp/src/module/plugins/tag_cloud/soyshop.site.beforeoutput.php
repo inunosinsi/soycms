@@ -20,6 +20,10 @@ class TagCloudBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		return TagCloudUtil::getWordIdByAlias($args[0]);
 	}
 
+	/**
+	 * @param string|int
+	 * @return string
+	 */
 	private function _getTagByWordId($wordId){
 		SOY2::import("module.plugins.tag_cloud.domain.SOYShop_TagCloudDictionaryDAO");
 		try{

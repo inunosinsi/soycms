@@ -3,7 +3,7 @@
  */
 class CampaignInfo extends SOYShopInfoPageBase{
 
-	function getPage($active = false){
+	function getPage(bool $active=false){
 		if($active){
 			$html = array();
 			$html[] = '<a href="'.SOY2PageController::createLink("Config.Detail?plugin=campaign").'">キャンペーンプラグインの設定</a>';

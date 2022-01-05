@@ -48,7 +48,7 @@ class DeliveryEachProductCustomField extends SOYShopItemCustomFieldBase{
      */
     function onOutput($htmlObj, SOYShop_Item $item){}
 
-    function onDelete($id){
+    function onDelete(int $itemId){
         try{
             SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO")->deleteByItemId($id);
         }catch(Exception $e){

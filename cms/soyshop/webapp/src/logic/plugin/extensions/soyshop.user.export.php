@@ -18,10 +18,9 @@ class SOYShopUserExportBase implements SOY2PluginAction{
 
 	/**
 	 * export エクスポート実行
+	 * @param array users
 	 */
-	function export($orders){
-
-	}
+	function export(array $users){}
 
 }
 
@@ -59,13 +58,11 @@ class SOYShopUserExportDeletageAction implements SOY2PluginDelegateAction{
 	function setMode($mode) {
 		$this->mode = $mode;
 	}
-	function export($orders){
+	function export(array $users){
 		if($this->action){
-			return $this->action->export($orders);
+			return $this->action->export($users);
 		}
 	}
 }
 
-SOYShopPlugin::registerExtension("soyshop.user.export","SOYShopUserExportDeletageAction");
-
-?>
+SOYShopPlugin::registerExtension("soyshop.user.export", "SOYShopUserExportDeletageAction");

@@ -3,7 +3,7 @@
  */
 class CommonItemCustomFieldInfo extends SOYShopInfoPageBase{
 
-	function getPage($active = false){
+	function getPage(bool $active=false){
 		if($active){
 			return '<a href="'.SOY2PageController::createLink("Item.CustomField").'">カスタムフィールドの追加</a>';
 		}else{

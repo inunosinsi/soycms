@@ -3,7 +3,8 @@
 		<div class="panel panel-default">
 			<div class="panel-heading">カテゴリの編集
 				<small class="pull-right">
-					<a class="btn btn-primary btn-xs" href="javascript:void(0);" data-toggle="modal" data-target="#categoryModal">ルートカテゴリの追加</a>
+					<a class="btn btn-primary btn-xs" href="javascript:void(0);" data-toggle="modal"
+						data-target="#categoryModal">ルートカテゴリの追加</a>
 				</small>
 			</div>
 
@@ -20,7 +21,8 @@
 					<h3>
 						<span soy:id="category_name*"></span>
 						<small class="pull-right">
-							<a class="btn btn-default btn-sm" soy:id="remove_link" onclick="return confirm('このカテゴリを削除しますか？')">このカテゴリの削除</a>
+							<a class="btn btn-default btn-sm" soy:id="remove_link"
+								onclick="return confirm('このカテゴリを削除しますか？')">このカテゴリの削除</a>
 						</small>
 					</h3>
 					<form soy:id="child_update_form">
@@ -46,10 +48,13 @@
 
 						<div class="form-group">
 							<label for="">親</label><br>
-							<select soy:id="category_parent"><option value="">--</option></select><br />
+							<select soy:id="category_parent">
+								<option value="">--</option>
+							</select><br />
 						</div>
 
-						<!-- soy:id="category_custom_field" --><!-- /soy:id="category_custom_field" -->
+						<!-- soy:id="category_custom_field" -->
+						<!-- /soy:id="category_custom_field" -->
 
 						<div class="form-group">
 							<label for="">公開</label><br>
@@ -58,7 +63,8 @@
 						</div>
 
 						<div class="text-center">
-							<a class="btn btn-primary btn-lg" href="javascript:void(0);" soy:id="update_submit_btn">更新</a>
+							<a class="btn btn-primary btn-lg" href="javascript:void(0);" soy:id="update_submit_btn"
+								id="update_btn">更新</a>
 						</div>
 					</form>
 
@@ -72,7 +78,8 @@
 								<input soy:id="category_new_name" name="name" type="text" class="form-control">
 								<a class="btn btn-primary" href="javascript:void(0);" soy:id="create_submit_btn">追加</a>
 							</div>
-							<div class="alert alert-danger" soy:id="category_new_name_error" style="display:none;">必須項目を入力してください</div>
+							<div class="alert alert-danger" soy:id="category_new_name_error" style="display:none;">
+								必須項目を入力してください</div>
 						</div>
 					</form>
 				</div>
@@ -90,15 +97,17 @@
 			</div>
 			<div class="modal-body">
 				<div id="upload_form_el" class="popup">
-					<iframe name="upload_target_frame" src="about:blank;" frameborder="0" style="height:0;width:0;position:absolute;"></iframe>
+					<iframe name="upload_target_frame" src="about:blank;" frameborder="0"
+						style="height:0;width:0;position:absolute;"></iframe>
 					<form soy:id="upload_form">
 						<input type="hidden" name="upload" soy:id="category_id_upload" value="" />
 						<p>
 							<span>
-						<input id="upload_input" name="upload_file[]" type="file" multiple="true" />
+								<input id="upload_input" name="upload_file[]" type="file" multiple="true" />
 
-						</span>
-							<a class="btn btn-default" href="javascript:void(0);" onclick="$( '#upload_form').trigger( 'submit');">Upload</a>
+							</span>
+							<a class="btn btn-default" href="javascript:void(0);"
+								onclick="$( '#upload_form').trigger( 'submit');">Upload</a>
 						</p>
 						<hr />
 						<div id="select_image_list" class="image_list">
@@ -110,7 +119,8 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" id="imageSelectModalClose" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" id="imageSelectModalClose" class="btn btn-secondary"
+					data-dismiss="modal">Close</button>
 			</div>
 		</div>
 	</div>
@@ -130,16 +140,19 @@
 						新しいカテゴリ名:
 						<div class="text-center">
 							<input id="category_new_name" name="name" type="text" class="text validate">
-							<span class="require" id="category_new_name_error" style="display:none;">必須項目を入力してください</span>
+							<span class="require" id="category_new_name_error"
+								style="display:none;">必須項目を入力してください</span>
 						</div>
 					</div>
 					<div class="text-right">
-						<a class="btn btn-primary" href="javascript:void(0);" onclick="$('#create_form').trigger('submit');">追加</a>
+						<a class="btn btn-primary" href="javascript:void(0);"
+							onclick="$('#create_form').trigger('submit');">追加</a>
 					</div>
 				</form>
 			</div>
 			<div class="modal-footer">
-				<button type="button" id="imageSelectModalClose" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" id="imageSelectModalClose" class="btn btn-secondary"
+					data-dismiss="modal">Close</button>
 			</div>
 		</div>
 	</div>
@@ -149,7 +162,7 @@
 
 <script type="text/javascript" soy:src="../soycms/js/tinymce/tinymce.min.js"></script>
 <script type="text/javascript">
-	$(function() {
+	$(function () {
 		tinymce.init({
 			mode: "specific_textareas",
 			editor_selector: "mceEditor",
@@ -162,10 +175,10 @@
 			toolbar1: "save | cut copy paste pastetext | searchreplace | bold italic underline strikethrough | subscript superscript | forecolor backcolor | alignleft aligncenter alignright | formatselect fontselect fontsizeselect",
 			toolbar2: "bullist numlist | outdent indent blockquote | undo redo | cleanup removeformat code styleprops attribs | fullscreen preview | insertdate inserttime | insertwidget | table",
 
-			init_instance_callback: function(editor) {
+			init_instance_callback: function (editor) {
 				//			onInitTinymceEditor(editor.id);
 			},
-			oninit: function() {
+			oninit: function () {
 				//			onInitTinymce();
 			},
 
@@ -188,7 +201,7 @@
 
 		var image_list = [];
 		//img list
-		$("img").each(function() {
+		$("img").each(function () {
 			if (!$(this).hasClass("image_list_image")) {
 				var image = new Image;
 				image.src = $(this).attr("src");
@@ -196,7 +209,7 @@
 			}
 		});
 
-		$("#select_image_list img").each(function() {
+		$("#select_image_list img").each(function () {
 			var src = $(this).attr("src");
 
 			if ($.inArray(src, image_list) > 0) {
@@ -262,5 +275,4 @@
 		display: block;
 		margin-top: 3px;
 	}
-
 </style>

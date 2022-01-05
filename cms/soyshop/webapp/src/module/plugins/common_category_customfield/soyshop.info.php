@@ -3,7 +3,7 @@
  */
 class CommonCategoryCustomfieldInfo extends SOYShopInfoPageBase{
 
-	function getPage($active = false){
+	function getPage(bool $active=false){
 		if($active){
 			return '<a href="'.SOY2PageController::createLink("Item.Category.Customfield").'">カテゴリカスタムフィールドの追加</a>';
 		}else{

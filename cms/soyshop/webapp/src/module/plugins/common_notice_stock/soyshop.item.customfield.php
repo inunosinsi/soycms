@@ -45,7 +45,7 @@ class CommonNoticeStock extends SOYShopItemCustomFieldBase{
 		));
 	}
 
-	function onDelete($id){
+	function onDelete(int $itemId){
 	}
 }
 

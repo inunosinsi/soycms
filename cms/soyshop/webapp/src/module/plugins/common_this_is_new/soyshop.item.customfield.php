@@ -18,7 +18,7 @@ class CommonThisIsNew extends SOYShopItemCustomFieldBase{
 		));
 	}
 
-	function onDelete($id){}
+	function onDelete(int $itemId){}
 
 	private function compareTime(SOYShop_Item $item){
 		$config = SOYShop_DataSets::get("common_this_is_new", array("date" => 7));

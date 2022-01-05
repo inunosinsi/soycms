@@ -3,7 +3,7 @@
  */
 class FacebookLoginInfo extends SOYShopInfoPageBase{
 
-	function getPage($active = false){
+	function getPage(bool $active=false){
 		if($active){
 			return '<a href="'.SOY2PageController::createLink("Config.Detail?plugin=facebook_login").'">Facebookログインの設定</a>';
 		}else{

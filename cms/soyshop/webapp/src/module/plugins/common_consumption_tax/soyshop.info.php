@@ -3,7 +3,7 @@
  */
 class CommonConsumptionTaxInfo extends SOYShopInfoPageBase{
 
-	function getPage($active = false){
+	function getPage(bool $active=false){
 		if($active){
 			return '<a href="'.SOY2PageController::createLink("Config.Detail?plugin=common_consumption_tax").'">消費税別表示設定</a>';
 		}else{

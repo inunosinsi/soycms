@@ -6,7 +6,7 @@ class HTMLCacheItemCustomField extends SOYShopItemCustomFieldBase{
 		HTMLCacheUtil::removeCacheFiles();
 	}
 
-	function onDelete($id){
+	function onDelete(int $itemId){
 		SOY2::import("module.plugins.x_html_cache.util.HTMLCacheUtil");
 		HTMLCacheUtil::removeCacheFiles();
 	}

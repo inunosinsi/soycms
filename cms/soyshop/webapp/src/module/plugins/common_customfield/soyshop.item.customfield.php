@@ -1,98 +1,86 @@
 <?php
-/*
- */
+
 class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 
-	private $itemAttributeDao;
-	private $prefix;	//多言語化のプレフィックスを保持
 	private $fieldTable = array();	//商品IDに紐づいたすべてのカスタムフィールドのオブジェクトを保持する
 
-	function doPost(SOYShop_Item $item){
-		self::prepare();
+	function __construct(){
+		SOY2::import("domain.shop.SOYShop_ItemAttribute");
 
+		//多言語の方も念のため
+		if(!defined("SOYSHOP_PUBLISH_LANGUAGE")) define("SOYSHOP_PUBLISH_LANGUAGE", "jp");
+
+		if(!defined("SOYSHOP_PUBLISH_LANGUAGE_POSTFIX")){	//カスタムフィールドの場合は多言語化プラグインのprefixがpostfixとして使用する
+			//多言語化のプレフィックスでも調べてみる
+			if(SOYSHOP_PUBLISH_LANGUAGE != "jp"){
+				SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
+				if(class_exists("UtilMultiLanguageUtil")){
+					$cnf = UtilMultiLanguageUtil::getConfig();
+					$postfix = (isset($cnf[SOYSHOP_PUBLISH_LANGUAGE]["prefix"])) ? trim($cnf[SOYSHOP_PUBLISH_LANGUAGE]["prefix"]) : SOYSHOP_PUBLISH_LANGUAGE;
+					define("SOYSHOP_PUBLISH_LANGUAGE_POSTFIX", $postfix);
+				}
+			}
+		}
+		if(!defined("SOYSHOP_PUBLISH_LANGUAGE_POSTFIX")) define("SOYSHOP_PUBLISH_LANGUAGE_POSTFIX", SOYSHOP_PUBLISH_LANGUAGE);
+	}
+
+	function doPost(SOYShop_Item $item){
 		$list = (isset($_POST["custom_field"])) ? $_POST["custom_field"] : array();
 		$extraFields = (isset($_POST["custom_field_extra"])) ? $_POST["custom_field_extra"] : null;
 
-		$array = $this->itemAttributeDao->getByItemId($item->getId());
+		SOY2::import("module.plugins.common_customfield.util.CustomfieldUtil");
+		$array = (is_numeric($item->getId())) ? CustomfieldUtil::getFieldValues($item->getId()) : array();
 
 		$configs = SOYShop_ItemAttributeConfig::load(true);
 
-		foreach($list as $key => $value){
+		if(count($list) && count($configs)){
+			foreach($list as $fieldId => $value){
 
-			if(!isset($configs[$key])) continue;
-			$extra = (isset($extraFields[$key])) ? $extraFields[$key] : array();
-
-			//type=checkboxesの時
-			if($configs[$key]->getType() === "checkboxes"){
-				$value = (isset($value) && count($value)) ? implode(",", $value) : null;
-			}
-
-			try{
-				if(isset($array[$key])){
-					$obj = $array[$key];
-					$obj->setValue($value);
-					$obj->setExtraValuesArray($extra);
-					$this->itemAttributeDao->update($obj);
-				}else{
-					$obj = new SOYShop_ItemAttribute();
-					$obj->setItemId($item->getId());
-					$obj->setFieldId($key);
-					$obj->setValue($value);
-					$obj->setExtraValuesArray($extra);
-
-					$this->itemAttributeDao->insert($obj);
+				if(!isset($configs[$fieldId])) continue;
+				$extra = (isset($extraFields[$fieldId])) ? $extraFields[$fieldId] : null;
+				
+				//type=checkboxesの時
+				if($configs[$fieldId]->getType() === "checkboxes"){
+					$value = (isset($value) && count($value)) ? implode(",", $value) : null;
 				}
-			}catch(Exception $e){
-				//
+
+				$obj = (isset($array[$fieldId])) ? $array[$fieldId] : soyshop_get_item_attribute_object($item->getId(), $fieldId);
+				$obj->setValue($value);
+				$obj->setExtraValuesArray($extra);
+				soyshop_save_item_attribute_object($obj);
+
+				if($configs[$fieldId]->isIndex()){
+					//毎回DAOを読み込まなければソート用のカラムに値が入ってくれない
+					SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->updateSortValue($item->getId(), $fieldId, $value);
+				}
 			}
 
-			if($configs[$key]->isIndex()){
-				//毎回DAOを読み込まなければソート用のカラムに値が入ってくれない
-				$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-				$itemDAO->updateSortValue($item->getId(), $key, $value);
+			//チェックボックスが非選択時の処理
+			foreach($configs as $fieldId => $cnf){
+				if(isset($list[$fieldId])) continue;
+				if($cnf->getType() != "checkbox" && $cnf->getType() != "checkboxes" && $cnf->getType() != "radio") continue;
+				$attr = soyshop_get_item_attribute_object($item->getId(), $fieldId);
+				$attr->setValue(null);
+				$attr->setExtraValues(null);
+				soyshop_save_item_attribute_object($attr);
 			}
 		}
-
-		//チェックボックスが非選択時の処理
-		foreach($configs as $key => $value){
-
-			try{
-				if(!isset($list[$key]) && isset($array[$key])){
-					$obj = $array[$key];
-					$obj->setValue("");
-					$this->itemAttributeDao->update($obj);
-				}
-			}catch(Exception $e){
-				//
-			}
-		}
-
 	}
 
 	function getForm(SOYShop_Item $item){
-
-		self::prepare();
-
 		$list = SOYShop_ItemAttributeConfig::load(true);
 		if(!count($list)) return "";
 
-		// 開発中
-		//SOY2::import("module.plugins.common_customfield.util.CustomfieldUtil");
-		//$array = (is_numeric($item->getId())) ? CustomfieldUtil::getFieldValues($item->getId()) : array();
-
-		try{
-			$array = $this->itemAttributeDao->getByItemId($item->getId());
-		}catch(Exception $e){
-			echo $e->getPDOExceptionMessage();
-		}
+		SOY2::import("module.plugins.common_customfield.util.CustomfieldUtil");
+		$array = (is_numeric($item->getId())) ? CustomfieldUtil::getFieldValues($item->getId()) : array();
 
 		$html = array();
 
 		$associationMode = false;	//カテゴリとの関連付けモード
 
 		foreach($list as $fieldId => $config){
-			$value = (isset($array[$config->getFieldId()])) ? $array[$config->getFieldId()]->getValue() : null;
-			$extraValues = (isset($array[$config->getFieldId()])) ? $array[$config->getFieldId()]->getExtraValuesArray() : null;
+			$value = (isset($array[$fieldId])) ? $array[$fieldId]->getValue() : null;
+			$extraValues = (isset($array[$fieldId])) ? $array[$fieldId]->getExtraValuesArray() : null;
 
 			$html[] = $config->getForm($value, $extraValues);
 
@@ -120,7 +108,7 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 		$html[] = 'var categoryId = $("#item_category").val();';
 		$html[] = 'var isCategory';
 
-		foreach($list as $config){
+		foreach($list as $fieldId => $config){
 			if(!strlen($config->getShowInput())) continue;
 			$html[] = 'isCategory = (categoryId == ' . $config->getShowInput() . ');';
 			$html[] = 'if(!isCategory){';	//親カテゴリの方にあるか調べる
@@ -130,17 +118,12 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 			$html[] = '}';
 
 			$html[] = 'if(isCategory){';
-			// $html[] = '	$("#custom_field_' . $config->getFieldId() . '_dt").show();';
-			// $html[] = '	$("#custom_field_' . $config->getFieldId() . '").show();';
-			$html[] = '	$("#custom_field_' . $config->getFieldId() . '_group").show();';
+			$html[] = '	$("#custom_field_' . $fieldId . '_group").show();';
 			$html[] = '}else{';
-			//$html[] = '	$("#custom_field_' . $config->getFieldId() . '_dt").hide();';
-			//$html[] = '	$("#custom_field_' . $config->getFieldId() . '").hide();';
-			$html[] = '	$("#custom_field_' . $config->getFieldId() . '_group").hide();';
+			$html[] = '	$("#custom_field_' . $fieldId . '_group").hide();';
 			$html[] = '}';
 		}
 		$html[] = "}, 1000);";
-
 		$html[] = "</script>";
 
 		return implode("\n", $html);
@@ -150,21 +133,14 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 	 * onOutput
 	 */
 	function onOutput($htmlObj, SOYShop_Item $item){
+		$list = SOYShop_ItemAttributeConfig::load(true);
+		if(!count($list)) return;
 
-		self::prepare();
-
-		if(!is_null($item->getId())){
-			try{
-				//多言語の方の値も一緒に取得してる
-				$this->fieldTable = $this->itemAttributeDao->getByItemId($item->getId());
-			}catch(Exception $e){
-			}
-		}
-
-		$list = SOYShop_ItemAttributeConfig::load();
-
-		foreach($list as $config){
-			$value = self::getFieldValue($config->getFieldId(), $config->getEmptyValue());
+		SOY2::import("module.plugins.common_customfield.util.CustomfieldUtil");
+		$this->fieldTable = (is_numeric($item->getId())) ? CustomfieldUtil::getFieldValues($item->getId()) : array();
+		
+		foreach($list as $fieldId => $config){
+			$value = self::getFieldValue($fieldId, $config->getEmptyValue());
 
 			//空の時の挙動
 			if(!is_null($config->getConfig()) && (is_null($value) || !strlen($value))){
@@ -176,22 +152,20 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 
 			$valueLength = (is_string($value)) ? strlen(trim(strip_tags($value))) : 0;
 
-			$htmlObj->addModel($config->getFieldId() . "_visible", array(
+			$htmlObj->addModel($fieldId . "_visible", array(
 				"visible" => ($valueLength > 0),
 				"soy2prefix" => SOYSHOP_SITE_PREFIX
 			));
 
 			switch($config->getType()){
-
 				case "image":
-
 					/**
 					 * 隠し機能:携帯自動振り分け、多言語化プラグイン用で画像の配置場所を別で用意する
 					 * @ToDo 管理画面でもいじれる様にしたい
 					 */
 					$value = (is_string($value)) ? soyshop_convert_file_path($value, $item) : null;
 
-					$extraValues = (isset($this->fieldTable[$config->getFieldId()])) ? $this->fieldTable[$config->getFieldId()]->getExtraValuesArray() : array();
+					$extraValues = (isset($this->fieldTable[$fieldId])) ? $this->fieldTable[$fieldId]->getExtraValuesArray() : array();
 					if(!count($extraValues) && strlen((string)$config->getExtraOutputs())){	//追加属性があるかだけ調べておく
 						$outputs = explode("\n", (string)$config->getExtraOutputs());
 						if(count($outputs)){
@@ -223,15 +197,14 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 						}
 					}
 
+					$htmlObj->createAdd($fieldId, $class, $attr);
 
-					$htmlObj->createAdd($config->getFieldId(), $class, $attr);
-
-					$htmlObj->addLink($config->getFieldId() . "_link",  array(
+					$htmlObj->addLink($fieldId . "_link",  array(
 						"link" => $value,
 						"soy2prefix" => SOYSHOP_SITE_PREFIX
 					));
 
-					$htmlObj->addLabel($config->getFieldId() . "_text", array(
+					$htmlObj->addLabel($fieldId . "_text", array(
 						"text" => $value,
 						"soy2prefix" => SOYSHOP_SITE_PREFIX
 					));
@@ -239,12 +212,12 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 
 				case "textarea":
 					if(is_string($config->getOutput()) && strlen($config->getOutput()) > 0){
-						$htmlObj->addModel($config->getFieldId(), array(
+						$htmlObj->addModel($fieldId, array(
 							"attr:" . htmlspecialchars($config->getOutput()) => (is_string($value)) ? soyshop_customfield_nl2br($value) : "",
 							"soy2prefix" => SOYSHOP_SITE_PREFIX
 						));
 					}else{
-						$htmlObj->addLabel($config->getFieldId(), array(
+						$htmlObj->addLabel($fieldId, array(
 							"html" => (is_string($value)) ? soyshop_customfield_nl2br($value) : "",
 							"soy2prefix" => SOYSHOP_SITE_PREFIX
 						));
@@ -252,87 +225,70 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 					break;
 				case "link":
 					if(strlen($config->getOutput()) > 0){
-						$htmlObj->addModel($config->getFieldId(), array(
+						$htmlObj->addModel($fieldId, array(
 							"attr:" . htmlspecialchars($config->getOutput()) => $value,
 							"soy2prefix" => SOYSHOP_SITE_PREFIX
 						));
 					}else{
-						$htmlObj->addLink($config->getFieldId(), array(
+						$htmlObj->addLink($fieldId, array(
 							"link" => $value,
 							"soy2prefix" => SOYSHOP_SITE_PREFIX
 						));
 					}
 
-					$htmlObj->addLabel($config->getFieldId() . "_text", array(
+					$htmlObj->addLabel($fieldId . "_text", array(
 						"text" => $value,
 						"soy2prefix" => SOYSHOP_SITE_PREFIX
 					));
-
 					break;
 
 				default:
 					if(is_string($config->getOutput()) && strlen($config->getOutput()) > 0){
 						if($config->getOutput() == "href" && $config->getType() != "link"){
-							$htmlObj->addLink($config->getFieldId(), array(
+							$htmlObj->addLink($fieldId, array(
 								"link" => $value,
 								"soy2prefix" => SOYSHOP_SITE_PREFIX
 							));
 						}else{
-							$htmlObj->addModel($config->getFieldId(), array(
+							$htmlObj->addModel($fieldId, array(
 								"attr:" . htmlspecialchars($config->getOutput()) => $value,
 								"soy2prefix" => SOYSHOP_SITE_PREFIX
 							));
 						}
 					}else{
-						$htmlObj->addLabel($config->getFieldId(), array(
+						$htmlObj->addLabel($fieldId, array(
 							"html" => $value,
 							"soy2prefix" => SOYSHOP_SITE_PREFIX
 						));
 					}
 			}
 
-			$htmlObj->addLabel($config->getFieldId()."_raw", array(
+			$htmlObj->addLabel($fieldId . "_raw", array(
 				"html" => $value,
 				"soy2prefix" => SOYSHOP_SITE_PREFIX
 			));
-			$htmlObj->addLabel($config->getFieldId()."_escaped", array(
+			$htmlObj->addLabel($fieldId . "_escaped", array(
 					"text" => $value,
 					"soy2prefix" => SOYSHOP_SITE_PREFIX
 			));
-			$htmlObj->addModel($config->getFieldId()."_is_empty", array(
+			$htmlObj->addModel($fieldId . "_is_empty", array(
 					"visible" => ($valueLength === 0),
 					"soy2prefix" => SOYSHOP_SITE_PREFIX
 			));
-			$htmlObj->addLabel($config->getFieldId()."_is_not_empty", array(
+			$htmlObj->addLabel($fieldId . "_is_not_empty", array(
 					"visible" => ($valueLength > 0),
 					"soy2prefix" => SOYSHOP_SITE_PREFIX
 			));
 		}
 	}
 
-	function onDelete($id){
+	function onDelete(int $itemId){
 		SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO")->deleteByItemId($id);
 	}
 
-	private function prepare(){
-		if(!$this->itemAttributeDao){
-			$this->itemAttributeDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		}
+	private function getFieldValue(string $fieldId, $emptyValue=null){
+		if(!is_array($this->fieldTable) || !count($this->fieldTable)) return null;
 
-		//多言語の方も念のため
-		if(!defined("SOYSHOP_PUBLISH_LANGUAGE")) define("SOYSHOP_PUBLISH_LANGUAGE", "jp");
-
-		//多言語化のプレフィックスでも調べてみる
-		if(is_null($this->prefix) && SOYSHOP_PUBLISH_LANGUAGE != "jp"){
-			SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
-			if(class_exists("UtilMultiLanguageUtil")){
-				$config = UtilMultiLanguageUtil::getConfig();
-				$this->prefix = (isset($config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"])) ? trim($config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"]) : SOYSHOP_PUBLISH_LANGUAGE;
-			}
-		}
-	}
-
-	private function getFieldValue($fieldId, $emptyValue = null){
 		$value = null;
 
 		//多言語化の値をとる
@@ -340,8 +296,8 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 			$value = (isset($this->fieldTable[$fieldId . "_" . SOYSHOP_PUBLISH_LANGUAGE])) ? $this->fieldTable[$fieldId . "_" . SOYSHOP_PUBLISH_LANGUAGE]->getValue() : null;
 
 			//多言語化のプレフィックスの方でも値を取得してみる
-			if(is_null($value) && SOYSHOP_PUBLISH_LANGUAGE != $this->prefix){
-				$value = (isset($this->fieldTable[$fieldId . "_" . $this->prefix])) ? $this->fieldTable[$fieldId . "_" . $this->prefix]->getValue() : null;
+			if(is_null($value) && SOYSHOP_PUBLISH_LANGUAGE != SOYSHOP_PUBLISH_LANGUAGE_POSTFIX){
+				$value = (isset($this->fieldTable[$fieldId . "_" . SOYSHOP_PUBLISH_LANGUAGE_POSTFIX])) ? $this->fieldTable[$fieldId . "_" . SOYSHOP_PUBLISH_LANGUAGE_POSTFIX]->getValue() : null;
 			}
 		}
 
@@ -349,9 +305,7 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 		if(is_null($value)) $value = (isset($this->fieldTable[$fieldId])) ? $this->fieldTable[$fieldId]->getValue() : null;
 
 		//空の時の値
-		if(is_null($value) || $value === ""){
-			$value = $emptyValue;
-		}
+		if(is_null($value) || $value === "") $value = $emptyValue;
 
 		return $value;
 	}

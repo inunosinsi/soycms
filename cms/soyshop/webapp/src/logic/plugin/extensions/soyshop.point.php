@@ -1,12 +1,23 @@
 <?php
 class SOYShopPointBase implements SOY2PluginAction{
 
+	/**
+	 * @param int userId
+	 */
 	function doPost(int $userId){}
 
+	/**
+	 * @param int userId
+	 * @return int point
+	 */
 	function getPoint(int $userId){
 		return 0;
 	}
 
+	/**
+	 * @param int userId
+	 * @return int timestamp
+	 */
 	function getTimeLimit(int $userId){
 		return 0;
 	}
@@ -23,8 +34,10 @@ class SOYShopPointDeletageAction implements SOY2PluginDelegateAction{
 		if(strtolower($_SERVER['REQUEST_METHOD']) == "post"){
 			$action->doPost($this->userId);
 		}else{
-			$this->_point = $action->getPoint($this->userId);
-			$this->_limit = $action->getTimeLimit($this->userId);
+			$p = $action->getPoint($this->userId);
+			if(is_numeric($p)) $this->_point = $p;
+			$l = $action->getTimeLimit($this->userId);
+			if(is_numeric($l)) $this->_limit = $l;
 		}
 	}
 
@@ -46,4 +59,3 @@ class SOYShopPointDeletageAction implements SOY2PluginDelegateAction{
 	}
 }
 SOYShopPlugin::registerExtension("soyshop.point", "SOYShopPointDeletageAction");
-?>

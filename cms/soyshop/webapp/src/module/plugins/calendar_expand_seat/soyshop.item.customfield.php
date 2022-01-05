@@ -32,7 +32,7 @@ class CalendarExpandSeatItemCustomField extends SOYShopItemCustomFieldBase{
 	 * 管理画面側で商品情報を削除した時にオプション設定も一緒に削除する
 	 * @param integer id
 	 */
-	function onDelete($id){}
+	function onDelete(int $itemId){}
 
 	private function logic(){
 		static $logic;

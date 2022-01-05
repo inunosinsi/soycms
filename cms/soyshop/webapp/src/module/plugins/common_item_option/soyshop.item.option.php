@@ -3,7 +3,11 @@ class CommonItemOption extends SOYShopItemOptionBase{
 
 	const ADMIN_OPTION_KEY = "admin";
 
-	private function getCartAttributeId($optionId, $itemIndex, $itemId){
+	/**
+	 * @param string optionId, int index, int itemId
+	 * @return string
+	 */
+	private function getCartAttributeId(string $optionId, int $itemIndex, int $itemId){
 		return "item_option_{$optionId}_{$itemIndex}_{$itemId}";
 	}
 
@@ -33,7 +37,7 @@ class CommonItemOption extends SOYShopItemOptionBase{
 	 * @param array postedOption, object CartLogic
 	 * @return integer index
 	 */
-	function compare(array $postedOption, CartLogic $cart){
+	function compare(array $postedOptions, CartLogic $cart){
 		self::prepare();
 
 		$itemOrders = $cart->getItems();
@@ -60,7 +64,7 @@ class CommonItemOption extends SOYShopItemOptionBase{
 				$currentOptions = array_diff($attrs[$idx], array(null));
 			}
 
-			if($postedOption == $currentOptions){
+			if($postedOptions == $currentOptions){
 				$checkOptionId = $idx;
 				break;
 			}
@@ -95,7 +99,7 @@ class CommonItemOption extends SOYShopItemOptionBase{
 	 * @param htmlObj, integer index
 	 * @return string html
 	 */
-	function onOutput($htmlObj, $index){
+	function onOutput($htmlObj, int $index){
 		self::prepare();
 
 		$cart = CartLogic::getCart();
@@ -196,14 +200,14 @@ class CommonItemOption extends SOYShopItemOptionBase{
 		$html = array();
 		foreach($opts as $key => $conf){
 			if(!isset($opts[$key])) continue;
-			$selected = (isset($attrs[$key])) ? trim($attrs[$key]) : null;
+			$selected = (isset($attrs[$key])) ? trim($attrs[$key]) : "";
 			$html[] = $opts[$key]["name"] . " : " . ItemOptionUtil::buildOptionsWithSelected($key, $conf, $itemOrder, $selected, SOYSHOP_PUBLISH_LANGUAGE, false);
 		}
 
 		return implode("<br />", $html);
 	}
 
-	function change($itemOrders){
+	function change(array $itemOrders){
 		if(is_null($itemOrders) || !count($itemOrders)) return;
 
 		self::prepare();
@@ -220,7 +224,7 @@ class CommonItemOption extends SOYShopItemOptionBase{
 	}
 
 	//変更履歴の取得のみ
-	function history($newItemOrder, $oldItemOrder){
+	function history(SOYShop_ItemOrder $newItemOrder, SOYShop_ItemOrder $oldItemOrder){
 		if(is_null($newItemOrder)) return array();
 
 		self::prepare();
@@ -254,15 +258,15 @@ class CommonItemOption extends SOYShopItemOptionBase{
 	/**
 	 * 注文詳細で登録されている商品オプションを変更できるようにする
 	 */
-	function edit($key){
-		if($key == self::ADMIN_OPTION_KEY) return "オプション";
+	function edit(string $key){
+		if(strlen($key) && $key == self::ADMIN_OPTION_KEY) return "オプション";
 
 		self::prepare();
 		$opts = ItemOptionUtil::getOptions();
 		return (isset($opts[$key]["name"])) ? $opts[$key]["name"] : "";
 	}
 
-	function build($itemOrderId, $key, $selected){
+	function build(int $itemOrderId, string $key, string $selected){
 		self::prepare();
 		$opts = ItemOptionUtil::getOptions();
 		if(!count($opts) || !isset($opts[$key])) return "";
@@ -278,7 +282,7 @@ class CommonItemOption extends SOYShopItemOptionBase{
 		return ItemOptionUtil::buildOption($name, $type, $v, $selected, false, true);
 	}
 
-	function buildOnAdmin($index, $fieldValue, $key, $selected){
+	function buildOnAdmin(int $index, string $fieldValue, string $key, string $selected){
 		self::prepare();
 		$opts = ItemOptionUtil::getOptions();
 		if(!count($opts) || !isset($opts[$key])) return "";
@@ -289,7 +293,7 @@ class CommonItemOption extends SOYShopItemOptionBase{
 		return ItemOptionUtil::buildOption($name, $type, $fieldValue, $selected, false);
 	}
 
-	private function getOptionName($values){
+	private function getOptionName(array $values){
 		if(defined("SOYSHOP_PUBLISH_LANGUAGE") && SOYSHOP_PUBLISH_LANGUAGE != "jp"){
 			return (isset($values["name_" . SOYSHOP_PUBLISH_LANGUAGE]) && strlen($values["name_" . SOYSHOP_PUBLISH_LANGUAGE])) ? $values["name_" . SOYSHOP_PUBLISH_LANGUAGE] : $values["name"];
 		}else{

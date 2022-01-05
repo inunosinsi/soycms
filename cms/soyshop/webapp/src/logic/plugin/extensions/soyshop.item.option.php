@@ -2,66 +2,107 @@
 
 class SOYShopItemOptionBase implements SOY2PluginAction{
 
-	function clear(int $index, CartLogic $cart){
-
-	}
+	/**
+	 * カートから商品を削除した時に実行する
+	 * @param int index, CartLogic
+	 */
+	function clear(int $index, CartLogic $cart){}
 
 	/**
-	 * @return int
+	 * カートに商品を入れた直後に実行する
+	 * @param array $postedOptions, CartLogic
+	 * @return int index
 	 */
 	function compare(array $postedOptions, CartLogic $cart){
-		return $index;
+		return 0;
 	}
 
-	function doPost(int $index, CartLogic $cart){
+	function doPost(int $index, CartLogic $cart){}
 
+	/**
+	 * 商品情報の下に表示される情報
+	 * @param htmlObj, int index
+	 * @return string html
+	 */
+	function onOutput($htmlObj, int $index){
+		return "";
 	}
 
 	/**
-	 * onOutput
+	 * 注文確定時に実行する
+	 * @param int index
 	 */
-	function onOutput($htmlObj, $index){
+	function order(int $index){}
 
-	}
-
-	function order($index){
-
-	}
-
+	/**
+	 * 注文確定後に商品情報の下に表示される
+	 * @param SOYShop_ItemOrder
+	 * @return string
+	 */
 	function display(SOYShop_ItemOrder $itemOrder){
-
+		return "";
 	}
 
+	/**
+	 * マイページで商品オプションを変更できるようにする
+	 * @param SOYShop_ItemOrder
+	 * @return string html
+	 */
 	function form(SOYShop_ItemOrder $itemOrder){
-
+		return "";
 	}
 
-	function change($itemOrders){
+	/**
+	 * マイページで商品オプションの値を変更する
+	 * @param SOYShop_ItemOrdere
+	 */
+	function change(array $itemOrders){}
 
+	/**
+	 * マイページで変更履歴を残す
+	 * @param SOYShop_ItemOrder $new, SOYShop_ItemOrder $old
+	 * @return array(string...)
+	 */
+	function history(SOYShop_ItemOrder $newItemOrder, SOYShop_ItemOrder $oldItemOrder){
+		return array();
 	}
 
-	function history($newItemOrder, $oldItemOrder){
+	/**
+	 * 用途不明
+	 */
+	function add(){}
 
+	/**
+	 * 注文詳細で商品オプションを変更できるようにする
+	 * @param string
+	 * @return string
+	 */
+	function edit(string $key){
+		return "";
 	}
 
-	function add(){
-
+	/**
+	 * @param int itemOrderId, string key, string selected
+	 * @return string 
+	 */
+	function build(int $itemOrderId, string $key, string $selected){
+		return "";
 	}
 
-	function edit($key){
-
+	/**
+	 * @param int index, string value, string key, string selected
+	 * @return string
+	 */
+	function buildOnAdmin(int $index, string $fieldValue, string $key, string $selected){
+		return "";
 	}
 
-	function build($itemOrderId, $key, $selected){
-
-	}
-
-	function buildOnAdmin($index, $fieldValue, $key, $selected){
-
-	}
-
-	function addition($index){
-
+	/**
+	 * @param int index
+	 * @return int 0 or 1
+	 */
+	function addition(int $index){
+		return 0;
 	}
 }
 class SOYShopItemOptionDeletageAction implements SOY2PluginDelegateAction{
@@ -133,6 +174,7 @@ class SOYShopItemOptionDeletageAction implements SOY2PluginDelegateAction{
 				$this->_attributes[$moduleId] = $action->add();
 				break;
 			case "edit":
+				if(!is_string($this->key)) $this->key = "";
 				$label = $action->edit($this->key);
 				if(isset($label)){
 					$this->_label = $label;

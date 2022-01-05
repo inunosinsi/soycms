@@ -58,7 +58,7 @@ class CommonItemDescriptionField extends SOYShopItemCustomFieldBase{
 	 * onOutput
 	 */
 	function onOutput($htmlObj, SOYShop_Item $item){
-		$ids = soy2_unserialize(soyshop_get_item_attribute_value($item->getId(), self::FIELD_ID, "string"));
+		$ids = (is_numeric($item->getId())) ? soy2_unserialize(soyshop_get_item_attribute_value($item->getId(), self::FIELD_ID, "string")) : array();
 
 		$htmlObj->addModel("is_item_description", array(
 			"soy2prefix" => "block",
@@ -91,4 +91,3 @@ class CommonItemDescriptionField extends SOYShopItemCustomFieldBase{
 }
 
 SOYShopPlugin::extension("soyshop.item.customfield","common_item_description","CommonItemDescriptionField");
-

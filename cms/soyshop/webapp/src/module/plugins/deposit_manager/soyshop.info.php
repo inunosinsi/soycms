@@ -3,7 +3,7 @@
  */
 class DepositManagerInfo extends SOYShopInfoPageBase{
 
-	function getPage($active = false){
+	function getPage(bool $active=false){
 		if($active){
 			return '<a href="'.SOY2PageController::createLink("Config.Detail?plugin=deposit_manager").'">入金管理の設定</a>';
 		}else{

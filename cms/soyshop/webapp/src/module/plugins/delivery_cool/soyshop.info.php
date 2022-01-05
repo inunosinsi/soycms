@@ -3,7 +3,7 @@
  */
 class DeliveryCoolModuleInfo extends SOYShopInfoPageBase{
 
-	function getPage($active = false){
+	function getPage(bool $active=false){
 		if($active){
 			return '<a href="' . SOY2PageController::createLink("Config.Detail?plugin=delivery_cool") . '">配送料、配達時間帯の設定</a>';
 		}else{

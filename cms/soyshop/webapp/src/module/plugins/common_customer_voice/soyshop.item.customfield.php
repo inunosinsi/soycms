@@ -110,7 +110,7 @@ class CommonCustomerVoice extends SOYShopItemCustomFieldBase{
 
 	}
 
-	function onDelete($id){
+	function onDelete(int $itemId){
 		$attributeDAO = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 		$attributeDAO->deleteByItemId($id);
 	}

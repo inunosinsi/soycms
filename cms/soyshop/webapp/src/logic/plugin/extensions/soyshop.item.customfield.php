@@ -35,10 +35,7 @@ class SOYShopItemCustomFieldBase implements SOY2PluginAction{
 	/**
 	 * @onDelete
 	 */
-	function onDelete($id){
-
-
-	}
+	function onDelete(int $itemId){}
 
 }
 class SOYShopItemCustomFieldDeletageAction implements SOY2PluginDelegateAction{

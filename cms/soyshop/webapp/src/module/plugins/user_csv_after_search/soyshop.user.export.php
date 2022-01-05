@@ -24,11 +24,10 @@ class UserCSVAfterSearchUserExport extends SOYShopUserExportBase{
 	/**
 	 * export エクスポート実行
 	 */
-	function export($users){
+	function export(array $users){
 		SOY2Logic::createInstance("module.plugins.user_csv_after_search.logic.ExportCSVLogic")->export($users);
 		exit;
 	}
 }
 
 SOYShopPlugin::extension("soyshop.user.export","user_csv_after_search","UserCSVAfterSearchUserExport");
-?>

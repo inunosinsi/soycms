@@ -214,7 +214,7 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 //		));
 	}
 
-	function onDelete($id){}
+	function onDelete(int $itemId){}
 
 	private function _checkIsChildItemStock(int $parentId, string $type){
 		if($type != "group") return false;

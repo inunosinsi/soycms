@@ -6,7 +6,6 @@ class CommonItemDescriptionConfig extends SOYShopConfigPageBase{
 	 * @return string
 	 */
 	function getConfigPage(){
-
 		$form = SOY2HTMLFactory::createInstance("CommonItemDescriptionConfigFormPage");
 		$form->setConfigObj($this);
 		$form->execute();
@@ -78,39 +77,56 @@ class CommonItemDescriptionConfigFormPage extends WebPage{
 
 		$html = array();
 		$html[] = "<h1>詳細説明の設定</h1>";
-		$html[] = "<dl>";
-
+		
 		$counter = 1;
 		if(is_string($v)){
 			$values = soy2_unserialize($v);
 
 			for($i = 0; $i < count($values); $i++){
 
-				$html[] = "<dt>設定" . $counter."</dt>";
-				$html[] = "<dd>";
+				$html[] = "<div class=\"alert alert-info\">設定" . $counter."</div>";
 
-				$html[] = "項目名 : " . $class->buildNameArea($values[$i]["name"])."<br />";
-				$html[] = "項目ID : " . $class->buildColumnArea($values[$i]["column"])." (半角英数字)<br />";
-				$html[] = "項目内容(HTML可) : " . $class->buildTextArea($values[$i]["value"])."<br />";
-
-				$html[] = "</dd>";
+				$html[] = "<div class=\"form-group\">";
+				$html[] = "<label>項目名 :</label>";
+				$html[] = $class->buildNameArea($values[$i]["name"]);
+				$html[] = "</div>";
+		
+				$html[] = "<div class=\"form-group\">";
+				$html[] = "<label>項目ID : </label>";
+				$html[] = "<div class=\"form-inline\">";
+				$html[] = $class->buildColumnArea($values[$i]["column"])." (半角英数字)";
+				$html[] = "</div>";
+				$html[] = "</div>";
+		
+				$html[] = "<div class=\"form-group\">";
+				$html[] = "<label>項目内容(HTML可) :</label>";
+				$html[] = $class->buildTextArea($values[$i]["value"]);
+				$html[] = "</div>";
 
 				$counter++;
 			}
 
 		}
 
-		$html[] = "<dt>設定" . $counter."</dt>";
-		$html[] = "<dd>";
+		$html[] = "<div class=\"alert alert-info\">設定" . $counter."</div>";
+		
+		$html[] = "<div class=\"form-group\">";
+		$html[] = "<label>項目名 :</label>";
+		$html[] = $class->buildNameArea();
+		$html[] = "</div>";
 
-		$html[] = "項目名 : " . $class->buildNameArea() . "<br />";
-		$html[] = "項目ID : " . $class->buildColumnArea() . " (半角英数字)<br />";
-		$html[] = "項目内容(HTML可) : " . $class->buildTextArea() . "<br />";
+		$html[] = "<div class=\"form-group\">";
+		$html[] = "<label>項目ID :</label>";
+		$html[] = "<div class=\"form-inline\">";
+		$html[] = $class->buildColumnArea() . " (半角英数字)";
+		$html[] = "</div>";
+		$html[] = "</div>";
 
-		$html[] = "</dd>";
-
-		$html[] = "</dl>";
-
+		$html[] = "<div class=\"form-group\">";
+		$html[] = "<label>項目内容(HTML可) :</label>";
+		$html[] = $class->buildTextArea();
+		$html[] = "</div>";
+		
 		$this->addLabel("html", array(
 			"html" => implode("\n", $html)
 		));

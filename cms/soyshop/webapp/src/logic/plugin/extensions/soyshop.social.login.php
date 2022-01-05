@@ -2,8 +2,11 @@
 
 class SOYShopSocialLoginBase implements SOY2PluginAction{
 
+	/**
+	 * @return string 
+	 */
 	function buttonOnMyPageLogin(){
-
+		return "";
 	}
 }
 
@@ -17,7 +20,7 @@ class SOYShopSocialLoginDeletageAction implements SOY2PluginDelegateAction{
 			case "mypage_login":
 			default:
 				$buttonHTML = $action->buttonOnMyPageLogin();
-				if(isset($buttonHTML) && strlen($buttonHTML)){
+				if(is_string($buttonHTML) && strlen($buttonHTML)){
 					$this->_buttons[$moduleId] = $buttonHTML;
 				}
 
@@ -34,4 +37,4 @@ class SOYShopSocialLoginDeletageAction implements SOY2PluginDelegateAction{
 	}
 }
 
-SOYShopPlugin::registerExtension("soyshop.social.login","SOYShopSocialLoginDeletageAction");
+SOYShopPlugin::registerExtension("soyshop.social.login", "SOYShopSocialLoginDeletageAction");

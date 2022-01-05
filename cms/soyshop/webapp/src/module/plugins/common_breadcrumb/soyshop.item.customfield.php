@@ -40,7 +40,7 @@ class CommonBreadcrumbCustomField extends SOYShopItemCustomFieldBase{
 		return implode("\n", $html);
 	}
 
-	function onDelete($id){
+	function onDelete(int $itemId){
 		SOY2Logic::createInstance("module.plugins.common_breadcrumb.logic.BreadcrumbLogic")->deleteItem($id);
 	}
 }

@@ -1,16 +1,12 @@
 <?php
 class SOYShopPageUpdate implements SOY2PluginAction{
 
-	function onUpdate($pageId){
-
-	}
+	function onUpdate(int $pageId){}
 
 	/**
 	 * @onDelete
 	 */
-	function onDelete($id){
-
-	}
+	function onDelete(int $pageId){}
 }
 class SOYShopPageUpdateDeletageAction implements SOY2PluginDelegateAction{
 

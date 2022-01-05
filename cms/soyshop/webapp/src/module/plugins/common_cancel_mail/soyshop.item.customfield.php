@@ -20,7 +20,7 @@ class CancelMailCustomField extends SOYShopItemCustomFieldBase{
         return $form->getObject();
     }
 
-    function onDelete($id){
+    function onDelete(int $itemId){
         SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO")->deleteByItemId($id);
     }
 }

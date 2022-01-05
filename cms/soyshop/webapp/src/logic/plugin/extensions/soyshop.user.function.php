@@ -4,6 +4,7 @@ class SOYShopUserFunctionBase implements SOY2PluginAction{
 
 	/**
 	 * 検索結果一覧に表示するメニューの表示文言
+	 * @return string
 	 */
 	function getMenuTitle(){
 		return "";
@@ -11,16 +12,17 @@ class SOYShopUserFunctionBase implements SOY2PluginAction{
 
 	/**
 	 * 検索結果一覧に表示するメニューの説明
+	 * @return string
 	 */
 	function getMenuDescription(){
 		return "";
 	}
 		
 	/**
-	 * @return html
+	 * @return string html
 	 */
 	function getPage(){
-		
+		return "";
 	}
 }
 
@@ -60,5 +62,4 @@ class SOYShopUserFunctionDeletageAction implements SOY2PluginDelegateAction{
 	}
 }
 
-SOYShopPlugin::registerExtension("soyshop.user.function","SOYShopUserFunctionDeletageAction");
-?>
+SOYShopPlugin::registerExtension("soyshop.user.function", "SOYShopUserFunctionDeletageAction");

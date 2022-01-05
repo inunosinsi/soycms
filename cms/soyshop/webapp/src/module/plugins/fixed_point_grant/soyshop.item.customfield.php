@@ -60,7 +60,7 @@ class FixedPointGrantCustomField extends SOYShopItemCustomFieldBase{
 		));
 	}
 
-	function onDelete($id){
+	function onDelete(int $itemId){
 		SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO")->delete($id, FixedPointGrantUtil::PLUGIN_ID);
 	}
 }

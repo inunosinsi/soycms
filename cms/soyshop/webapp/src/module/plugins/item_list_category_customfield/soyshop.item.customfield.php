@@ -36,7 +36,7 @@ class ItemListCategoryCustomfield extends SOYShopItemCustomFieldBase{
         return $form->getObject();
     }
 
-    function onDelete($id){
+    function onDelete(int $itemId){
     }
 }
 SOYShopPlugin::extension("soyshop.item.customfield", "item_list_category_customfield", "ItemListCategoryCustomfield");

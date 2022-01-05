@@ -84,7 +84,7 @@ class TagCloudItemCustomField extends SOYShopItemCustomFieldBase{
 		));
 	}
 
-	function onDelete($id){}
+	function onDelete(int $itemId){}
 }
 
 SOYShopPlugin::extension("soyshop.item.customfield", "tag_cloud", "TagCloudItemCustomField");

@@ -20,6 +20,7 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 		) return;
 
 		//商品一覧ページ以外では動作しない
+		$name = "";
 		switch($obj->getType()){
 			case SOYShop_Page::TYPE_LIST:
 				$current = $obj->getObject()->getCurrentCategory();

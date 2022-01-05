@@ -12,7 +12,7 @@ class PayJpRecurringItemCustomField extends SOYShopItemCustomFieldBase{
 
 	function getForm(SOYShop_Item $item){}
 	function onOutput($htmlObj, SOYShop_Item $item){}
-	function onDelete($id){}
+	function onDelete(int $itemId){}
 }
 
 SOYShopPlugin::extension("soyshop.item.customfield", "payment_pay_jp_recurring", "PayJpRecurringItemCustomField");

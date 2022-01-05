@@ -2,7 +2,7 @@
 
 class HTMLCachePageUpdate extends SOYShopPageUpdate{
 
-	function onUpdate($pageId){
+	function onUpdate(int $pageId){
 		SOY2::import("module.plugins.x_html_cache.util.HTMLCacheUtil");
 		HTMLCacheUtil::removeCacheFiles();
 	}

@@ -75,7 +75,7 @@ class CommonConsumptionTaxCustomField extends SOYShopItemCustomFieldBase{
 		));
 	}
 
-	function onDelete($id){}
+	function onDelete(int $itemId){}
 }
 
 SOYShopPlugin::extension("soyshop.item.customfield", "common_consumption_tax", "CommonConsumptionTaxCustomField");

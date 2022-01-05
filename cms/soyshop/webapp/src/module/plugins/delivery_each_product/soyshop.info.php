@@ -2,7 +2,7 @@
 
 class DeliveryEachProductInfo extends SOYShopInfoPageBase{
 
-  function getPage($active = false){
+  function getPage(bool $active=false){
       if($active){
         if(!self::checkInstalledOtherDeliveryModule()){
           return '<a href="'.SOY2PageController::createLink("Config.Detail?plugin=delivery_each_product").'">配送料の設定</a>';

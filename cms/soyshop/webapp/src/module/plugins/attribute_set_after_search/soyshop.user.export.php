@@ -24,7 +24,7 @@ class AttributeSetAfterUserSearchExport extends SOYShopUserExportBase{
 	/**
 	 * export エクスポート実行
 	 */
-	function export($users){
+	function export(array $users){
 		SOY2Logic::createInstance("module.plugins.attribute_set_after_search.logic.RegisterLogic")->setUserAttribute($users);
 		echo "設定しました。";
 		exit;
@@ -32,4 +32,3 @@ class AttributeSetAfterUserSearchExport extends SOYShopUserExportBase{
 }
 
 SOYShopPlugin::extension("soyshop.user.export","attribute_set_after_search","AttributeSetAfterUserSearchExport");
-?>

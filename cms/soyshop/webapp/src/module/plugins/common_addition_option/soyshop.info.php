@@ -3,7 +3,7 @@
  */
 class CommonAdditionOptionInfo extends SOYShopInfoPageBase{
 
-	function getPage($active = false){
+	function getPage(bool $active=false){
 		if($active){
 			$html = array();
 			$html[] = '<a href="'.SOY2PageController::createLink("Config.Detail?plugin=common_addition_option").'">加算オプションプラグインの設定</a>';
