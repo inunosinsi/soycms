@@ -134,14 +134,14 @@ class CustomFieldPluginAdvanced{
 					//タイプがリンクの場合はここで上書き
 					if($master->getType() == "link"){
 						$class = "HTMLLink";
-						$attr["link"] = (strlen($field->getValue()) > 0) ? $field->getValue() : null;
+						$attr["link"] = (is_string($field->getValue()) && strlen($field->getValue())) ? $field->getValue() : null;
 						unset($attr["html"]);
 						$resetFlag = false;
 
 					//画像の場合
 					}else if($master->getType() == "image"){
 						$class = "HTMLImage";
-						$attr["src"] = (strlen($field->getValue()) > 0) ? $field->getValue() : null;
+						$attr["src"] = (is_string($field->getValue()) && strlen($field->getValue())) ? $field->getValue() : null;
 						unset($attr["html"]);
 						$resetFlag = false;
 
@@ -416,7 +416,7 @@ class CustomFieldPluginAdvanced{
 
 		foreach($this->customFields as $fieldId => $field){
 			if($field->getType() == $type){
-				$extraOutputs = explode("\n", $field->getExtraOutputs());
+				$extraOutputs = (is_string($field->getExtraOutputs()) && strlen($field->getExtraOutputs())) ? explode("\n", $field->getExtraOutputs()) : array();
 				if(!count($extraOutputs)) continue;
 				foreach($extraOutputs as $output){
 					$output = trim($output);

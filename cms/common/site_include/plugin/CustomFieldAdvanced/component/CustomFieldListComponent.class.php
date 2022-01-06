@@ -4,14 +4,11 @@ class CustomFieldListComponent extends HTMLList {
 
 	private $labels = array();
 
-	function populateItem($entity, $i){
-		static $i = 0;
-		$i++;
-
+	function populateItem($entity){
 		/* 情報表示用 */
 		$this->addLabel("label", array(
 			"text"=>$entity->getLabel(),
-			"id" => "label_text_" . $i,
+			"id" => "label_text_" . $entity->getId(),
 		));
 
 		$this->addLabel("id", array(
@@ -20,7 +17,7 @@ class CustomFieldListComponent extends HTMLList {
 
 		$this->addLabel("type", array(
 			"text"=> (is_string($entity->getType()) && isset(CustomField::$TYPES[$entity->getType()])) ? CustomField::$TYPES[$entity->getType()] : "",
-			"id" => "type_text_" . $i,
+			"id" => "type_text_" . $entity->getId(),
 		));
 
 		$this->addLabel("display_form", array(
@@ -31,37 +28,37 @@ class CustomFieldListComponent extends HTMLList {
 		/* カスタムフィールド設定変更用 */
 		$this->addLink("toggle_update", array(
 			"link" => "javascript:void(0)",
-			"onclick" => '$(\'#label_input_'.$i.'\').show();' .
-						'$(\'#label_text_'.$i.'\').hide();' .
-						'$(\'#type_select_'.$i.'\').show();' .
-						'$(\'#type_text_'.$i.'\').hide();' .
-						'$(\'#update_link_'.$i.'\').show();' .
+			"onclick" => '$(\'#label_input_'.$entity->getId().'\').show();' .
+						'$(\'#label_text_'.$entity->getId().'\').hide();' .
+						'$(\'#type_select_'.$entity->getId().'\').show();' .
+						'$(\'#type_text_'.$entity->getId().'\').hide();' .
+						'$(\'#update_link_'.$entity->getId().'\').show();' .
 						'$(this).hide();'
 		));
 
 		$this->addLink("update_link", array(
 			"link" => "javascript:void(0)",
-			"id" => "update_link_" . $i,
-			"onclick" => '$(\'#update_submit_'.$i.'\').click();' .
+			"id" => "update_link_" . $entity->getId(),
+			"onclick" => '$(\'#update_submit_'.$entity->getId().'\').click();' .
 						'return false;'
 		));
 
 		$this->addInput("update_submit", array(
 			"name" => "update_submit",
 			"value" => $entity->getId(),
-			"attr:id" => "update_submit_".$i
+			"attr:id" => "update_submit_".$entity->getId()
 		));
 
 		$this->addInput("label_input", array(
 			"name" => "label",
-			"id" => "label_input_" . $i,
+			"id" => "label_input_" . $entity->getId(),
 			"value" => $entity->getLabel(),
 		));
 
 		$this->addSelect("type_select", array(
 			"name" => "type",
 			"options" => CustomField::$TYPES,
-			"id" => "type_select_" . $i,
+			"id" => "type_select_" . $entity->getId(),
 			"selected" => $entity->getType(),
 		));
 
@@ -76,25 +73,27 @@ class CustomFieldListComponent extends HTMLList {
 		$this->addInput("delete_submit", array(
 			"name" => "delete_submit",
 			"value" => $entity->getId(),
-			"id" => "delete_submit_".$i
+			"id" => "delete_submit_".$entity->getId()
 		));
 
 		$this->addLink("delete", array(
 			"text"=>"削除",
 			"link"=>"javascript:void(0);",
-			"onclick"=>'if(confirm("delete \"'.$entity->getLabel().'\"?")){$(\'#delete_submit_'.$i.'\').click();}return false;'
+			"onclick"=>'if(confirm("delete \"'.$entity->getLabel().'\"?")){$(\'#delete_submit_'.$entity->getId().'\').click();}return false;',
+			"attr:id" => "delete_btn_" . $entity->getId()
 		));
 
 		/* 高度な設定 */
 		$this->addLink("toggle_config", array(
 			"link" => "javascript:void(0)",
 			"text" => "高度な設定",
-			"onclick" => '$(\'#field_config_'.$i.'\').toggle();',
-			"class" => (!$entity->getShowInput() || is_numeric($entity->getLabelId()) || count($entity->getLabelIds())|| $entity->getDefaultValue() || $entity->getEmptyValue() || $entity->getDescription() || $entity->getFixedLabelId() || strlen($entity->getOption())) ? "btn btn-warning" : "btn btn-info"
+			"onclick" => '$(\'#field_config_'.$entity->getId().'\').toggle();',
+			"class" => (!$entity->getShowInput() || is_numeric($entity->getLabelId()) || count($entity->getLabelIds())|| $entity->getDefaultValue() || $entity->getEmptyValue() || $entity->getDescription() || $entity->getFixedLabelId() || strlen($entity->getOption())) ? "btn btn-warning" : "btn btn-info",
+			"attr:id" => "toggle_config_" . $entity->getId()
 		));
 
 		$this->addModel("field_config", array(
-			"id" => "field_config_" . $i
+			"id" => "field_config_" . $entity->getId()
 		));
 
 		//表示の切り替え：表示/非表示/ラベルと連動
@@ -166,7 +165,8 @@ class CustomFieldListComponent extends HTMLList {
 
 		$this->addTextArea("option", array(
 			"name" => "config[option]",
-			"value" => $entity->getOption()
+			"value" => $entity->getOption(),
+			"attr:id" => "option_form_" . $entity->getId()
 		));
 
 		//ペアフィールド用
@@ -196,8 +196,13 @@ class CustomFieldListComponent extends HTMLList {
 			"options" => $entity->getLabels(),
 			"selected" => $entity->getFixedLabelId()
 		));
+		$isTmbPlg = file_exists(UserInfoUtil::getSiteDirectory() . ".plugin/soycms_thumbnail.active");
 		$this->addModel("is_entry_field_with_thumbnail_plugin", array(
-			"visible" => ($entity->getType() == "entry" && file_exists(UserInfoUtil::getSiteDirectory() . ".plugin/soycms_thumbnail.active"))
+			"visible" => ($entity->getType() == "entry" && $isTmbPlg)
+		));
+
+		$this->addLabel("entry_field_tag_example", array(
+			"html" => ($entity->getType() == "entry") ? self::_buildExample($entity->getId(), $isTmbPlg) : "" 
 		));
 
 		/** 記事フィールド用 **/
@@ -210,14 +215,42 @@ class CustomFieldListComponent extends HTMLList {
 
 		$this->addInput("update_advance", array(
 			"value"=>"設定保存",
-			"onclick"=>'$(\'#update_advance_submit_'.$i.'\').click();return false;'
+			"onclick"=>'$(\'#update_advance_submit_'.$entity->getId().'\').click();return false;',
+			"attr:id" => "update_advance_submit_btn_" . $entity->getId()
 		));
 
 		$this->addInput("update_advance_submit", array(
 			"name" => "update_advance",
 			"value" => $entity->getId(),
-			"id" => "update_advance_submit_".$i
+			"id" => "update_advance_submit_".$entity->getId(),
+			"attr:id" => "update_advance_submit_" . $entity->getId()
 		));
+	}
+
+	/**
+	 * @param string fieldId, bool isTmbPlg サムネイルプラグインが有効であるか？
+	 * @return string html
+	 */
+	private function _buildExample(string $fieldId, bool $isTmbPlg){
+		$html = array();
+		$html[] = "<h5>記事フィールドで追加されるタグ</h5>";
+		$html[] = "<ul>";
+		foreach(array("id", "title", "content", "more", "create_date", "label_caption", "label_alias", "blog_title", "blog_uri") as $typ){
+			$html[] = "<li>cms:id=\"" . $fieldId . "_" . $typ . "\"</li>";
+		}
+
+		if($isTmbPlg){
+			foreach(array("upload", "trimming", "thumbnail") as $typ){
+				$html[] = "<li>cms:id=\"" . $fieldId . "_" . $typ . "\"</li>";
+				$html[] = "<li>cms:id=\"" . $fieldId . "_is_" . $typ . "\"</li>";
+				$html[] = "<li>cms:id=\"" . $fieldId . "_no_" . $typ . "\"</li>";
+				$html[] = "<li>cms:id=\"" . $fieldId . "_" . $typ . "_text\"</li>";
+				$html[] = "<li>cms:id=\"" . $fieldId . "_" . $typ . "_path_text\"</li>";
+			}
+		}
+
+		$html[] = "</ul>";
+		return implode("\n", $html);
 	}
 
 	private function _buildLabelSelectBoxes(array $selectedLabelIds){
