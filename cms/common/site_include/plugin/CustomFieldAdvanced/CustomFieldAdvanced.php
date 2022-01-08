@@ -656,11 +656,11 @@ class CustomFieldPluginAdvanced{
 		$html = $this->getScripts();
 		$html .= '<div class="section custom_field">' . "\n";
 		$db_arr = ($entryId > 0) ? self::_getCustomFields($entryId) : array();
-
+		
 		$db_values = array();
 		if(count($db_arr)){
 			foreach($db_arr as $field){
-				$db_values[$field->getId()] = $field->getValue();
+				$db_values[$field->getId()] = (string)$field->getValue();	//値がnullの場合は空文字を入れる
 			}
 		}
 

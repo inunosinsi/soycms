@@ -96,8 +96,12 @@ class EntryLogic extends SOY2LogicBase{
 			$bean->setOpenPeriodStart(CMSUtil::encodeDate($bean->getOpenPeriodStart(),true));
 		}
 		
-		$dao->update($bean);
-
+		try{
+			$dao->update($bean);
+		}catch(Exception $e){
+			//
+		}
+		
 		return $bean->getId();
 	}
 
