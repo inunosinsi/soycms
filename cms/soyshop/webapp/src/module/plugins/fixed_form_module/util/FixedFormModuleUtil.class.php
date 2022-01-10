@@ -4,7 +4,7 @@ class FixedFormModuleUtil {
 
 	const PLUGIN_ID = "fixed_form_module";
 
-	public static function saveConfig($values){
+	public static function saveConfig(array $values){
 		SOYShop_DataSets::put(self::PLUGIN_ID . ".config", $values);
 	}
 
@@ -12,6 +12,12 @@ class FixedFormModuleUtil {
 		return SOYShop_DataSets::get(self::PLUGIN_ID . ".config", array());
 	}
 
+	/**
+	 * @return array(
+	 * 	array("moduleId" => "name")
+	 * 	...
+	 * )
+	 */
 	public static function getAllModuleList(){
 		$res = array();
 		//すべてのモジュールを読み込む
@@ -40,44 +46,5 @@ class FixedFormModuleUtil {
 		}
 
 		return $res;
-	}
-
-	public static function getAttr($itemId){
-		return self::_getAttr($itemId);
-	}
-
-	public static function save($itemId, $value){
-		if(strlen($value)){
-			$attr = self::_getAttr($itemId);
-			$attr->setValue($value);
-			try{
-				self::_dao()->insert($attr);
-			}catch(Exception $e){
-				try{
-					self::_dao()->update($attr);
-				}catch(Exception $e){
-					//
-				}
-			}
-		}else{
-			self::_dao()->delete($itemId, self::PLUGIN_ID);
-		}
-	}
-
-	private static function _getAttr($itemId){
-		try{
-			return self::_dao()->get($itemId, self::PLUGIN_ID);
-		}catch(Exception $e){
-			$attr = new SOYShop_ItemAttribute();
-			$attr->setItemId($itemId);
-			$attr->setFieldId(self::PLUGIN_ID);
-			return $attr;
-		}
-	}
-
-	private static function _dao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		return $dao;
 	}
 }

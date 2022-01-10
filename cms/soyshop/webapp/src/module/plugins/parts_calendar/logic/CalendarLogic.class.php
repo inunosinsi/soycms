@@ -6,20 +6,20 @@ class CalendarLogic extends SOY2LogicBase{
 		SOY2::import("module.plugins.parts_calendar.common.PartsCalendarCommon");
 	}
 	
-	function isBD($time){
-		return $this->calendarIsBD($time);
+	function isBD(int $timestamp){
+		return self::_calendarIsBD($timestamp);
 	}
-	
-	function isOther($time){		
-		$other = PartsCalendarCommon::getOtherConfig();
-		$date = date("Y/m/d", $time);
-		return (in_array($date, $other));	
+
+	function isOther(int $timestamp){
+		return self::_isOther($timestamp);
 	}
 	
 	/**
 	 * 営業日での計算
+	 * @param int day, int timestamp
+	 * @return int timestamp
 	 */
-	function BDCaluculate($day, $base){
+	function BDCaluculate(int $day, int $base){
 		
 		$bd = 0;
 		//今日の午前0時
@@ -28,7 +28,7 @@ class CalendarLogic extends SOY2LogicBase{
 		$add = 60 * 60 * 24;
 		
 		while($bd <= $day){
-			if($this->calendarIsBD($time)){
+			if(self::_calendarIsBD($time)){
 				//businessday
 				$bd++;
 			}
@@ -42,38 +42,39 @@ class CalendarLogic extends SOY2LogicBase{
 	
 	/**
 	 * 営業日の判定
+	 * @param int timestamp
 	 * @return boolean
 	 */
-	function calendarIsBD($time){
+	private function _calendarIsBD(int $timestamp){
 		$res = true;
 		
 		//@TODO 毎週X曜日が休みの判定
-		if($this->EveryWeekHoliday($time)){
+		if(self::_EveryWeekHoliday($timestamp)){
 			$res = false;	
 		}
 		
 		//@TODO 第n週のX曜日が休みの判定
-		if($this->NthDayHoliday($time)){
+		if(self::_NthDayHoliday($timestamp)){
 			$res = false;	
 		}
 		
 		//@TODO 指定月日が休みの判定
-		if($this->MdHoliday($time)){
+		if(self::_MdHoliday($timestamp)){
 			$res = false;	
 		}
 
 		//@TODO 指定年月日が休みの判定
-		if($this->YmdHoliday($time)){
+		if(self::_YmdHoliday($timestamp)){
 			$res = false;	
 		}
 		
 		//@TODO 指定営業日
-		if($this->Businessday($time)){
+		if(self::_Businessday($timestamp)){
 			$res = true;
 		}
 		
 		//@TODO 指定営業日
-		if($this->isOther($time)){
+		if(self::_isOther($timestamp)){
 			$res = true;
 		}
 		
@@ -82,25 +83,28 @@ class CalendarLogic extends SOY2LogicBase{
 	
 	/**
 	 * 毎週X曜日が休み
+	 * @param int timestamp
+	 * @return bool
 	 */
-	function EveryWeekHoliday($time){
+	private function _EveryWeekHoliday(int $timestamp){
 		// Sun, Sat
 		$yobi = PartsCalendarCommon::getWeekConfig();
-		return (in_array(date("w", $time), $yobi));
+		return (in_array(date("w", $timestamp), $yobi));
 	}
 	
 	/**
 	 * 第n週のX曜日が休みの判定
+	 * @param int timestamp
+	 * @return bool
 	 */
-	function NthDayHoliday($time){
+	private function _NthDayHoliday(int $timestamp){
 		$holidays = PartsCalendarCommon::getDayOfWeekConfig();
 		if(count($holidays) == 0) return false;
 		
-		$DOW = date("w", $time);
-		$day = (int)date("d", $time);
+		$DOW = date("w", $timestamp);
+		$day = (int)date("d", $timestamp);
 
-		$nth = ($day - 1) / 7 + 1;
-		$nth = (int)$nth;
+		$nth = (int)(($day - 1) / 7 + 1);
 		
 		//週
 		if(array_key_exists($nth, $holidays)){
@@ -112,40 +116,54 @@ class CalendarLogic extends SOY2LogicBase{
 	
 	/**
 	 * 指定月日が休みの判定
+	 * @param int timestamp
+	 * @return bool
 	 */
-	function MdHoliday($time){
-
+	private function _MdHoliday(int $timestamp){
 		$holidays = PartsCalendarCommon::getMdConfig();
-		
-		$date = date("m/d", $time);
+		$date = date("m/d", $timestamp);
 		return (in_array($date, $holidays));
 	}
 	
 	/**
 	 * 指定年月日が休みの判定
+	 * @param int timestamp
+	 * @return bool
 	 */
-	function YmdHoliday($time){
-
+	private function _YmdHoliday(int $timestamp){
 		$holidays = PartsCalendarCommon::getYmdConfig();
-		$date = date("Y/m/d", $time);
+		$date = date("Y/m/d", $timestamp);
 		return (in_array($date, $holidays));
 	}
 	
 	/**
 	 * 指定営業日
+	 * @param int timestamp
+	 * @return bool
 	 */
-	function Businessday($time){
-
+	private function _Businessday(int $timestamp){
 		$businessdays = PartsCalendarCommon::getBDConfig();
-		$date = date("Y/m/d", $time);
+		$date = date("Y/m/d", $timestamp);
 		return (in_array($date, $businessdays));
-	}	
+	}
+
+	/**
+	 * @param int timestamp
+	 * @return bool
+	 */
+	private function _isOther(int $timestamp){		
+		$other = PartsCalendarCommon::getOtherConfig();
+		$date = date("Y/m/d", $timestamp);
+		return (in_array($date, $other));	
+	}
 	
 	
 	/**
 	 * 発送日5日間のセレクトボックスを作成
+	 * @param int timestamp
+	 * @return array
 	 */
-	function getOptions($send_time){
+	function getOptions(int $send_time){
 		
 		$options = array();
 		$options[] = date("Y年m月d日", $send_time);
@@ -153,7 +171,7 @@ class CalendarLogic extends SOY2LogicBase{
 
 		while(count($options) < 5){
 			$send_time += 60 * 60 * 24;
-			if($this->CalendarIsDB($send_time)){
+			if(self::_calendarIsBD($send_time)){
 				$options[]  = date("Y年m月d日", $send_time);
 			}
 			$count++;
@@ -242,7 +260,7 @@ class CalendarLogic extends SOY2LogicBase{
 		//発送日が発送可能か
 		$time = strtotime($date);
 
-		while(!$this->CalendarIsDB($time)){
+		while(!self::_calendarIsDB($time)){
 			$time += 60 * 60 * 24;//翌日へ
 		}
 		
@@ -256,4 +274,3 @@ class CalendarLogic extends SOY2LogicBase{
 		$this->baseDate = $baseDate;
 	}
 }
-?>

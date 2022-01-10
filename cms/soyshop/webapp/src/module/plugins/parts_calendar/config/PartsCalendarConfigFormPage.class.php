@@ -140,11 +140,11 @@ class PartsCalendarConfigFormPage extends WebPage{
 	/**
 	 * convert md
 	 */
-	function convertMd($date){
-		$array = explode("\n", $date);
+	function convertMd(string $date){
+		$arr = explode("\n", $date);
 
 		$val = array();
-		foreach($array as $line){
+		foreach($arr as $line){
 			$line = mb_convert_kana(trim($line), "a");
 			if(preg_match("|^\d{2}\/\d{2}$|", $line) || preg_match("|^\d{2}-\d{2}$|", $line)){
 				$line = str_replace("-", "/", $line);
@@ -158,4 +158,3 @@ class PartsCalendarConfigFormPage extends WebPage{
 		$this->config = $obj;
 	}
 }
-?>

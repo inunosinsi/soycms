@@ -5,7 +5,7 @@ class CampaignInstall extends SOYShopPluginInstallerBase{
 		//初期化時のみテーブルを作成する
 		$dao = new SOY2DAO();
 		try{
-			$dao->executeQuery(self::_dao());
+			$dao->executeQuery(self::_sql());
 		}catch(Exception $e){
 			//
 		}

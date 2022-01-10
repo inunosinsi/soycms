@@ -21,15 +21,13 @@ class CommonCustomerCategoryVoiceBeforeOutput extends SOYShopSiteBeforeOutputAct
 		) return;
 
 		//商品一覧ページ以外では動作しない
-		$class = new CustomerCategoryVoiceClass();
-
+		
 		$current = $obj->getObject()->getCurrentCategory();
-		if(is_null($current)){
-			return;
-		}
+		if(is_null($current)) return;
+
 		$category = $current;
 
-		$values = soy2_unserialize(soyshop_get_category_attribute_value($category->getId(), "customer_category_voice_plugin", "string"));
+		$values = soy2_unserialize(soyshop_get_category_attribute_value((int)$category->getId(), "customer_category_voice_plugin", "string"));
 
 		$page->addModel("is_category_voice_list", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
@@ -55,7 +53,7 @@ class CommonCustomerCategoryVoiceList extends HTMLList{
 
 		$this->addLabel("voice", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"html" => nl2br($entity["value"])
+			"html" => (isset($entity["value"]) && $entity["value"]) ? nl2br($entity["value"]) : ""
 		));
 
 	}

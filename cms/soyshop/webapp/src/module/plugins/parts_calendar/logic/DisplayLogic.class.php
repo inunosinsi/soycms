@@ -39,15 +39,19 @@ class DisplayLogic extends SOY2LogicBase{
 		return $this->createCalendar($flag,$time);
 	}
 
-	function createCalendar($flag,$time){
+	/**
+	 * @param bool flag, int timestamp
+	 * @return html
+	 */
+	function createCalendar(bool $flag, int $timestamp){
 
 		//その月の日付の数（最後の日）：28-31
-		$num = date("t",$time);
+		$num = date("t", $timestamp);
 
 		//表示用の年月日を取得
-		$year = date("Y",$time);
-		$month = date("n",$time);
-		$day = date("j",$time);
+		$year = date("Y", $timestamp);
+		$month = date("n", $timestamp);
+		$day = date("j", $timestamp);
 
 		//カレンダを表示する
 		$html = array();
@@ -64,7 +68,7 @@ class DisplayLogic extends SOY2LogicBase{
 		//<tr>から</tr>までの<td>のカウンター
 		$counter = 0;
 		//カレンダの日付を作成する
-		for($i=1;$i<=$num;$i++){
+		for($i = 1; $i <= $num; $i++){
 			//本日の曜日を取得する
 			$getToday = mktime(0,0,0,$month,$i,$year);
 			$getDay = date("w",$getToday);
@@ -92,7 +96,7 @@ class DisplayLogic extends SOY2LogicBase{
 				if($getDay == 6 || $i == $num){
 					if($counter !== 6){
 						$count = 7 - $counter;
-						for($k=0;$k<$count;$k++)$html[] = "<td>&nbsp;</td>";
+						for($k = 0; $k < $count; $k++) $html[] = "<td>&nbsp;</td>";
 						$counter = 0;
 					}
 					$html[] = "</tr>";
@@ -115,7 +119,7 @@ class DisplayLogic extends SOY2LogicBase{
 	 * @param Integer タイムスタンプ
 	 * @return Text
 	 */
-	function createDayColumn($i,$w,$day,$num,$thisMonth,$dateTime){
+	function createDayColumn(int $i,int $w, int $day, int $num, int $thisMonth, int $dateTime){
 
 		$today = false;
 		if($i == $day && $thisMonth == true) $today = true;
@@ -127,15 +131,13 @@ class DisplayLogic extends SOY2LogicBase{
 			$class[] = "today";
 		}
 		
-		$calendarLogic = SOY2Logic::createInstance("module.plugins.parts_calendar.logic.CalendarLogic");
-
 		//休日
-		if(!$calendarLogic->isBD($dateTime)){
+		if(!self::_logic()->isBD($dateTime)){
 			$class[] = "close";
 		}
 
 		//その他
-		if($calendarLogic->isOther($dateTime)){
+		if(self::_logic()->isOther($dateTime)){
 			$class[] = "other";
 		}
 
@@ -149,5 +151,10 @@ class DisplayLogic extends SOY2LogicBase{
 
 		return "<td{$attr}>" . $i."</td>";
 	}
+
+	private function _logic(){
+		static $l;
+		if(is_null($l)) $l = SOY2Logic::createInstance("module.plugins.parts_calendar.logic.CalendarLogic");
+		return $l;
+	}
 }
-?>

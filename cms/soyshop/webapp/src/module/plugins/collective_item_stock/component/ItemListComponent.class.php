@@ -19,7 +19,7 @@ class ItemListComponent extends HTMLList{
 		));
 		
 		$this->addLabel("update_date", array(
-			"text" => print_update_date($item->getUpdateDate())
+			"text" => (is_numeric($item->getUpdateDate())) ? print_update_date($item->getUpdateDate()) : ""
 		));
 		
 		$this->addLabel("item_publish", array(
@@ -39,13 +39,13 @@ class ItemListComponent extends HTMLList{
 		));
 
 		$this->addLabel("item_price", array(
-			"text" => number_format($item->getPrice())
+			"text" => (is_numeric($item->getPrice())) ? number_format($item->getPrice()) : 0
 		));
 		$this->addModel("is_sale", array(
 			"visible" => $item->isOnSale()
 		));
 		$this->addLabel("sale_price", array(
-			"text" => number_format($item->getSalePrice())
+			"text" => (is_numeric($item->getSalePrice())) ? number_format($item->getSalePrice()) : 0
 		));
 		
 		$this->addInput("item_stock_input", array(
@@ -60,15 +60,15 @@ class ItemListComponent extends HTMLList{
 		));
 
 		$this->addLabel("order_count", array(
-			"text" => number_format(self::getOrderCount($item))
+			"text" => ($item instanceof SOYShop_Item) ? number_format(self::getOrderCount($item)) : 0
 		));
 		
 		$this->addLabel("item_category", array(
-			"text" => (isset($this->categories[$item->getCategory()])) ? $this->categories[$item->getCategory()]->getNameWithStatus() : "-"
+			"text" => (is_numeric($item->getCategory()) && isset($this->categories[$item->getCategory()])) ? $this->categories[$item->getCategory()]->getNameWithStatus() : "-"
 		));
 	}
 	
-	private function getOrderCount($item){
+	private function getOrderCount(SOYShop_item $item){
 
 		$childItemStock = $this->config->getChildItemStock();
 		//子商品の在庫管理設定をオン(子商品の注文数合計を取得する)
@@ -128,4 +128,3 @@ class ItemListComponent extends HTMLList{
 		$this->config = $config;
 	}
 }
-?>

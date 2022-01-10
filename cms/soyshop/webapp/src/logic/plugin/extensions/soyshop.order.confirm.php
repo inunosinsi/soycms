@@ -2,17 +2,28 @@
 
 class SOYShopOrderConfirmBase implements SOY2PluginAction{
 
-	function hasError($param){
-
+	/**
+	 * @param int 0 or 1
+	 * @return bool
+	 */
+	function hasError(int $param){
+		return true;
 	}
 	
+	/**
+	 * @return string html
+	 */
 	function display(){
-		
+		return "";
 	}
 	
-	//エラーメッセージがある場合はこちら
-	function error($error){
-		
+	/**
+	 * エラーメッセージがある場合はこちら
+	 * @param bool
+	 * @return string html
+	 **/
+	function error(bool $isErr){
+		return "";
 	}
 }
 class SOYShopOrderConfirmDeletageAction implements SOY2PluginDelegateAction{
@@ -42,7 +53,6 @@ class SOYShopOrderConfirmDeletageAction implements SOY2PluginDelegateAction{
 				);
 				break;
 		}
-		
 	}
 	
 	function setError($error){
@@ -62,4 +72,3 @@ class SOYShopOrderConfirmDeletageAction implements SOY2PluginDelegateAction{
 	}
 }
 SOYShopPlugin::registerExtension("soyshop.order.confirm","SOYShopOrderConfirmDeletageAction");
-?>

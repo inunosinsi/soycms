@@ -10,7 +10,7 @@ class SOYShop_FreePage extends SOYShop_PageBase{
 
 
     function getTitle() {
-    	if(strlen($this->title) < 1){
+    	if(!is_string($this->title) || strlen($this->title) < 1){
     		return "[無題]";
     	}
     	return $this->title;

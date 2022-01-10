@@ -1,16 +1,6 @@
 <?php
-/*
- */
-
 class ButtonSocialCustomField extends SOYShopItemCustomFieldBase{
-
-	function doPost(SOYShop_Item $item){}
-
-	function getForm(SOYShop_Item $item){}
-
-	/**
-	 * onOutput
-	 */
+	
 	function onOutput($htmlObj, SOYShop_Item $item){
 
 		$htmlObj->addLabel("facebook_like_button", array(
@@ -44,8 +34,6 @@ class ButtonSocialCustomField extends SOYShopItemCustomFieldBase{
 		));
 	}
 
-	function onDelete(int $itemId){}
-
 	function getFbButton(SOYShop_Item $item){
 		return "<div class=\"fb-like fb-like-comment\" data-href=\"" . self::_getPageUrl($item) . "\" data-send=\"false\" data-layout=\"button_count\" data-width=\"450\" data-show-faces=\"false\"></div>";
 	}
@@ -63,7 +51,7 @@ class ButtonSocialCustomField extends SOYShopItemCustomFieldBase{
 
 	function getTwitterButtonMobile(SOYShop_Item $item){
 		$url = rawurlencode(self::_getPageUrl($item));
-		$itemName = rawurlencode($item->getName());
+		$itemName = (is_string($item->getName())) ? rawurlencode($item->getName()) : "";
 
 		return "http://twtr.jp/share?url=" . $url . "&text=" . $itemName;
 	}
@@ -104,10 +92,8 @@ class ButtonSocialCustomField extends SOYShopItemCustomFieldBase{
 
 	private function _getPageUrl(SOYShop_Item $item){
 		$url = soyshop_get_site_url(true);
-
 		$uri = soyshop_get_page_object($item->getDetailPageId())->getUri();
 		if(isset($uri)) $url = $url.$uri . "/" . $item->getAlias();
-
 		return $url;
 	}
 }

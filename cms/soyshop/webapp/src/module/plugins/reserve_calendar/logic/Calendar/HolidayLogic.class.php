@@ -14,33 +14,33 @@ class HolidayLogic extends SOY2LogicBase{
 	}
 
 	function isBD(int $time){
-		return self::calendarIsBD($time);
+		return self::_calendarIsBD($time);
 	}
 
 	/**
 	 * 営業日の判定
 	 * @return boolean
 	 */
-	private function calendarIsBD(int $time){
+	private function _calendarIsBD(int $time){
 		$res = true;
 
 		//@TODO 毎週X曜日が休みの判定
-		if(self::EveryWeekHoliday($time)) $res = false;
+		if(self::_EveryWeekHoliday($time)) $res = false;
 
 		//@TODO 第n週のX曜日が休みの判定
-		if(self::NthDayHoliday($time)) $res = false;
+		if(self::_NthDayHoliday($time)) $res = false;
 
 		//@TODO 指定月日が休みの判定
-		if(self::MdHoliday($time)) $res = false;
+		if(self::_MdHoliday($time)) $res = false;
 
 		//@TODO 指定年月日が休みの判定
-		if(self::YmdHoliday($time)) $res = false;
+		if(self::_YmdHoliday($time)) $res = false;
 
 		//@TODO 指定営業日
-		if(self::Businessday($time)) $res = true;
+		if(self::_Businessday($time)) $res = true;
 
 		//@TODO 指定営業日
-		if(self::isOther($time)) $res = true;
+		if(self::_isOther($time)) $res = true;
 
 		return $res;
 	}
@@ -48,7 +48,7 @@ class HolidayLogic extends SOY2LogicBase{
 	/**
 	 * 毎週X曜日が休み
 	 */
-	private function EveryWeekHoliday(int $time){
+	private function _EveryWeekHoliday(int $time){
 		static $yobi;
 		if(!is_numeric($this->itemId)) return null;
 		if(is_null($yobi)) $yobi = ReserveCalendarUtil::getWeekConfig($this->itemId);
@@ -58,7 +58,7 @@ class HolidayLogic extends SOY2LogicBase{
 	/**
 	 * 第n週のX曜日が休みの判定
 	 */
-	private function NthDayHoliday(int $time){
+	private function _NthDayHoliday(int $time){
 		static $holidays;
 		if(!is_numeric($this->itemId)) return null;
 		if(is_null($holidays)) $holidays = ReserveCalendarUtil::getDayOfWeekConfig($this->itemId);
@@ -81,7 +81,7 @@ class HolidayLogic extends SOY2LogicBase{
 	/**
 	 * 指定月日が休みの判定
 	 */
-	private function MdHoliday(int $time){
+	private function _MdHoliday(int $time){
 		static $holidays;
 		if(!is_numeric($this->itemId)) return null;
 		if(is_null($holidays)) $holidays = ReserveCalendarUtil::getMdConfig($this->itemId);
@@ -93,7 +93,7 @@ class HolidayLogic extends SOY2LogicBase{
 	/**
 	 * 指定年月日が休みの判定
 	 */
-	private function YmdHoliday(int $time){
+	private function _YmdHoliday(int $time){
 		static $holidays;
 		if(!is_numeric($this->itemId)) return null;
 		if(is_null($holidays)) $holidays = ReserveCalendarUtil::getYmdConfig($this->itemId);
@@ -104,7 +104,7 @@ class HolidayLogic extends SOY2LogicBase{
 	/**
 	 * 指定営業日
 	 */
-	private function Businessday(int $time){
+	private function _Businessday(int $time){
 		static $businessdays;
 		if(!is_numeric($this->itemId)) return null;
 		if(is_null($businessdays)) $businessdays = ReserveCalendarUtil::getBDConfig($this->itemId);
@@ -112,7 +112,7 @@ class HolidayLogic extends SOY2LogicBase{
 		return (in_array($date, $businessdays));
 	}
 
-	private function isOther(int $time){
+	private function _isOther(int $time){
 		static $other;
 		if(!is_numeric($this->itemId)) return null;
 		if(is_null($other)) $other = ReserveCalendarUtil::getOtherConfig($this->itemId);

@@ -29,8 +29,5 @@ class DayOfWeekHolidayListComponent extends HTMLList{
 	}
 	function setConfig($config) {
 		$this->config = $config;
-	}
-	
+	}	
 }
-
-?>

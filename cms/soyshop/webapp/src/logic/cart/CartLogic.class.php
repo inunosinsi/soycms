@@ -1083,7 +1083,7 @@ class CartLogic extends SOY2LogicBase{
 				$id = $tmpUser->getId();
 
 				//既に登録されているメールアドレスは会員で、今回はゲスト注文
-				if(strlen($tmpUser->getPassword()) > 0){
+				if(strlen((string)$tmpUser->getPassword()) > 0){
 					//顧客情報を更新せず
 
 				//ゲスト注文二回目

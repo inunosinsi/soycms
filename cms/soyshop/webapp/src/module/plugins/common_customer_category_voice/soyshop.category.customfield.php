@@ -3,51 +3,35 @@ include(dirname(__FILE__) . "/common.php");
 class CommonCustomerCategoryVoiceCustomfield extends SOYShopCategoryCustomFieldBase{
 
 	function doPost(SOYShop_Category $category){
+		$fieldId = "customer_category_voice_plugin";
+		$attr = soyshop_get_category_attribute_object($category->getId(), $fieldId);
 
-		$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO");
-		$categoryDAO = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-		$array = $dao->getByCategoryId($category->getId());
-
-		$configs = SOYShop_CategoryAttributeConfig::load(true);
-
-		$key = "customer_category_voice_plugin";
-		$value = 1;
-
-		try{
-			$dao->delete($category->getId(),$key);
-		}catch(Exception $e){
-
-		}
-
-		if(isset($_POST["customer_category_voice_plugin"])){
+		$v = null;
+		if(isset($_POST[$fieldId])){
 
 			$names = $_POST["customer_category_voice_plugin"];
 			$values = $_POST["customer_category_voice_text"];
 
-			$array = array();
+			$arr = array();
 			for($i = 0; $i < count($names); $i++){
 				if(strlen($values[$i]) > 0){
 					$obj = array();
 					$obj["name"] = $names[$i];
 					$obj["value"] = $values[$i];
-					$array[] = $obj;
+					$arr[] = $obj;
 				}
-
 			}
-
-			if(count($array) > 0){
-				$attr = soyshop_get_category_attribute_object($category->getId(), $key);
-				$attr->setValue(soy2_serialize($array));
-				soyshop_save_category_attribute_object($attr);
-			}
+			if(count($arr)) $v = soy2_serialize($arr);
 		}
+		$attr->setValue($v);
+		soyshop_save_category_attribute_object($attr);
 	}
 
 	function getForm(SOYShop_Category $category){
 
 		$class = new CustomerCategoryVoiceClass();
 
-		$values = soy2_unserialize(soyshop_get_category_attribute_value($category->getId(), "customer_category_voice_plugin", "string"));
+		$values = (is_numeric($category->getId())) ? soy2_unserialize(soyshop_get_category_attribute_value($category->getId(), "customer_category_voice_plugin", "string")) : array();
 
 		$html = array();
 		$html[] = "<h4>お客様の声</h4>";
@@ -69,8 +53,8 @@ class CommonCustomerCategoryVoiceCustomfield extends SOYShopCategoryCustomFieldB
 		return implode("\n", $html);
 	}
 
-	function onDelete(int $id){
-		SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO")->deleteByCategoryId($id);
+	function onDelete(int $categoryId){
+		SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO")->deleteByCategoryId($categoryId);
 	}
 }
 

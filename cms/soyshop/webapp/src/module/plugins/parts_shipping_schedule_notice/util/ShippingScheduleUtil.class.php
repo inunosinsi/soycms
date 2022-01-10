@@ -23,9 +23,9 @@ class ShippingScheduleUtil {
 		return array_keys(self::_type());
 	}
 
-	public static function getLabel($type){
+	public static function getLabel(string $typ=self::BIZ_AM){
 		$types = self::_type();
-		return (isset($types[$type])) ? $types[$type] : $types[0];
+		return (isset($types[$typ])) ? $types[$typ] : $types[self::BIZ_AM];
 	}
 
 	public static function buildUsabledReplaceWordsList(){

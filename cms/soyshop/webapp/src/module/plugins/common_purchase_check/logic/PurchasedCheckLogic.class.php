@@ -21,7 +21,7 @@ class PurchasedCheckLogic extends SOY2LogicBase{
 				"AND o.order_status < " . SOYShop_Order::ORDER_STATUS_CANCELED . " ";
 		if(self::_isPaid()) $sql .= "AND o.payment_status IN (" . SOYShop_Order::PAYMENT_STATUS_CONFIRMED . ", " . SOYShop_Order::PAYMENT_STATUS_DIRECT . ") ";
 		$sql .=	"AND os.item_id = :itemId";
-		$binds = array(":userId" => $this->userId, ":itemId" => $itemId);
+		$binds = array(":userId" => $userId, ":itemId" => $itemId);
 		try{
 			$results = $dao->executeQuery($sql, $binds);
 		}catch(Exception $e){

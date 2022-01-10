@@ -22,4 +22,3 @@ class WeekHolidayListComponent extends HTMLList{
 		$this->config = $config;
 	}
 }
-?>

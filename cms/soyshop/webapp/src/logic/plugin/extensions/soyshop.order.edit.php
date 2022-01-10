@@ -60,10 +60,10 @@ class SOYShopOrderEditBaseDeletageAction implements SOY2PluginDelegateAction{
 		$html = "";
 		switch($this->mode){
 			case "item":	//注文編集画面で注文商品の編集の画面の下に自由に拡張できる
-				$html = $action->addFunc($this->orderId);
+				$html = $action->addFunc((int)$this->orderId);
 				break;
 			case "order":	//管理画面からの注文で商品の選択を行う画面の下で自由に拡張できる
-				$html = $action->addFuncOnAdminOrder($this->orderId);
+				$html = $action->addFuncOnAdminOrder((int)$this->orderId);
 				break;
 			case "attribute":	//管理画面の注文編集でattributeを増やす
 				$attrs = $action->addAttributes();
@@ -72,22 +72,22 @@ class SOYShopOrderEditBaseDeletageAction implements SOY2PluginDelegateAction{
 				}
 				break;
 			case "html_on_detail":
-				$action->setOrderId($this->orderId);	//使うかもしれない
+				$action->setOrderId((int)$this->orderId);	//使うかもしれない
 				$html = $action->html_on_detail();
 				break;
 			case "html":	//注文詳細画面でjavascriptの記述等を追加する時に使用する
-				$action->setOrderId($this->orderId);
+				$action->setOrderId((int)$this->orderId);
 				$html = $action->html();
 				break;
 			case "update":
-				$action->update($this->orderId, $this->isChange);
+				$action->update((int)$this->orderId, $this->isChange);
 				break;
 			case "error":
-				$action->error($this->orderId);
+				$action->error((int)$this->orderId);
 				break;
 			case "message":
 			default:
-				$msg = $action->message($this->orderId);
+				$msg = $action->message((int)$this->orderId);
 				if(is_array($msg) && isset($msg["message"])){
 					$this->_messages[$moduleId] = $msg;
 				}

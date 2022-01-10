@@ -145,26 +145,3 @@ function soyshop_get_user_ids_by_orders(array $orders){
 	}
 	return $ids;
 }
-
-// array(page_id => page_name...)
-function soyshop_get_page_list(){
-	static $list;
-	if(is_null($list)){
-		$list = array();
-		try{
-			$pages = SOY2DAOFactory::create("site.SOYShop_PageDAO")->get();
-		}catch(Exception $e){
-			$pages = array();
-		}
-
-		if(count($pages)){
-			foreach($pages as $page){
-				if(is_null($page->getId())) continue;
-				$list[(int)$page->getId()] = $page->getName();
-			}
-		}
-		unset($pages);
-	}
-	return $list;
-
-}

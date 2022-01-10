@@ -24,7 +24,12 @@ class DetailPage extends WebPage{
 	}
 
     function __construct($args) {
-    	$this->id = (isset($args[0])) ? (int)$args[0] : "";
+		if(!isset($args[0])) SOY2PageController::jump("Plugin");
+		if(!is_numeric($args[0])){
+			$plgId = soyshop_get_plugin_object($args[0])->getId(); 
+			if(is_numeric($plgId)) SOY2PageController::jump("Plugin.Detail." . $plgId);
+		}
+    	$this->id = (is_numeric($args[0])) ? (int)$args[0] :  0;
     	$module = soyshop_get_plugin_object($this->id);
 		if(is_null($module->getId())) SOY2PageController::jump("Plugin");
 

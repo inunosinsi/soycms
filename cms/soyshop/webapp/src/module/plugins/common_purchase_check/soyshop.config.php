@@ -18,7 +18,7 @@ class CommonPurchaseCheckConfig extends SOYShopConfigPageBase{
 	 * 拡張設定に表示されたモジュールのタイトルを表示する
 	 */
 	function getConfigPageTitle(){
-		return "購入最低金額設定";
+		return "購入済み商品チェックプラグイン";
 	}
 }
 SOYShopPlugin::extension("soyshop.config", "common_purchase_check", "CommonPurchaseCheckConfig");

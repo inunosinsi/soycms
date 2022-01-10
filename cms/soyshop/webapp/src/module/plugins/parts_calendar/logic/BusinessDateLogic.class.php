@@ -7,8 +7,12 @@ class BusinessDateLogic extends SOY2LogicBase{
 		SOY2::import("module.plugins.parts_calendar.common.PartsCalendarCommon");
 	}
 
-	//次の営業日を調べる
-	function getNextBusinessDate($i = 0){
+	/**
+	 * 次の営業日を調べる
+	 * @param int
+	 * @return int timestamp
+	 */
+	function getNextBusinessDate(int $i=0){
 
 		$timestamp = time();
 
@@ -30,8 +34,12 @@ class BusinessDateLogic extends SOY2LogicBase{
 		return $timestamp;
 	}
 
-	//今日の日付が定休日であるか調べる
-	function checkRegularHoliday($timestamp){
+	/**
+	 * 今日の日付が定休日であるか調べる
+	 * @param int timestamp
+	 * @return bool
+	 */
+	function checkRegularHoliday(int $timestamp){
 		$flag = false;
 
 		//本日が定休日であるか調べる
@@ -100,7 +108,11 @@ class BusinessDateLogic extends SOY2LogicBase{
 		return $flag;
 	}
 
-	private function _convertDateNotation($v){
+	/**
+	 * @param string
+	 * @return string
+	 */
+	private function _convertDateNotation(string $v){
 		if(strpos($v, "/") === false) return $v;
 		$values = explode("/", $v);
 		for($i = 0; $i < count($values); $i++){

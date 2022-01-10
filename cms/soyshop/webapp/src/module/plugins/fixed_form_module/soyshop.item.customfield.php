@@ -4,13 +4,15 @@ class FixedFormModuleCustomField extends SOYShopItemCustomFieldBase{
 
 	function doPost(SOYShop_Item $item){
 		if(isset($_POST[FixedFormModuleUtil::PLUGIN_ID])){
-			FixedFormModuleUtil::save($item->getId(), $_POST[FixedFormModuleUtil::PLUGIN_ID]);
+			$attr = soyshop_get_item_attribute_object($item->getId(), FixedFormModuleUtil::PLUGIN_ID);
+			$attr->setValue(trim($_POST[FixedFormModuleUtil::PLUGIN_ID]));
+			soyshop_save_item_attribute_object($attr);
 		}
 	}
 
 	function getForm(SOYShop_Item $item){
 		$list = FixedFormModuleUtil::getAllModuleList();
-		$selected = FixedFormModuleUtil::getAttr($item->getId())->getValue();
+		$selected = soyshop_get_item_attribute_value($item->getId(), FixedFormModuleUtil::PLUGIN_ID, "string");
 
 		$cnf = FixedFormModuleUtil::getConfig();
 		$label = (isset($cnf["form_name"]) && strlen($cnf["form_name"])) ? $cnf["form_name"] : "shop:module=\"fixed_form_module\"内で実行するモジュールの選択";
@@ -20,11 +22,13 @@ class FixedFormModuleCustomField extends SOYShopItemCustomFieldBase{
 		$html[] = "	<label>" . $label . "</label><br>";
 		$html[] = "	<select name=\"" . FixedFormModuleUtil::PLUGIN_ID . "\">";
 		$html[] = "		<option></option>";
-		foreach($list as $moduleId => $name){
-			if(strlen($selected) && $moduleId == $selected){
-				$html[] = "<option value=\"" . $moduleId . "\" selected=\"selected\">" . $name . "</option>";
-			}else{
-				$html[] = "<option value=\"" . $moduleId . "\">" . $name . "</option>";
+		if(count($list)){
+			foreach($list as $moduleId => $name){
+				if(strlen($selected) && $moduleId == $selected){
+					$html[] = "<option value=\"" . $moduleId . "\" selected=\"selected\">" . $name . "</option>";
+				}else{
+					$html[] = "<option value=\"" . $moduleId . "\">" . $name . "</option>";
+				}
 			}
 		}
 		$html[] = "	</select>";
@@ -41,12 +45,6 @@ class FixedFormModuleCustomField extends SOYShopItemCustomFieldBase{
 		$html[] = "</div>";
 		return implode("\n", $html);
 	}
-
-	/**
-	 * onOutput
-	 */
-	function onOutput($htmlObj, SOYShop_Item $item){}
-	function onDelete(int $itemId){}
 }
 
 SOYShopPlugin::extension("soyshop.item.customfield", "fixed_form_module", "FixedFormModuleCustomField");

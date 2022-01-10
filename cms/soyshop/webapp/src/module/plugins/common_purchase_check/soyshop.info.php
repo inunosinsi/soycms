@@ -11,7 +11,5 @@ class CommonPurchaseCheckInfo extends SOYShopInfoPageBase{
 			return "";
 		}
 	}
-
 }
 SOYShopPlugin::extension("soyshop.info", "common_purchase_check", "CommonPurchaseCheckInfo");
-?>

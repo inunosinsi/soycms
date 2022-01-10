@@ -40,4 +40,3 @@ class CommonOrderConfirmCheckConfigFormPage extends WebPage{
 		$this->config = $obj;
 	}
 }
-?>

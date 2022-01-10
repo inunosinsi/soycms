@@ -15,7 +15,7 @@ class InsertStringTemplateUtil {
 
 	public static function getTextByFieldId($fieldId){
 		if($fieldId == "config") $fieldId = "conf";
-		return SOYShop_DataSets::get("order_mail_insert_template." . $fieldId, null);
+		return (string)SOYShop_DataSets::get("order_mail_insert_template." . $fieldId, "");
 	}
 
 	public static function saveTextByFieldId($fieldId, $txt){

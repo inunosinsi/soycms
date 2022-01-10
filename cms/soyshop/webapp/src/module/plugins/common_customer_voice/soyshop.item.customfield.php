@@ -2,60 +2,36 @@
 include(dirname(__FILE__) . "/common.php");
 class CommonCustomerVoice extends SOYShopItemCustomFieldBase{
 
-	private $itemAttributeDao;
-
+	
 	function doPost(SOYShop_Item $item){
+		$fieldId = "customer_voice_plugin";
+		$attr = soyshop_get_item_attribute_object($item->getId(), $fieldId);
 
-		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-		$array = $dao->getByItemId($item->getId());
-
-		$configs = SOYShop_ItemAttributeConfig::load(true);
-
-		$key = "customer_voice_plugin";
-		$value = 1;
-
-		try{
-			$dao->delete($item->getId(),$key);
-		}catch(Exception $e){
-
-		}
-
-		if(isset($_POST["customer_voice_plugin"])){
-
+		$v = null;
+		if(isset($_POST[$fieldId])){
 			$names = $_POST["customer_voice_plugin"];
 			$values = $_POST["customer_voice_text"];
-
-			$array = array();
+			
+			$arr = array();
 			for($i = 0;$i < count($names); $i++){
 				if(strlen($values[$i]) > 0){
 					$obj = array();
 					$obj["name"] = $names[$i];
 					$obj["value"] = $values[$i];
-					$array[] = $obj;
+					$arr[] = $obj;
 				}
 			}
-
-			if(count($array) > 0){
-				try{
-					$obj = new SOYShop_ItemAttribute();
-					$obj->setItemId($item->getId());
-					$obj->setFieldId($key);
-					$obj->setValue(soy2_serialize($array));
-
-					$dao->insert($obj);
-				}catch(Exception $e){
-					//
-				}
-			}
+			if(count($arr)) $v = soy2_serialize($arr);
 		}
+		$attr->setValue($v);
+		soyshop_save_item_attribute_object($attr);
 	}
 
 	function getForm(SOYShop_Item $item){
 
 		$class = new CustomerVoiceClass();
 
-		$values = soy2_unserialize(soyshop_get_item_attribute_value($item->getId(), "customer_voice_plugin", "string"));
+		$values = (is_numeric($item->getId())) ? soy2_unserialize(soyshop_get_item_attribute_value($item->getId(), "customer_voice_plugin", "string")) : array();
 
 		$html = array();
 
@@ -75,7 +51,6 @@ class CommonCustomerVoice extends SOYShopItemCustomFieldBase{
 
 				$counter++;
 			}
-
 		}
 
 		$html[] = "<dt>お客様の声" . $counter . "</dt>";
@@ -94,9 +69,7 @@ class CommonCustomerVoice extends SOYShopItemCustomFieldBase{
 	 */
 	function onOutput($htmlObj, SOYShop_Item $item){
 
-		$class = new CustomerVoiceClass();
-
-		$values = soy2_unserialize(soyshop_get_item_attribute_value($item->getId(), "customer_voice_plugin", "string"));
+		$values = (is_numeric($item->getId())) ? soy2_unserialize(soyshop_get_item_attribute_value($item->getId(), "customer_voice_plugin", "string")) : array();
 
 		$htmlObj->addModel("is_voice_list", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
@@ -111,8 +84,7 @@ class CommonCustomerVoice extends SOYShopItemCustomFieldBase{
 	}
 
 	function onDelete(int $itemId){
-		$attributeDAO = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		$attributeDAO->deleteByItemId($id);
+		SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO")->deleteByItemId($itemId);
 	}
 }
 
@@ -133,4 +105,3 @@ class CommonCustomerVoiceList extends HTMLList{
 }
 
 SOYShopPlugin::extension("soyshop.item.customfield","common_customer_voice","CommonCustomerVoice");
-?>
