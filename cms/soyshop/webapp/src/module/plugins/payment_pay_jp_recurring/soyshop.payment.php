@@ -173,12 +173,13 @@ class PayJpRecurringPayment extends SOYShopPayment{
 		$customer["email"] = $user->getMailAddress();
 
 		list($res, $err) = $this->recurringLogic->registCustomer($customer);
+		unset($err);
 		$token = (!is_null($res)) ? $res->id : null;
 
 		if(isset($token)){
-			$this->recurringLogic->saveCustomerTokenByUserId($token, $user->getId());
+			$this->recurringLogic->saveCustomerTokenByUserId((string)$token, (int)$user->getId());
 		}else{
-			$this->recurringLogic->deleteCustomerTokenByUserId($user->getId());
+			$this->recurringLogic->deleteCustomerTokenByUserId((int)$user->getId());
 		}
 
 		return $token;

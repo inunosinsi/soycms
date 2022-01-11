@@ -14,7 +14,7 @@ class SOYShopItemOptionBase implements SOY2PluginAction{
 	 * @return int index
 	 */
 	function compare(array $postedOptions, CartLogic $cart){
-		return 0;
+		return -1;
 	}
 
 	function doPost(int $index, CartLogic $cart){}
@@ -134,7 +134,9 @@ class SOYShopItemOptionDeletageAction implements SOY2PluginDelegateAction{
 				$action->clear($this->index, $this->cart);
 				break;
 			case "compare":
-				$this->_id = $action->compare($this->option, $this->cart);
+				var_dump($moduleId);
+				$idx = $action->compare($this->option, $this->cart);
+				if(is_numeric($idx) && $idx >= 0) $this->_id = $idx;
 				break;
 			case "post":
 				$action->doPost($this->index, $this->cart);

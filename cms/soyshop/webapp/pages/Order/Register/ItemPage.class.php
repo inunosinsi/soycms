@@ -11,7 +11,7 @@ class ItemPage extends WebPage{
 
 	function doPost(){
 		if(soy2_check_token()){
-
+			
 			//モジュールをクリアする
 			$paymentModuleId = $this->cart->getAttribute("payment_module");
 			if(is_string($paymentModuleId)) $this->cart->removeModule($paymentModuleId);
@@ -89,7 +89,7 @@ class ItemPage extends WebPage{
 								"cart" => $this->cart,
 								"option" => $resOpts
 							))->getCartOrderId();
-
+							
 							//商品オプションが一致したため統合する
 							if(isset($res) && $idx != $res && isset($items[$res])){
 								/** @ToDo 数がうまくいかない **/

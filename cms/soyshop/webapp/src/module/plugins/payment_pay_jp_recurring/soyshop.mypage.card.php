@@ -40,7 +40,7 @@ class PayJpRecurringMypageCard extends SOYShopMypageCard{
 		static $res;
 		if(is_null($res)){
 			$mypage = MypageLogic::getMypage();
-			$token = SOY2Logic::createInstance("module.plugins.payment_pay_jp_recurring.logic.RecurringLogic")->getCustomerTokenByUserId($mypage->getUser()->getId());
+			$token = SOY2Logic::createInstance("module.plugins.payment_pay_jp_recurring.logic.RecurringLogic")->getCustomerTokenByUserId((int)$mypage->getUser()->getId());
 			$res = (isset($token) && strlen($token));
 		}
 		return $res;

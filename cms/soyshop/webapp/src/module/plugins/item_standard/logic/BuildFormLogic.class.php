@@ -21,8 +21,8 @@ class BuildFormLogic extends SOY2LogicBase{
 		if(!count($cnfs)) return "";
 
 		$html = array();
-		$html[] = "<section>";
-		$html[] = "<h4>商品の規格設定</h4>";
+		$html[] = "<br>";
+		$html[] = "<div class=\"alert alert-info\">商品の規格設定</div>";
 		$html[] = "<div style=\"float:left;margin-right:5px;\">※規格を改行区切りで入力してください</div>";
 		$html[] = "<div style=\"float:left;\"><a href=\"" . SOY2PageController::createLink("Config.Detail") . "?plugin=item_standard&item_id=" . $this->parentId . "\" class=\"btn btn-success\">規格毎の料金設定</a></div>";
 		$html[] = "<br style=\"clear:both;\">";
@@ -32,8 +32,7 @@ class BuildFormLogic extends SOY2LogicBase{
 			$html[] = "<textarea name=\"Standard[" . $cnf["id"] . "]\" class=\"form-control\" style=\"height:100px;\">" . soyshop_get_item_attribute_value($this->parentId, $cnf["id"], "string") . "</textarea>";
 			$html[] = "</div>";
 		}
-
-		$html[] = "</section>";
+		$html[] = "<div class=\"alert alert-info\">商品の規格設定ここまで</div>";
 
 		//子商品のエリアを非表示にする
 		$html[] = "<script>";

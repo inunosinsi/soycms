@@ -16,7 +16,5 @@ class DetailCategoryInfoInfo extends SOYShopInfoPageBase{
 			return "";
 		}
 	}
-
 }
 SOYShopPlugin::extension("soyshop.info","detail_category_info","DetailCategoryInfoInfo");
-?>

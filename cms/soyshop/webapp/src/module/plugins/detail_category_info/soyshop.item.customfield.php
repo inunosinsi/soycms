@@ -1,31 +1,15 @@
 <?php
-/*
- */
+
 class DetailCategoryInfoCustomField extends SOYShopItemCustomFieldBase{
 
 	/**
 	 * onOutput
 	 */
 	function onOutput($htmlObj, SOYShop_Item $item){
-		$categoryId = $item->getCategory();
-
-		$categoryName = "";
-		$categoryAlias = "";
-		$categoryTree = "";
-
-		//カテゴリIDが取得出来た時
-		if(!is_null($categoryId)){
-			$category = soyshop_get_category_object($categoryId);
-
-			//カテゴリ名の取得
-			$categoryName = $category->getName();
-
-			//カテゴリエイリアスの取得
-			$categoryAlias = $category->getAlias();
-
-			//カテゴリツリーの取得
-			$categoryTree = $this->getCategoryRelation($category);
-		}
+		$category = soyshop_get_category_object((int)$item->getCategory());
+		$categoryName = $category->getName();					//カテゴリ名の取得
+		$categoryAlias = $category->getAlias();					//カテゴリエイリアスの取得
+		$categoryTree = self::_getCategoryRelation($category);	//カテゴリツリーの取得
 
 		$htmlObj->addLabel("category_name", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
@@ -44,11 +28,11 @@ class DetailCategoryInfoCustomField extends SOYShopItemCustomFieldBase{
 
 
 		//ここからカテゴリのカスタムフィールドの値を取得する
-		if(!is_null($categoryId)){
-			$categoryAttributeDao = $this->getCategoryAttributeDao();
+		if(is_numeric($category->getId())){
+			$attrDao = soyshop_get_hash_table_dao("category_attribute");
 
 			try{
-				$array = $categoryAttributeDao->getByCategoryId($categoryId);
+				$array = $attrDao->getByCategoryId($category->getId());
 			}catch(Exception $e){
 				$array = array();
 			}
@@ -57,9 +41,9 @@ class DetailCategoryInfoCustomField extends SOYShopItemCustomFieldBase{
 				$list = SOYShop_CategoryAttributeConfig::load();
 
 				foreach($list as $config){
-					$value = (isset($array[$config->getFieldId()])) ? $array[$config->getFieldId()]->getValue() : null;
+					$value = (isset($array[$config->getFieldId()])) ? (string)$array[$config->getFieldId()]->getValue() : "";
 
-					$htmlObj->createAdd($config->getFieldId() . "_visible","HTMLModel", array(
+					$htmlObj->addModel($config->getFieldId() . "_visible", array(
 						"visible" => (strlen(strip_tags($value)) > 0),
 						"soy2prefix" => SOYSHOP_SITE_PREFIX
 					));
@@ -68,31 +52,31 @@ class DetailCategoryInfoCustomField extends SOYShopItemCustomFieldBase{
 
 						case "image":
 							if(strlen($config->getOutput()) > 0){
-								$htmlObj->createAdd($config->getFieldId(),"HTMLModel", array(
-									"attr:" . htmlspecialchars($config->getOutput()) => $value,
+								$htmlObj->addModel($config->getFieldId(), array(
+									"attr:" . htmlspecialchars((string)$config->getOutput()) => $value,
 									"soy2prefix" => SOYSHOP_SITE_PREFIX
 								));
 							}else{
-								$htmlObj->createAdd($config->getFieldId(),"HTMLImage", array(
+								$htmlObj->addImage($config->getFieldId(), array(
 									"src" => $value,
 									"soy2prefix" => SOYSHOP_SITE_PREFIX,
-									"visible" => ($value)?true:false
+									"visible" => (strlen($value))
 								));
 							}
-							$htmlObj->createAdd($config->getFieldId() . "_link","HTMLLink", array(
+							$htmlObj->addLink($config->getFieldId() . "_link", array(
 								"link" => $value,
 								"soy2prefix" => SOYSHOP_SITE_PREFIX
 							));
 							break;
 
 						case "textarea":
-							if(strlen($config->getOutput()) > 0){
-								$htmlObj->createAdd($config->getFieldId(),"HTMLModel", array(
+							if(strlen((string)$config->getOutput()) > 0){
+								$htmlObj->addModel($config->getFieldId(), array(
 									"attr:" . htmlspecialchars($config->getOutput()) => nl2br($value),
 									"soy2prefix" => SOYSHOP_SITE_PREFIX
 								));
 							}else{
-								$htmlObj->createAdd($config->getFieldId(),"HTMLLabel", array(
+								$htmlObj->addLabel($config->getFieldId(), array(
 									"html" => nl2br($value),
 									"soy2prefix" => SOYSHOP_SITE_PREFIX
 								));
@@ -100,13 +84,13 @@ class DetailCategoryInfoCustomField extends SOYShopItemCustomFieldBase{
 							break;
 
 						default:
-							if(strlen($config->getOutput()) > 0){
-								$htmlObj->createAdd($config->getFieldId(),"HTMLModel", array(
+							if(strlen((string)$config->getOutput()) > 0){
+								$htmlObj->addModel($config->getFieldId(), array(
 									"attr:" . htmlspecialchars($config->getOutput()) => $value,
 									"soy2prefix" => SOYSHOP_SITE_PREFIX
 								));
 							}else{
-								$htmlObj->createAdd($config->getFieldId(),"HTMLLabel", array(
+								$htmlObj->addLabel($config->getFieldId(), array(
 									"html" => $value,
 									"soy2prefix" => SOYSHOP_SITE_PREFIX
 								));
@@ -117,7 +101,7 @@ class DetailCategoryInfoCustomField extends SOYShopItemCustomFieldBase{
 		}
 	}
 
-	function getCategoryRelation($category){
+	private function _getCategoryRelation(SOYShop_Category $category){
 		$array = array();
 		$text = "";
 
@@ -143,12 +127,6 @@ class DetailCategoryInfoCustomField extends SOYShopItemCustomFieldBase{
 
 		return $text;
 	}
-
-	function getCategoryAttributeDao(){
-		static $categoryAttributeDao;
-		if(!$categoryAttributeDao)$categoryAttributeDao = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO");
-		return $categoryAttributeDao;
-	}
 }
 
-SOYShopPlugin::extension("soyshop.item.customfield","detail_category_info","DetailCategoryInfoCustomField");
+SOYShopPlugin::extension("soyshop.item.customfield", "detail_category_info", "DetailCategoryInfoCustomField");
