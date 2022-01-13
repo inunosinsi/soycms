@@ -301,7 +301,8 @@ class CustomField{
 
 				break;
 			case "link":
-				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
+				if(is_null($fieldValue)) $fieldValue = $this->getDefaultValue();
+				$h_value = htmlspecialchars((string)$fieldValue,ENT_QUOTES,"UTF-8");
 				$body =  '<div class="form-inline">'
 						.'<input type="text" class="custom_field_input form-control" style="width:70%"'
 				       .' id="'.$h_formID.'"'

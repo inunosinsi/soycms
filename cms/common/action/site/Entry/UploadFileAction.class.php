@@ -102,6 +102,16 @@ class UploadFileAction extends SOY2Action{
     		$filename = $_FILES['file']['name'];
     	}
 
+		//ファイル名の変更
+		$onLoads = CMSPlugin::getEvent('onFileUploadConvertFileName');
+		if(count($onLoads)){
+			foreach($onLoads as $plugin){
+				$func = $plugin[0];
+				$res = call_user_func($func, array('filename' => $filename));
+				if(is_string($res)) $filename = $res;
+			}
+		}
+
     	//パス, URL
 		$filepath = UserInfoUtil::getSiteDirectory() .$this->getDefaultUpload() . "/". $filename;
 

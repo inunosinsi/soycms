@@ -62,6 +62,7 @@ class CMSPlugin {
 
 		//ファイルマネージャ関連
 		"onFileUpload"=>array(),		//*ファイルがアップロードされる直前(filename)
+		"onFileUploadConvertFileName"=>array(),	//*ファイルがアップロードされた後、ファイル名の変更を行うarray(filename) 上の拡張ポイントが何の為に作られたのか？が不明の為、、新規で設ける
 		"onFileRemoved"=>array(),		//*ファイルが削除される直前(filename)
 
 		//ブログ関連
