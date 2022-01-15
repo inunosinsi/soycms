@@ -55,6 +55,8 @@ class UploadFileAction extends SOY2Action{
 			}
 
 			//MIMETYPE
+			$mimetypes = null;
+			if(!defined("ELFINDER_MODE")) define("ELFINDER_MODE", false);
 			if(file_exists(SOY2::RootDir() . "/config/upload.config.php")){
 				include_once(SOY2::RootDir() . "/config/upload.config.php");
 			}

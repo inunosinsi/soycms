@@ -3,7 +3,10 @@
  * MIME type ファイルのアップロードで許可したいファイルの拡張子は下記のページを参考にしてください。
  * https://developer.mozilla.org/ja/docs/Web/HTTP/Basics_of_HTTP/MIME_types
  * https://developer.mozilla.org/ja/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
- */
+ *
+ * 定数 ELFINDER_MODE によって設定を分けられる (SOY CMS 3.2.1以降)
+ * 詳細：https://saitodev.co/article/4315
+ **/
 $mimetypes = array(
 	'image/x-ms-bmp',
 	'image/gif',

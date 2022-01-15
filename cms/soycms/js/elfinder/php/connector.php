@@ -145,6 +145,8 @@ function access($attr, $path, $data, $volume, $isDir, $relpath) {
 		? !($attr == 'read' || $attr == 'write') // set read+write to false, other (locked+hidden) set to true
 		:  null;                                 // else elFinder decide it itself
 }
+
+if(!defined("ELFINDER_MODE")) define("ELFINDER_MODE", true);
 if(isset($_GET["site_id"])){
 	//SOY CMSとの接続:サイトのパスを取得
 	SOY2::import("domain.admin.Site");
@@ -180,6 +182,7 @@ if(isset($_GET["site_id"])){
 	$url = SOYSHOP_SITE_URL;
 }
 
+$mimetypes = null;
 if(file_exists(SOY2::RootDir() . "/config/upload.config.php")){
 	include_once(SOY2::RootDir() . "/config/upload.config.php");
 }
