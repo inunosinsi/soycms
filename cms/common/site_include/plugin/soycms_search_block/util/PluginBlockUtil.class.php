@@ -112,10 +112,10 @@ class PluginBlockUtil {
 
 	public static function getLimitByPageId(int $pageId, string $soyId=""){
 		$template = self::__getTemplateByPageId($pageId);
-		if(is_null($template)) return null;
+		if(is_null($template)) return 0;
 
 		$blocks = self::__getBlockByPageId($pageId);
-		if(!is_array($blocks) || !count($blocks)) return null;
+		if(!is_array($blocks) || !count($blocks)) return 0;
 
 		foreach($blocks as $block){
 			//soyIdに指定がある場合は正規表現をする前にチェック
@@ -128,7 +128,7 @@ class PluginBlockUtil {
 			}
 		}
 
-		return null;
+		return 0;
 	}
 
 	public static function getSortRandomMode(int $pageId){

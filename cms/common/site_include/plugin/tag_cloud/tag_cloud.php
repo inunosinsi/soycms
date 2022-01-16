@@ -13,7 +13,7 @@ class TagCloudPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.8"
+			"version"=>"1.8.1"
 		));
 
 		//active or non active
@@ -161,7 +161,7 @@ class TagCloudPlugin{
 
 		//ラベルIDを取得とデータベースから記事の取得件数指定
 		$labelId = PluginBlockUtil::getLabelIdByPageId($pageId, $soyId);
-		if(is_null($labelId)) return array();
+		if(!is_numeric($labelId)) return array();
 
 		return SOY2Logic::createInstance("site_include.plugin.tag_cloud.logic.TagCloudBlockEntryLogic")->search($labelId, $wordId, PluginBlockUtil::getLimitByPageId($pageId, $soyId));
 	}
