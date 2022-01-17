@@ -105,7 +105,7 @@ class GravatarPlugin {
 
 		SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
 		$limit = PluginBlockUtil::getLimitByPageId((int)$_SERVER["SOYCMS_PAGE_ID"]);
-		if(is_null($limit)) $limit = 100000;
+		if(!is_numeric($limit) || $limit === 0) $limit = 100000;
 
 		$current = (isset($args[1]) && strpos($args[1], "page-") === 0) ? (int)str_replace("page-", "", $args[1]) : 0;
 		$last_page_number = (int)ceil($entryLogic->getTotalEachAuthorEntries() / $limit);

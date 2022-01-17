@@ -56,7 +56,7 @@ class SOYCMS_Search_Block_Plugin{
 		if(strpos($url, "page-")) $url = substr($url, 0, strpos($url, "/page-")) . "/";
 
 		$limit = PluginBlockUtil::getLimitByPageId($pageId, $soyId);
-		if(is_null($limit)) $limit = 100000;
+		if(!is_numeric($limit) || $limit === 0) $limit = 100000;
 
 		$query = (isset($_GET["q"]) && strlen(trim($_GET["q"]))) ? htmlspecialchars(trim($_GET["q"]), ENT_QUOTES, "UTF-8") : null;
 

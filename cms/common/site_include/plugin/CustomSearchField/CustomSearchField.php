@@ -141,7 +141,7 @@ class CustomSearchFieldPlugin{
 		$url = rtrim($url, "/") . "/";
 
 		$limit = PluginBlockUtil::getLimitByPageId($pageId, $soyId);
-		if(is_null($limit)) $limit = 100000;
+		if(!is_numeric($limit) || $limit === 0) $limit = 100000;
 
 		$args = $logic->getArgs();
 		$labelId = PluginBlockUtil::getLabelIdByPageId($pageId);

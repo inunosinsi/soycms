@@ -74,7 +74,7 @@ class SOYCMSSameCategoryBlockPlugin{
 			$sql .= "ORDER BY ent.cdate desc ";
 		}
 
-		if(isset($count) && $count > 0){
+		if(is_numeric($count) && $count > 0){
 			 $sql .= "LIMIT " . $count;
 		}
 

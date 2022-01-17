@@ -69,7 +69,7 @@ class SOYCMS_Random_Block_Plugin{
             $sql .= "ORDER BY Random() ";
         }
 
-        if(isset($count) && $count > 0) {
+        if(is_numeric($count) && $count > 0) {
             $sql .= "Limit " . $count;
         }
 

@@ -40,7 +40,7 @@ class GravatarEntryLogic extends SOY2LogicBase {
 							"AND ent.isPublished > " . Entry::ENTRY_NOTPUBLIC . " ".
 							"ORDER BY ent.cdate DESC ";
 
-			if(isset($count) && $count > 0){
+			if(is_numeric($count) && $count > 0){
 				$sql .= "LIMIT " . $count;
 
 				//ページャ
