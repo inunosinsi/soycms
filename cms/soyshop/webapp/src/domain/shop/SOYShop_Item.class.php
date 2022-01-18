@@ -338,7 +338,7 @@ class SOYShop_Item {
 
         if(SOYSHOP_MAIL_LANGUAGE != "jp"){
             try{
-                $name = soyshop_get_item_attribute_value($this->id, "item_name_" . SOYSHOP_MAIL_LANGUAGE, "string");
+                $name = (is_numeric($this->id)) ? soyshop_get_item_attribute_value($this->id, "item_name_" . SOYSHOP_MAIL_LANGUAGE, "string") : "";
                 if(strlen($name)) return $name;
             }catch(Exception $e){
                 //

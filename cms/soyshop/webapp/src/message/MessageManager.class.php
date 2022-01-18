@@ -41,7 +41,7 @@ class MessageManager{
         return $_instance;
     }
 
-    static function addMessagePath($dirName){
+    static function addMessagePath(string $dirName){
         $instance = &self::getInstance();
         $dir = $instance->messageDir . $dirName;
         $messagePath = self::getFilesByDirectory($dir);
@@ -52,7 +52,7 @@ class MessageManager{
         return (count($instance->messagePath));
     }
 
-    public static function get($key, $replace = array()){
+    public static function get(string $key, array $replace = array()){
         $instance = &self::getInstance();
 
         if(is_null($instance->messageArray)){
@@ -65,6 +65,7 @@ class MessageManager{
             foreach($replace as $key => $value){
 				$tmpMsg = preg_replace('/%' . $key . '%/i', $value, $tmpMsg);
             }
+            if(is_numeric(strpos($tmpMsg, "&lt;br&gt;"))) $tmpMsg = str_replace("&lt;br&gt;", "<br>", $tmpMsg);
 			return $tmpMsg;
         }else{
             //throw new Exception($key."に対応するメッセージがありません");
@@ -107,7 +108,7 @@ class MessageManager{
     /**
      * ディレクトリ内のファイルを取得します
      */
-    private static function getFilesByDirectory($dir){
+    private static function getFilesByDirectory(string $dir){
         $files = scandir($dir);
         $messagePath = array();
         foreach($files as $file){

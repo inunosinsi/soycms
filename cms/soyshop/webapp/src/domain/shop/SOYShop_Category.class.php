@@ -103,12 +103,12 @@ class SOYShop_Category {
 			}
 
             try{
-                $name = soyshop_get_category_attribute_value($this->id, "category_name_" . SOYSHOP_MAIL_LANGUAGE, "string");
+                $name = (is_numeric($this->id)) ? soyshop_get_category_attribute_value($this->id, "category_name_" . SOYSHOP_MAIL_LANGUAGE, "string") : "";
                 if(strlen($name)) return $name;
             }catch(Exception $e){
                 try{
 					$lng = (isset($lngCnf[SOYSHOP_MAIL_LANGUAGE]["prefix"])) ? $lngCnf[SOYSHOP_MAIL_LANGUAGE]["prefix"] : SOYSHOP_MAIL_LANGUAGE;
-					$name = soyshop_get_category_attribute_value($this->id, "category_name_" . $lng, "string");
+					$name = (is_numeric($this->id)) ? soyshop_get_category_attribute_value($this->id, "category_name_" . $lng, "string") : "";
 	                if(strlen($name)) return $name;
 				}catch(Exception $e){
 					//

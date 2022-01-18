@@ -5,11 +5,7 @@ class LanguageListComponent extends HTMLList{
 	private $config;
 
 	function populateItem($entity, $lang){
-		if($lang !== "jp"){
-			$text = (isset($this->config[$lang]["prefix"])) ? $this->config[$lang]["prefix"] : $lang;
-		}else{
-			$text = (isset($this->config[$lang]["prefix"])) ? $this->config[$lang]["prefix"] : "";
-		}
+		$lngUri = (is_string($lang)) ? self::getLanguageUri($lang) : "";
 
 		$this->addLink("create_pc_page_link", array(
 			"link" => (isset($this->config[$lang]["prefix"])) ? SOY2PageController::createLink("Config.Detail?plugin=util_multi_language&create=" . $this->config[$lang]["prefix"] . "&carrier=pc") : null,
@@ -45,11 +41,11 @@ class LanguageListComponent extends HTMLList{
 
 		$this->addInput("prefix_input", array(
 			"name" => "Config[" . $lang . "][prefix]",
-			"value" => $text
+			"value" => $lngUri
 		));
 
 		$this->addLabel("prefix_text", array(
-			"text" => (strlen($text)) ? "/" . $text : ""
+			"text" => (strlen($lngUri)) ? "/" . $lngUri : ""
 		));
 
 		$iPrefix = $this->getSmartPhonePrefix();
@@ -58,19 +54,19 @@ class LanguageListComponent extends HTMLList{
 		));
 
 		$this->addLabel("user_cart_id", array(
-			"text" => (strlen($text)) ? $this->getPcCartId() . "_" . $text : $this->getPcCartId()
+			"text" => (strlen($lngUri)) ? $this->getPcCartId() . "_" . $lngUri : $this->getPcCartId()
 		));
 
 		$this->addLabel("user_mypage_id", array(
-			"text" => (strlen($text)) ? $this->getPcMypageId() . "_" . $text : $this->getPcMypageId()
+			"text" => (strlen($lngUri)) ? $this->getPcMypageId() . "_" . $lngUri : $this->getPcMypageId()
 		));
 
 		$this->addLabel("user_sp_cart_id", array(
-			"text" => (strlen($text)) ? $this->getSpCartId() . "_" . $text : $this->getSpCartId()
+			"text" => (strlen($lngUri)) ? $this->getSpCartId() . "_" . $lngUri : $this->getSpCartId()
 		));
 
 		$this->addLabel("user_sp_mypage_id", array(
-			"text" => (strlen($text)) ? $this->getSpMypageId() . "_" . $text : $this->getSpMypageId()
+			"text" => (strlen($lngUri)) ? $this->getSpMypageId() . "_" . $lngUri : $this->getSpMypageId()
 		));
 
 		$this->addLabel("domain", array(
@@ -147,6 +143,14 @@ class LanguageListComponent extends HTMLList{
 			$spMypageId = SOYShop_DataSets::get("config.mypage.smartphone.id", "smart");
 		}
 		return $spMypageId;
+	}
+
+	private function getLanguageUri(string $lng){
+		if($lng !== "jp"){
+			return (isset($this->config[$lng]["prefix"])) ? (string)$this->config[$lng]["prefix"] : $lng;
+		}else{
+			return (isset($this->config[$lng]["prefix"])) ? (string)$this->config[$lng]["prefix"] : "";
+		}
 	}
 
 

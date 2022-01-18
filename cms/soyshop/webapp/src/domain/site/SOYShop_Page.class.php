@@ -341,10 +341,14 @@ class SOYShop_Page {
 	 *
 	 */
 	function getWebPageObject($args){
-		include(SOYSHOP_SITE_DIRECTORY . ".page/" . $this->getCustomClassFileName());
-		return SOY2HTMLFactory::createInstance($this->getCustomClassName(), array(
-			"arguments" => array("page" => $this, "arguments" => $args)
-		));
+		if(file_exists(SOYSHOP_SITE_DIRECTORY . ".page/" . $this->getCustomClassFileName())){
+			include(SOYSHOP_SITE_DIRECTORY . ".page/" . $this->getCustomClassFileName());
+			return SOY2HTMLFactory::createInstance($this->getCustomClassName(), array(
+				"arguments" => array("page" => $this, "arguments" => $args)
+			));
+		}else{
+			return null;	//どうする？
+		}
 	}
 
 	function getTypeText(){

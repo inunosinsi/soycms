@@ -9,7 +9,9 @@ function output_page(string $uri, array $args, $page){
     if(DEBUG_MODE) count_timer("Search");
 
     $webPage = $page->getWebPageObject($args);
-	$webPage->setArguments($args);
+    if(is_null($webPage)) return "";	//名前無しページオブジェクトの取得を試みることがあるので処理を停止する
+	
+    $webPage->setArguments($args);
 
     /* Event OnLoad */
     SOYShopPlugin::load("soyshop.site.onload");
