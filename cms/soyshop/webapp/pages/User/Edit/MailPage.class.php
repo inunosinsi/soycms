@@ -25,12 +25,11 @@ class MailPage extends WebPage{
     }
 
 	function doPost(){
-		if(!soy2_check_token()){
+		if(!soy2_check_token() || !isset($_POST["Email"])){
 			SOY2PageController::jump("User.Edit.Mail." . $this->id);
 		}
 
-		$new_email = @$_POST["Email"];
-		$dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
+		$new_email = $_POST["Email"];
 
 		/*
 		 * 元のデータを読み込む
@@ -40,13 +39,13 @@ class MailPage extends WebPage{
 			SOY2PageController::jump("User.Edit.Mail." . $this->id."?failed");
 		}
 
-		$oldUser = soyshop_get_user_object_by_mailaddress($new_email);
-		if(!is_numeric($oldUser->getId())) {
+		//指定のメールアドレスが既に登録されているか？
+		if(is_numeric(soyshop_get_user_object_by_mailaddress($new_email)->getId())) {
 			SOY2PageController::jump("User.Edit.Mail." . $this->id . "?used_email");
 		}
 
 		$user->setMailAddress($new_email);
-
+		
 		/*
 		 * 書式チェック
 		 */
@@ -58,7 +57,7 @@ class MailPage extends WebPage{
 		 * 保存
 		 */
 		try{
-			$dao->update($user);
+			SOY2DAOFactory::create("user.SOYShop_UserDAO")->update($user);
 			SOY2PageController::jump("User.Edit.Mail." . $this->id . "?updated");
 		}catch(Exception $e){
 			SOY2PageController::jump("User.Edit.Mail." . $this->id."?failed");

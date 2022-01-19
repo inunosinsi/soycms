@@ -39,7 +39,7 @@ class ItemReviewSitemapUtil {
 		return $id;
 	}
 
-	private function _getMbReviewPageId(string $prefix){
+	private static function _getMbReviewPageId(string $prefix){
 		static $ids;
 		if(isset($ids[$prefix])) return $ids[$prefix];
 
