@@ -181,16 +181,6 @@ class SiteConfig {
     			if(!$res)return $dir;	//作成に失敗したら$dir
 
     			@chmod($targetDir, 0777);
-
-    			//ファイルDBに追加
-    			CMSFileManager::add($targetDir);
-    		}
-
-    		//ファイルDBになかったら追加する
-    		try{
-    			CMSFileManager::get($targetDir,$targetDir);
-    		}catch(Exception $e){
-    			CMSFileManager::add($targetDir);
     		}
 
     		if(file_exists($targetDir) && is_writable($targetDir)){

@@ -12,6 +12,7 @@ $mimetypes = array(
 	'image/gif',
 	'image/jpeg',
 	'image/png',
+	'image/webp',
 	'image/x-icon',
 	'text/plain',
 	"text/css",

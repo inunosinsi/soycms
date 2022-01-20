@@ -173,13 +173,13 @@ class SOYCMSThumbnailPlugin{
 				//Siteのアップロードディレクトリを調べる
 				$siteConfig = SOY2DAOFactory::create("cms.SiteConfigDAO")->get();
 
-				$resizeDir = str_replace("//" , "/" , UserInfoUtil::getSiteDirectory() . $siteConfig->getDefaultUploadDirectory()) . "/resize";
+				$resizeDir = str_replace("//" , "/" , UserInfoUtil::getSiteDirectory() . $siteConfig->getUploadDirectory()) . "/resize";
 				if(!file_exists($resizeDir)) mkdir($resizeDir);
 
 				$imageFileName = substr($imageFilePath, strrpos($imageFilePath, "/") + 1);
 				$resizePath = $resizeDir . "/" . $imageFileName;
 				soy2_resizeimage($path, $resizePath, $w, $h);
-				$images[self::RESIZE_IMAGE] = "/" . UserInfoUtil::getSite()->getSiteId() . $siteConfig->getDefaultUploadDirectory() . "/resize/" . $imageFileName;
+				$images[self::RESIZE_IMAGE] = "/" . UserInfoUtil::getSite()->getSiteId() . $siteConfig->getUploadDirectory() . "/resize/" . $imageFileName;
 			}else{
 				$images[self::RESIZE_IMAGE] = "";
 			}

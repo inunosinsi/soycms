@@ -90,13 +90,8 @@ class CreatePage extends CMSUpdatePageBase{
 	private function _createSite(){
 		$result = SOY2ActionFactory::createInstance("Site.CreateAction")->run();
 
-		if($result->success()){
-			$site = $result->getAttribute("Site");
-
-			SOY2::import("util.CMSFileManager");
-			CMSFileManager::insertAll($site->getPath());
-		}else{
-			//
+		if($result->success()){	
+			// 何もしない
 		}
 
 		return $result->success();

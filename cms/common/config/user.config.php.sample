@@ -7,7 +7,7 @@
 //ファイルマネージャーでアップロード可能な拡張子を追加する
 //コンマ「,」区切りの文字列で指定
 //元々許可されているのは "txt","html","htm","jpg","jpeg","png","gif","bmp","swf","ico","js","css","pdf","zip" のみ
-define("SOYCMS_ALLOWED_EXTENSIONS","php,doc,xls,pdf");
+//SOYCMS_ALLOWED_EXTENSIONSは廃止→/common/config/upload.config.phpに移行
 
 //テンプレートへのPHPの許可、不許可 (true or false)
 //デフォルトは不許可 (false)

@@ -1,8 +1,7 @@
 <?php
-SOY2::import("util.CMSFileManager");
 class CancelUploadFileAction extends SOY2Action{
 
-    function execute($response,$form,$request) {
+    function execute($resp, $form, $req) {
     	if(substr($this->getDefaultUpload(),-1) == '/'){
     		$filepath = UserInfoUtil::getSiteDirectory().self::getDefaultUpload().$form->serverpath;
     	}else{
@@ -18,9 +17,6 @@ class CancelUploadFileAction extends SOY2Action{
     	}else{
     		//if(unlink($filepath)){
     		try{
-
-    			CMSFileManager::delete(UserInfoUtil::getSiteDirectory(),realpath($filepath));
-
     			$resObj->message ="成功しました";
     			$resObj->result = true;
     		}catch(Exception $e){
@@ -35,7 +31,6 @@ class CancelUploadFileAction extends SOY2Action{
 		try{
 			return SOY2DAOFactory::create("cms.SiteConfigDAO")->get()->getUploadDirectory();
 		}catch(Exception $e){
-			var_dump($e);
 			return null;
 		}
     }

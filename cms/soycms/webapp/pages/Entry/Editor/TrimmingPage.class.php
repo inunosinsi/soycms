@@ -21,7 +21,7 @@ class TrimmingPage extends CMSWebPageBase {
 			$result = $action->run();
 			$entity = $result->getAttribute("entity");
 
-			$uploadFileDir = str_replace("//" , "/" , UserInfoUtil::getSiteDirectory() . $entity->getDefaultUploadDirectory()) . "/";
+			$uploadFileDir = str_replace("//" , "/" , UserInfoUtil::getSiteDirectory() . self::_getDefaultUpload()) . "/";
 			$uploadThumbDir = $uploadFileDir . "thumb";
 			if(!file_exists($uploadThumbDir)) mkdir($uploadThumbDir);
 
@@ -43,13 +43,27 @@ class TrimmingPage extends CMSWebPageBase {
 
 			imagedestroy($dst_r);
 
-			$uploadImagePath = "/" . UserInfoUtil::getSite()->getSiteId() . $entity->getDefaultUploadDirectory() . "/thumb/";
+			$uploadImagePath = "/" . UserInfoUtil::getSite()->getSiteId() . "/" . self::_getDefaultUpload() . "/thumb/";
 
 			$responseObject->result = true;
 			$responseObject->imagePath = $uploadImagePath . $imageFileName;
 			$this->responseObject = $responseObject;
 		}
 	}
+
+	/**
+	 * アップロードディレクトリのパスを返す
+	 * 最初にも最後にもスラッシュは付かない
+	 */
+    private function _getDefaultUpload(){
+		// 空文字列または/dir/**/path
+		$dir = SOY2DAOFactory::create("cms.SiteConfigDAO")->get()->getUploadDirectory();
+
+		//先頭の/を削除
+		if(strlen($dir) && $dir[0] == "/") $dir = substr($dir,1);
+
+		return rtrim($dir, "/");
+    }
 
 	function __construct($arg) {
 		parent::__construct();

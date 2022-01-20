@@ -170,18 +170,6 @@ class DetailPage extends CMSUpdatePageBase{
 	}
 
 	function updateFileDB(){
-		SOY2::import("util.CMSFileManager");
-
-		CMSFileManager::deleteAll();
-
-		$SiteLogic = SOY2Logic::createInstance("logic.admin.Site.SiteLogic");
-		$sites = $SiteLogic->getSiteList();
-
-		foreach($sites as $site){
-			$url = (UserInfoUtil::getSiteURLBySiteId($site->getId()) != $site->getUrl() ) ? $site->getUrl() : null;
-			CMSFileManager::setSiteInformation($site->getId(), $url, $site->getPath());
-			CMSFileManager::insertAll($site->getPath());
-		}
+		//廃止
 	}
 }
-?>

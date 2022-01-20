@@ -82,48 +82,47 @@ class ConfirmStage extends StageBase{
 		$fileReplaceList = array();
 
 		foreach($template->getFileList() as $key => $value){
-			$fileNode = $doc->createElement("file");
-			$id = $value["id"];
+			//$fileNode = $doc->createElement("file");
+			//$id = $value["id"];
 
-			try{
-				$file = CMSFileManager::get($siteRoot, $value["path"]);
-			}catch(Exception $e){
-				//todo エラーリストに追加
-				continue;
-			}
+			// try{
+			// 	$file = CMSFileManager::get($siteRoot, $value["path"]);
+			// }catch(Exception $e){
+			// 	//todo エラーリストに追加
+			// 	continue;
+			// }
 
-			$newName = str_replace("/","_",str_replace($siteRoot,"",$file->getPath()));
+			//$newName = str_replace("/","_",str_replace($siteRoot,"",$file->getPath()));
 
-			if(defined("SOYCMS_ASP_MODE")){
-				$filePath = str_replace($siteUrl,"",$file->getUrl());
-			}else{
-				$oldPath = str_replace("\\","/",$file->getPath());
-				$filePath = str_replace($siteRoot,"",$oldPath);
-				if($filePath[0] != "/")$filePath = "/" . $filePath;
-			}
+			// if(defined("SOYCMS_ASP_MODE")){
+			// 	$filePath = str_replace($siteUrl,"",$file->getUrl());
+			// }else{
+			// 	$oldPath = str_replace("\\","/",$file->getPath());
+			// 	$filePath = str_replace($siteRoot,"",$oldPath);
+			// 	if($filePath[0] != "/")$filePath = "/" . $filePath;
+			// }
 
-			$fileReplaceList[$file->getUrl()] = $filePath;
+			// $fileReplaceList[$file->getUrl()] = $filePath;
 
-			//ファイルのコピー
-			copy($file->getPath(),$tmpDir . "/" . $newName);
+			// //ファイルのコピー
+			// copy($file->getPath(),$tmpDir . "/" . $newName);
 
-			$files->appendChild($fileNode);
+			// $files->appendChild($fileNode);
 
 			//name
-			$name = $doc->createElement("name");
-			$name->appendChild($doc->createTextNode($newName));
-			$fileNode->appendChild($name);
+			// $name = $doc->createElement("name");
+			// $name->appendChild($doc->createTextNode($newName));
+			// $fileNode->appendChild($name);
 
-			//path
-			$path = $doc->createElement("path");
-			$path->appendChild($doc->createTextNode($filePath));
-			$fileNode->appendChild($path);
+			// //path
+			// $path = $doc->createElement("path");
+			// $path->appendChild($doc->createTextNode($filePath));
+			// $fileNode->appendChild($path);
 
-			//description
-			$description = $doc->createElement("description");
-			$description->appendChild($doc->createCDATASection(@$value["description"]));
-			$fileNode->appendChild($description);
-
+			// //description
+			// $description = $doc->createElement("description");
+			// $description->appendChild($doc->createCDATASection(@$value["description"]));
+			// $fileNode->appendChild($description);
 		}
 
 		//templates

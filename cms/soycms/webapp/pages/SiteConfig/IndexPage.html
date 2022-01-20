@@ -8,7 +8,10 @@
 
 	<div id="wrapper">
 		<!-- Navigation -->
-		<nav  class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" soy:page="_common.UpperMenuPage"><!-- --></nav>
+		<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0"
+			soy:page="_common.UpperMenuPage">
+			<!-- -->
+		</nav>
 		<div id="page-wrapper">
 			<div class="row">
 				<div class="col-lg-12">
@@ -35,56 +38,59 @@
 				<div class="col-lg-12">
 					<div class="panel panel-green">
 						<div class="panel-body">
-								<form soy:id="index_form" id="siteconfig_form">
-									<div class="form-group">
-										<label>サイト名称</label>
-										<input class="form-control" type="text" name="name" soy:id="name" value="SiteName">
+							<form soy:id="index_form" id="siteconfig_form">
+								<div class="form-group">
+									<label>サイト名称</label>
+									<input class="form-control" type="text" name="name" soy:id="name" value="SiteName">
+								</div>
+								<div class="form-group">
+									<label>サイトの説明</label>
+									<textarea class="form-control" type="text" soy:id="description"
+										style="height:200px;">説明が入ります。</textarea>
+								</div>
+								<div class="form-group">
+									<label>文字コード</label>
+									<select class="form-control" name="charset" soy:id="charset"></select>
+								</div>
+								<div class="form-group">
+									<label>ラベル</label>
+									<input class="form-control" type="hidden" name="useLabelCategory" value="0">
+									<input class="" soy:id="useLabelCategory">
+									<span soy:message="HELP_USE_LABEL_CATEGORY"></span>
+								</div>
+								<div class="form-group">
+									<label>記事投稿時のイメージの挿入設定</label><br>
+									<select soy:id="uploadmode"></select>
+								</div>
+								<div class="form-group">
+									<label>ファイルアップロード先パス設定</label>
+									<div class="form-inline">
+										<input class="form-control" type="text" soy:id="uploadpath"
+											style="width:30% !important;">
+										<input type="hidden" name="createUploadDirectoryByDate" value="0">
+										<input class="" soy:id="create_by_date">
 									</div>
-									<div class="form-group">
-										<label>サイトの説明</label>
-										<textarea class="form-control" type="text" soy:id="description" style="height:200px;">説明が入ります。</textarea>
-									</div>
-									<div class="form-group">
-										<label>文字コード</label>
-										<select class="form-control" name="charset" soy:id="charset"></select>
-									</div>
-									<div class="form-group">
-										<label>ラベル</label>
-										<input class="form-control" type="hidden" name="useLabelCategory" value="0" >
-										<input class="" soy:id="useLabelCategory" >
-										<span soy:message="HELP_USE_LABEL_CATEGORY"></span>
-									</div>
-									<div class="form-group">
-										<label>記事投稿時のイメージの挿入設定</label><br>
-										<select soy:id="uploadmode"></select>
-									</div>
-									<div class="form-group">
-										<label>ファイルアップロード先パス設定</label>
-										<div class="form-inline">
-											<input class="form-control" type="text" soy:id="uploadpath" style="width:30% !important;">
-											<input type="hidden" name="createUploadDirectoryByDate" value="0" >
-											<input class="" soy:id="create_by_date" >
-										</div>
-									</div>
+								</div>
 
-									<div class="form-group">
-										<label>ファイルアップロード リサイズ設定(width)</label>
-										<div class="form-inline">
-											<input class="form-control" type="text" soy:id="resizewidth"> px
-										</div>
+								<div class="form-group">
+									<label>ファイルアップロード リサイズ設定(width)</label>
+									<div class="form-inline">
+										<input class="form-control" type="text" soy:id="resizewidth"> px
 									</div>
+								</div>
 
-									<div class="form-group">
-										<label>閲覧制限</label>
-										<input type="hidden" name="isShowOnlyAdministrator" value="0" >
-										<input class="" soy:id="isShowOnlyAdministrator" >
-									</div>
+								<div class="form-group">
+									<label>閲覧制限</label>
+									<input type="hidden" name="isShowOnlyAdministrator" value="0">
+									<input class="" soy:id="isShowOnlyAdministrator">
+								</div>
 
-									<div class="form-group">
-										<input class="form-control" type="hidden" soy:id="url">
-										<input class="btn btn-primary btn-lg btn-block" type="submit" class="submit_button" value="変更" >
-									</div>
-								</form soy:id="index_form">
+								<div class="form-group">
+									<input class="form-control" type="hidden" soy:id="url">
+									<input class="btn btn-primary btn-lg btn-block submit_button" type="submit"
+										id="update_btn" value="変更">
+								</div>
+							</form>
 						</div>
 					</div>
 

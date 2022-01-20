@@ -130,13 +130,10 @@ class TemplateLogic extends SOY2LogicBase{
 	    				}
 	    				mkdir($tmpPath);
 
-	    				CMSFileManager::add($tmpPath);
 	    				$counter--;
 	    			}
 
-	    			if(@rename($tempDir."/".$detect,$path)){
-	    				CMSFileManager::add($path);
-	    			}
+	    			//if(@rename($tempDir."/".$detect,$path)){}
 
 	    			continue;
 	    		}
@@ -209,13 +206,12 @@ class TemplateLogic extends SOY2LogicBase{
 	    				}
 	    				mkdir($tmpPath);
 
-	    				CMSFileManager::add($tmpPath);
+	    				
 	    				$counter--;
 	    			}
 
-	    			$buf = zip_entry_read($entry, zip_entry_filesize($entry));
+	    			//$buf = zip_entry_read($entry, zip_entry_filesize($entry));
 	    			file_put_contents($path,$buf);
-	    			CMSFileManager::add($path);
 	    			continue;
 	    		}
 

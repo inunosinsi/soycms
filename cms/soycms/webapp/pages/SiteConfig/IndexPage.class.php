@@ -4,22 +4,6 @@ class IndexPage extends CMSWebPageBase{
 
 	function doPost() {
     	if(soy2_check_token()){
-
-			//当サイトのファイルDBを更新
-			{
-				SOY2::import("util.CMSFileManager");
-
-				CMSFileManager::deleteAll();
-
-				set_time_limit(0);
-
-				$sites = self::getSiteList();
-				foreach($sites as $site){
-					CMSFileManager::setSiteInformation($site->getId(), $site->getUrl(), $site->getPath());
-					CMSFileManager::insertAll($site->getPath());
-				}
-			}
-
 			$action = SOY2ActionFactory::createInstance("SiteConfig.UpdateAction");
 			$result = $action->run();
 			if($result->success()){

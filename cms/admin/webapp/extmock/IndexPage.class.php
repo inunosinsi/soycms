@@ -6,23 +6,11 @@ class IndexPage extends CMSWebPageBase{
 
     	if(soy2_check_token()){
 
-			if(isset($_POST["file_db_update"])){
-
-				SOY2::import("util.CMSFileManager");
-
-				CMSFileManager::deleteAll();
-
-				set_time_limit(0);
-
-				$sites = $this->getSiteList();
-				foreach($sites as $site){
-					CMSFileManager::setSiteInformation($site->getId(), $site->getUrl(), $site->getPath());
-					CMSFileManager::insertAll($site->getPath());
-				}
-				$this->jump("?file_db_updated");
-				exit;
-
-			}
+			// ファイルDBの更新は廃止
+			// if(isset($_POST["file_db_update"])){
+			// 	$this->jump("?file_db_updated");
+			// 	exit;
+			// }
 
 			if(isset($_POST["cache_clear"])){
 				set_time_limit(0);

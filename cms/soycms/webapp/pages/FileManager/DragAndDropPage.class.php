@@ -15,6 +15,7 @@ class DragAndDropPage extends CMSWebPageBase{
 		
 		if($id && $upload){
 			$result = CMSFileManager::upload($root,$id,$upload);
+			unset($result);
 		}
 		
 		exit;
@@ -41,8 +42,5 @@ class DragAndDropPage extends CMSWebPageBase{
 			"src" => "http://java.com/js/deployJava.js"
 		));
 		
-	}
-	
+	}	
 }
-
-?>

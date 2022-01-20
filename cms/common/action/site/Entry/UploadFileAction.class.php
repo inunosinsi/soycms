@@ -6,9 +6,7 @@ class UploadFileAction extends SOY2Action{
 	private $maxWidth;
 	private $ifExists;//auto_rename | dialog デフォルトはdialog
 
-    function execute($response,$form,$request) {
-    	$siteDir = UserInfoUtil::getSiteDirectory();
-
+    function execute($resp, $form, $req) {
 		$responseObject = new StdClass();
 		$responseObject->clearfileresult = false;
 		$responseObject->result = false;
@@ -55,15 +53,7 @@ class UploadFileAction extends SOY2Action{
 			}
 
 			//MIMETYPE
-			$mimetypes = null;
-			if(!defined("ELFINDER_MODE")) define("ELFINDER_MODE", false);
-			if(file_exists(SOY2::RootDir() . "/config/upload.config.php")){
-				include_once(SOY2::RootDir() . "/config/upload.config.php");
-			}
-			if(!isset($mimetypes) || !is_array($mimetypes)){
-				$mimetypes = array('image/x-ms-bmp', 'image/gif', 'image/jpeg', 'image/png', 'image/x-icon', 'text/plain', "text/css", "application/pdf");
-			}
-			if(is_bool(array_search($_FILES['file']["type"], $mimetypes))){
+			if(is_bool(array_search($_FILES['file']["type"], CMSFileManager::getAllowedMimeTypes()))){
 				$responseObject->result = false;
 				$responseObject->message = "許可されていないMIMETYPEです。";
 				$responseObject->errorCode = 101;
@@ -126,8 +116,7 @@ class UploadFileAction extends SOY2Action{
 		}
 		$_FILES['file']['name'] = $filename;
 
-		$fileurl = self::getSiteUrl() . $this->getDefaultUpload() .  "/". rawurlencode($filename);
-		$responseObject->filepath = $fileurl;
+		$responseObject->filepath = self::getSiteUrl() . $this->getDefaultUpload() .  "/". rawurlencode($filename);
 
     	//一時ファイルにしたほうがいいかも
     	//サーバー内のファイルパス
@@ -144,55 +133,42 @@ class UploadFileAction extends SOY2Action{
     		$responseObject->message = "すでにファイルが存在します";
     		$responseObject->errorCode = 1;
     	}else{
-	    	$file = CMSFileManager::get(UserInfoUtil::getSiteDirectory(),dirname($filepath));
-
+	    	
 	    	//サイトの情報を設定
-	    	$site = UserInfoUtil::getSite();
-	    	$url = (UserInfoUtil::getSiteURLBySiteId($site->getId()) != $site->getUrl() ) ? $site->getUrl() : null;
-	    	CMSFileManager::setSiteInformation($site->getId(), $url, $site->getPath());
+	    	//$site = UserInfoUtil::getSite();
+	    	//$url = (UserInfoUtil::getSiteURLBySiteId($site->getId()) != $site->getUrl() ) ? $site->getUrl() : null;
+	    	
+	    	if(CMSFileManager::upload(UserInfoUtil::getSiteDirectory(), $this->getDefaultUpload(), $_FILES['file'])){
+				$responseObject->result = true;
+				$responseObject->message = "成功しました";
 
-	    	if(CMSFileManager::upload(UserInfoUtil::getSiteDirectory(),$file->getId(),$_FILES['file']) === true){
-		   		$responseObject->result = true;
-		   		$responseObject->message = "成功しました";
+				// typeはmimetypeからスラッシュより前の部分(image/jpegであればimage)を取得する
+				$responseObject->type = trim(trim(substr($_FILES['file']["type"], 0, strpos($_FILES['file']["type"], "/")), "/"));
+				if($responseObject->type == "image"){
+					if($imageSize = soy2_image_info($filepath)){
+						$responseObject->imageWidth = $imageSize["width"];
+						$responseObject->imageHeight = $imageSize["height"];
 
-		   		$file = CMSFileManager::get(UserInfoUtil::getSiteDirectory(),$filepath);
-
-				if($file->isImage()){
-		   			$responseObject->type = 'image';
-		   			if($imageSize = soy2_image_info($filepath)){
-		   				$responseObject->imageWidth = $imageSize["width"];
-		   				$responseObject->imageHeight = $imageSize["height"];
-
-		   				//リサイズ
-		   				if($this->maxWidth && $this->maxWidth < $responseObject->imageWidth){
+						//リサイズ
+						if($this->maxWidth && $this->maxWidth < $responseObject->imageWidth){
 							if(soy2_resizeimage($filepath,$filepath,$this->maxWidth)){
-				   				$responseObject->imageWidth  = $this->maxWidth;
-				   				$responseObject->imageHeight = $imageSize["height"] * $this->maxWidth / $imageSize["width"];
+								$responseObject->imageWidth  = $this->maxWidth;
+								$responseObject->imageHeight = $imageSize["height"] * $this->maxWidth / $imageSize["width"];
 							}
-		   				}
-		   			}
+						}
+					}
 
 					//jpegoptim
-					switch(strtolower($file->getExtension())){
-						case "jpg":
+					$ext = trim(trim(substr($_FILES['file']["type"], strpos($_FILES['file']["type"], "/")), "/"));
+					switch($ext){
 						case "jpeg":
 							exec("jpegoptim -V", $out);
 							if(isset($out) && count($out)){
-								exec("jpegoptim --strip-all " . $file->getPath());
+								exec("jpegoptim --strip-all " . $filepath);
 							}
-
-							//guetzli	廃止
-							// if(defined("GUETZLI_AUTO_OPTIMIZE") && GUETZLI_AUTO_OPTIMIZE){
-							// 	exec("guetzli " . $file->getPath() . " " . $file->getPath());
-							// }
 							break;
-						default:
 					}
-
-				}else{
-		   			$responseObject->type = $_FILES['file']['type'];
-		   		}
-
+				}
 	    	}else{
 	    		$responseObject->result = false;
 	    		$responseObject->message = "ファイル移動で原因不明のエラーが発生しました";
@@ -205,7 +181,7 @@ class UploadFileAction extends SOY2Action{
 	private function getSiteUrl(){
 		$url = UserInfoUtil::getSiteURL();
 		$siteId = UserInfoUtil::getSite()->getSiteId();
-		if(strpos($url, $_SERVER["HTTP_HOST"]) !== false && !strpos($url, "/" . $siteId . "/")){
+		if(is_numeric(strpos($url, $_SERVER["HTTP_HOST"])) && !strpos($url, "/" . $siteId . "/")){
 			$url = rtrim($url, "/") . "/" . $siteId . "/";
 		}
 		return $url;
@@ -220,15 +196,13 @@ class UploadFileAction extends SOY2Action{
 		$dir = SOY2DAOFactory::create("cms.SiteConfigDAO")->get()->getUploadDirectory();
 
 		//先頭の/を削除
-		if(strlen($dir) && $dir[0] == "/"){
-			$dir = substr($dir,1);
-		}
+		if(strlen($dir) && $dir[0] == "/") $dir = substr($dir,1);
 
-    	return $dir;
+		return $dir;
     }
 
-    function getNextFileName($filename, $counter){
-    	if(strpos($filename,".")!==false){
+    function getNextFileName(string $filename, int $counter){
+    	if(is_numeric(strpos($filename,"."))){
 	    	$base = substr($filename,0,strrpos($filename,"."));
 	    	$ext  = substr($filename,strrpos($filename,"."));
     	}else{
