@@ -54,7 +54,7 @@ abstract class SOYShop_SlipNumberDAO extends SOY2DAO {
 	/**
 	 * @final
 	 */
-	function getRegisteredNumberListByOrderId($orderId){
+	function getRegisteredNumberListByOrderId(int $orderId){
 		$sql = "SELECT id, slip_number FROM soyshop_slip_number ".
 				"WHERE order_id = :orderId";
 		try{
