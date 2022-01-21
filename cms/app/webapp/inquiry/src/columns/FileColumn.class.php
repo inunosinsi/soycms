@@ -2,7 +2,7 @@
 
 class FileColumn extends SOYInquiry_ColumnBase{
 
-	private $extensions = "jpg,jpeg,gif,png";
+	private $extensions = "jpg,jpeg,gif,png,webp";
 	private $uploadsize = 500;	//KB
 	private $resize_w;
 	private $resize_h;
@@ -164,8 +164,7 @@ class FileColumn extends SOYInquiry_ColumnBase{
 			//ここでは何もしない
 
 		}else{	//アップロードしてない
-			$value = $this->getValue();
-			$tmp = (isset($value) && strlen($value)) ? soy2_unserialize(base64_decode($value)) : array();
+			$tmp = (is_string($this->getValue())) ? soy2_unserialize(base64_decode($this->getValue())) : array();
 
 			//二回目のPOST
 			if(is_array($tmp) && isset($tmp["tmp_name"])

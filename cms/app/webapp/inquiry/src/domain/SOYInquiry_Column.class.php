@@ -119,7 +119,7 @@ class SOYInquiry_Column{
 
 		$column->setId($this->id);
 		$column->setFormId($this->formId);
-		if(strlen($this->columnId)>0){
+		if(strlen((string)$this->columnId)>0){
 			$column->setColumnId($this->columnId);
 		}else{
 			$column->setColumnId($this->id);

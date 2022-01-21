@@ -362,7 +362,7 @@ class SOYInquiry_PageApplication{
 				}
 
 				//禁止したドメインによる制御
-				$config = soy2_unserialize($column->getConfig());
+				$config = soy2_unserialize((string)$column->getConfig());
 				if(isset($config["ban_mail_domain"]) && strlen($config["ban_mail_domain"])){
 					$bans = explode(",", $config["ban_mail_domain"]);
 					foreach($bans as $ban){
@@ -404,7 +404,7 @@ class SOYInquiry_PageApplication{
 			//連番はここで値を更新
 			foreach($columns as $column){
 				if($column->getType() == "SerialNumber"){
-					$config = soy2_unserialize($column->getConfig());
+					$config = soy2_unserialize((string)$column->getConfig());
 					if(!isset($config["serialNumber"]) || !is_numeric($config["serialNumber"])) $config["serialNumber"] = 1;
 
 					//連番を更新する

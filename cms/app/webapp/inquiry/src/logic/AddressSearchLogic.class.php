@@ -67,4 +67,3 @@ class AddressSearchLogic extends SOY2LogicBase{
     	}
     }
 }
-?>

@@ -69,8 +69,7 @@ foreach($columns as $key => $column){
 	    $output .= "\n</td>\n";
 	}else{
 		if(($column->getType() == "Enquete" || $column->getType() == "EnqueteFree")){	//アンケートカラムの場合は文言を大きく表示
-			$cnf = $column->getConfig();
-			$config = (strlen($cnf)) ? soy2_unserialize($cnf) : array();
+			$config = soy2_unserialize((string)$column->getConfig());
 			if(isset($config["question"]) && strlen($config["question"])){
 				$output .= "<th colspan=\"2\">\n";
 				$output .= htmlspecialchars($config["question"], ENT_QUOTES, "UTF-8");

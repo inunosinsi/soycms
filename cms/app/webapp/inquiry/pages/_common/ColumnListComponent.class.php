@@ -8,12 +8,10 @@ class ColumnListComponent extends HTMLList{
 	private $mode = self::MODE_ADD;
 
 	protected function populateItem($entity){
-		if(!is_a($entity,"SOYInquiry_Column")){
-			$entity = new SOYInquiry_Column();
-		}
+		if(!$entity instanceof SOYInquiry_Column) $entity = new SOYInquiry_Column();
 
 		$obj = $entity->getColumn();
-		$label = $obj->getLabel();
+		$label = (is_string($obj->getLabel())) ? $obj->getLabel() : "";
 
 		$this->addLabel("label", array(
 			"text" => $label,
@@ -21,7 +19,7 @@ class ColumnListComponent extends HTMLList{
 		));
 
 		$this->addLabel("form", array(
-			"html" => self::_stripRequired($obj->getForm()),
+			"html" => (is_string($obj->getForm())) ? self::_stripRequired($obj->getForm()) : "",
 			"colspan" => (strlen($label)>0) ? "1" : "2"
 		));
 
@@ -49,7 +47,7 @@ class ColumnListComponent extends HTMLList{
 		));
 	}
 
-	private function _stripRequired($form){
+	private function _stripRequired(string $form=""){
 		if(!strlen($form)) return "";
 		$form = str_replace("required=\"required\"", "", $form);
 		return str_replace("required", "", $form);

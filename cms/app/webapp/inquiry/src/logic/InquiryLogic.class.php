@@ -33,7 +33,7 @@ class InquiryLogic extends SOY2LogicBase{
 			//連番の場合
 			if($column->getType() == "SerialNumber"){
 				SOY2::import("util.SOYInquiryUtil");
-				$value = SOYInquiryUtil::buildSerialNumber(soy2_unserialize($column->getConfig()));
+				$value = SOYInquiryUtil::buildSerialNumber(soy2_unserialize((string)$column->getConfig()));
 			}else{
 				$value = ($useMailBody) ? $column->getColumn()->getMailText() : $column->getContent();
 			}

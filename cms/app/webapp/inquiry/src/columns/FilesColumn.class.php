@@ -2,7 +2,7 @@
 
 class FilesColumn extends SOYInquiry_ColumnBase{
 
-	private $extensions = "jpg,jpeg,gif,png";
+	private $extensions = "jpg,jpeg,gif,png,webp";
 	private $uploadsize = 500;	//KB
 	private $resize_w;
 	private $resize_h;
@@ -275,7 +275,7 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 
 	private function getValues(){
 		$values = $this->getValue();
-		if(is_string($values) && strlen($values)) $values = soy2_unserialize(base64_decode($values));
+		if(is_string($values)) $values = soy2_unserialize(base64_decode($values));
 		if(!isset($values) || !is_array($values)) $values = array();
 		return $values;
 	}
