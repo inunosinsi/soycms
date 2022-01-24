@@ -14,7 +14,7 @@ class MigrateConfigLogic extends SOY2LogicBase{
 		if(count($obj->customFields) === 0) return;
 
 		foreach($obj->customFields as $customField){
-			if(strlen($customField->getId())>0){
+			if(strlen($customField->getId()) > 0){
 				$this->pluginObj->insertField($customField);
 			}
 		}
@@ -33,14 +33,22 @@ class MigrateConfigLogic extends SOY2LogicBase{
 			if(!count($fields)) continue;
 
 			foreach($fields as $field){
-				if(is_null($field->getValue()) && !count($field->getExtraValuesArray())) continue;	//処理の節約
+				if( (is_null($field->getValue()) || !strlen($field->getValue())) && !count($field->getExtraValuesArray())) continue;	//処理の節約
 
-				$attr = new EntryAttribute();
-				$attr->setEntryId($entry->getId());
-				$attr->setFieldId($field->getId());
-				$attr->setValue($field->getValue());
-				$attr->setExtraValuesArray($field->getExtraValues());
-				$dao->insert($attr);
+				try{
+					$attr = $dao->get($entry->getId(), $entry->getFieldId);
+				}catch(Exception $e){
+					$attr = new EntryAttribute();
+					$attr->setEntryId($entry->getId());
+					$attr->setFieldId($field->getId());
+					$attr->setValue($field->getValue());
+					$attr->setExtraValuesArray($field->getExtraValues());
+					try{
+						$dao->insert($attr);
+					}catch(Exception $e){
+						//
+					}
+				}
 			}
 		}
 
@@ -52,3 +60,4 @@ class MigrateConfigLogic extends SOY2LogicBase{
 		$this->pluginObj = $pluginObj;
 	}
 }
+
