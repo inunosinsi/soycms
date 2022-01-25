@@ -49,13 +49,33 @@ class EntryListComponent extends HTMLList{
 			"soy2prefix"=>"cms"
 		));
 
+		$contentLen = (is_string($entry->getContent())) ? strlen($entry->getContent()) : 0;
 		$this->createAdd("content","CMSLabel",array(
 			"html"=>$entry->getContent(),
+			"soy2prefix"=>"cms"
+		));
+		$this->addModel("has_content", array(
+			"visible" => ($contentLen > 0),
+			"soy2prefix"=>"cms"
+		));
+		$this->addModel("no_content", array(
+			"visible" => ($contentLen === 0),
 			"soy2prefix"=>"cms"
 		));
 		$this->createAdd("more","CMSLabel",array(
 			"html"=>$entry->getMore(),
 			"soy2prefix"=>"cms"
+		));
+
+		$moreLen = (is_string($entry->getMore())) ? strlen($entry->getMore()) : 0;
+		$more = ($moreLen > 0) ? trim($entry->getMore()) : "";
+		$this->addModel("has_more",array(
+			"visible"=> ($moreLen > 0),
+			"soy2prefix"=>"cms",
+		));
+		$this->addModel("no_more",array(
+			"visible"=> ($moreLen ==- 0),
+			"soy2prefix"=>"cms",
 		));
 		$this->createAdd("create_date","DateLabel",array(
 			"text"=>$entry->getCdate(),
@@ -84,23 +104,16 @@ class EntryListComponent extends HTMLList{
 			"link" => $link
 		));
 
-		$more = trim($entry->getMore());
-
 		$this->addLink("more_link", array(
 			"soy2prefix"=>"cms",
 			"link" => $link ."#more",
-			"visible"=>(strlen($more) != 0)
+			"visible"=>($moreLen > 0)
 		));
 
 		$this->addLink("more_link_no_anchor", array(
 			"soy2prefix"=>"cms",
 			"link" => $link,
-			"visible"=>(strlen($more) != 0)
-		));
-
-		$this->addModel("has_more",array(
-			"visible"=> strlen($more),
-			"soy2prefix"=>"cms",
+			"visible"=>($moreLen > 0)
 		));
 
 		$this->addLink("trackback_link", array(

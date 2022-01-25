@@ -17,7 +17,7 @@ class XLazyLoadPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/3278",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.7"
+			"version"=>"0.8"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
@@ -39,12 +39,7 @@ class XLazyLoadPlugin{
 
 		//記事詳細ページを開いている時のみ
 		if($htmlObj instanceOf EntryComponent){
-			try{
-				$content = SOY2DAOFactory::create("cms.EntryDAO")->getById($entryId)->getContent();
-			}catch(Exception $e){
-				//
-			}
-
+			$content = (is_numeric($entryId)) ? self::_getContent($entryId) : "";
 			$lines = explode("\n", $content);
 			if(count($lines)){
 				$html = array();
@@ -94,6 +89,16 @@ class XLazyLoadPlugin{
 			"soy2prefix" => "cms",
 			"html" => $content
 		));
+	}
+
+	//高速化の為に本文のみを取得する
+	private function _getContent(int $entryId){
+		try{
+			$res = soycms_get_hash_table_dao("entry")->executeQuery("SELECT content FROM Entry WHERE id = :entryId LIMIT 1;", array(":entryId" => $entryId));
+		}catch(Exception $e){
+			$res = array();
+		}
+		return (isset($res[0]["content"])) ? $res[0]["content"] : "";
 	}
 
 	function config_page(){

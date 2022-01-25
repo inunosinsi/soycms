@@ -41,7 +41,7 @@ class CustomFieldPluginAdvanced{
 			"author" => "日本情報化農業研究所",
 			"url" => "http://www.n-i-agroinformatics.com/",
 			"mail" => "soycms@soycms.net",
-			"version"=>"1.14"
+			"version"=>"1.14.1"
 		));
 
 		//プラグイン アクティブ
@@ -79,7 +79,7 @@ class CustomFieldPluginAdvanced{
 	 */
 	function display($arg){
 
-		$entryId = $arg["entryId"];
+		$entryId = (int)$arg["entryId"];
 		$htmlObj = $arg["SOY2HTMLObject"];
 
 		//高速化
@@ -409,7 +409,7 @@ class CustomFieldPluginAdvanced{
 	}
 
 	//画像フィールドの属性の設定を取得
-	private function _getImgProps($type="image"){
+	private function _getImgProps(string $type="image"){
 		if(!is_array($this->customFields) || !count($this->customFields)) return array();
 		if(isset($this->properties[$type])) return $this->properties[$type];
 		$this->properties[$type] = array();
@@ -716,7 +716,7 @@ class CustomFieldPluginAdvanced{
 	 * @param int entryId 記事のID
 	 * @return Array <CustomField>
 	 */
-	private function _getCustomFields($entryId, $labelIdWithBlock = null, $blogCategoryLabelList = array()){
+	private function _getCustomFields(int $entryId, $labelIdWithBlock = null, $blogCategoryLabelList = array()){
 		$dao = $this->dao;
 
 		if(is_null($labelIdWithBlock)){
@@ -767,11 +767,7 @@ class CustomFieldPluginAdvanced{
 
 		//値がない場合は満たす
 		foreach($fieldIds as $fieldId){
-			if(!isset($attrs[$fieldId])) {
-				$attr = new EntryAttribute();
-				$attr->setFieldId($fieldId);
-				$attrs[$fieldId] = $attr;
-			}
+			if(!isset($attrs[$fieldId])) $attrs[$fieldId] = soycms_get_entry_attribute_object($entryId, $fieldId);
 		}
 
 		/*

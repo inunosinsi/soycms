@@ -55,7 +55,8 @@ class EntryComponent extends SOYBodyComponentBase{
 		));
 
 		//本文
-		$content = trim($entry->getContent());
+		$contentLen = (is_string($entry->getContent())) ? strlen($entry->getContent()) : 0;
+		$content = ($contentLen ) ? trim($entry->getContent()) : "";
 
 		$this->createAdd("content","CMSLabel",array(
 			"html"=> $content,
@@ -67,11 +68,16 @@ class EntryComponent extends SOYBodyComponentBase{
 			"soy2prefix"=>"cms"
 		));
 		$this->addModel("has_content",array(
-			"visible"=> strlen($content),
+			"visible"=> ($contentLen > 0),
+			"soy2prefix"=>"cms",
+		));
+		$this->addModel("no_content",array(
+			"visible"=> ($contentLen === 0),
 			"soy2prefix"=>"cms",
 		));
 
-		$more = trim($entry->getMore());
+		$moreLen = (is_string($entry->getMore())) ? strlen($entry->getMore()) : 0;
+		$more = ($moreLen > 0) ? trim($entry->getMore()) : "";
 
 		$this->createAdd("more","CMSLabel",array(
 			"html"=> '<a name="more"></a>'.$more,
@@ -84,7 +90,11 @@ class EntryComponent extends SOYBodyComponentBase{
 			"soy2prefix"=>"cms",
 		));
 		$this->addModel("has_more",array(
-			"visible"=> strlen($more),
+			"visible"=> ($moreLen > 0),
+			"soy2prefix"=>"cms",
+		));
+		$this->addModel("no_more",array(
+			"visible"=> ($moreLen === 0),
 			"soy2prefix"=>"cms",
 		));
 

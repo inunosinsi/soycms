@@ -66,8 +66,26 @@ class SiteLabeledEntryListComponent extends HTMLList{
 			"html"=>$entity->getContent(),
 			"soy2prefix"=>"cms"
 		));
+		$contentLen = (is_string($entity->getContent())) ? strlen($entity->getContent()) : 0;
+		$this->addModel("has_content", array(
+			"visible" => ($contentLen > 0),
+			"soy2prefix"=>"cms"
+		));
+		$this->addModel("no_content", array(
+			"visible" => ($contentLen === 0),
+			"soy2prefix"=>"cms"
+		));
 		$this->createAdd("more","CMSLabel",array(
 			"html"=>$entity->getMore(),
+			"soy2prefix"=>"cms"
+		));
+		$moreLen = (is_string($entity->getMore())) ? strlen($entity->getMore()) : 0;
+		$this->addModel("has_more", array(
+			"visible" => ($moreLen > 0),
+			"soy2prefix"=>"cms"
+		));
+		$this->addModel("no_more", array(
+			"visible" => ($moreLen === 0),
 			"soy2prefix"=>"cms"
 		));
 		$this->createAdd("create_date","DateLabel",array(

@@ -168,7 +168,9 @@ class CMSBlogPage extends CMSPage{
 					throw new Exception("EntryPageは表示できません");
 				}
 				$this->mode = CMSBlogPage::MODE_ENTRY;
-				$entryId = mb_convert_encoding(
+				
+				// mixed int|string
+				$alias = mb_convert_encoding(
 					str_replace($this->page->getEntryPageUri()."/",
 							"",
 							$arguments
@@ -176,8 +178,8 @@ class CMSBlogPage extends CMSPage{
 					"UTF-8",
 					"UTF-8,ASCII,JIS,Shift_JIS,EUC-JP,SJIS,SJIS-win"
 				);
-				list($this->entry,$this->nextEntry,$this->prevEntry) = $this->getEntry($entryId);
-
+				list($this->entry,$this->nextEntry,$this->prevEntry) = self::_entry($alias);
+				
 				//表示しているページの絶対URL
 				$this->currentAbsoluteURL = $this->getEntryPageURL(true) . rawurlencode($this->entry->getAlias());
 
@@ -187,8 +189,8 @@ class CMSBlogPage extends CMSPage{
 				 */
 				if(
 				    !isset($_GET["comment"]) && !isset($_GET["trackback"])
-				    && $entryId == $this->entry->getId()
-				    && $entryId != $this->entry->getAlias()
+				    && $alias == $this->entry->getId()
+				    && $alias != $this->entry->getAlias()
 				){
 					header("Location: ".$this->currentAbsoluteURL);
 				}
@@ -219,7 +221,7 @@ class CMSBlogPage extends CMSPage{
 					"UTF-8,ASCII,JIS,Shift_JIS,EUC-JP,SJIS,SJIS-win"
 				);
 
-				$this->label = $this->getLabel($alias);
+				$this->label = self::_label((string)$alias);
 				$this->entries = self::getEntriesByLabel($this->label);
 
 				$pageFormat = $this->page->getCategoryTitleFormat();
@@ -851,15 +853,16 @@ class CMSBlogPage extends CMSPage{
 
 	/**
 	 * エントリーをIDまたはエイリアスで取得
+	 * @param mixed int|string
 	 */
-	function getEntry($entryId){
+	private function _entry($alias){
 
 		$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
 		$blogLabelId = $this->page->getBlogLabelId();
 
 		//ブログのエントリーをIDまたはエイリアスで取得
-		$entry = $logic->getBlogEntry($blogLabelId,$entryId);
-
+		$entry = $logic->getBlogEntry($blogLabelId, $alias);
+		
 		//表示順の投入
 		$entryLabelDAO = SOY2DAOFactory::create("cms.EntryLabelDAO");
 		$entryLabel = $entryLabelDAO->getByParam($blogLabelId,$entry->getId());
@@ -882,8 +885,8 @@ class CMSBlogPage extends CMSPage{
 	/**
 	 * ラベルを取得
 	 */
-	function getLabel($alias){
-		$dao = SOY2DAOFactory::create("cms.LabelDAO");
+	private function _label(string $alias){
+		$dao = soycms_get_hash_table_dao("label");
 
 		try{
 			//0から始まる場合は文字列とみなす
@@ -1040,7 +1043,7 @@ class CMSBlogPage extends CMSPage{
 		//全ラベル：表示順に並んでいる
 		if(is_null($_labels)){
 			try{
-				$_labels = $this->getLabelDAO()->get();
+				$_labels = soycms_get_hash_table_dao("label")->get();
 			}catch(Exception $e){
 				$_labels = array();
 			}
@@ -1069,11 +1072,5 @@ class CMSBlogPage extends CMSPage{
 		static $logic;
 		if(!$logic) $logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
 		return $logic;
-	}
-
-	private function getLabelDAO(){
-		static $labelDAO;
-		if(!$labelDAO) $labelDAO = SOY2DAOFactory::create("cms.LabelDAO");
-		return $labelDAO;
 	}
 }
