@@ -3,7 +3,7 @@
  */
 class TrackingMoreInfo extends SOYShopInfoPageBase{
 
-	function getPage($active = true){
+	function getPage(bool $active=true){
 		if($active){
 			return '<a href="'.SOY2PageController::createLink("Config.Detail?plugin=tracking_more").'">Trackingmoreの設定</a>';
 		}else{

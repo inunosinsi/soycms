@@ -28,7 +28,7 @@ class OrderPage extends WebPage{
 		parent::__construct();
 
 		$order = soyshop_get_order_object($this->id);
-		if(!is_numeric($order->getId()) SOY2PageController::jump("Order.Detail." . $this->id);
+		if(!is_numeric($order->getId())) SOY2PageController::jump("Order.Detail." . $this->id);
 
 		$this->addLabel("order_name_text", array(
 			"text" => $order->getTrackingNumber()

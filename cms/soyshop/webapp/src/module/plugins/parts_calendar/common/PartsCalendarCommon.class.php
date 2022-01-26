@@ -12,28 +12,34 @@ class PartsCalendarCommon{
 	const DELIVERY_TWO_MONTH = "2ヶ月以降";
 	const DELIVERY_BACK_ORDER = "お取り寄せ";
 	
-	private $baseDate;
-	
-	public static function getWeekConfig(){
-		return SOYShop_DataSets::get("calendar.config.week", array(0, 6));
+	public static function getWeekConfig(string $base=""){
+		if(!strlen($base)) $base = "calendar.config";
+		return SOYShop_DataSets::get($base . ".week", array(0, 6));
+	}
+
+	/**
+	 * @param string key, string|array v, string base←配達日カレンダーで使いまわしたい
+	 */
+	public static function saveConfig(string $key="", $v="", string $base=""){
+		if(!strlen($base)) $base = "calendar.config";
+		SOYShop_DataSets::put($base . "." . $key, $v);
 	}
 
 	public static function getWeek(){
-		$name = array("sun","mon","tue","wed","thu","fri","sat");
-		$jp = array("日曜","月曜","火曜","水曜","木曜","金曜","土曜");
+		$name = array("sun", "mon", "tue", "wed", "thu", "fri", "sat");
+		$jp = array("日曜", "月曜", "火曜", "水曜", "木曜", "金曜", "土曜");
 		$week = array();
-		for($i=0;$i<7;$i++){
-			$week[] = array("name"=>$name[$i],"jp"=>$jp[$i]);
+		for($i = 0; $i < 7; $i++){
+			$week[] = array("name" => $name[$i], "jp" => $jp[$i]);
 		}
 		
-		return $week;
-		
+		return $week;	
 	}
 
-	public static function getDayOfWeekConfig(){
-
+	public static function getDayOfWeekConfig(string $base=""){
+		if(!strlen($base)) $base = "calendar.config";
 		try{
-			$dow = SOYShop_DataSets::get("calendar.config.day_of_week");
+			$dow = SOYShop_DataSets::get($base . ".day_of_week");
 		}catch(Exception $e){
 			$dow = array();	//default
 			for($i = 1; $i < 6; $i++){
@@ -46,52 +52,79 @@ class PartsCalendarCommon{
 	/**
 	 * 月日での設定
 	 */
-	public static function getMdConfig($isText=false){
-		try{
-			$config = SOYShop_DataSets::get("calendar.config.md", array());
-			if($isText) $config = implode("\n", $config);
-		}catch(Exception $e){
-			$config = array();
-		}
-		return $config;
+	public static function getMdConfig(bool $isText=false, string $base=""){
+		return self::_commonConfig($base, "md", $isText);
 	}
 	
 	/**
 	 * 年月日での設定
 	 */
-	public static function getYmdConfig($isText=false){
-		try{
-			$config = SOYShop_DataSets::get("calendar.config.ymd", array());
-			if($isText)$config = implode("\n", $config);
-		}catch(Exception $e){
-
-		}
-		return $config;
+	public static function getYmdConfig(bool $isText=false, string $base=""){
+		return self::_commonConfig($base, "ymd", $isText);
 	}
 	
 	/**
 	 * 営業日
 	 */
-	public static function getBDConfig($isText=false){
-		try{
-			$config = SOYShop_DataSets::get("calendar.config.business_day", array());
-			if($isText)$config = implode("\n", $config);
-		}catch(Exception $e){
+	public static function getBDConfig(bool $isText=false, string $base=""){
+		return self::_commonConfig($base, "business_day", $isText);
+	}
 
-		}
-		return $config;
+	/**
+	 * 例外の配送日
+	 */
+	public static function getDDConfig(bool $isText=false, string $base=""){
+		return self::_commonConfig($base, "delivery_day", $isText);
 	}
 	
 	/**
 	 * その他の日
 	 */
-	public static function getOtherConfig($isText=false){
-		try{
-			$config = SOYShop_DataSets::get("calendar.config.other_day", array());
-			if($isText)$config = implode("\n", $config);
-		}catch(Exception $e){
+	public static function getOtherConfig(bool $isText=false, $base=""){
+		return self::_commonConfig($base, "other_day", $isText);
+	}
 
+	private static function _commonConfig(string $base="", string $key="", bool $isText=false){
+		if(!strlen($base)) $base = "calendar.config";
+		$cnf = SOYShop_DataSets::get($base . "." . $key, array());
+		return ($isText) ? implode("\n", $cnf) : $cnf;
+	}
+
+	/**
+	 * convert Ymd
+	 * @param string
+	 * @return string
+	 */
+	public static function ymd(string $date){
+		$array = explode("\n", $date);
+
+		$val = array();
+		foreach($array as $line){
+			$line = mb_convert_kana(trim($line), "a");
+			if(preg_match("|^\d{4}\/\d{2}\/\d{2}$|", $line) || preg_match("|^\d{4}-\d{2}-\d{2}$|", $line)){
+				$line = str_replace("-", "/", $line);
+				$val[] = $line;
+			}
 		}
-		return $config;
+		return $val;
+	}
+
+	/**
+	 * convert md
+	 * @param string
+	 * @return string
+	 */
+	public static function md(string $date){
+		$arr = explode("\n", $date);
+
+		$val = array();
+		foreach($arr as $line){
+			$line = mb_convert_kana(trim($line), "a");
+			if(preg_match("|^\d{2}\/\d{2}$|", $line) || preg_match("|^\d{2}-\d{2}$|", $line)){
+				$line = str_replace("-", "/", $line);
+				$val[] = $line;
+			}
+		}
+		return $val;
 	}
 }

@@ -15,53 +15,22 @@ class PartsCalendarConfigFormPage extends WebPage{
 		}
 
 		//毎週
-		if(isset($_POST["week"])){
-			$post = $_POST["week"];
-			$post = array_keys($post);
-
-			SOYShop_DataSets::put("calendar.config.week", $post);
-		}else{
-			SOYShop_DataSets::put("calendar.config.week", array());
-		}
-
+		$week = (isset($_POST["week"])) ? array_keys($_POST["week"]) : array();
+		PartsCalendarCommon::saveConfig("week", $week);
+		
 		//曜日
+		$dow = array();
 		if(isset($_POST["dow"])){
 			$post = $_POST["dow"];
-			$dow = array();
 			foreach($post as $key => $val){
 				$dow[$key] = array_keys($post[$key]);
 			}
-
-			SOYShop_DataSets::put("calendar.config.day_of_week", $dow);
-		}else{
-			SOYShop_DataSets::put("calendar.config.day_of_week", array());
 		}
-
-		//月日
-		if(isset($_POST["md"])){
-			$config = $_POST["md"];
-			SOYShop_DataSets::put("calendar.config.md", $this->convertMd($config));
-		}
-
-		//年月日
-		if(isset($_POST["ymd"])){
-			$config = $_POST["ymd"];
-			SOYShop_DataSets::put("calendar.config.ymd", $this->convertYmd($config));
-		}
-
-		//営業日
-		if(isset($_POST["business_day"])){
-			$config = $_POST["business_day"];
-
-			SOYShop_DataSets::put("calendar.config.business_day", $this->convertYmd($config));
-		}
-
-		//その他
-		if(isset($_POST["other_day"])){
-			$config = $_POST["other_day"];
-
-			SOYShop_DataSets::put("calendar.config.other_day", $this->convertYmd($config));
-		}
+		PartsCalendarCommon::saveConfig("day_of_week", $dow);
+		PartsCalendarCommon::saveConfig("md", PartsCalendarCommon::md($_POST["md"]));	//月日
+		PartsCalendarCommon::saveConfig("ymd", PartsCalendarCommon::ymd($_POST["ymd"]));	//年月日
+		PartsCalendarCommon::saveConfig("business_day", PartsCalendarCommon::ymd($_POST["business_day"]));	//営業日
+		PartsCalendarCommon::saveConfig("other_day", PartsCalendarCommon::ymd($_POST["other_day"]));	//その他
 
 		$this->config->redirect("updated");
 	}
@@ -118,40 +87,6 @@ class PartsCalendarConfigFormPage extends WebPage{
 		$this->addLabel("next_calendar", array(
 			"html" => $displayLogic->getNextCalendar()
 		));
-	}
-
-	/**
-	 * convert Ymd
-	 */
-	function convertYmd($date){
-		$array = explode("\n", $date);
-
-		$val = array();
-		foreach($array as $line){
-			$line = mb_convert_kana(trim($line), "a");
-			if(preg_match("|^\d{4}\/\d{2}\/\d{2}$|", $line) || preg_match("|^\d{4}-\d{2}-\d{2}$|", $line)){
-				$line = str_replace("-", "/", $line);
-				$val[] = $line;
-			}
-		}
-		return $val;
-	}
-
-	/**
-	 * convert md
-	 */
-	function convertMd(string $date){
-		$arr = explode("\n", $date);
-
-		$val = array();
-		foreach($arr as $line){
-			$line = mb_convert_kana(trim($line), "a");
-			if(preg_match("|^\d{2}\/\d{2}$|", $line) || preg_match("|^\d{2}-\d{2}$|", $line)){
-				$line = str_replace("-", "/", $line);
-				$val[] = $line;
-			}
-		}
-		return $val;
 	}
 
 	function setConfigObj($obj) {

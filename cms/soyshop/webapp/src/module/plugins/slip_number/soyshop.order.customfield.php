@@ -21,9 +21,9 @@ class SlipNumberOrderCustomfield extends SOYShopOrderCustomfield{
 	}
 
 	function complete(CartLogic $cart){
-		$orderId = $cart->getAttribute("order_id");
-		$slipNumber = $cart->getAttribute("slip_number.value");
-		if(is_numeric($orderId) && strlen($slipNumber)){
+		$orderId = (int)$cart->getAttribute("order_id");
+		$slipNumber = (string)$cart->getAttribute("slip_number.value");
+		if($orderId > 0 && strlen($slipNumber)){
 			SOY2Logic::createInstance("module.plugins.slip_number.logic.SlipNumberLogic")->save($orderId, $slipNumber);
 		}
 	}

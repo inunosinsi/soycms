@@ -3,7 +3,7 @@
  */
 class SOYCMSConnectorInfo extends SOYShopInfoPageBase{
 
-	function getPage($active = true){
+	function getPage(bool $active=true){
 		if($active){
 			return '<a href="'.SOY2PageController::createLink("Config.Detail?plugin=soycms_connector").'">SOY CMS連携プラグインの設定</a>';
 		}else{

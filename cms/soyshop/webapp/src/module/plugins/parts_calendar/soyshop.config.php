@@ -5,8 +5,7 @@ class CalendarConfig extends SOYShopConfigPageBase{
 	 * @return string
 	 */
 	function getConfigPage(){
-
-		include_once(dirname(__FILE__) . "/config/PartsCalendarConfigFormPage.class.php");
+		SOY2::import("module.plugins.parts_calendar.config.PartsCalendarConfigFormPage");
 		$form = SOY2HTMLFactory::createInstance("PartsCalendarConfigFormPage");
 		$form->setConfigObj($this);
 		$form->execute();

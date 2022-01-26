@@ -3,7 +3,7 @@
  */
 class TagCloudInfo extends SOYShopInfoPageBase{
 
-	function getPage($active = true){
+	function getPage(bool $active=true){
 		if($active){
 			return '<a href="'.SOY2PageController::createLink("Config.Detail?plugin=tag_cloud").'">タグクラウドプラグインの設定</a>';
 		}else{
