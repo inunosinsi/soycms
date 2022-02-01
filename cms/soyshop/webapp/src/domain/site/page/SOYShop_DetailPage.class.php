@@ -26,7 +26,7 @@ class SOYShop_DetailPage extends SOYShop_PageBase{
 		
         $title = str_replace("%ITEM_NAME%", $this->currentItem->getOpenItemName(), $title);
         $title = str_replace("%ITEM_CODE%", $this->currentItem->getCode(), $title);
-        return str_replace("%CATEGORY_NAME%", soyshop_get_category_name($this->currentItem->getCategory()), $title);
+        return str_replace("%CATEGORY_NAME%", soyshop_get_category_name((int)$this->currentItem->getCategory()), $title);
     }
 
 	private function _getCommonFormat(){

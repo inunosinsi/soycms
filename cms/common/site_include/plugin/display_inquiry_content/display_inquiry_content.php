@@ -26,7 +26,7 @@ class DisplayInquiryContentPlugin{
 			"modifier"=>"Tsuyoshi Saito",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.10"
+			"version"=>"0.11"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -48,7 +48,6 @@ class DisplayInquiryContentPlugin{
 	function onOutput($arg){
 		//アプリケーションページでお問い合わせフォームの完了ページを読み込んでいることを確認
 		if(isset($_GET["complete"]) && isset($_GET["trackid"]) && get_class($arg["webPage"]->page) === "ApplicationPage" && $arg["webPage"]->page->getApplicationId() === "inquiry"){
-
 			//プラグインで登録しているお問い合わせフォームか？調べる
 			preg_match('/app:formid="(.*)"/', $arg["webPage"]->page->getTemplate(), $tmp);
 			if(isset($tmp[1])){
@@ -73,15 +72,15 @@ class DisplayInquiryContentPlugin{
 	private function _createEntryAuto(){
 		//時々最終お問い合わせの日を確認しにいくためのフラグ
 		$r = (int)mt_rand(1,10);
-
+		
 		//最終お問い合わせ時刻が常に0(他サイトにフォームを設置している)の場合は常に最終お問い合わせ時刻を調べに行く
 		if($r < 2 || $this->lastInquiryTime === 0){
 			SOY2::import("site_include.plugin.display_inquiry_content.util.DisplayInquiryContentUtil");
 			$this->lastInquiryTime = DisplayInquiryContentUtil::getLastInquiryTime($this->getFormId());
 		}
-
+		
 		//お問い合わせのデータベースから記事を登録する
-		if($this->lastEntryImportTime < $this->lastInquiryTime && count($this->connects)){
+		if((int)$this->lastEntryImportTime < $this->lastInquiryTime && count($this->connects)){
 			SOY2::import("site_include.plugin.display_inquiry_content.util.DisplayInquiryContentUtil");
 
 			DisplayInquiryContentUtil::defineInquiryDsn();
@@ -93,6 +92,7 @@ class DisplayInquiryContentPlugin{
 			$dates = $v[3];
 			if(count($datas)){
 				$dao = SOY2DAOFactory::create("cms.EntryDAO");
+				$entryLogic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
 				$attrDao = SOY2DAOFactory::create("cms.EntryAttributeDAO");
 				$entryLabelDao = SOY2DAOFactory::create("cms.EntryLabelDAO");
 
@@ -110,9 +110,9 @@ class DisplayInquiryContentPlugin{
 					$entry->setCdate($dates[$i]);
 					$entry->setUdate($dates[$i]);
 					$entry->setIsPublished($this->isPublished);
-
+				
 					try{
-						$entryId = $dao->insert($entry);
+						$entryId = $entryLogic->create($entry);
 					}catch(Exception $e){
 						$error = true;
 					}

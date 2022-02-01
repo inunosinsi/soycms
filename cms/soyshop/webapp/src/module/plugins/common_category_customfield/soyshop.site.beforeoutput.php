@@ -47,9 +47,9 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 				if(is_null($current->getCategory())) return;
 				if(is_numeric($current->getCategory())){
 					$parent = soyshop_get_item_object($current->getCategory());
-					$category = soyshop_get_category_object($parent->getCategory());
+					$category = soyshop_get_category_object($parent->getCategoryId());
 				}else{
-					$category = soyshop_get_category_object($current->getCategory());
+					$category = soyshop_get_category_object($current->getCategoryId());
 				}
 				$name = $category->getOpenCategoryName();
 				break;

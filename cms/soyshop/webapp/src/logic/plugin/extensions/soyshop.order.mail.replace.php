@@ -1,12 +1,21 @@
 <?php
 class SOYShopOrderMailReplace implements SOY2PluginAction{
 
+	/**
+	 * @return array(
+	 * 	array(string replaceKey => string replaceLabel)
+	 * )
+	 */
 	function strings(){
-
+		return array();
 	}
 
-	function replace(SOYShop_Order $order, $content){
-
+	/**
+	 * @param SOYShop_Order, string
+	 * @return string
+	 */
+	function replace(SOYShop_Order $order, string $content){
+		return "";
 	}
 }
 class SOYShopOrderMailReplaceDeletageAction implements SOY2PluginDelegateAction{
@@ -22,7 +31,7 @@ class SOYShopOrderMailReplaceDeletageAction implements SOY2PluginDelegateAction{
 				$this->_strings[$moduleId] = $action->strings();
 				break;
 			case "replace":
-				$this->content = $action->replace($this->order, $this->content);
+				$this->content = $action->replace($this->order, (string)$this->content);
 				break;
 		}
 	}

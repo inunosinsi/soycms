@@ -268,7 +268,7 @@ class CategoryLogic extends SOY2LogicBase{
 				if(isset($arr["alias"])) $category->setAlias($arr["alias"]);
 				if(isset($arr["order"])) $category->setOrder($arr["order"]);
 			}
-			if(strlen($category->getAlias()) == 0){
+			if(strlen((string)$category->getAlias()) == 0){
 				$category->setAlias("category-" . $count . ".html");
 			}
 

@@ -116,7 +116,7 @@ class SOYShopPageBase extends WebPage{
 				if($current instanceof SOYShop_Item){
 					$string = str_replace("%ITEM_NAME%", $current->getOpenItemName(), $string);
 	                $string = str_replace("%ITEM_CODE%", $current->getCode(), $string);
-	                return str_replace("%CATEGORY_NAME%", soyshop_get_category_name($current->getCategory()), $string);
+	                return str_replace("%CATEGORY_NAME%", soyshop_get_category_name((int)$current->getCategory()), $string);
 				}
 				break;
             case "search":

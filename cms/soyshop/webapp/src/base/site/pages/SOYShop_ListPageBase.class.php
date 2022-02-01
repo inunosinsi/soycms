@@ -86,7 +86,7 @@ class SOYShop_ListPageBase extends SOYShopPageBase{
                 $categoryAlias = implode("/", $args);
 
                 //argsが存在しないカテゴリの場合、デフォルトのカテゴリを設定する
-                if(!is_null($obj->getDefaultCategory()) && !$categoryDAO->isAlias($categoryAlias)){
+                if(is_numeric($obj->getDefaultCategory()) && !$categoryDAO->isAlias($categoryAlias)){
 					$category = soyshop_get_category_object($obj->getDefaultCategory());
                 }else{
                     try{
@@ -117,7 +117,7 @@ class SOYShop_ListPageBase extends SOYShopPageBase{
 
 
             }else{
-				if(is_null($obj->getDefaultCategory())){	//404で返す
+				if(!is_numeric($obj->getDefaultCategory())){	//404で返す
 					throw new Exception("There is no default category setting.");
 				}
 				list($res, $total) = $logic->getByCategoryIds($obj->getDefaultCategory(), $offset, $limit);

@@ -20,7 +20,7 @@ class DeliveryNormalMailReplace extends SOYShopOrderMailReplace{
 		return $strings;
 	}
 
-	function replace(SOYShop_Order $order, $content){
+	function replace(SOYShop_Order $order, string $content){
 		$list = $order->getAttributeList();
 
 		//配送方法

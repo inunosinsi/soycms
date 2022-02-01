@@ -190,7 +190,7 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
         "soy2prefix" => SOYSHOP_SITE_PREFIX
     ));
 
-    $categoryObj = soyshop_get_category_object($item->getCategory());
+    $categoryObj = soyshop_get_category_object($item->getCategoryId());
 
     //カテゴリの表示
     $htmlObj->addLabel("category_name", array(
@@ -266,10 +266,7 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
     $parentCategory = new SOYShop_Category();
     if(is_numeric($item->getType())) {
         $parent = soyshop_get_item_object($item->getType());
-
-        if(is_numeric($parent->getCategory())){
-            $parentCategory = soyshop_get_category_object($parent->getCategory());
-        }
+        if($parent->getCategoryId() > 0) $parentCategory = soyshop_get_category_object($parent->getCategoryId());
     }
 
     $htmlObj->addLink("parent_link", array(

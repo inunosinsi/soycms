@@ -54,4 +54,53 @@ class CustomfieldAdvancedUtil {
 		}
 		return $isList;
 	}
+
+	/**
+	 * @param int entryId, array fieldIds
+	 * @return array 
+	 * array(
+	 * 	fieldId => array("value" => "", "extraValues" => "")
+	 * 	...
+	 * )
+	 */
+	public static function getValuesByFieldIds(int $entryId, array $fieldIds){
+		if(!count($fieldIds)) return array();
+
+		try{
+			$res = soycms_get_hash_table_dao("entry_attribute")->executeQuery(
+				"SELECT entry_field_id, entry_value, entry_extra_values ".
+				"FROM EntryAttribute ".
+				"WHERE entry_id = :entryId ".
+				"AND entry_field_id IN (\"" . implode("\",\"", $fieldIds) . "\")",
+				array(
+					":entryId" => $entryId
+				)
+			);
+		}catch(Exception $e){
+			$res = array();
+		}
+		if(!count($res)) return array();
+
+		$arr = array();
+		foreach($res as $v){
+			$extra = (isset($v["entry_extra_values"]) && is_string($v["entry_extra_values"]) && strlen($v["entry_extra_values"])) ? soy2_unserialize($v["entry_extra_values"]) : null;
+			$arr[$v["entry_field_id"]] = array("value" => $v["entry_value"], "extraValues" => $extra);
+		}
+
+		//　fieldIdに対応した値がない場合は空文字を入れておく
+		foreach($fieldIds as $fieldId){
+			if(!isset($arr[$fieldId])) $arr[$fieldId] = array("value" => "", "extraValues" => null);
+		}
+		
+		return $arr;
+	}
+
+	/**
+	 * ブロックに紐づいたラベルIDと高度な設定で設定したラベルIDが同じでなければtrue
+	 * @param int labelId, int labelIdWithBlock
+	 * @return bool
+	 */
+	public static function checkLabelConfigOnBlock(int $labelId, int $labelIdWithBlock){
+		return ($labelId > 0 && $labelId != $labelIdWithBlock);
+	}
 }

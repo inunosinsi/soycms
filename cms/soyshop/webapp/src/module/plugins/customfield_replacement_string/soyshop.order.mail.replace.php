@@ -8,7 +8,7 @@ class CustomfieldReplacementStringMailReplace extends SOYShopOrderMailReplace{
 		return $strings;
 	}
 
-	function replace(SOYShop_Order $order, $content){
+	function replace(SOYShop_Order $order, string $content){
 		return str_replace("#CUSTOMFIELD#", self::_buildText($order->getId()), $content);
 	}
 

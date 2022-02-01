@@ -7,7 +7,7 @@ class SOYShopNotepadBase implements SOY2PluginAction{
 	 * @param item_id
 	 * @return html
 	 */
-	function buildItemNotepad($itemId){
+	function buildItemNotepad(int $itemId){
 		return "";
 	}
 
@@ -15,7 +15,7 @@ class SOYShopNotepadBase implements SOY2PluginAction{
 	 * @param category_id
 	 * @return html
 	 */
-	function buildCategoryNotepad($categoryId){
+	function buildCategoryNotepad(int $categoryId){
 		return "";
 	}
 
@@ -23,7 +23,7 @@ class SOYShopNotepadBase implements SOY2PluginAction{
 	 * @param user_id
 	 * @return html
 	 */
-	function buildUserNotepad($userId){
+	function buildUserNotepad(int $userId){
 		return "";
 	}
 
@@ -47,13 +47,13 @@ class SOYShopNotepadDelegateAction implements SOY2PluginDelegateAction{
 		$action->setPluginId($this->pluginId);
 		switch($this->mode){
 			case "item":
-				$this->_html = $action->buildItemNotepad($this->id);
+				$this->_html = $action->buildItemNotepad((int)$this->id);
 				break;
 			case "category":
-				$this->_html = $action->buildCategoryNotepad($this->id);
+				$this->_html = $action->buildCategoryNotepad((int)$this->id);
 				break;
 			case "user":
-				$this->_html = $action->buildUserNotepad($this->id);
+				$this->_html = $action->buildUserNotepad((int)$this->id);
 				break;
 		}
 	}

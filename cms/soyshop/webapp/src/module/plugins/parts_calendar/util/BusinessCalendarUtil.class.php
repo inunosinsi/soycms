@@ -8,7 +8,6 @@ class BusinessCalendarUtil {
 	 * @return bool 営業日であればtrue
 	 */
 	public static function isBD(int $timestamp){
-		$timestamp = soyshop_shape_timestamp($timestamp);
-		return SOY2Logic::createInstance("module.plugins.parts_calendar.logic.CalendarLogic")->isBD($timestamp);
+		return SOY2Logic::createInstance("module.plugins.parts_calendar.logic.CalendarLogic")->isBD(soyshop_shape_timestamp($timestamp));
 	}
 }

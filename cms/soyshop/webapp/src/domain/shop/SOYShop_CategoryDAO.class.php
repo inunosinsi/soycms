@@ -48,12 +48,12 @@ abstract class SOYShop_CategoryDAO extends SOY2DAO{
 	 */
 	function onInsert($query, $binds){
 
-		if(strlen($binds[":name"]) < 1){
+		if(strlen((string)$binds[":name"]) < 1){
 			$mapping = $this->getMapping();
 			$binds[":name"] = "new_category_" . count($mapping);
 		}
 
-		if(strlen($binds[":alias"]) < 1){
+		if(strlen((string)$binds[":alias"]) < 1){
 			$binds[":alias"] = rawurldecode($binds[":name"]);
 		}
 

@@ -92,7 +92,7 @@ function soyshop_breadcrumb_navigation($html, $page){
 					//商品グループの子商品の時
 					if(is_numeric($item->getType())){
 						$parent = soyshop_get_item_object($item->getType());
-						$categoryId = $parent->getCategory();
+						$categoryId = $parent->getCategoryId();
 
 						SOY2::import("module.plugins.common_breadcrumb.util.BreadcrumbUtil");
 						$config = BreadcrumbUtil::getConfig();
@@ -110,7 +110,7 @@ function soyshop_breadcrumb_navigation($html, $page){
 
 					//子商品以外の時
 					}else{
-						$categoryId = $item->getCategory();
+						$categoryId = $item->getCategoryId();
 						$itemName = $item->getOpenItemName();
 					}
 
@@ -164,7 +164,7 @@ function soyshop_breadcrumb_navigation($html, $page){
 							//商品グループの子商品の時
 							if(is_numeric($item->getType())){
 								$parent = soyshop_get_item_object($item->getType());
-								$category = soyshop_get_category_object($parent->getCategory());
+								$category = soyshop_get_category_object($parent->getCategoryId());
 
 								SOY2::import("module.plugins.common_breadcrumb.util.BreadcrumbUtil");
 								$config = BreadcrumbUtil::getConfig();
@@ -197,7 +197,7 @@ function soyshop_breadcrumb_navigation($html, $page){
 									$itemName = $parent->getOpenItemName();
 								}
 							}else{
-								$category = soyshop_get_category_object($item->getCategory());
+								$category = soyshop_get_category_object($item->getCategoryId());
 							}
 
 							$categories = $dao->getAncestry($category, false);

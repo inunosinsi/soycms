@@ -6,7 +6,7 @@ class DetailCategoryInfoCustomField extends SOYShopItemCustomFieldBase{
 	 * onOutput
 	 */
 	function onOutput($htmlObj, SOYShop_Item $item){
-		$category = soyshop_get_category_object((int)$item->getCategory());
+		$category = soyshop_get_category_object(($item->getCategoryId());
 		$categoryName = $category->getName();					//カテゴリ名の取得
 		$categoryAlias = $category->getAlias();					//カテゴリエイリアスの取得
 		$categoryTree = self::_getCategoryRelation($category);	//カテゴリツリーの取得
@@ -108,10 +108,10 @@ class DetailCategoryInfoCustomField extends SOYShopItemCustomFieldBase{
 		try{
 			if(isset($category)){
 				$array[] = $category->getName();
-				if(!is_null($category->getParent())){
+				if(is_numeric($category->getParent())){
 					$parent = soyshop_get_category_object($category->getParent());
 					$array[] = $parent->getName();
-					if(!is_null($parent->getParent())){
+					if(is_numeric($parent->getParent())){
 						$grandParent = soyshop_get_category_object($parent->getParent());
 						$array[] = $grandParent->getName();
 					}

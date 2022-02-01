@@ -62,13 +62,13 @@ class EntryListComponent extends HTMLList{
 			"visible" => ($contentLen === 0),
 			"soy2prefix"=>"cms"
 		));
-		$this->createAdd("more","CMSLabel",array(
-			"html"=>$entry->getMore(),
-			"soy2prefix"=>"cms"
-		));
-
+		
 		$moreLen = (is_string($entry->getMore())) ? strlen($entry->getMore()) : 0;
 		$more = ($moreLen > 0) ? trim($entry->getMore()) : "";
+		$this->createAdd("more","CMSLabel",array(
+			"html" => $more,
+			"soy2prefix"=>"cms"
+		));
 		$this->addModel("has_more",array(
 			"visible"=> ($moreLen > 0),
 			"soy2prefix"=>"cms",

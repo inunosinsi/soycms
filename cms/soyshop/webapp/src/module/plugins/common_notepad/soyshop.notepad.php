@@ -5,8 +5,8 @@ class CommonNotepad extends SOYShopNotepadBase {
 		SOY2::import("module.plugins.common_notepad.component.NotepadListAreaComponent");
 	}
 
-	function buildItemNotepad($itemId){
-		if(is_null($itemId) || !is_numeric($itemId)) return "";
+	function buildItemNotepad(int $itemId){
+		if($itemId === 0) return "";
 		$component = new NotepadListAreaComponent();
 		$component->setItem(soyshop_get_item_object($itemId));
 		$component->setPluginId($this->getPluginId());
@@ -14,8 +14,8 @@ class CommonNotepad extends SOYShopNotepadBase {
 		return $component->buildBlock();
 	}
 
-	function buildCategoryNotepad($categoryId){
-		if(is_null($categoryId) || !is_numeric($categoryId)) return "";
+	function buildCategoryNotepad(int $categoryId){
+		if($categoryId === 0) return "";
 		$component = new NotepadListAreaComponent();
 		$component->setCategory(soyshop_get_category_object($categoryId));
 		$component->setPluginId($this->getPluginId());
@@ -23,8 +23,8 @@ class CommonNotepad extends SOYShopNotepadBase {
 		return $component->buildBlock();
 	}
 
-	function buildUserNotepad($userId){
-		if(is_null($userId) || !is_numeric($userId)) return "";
+	function buildUserNotepad(int $userId){
+		if($userId === 0) return "";
 		$component = new NotepadListAreaComponent();
 		$component->setUser(soyshop_get_user_object($userId));
 		$component->setPluginId($this->getPluginId());
