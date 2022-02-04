@@ -41,7 +41,7 @@ class CustomFieldPluginAdvanced{
 			"author" => "日本情報化農業研究所",
 			"url" => "http://www.n-i-agroinformatics.com/",
 			"mail" => "soycms@soycms.net",
-			"version"=>"1.14.1"
+			"version"=>"1.14.2"
 		));
 
 		//プラグイン アクティブ
@@ -478,13 +478,13 @@ class CustomFieldPluginAdvanced{
 	 */
 	function onEntryCopy($args){
 		list($old, $new) = $args;
-		$list = self::_getCustomFields($old);
-		if(!count($list)) return true;
+		$arr = self::_getFieldValues($old);
+		if(!count($arr)) return true;
 
-		foreach($list as $custom){
-			$attr = soycms_get_entry_attribute_object($new, $custom->getId());
-			$attr->setValue($custom->getValue());
-			$attr->setExtraValues($custom->getExtraValues());
+		foreach($arr as $fieldId => $v){
+			$attr = soycms_get_entry_attribute_object($new, $fieldId);
+			$attr->setValue($v["value"]);
+			$attr->setExtraValues($v["extraValues"]);
 			soycms_save_entry_attribute_object($attr);
 		}
 

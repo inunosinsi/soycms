@@ -36,11 +36,23 @@ class SaitodevAdminTop extends SOYShopAdminTopBase{
 		if(file_exists($cacheFile) && self::checkCacheOld($cacheFile)){
 			$contents = file_get_contents($cacheFile);
 		}else{
-			$contents = @file_get_contents("https://saitodev.co/soyshop.xml", false, $ctx = stream_context_create(array(
-				'http' => array(
-					'timeout' => 3
-				)
-			)));
+			if(function_exists("curl_init")){
+				$ch = curl_init("https://saitodev.co/soyshop.xml");
+				curl_setopt_array($ch, array(
+					CURLOPT_RETURNTRANSFER => true, //文字列として返す
+					CURLOPT_TIMEOUT        => 3, // タイムアウト時間
+				));
+
+				$res = curl_exec($ch);
+				$info = curl_getinfo($ch);
+				$contents = ((int)$info["http_code"] === 200) ? (string)$res : "";
+			}else{
+				$contents = @file_get_contents("https://saitodev.co/soyshop.xml", false, $ctx = stream_context_create(array(
+					'http' => array(
+						'timeout' => 3
+					)
+				)));
+			}
 		}
 
 		$html = array();

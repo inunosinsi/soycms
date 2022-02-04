@@ -60,18 +60,32 @@ class SOYCMS_Info_Plugin{
 	}
 
 	function widget(){
-		if(ini_get("allow_url_fopen") && function_exists("simplexml_load_string")){
+		$html = array();
+		if(ini_get("allow_url_fopen") && function_exists("curl_init")){
 			//list($rss,$time) = $this->loadRSS(self::INFO_RSS_URL);
 			//list($forum,$time2) = $this->loadRSS(self::FORUM_RSS_URL);
 
-			$html = array();
 			$html[] = $this->getStyleSheet();
 			$html[] = "<h1><a href=\"https://saitodev.co/app/bulletin/board/topic/1\" target=\"_blank\" rel=\"noopener\" style=\"color:gray;text-decoration:none;\">SOY CMSフォーラム - saitodev.co</a></h1>";
 			$html[] = "<ul>";
-			$arr = json_decode(file_get_contents(self::SAITODEV_FORUM_JSON_URL), true);
-			foreach($arr as $v){
-				$label = mb_strimwidth(SOY2HTML::ToText($v["label"]),0,80,"...");
-				$html[] = "<li><a href=\"" . $v["url"] . "\" target=\"_blank\" rel=\"noopener\">" . $label . "</a></li>";
+		
+			$ch = curl_init(self::SAITODEV_FORUM_JSON_URL);
+			curl_setopt_array($ch, array(
+				CURLOPT_RETURNTRANSFER => true, //文字列として返す
+				CURLOPT_TIMEOUT        => 3, // タイムアウト時間
+			));
+
+			$json = curl_exec($ch);
+    		$info = curl_getinfo($ch);
+			//$errorNo = curl_errno($ch);
+			$arr = ((int)$info["http_code"] === 200) ? json_decode($json, true) : array();
+			if(is_array($arr) && count($arr)){
+				foreach($arr as $v){
+					$label = mb_strimwidth(SOY2HTML::ToText($v["label"]),0,80,"...");
+					$html[] = "<li><a href=\"" . $v["url"] . "\" target=\"_blank\" rel=\"noopener\">" . $label . "</a></li>";
+				}
+			}else{
+				$html[] = "<li>RSSの取得に失敗しました。</li>";
 			}
 			$html[] = "</ul>";
 			//if($rss)$html .= $this->outputRSS("お知らせ",$rss,$time);

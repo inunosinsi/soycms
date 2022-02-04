@@ -810,18 +810,18 @@ function soyshop_convert_timestamp_on_array(array $array, string $mode = "start"
 	}
 
 	if($mode == "start"){
-		return mktime(0, 0, 0, $array["month"], $array["day"], $array["year"]);
+		return mktime(0, 0, 0, (int)$array["month"], (int)$array["day"], (int)$array["year"]);
 	}else{
-		return mktime(23, 59, 59, $array["month"], $array["day"], $array["year"]);
+		return mktime(23, 59, 59, (int)$array["month"], (int)$array["day"], (int)$array["year"]);
 	}
 }
 
 function soyshop_shape_timestamp(int $timestamp, string $mode="start"){
-	$array = explode("-", date("Y-m-d", $timestamp));
+	$array = explode("-", date("Y-n-j", $timestamp));
 	if($mode == "start"){
-		return mktime(0, 0, 0, $array[1], $array[2], $array[0]);
+		return mktime(0, 0, 0, (int)$array[1], (int)$array[2], (int)$array[0]);
 	}else{
-		return mktime(23, 59, 59, $array[1], $array[2], $array[0]);
+		return mktime(23, 59, 59, (int)$array[1], (int)$array[2], (int)$array[0]);
 	}
 }
 

@@ -30,9 +30,8 @@ class CommonItemOptionMail extends SOYShopOrderMail{
 
 			$res[] = $item->getOpenItemName() . ":";
 			foreach($attributes as $key => $value){
-				if(strlen($value) > 0){
-					$res[] = self::getOptionName($opts[$key]) . ":" . $value;
-				}
+				if(!is_string($value)) continue;
+				if(strlen($value) > 0) $res[] = self::getOptionName($opts[$key]) . ":" . $value;
 			}
 			$res[] = "";
 		}

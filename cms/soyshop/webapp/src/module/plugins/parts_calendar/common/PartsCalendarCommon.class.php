@@ -14,7 +14,11 @@ class PartsCalendarCommon{
 	
 	public static function getWeekConfig(string $base=""){
 		if(!strlen($base)) $base = "calendar.config";
-		return SOYShop_DataSets::get($base . ".week", array(0, 6));
+		if(is_numeric(strpos($base, "dd"))){
+			return SOYShop_DataSets::get($base . ".week", range(0, 6));	//配送日カレンダーの場合は全ての曜日にチェック
+		}else{
+			return SOYShop_DataSets::get($base . ".week", array(0, 6));
+		}
 	}
 
 	/**

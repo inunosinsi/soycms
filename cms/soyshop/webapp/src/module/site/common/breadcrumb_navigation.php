@@ -31,7 +31,7 @@ function soyshop_breadcrumb_navigation($html, $page){
 
 	if(SOYShopPluginUtil::checkIsActive("common_breadcrumb")){
 
-		$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
+		$dao = soyshop_get_hash_table_dao("category");
 
 		$pageObject = $page->getPageObject();
 		$className = (isset($pageObject)) ? get_class($pageObject) : "";
@@ -63,7 +63,8 @@ function soyshop_breadcrumb_navigation($html, $page){
 					}else{
 						//カスタムフィールドの場合
 						if($pageObject->getObject()->getType() == "field"){
-							$itemAttributeDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
+							$_dao = soyshop_get_hash_table_dao("item_attribute");
+							unset($_dao);
 							$list = SOYShop_ItemAttributeConfig::load(true);
 							$object = $pageObject->getObject();
 							$name = (isset($list[$object->getFieldId()])) ? $list[$object->getFieldId()]->getLabel() : "";
