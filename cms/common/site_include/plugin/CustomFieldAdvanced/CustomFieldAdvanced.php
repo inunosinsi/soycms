@@ -23,8 +23,6 @@ class CustomFieldPluginAdvanced{
 	//表示の高速化
 	private $acceleration = 0;
 
-	private $dao;
-
 	private $displayLogic;
 
 	//設定
@@ -41,12 +39,11 @@ class CustomFieldPluginAdvanced{
 			"author" => "日本情報化農業研究所",
 			"url" => "http://www.n-i-agroinformatics.com/",
 			"mail" => "soycms@soycms.net",
-			"version"=>"1.14.2"
+			"version"=>"1.15"
 		));
 
 		//プラグイン アクティブ
 		if(CMSPlugin::activeCheck(CustomFieldPluginAdvanced::PLUGIN_ID)){
-			$this->dao = SOY2DAOFactory::create("cms.EntryAttributeDAO");
 			SOY2::import("site_include.plugin.CustomFieldAdvanced.util.CustomfieldAdvancedUtil");
 
 			//管理側
@@ -66,7 +63,8 @@ class CustomFieldPluginAdvanced{
 
 			//公開側
 			}else{
-				CMSPlugin::setEvent('onEntryOutput', CustomFieldPluginAdvanced::PLUGIN_ID, array($this, "display"));
+				CMSPlugin::setEvent('onEntryListBeforeOutput', CustomFieldPluginAdvanced::PLUGIN_ID, array($this, "onEntryListBeforeOutput"));
+				CMSPlugin::setEvent('onEntryOutput', CustomFieldPluginAdvanced::PLUGIN_ID, array($this, "onEntryOutput"));
 			}
 
 		}else{
@@ -75,9 +73,21 @@ class CustomFieldPluginAdvanced{
 	}
 
 	/**
+	 * onEntryListBeforeOutput
+	 */
+	function onEntryListBeforeOutput($arg){
+		$entries = &$arg["entries"];
+		$entryIds = soycms_get_entry_id_by_entries($entries);
+		
+		// カスタムフィールドの値を一気に取得
+		$fieldIds = array_keys($this->customFields);
+		if(count($entryIds)) CustomfieldAdvancedUtil::setValuesByEntryIdsAndFieldIds($entryIds, $fieldIds);
+	}
+
+	/**
 	 * onEntryOutput
 	 */
-	function display($arg){
+	function onEntryOutput($arg){
 
 		$entryId = (int)$arg["entryId"];
 		$htmlObj = $arg["SOY2HTMLObject"];
@@ -243,14 +253,11 @@ class CustomFieldPluginAdvanced{
 						//サムネイルプラグイン
 						if(file_exists(_SITE_ROOT_ . "/.plugin/soycms_thumbnail.active")){
 							SOY2::import("site_include.plugin.soycms_thumbnail.util.ThumbnailPluginUtil");
-							$tmbObjects = ThumbnailPluginUtil::getThumbnailObjectsByEntryId($entry->getId());
+							$tmbImagePathes = ThumbnailPluginUtil::getThumbnailPathesByEntryId((int)$entry->getId());
 
 							foreach(array("upload", "trimming", "resize") as $label){
-								$tmb = (isset($tmbObjects["soycms_thumbnail_plugin_" . $label])) ? $tmbObjects["soycms_thumbnail_plugin_" . $label] : new EntryAttribute();
+								$imagePath = (isset($tmbImagePathes[ThumbnailPluginUtil::PREFIX_IMAGE . $label])) ? $tmbImagePathes[ThumbnailPluginUtil::PREFIX_IMAGE . $label] : "";
 								if($label == "resize") $label = "thumbnail";
-
-								$imagePath = trim((string)$tmb->getValue());
-								//if($label == "thumbnail" && !strlen($imagePath)) $imagePath = $this->no_thumbnail_path;
 
 								$htmlObj->addModel($fieldId . "_is_" . $label, array(
 									"soy2prefix" => "cms",
@@ -265,7 +272,7 @@ class CustomFieldPluginAdvanced{
 								$htmlObj->addImage($fieldId . "_" . $label, array(
 									"soy2prefix" => "cms",
 									"src" => $imagePath,
-									"alt" => (isset($tmbObjects["soycms_thumbnail_plugin_alt"])) ? $tmbObjects["soycms_thumbnail_plugin_alt"]->getValue() : ""
+									"alt" => $tmbImagePathes[ThumbnailPluginUtil::THUMBNAIL_ALT]
 								));
 
 								$htmlObj->addLabel($fieldId . "_" . $label . "_text", array(
@@ -496,10 +503,9 @@ class CustomFieldPluginAdvanced{
 	 * @param array $args エントリーID
 	 */
 	function onEntryRemove($args){
-		$dao = $this->dao;
 		foreach($args as $entryId){
 			try{
-				$dao->deleteByEntryId($entryId);
+				soycms_get_hash_table_dao("entry_attribute")->deleteByEntryId($entryId);
 			}catch(Exception $e){
 
 			}

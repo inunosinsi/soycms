@@ -38,6 +38,7 @@ class CMSPlugin {
 		"onEntryOutput"=>array(),		//エントリーが呼び出された際に呼ばれる array(entryId,SOYHTMLObject,entry)
 		"onEntryCopy"=>array(),			//エントリー複製時に呼び出される	array(oldId,newId)
 		"onSetupWYSIWYG"=>array(),		//WYSIWYGエディタをセットアップしている時 array(entryId, labelIds)
+		"onEntryListBeforeOutput"=>array(),	//エントリーリストが呼び出される直前 array(&entries)
 
 		//記事のCSV
 		"onEntryCSVExImport"=>array(),			//インポート、エクスポート時に対象となるプラグインを探す array()

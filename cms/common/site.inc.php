@@ -61,6 +61,7 @@ include_once(SOY2::RootDir()."config/db/".SOYCMS_DB_TYPE.".php");
 
 //func
 include_once(SOY2::RootDir() . "site_include/func/dao.php");
+include_once(SOY2::RootDir() . "site_include/func/public.php");
 
 /* ここまでcommon.inc.phpのコピー */
 

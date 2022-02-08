@@ -141,6 +141,8 @@ class LabeledBlockComponent implements BlockComponent{
 			}
 		}
 
+		CMSPlugin::callEventFunc('onEntryListBeforeOutput', array("entries" => &$array));
+
 		SOY2::import("site_include.block._common.BlockEntryListComponent");
 		SOY2::import("site_include.blog.component.CategoryListComponent");
 		return SOY2HTMLFactory::createInstance("BlockEntryListComponent",array(

@@ -87,6 +87,8 @@ function soy_cms_blog_output_entry_list($page,$entries){
 		}
 	}
 
+    CMSPlugin::callEventFunc('onEntryListBeforeOutput', array("entries" => &$entries));
+
     $page->createAdd("entry_list","EntryListComponent",array(
         "list" => $entries,
         "entryPageUrl" => $page->getEntryPageURL(true),

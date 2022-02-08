@@ -41,25 +41,29 @@ abstract class EntryAttributeDAO extends SOY2DAO{
 	}
 
 
-    function getByEntryIdCustom($entryId, $fields){
-    	if(!is_numeric($entryId) || count($fields) === 0) return array();
+    function getByEntryIdCustom(int $entryId, array $fieldIds){
+    	if(!is_numeric($entryId) || count($fieldIds) === 0) return array();
 
     	$sql = "SELECT * FROM EntryAttribute ".
     			"WHERE entry_id = :entryId ".
-    			"AND entry_field_id IN (\"" . implode("\",\"", $fields) . "\")";
+    			"AND entry_field_id IN (\"" . implode("\",\"", $fieldIds) . "\")";
     	$binds = array(":entryId" => (int)$entryId);
 
     	try{
-    		$results = $this->executeQuery($sql, $binds);
+    		$res = $this->executeQuery($sql, $binds);
     	}catch(Exception $e){
-    		return array();
+    		$res = array();
     	}
 
     	$attrs = array();
-    	foreach($results as $result){
-    		if(!isset($result["entry_field_id"])) continue;
-    		$attrs[$result["entry_field_id"]] = $this->getObject($result);
+		foreach($res as $v){
+    		if(!isset($v["entry_field_id"])) continue;
+    		$attrs[$v["entry_field_id"]] = $this->getObject($v);
     	}
+
+		foreach($fieldIds as $fieldId){
+			if(!isset($attrs[$fieldId])) $attrs[$fieldId] = new EntryAttribute();
+		}
 
     	return $attrs;
     }

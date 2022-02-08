@@ -5,16 +5,6 @@ class SOYCMSThumbnailPlugin{
 
 	const PLUGIN_ID = "soycms_thumbnail";
 
-	const UPLOAD_IMAGE = "soycms_thumbnail_plugin_upload";
-	const TRIMMING_IMAGE = "soycms_thumbnail_plugin_trimming";
-	const RESIZE_IMAGE = "soycms_thumbnail_plugin_resize";
-	const PREFIX_IMAGE = "soycms_thumbnail_plugin_";
-
-	const THUMBNAIL_CONFIG = "soycms_thumbnail_plugin_config";
-	const THUMBNAIL_ALT = "soycms_thumbnail_plugin_alt";
-
-	private $entryAttributeDao;
-
 	private $ratio_w = 4;
 	private $ratio_h = 3;
 
@@ -36,7 +26,7 @@ class SOYCMSThumbnailPlugin{
 			"author"=>"日本情報化農業研究所",
 			"url"=>"http://www.n-i-agroinformatics.com/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.2"
+			"version"=>"1.3"
 		));
 
 		if(CMSPlugin::activeCheck($this->getId())){
@@ -57,25 +47,34 @@ class SOYCMSThumbnailPlugin{
 				CMSPlugin::addCustomFieldFunction($this->getId(), "Blog.Entry", array($this, "onCallCustomField_inBlog"));
 			//公開側
 			}else{
+				CMSPlugin::setEvent('onEntryListBeforeOutput', $this->getId(), array($this, "onEntryListBeforeOutput"));
 				CMSPlugin::setEvent('onEntryOutput', $this->getId(), array($this, "onEntryOutput"));
 			}
 		}
 	}
 
+	/**
+	 * onEntryListBeforeOutput
+	 */
+	function onEntryListBeforeOutput($arg){
+		$entries = &$arg["entries"];
+		$entryIds = soycms_get_entry_id_by_entries($entries);
+		
+		if(count($entryIds)) ThumbnailPluginUtil::setThumbnailPathesByEntryIds($entryIds);
+	}
+
 	function onEntryOutput($arg){
-		$entryId = $arg["entryId"];
+		$entryId = (int)$arg["entryId"];
 		$htmlObj = $arg["SOY2HTMLObject"];
 
-		$objects = ThumbnailPluginUtil::getThumbnailObjectsByEntryId($entryId);
+		$attrValues = ThumbnailPluginUtil::getThumbnailPathesByEntryId($entryId);
+		
+		foreach(array(ThumbnailPluginUtil::UPLOAD_IMAGE, ThumbnailPluginUtil::TRIMMING_IMAGE, ThumbnailPluginUtil::RESIZE_IMAGE) as $typ){
+			$label = str_replace(ThumbnailPluginUtil::PREFIX_IMAGE, "", $typ);
+			if($label ==  "resize") $label = "thumbnail";
 
-		foreach(array(self::UPLOAD_IMAGE, self::TRIMMING_IMAGE, self::RESIZE_IMAGE) as $imageType){
-			$obj = (isset($objects[$imageType])) ? $objects[$imageType] : new EntryAttribute();
-
-			$label = str_replace("soycms_thumbnail_plugin_", "", $imageType);
-			if($label == "resize") $label = "thumbnail";
-
-			$imagePath = (is_string($obj->getValue())) ? trim($obj->getValue()) : "";
-			if($label == "thumbnail" && !strlen($imagePath)) $imagePath = $this->no_thumbnail_path;
+			$imagePath = (isset($attrValues[$typ])) ? $attrValues[$typ] : "";
+			if($label == "thumbnail" && !strlen($imagePath) && is_string($this->no_thumbnail_path)) $imagePath = $this->no_thumbnail_path;
 
 			$htmlObj->addModel("is_" . $label, array(
 				"soy2prefix" => "cms",
@@ -90,7 +89,7 @@ class SOYCMSThumbnailPlugin{
 			$htmlObj->addImage($label, array(
 				"soy2prefix" => "cms",
 				"src" => $imagePath,
-				"alt" => (isset($objects["soycms_thumbnail_plugin_alt"])) ? $objects["soycms_thumbnail_plugin_alt"]->getValue() : ""
+				"alt" => $attrValues[ThumbnailPluginUtil::THUMBNAIL_ALT]
 			));
 
 			$htmlObj->addLabel($label . "_text", array(
@@ -113,25 +112,16 @@ class SOYCMSThumbnailPlugin{
 		$entry = $arg["entry"];
 		$entryId = $entry->getId();
 
-		try{
-			self::_attrDao()->delete($entryId, self::UPLOAD_IMAGE);
-			self::_attrDao()->delete($entryId, self::TRIMMING_IMAGE);
-			self::_attrDao()->delete($entryId, self::RESIZE_IMAGE);
-			self::_attrDao()->delete($entryId, self::THUMBNAIL_CONFIG);
-			self::_attrDao()->delete($entryId, self::THUMBNAIL_ALT);
-		}catch(Exception $e){
-			//
-		}
-
 		$images = array();
-		$images[self::UPLOAD_IMAGE] = (isset($_POST["jcrop_upload_field"])) ? $_POST["jcrop_upload_field"] : null;
-		$images[self::TRIMMING_IMAGE] = (isset($_POST["jcrop_trimming_field"])) ? $_POST["jcrop_trimming_field"] : null;
+		$images[ThumbnailPluginUtil::UPLOAD_IMAGE] = (isset($_POST["jcrop_upload_field"])) ? $_POST["jcrop_upload_field"] : null;
+		$images[ThumbnailPluginUtil::TRIMMING_IMAGE] = (isset($_POST["jcrop_trimming_field"])) ? $_POST["jcrop_trimming_field"] : null;
+		$images[ThumbnailPluginUtil::RESIZE_IMAGE] = null;
 
 		//http or httpsからはじまる場合はスラッシュからはじまる絶対パスに変換する
-		if(strpos($images[self::UPLOAD_IMAGE], "http") === 0){
-			$iPath = str_replace(array("http://", "https://"), "", $images[self::UPLOAD_IMAGE]);
+		if(strpos($images[ThumbnailPluginUtil::UPLOAD_IMAGE], "http") === 0){
+			$iPath = str_replace(array("http://", "https://"), "", $images[ThumbnailPluginUtil::UPLOAD_IMAGE]);
 			$iPath = substr($iPath, strpos($iPath, "/"));
-			$images[self::UPLOAD_IMAGE] = $iPath;
+			$images[ThumbnailPluginUtil::UPLOAD_IMAGE] = $iPath;
 		}
 
 		$resizeFlag = false;
@@ -144,7 +134,7 @@ class SOYCMSThumbnailPlugin{
 				$imageFilePath = trim($_POST["jcrop_trimming_field"]);
 			}else if(isset($_POST["jcrop_upload_field"]) && strlen($_POST["jcrop_upload_field"]) > 0){
 				$resizeFlag = true;
-				$imageFilePath = trim($images[self::UPLOAD_IMAGE]);
+				$imageFilePath = trim($images[ThumbnailPluginUtil::UPLOAD_IMAGE]);
 			}
 		}
 
@@ -153,95 +143,74 @@ class SOYCMSThumbnailPlugin{
 			$path = $dir . $imageFilePath;
 
 			//念の為、指定のパスに画像があるか調べる
-			if(!file_exists($path)) {
-				$path = $dir . "/" . UserInfoUtil::getSite()->getSiteId() . $imageFilePath;
+			if(!file_exists($path)) $path = $dir . "/" . UserInfoUtil::getSite()->getSiteId() . $imageFilePath;
+
+			if(file_exists($path)){
+				$imageInfoArray = (getimagesize($path));
+				$w = (int)$imageInfoArray[0];
+				$h = (int)$imageInfoArray[1];
+
+				//アスペクト比の維持
+				if($w > (int)$_POST["jcrop_resize_w"]){
+					$ratio = $w / $h;
+					$w = (int)$_POST["jcrop_resize_w"];
+					$h = $w / $ratio;
+				}
+
+				//念の為にwidthの値を確認
+				if($w > 0 && $h > 0){
+					//Siteのアップロードディレクトリを調べる
+					$uploadDir = (string)ThumbnailPluginUtil::getSiteConfig()->getUploadDirectory();
+					
+					$resizeDir = str_replace("//" , "/" , UserInfoUtil::getSiteDirectory() . $uploadDir) . "/resize";
+					if(!file_exists($resizeDir)) mkdir($resizeDir);
+
+					$imageFileName = substr($imageFilePath, strrpos($imageFilePath, "/") + 1);
+					$resizePath = $resizeDir . "/" . $imageFileName;
+					soy2_resizeimage($path, $resizePath, $w, $h);
+					$images[ThumbnailPluginUtil::RESIZE_IMAGE] = "/" . UserInfoUtil::getSite()->getSiteId() . $uploadDir . "/resize/" . $imageFileName;
+				}else{
+					$images[ThumbnailPluginUtil::RESIZE_IMAGE] = "";
+				}
 			}
-
-			$imageInfoArray = (getimagesize($path));
-			$w = (int)$imageInfoArray[0];
-			$h = (int)$imageInfoArray[1];
-
-			//アスペクト比の維持
-			if($w > (int)$_POST["jcrop_resize_w"]){
-				$ratio = $w / $h;
-				$w = (int)$_POST["jcrop_resize_w"];
-				$h = $w / $ratio;
-			}
-
-			//念の為にwidthの値を確認
-			if($w > 0 && $h > 0){
-				//Siteのアップロードディレクトリを調べる
-				$siteConfig = SOY2DAOFactory::create("cms.SiteConfigDAO")->get();
-
-				$resizeDir = str_replace("//" , "/" , UserInfoUtil::getSiteDirectory() . $siteConfig->getUploadDirectory()) . "/resize";
-				if(!file_exists($resizeDir)) mkdir($resizeDir);
-
-				$imageFileName = substr($imageFilePath, strrpos($imageFilePath, "/") + 1);
-				$resizePath = $resizeDir . "/" . $imageFileName;
-				soy2_resizeimage($path, $resizePath, $w, $h);
-				$images[self::RESIZE_IMAGE] = "/" . UserInfoUtil::getSite()->getSiteId() . $siteConfig->getUploadDirectory() . "/resize/" . $imageFileName;
-			}else{
-				$images[self::RESIZE_IMAGE] = "";
-			}
+			
 		}else{
-			$images[self::RESIZE_IMAGE] = trim($_POST["jcrop_resize_field"]);
+			$images[ThumbnailPluginUtil::RESIZE_IMAGE] = trim($_POST["jcrop_resize_field"]);
 		}
 
-		$obj = new EntryAttribute();
-		$obj->setEntryId($entryId);
-
-		foreach($images as $key => $path){
-			if(!strlen($path)) continue;
-			$obj->setFieldId($key);
-			$obj->setValue($path);
-			try{
-				self::_attrDao()->insert($obj);
-			}catch(Exception $e){
-				//
-			}
+		foreach($images as $fieldId => $path){
+			if(is_null($path) || !strlen($path)) continue;
+			$attr = soycms_get_entry_attribute_object($entryId, $fieldId);
+			$attr->setValue($path);
+			soycms_save_entry_attribute_object($attr);
 		}
 
 		//記事毎のリサイズ設定を配列に格納しておく
-		$config = array(
+		$cnf = array(
 					"ratio_w" => (int)$_POST["jcrop_ratio_w"],
 					"ratio_h" => (int)$_POST["jcrop_ratio_h"],
 					"resize_w" => (int)$_POST["jcrop_resize_w"],
 					"resize_h" => (int)$_POST["jcrop_resize_h"]
 					);
 
-		$obj->setFieldId(self::THUMBNAIL_CONFIG);
-		$obj->setValue(soy2_serialize($config));
-		try{
-			self::_attrDao()->insert($obj);
-		}catch(Exception $e){
-			//
-		}
-
+		$attr = soycms_get_entry_attribute_object($entryId, ThumbnailPluginUtil::THUMBNAIL_CONFIG);
+		$attr->setValue(soy2_serialize($cnf));
+		soycms_save_entry_attribute_object($attr);
+		
 		//alt
-		$obj->setFieldId(self::THUMBNAIL_ALT);
-		$obj->setValue($_POST["jcrop_thumbnail_alt"]);
-		try{
-			self::_attrDao()->insert($obj);
-		}catch(Exception $e){
-			//
-		}
+		$attr = soycms_get_entry_attribute_object($entryId, ThumbnailPluginUtil::THUMBNAIL_ALT);
+		$attr->setValue($_POST["jcrop_thumbnail_alt"]);
+		soycms_save_entry_attribute_object($attr);
 	}
 
 	function onEntryCopy($args){
 		list($old, $new) = $args;
-		$objects = ThumbnailPluginUtil::getThumbnailObjectsByEntryId($old);
+		$attrValues = ThumbnailPluginUtil::getThumbnailPathesByEntryId($old);
 
-		foreach($objects as $key => $object){
-			try{
-				$obj = new EntryAttribute();
-				$obj->setEntryId($new);
-				$obj->setFieldId($key);
-				$obj->setValue($object->getValue());
-				$obj->setExtraValuesArray(null);
-				self::_attrDao()->insert($obj);
-			}catch(Exception $e){
-				//
-			}
+		foreach($attrValues as $fieldId => $attrValue){
+			$newAttr = soycms_get_entry_attribute_object($new, $fieldId);
+			$newAttr->setValue($attrValue);
+			soycms_save_entry_attribute_object($newAttr);
 		}
 
 		return true;
@@ -249,40 +218,27 @@ class SOYCMSThumbnailPlugin{
 
 	function onEntryRemove($args){
 		foreach($args as $entryId){
-			try{
-				self::_attrDao()->deleteByEntryId($entryId);
-			}catch(Exception $e){
-				//
+			$attrValues = ThumbnailPluginUtil::getThumbnailPathesByEntryId(0);
+			foreach($attrValues as $fieldId => $_dust){
+				$newAttr = soycms_get_entry_attribute_object($entryId, $fieldId);
+				$newAttr->setValue(null);
+				soycms_save_entry_attribute_object($newAttr);
 			}
 		}
-
+		
 		return true;
 	}
 
 	function onCallCustomField(){
 		$arg = SOY2PageController::getArguments();
-		$entryId = (isset($arg[0])) ? (int)$arg[0] : null;
-
-		$htmls = array();
-
-		$htmls[] = "<div class=\"form-inline\">";
-		$htmls[] = self::buildFormHtml($entryId);
-		$htmls[] = "</div>";
-
-		return implode("\n", $htmls);
+		$entryId = (isset($arg[0])) ? (int)$arg[0] : 0;
+		return self::_buildFormHtml($entryId);
 	}
 
 	function onCallCustomField_inBlog(){
 		$arg = SOY2PageController::getArguments();
-		$entryId = (isset($arg[1])) ? (int)$arg[1] : null;
-
-		$htmls = array();
-
-		$htmls[] = "<div class=\"form-inline\">";
-		$htmls[] = self::buildFormHtml($entryId);
-		$htmls[] = "</div>";
-
-		return implode("\n", $htmls);
+		$entryId = (isset($arg[1])) ? (int)$arg[1] : 0;
+		return self::_buildFormHtml($entryId);
 	}
 
 	/**
@@ -290,145 +246,139 @@ class SOYCMSThumbnailPlugin{
 	 * @param integer entryId
 	 * @return string html
 	 */
-	private function buildFormHtml($entryId){
-		$objects = ThumbnailPluginUtil::getThumbnailObjectsByEntryId($entryId);
-		$config = self::getConfigObject($entryId);
+	private function _buildFormHtml(int $entryId){
+		$attrValues = ThumbnailPluginUtil::getThumbnailPathesByEntryId($entryId);
+		$cnf = self::_getTmbConfig($entryId);
 
-		try{
-			$siteConfig = SOY2DAOFactory::create("cms.SiteConfigDAO")->get();
-		}catch(Exception $e){
-			$siteConfig = new SiteConfig();
+		$uploadImagePath = $attrValues[ThumbnailPluginUtil::UPLOAD_IMAGE];
+
+		$html = array();
+		$html[] = "<div class=\"form-inline\">";
+		$html[] = "<label for=\"custom_field_img\">サムネイルの生成</label>";
+		$html[] = '<div class="table-responsive"><table class="table">';
+		$html[] = "<tr>";
+		$html[] = "<th style=\"width:15%;\">";
+		$html[] = "アップロード";
+		$html[] = "<a href=\"javascript:void(0);\" title=\"サムネイルの生成用の画像を選択します。\"><i class=\"fa fa-question-circle\"></i></a>";
+		$html[] = "</th>";
+		$html[] = "<td><input type=\"text\" class=\"jcrop_field_input form-control\" style=\"width:70%\" id=\"jcrop_upload_field\" name=\"jcrop_upload_field\" value=\"" . $uploadImagePath . "\" />";
+		$html[] = "<input type=\"button\" onclick=\"open_jcrop_filemanager($('#jcrop_upload_field'));\" class=\"btn\" value=\"ファイルを指定する\">";
+		if(strlen($uploadImagePath) > 0){
+			$html[] = "<a href=\"#\" onclick=\"return preview_thumbnail_plugin(\$('#jcrop_upload_field'));\" class=\"btn btn-info\">Preview</a>";
+		}
+		$html[] = "</td>";
+		$html[] = "</tr>";
+
+		$trimmingImagePath = $attrValues[ThumbnailPluginUtil::TRIMMING_IMAGE];
+		
+		$html[] = "<tr>";
+		$html[] = "<th>トリミング</th>";
+		$html[] = "<td><input type=\"text\" style=\"width:70%;\" id=\"jcrop_trimming_field\" class=\"form-control\" name=\"jcrop_trimming_field\" value=\"" . $trimmingImagePath . "\" readonly=\"readonly\">";
+		if(strlen($trimmingImagePath) === 0){
+			$html[] = "<input type=\"button\" onclick=\"open_jcrop_trimming($('#jcrop_trimming_field'));\" class=\"btn btn-primary\" value=\"トリミング\">";
+		}
+		if(strlen($trimmingImagePath) > 0){
+			$html[] = "<input type=\"button\" class=\"btn btn-warning\" onclick=\"clearTrimmingForm();\" value=\"クリア\">";
+			$html[] = "<a href=\"#\" onclick=\"return preview_thumbnail_plugin(\$('#jcrop_trimming_field'));\" class=\"btn btn-info\">Preview</a>";
+		}
+		$html[] = "<br><span style=\"display:block;margin-top:10px;\">アスペクト比:width:<input type=\"number\" id=\"ratio_w\" class=\"form-control\" name=\"jcrop_ratio_w\" value=\"". (int)$cnf["ratio_w"] . "\" style=\"width:80px;\">&nbsp;";
+		$html[] = "height:<input type=\"number\" id=\"ratio_h\" class=\"form-control\" name=\"jcrop_ratio_h\" value=\"" . (int)$cnf["ratio_h"] . "\" style=\"width:80px;\"></span>";
+		$html[] = "</td>";
+		$html[] = "</tr>";
+
+		$resizeImagePath = $attrValues[ThumbnailPluginUtil::RESIZE_IMAGE];
+		
+		$html[] = "<tr>";
+		$html[] = "<th>";
+		$html[] = "サムネイルの<br>リサイズ";
+		$html[] = "<a href=\"javascript:void(0);\" title=\"トリミングの画像があればリサイズして、トリミング画像がなければアップロードの画像をリサイズしてサムネイルを生成します。リサイズをし直す時は一度クリアを押してください。\"><i class=\"fa fa-question-circle\"></i></a>";
+		$html[] = "</th>";
+		$html[] = "<td>";
+		$html[] = "<input type=\"text\" style=\"width:70%;\" id=\"jcrop_resize_field\" class=\"form-control\" name=\"jcrop_resize_field\" value=\"" . $resizeImagePath . "\" readonly=\"readonly\">";
+		if(strlen($resizeImagePath) > 0){
+			$html[] = "<input type=\"button\" class=\"btn btn-warning\" onclick=\"clearResizeForm();\" value=\"クリア\">";
+		}
+		if(strlen($resizeImagePath) > 0){
+			$html[] = "<a href=\"#\" onclick=\"return preview_thumbnail_plugin(\$('#jcrop_resize_field'));\" class=\"btn btn-info\">Preview</a>";
 		}
 
-		$uploadObject = (isset($objects["soycms_thumbnail_plugin_upload"])) ? $objects["soycms_thumbnail_plugin_upload"] : new EntryAttribute();
+		$html[] = "<br /><span style=\"display:block;margin-top:10px;\">リサイズ:width:<input type=\"number\" class=\"form-control\" name=\"jcrop_resize_w\" value=\"" . (int)$cnf["resize_w"] . "\" style=\"width:100px;\">&nbsp;";
+		$html[] = "height:<input type=\"number\" class=\"form-control\" name=\"jcrop_resize_h\" value=\"" . (int)$cnf["resize_h"] . "\" style=\"width:100px;\"></span><br />";
+    	$html[] = "<span style=\"display:block;\">alt:<input type=\"text\" class=\"form-control\" name=\"jcrop_thumbnail_alt\" value=\"" . $attrValues[ThumbnailPluginUtil::THUMBNAIL_ALT] . "\" style=\"width:40%;\"></span>";
+		$html[] = "</td>";
+		$html[] = "</tr>";
+		$html[] = "</table></div>";
 
-		$htmls = array();
-		$htmls[] = "<label for=\"custom_field_img\">サムネイルの生成</label>";
-		$htmls[] = '<div class="table-responsive"><table class="table">';
-		$htmls[] = "<tr>";
-		$htmls[] = "<th style=\"width:15%;\">";
-		$htmls[] = "アップロード";
-		$htmls[] = "<a href=\"javascript:void(0);\" title=\"サムネイルの生成用の画像を選択します。\"><i class=\"fa fa-question-circle\"></i></a>";
-		$htmls[] = "</th>";
-		$htmls[] = "<td><input type=\"text\" class=\"jcrop_field_input form-control\" style=\"width:70%\" id=\"jcrop_upload_field\" name=\"jcrop_upload_field\" value=\"" . $uploadObject->getValue() . "\" />";
-		$htmls[] = "<input type=\"button\" onclick=\"open_jcrop_filemanager($('#jcrop_upload_field'));\" class=\"btn\" value=\"ファイルを指定する\">";
-		if(strlen($uploadObject->getValue()) > 0){
-			$htmls[] = "<a href=\"#\" onclick=\"return preview_thumbnail_plugin(\$('#jcrop_upload_field'));\" class=\"btn btn-info\">Preview</a>";
-		}
-		$htmls[] = "</td>";
-		$htmls[] = "</tr>";
-
-		$trimmingObject = (isset($objects["soycms_thumbnail_plugin_trimming"])) ? $objects["soycms_thumbnail_plugin_trimming"] : new EntryAttribute();
-
-		$htmls[] = "<tr>";
-		$htmls[] = "<th>トリミング</th>";
-		$htmls[] = "<td><input type=\"text\" style=\"width:70%;\" id=\"jcrop_trimming_field\" class=\"form-control\" name=\"jcrop_trimming_field\" value=\"" . $trimmingObject->getValue() . "\" readonly=\"readonly\">";
-		if(strlen($trimmingObject->getValue()) === 0){
-			$htmls[] = "<input type=\"button\" onclick=\"open_jcrop_trimming($('#jcrop_trimming_field'));\" class=\"btn btn-primary\" value=\"トリミング\">";
-		}
-		if(strlen($trimmingObject->getValue()) > 0){
-			$htmls[] = "<input type=\"button\" class=\"btn btn-warning\" onclick=\"clearTrimmingForm();\" value=\"クリア\">";
-			$htmls[] = "<a href=\"#\" onclick=\"return preview_thumbnail_plugin(\$('#jcrop_trimming_field'));\" class=\"btn btn-info\">Preview</a>";
-		}
-		$htmls[] = "<br><span style=\"display:block;margin-top:10px;\">アスペクト比:width:<input type=\"number\" id=\"ratio_w\" class=\"form-control\" name=\"jcrop_ratio_w\" value=\"". (int)$config["ratio_w"] . "\" style=\"width:80px;\">&nbsp;";
-		$htmls[] = "height:<input type=\"number\" id=\"ratio_h\" class=\"form-control\" name=\"jcrop_ratio_h\" value=\"" . (int)$config["ratio_h"] . "\" style=\"width:80px;\"></span>";
-		$htmls[] = "</td>";
-		$htmls[] = "</tr>";
-
-		$resizeObject = (isset($objects["soycms_thumbnail_plugin_resize"])) ? $objects["soycms_thumbnail_plugin_resize"] : new EntryAttribute();
-
-		$htmls[] = "<tr>";
-		$htmls[] = "<th>";
-		$htmls[] = "サムネイルの<br>リサイズ";
-		$htmls[] = "<a href=\"javascript:void(0);\" title=\"トリミングの画像があればリサイズして、トリミング画像がなければアップロードの画像をリサイズしてサムネイルを生成します。リサイズをし直す時は一度クリアを押してください。\"><i class=\"fa fa-question-circle\"></i></a>";
-		$htmls[] = "</th>";
-		$htmls[] = "<td>";
-		$htmls[] = "<input type=\"text\" style=\"width:70%;\" id=\"jcrop_resize_field\" class=\"form-control\" name=\"jcrop_resize_field\" value=\"" . $resizeObject->getValue() . "\" readonly=\"readonly\">";
-		if(strlen($resizeObject->getValue()) > 0){
-			$htmls[] = "<input type=\"button\" class=\"btn btn-warning\" onclick=\"clearResizeForm();\" value=\"クリア\">";
-		}
-		if(strlen($resizeObject->getValue()) > 0){
-			$htmls[] = "<a href=\"#\" onclick=\"return preview_thumbnail_plugin(\$('#jcrop_resize_field'));\" class=\"btn btn-info\">Preview</a>";
-		}
-
-		$altObject = (isset($objects["soycms_thumbnail_plugin_alt"])) ? $objects["soycms_thumbnail_plugin_alt"] : new EntryAttribute();
-
-		$htmls[] = "<br /><span style=\"display:block;margin-top:10px;\">リサイズ:width:<input type=\"number\" class=\"form-control\" name=\"jcrop_resize_w\" value=\"" . (int)$config["resize_w"] . "\" style=\"width:100px;\">&nbsp;";
-		$htmls[] = "height:<input type=\"number\" class=\"form-control\" name=\"jcrop_resize_h\" value=\"" . (int)$config["resize_h"] . "\" style=\"width:100px;\"></span><br />";
-    	$htmls[] = "<span style=\"display:block;\">alt:<input type=\"text\" class=\"form-control\" name=\"jcrop_thumbnail_alt\" value=\"" . $altObject->getValue() . "\" style=\"width:40%;\"></span>";
-		$htmls[] = "</td>";
-		$htmls[] = "</tr>";
-		$htmls[] = "</table></div>";
-
-		$htmls[] = "<script type=\"text/javascript\">";
+		$html[] = "<script type=\"text/javascript\">";
 
 		if(count($this->label_thumbail_paths)){
-			$htmls[] = "	var list = [];";
+			$html[] = "	var list = [];";
 			$keys = array();
 			foreach($this->label_thumbail_paths as $labelId => $path){
-				$htmls[] = "list[" . $labelId . "] = \"" . $path . "\";";
+				$html[] = "list[" . $labelId . "] = \"" . $path . "\";";
 				$keys[] = $labelId;
 			}
-			$htmls[] = "keys = [".implode(",", $keys) ."];";
-			$htmls[] = "for (var i = 0; i < keys.length; i++) {";
-			$htmls[] = "	$('#label_' + keys[i]).change(function(){";
-			$htmls[] = "		if($(this).is(':checked')){";
-			$htmls[] = "			var idx = $(this).prop('id').replace('label_', '');";
-			$htmls[] = "			if(list[idx]){";
-			$htmls[] = "				$('#jcrop_upload_field').val(list[idx])";
-			$htmls[] = "			}";
-			$htmls[] = "		}";
-			$htmls[] = "	});";
-			$htmls[] = "}";
+			$html[] = "keys = [".implode(",", $keys) ."];";
+			$html[] = "for (var i = 0; i < keys.length; i++) {";
+			$html[] = "	$('#label_' + keys[i]).change(function(){";
+			$html[] = "		if($(this).is(':checked')){";
+			$html[] = "			var idx = $(this).prop('id').replace('label_', '');";
+			$html[] = "			if(list[idx]){";
+			$html[] = "				$('#jcrop_upload_field').val(list[idx])";
+			$html[] = "			}";
+			$html[] = "		}";
+			$html[] = "	});";
+			$html[] = "}";
 		}
 
-		$htmls[] = "function open_jcrop_filemanager(\$form){";
-		$htmls[] = "	common_to_layer(\"" . SOY2PageController::createLink("Page.Editor.FileUpload?jcrop_upload_field") . "\");";
-		$htmls[] = "}";
-		$htmls[] = "function open_jcrop_trimming(\$form){";
-		$htmls[] = "	if(\$(\"#jcrop_upload_field\").val().length > 0){";
-		$htmls[] = "		common_to_layer(\"" . SOY2PageController::createLink("Entry.Editor.Trimming") . "?jcrop_trimming_field&path=\" + \$(\"#jcrop_upload_field\").val() + \"&w=\" + \$(\"#ratio_w\").val() + \"&h=\" + \$(\"#ratio_h\").val())";
-		$htmls[] = "	}else{";
-		$htmls[] = "		alert(\"画像が選択されていません。\")";
-		$htmls[] = "	}";
-		$htmls[] = "}";
+		$html[] = "function open_jcrop_filemanager(\$form){";
+		$html[] = "	common_to_layer(\"" . SOY2PageController::createLink("Page.Editor.FileUpload?jcrop_upload_field") . "\");";
+		$html[] = "}";
+		$html[] = "function open_jcrop_trimming(\$form){";
+		$html[] = "	if(\$(\"#jcrop_upload_field\").val().length > 0){";
+		$html[] = "		common_to_layer(\"" . SOY2PageController::createLink("Entry.Editor.Trimming") . "?jcrop_trimming_field&path=\" + \$(\"#jcrop_upload_field\").val() + \"&w=\" + \$(\"#ratio_w\").val() + \"&h=\" + \$(\"#ratio_h\").val())";
+		$html[] = "	}else{";
+		$html[] = "		alert(\"画像が選択されていません。\")";
+		$html[] = "	}";
+		$html[] = "}";
 
-		$htmls[] = "function preview_thumbnail_plugin(\$form){";
-		$htmls[] = "	var domainURL = \"". self::getDomainUrl($siteConfig->getConfigValue("url")) . "\";";
-		$htmls[] = "	var siteURL = \"" . UserInfoUtil::getSiteUrl() . "\";";
-		$htmls[] = "";
-		$htmls[] = "	var url = \"\";";
-		$htmls[] = "	var href = \$form.val();";
-		$htmls[] = "";
-		$htmls[] = "	if(href && href.indexOf(\"/\") == 0){";
-		$htmls[] = "		url = domainURL + href.substring(1, href.length);";
-		$htmls[] = "	}else{";
-		$htmls[] = "		url = siteURL + href;";
-		$htmls[] = "	}";
-		$htmls[] = "";
-		$htmls[] = "	var temp = new Image();";
-		$htmls[] = "	temp.src = url;";
-		$htmls[] = "	temp.onload = function(e){";
-		$htmls[] = "		common_element_to_layer(url, {";
-		$htmls[] = "			height : Math.min(600, Math.max(400, temp.height + 20)),";
-		$htmls[] = "			width  : Math.min(800, Math.max(400, temp.width + 20))";
-		$htmls[] = "		});";
-		$htmls[] = "	};";
-		$htmls[] = "	temp.onerror = function(e){";
-		$htmls[] = "		alert(url + \"が見つかりません。\");";
-		$htmls[] = "	}";
-		$htmls[] = "	return false;";
-		$htmls[] = "}";
-		$htmls[] = "";
-		$htmls[] = "function clearTrimmingForm(){";
-		$htmls[] = "	\$(\"#jcrop_trimming_field\").val(\"\");";
-		$htmls[] = "}";
-		$htmls[] = "function clearResizeForm(){";
-		$htmls[] = "	\$(\"#jcrop_resize_field\").val(\"\");";
-		$htmls[] = "}";
-		$htmls[] = "</script>";
+		$html[] = "function preview_thumbnail_plugin(\$form){";
+		$html[] = "	var domainURL = \"". self::_getDomainUrl() . "\";";
+		$html[] = "	var siteURL = \"" . UserInfoUtil::getSiteUrl() . "\";";
+		$html[] = "";
+		$html[] = "	var url = \"\";";
+		$html[] = "	var href = \$form.val();";
+		$html[] = "";
+		$html[] = "	if(href && href.indexOf(\"/\") == 0){";
+		$html[] = "		url = domainURL + href.substring(1, href.length);";
+		$html[] = "	}else{";
+		$html[] = "		url = siteURL + href;";
+		$html[] = "	}";
+		$html[] = "";
+		$html[] = "	var temp = new Image();";
+		$html[] = "	temp.src = url;";
+		$html[] = "	temp.onload = function(e){";
+		$html[] = "		common_element_to_layer(url, {";
+		$html[] = "			height : Math.min(600, Math.max(400, temp.height + 20)),";
+		$html[] = "			width  : Math.min(800, Math.max(400, temp.width + 20))";
+		$html[] = "		});";
+		$html[] = "	};";
+		$html[] = "	temp.onerror = function(e){";
+		$html[] = "		alert(url + \"が見つかりません。\");";
+		$html[] = "	}";
+		$html[] = "	return false;";
+		$html[] = "}";
+		$html[] = "";
+		$html[] = "function clearTrimmingForm(){";
+		$html[] = "	\$(\"#jcrop_trimming_field\").val(\"\");";
+		$html[] = "}";
+		$html[] = "function clearResizeForm(){";
+		$html[] = "	\$(\"#jcrop_resize_field\").val(\"\");";
+		$html[] = "}";
+		$html[] = "</script>";
+		$html[] = "</div>";
 
-		return implode("\n", $htmls);
+		return implode("\n", $html);
 	}
 
 	/**
@@ -436,38 +386,28 @@ class SOYCMSThumbnailPlugin{
 	 * @param string url
 	 * @return string url
 	 */
-	private function getDomainUrl($url){
+	private function _getDomainUrl(){
+		$siteUrl = (string)ThumbnailPluginUtil::getSiteConfig()->getConfigValue("url");
 		$siteId = UserInfoUtil::getSite()->getSiteId();
-
-		if(strpos($url, "/" . $siteId . "/")){
-			$url = str_replace("/" . $siteId . "/", "/" , $url);
-		}
-
-		return $url;
+		if(is_numeric(strpos($siteUrl, "/" . $siteId . "/"))) $siteUrl = str_replace("/" . $siteId . "/", "/" , $siteUrl);
+		return $siteUrl;
 	}
 
 	/**
 	 * 記事毎のトリミング設定の取得
 	 */
-	private function getConfigObject($entryId){
-		try{
-			$config = self::_attrDao()->get($entryId, self::THUMBNAIL_CONFIG);
-		}catch(Exception $e){
-			$config = new EntryAttribute();
+	private function _getTmbConfig(int $entryId){
+		$cnf = ($entryId > 0) ? soycms_get_entry_attribute_value($entryId, ThumbnailPluginUtil::THUMBNAIL_CONFIG, "string") : "";
+		if(!strlen($cnf)){
+			return array(
+				"ratio_w" => $this->ratio_w,
+				"ratio_h" => $this->ratio_h,
+				"resize_w" => $this->resize_w,
+				"resize_h" => $this->resize_h
+			);
 		}
 
-		if(is_string($config->getValue())){
-			$configArray = soy2_unserialize($config->getValue());
-		}else{
-			$configArray = array(
-							"ratio_w" => $this->ratio_w,
-							"ratio_h" => $this->ratio_h,
-							"resize_w" => $this->resize_w,
-							"resize_h" => $this->resize_h
-							);
-		}
-
-		return $configArray;
+		return soy2_unserialize($cnf);
 	}
 
 	/**
@@ -521,12 +461,6 @@ class SOYCMSThumbnailPlugin{
 	}
 	function setLabelThumbnailPaths($label_thumbail_paths){
 		$this->label_thumbail_paths = $label_thumbail_paths;
-	}
-
-	private function _attrDao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("cms.EntryAttributeDAO");
-		return $dao;
 	}
 
 	public static function register(){

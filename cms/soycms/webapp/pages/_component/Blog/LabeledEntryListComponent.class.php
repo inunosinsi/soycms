@@ -55,9 +55,10 @@ class LabeledEntryListComponent extends HTMLList{
 			"link" => $pageUrl.$this->page->getEntryPageUri()."/".rawurlencode($entity->getAlias()),
 		));
 
+		$content = (is_string($entity->getContent())) ? $entity->getContent() : "";
 		$this->addLabel("content", array(
-			"text"  => mb_strimwidth(SOY2HTML::ToText($entity->getContent()),0,100,"..."),
-			"title" => mb_strimwidth(SOY2HTML::ToText($entity->getContent()),0,1000,"..."),
+			"text"  => mb_strimwidth(SOY2HTML::ToText($content),0,100,"..."),
+			"title" => mb_strimwidth(SOY2HTML::ToText($content),0,1000,"..."),
 		));
 
 		$this->addLabel("create_date", array(

@@ -61,7 +61,7 @@ class SOYCMSThumbnailConfigPage extends WebPage{
 			"style" => "width:60%"
 		));
 
-		DisplayPlugin::toggle("display_noimage_ppreview_button",strlen($this->pluginObj->getNoThumbnailPath()));
+		DisplayPlugin::toggle("display_noimage_ppreview_button",strlen((string)$this->pluginObj->getNoThumbnailPath()));
 
 		$labels = self::getLabels();
 		DisplayPlugin::toggle("display_label_upload_area", count($labels));
