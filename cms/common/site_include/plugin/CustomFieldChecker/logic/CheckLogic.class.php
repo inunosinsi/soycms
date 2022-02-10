@@ -4,17 +4,17 @@ class CheckLogic extends SOY2LogicBase {
 
 	function __construct(){}
 
-	function get($mode="CustomField", $fieldId){
+	function get(string $mode="CustomField", string $fieldId, string $q=""){
 		switch($mode){
 			case "CustomFieldAdvanced":
-				return self::_customfieldAdvanced($fieldId);
+				return self::_customfieldAdvanced($fieldId, $q);
 			case "CustomField":
 			default:
-				return self::_customfield($fieldId);
+				return self::_customfield($fieldId, $q);
 		}
 	}
 
-	function getConfig($mode="CustomField"){
+	function getConfig(string $mode="CustomField"){
 		$obj = CMSPlugin::loadPluginConfig($mode);
 		if(!count($obj->customFields)) return array();
 
@@ -25,7 +25,7 @@ class CheckLogic extends SOY2LogicBase {
 		return $fields;
 	}
 
-	function _customfield($fieldId){
+	private function _customfield(string $fieldId, string $q=""){
 		$obj = CMSPlugin::loadPluginConfig("CustomField");
 		$haves = array();	//値がある
 		$nones = array(); 	//値がない
@@ -52,7 +52,15 @@ class CheckLogic extends SOY2LogicBase {
 				}
 
 				if(strlen($fieldV)){
-					$haves[$v["id"]] = self::_convert($v);
+					if(strlen($q)){
+						if(is_numeric(strpos($fieldV, $q))){
+							$haves[$v["id"]] = self::_convert($v);
+						}else{
+							$nones[$v["id"]] = self::_convert($v);
+						}
+					}else{	//検索クエリがない場合は必ずhavesに加える
+						$haves[$v["id"]] = self::_convert($v);
+					}
 				}else{
 					$nones[$v["id"]] = self::_convert($v);
 				}
@@ -62,8 +70,10 @@ class CheckLogic extends SOY2LogicBase {
 		return array($haves, $nones);
 	}
 
-	function _customfieldAdvanced($fieldId){
+	private function _customfieldAdvanced(string $fieldId, string $q=""){
 		$obj = CMSPlugin::loadPluginConfig("CustomFieldAdvanced");
+		unset($obj);
+
 		$haves = array();	//値がある
 		$nones = array(); 	//値がない
 		$lim = 100;
@@ -71,7 +81,7 @@ class CheckLogic extends SOY2LogicBase {
 		$dao = new SOY2DAO();
 		//nonesの方のみ拾うSQL
 		$noneSql = "SELECT id, title, openPeriodStart, openPeriodEnd, isPublished FROM Entry ".
-				"WHERE id NOT IN (" .
+				"WHERE id NOT IN (" . 
 					"SELECT entry_id FROM EntryAttribute WHERE entry_field_id = :fieldId ".
 				") ".
 				"LIMIT " . $lim . " ";
@@ -79,9 +89,10 @@ class CheckLogic extends SOY2LogicBase {
 		$haveSql = "SELECT ent.id, ent.title, ent.openPeriodStart, ent.openPeriodEnd, ent.isPublished, attr.entry_value FROM Entry ent ".
 					"INNER JOIN EntryAttribute attr ".
 					"ON ent.id = attr.entry_id ".
-					"WHERE attr.entry_field_id = :fieldId ".
-					"LIMIT " . $lim . " ";
-
+					"WHERE attr.entry_field_id = :fieldId ";
+		if(strlen($q)) $haveSql .= "AND attr.entry_value LIKE '%" . trim(htmlspecialchars($q, ENT_QUOTES, "UTF-8")) . "%' ";
+		$haveSql .= "LIMIT " . $lim . " ";
+		
 		$i = 1;
 		for(;;){
 			$flg = false;
@@ -112,7 +123,7 @@ class CheckLogic extends SOY2LogicBase {
 		return array($haves, $nones);
 	}
 
-	private function _convert($v){
+	private function _convert(array $v){
 		$title = $v["title"];
 		if($v["isPublished"] != 1) $title .= "(非公開)";
 		if($v["openPeriodStart"] > time() || $v["openPeriodEnd"] < time()) $title .= "(公開期間外)";

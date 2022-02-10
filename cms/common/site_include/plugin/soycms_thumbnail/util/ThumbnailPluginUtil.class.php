@@ -64,11 +64,9 @@ class ThumbnailPluginUtil {
 	 * @return array
 	 */
 	public static function getThumbnailPathesByEntryId(int $entryId){
-		$attrValues = array();
-
 		if($entryId > 0){
 			if(isset($GLOBALS[self::GLOBAL_INDEX][$entryId])){
-				$attrValues = $GLOBALS[self::GLOBAL_INDEX][$entryId];
+				$attrValues = &$GLOBALS[self::GLOBAL_INDEX][$entryId];
 			}else{
 				try{
 					$res = soycms_get_hash_table_dao("entry_attribute")->executeQuery(
@@ -82,6 +80,7 @@ class ThumbnailPluginUtil {
 					$res = array();
 				}
 
+				$attrValues = array();
 				if(count($res)){
 					foreach($res as $v){
 						if(!isset($v["entry_value"]) || !is_string($v["entry_value"]) || !strlen($v["entry_value"])) continue;

@@ -1,20 +1,21 @@
-<div>
-記事の作成日時から下記で設定した期間中はcms:id="<!-- soy:id="cms_id" /-->"で示された箇所が表示されます。<br/>
+<div class="alert alert-info">
+	記事の作成日時から下記で設定した期間中はcms:id="this_is_new"で示された箇所が表示されます。
 </div>
 
 <form method="post" soy:id="this_is_new_form">
-<fieldset><legend>設定</legend>
-	<div class="form-group col-lg-6">
-		<label>新着期間</label>
-		<div class="input-group">
-			<input soy:id="days_to_be_new" style="text-align:right" class="form-control" type="number">
-			<span class="input-group-addon">日</span>
+	<fieldset>
+		<legend>設定</legend>
+		<div class="form-group col-lg-6">
+			<label>新着期間</label>
+			<div class="form-inline">
+				<input soy:id="days_to_be_new" style="text-align:right" class="form-control" type="number"
+					style="width:100px;">&nbsp;日
+			</div>
+			<input soy:id="ignore_future_entry" id="ignore_future_entry" value="1"><br />
+			<input type="submit" name="save" value="設定" class="btn btn-primary btn-block">
 		</div>
-		<input soy:id="ignore_future_entry" id="ignore_future_entry" value="1"><br />
-	<input type="submit" name="save" value="設定" class="btn btn-primary btn-block" >
-	</div>
-</fieldset>
-</form soy:id="this_is_new_form">
+	</fieldset>
+</form>
 
 <h4>使用例</h4>
 <pre style="margin: 1.5em 2em; border: 1px solid gray; padding: 1ex 1.5ex;">

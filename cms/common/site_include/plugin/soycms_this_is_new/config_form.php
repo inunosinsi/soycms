@@ -3,8 +3,7 @@ class SOYCMS_ThisIsNew_Plugin_FormPage extends WebPage{
 
 	private $pluginObj;
 
-	function __construct(){
-	}
+	function __construct(){}
 
 	function doPost(){
 		if(soy2_check_token()){
@@ -21,20 +20,19 @@ class SOYCMS_ThisIsNew_Plugin_FormPage extends WebPage{
 	function execute(){
 		parent::__construct();
 
-		$this->createAdd("cms_id","HTMLLabel",array(
+		$this->addLabel("cms_id", array(
 			"text" => SOYCMS_ThisIsNew_Plugin::CMS_ID
 		));
 
 
-		$this->createAdd("this_is_new_form","HTMLForm",array(
-		));
+		$this->addForm("this_is_new_form");
 
-		$this->createAdd("days_to_be_new","HTMLInput",array(
+		$this->addInput("days_to_be_new", array(
 			"name" => "days_to_be_new",
 			"value" => $this->pluginObj->daysToBeNew,
 		));
 
-		$this->createAdd("ignore_future_entry","HTMLCheckBox",array(
+		$this->addCheckBox("ignore_future_entry", array(
 			"type" => "checkbox",
 			"name" => "ignore_future_entry",
 			"value" => 1,

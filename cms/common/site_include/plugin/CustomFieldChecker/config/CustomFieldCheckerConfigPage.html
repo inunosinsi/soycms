@@ -3,13 +3,19 @@
 	<div class="form-group">
 		<div class="form-inline">
 			<label>カスタムフィールド</label>
-			<select soy:id="customfield" class="form-control"><option></option></select>&nbsp;
+			<select soy:id="customfield" class="form-control">
+				<option></option>
+			</select>&nbsp;
+			<input type="text" class="form-control" soy:id="customfield_keyword">
 			<input type="submit" class="btn btn-primary" value="調べる">
 		</div>
 	</div>
 </form>
 
-<!-- soy:id="customfield_result" /-->
+<form soy:id="customfield_entry_list_form">
+	<!-- soy:id="customfield_result" /-->
+</form>
+
 
 <!-- /soy:display="customfield" -->
 
@@ -18,12 +24,33 @@
 	<div class="form-group">
 		<div class="form-inline">
 			<label>カスタムフィールドアドバンスド</label>
-			<select soy:id="customfield_advanced" class="form-control"><option></option></select>&nbsp;
+			<select soy:id="customfield_advanced" class="form-control">
+				<option></option>
+			</select>&nbsp;
+			<input type="text" class="form-control" soy:id="customfield_advanced_keyword">
 			<input type="submit" class="btn btn-primary" value="調べる">
 		</div>
 	</div>
 </form>
 
-<!-- soy:id="customfield_advanced_result" /-->
-
+<form soy:id="customfield_advanced_entry_list_form">
+	<!-- soy:id="customfield_advanced_result" /-->
+</form>
 <!-- /soy:display="customfield_advanced" -->
+
+<style>
+	#customfield_btn_area,
+	#customfield_advanced_btn_area {
+		display: none;
+	}
+</style>
+
+<script>
+	["customfield", "customfield_advanced"].forEach(function (idx) {
+		$("." + idx + "_check").each(function () {
+			$(this).on("click", function () {
+				$("#" + idx + "_btn_area").show();
+			});
+		});
+	});
+</script>

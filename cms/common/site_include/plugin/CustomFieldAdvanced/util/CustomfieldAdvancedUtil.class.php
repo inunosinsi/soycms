@@ -105,8 +105,6 @@ class CustomfieldAdvancedUtil {
 	public static function getValuesByFieldIds(int $entryId, array $fieldIds){
 		if(!count($fieldIds)) return array();
 
-		$arr = array();
-		
 		// setValuesByEntryIdsAndFieldIdsを実行した場合はその結果を格納する
 		if(isset($GLOBALS[self::GLOBAL_INDEX][$entryId])){
 			$arr = &$GLOBALS[self::GLOBAL_INDEX][$entryId];
@@ -125,6 +123,7 @@ class CustomfieldAdvancedUtil {
 				$res = array();
 			}
 
+			$arr = array();
 			if(count($res)){
 				foreach($res as $v){
 					$extra = (isset($v["entry_extra_values"]) && is_string($v["entry_extra_values"]) && strlen($v["entry_extra_values"])) ? soy2_unserialize($v["entry_extra_values"]) : null;
