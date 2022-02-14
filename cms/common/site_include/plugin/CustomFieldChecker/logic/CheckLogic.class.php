@@ -52,10 +52,10 @@ class CheckLogic extends SOY2LogicBase {
 				}
 
 				if(strlen($fieldV)){
-					if(strlen($q)){
+					if(strlen($q)){	//検索クエリがある場合
 						if(is_numeric(strpos($fieldV, $q))){
 							$haves[$v["id"]] = self::_convert($v);
-						}else{
+						}else{	//検索クエリがある場合はnonesには入れない
 							$nones[$v["id"]] = self::_convert($v);
 						}
 					}else{	//検索クエリがない場合は必ずhavesに加える
@@ -66,6 +66,8 @@ class CheckLogic extends SOY2LogicBase {
 				}
 			}
 		}
+
+		if(strlen($q)) $nones = array();
 
 		return array($haves, $nones);
 	}
