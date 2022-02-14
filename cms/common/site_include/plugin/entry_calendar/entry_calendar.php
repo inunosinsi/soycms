@@ -41,9 +41,7 @@ class EntryCalendarPlugin{
 
 	public static function register(){
 		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
-		if(is_null($obj)){
-			$obj = new EntryCalendarPlugin();
-		}
+		if(is_null($obj)) $obj = new EntryCalendarPlugin();
 		CMSPlugin::addPlugin(self::PLUGIN_ID,array($obj,"init"));
 	}
 }

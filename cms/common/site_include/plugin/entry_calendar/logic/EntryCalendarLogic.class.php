@@ -31,7 +31,6 @@ class EntryCalendarLogic extends SOY2LogicBase {
 		try{
 			$res = $this->entryDao->executeQuery($sql, array(":labelId" => $labelId));
 		}catch(Exception $e){
-var_dump($e);
 			return array();
 		}
 
