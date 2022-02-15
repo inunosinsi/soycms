@@ -39,7 +39,7 @@ class CustomFieldPluginAdvanced{
 			"author" => "日本情報化農業研究所",
 			"url" => "http://www.n-i-agroinformatics.com/",
 			"mail" => "soycms@soycms.net",
-			"version"=>"1.15"
+			"version"=>"1.15.1"
 		));
 
 		//プラグイン アクティブ
@@ -365,22 +365,22 @@ class CustomFieldPluginAdvanced{
 								$_hash = (is_string($fieldValue) && strlen($fieldValue)) ? CustomfieldAdvancedUtil::createHash($fieldValue) : null;
 								$pairValue = (isset($_hash) && isset($pairValues[$_hash])) ? $pairValues[$_hash] : "";
 
-								$htmlObj->addLabel($fieldId . "_pair_" . ($idx + 1) . "_visible", array(
+								$htmlObj->addModel($fieldId . "_pair_" . ($idx + 1) . "_visible", array(
 									"soy2prefix" => "cms",
 									"visible" => (strlen($pairValue) > 0)
 								));
 
-								$htmlObj->addLabel($fieldId . "_pair_" . ($idx + 1) . "_is_not_empty", array(
+								$htmlObj->addModel($fieldId . "_pair_" . ($idx + 1) . "_is_not_empty", array(
 									"soy2prefix" => "cms",
 									"visible" => (strlen($pairValue) > 0)
 								));
 
-								$htmlObj->addLabel($fieldId . "_pair_" . ($idx + 1) . "_is_empty", array(
+								$htmlObj->addModel($fieldId . "_pair_" . ($idx + 1) . "_is_empty", array(
 									"soy2prefix" => "cms",
 									"visible" => (strlen($pairValue) === 0)
 								));
 
-								$htmlObj->addLabel($fieldId . "_pair_" . ($idx + 1), array(
+								$htmlObj->addModel($fieldId . "_pair_" . ($idx + 1), array(
 									"soy2prefix" => "cms",
 									"html" => $pairValue
 								));
