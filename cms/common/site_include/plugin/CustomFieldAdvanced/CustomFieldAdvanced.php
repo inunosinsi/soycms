@@ -380,7 +380,7 @@ class CustomFieldPluginAdvanced{
 									"visible" => (strlen($pairValue) === 0)
 								));
 
-								$htmlObj->addModel($fieldId . "_pair_" . ($idx + 1), array(
+								$htmlObj->addLabel($fieldId . "_pair_" . ($idx + 1), array(
 									"soy2prefix" => "cms",
 									"html" => $pairValue
 								));
