@@ -826,13 +826,23 @@ function soyshop_shape_timestamp(int $timestamp, string $mode="start"){
 }
 
 /**
- * タイムスタンプから時刻へ変換
+ * タイムスタンプから日付へ変換
  * @param integer $timestamp, string $divide
  * @return string
  */
 function soyshop_convert_date_string(int $timestamp, string $divide="-"){
 	if($timestamp == 0 || $timestamp == 2147483647) return "";
 	return date("Y" . $divide . "m" . $divide . "d", $timestamp);
+}
+
+/**
+ * タイムスタンプから時刻付き日付へ変換する
+ * @param int timestamp, string divide
+ * @return string
+ */
+function soyshop_convert_date_with_time_string(int $timestamp, string $divide="-"){
+	if($timestamp == 0 || $timestamp == 2147483647) return "";
+	return soyshop_convert_date_string($timestamp, $divide) . date("H:i:s", $timestamp);
 }
 
 /**

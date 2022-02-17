@@ -146,7 +146,7 @@ class ItemListComponent extends HTMLList {
 		$html = array();
 		foreach($opts as $optionId => $opt){
 			if(!isset($list[$optionId]) || !strlen($opt)) continue;
-			$html[] = $list[$optionId]["name"] . ":" . $opt;
+			$html[] = $list[$optionId]["name"] . ":" . nl2br($opt);
 		}
 
 		return implode("<br>", $html);

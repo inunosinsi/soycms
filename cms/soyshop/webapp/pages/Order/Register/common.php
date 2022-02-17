@@ -83,7 +83,7 @@ class AdminCartLogic extends CartLogic{
 			}else{
 				$author = SOY2ActionSession::getUserSession()->getAttribute("username")." (".SOY2ActionSession::getUserSession()->getAttribute("userid").")";
 			}
-			$orderLogic->addHistory($this->getAttribute("order_id"), $author."が管理画面から注文を登録しました。");
+			$orderLogic->addHistory((int)$this->getAttribute("order_id"), $author."が管理画面から注文を登録しました。");
 			SOY2Logic::createInstance("logic.order.admin.AdminOrderLogic")->clear();	//バックアップの削除
 
 			$orderDAO->commit();

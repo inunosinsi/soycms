@@ -118,7 +118,7 @@ class CommonItemOption extends SOYShopItemOptionBase{
 		foreach($opts as $key => $conf){
 			$opt = (string)$cart->getAttribute(self::getCartAttributeId($key, $index, $itemId));
 			if(strlen($opt) > 0){
-				$html[] = self::getOptionName($conf) . ":" . trim(htmlspecialchars($opt, ENT_QUOTES, "UTF-8"));
+				$html[] = self::getOptionName($conf) . ":" . trim(nl2br(htmlspecialchars($opt, ENT_QUOTES, "UTF-8")));
 			}
 		}
 
@@ -129,7 +129,7 @@ class CommonItemOption extends SOYShopItemOptionBase{
 	 * 注文確定時に商品とオプション内容を紐づける
 	 * @param integer index
 	 */
-	function order($index){
+	function order(int $index){
 		$cart = CartLogic::getCart();
 
 		$items = $cart->getItems();
@@ -177,7 +177,7 @@ class CommonItemOption extends SOYShopItemOptionBase{
 		$html = array();
 		foreach($attrs as $key => $value){
 			if(isset($opts[$key]["name"]) && is_string($value) && strlen($value) > 0){
-				$html[] = $opts[$key]["name"] . " : " . trim(htmlspecialchars($value, ENT_QUOTES, "UTF-8"));
+				$html[] = $opts[$key]["name"] . " : " . trim(nl2br(htmlspecialchars($value, ENT_QUOTES, "UTF-8")));
 			}
 		}
 

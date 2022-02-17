@@ -142,11 +142,8 @@ class SlipNumberLogic extends SOY2LogicBase{
 			return false;
 		}
 
-		//返送管理プラグインと連携している場合は返送のチェックを行う
-		$isResend = false;
-		if(SOYShopPluginUtil::checkIsActive("resend_manager")){
-			$isResend = SOY2Logic::createInstance("module.plugins.resend_manager.logic.ResendLogic")->checkResendSlipNumber($slipNumber->getOrderId(), $slipNumber->getSlipNumber());
-		}
+		//返送管理プラグインと連携している場合は返送のチェックを行う→何のため？
+		$isResend = (SOYShopPluginUtil::checkIsActive("resend_manager")) ? SOY2Logic::createInstance("module.plugins.resend_manager.logic.ResendLogic")->checkResendSlipNumber($slipNumber->getOrderId(), $slipNumber->getSlipNumber()) : false;
 
 		//一つの注文ですべて配送済みにしたら注文ステータスを配送済みにする
 		SOY2::import("domain.order.SOYShop_Order");
@@ -157,6 +154,12 @@ class SlipNumberLogic extends SOY2LogicBase{
 		//戻す。ただし再送を行っている場合は見ない
 		}else if(!$isResend){
 			$orderLogic->changeOrderStatus($slipNumber->getOrderId(), SOYShop_Order::ORDER_STATUS_RECEIVED);
+		}
+
+		// 再送にチェックが入っている場合は再送済みにする
+		if($isResend){
+			SOY2::import("module.plugins.resend_manager.util.ResendManagerUtil");
+			ResendManagerUtil::saveFlagData(true, true, (int)$slipNumber->getOrderId());
 		}
 
 		return true;

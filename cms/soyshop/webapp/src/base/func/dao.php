@@ -9,7 +9,7 @@ function soyshop_generate_hash_value(string $str, int $length=12){
 
 function soyshop_get_hash_table_types(){
 	static $types;
-	if(is_null($types)) $types = array("item", "item_children", "item_attribute", "category", "category_attribute", "user", "user_attribute", "order", "order_attribute", "order_date_attribute", "item_orders", "page", "plugin");
+	if(is_null($types)) $types = array("item", "item_children", "item_attribute", "category", "category_attribute", "user", "user_attribute", "order", "order_attribute", "order_date_attribute", "order_state_history", "item_orders", "page", "plugin");
 	return $types;
 }
 
@@ -68,12 +68,15 @@ function soyshop_get_hash_table_dao(string $fnName){
 			$path = "order.SOYShop_OrderDateAttributeDAO";
 			break;
 		case 10:
+			$path = "order.SOYShop_OrderStateHistoryDAO";
+			break;
+		case 11:	// item_orders
 			$path = "order.SOYShop_ItemOrderDAO";
 			break;
-		case 11:
+		case 12:
 			$path = "site.SOYShop_PageDAO";
 			break;
-		case 12:
+		case 13:
 			$path = "plugin.SOYShop_PluginConfigDAO";
 			break;
 	}
@@ -495,8 +498,10 @@ function soyshop_get_order_date_attribute_objects(int $orderId, array $fieldIds)
 
 	if(!count($fieldIds)) return $attrs;
 
-	$attrs = $dao->getByOrderIdAndFieldIds($orderId, $fieldIds);
-	foreach($attrs as $fieldId => $attr){
+	$arr = $dao->getByOrderIdAndFieldIds($orderId, $fieldIds);
+	foreach($arr as $fieldId => $attr){
+		if(isset($attrs[$fieldId])) continue;
+		$attrs[$fieldId] = $attr;
 		$idx = soyshop_get_hash_index(((string)$orderId . $fieldId), __FUNCTION__);
 		if(!isset($GLOBALS["soyshop_order_date_attribute_hash_table"][$idx])) $GLOBALS["soyshop_order_date_attribute_hash_table"][$idx] = $attr;
 	}
@@ -528,7 +533,7 @@ function soyshop_get_order_date_attribute_values(int $orderId, array $fieldIds, 
 				$list[$fieldId] = soyshop_get_attribute_value($attr->getValue1());
 		}
 	}
-
+	
 	return $list;
 }
 

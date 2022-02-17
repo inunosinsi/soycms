@@ -19,7 +19,7 @@ class ConfirmPage extends IndexPage{
 				//ポイントモジュール
 				{
 					SOYShopPlugin::load("soyshop.point.payment");
-					$delegate = SOYShopPlugin::invoke("soyshop.point.payment", array(
+					SOYShopPlugin::invoke("soyshop.point.payment", array(
 						"mode" => "order",
 						"cart" => $cart,
 					));
@@ -32,13 +32,13 @@ class ConfirmPage extends IndexPage{
 				//注文日時変更
 				$cart->changeOrderDate();
 
-				$orderId = $cart->getAttribute("order_id");
+				$orderId = (int)$cart->getAttribute("order_id");
 
 				//カートをクリア
 				$cart->clear();
 
 				//注文詳細画面へ移動
-				SOY2PageController::jump("Order.Detail" . "." . $orderId);
+				SOY2PageController::jump("Order.Detail" . "." . $orderId . "?complete&order_id=" . $orderId);
 
 			}catch(SOYShop_EmptyStockException $e){
 				$cart->addErrorMessage("stock", "在庫切れの商品があります。");

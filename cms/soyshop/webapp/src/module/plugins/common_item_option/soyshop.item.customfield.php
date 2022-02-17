@@ -39,7 +39,7 @@ class CommonItemOptionCustomField extends SOYShopItemCustomFieldBase{
 
 		$types = ItemOptionUtil::getTypes();
 		foreach($opts as $key => $conf){
-			$html[] = self::buildTextArea($key, $conf, $item->getId(), $types);
+			$html[] = self::buildTextArea($key, $conf, (int)$item->getId(), $types);
 		}
 
 		$html[] = "<div class=\"alert alert-info\">商品オプションの設定ここまで</div>";
@@ -52,7 +52,7 @@ class CommonItemOptionCustomField extends SOYShopItemCustomFieldBase{
 	 * @param string key, string value, integer itemId
 	 * @retrun string html
 	 */
-	private function buildTextArea($key, $conf, $itemId, $types){
+	private function buildTextArea(string $key, array $conf, int $itemId, array $types){
 		$prefix = (is_string($this->prefix)) ? $this->prefix : "";
 		$v = ItemOptionUtil::getFieldValue($key, $itemId, $prefix);
 
@@ -63,7 +63,7 @@ class CommonItemOptionCustomField extends SOYShopItemCustomFieldBase{
 
 		$html[] = "<div class=\"form-group\">";
 		$html[] = "<label for=\"item_option_" . $key . "\">オプション名：" . $conf["name"] . "&nbsp;タイプ：" . $types[$type] . "</label><br>";
-		if($type == "text"){
+		if($type == "text" || $type == "textarea"){
 			$html[] = "<input type=\"hidden\" name=\"item_option[" . $key . "]\" value=\"0\"><input type=\"checkbox\" name=\"item_option[" . $key . "]\" id=\"item_option_" . $key ."\" value=\"1\"".( $v ? " checked" : "" )."><label for=\"item_option_" . $key ."\">使う</label>";
 		}else{
 			$html[] = "<textarea name=\"item_option[" . $key . "]\" class=\"form-control\">" . $v . "</textarea>";

@@ -6,7 +6,8 @@ class ItemOptionUtil {
 		return array(
 			"select" => "セレクトボックス",
 			"radio" => "ラジオボタン",
-			"text" => "テキスト"
+			"text" => "テキスト",
+			"textarea" => "複数行テキスト"
 		);
 	}
 
@@ -69,6 +70,8 @@ class ItemOptionUtil {
 		switch($type){
 			case "text":
 				return "<input type=\"text\" name=\"" . $name . "\" value=\"" . $selected . "\" >";
+			case "textarea":
+				return "<textarea name=\"" . $name . "\">" . $selected . "</textarea>";
 			case "radio":
 				$html = array();
 				$first = true;
@@ -189,7 +192,7 @@ class ItemOptionUtil {
 		if(isset($res[0]) && isset($res[0]["item_value"]) && strlen($res[0]["item_value"])) return $dao->getObject($res[0]);
 
 		//子商品である場合は親商品の設定を調べる
-		$itemId = self::itemOrderDao()->getItemIdById($itemOrderId);
+		$itemId = soyshop_get_hash_table_dao("item_orders")->getItemIdById($itemOrderId);
 		if(!is_numeric($itemId)) $itemId = 0;
 		return soyshop_get_item_attribute_object(soyshop_get_parent_id_by_child_id($itemId), "item_option_" . $key);
 	}
@@ -224,11 +227,5 @@ class ItemOptionUtil {
 		}
 
 		return $str;
-	}
-
-	private static function itemOrderDao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
-		return $dao;
 	}
 }

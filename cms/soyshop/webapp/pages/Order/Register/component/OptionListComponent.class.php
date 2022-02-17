@@ -21,7 +21,7 @@ class OptionListComponent extends HTMLList{
 			"text" => $label
 		));
 
-		$form = self::buildForm($key, $entity);
+		$form = (is_string($key) && is_string($entity)) ? self::buildForm($key, $entity) : "";
 		$this->addModel("is_option", array(
 			"visible" => (strlen($form))
 		));
@@ -31,7 +31,7 @@ class OptionListComponent extends HTMLList{
 		));
 	}
 
-	private function buildForm($key, $selected){
+	private function buildForm(string $key, string $selected){
 		if(!isset($key) || !isset($this->configs[$key])) return "";
 		switch($this->configs[$key]){
 			case "text":
@@ -41,7 +41,7 @@ class OptionListComponent extends HTMLList{
 		}
 	}
 
-	private function _buildForm($key, $selected){
+	private function _buildForm(string $key, string $selected){
 		$selected = trim(htmlspecialchars($selected, ENT_QUOTES, "UTF-8"));
 
 		$form = self::getItemOptionHtml($key, $selected);
@@ -51,9 +51,7 @@ class OptionListComponent extends HTMLList{
 		return "<input type=\"text\" name=\"" . $name . "\" value=\"" . $selected . "\">";
 	}
 
-	private function getItemOptionHtml($key, $selected){
-		if(is_null($key)) return "";
-
+	private function getItemOptionHtml(string $key, string $selected){
 		$htmls = SOYShopPlugin::invoke("soyshop.item.option", array(
 			"mode" => "admin",
 			"index" => $this->index,
