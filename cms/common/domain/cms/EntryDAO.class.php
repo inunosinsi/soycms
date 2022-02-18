@@ -84,6 +84,11 @@ abstract class EntryDAO extends SOY2DAO{
 		//プラグインによっては読み込まれていないことがある
 		if(!class_exists("UserInfoUtil")) SOY2::import("util.UserInfoUtil");
 		if(!isset($binds[':author'])) $binds[':author'] = UserInfoUtil::getUserName();
+
+		// 作成日にあり得ない数字が入り、CPUの負荷がかかったことがある
+		if(!isset($binds[":cdate"]) || !is_numeric($binds[":cdate"])) $binds[":cdate"] = time();
+		if($binds[":cdate"] < self::DATE_MIN || $binds[":cdate"] > self::DATE_MAX) $binds[":cdate"] = time();
+
 		if(!isset($binds[':udate'])) $binds[':udate'] = time();
 
 		if(!isset($binds[":openPeriodStart"])) $binds[":openPeriodStart"] = self::DATE_MIN;
