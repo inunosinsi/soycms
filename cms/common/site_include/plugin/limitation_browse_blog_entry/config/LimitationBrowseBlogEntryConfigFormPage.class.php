@@ -14,4 +14,3 @@ class LimitationBrowseBlogEntryConfigFormPage extends WebPage{
 		$this->pluginObj = $pluginObj;
 	}
 }
-?>

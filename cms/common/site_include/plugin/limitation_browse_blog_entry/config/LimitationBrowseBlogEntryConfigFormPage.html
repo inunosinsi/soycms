@@ -1,23 +1,24 @@
 <h3>テンプレートへの記述例</h3>
 <pre>
-&lt;meta b_block:id="meta_robots"&gt;
+&lt;meta <strong>b_block:id="meta_robots"</strong>&gt;
 
 &lt;!-- b_block:id="entry" --&gt;
 &lt;h2 cms:id="title_plain"&gt;タイトル&lt;/h2&gt;
 
 &lt;!-- パスワード認証後に表示する箇所 --&gt;
-&lt;!-- cms:id="allow_browse_entry" --&gt;
+&lt;!-- <strong>cms:id="allow_browse_entry"</strong> --&gt;
 &lt;div cms:id="content"&gt;本文を記載します&lt;/div&gt;
 &lt;div cms:id="more"&gt;追記を記載します&lt;/div&gt;
-&lt;!-- /cms:id="allow_browse_entry" --&gt;
+&lt;!-- /<strong>cms:id="allow_browse_entry"</strong> --&gt;
 
 &lt;!-- パスワードによる閲覧制限がある場合に表示する箇所 --&gt;
-&lt;!-- cms:id="not_allow_browse_entry" --&gt;
+&lt;!-- <strong>cms:id="not_allow_browse_entry"</strong> --&gt;
 &lt;h2&gt;閲覧するためにはパスワードが必要です。&lt;/h2&gt;
-&lt;form cms:id="browse_password_form"&gt;
-	&lt;input type="text" cms:id="browse_password_input"&gt;
+&lt;form <strong>cms:id="browse_password_form"</strong>&gt;
+	&lt;input type="text" <strong>cms:id="browse_password_input"</strong>&gt;
 	&lt;input type="submit" value="送信"&gt;
+	&lt;label&gt;&lt;input type="checkbox" <strong>cms:id="browse_password_save"</strong>&gt;パスワードをブラウザに記録する&lt;/label&gt;
 &lt;/form&gt;
-&lt;!-- /cms:id="not_allow_browse_entry" --&gt;
+&lt;!-- /<strong>cms:id="not_allow_browse_entry"</strong> --&gt;
 &lt;!-- /b_block:id="entry" --&gt;
 </pre>

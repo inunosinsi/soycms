@@ -3,10 +3,7 @@
 class LimitationBrowseBlogEntryPlugin{
 
 	const PLUGIN_ID = "LimitationBrowseBlogEntry";
-	const FIELD_ID = "browse_password";
-
-	private $entryAttributeDao;
-
+	
 	function getId(){
 		return self::PLUGIN_ID;
 	}
@@ -18,16 +15,15 @@ class LimitationBrowseBlogEntryPlugin{
 			"author"=>"日本情報化農業研究所",
 			"url"=>"http://www.n-i-agroinformatics.com",
 			"mail"=>"info@n-i-agroinformatics.com",
-			"version"=>"0.6"
+			"version"=>"0.8"
 		));
 
 		if(CMSPlugin::activeCheck($this->getId())){
+			SOY2::import("site_include.plugin.limitation_browse_blog_entry.util.LimitationBrowseUtil");
 
 			CMSPlugin::addPluginConfigPage(self::PLUGIN_ID, array(
 				$this,"config_page"
 			));
-
-			$this->entryAttributeDao = SOY2DAOFactory::create("cms.EntryAttributeDAO");
 
 			//公開画面側
 			if(defined("_SITE_ROOT_")){
@@ -53,131 +49,82 @@ class LimitationBrowseBlogEntryPlugin{
 		$htmlObj = $arg["SOY2HTMLObject"];
 		$entryId = (int)$arg["entryId"];
 
-		$allowBrowse = false;
-
 		//詳細ページのみで動く。数字の時のみ処理を行う。
-		if(get_class($htmlObj) == "EntryComponent" && is_numeric($entryId) && $entryId > 0){
-			$obj = $this->getCustomFieldObject($entryId);
-
-			//文字列がある時は条件付きと見なして、セッションに入れた値を確認しにいく
-			if(!is_null($obj->getValue()) && strlen($obj->getValue())){
-
-				$userSession = SOY2ActionSession::getUserSession();
-				$allowBrowse = $userSession->getAttribute("allow_browse_" . $entryId);
-
-				if(is_null($allowBrowse)) $allowBrowse = false;
-
-			//文字列が登録されていない場合は無条件と見なして常にtrue
-			}else{
-				$allowBrowse = true;
-			}
-		}
-
+		$on = ($htmlObj instanceof EntryComponent && $entryId > 0) ? LimitationBrowseUtil::checkIsAllowBrowse($entryId) : true;
+		
 		$htmlObj->addModel("allow_browse_entry", array(
 			"soy2prefix" => "cms",
-			"visible" => ($allowBrowse)
+			"visible" => ($on)
 		));
 
 		$htmlObj->addModel("not_allow_browse_entry", array(
 			"soy2prefix" => "cms",
-			"visible" => (!$allowBrowse)
+			"visible" => (!$on)
 		));
 
-		$htmlObj->addForm("browse_password_form", array(
+		$htmlObj->addForm(LimitationBrowseUtil::FIELD_ID . "_form", array(
 			"soy2prefix" => "cms"
 		));
 
-		$htmlObj->addInput("browse_password_input", array(
+		$htmlObj->addInput(LimitationBrowseUtil::FIELD_ID . "_input", array(
 			"soy2prefix" => "cms",
-			"name" => "browse_password",
+			"name" => LimitationBrowseUtil::FIELD_ID,
 			"value" => ""
+		));
+
+		$htmlObj->addCheckBox(LimitationBrowseUtil::FIELD_ID . "_save", array(
+			"soy2prefix" => "cms",
+			"name" => LimitationBrowseUtil::FIELD_ID . "_save",
+			"value" => 1
 		));
 	}
 
 	//パスワードのチェック
 	function onPageOutput($obj){
-
-		if(get_class($obj) == "CMSBlogPage"){
-
-			//詳細ページで動きます。
-			if(isset($obj->entry)){
-				$entryId = (int)$obj->entry->getId();
-
-				$attr = $this->getCustomFieldObject($entryId);
-
-				if(soy2_check_token() && isset($_POST[self::FIELD_ID])){
-
-					//入力したパスワードが一致しているならば
-					if($_POST[self::FIELD_ID] == $attr->getValue()){
-						$userSession = SOY2ActionSession::getUserSession();
-						$userSession->setAttribute("allow_browse_" . $entryId, true);
-					}
-
-					//元のページにリダイレクト
-					header("Location:" . $_SERVER["REQUEST_URI"]);
-				}
-
-				$limitBrowse = (!is_null($attr->getValue()) && strlen($attr->getValue()));
-
-				$obj->addModel("meta_robots", array(
-					"soy2prefix" => "b_block",
-					"attr:name" => "robots",
-					"attr:content" => ($limitBrowse) ? "noindex,nofollow,noarchive" : "all"
-				));
+		if($obj instanceof CMSBlogPage && isset($obj->entry) && $obj->entry instanceof LabeledEntry){	//詳細ページで動きます。
+			$entryId = (int)$obj->entry->getId();
+			$pw = soycms_get_entry_attribute_value($entryId, LimitationBrowseUtil::FIELD_ID, "string");
+			
+			//入力したパスワードが一致しているならば
+			if(soy2_check_token() && isset($_POST[LimitationBrowseUtil::FIELD_ID]) && $_POST[LimitationBrowseUtil::FIELD_ID] == $pw){
+				$on = (isset($_POST[LimitationBrowseUtil::FIELD_ID . "_save"]) && $_POST[LimitationBrowseUtil::FIELD_ID . "_save"] == 1);
+				LimitationBrowseUtil::save($entryId, $on);
+				
+				//元のページにリダイレクト
+				header("Location:" . $_SERVER["REQUEST_URI"]);
 			}
+
+			$obj->addModel("meta_robots", array(
+				"soy2prefix" => "b_block",
+				"attr:name" => "robots",
+				"attr:content" => (strlen($pw)) ? "noindex,nofollow,noarchive" : "all"
+			));
 		}
 	}
 
 	function onEntryUpdate($arg){
 		$entry = $arg["entry"];
 
-		try{
-			$this->entryAttributeDao->delete($entry->getId(), self::FIELD_ID);
-		}catch(Exception $e){
-			//
-		}
-
-		if(isset($_POST[self::FIELD_ID]) && strlen($_POST[self::FIELD_ID])){
-			//新規作成の場合
-			try{
-				$obj = new EntryAttribute();
-				$obj->setEntryId($entry->getId());
-				$obj->setFieldId(self::FIELD_ID);
-				$obj->setValue($_POST[self::FIELD_ID]);
-				$this->entryAttributeDao->insert($obj);
-			}catch(Exception $e){
-				//
-			}
-		}
+		$v = (isset($_POST[LimitationBrowseUtil::FIELD_ID]) && strlen($_POST[LimitationBrowseUtil::FIELD_ID])) ? $_POST[LimitationBrowseUtil::FIELD_ID] : "";
+		$attr = soycms_get_entry_attribute_object((int)$entry->getId(), LimitationBrowseUtil::FIELD_ID);
+		$attr->setValue($v);
+		soycms_save_entry_attribute_object($attr);
 	}
 
 	function onEntryCopy($args){
 		list($old, $new) = $args;
 
-		try{
-			$field = $this->entryAttributeDao->get($old, self::FIELD_ID);
-		}catch(Exception $e){
-			return;
-		}
-
-		try{
-			$obj = new EntryAttribute();
-			$obj->setEntryId($new);
-			$obj->setFieldId(self::FIELD_ID);
-			$obj->setValue($field->getValue());
-			$this->entryAttributeDao->insert($obj);
-		}catch(Exception $e){
-
-		}
+		$oldAttrValue = soycms_get_entry_attribute_value($old, LimitationBrowseUtil::FIELD_ID, "string");
+		$attr = soycms_get_entry_attribute_object($new, LimitationBrowseUtil::FIELD_ID);
+		$attr->setValue($oldAttrValue);
+		soycms_save_entry_attribute_object($attr);
 	}
 
 	function onEntryRemove($args){
 		foreach($args as $entryId){
-			try{
-				$this->entryAttributeDao->deleteByEntryId($entryId);
-			}catch(Exception $e){
-
-			}
+			$attr = soycms_get_entry_attribute_object($entryId, LimitationBrowseUtil::FIELD_ID);
+			$attr->setValue(null);
+			soycms_save_entry_attribute_object($attr);
 		}
 
 		return true;
@@ -185,36 +132,24 @@ class LimitationBrowseBlogEntryPlugin{
 
 	function onCallCustomField(){
 		$arg = SOY2PageController::getArguments();
-		$entryId = (isset($arg[0])) ? (int)$arg[0] : null;
+		$entryId = (isset($arg[0])) ? (int)$arg[0] : 0;
 		return self::_buildForm($entryId);
 	}
 
 	function onCallCustomField_inBlog(){
 		$arg = SOY2PageController::getArguments();
-		$entryId = (isset($arg[1])) ? (int)$arg[1] : null;
+		$entryId = (isset($arg[1])) ? (int)$arg[1] : 0;
 		return self::_buildForm($entryId);
 	}
 
-	private function _buildForm($entryId){
-		$obj = $this->getCustomFieldObject($entryId);
-
+	private function _buildForm(int $entryId){
 		$html = array();
-
 		$html[] = '<div class="form-group">';
 		$html[] = '<label>閲覧用パスワード(空の場合はパスワード制限なし)</label>';
-		$html[] = '<input type="text" class="form-control" name="' . self::FIELD_ID . '" value="'. $obj->getValue() . '" style="width:50%;">';
+		$html[] = '<input type="text" class="form-control" name="' . LimitationBrowseUtil::FIELD_ID . '" value="'. soycms_get_entry_attribute_value($entryId, LimitationBrowseUtil::FIELD_ID, "string") . '" style="width:50%;">';
 		$html[] = '</div>';
 
 		return implode("\n", $html);
-	}
-
-	function getCustomFieldObject($entryId){
-		try{
-			$obj = $this->entryAttributeDao->get($entryId, self::FIELD_ID);
-		}catch(Exception $e){
-			$obj = new EntryAttribute();
-		}
-		return $obj;
 	}
 
 	function config_page($message){
@@ -226,15 +161,9 @@ class LimitationBrowseBlogEntryPlugin{
 	}
 
 	public static function register(){
-
 		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
-		if(!$obj){
-			$obj = new LimitationBrowseBlogEntryPlugin();
-		}
-
+		if(!$obj) $obj = new LimitationBrowseBlogEntryPlugin();
 		CMSPlugin::addPlugin(self::PLUGIN_ID, array($obj,"init"));
 	}
-
 }
 LimitationBrowseBlogEntryPlugin::register();
-?>
