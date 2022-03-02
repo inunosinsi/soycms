@@ -24,9 +24,9 @@ class CMSAppContainer extends SOY2HTML{
 				define("CMS_COMMON", SOY2::RootDir());
 			}
 
-			if(is_readable(CMS_APPLICATION_ROOT_DIR . "webapp/base/CMSApplication.class.php")){
+			if(is_readable(CMS_APPLICATION_ROOT_DIR . "base/CMSApplication.class.php")){
 				//読み込み
-				include_once(CMS_APPLICATION_ROOT_DIR . "webapp/base/CMSApplication.class.php");
+				include_once(CMS_APPLICATION_ROOT_DIR . "base/CMSApplication.class.php");
 
 				//保険
 				$this->saveSOY2Config();

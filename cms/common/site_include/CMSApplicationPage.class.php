@@ -34,7 +34,7 @@ class CMSApplicationPage extends CMSPage{
 	    	define("CMS_APPLICATION_ROOT_DIR", dirname(SOY2::RootDir()) . "/app/");
 			define("CMS_COMMON", SOY2::RootDir());
 
-			include_once(CMS_APPLICATION_ROOT_DIR . "webapp/base/CMSApplication.class.php");
+			include_once(CMS_APPLICATION_ROOT_DIR . "base/CMSApplication.class.php");
 
 			$applicationId = $this->page->getApplicationId();
 

@@ -3,7 +3,7 @@
 include_once(CMS_COMMON."common.inc.php");
 
 //CMSApplicationの読み込み
-include_once(CMS_APPLICATION_ROOT_DIR . "webapp/base/CMSApplication.class.php");
+include_once(CMS_APPLICATION_ROOT_DIR . "base/CMSApplication.class.php");
 
 CMSApplication::import("util.CMSUtil");
 CMSApplication::import("util.UserInfoUtil");

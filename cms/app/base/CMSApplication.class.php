@@ -240,7 +240,7 @@ class CMSApplication {
 			$isIframe = (file_exists($iframeDir) && is_dir($iframeDir));	//pagesディレクトリにIframeがある場合
 			// アプリ内ではIframeディレクトリがあっても、ないと見なしたい時があるのでその対応
 			// /ルート/CMSインストールディレクトリ/app/webapp/APPLICATION_ID/iframe.phpに特別な設定を記述できる iframe.phpには$isIframeをbool値で指定 hでiframeの高さの指定
-			if($isIframe && file_exists(dirname(dirname(__FILE__)) . "/" . APPLICATION_ID . "/iframe.php")) include_once(dirname(dirname(__FILE__)) . "/" . APPLICATION_ID . "/iframe.php");
+			if($isIframe && file_exists(dirname(dirname(__FILE__)) . "/webapp/" . APPLICATION_ID . "/iframe.php")) include_once(dirname(dirname(__FILE__)) . "/webapp/" . APPLICATION_ID . "/iframe.php");
 			unset($iframeDir);
 		}
 
@@ -353,7 +353,7 @@ class CMSApplication {
 		$self->arguments = array_slice($paths,1);
 
 		//キャッシュディレクトリの指定
-		$cacheDir = dirname(dirname(dirname(__FILE__)))."/cache/".$self->applicationId."/";
+		$cacheDir = dirname(dirname(__FILE__))."/cache/".$self->applicationId."/";
 		if(!file_exists($cacheDir)){
 			if(!@mkdir($cacheDir,0777,true)){
 				throw new SOY2HTMLException("Cannot create Application Cache Directory: ".$cacheDir);
@@ -376,7 +376,7 @@ class CMSApplication {
 		}
 
 		//アプリケーションのチェック
-		$base = dirname(dirname(__FILE__)) . "/";
+		$base = dirname(dirname(__FILE__)) . "/webapp/";
 		if(!file_exists($base . $self->applicationId)
 			|| !file_exists($base . $self->applicationId . "/admin.php")
 		){
@@ -436,7 +436,7 @@ class CMSApplication {
 		}else{
 			$backgroundColor = (isset($self->properties["background-color"]) && strlen($self->properties["background-color"]) === 6) ? $self->properties["background-color"] : "ffeaef";
 			//隠しモードロゴ usage：/cmsインストールディレクトリ/app/webapp/{アプリケーションID}/logo/以下に画像ファイルを一枚配置する
-			$logoDir = dirname(dirname(__FILE__)) . "/" . $self->applicationId . "/logo/";
+			$logoDir = dirname(dirname(__FILE__)) . "/webapp/" . $self->applicationId . "/logo/";
 			$fileName = null;
 			if(file_exists($logoDir) && is_dir($logoDir)){
 				foreach(glob($logoDir . "*") as $f){
