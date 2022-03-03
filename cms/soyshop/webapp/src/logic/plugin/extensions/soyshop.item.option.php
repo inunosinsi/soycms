@@ -134,7 +134,6 @@ class SOYShopItemOptionDeletageAction implements SOY2PluginDelegateAction{
 				$action->clear($this->index, $this->cart);
 				break;
 			case "compare":
-				var_dump($moduleId);
 				$idx = $action->compare($this->option, $this->cart);
 				if(is_numeric($idx) && $idx >= 0) $this->_id = $idx;
 				break;
@@ -177,10 +176,8 @@ class SOYShopItemOptionDeletageAction implements SOY2PluginDelegateAction{
 				break;
 			case "edit":
 				if(!is_string($this->key)) $this->key = "";
-				$label = $action->edit($this->key);
-				if(isset($label)){
-					$this->_label = $label;
-				}
+				$lab = (strlen($this->key)) ? $action->edit($this->key) : "";
+				if(strlen($lab)) $this->_label = $lab;
 				break;
 			case "build":
 				$this->_htmls[$moduleId] = $action->build($this->itemOrderId, $this->key, $this->selected);

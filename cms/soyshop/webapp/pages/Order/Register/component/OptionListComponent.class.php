@@ -12,13 +12,8 @@ class OptionListComponent extends HTMLList{
 	}
 
 	protected function populateItem($entity, $key) {
-		$label = SOYShopPlugin::invoke("soyshop.item.option", array(
-			"mode" => "edit",
-			"key" => $key
-		))->getLabel();
-
 		$this->addLabel("label", array(
-			"text" => $label
+			"text" => (is_string($key) && strlen($key)) ? self::_getLabel($key) : ""
 		));
 
 		$form = (is_string($key) && is_string($entity)) ? self::buildForm($key, $entity) : "";
@@ -29,6 +24,13 @@ class OptionListComponent extends HTMLList{
 		$this->addLabel("option_form", array(
 			"html" => $form
 		));
+	}
+
+	private function _getLabel(string $key){
+		return SOYShopPlugin::invoke("soyshop.item.option", array(
+			"mode" => "edit",
+			"key" => $key
+		))->getLabel();
 	}
 
 	private function buildForm(string $key, string $selected){

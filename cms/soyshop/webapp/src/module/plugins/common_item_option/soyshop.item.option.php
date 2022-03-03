@@ -263,7 +263,7 @@ class CommonItemOption extends SOYShopItemOptionBase{
 
 		self::prepare();
 		$opts = ItemOptionUtil::getOptions();
-		return (isset($opts[$key]["name"])) ? $opts[$key]["name"] : "";
+		return (strlen($key) && isset($opts[$key]["name"])) ? $opts[$key]["name"] : "";
 	}
 
 	function build(int $itemOrderId, string $key, string $selected){
