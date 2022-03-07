@@ -96,14 +96,24 @@ function soycms_entry_calendar_next($html, $page){
 				"link" => $link . "?y=" . $ny . "&m=" . $nm
 			));
 
-
+			$list = $logic->getEntryList($y, $m);
+			$entries = array();
+			foreach($list as $arr){
+				if(!count($arr)) continue;
+				foreach($arr as $entry){
+					$entries[] = $entry;
+				}
+			}
+			
+			CMSPlugin::callEventFunc('onEntryListBeforeOutput', array("entries" => &$entries));
+			unset($entries);
 
 			$obj->createAdd("date_list", "EntryCalendarComponent", array(
 				"soy2prefix" => "c_block",
 				"list" => $dateList,
 				"year" => $y,
 				"month" => $m,
-				"entries" => $logic->getEntryList($y, $m),
+				"entries" => $list,
 				"entryPageUrl" => $logic->getEntryPageUrl()
 			));
 		}

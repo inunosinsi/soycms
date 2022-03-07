@@ -17,7 +17,7 @@ class SOYCMS_ThisIsNew_Plugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.3"
+			"version"=>"1.3.1"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -50,7 +50,7 @@ class SOYCMS_ThisIsNew_Plugin{
 		$entryIds = soycms_get_entry_id_by_entries($entries);
 		if(!count($entryIds)) return;
 		
-		$t = (int)$this->daysToBeNew * 60 * 60 * 24;
+		$t = time() - (int)$this->daysToBeNew * 60 * 60 * 24;
 		$sql = "SELECT id FROM Entry WHERE cdate > " . $t . " AND id IN (" . implode(",", $entryIds) . ")";
 		if(is_numeric($this->ignoreFutureEntry) && $this->ignoreFutureEntry == 1) $sql .= " AND cdate < " . time();
 

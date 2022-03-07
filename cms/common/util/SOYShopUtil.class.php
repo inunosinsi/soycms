@@ -42,7 +42,12 @@ class SOYShopUtil {
 		SOY2DAOConfig::EntityDir(SOY2::RootDir() . "domain/");
 		SOY2DAOConfig::DaoCacheDir($soyshopRoot . "cache/");
 
-		include_once(dirname(SOY2::RootDir()) . "/conf/shop/" . $siteId . ".conf.php");
+		if(file_exists(SOY2::RootDir() . "/conf/shop/" . $siteId . ".conf.php")){
+			include_once(dirname(SOY2::RootDir()) . "/conf/shop/" . $siteId . ".conf.php");
+		}else{
+			include_once(dirname(SOY2::RootDir()) . "/conf/shop/" . $siteId . ".php");
+		}
+		
 
 		SOY2DAOConfig::Dsn(SOYSHOP_SITE_DSN);
 		SOY2DAOConfig::user(SOYSHOP_SITE_USER);

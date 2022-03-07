@@ -88,6 +88,17 @@ function soycms_entry_calendar($html, $page){
 				"link" => $link . "?y=" . $ny . "&m=" . $nm
 			));
 
+			$list = $logic->getEntryList($y, $m);
+			$entries = array();
+			foreach($list as $arr){
+				if(!count($arr)) continue;
+				foreach($arr as $entry){
+					$entries[] = $entry;
+				}
+			}
+			
+			CMSPlugin::callEventFunc('onEntryListBeforeOutput', array("entries" => &$entries));
+			unset($entries);
 
 			SOY2::import("site_include.plugin.entry_calendar.component.EntryCalendarComponent");
 			$obj->createAdd("date_list", "EntryCalendarComponent", array(
@@ -95,7 +106,7 @@ function soycms_entry_calendar($html, $page){
 				"list" => $dateList,
 				"year" => $y,
 				"month" => $m,
-				"entries" => $logic->getEntryList($y, $m),
+				"entries" => $list,
 				"entryPageUrl" => $logic->getEntryPageUrl(),
 				"blogPageId" => $blogId
 			));

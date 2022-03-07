@@ -255,8 +255,10 @@ function _soy2_resizeimage($filepath,$savepath,$width = null,$height = null,$max
 				$width = $imageSize[0];
 				$height = $imageSize[1];
 			}else if(is_null($width)){
+				if((int)$imageSize[1] === 0) $imageSize[1] = 1;	// 0で割り算することを回避する
 				$width = (int)( $imageSize[0] * $height / $imageSize[1] );
 			}else if(is_null($height)){
+				if((int)$imageSize[0] === 0) $imageSize[0] = 1;	// 0で割り算することを回避する
 				$height = (int)( $imageSize[1] * $width / $imageSize[0] );
 			}
 
@@ -385,8 +387,10 @@ function _soy2_image_resizeimage_gd($filepath,$savepath,$width = null,$height = 
 		$width = $imageSize[0];
 		$height = $imageSize[1];
 	}else if(is_null($width)){
+		if((int)$imageSize[1] === 0) $imageSize[1] = 1;	// 0で割り算することを回避する
 		$width = (int)( $imageSize[0] * $height / $imageSize[1] );
 	}else if(is_null($height)){
+		if((int)$imageSize[0] === 0) $imageSize[0] = 1;
 		$height = (int)( $imageSize[1] * $width / $imageSize[0] );
 	}
 
@@ -401,8 +405,13 @@ function _soy2_image_resizeimage_gd($filepath,$savepath,$width = null,$height = 
 		return false;
 	}
 
+	if(!is_numeric($width) || !is_numeric($height)){
+		return false;
+	}
+
 	/* 変換 */
 	$dstImage = imagecreatetruecolor($width,$height);
+	if(is_bool($dstImage) || is_null($dstImage)) return false;
 
 	//PNGの場合で画像に透過が入っている場合、透過の箇所を黒にしない
 	if($filetype == "png"){
@@ -446,4 +455,6 @@ function _soy2_image_resizeimage_gd($filepath,$savepath,$width = null,$height = 
 			return -1;
 			break;
 	}
+
+	return true;
 }
