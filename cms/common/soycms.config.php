@@ -1,8 +1,8 @@
 <?php
 define("SOYCMS_DB_TYPE","mysql");
-define("SOYCMS_VERSION","3.2.9");
-define("SOYCMS_BUILD","2022-03-07T13:16:28+09:00");
-define("SOYCMS_BUILD_TIME","1646626589");
+define("SOYCMS_VERSION","3.2.10");
+define("SOYCMS_BUILD","2022-03-10T10:54:32+09:00");
+define("SOYCMS_BUILD_TIME","1646877273");
 define("SOYCMS_REVISION","45154");
 define("SOYCMS_AUTOLOGIN_EXPIRE", 30);
 if(!defined("SOY2HTML_CACHE_FORCE")) define("SOY2HTML_CACHE_FORCE", false);

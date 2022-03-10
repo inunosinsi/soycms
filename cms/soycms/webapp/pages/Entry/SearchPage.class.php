@@ -55,7 +55,7 @@ class SearchPage extends CMSWebPageBase{
 			}
 		}
 
-		list($entries,$count,$from,$to,$limit,$form) = $this->getEntries();
+		list($entries,$count,$from,$to,$limit,$form) = self::getEntries();
 		$this->jump("Entry.Search".'?'.$form);
 		exit;
 
@@ -81,19 +81,7 @@ class SearchPage extends CMSWebPageBase{
 		//記事を取得
 		list($entries,$count,$from,$to,$limit,$form) = self::getEntries();
 
-		$result = $this->run("Label.LabelListAction");
-		$this->createAdd("label_list","_component.Entry.SearchLabelListComponent",array(
-			"list"=>$result->getAttribute("list"),
-			"selectedIds"=>array_merge($form->getLabel(),$labelIds)
-		));
-
-		$this->addInput("freewordText", array(
-			"value" => (isset($_GET["freeword_text"])) ? $_GET["freeword_text"] : ""
-		));
-
-		$this->addForm("main_form", array(
-			"method" =>"get"
-		));
+		self::_buildSearchForm($form, $labelIds);
 
 		//記事テーブルのCSS
 		HTMLHead::addLink("entrytree",array(
@@ -204,6 +192,45 @@ class SearchPage extends CMSWebPageBase{
 		}
 	}
 
+	private function _buildSearchForm(SearchActionForm $form, array $labelIds){
+		$this->createAdd("label_list","_component.Entry.SearchLabelListComponent",array(
+			"list"=>$this->run("Label.LabelListAction")->getAttribute("list"),
+			"selectedIds"=>array_merge($form->getLabel(),$labelIds)
+		));
+
+		$this->addInput("freewordText", array(
+			"value" => (isset($_GET["freeword_text"])) ? $_GET["freeword_text"] : ""
+		));
+
+		$this->addForm("main_form", array(
+			"method" =>"get"
+		));
+
+		//カスタムフィールドアドバンスド
+		$cfaItems = self::_getCustomFieldItems();
+		DisplayPlugin::toggle("customfield_advanced_items", count($cfaItems));
+
+		$this->createAdd("customfield_list", "_component.Entry.SearchCustomfieldListComponent", array(
+			"list" => $cfaItems,
+			"conditions" => (isset($_GET["customfield"]) && is_array($_GET["customfield"])) ? $_GET["customfield"] : array()
+		));
+	}
+
+	private function _getCustomFieldItems(){
+		if(!file_exists(UserInfoUtil::getSiteDirectory() . ".plugin/CustomFieldAdvanced.active")) return array();
+		if(!class_exists("CustomFieldPluginAdvanced")) include(SOY2::rootDir() . "site_include/plugin/CustomFieldAdvanced/CustomFieldAdvanced.php");
+
+		$advObj = CMSPlugin::loadPluginConfig("CustomFieldAdvanced");
+		if(!count($advObj->customFields)) return array();
+				
+		$items = array();
+		foreach($advObj->customFields as $fieldId => $field){
+			$items[$fieldId] = $field->getLabel();
+		}
+
+		return $items;
+	}
+
 	/**
 	 * 表示件数を変更するリンクを作成
 	 */
@@ -232,11 +259,6 @@ class SearchPage extends CMSWebPageBase{
 
 	private function getLabelList(){
 		$result = SOY2ActionFactory::createInstance("Label.LabelListAction")->run();
-		if($result->success()){
-			$list = $result->getAttribute("list");
-			return $list;
-		}else{
-			return array();
-		}
+		return ($result->success()) ? $result->getAttribute("list") : array();
 	}
 }

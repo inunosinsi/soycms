@@ -10,10 +10,10 @@ class SearchAction extends SOY2Action{
     	$this->limit = (is_numeric($form->getLimit()) ? $form->getLimit() : 10);
     	$this->offset =(is_numeric($form->getOffset()) ? $form->getOffset() : 0);
 
-    	$entries = self::searchEntries($form->getFreeword_text(),array(
+    	$entries = self::searchEntries((string)$form->getFreeword_text(),array(
     		"op" => $form->getLabelOperator(),
     		"labels" => $form->getLabel()
-       	));
+       	), $form->getCustomFields());
 
     	$count = $this->totalCount;
 
@@ -34,7 +34,7 @@ class SearchAction extends SOY2Action{
 
     }
 
-    private function searchEntries($freewordText,$label,$others = null){
+    private function searchEntries(string $freewordText, array $label, array $customfields=array(), $others = null){
     	$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
     	$dao = SOY2DAOFactory::create("LabeledEntryDAO");
     	$dao->setLimit($this->limit);
@@ -115,11 +115,29 @@ class SearchAction extends SOY2Action{
 			$where[] = 'Entry.id IN ('.$labelQuery.')';
 		}
 
+		if(count($customfields)){
+			$queries = array();
+			foreach($customfields as $fieldId => $fieldValue){
+				$fieldValue = trim($fieldValue);
+				if(!strlen($fieldValue)) continue;
+				$queries[] = "(entry_field_id = '" . trim($fieldId) . "' AND entry_value LIKE '%" . htmlspecialchars($fieldValue, ENT_QUOTES, "UTF-8") . "%')";
+			}
+			
+			if(count($queries)){
+				$customQuery = new SOY2DAO_Query();
+				$customQuery->prefix = "select";
+				$customQuery->sql = "entry_id";
+				$customQuery->table = "EntryAttribute";
+				$customQuery->distinct = true;
+				$customQuery->where = implode(" AND ", $queries);
+				$where[] = 'Entry.id IN ('.$customQuery.')';
+			}
+		}
+
 		$query->where = implode(" AND ",$where);
 		try{
 			$results = $dao->executeQuery($query,$binds);
 		}catch(Exception $e){
-			var_dump($e);
 			$results = array();
 		}
 
@@ -141,6 +159,7 @@ class SearchActionForm extends SOY2ActionForm{
 
 	private $freeword_text;
 	private $label;
+	private $customfields;
 	private $limit;
 	private $offset;
 
@@ -164,6 +183,27 @@ class SearchActionForm extends SOY2ActionForm{
 
 		if(!is_array($label)) $label = array();
 		$this->label = $label;
+	}
+
+	function getCustomFields(){
+		if(!is_array($this->customfields) && isset($_COOKIE["ENTRY_SEARCH_CUSTOMFIELDS"])){
+			$this->customfields = soy2_unserialize($_COOKIE["ENTRY_SEARCH_CUSTOMFIELDS"]);
+		}
+		if(!is_array($this->customfields)) $this->customfields = array();
+		return $this->customfields;
+	}
+
+	function setCustomfields($customfields){
+		if(isset($_GET["customfield"]) && is_array($_GET["customfield"])){
+			soy2_setcookie("ENTRY_SEARCH_CUSTOMFIELDS", soy2_serialize($_GET["customfield"]));
+			$customfields = $_GET["customfield"];
+		}
+
+		if(is_null($customfields) && isset($_COOKIE["ENTRY_SEARCH_CUSTOMFIELDS"])){
+			$customfields = soy2_unserialize($_COOKIE["ENTRY_SEARCH_CUSTOMFIELDS"]);
+		}
+
+		$this->customfields = $customfields;
 	}
 
 	function getFreeword_text(){
