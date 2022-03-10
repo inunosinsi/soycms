@@ -23,7 +23,7 @@ class AdministratorLogic extends Administrator implements SOY2LogicInterface{
 	 * ログイン処理を行い（ユーザーIDとパスワードの照合判定のみ）、$thisにAdministratorの値が入る
 	 * @return boolean ログイン成功したかどうか
 	 */
-	function login($userid,$password){
+	function login(string $userid, string $password){
 		try{
 			$bean = SOY2DAOFactory::create("admin.AdministratorDAO")->getByUserId($userid);
 		}catch(Exception $e){
@@ -45,7 +45,7 @@ class AdministratorLogic extends Administrator implements SOY2LogicInterface{
 	 * 自動ログイン用のメソッド
 	 * @return boolean ログイン成功したかどうか
 	 */
-	function autoLogin($userid){
+	function autoLogin(int $userid){
 		try{
 			$bean = SOY2DAOFactory::create("admin.AdministratorDAO")->getById($userid);
 		}catch(Exception $e){
@@ -312,10 +312,8 @@ class AdministratorLogic extends Administrator implements SOY2LogicInterface{
 	 * @param id ユーザID
 	 */
 	function getById($id){
-		$dao = SOY2DAOFactory::create("admin.AdministratorDAO");
 		try{
-			$admin = $dao->getById($id);
-			return $admin;
+			return SOY2DAOFactory::create("admin.AdministratorDAO")->getById($id);
 		}catch(Exception $e){
 			return null;
 		}

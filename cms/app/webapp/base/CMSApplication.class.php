@@ -288,13 +288,13 @@ class CMSApplication {
 	/**
 	 * jump
 	 */
-	public static function jump($path = "", $array = array()){
+	public static function jump(string $path="", array $array=array()){
 		$self = CMSApplication::getInstance();
 		$path = $self->applicationId . "." . $path;
 		SOY2PageController::jump($path);
 	}
 
-	public static function createLink($path = "", $isAbsoluteUrl = false){
+	public static function createLink(string $path="", bool $isAbsoluteUrl=false){
 		$self = CMSApplication::getInstance();
 		$path = $self->applicationId . "." . $path;
 		return SOY2PageController::createLink($path, $isAbsoluteUrl);

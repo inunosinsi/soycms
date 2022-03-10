@@ -37,7 +37,7 @@ class AutoLoginAction extends SOY2Action{
 		}
     	$logic = SOY2Logic::createInstance("logic.admin.Administrator.AdministratorLogic");
 
-    	if($logic->autoLogin($login->getUserId())){
+    	if($logic->autoLogin($login->getId())){
     		//ログイン状態をセッションに保存：$logicはloginに成功したらAdministratorが入っている
     		UserInfoUtil::login($logic);
 
