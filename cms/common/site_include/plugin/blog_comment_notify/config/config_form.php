@@ -3,6 +3,8 @@ class config_form extends WebPage{
 
 	private $pluginObj;
 
+	function __construct(){}
+
 	function doPost(){
 
     	if(soy2_check_token()){
@@ -19,8 +21,6 @@ class config_form extends WebPage{
     	}
 
 	}
-
-	function config_form(){}
 
 	function execute(){
 		parent::__construct();
@@ -131,6 +131,3 @@ class blog_list_component extends HTMLList{
 		$this->blogConfig = $blogConfig;
 	}
 }
-
-
-?>

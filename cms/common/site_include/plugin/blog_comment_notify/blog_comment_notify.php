@@ -33,7 +33,7 @@ class SOYCMS_BlogCommnetNotifyPlugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"dev"
+			"version"=>"0.5"
 		));
 		
 		if(CMSPlugin::activeCheck($this->getId())){
@@ -80,8 +80,6 @@ class SOYCMS_BlogCommnetNotifyPlugin{
 			$to = trim($to);
 			$logic->sendMail($to, $title, $content);
 		}
-		 
-		
 	}
 	
 	/**
@@ -134,14 +132,10 @@ class SOYCMS_BlogCommnetNotifyPlugin{
 	 */
 	function config_page(){
 		include_once(dirname(__FILE__). "/config/config_form.php");
-		$page = SOY2HTMLFactory::createInstance("config_form", array(
-			"pluginObj" => $this
-		));
-		
+		$page = SOY2HTMLFactory::createInstance("config_form");
+		$page->setPluginObj($this);
 		$page->execute();
-		$html = $page->getObject(); 
-
-		return $html;
+		return $page->getObject(); 
 	}
 	
 	function getMailAddress() {
@@ -160,10 +154,10 @@ class SOYCMS_BlogCommnetNotifyPlugin{
 		$this->commentMail = $commentMail;
 	}
 
-	public function getBlogConfig() {
+	function getBlogConfig() {
 		return $this->blogConfig;
 	}
-	public function setBlogConfig($blogConfig) {
+	function setBlogConfig($blogConfig) {
 		$this->blogConfig = $blogConfig;
 	}
 
@@ -171,14 +165,8 @@ class SOYCMS_BlogCommnetNotifyPlugin{
 	 * プラグインの登録
 	 */
 	public static function registerPlugin(){
-		
 		$obj = CMSPlugin::loadPluginConfig(SOYCMS_BlogCommnetNotifyPlugin::PLUGIN_ID);
-		if(is_null($obj)){
-			$obj = new SOYCMS_BlogCommnetNotifyPlugin();
-		}
-		
+		if(is_null($obj)) $obj = new SOYCMS_BlogCommnetNotifyPlugin();
 		CMSPlugin::addPlugin(SOYCMS_BlogCommnetNotifyPlugin::PLUGIN_ID,array($obj,"init"));
 	}
-	
 }
-?>

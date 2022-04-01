@@ -96,7 +96,7 @@ class CustomFieldPluginAdvancedImgCopy{
 			if(count($advObj->customFields)){
 				foreach($advObj->customFields as $fieldId => $field){
 					if($field->getType() != "image") continue;	//取り急ぎHTMLImageのみ
-					if(!strlen($field->getExtraOutputs())) continue;	//属性の設定をしていないものを除く
+					if(!strlen((string)$field->getExtraOutputs())) continue;	//属性の設定をしていないものを除く
 					$this->imgFieldIds[] = $fieldId;
 
 					$outputs = explode("\n", $field->getExtraOutputs());
