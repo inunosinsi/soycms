@@ -17,9 +17,7 @@ class RecordListComponent extends HTMLList{
 		));
 		
 		$this->addLabel("register_date", array(
-			"text" => date("Y-m-d H:i:s", $entity->getRegisterDate())
+			"text" => (is_numeric($entity->getRegisterDate())) ? date("Y-m-d H:i:s", $entity->getRegisterDate()) : ""
 		));
-		
 	}
 }
-?>
