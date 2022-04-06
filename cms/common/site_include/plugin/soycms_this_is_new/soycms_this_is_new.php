@@ -17,7 +17,7 @@ class SOYCMS_ThisIsNew_Plugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.3.1"
+			"version"=>"1.3.2"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -71,10 +71,25 @@ class SOYCMS_ThisIsNew_Plugin{
 		$htmlObj = $arg["SOY2HTMLObject"];
 		
 		$htmlObj->addModel("this_is_new", array(
-			"visible" => ($entryId > 0 && count($this->news) && is_numeric(array_search($entryId, $this->news))),
+			"visible" => ($entryId > 0) ? self::_check_new($entryId) : false,
 			"soy2prefix" => "cms",
 		));
+	}
 
+	/**
+	 * 指定のentryIdが新着記事であるか？
+	 * @param int
+	 * @return bool
+	 */
+	private function _check_new(int $entryId){
+		if(count($this->news) && is_numeric(array_search($entryId, $this->news))) return true;
+
+		$cdate = (int)soycms_get_hash_table_dao("entry")->getById($entryId)->getCdate();
+		if($cdate < (time() - ((int)$this->daysToBeNew * 60 * 60 * 24))) return false;
+
+		if(!is_numeric($this->ignoreFutureEntry) || $this->ignoreFutureEntry != 1) return true;
+
+		return ($cdate < time());
 	}
 
 
