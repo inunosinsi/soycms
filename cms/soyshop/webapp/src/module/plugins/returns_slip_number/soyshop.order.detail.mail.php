@@ -1,7 +1,7 @@
 <?php
 class ReturnsSlipNumberOrderDetailMail extends SOYShopOrderDetailMailBase{
 
-	function getMailType($mode){
+	function getMailType(string $mode){
 		if($mode == "order"){
 			return array("return" => array("id" => "return", "title" => "返送完了メール"));
 		}

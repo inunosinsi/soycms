@@ -29,28 +29,27 @@ class DetailFooterMenuPage extends HTMLPage{
 	}
 
 	private function _buildMailForm(SOYShop_User $user){
-		DisplayPlugin::toggle("mail", $user->isUsabledEmail());
-		$this->addLink("send_mail_link", array(
-			"link" => SOY2PageController::createLink("User.Mail." . $user->getId())
-		));
-
+		$isUsabledEmail = $user->isUsabledEmail();
+		DisplayPlugin::toggle("mail", $isUsabledEmail);
+		
 		//メールの拡張
-		$this->createAdd("mail_plugin_list", "_common.Plugin.MailPluginListComponent", array(
-			"list" => self::_getMailPluginList(),
+		$this->createAdd("mail_type_list", "_common.Plugin.MailPluginListComponent", array(
+			"list" => ($isUsabledEmail) ? self::_getMailPluginList() : array(),
 			"userId" => $user->getId()
 		));
 	}
 
 	private function _getMailPluginList(){
+		$list = array("send" => "顧客宛メール");
+
     	SOYShopPlugin::load("soyshop.order.detail.mail");
     	$mailList = SOYShopPlugin::invoke("soyshop.order.detail.mail", array("mode" => "user"))->getList();
-		if(!count($mailList)) return array();
+		if(!count($mailList)) return $list;
 
-    	$list = array();
-    	foreach($mailList as $values){
-    		if(!is_array($values)) continue;
-   			foreach($values as $value){
-   				$list[] = $value;
+    	foreach($mailList as $arr){
+    		if(!is_array($arr)) continue;
+   			foreach($arr as $v){
+   				$list[$v["id"]] = $v["title"];
    			}
     	}
     	return $list;

@@ -493,4 +493,15 @@ class SOYShop_Order {
     		self::SENDMAIL_TYPE_OTHER
     	);
     }
+
+	public static function getMailTypeList(){
+		return array(
+			self::SENDMAIL_TYPE_ORDER => "注文受付メール",
+			self::SENDMAIL_TYPE_CONFIRM => "注文確定メール",
+			self::SENDMAIL_TYPE_PAYMENT => "支払確認メール",
+			self::SENDMAIL_TYPE_DELIVERY => "配送確認メール",
+			self::SENDMAIL_TYPE_OTHER => "その他のメール"
+		);
+	}
+	
 }

@@ -7,8 +7,6 @@ class ModuleListComponent extends HTMLList{
 			"text" => $entity->getId()
 		));
 
-		$type = $entity->getType();
-
 		$detailLink = SOY2PageController::createLink("Plugin.Detail." . $entity->getId());
 		$this->addLink("module_name", array(
 			"text" => $entity->getName(),
@@ -21,7 +19,6 @@ class ModuleListComponent extends HTMLList{
 			"name" => "Plugin[" . $entity->getId() . "]",
 			"value" => ($entity->getDisplayOrder() < SOYShop_PluginConfig::DISPLAY_ORDER_MAX) ? $entity->getDisplayOrder() : null,
 			"style" => "width:60px;"
-//			"disabled" => ($type == "util")
 		));
 		$this->addLink("module_detail_link", array(
 			"link" => $detailLink

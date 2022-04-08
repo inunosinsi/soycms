@@ -1,7 +1,7 @@
 <?php
 class CommonCancelMailOrderDetailMail extends SOYShopOrderDetailMailBase{
 
-	function getMailType($mode){
+	function getMailType(string $mode){
 		if($mode == "order"){
 			return array("cancel" => array("id" => "cancel", "title" => "キャンセルのメール"));
 		}

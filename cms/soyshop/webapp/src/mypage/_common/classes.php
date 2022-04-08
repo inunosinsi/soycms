@@ -42,16 +42,13 @@ class MainMyPagePageBase extends WebPage{
      * @override HTMLPage::getTemplateFilePath()
      */
     function getTemplateFilePath(){
-
     	if(defined("SOYSHOP_MYPAGE_PATH")){
     		$html = SOYSHOP_MAIN_MYPAGE_TEMPLATE_DIR . self::createDirectory(SOYSHOP_MYPAGE_PATH) . ".html";
     	}else{
     		$html = SOYSHOP_MAIN_MYPAGE_TEMPLATE_DIR . get_class($this) . ".html";
     	}
 
-		if(file_exists($html)){
-			return $html;
-		}
+		if(file_exists($html)) return $html;
 
 		if(DEBUG_MODE){
 			echo "<p>Custom Template Not Found: " . $html . "</p>";
@@ -60,12 +57,12 @@ class MainMyPagePageBase extends WebPage{
 		return SOYSHOP_DEFAULT_MYPAGE_TEMPLATE_DIR . get_class($this) . ".html";
     }
 
-    function createDirectory($path){
+    function createDirectory(string $path){
     	$array = explode(".", $path);
     	return implode("/", $array);
     }
 
-   	function addForm($id, $arguments = array()){
+   	function addForm(string $id, array $arguments=array()){
 
    		$url = (!isset($arguments["action"])) ? @$_SERVER["REQUEST_URI"] : $arguments["action"];
 
@@ -93,7 +90,7 @@ class MainMyPagePageBase extends WebPage{
 		return self::getMyPage()->getUserId();
 	}
 
-	function jump($addr=""){
+	function jump(string $addr=""){
 		$url = soyshop_get_mypage_url() . "/" . $addr;
 		if(isset($_GET["r"])){
 			$url .= "?r=" . $_GET["r"];
