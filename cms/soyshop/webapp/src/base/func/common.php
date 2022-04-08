@@ -538,7 +538,7 @@ function soyshop_redirect_mypage(string $param=""){
  */
 function soyshop_redirect_login_form(string $param=""){
     $url = soyshop_get_mypage_url() . "/login";
-    if(string($param)) $url .= "?" . $param;
+    if(strlen($param)) $url .= "?" . $param;
     header("Location: ". $url);
     exit;
 }

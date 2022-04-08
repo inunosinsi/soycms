@@ -1,6 +1,4 @@
 <?php
-require_once __DIR__.'/vendor/autoload.php';
-
 class OrderInvoiceAddReceiptDownload extends SOYShopDownload{
 
 	function execute(){
@@ -24,12 +22,10 @@ class OrderInvoiceAddReceiptDownload extends SOYShopDownload{
 			"mode" => "select"
 		));
 
-		$mpdf = new \Mpdf\Mpdf(['tempDir' => SOY2HTMLConfig::CacheDir(), 'mode' => 'ja', 'format' => 'A4',]);
-		$mpdf->setTitle("領収書");
-		$mpdf->WriteHTML($html);
-		$mpdf->Output();
-		//echo $html;
-		//exit;
+		// @ToDo PDFに変換したい
+
+		echo $html;
+		exit;
 	}
 
 	private function _error(){
