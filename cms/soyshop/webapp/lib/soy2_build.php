@@ -1390,7 +1390,7 @@ class SOY2Mail_SMTPLogic extends SOY2Mail implements SOY2Mail_SenderInterface{
 			$this->sendMail($recipient, $bccRecipients);
 		}
 	}
-	function sendMail(SOY2Mail_MailAddress $sendTo,$bccRecipients = array()){
+	function sendMail(SOY2Mail_MailAddress $sendTo, array $bccRecipients = array()){
 		$sent = false;
 		$try = $try_connect = 0;
 		while(!$sent){
@@ -1426,7 +1426,7 @@ class SOY2Mail_SMTPLogic extends SOY2Mail implements SOY2Mail_SenderInterface{
 			}
 		}
 	}
-	private function _sendMail(SOY2Mail_MailAddress $sendTo,$bccRecipients = array()){
+	private function _sendMail(SOY2Mail_MailAddress $sendTo, array $bccRecipients = array()){
 		$from = $this->getFrom();
 		$title = $this->getEncodedSubject();
 		$body = $this->getEncodedText();
@@ -1658,7 +1658,7 @@ class SOY2Mail_SendMailLogic extends SOY2Mail implements SOY2Mail_SenderInterfac
 			$this->sendMail($recipient, $bccRecipients);
 		}
     }
-    function sendMail($sendTo,$bccRecipients = array()){
+    function sendMail($sendTo,array $bccRecipients = array()){
 		$to = $sendTo->getString();
 		$from = $this->getFrom();
 		$title = $this->getEncodedSubject();
