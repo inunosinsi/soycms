@@ -100,17 +100,16 @@ class SOYShop_SOYCMSPageModulePlugin extends PluginBase{
 		$soyValue = $this->soyValue;
 
 		$array = explode(".",$soyValue);
-		if(count($array)>1){
-			unset($array[0]);
-		}
+		if(count($array) > 1) unset($array[0]);
 		$func = "soycms_" . implode("_", $array);
-
-		$modulePath = soy2_realpath(_SITE_ROOT_) . ".module/" . str_replace(".", "/", $soyValue) . ".php";
-
-		$this->setInnerHTML('<?php SOYShop_SOYCMSPageModulePlugin::prepare(); ob_start(); ' .
+		
+		if(defined("_SITE_ROOT_") && is_string(_SITE_ROOT_)){
+			$modulePath = soy2_realpath(_SITE_ROOT_) . ".module/" . str_replace(".", "/", $soyValue) . ".php";
+			$this->setInnerHTML('<?php SOYShop_SOYCMSPageModulePlugin::prepare(); ob_start(); ' .
 						'if(file_exists("'.$modulePath.'")){include_once("'.$modulePath.'");}else{@SOY2::import("site_include.module.'.$soyValue.'",".php");} ?>'.
 						$this->getInnerHTML().'' .
 						'<?php $tmp_html=ob_get_contents();ob_end_clean(); '.
 						'if(function_exists("'.$func.'")){echo call_user_func("'.$func.'",$tmp_html,$this);}else{ echo "function not found : '.$func.'";} SOYShop_SOYCMSPageModulePlugin::tearDown(); ?>');
+		}
 	}
 }
