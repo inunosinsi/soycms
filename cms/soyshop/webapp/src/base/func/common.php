@@ -526,9 +526,9 @@ function soyshop_get_mypage_page_title($args){
 /**
  * マイページにリダイレクトする
  */
-function soyshop_redirect_mypage($param = null){
+function soyshop_redirect_mypage(string $param=""){
     $url = soyshop_get_mypage_url();
-    if($param)$url .= "?" . $param;
+    if(strlen($param)) $url .= "?" . $param;
     header("Location: ". $url);
     exit;
 }
@@ -536,9 +536,9 @@ function soyshop_redirect_mypage($param = null){
 /**
  * ログインページにリダイレクトする
  */
-function soyshop_redirect_login_form($param = null){
+function soyshop_redirect_login_form(string $param=""){
     $url = soyshop_get_mypage_url() . "/login";
-    if($param)$url .= "?" . $param;
+    if(string($param)) $url .= "?" . $param;
     header("Location: ". $url);
     exit;
 }
@@ -991,4 +991,22 @@ function soyshop_get_days_after_birth($birthday, $now=null){
 	$diff = $now - $time;
 
 	return (int)($diff / (24 * 60 * 60));
+}
+
+/**
+ * プラグインの拡張ポイントで得られた結果を整形する
+ * @param array
+ * @return array
+ */
+function soyshop_shape_extension_point_result_array(array $results){
+	if(!count($results)) return array();
+
+	$list = array();
+	foreach($results as $arr){
+		if(!is_array($arr)) continue;
+		foreach($arr as $fieldId => $values){
+			$list[$fieldId] = $values;
+		}
+	}
+	return $list;
 }
