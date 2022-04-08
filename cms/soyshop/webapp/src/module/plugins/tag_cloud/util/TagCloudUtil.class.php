@@ -149,6 +149,7 @@ class TagCloudUtil {
 
 		$pageId = 0;
 		foreach($pages as $page){
+			if(is_null($page->getObject())) continue;
 			if($page->getObject()->getType() != "custom") continue;
 			if($page->getObject()->getModuleId() == "tag_cloud") $pageId = $page->getId();
 		}
