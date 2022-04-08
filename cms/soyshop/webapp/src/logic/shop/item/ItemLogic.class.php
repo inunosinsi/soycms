@@ -6,7 +6,7 @@ class ItemLogic extends SOY2LogicBase{
 
     function validate(SOYShop_Item $item){
 
-		$dao = self::getItemDAO();
+		$dao = self::_dao();
 		$errors = array();
 
 		if(strlen($item->getName()) < 1){
@@ -24,9 +24,7 @@ class ItemLogic extends SOY2LogicBase{
 		}
 
 		if(strlen($item->getAlias()) > 0){
-
-			//重複チェック
-			$tmp = $dao->checkAlias($item->getAlias());
+			$tmp = $dao->checkAlias($item->getAlias());	//重複チェック
 
 			if(count($tmp) > 0){
 				if(count($tmp) > 1){
@@ -48,14 +46,14 @@ class ItemLogic extends SOY2LogicBase{
 		$item->setAlias($alias);
 
 		try{
-			self::getItemDAO()->update($item);
+			self::_dao()->update($item);
 		}catch(Exception $e){
 			var_dump($e);
 		}
 
     }
 
-    function setAttribute(int $itemId, string $fieldId, $value=null){
+    function setAttribute(int $itemId, string $fieldId, string $value=""){
 		$attr = soyshop_get_item_attribute_object($itemId, $fieldId);
     	$attr->setValue($value);
 		soyshop_save_item_attribute_object($attr);
@@ -64,7 +62,7 @@ class ItemLogic extends SOY2LogicBase{
     function delete($ids){
     	if(!is_array($ids)) $ids = array($ids);
 
-    	$dao = self::getItemDAO();
+    	$dao = self::_dao();
 
     	$dao->begin();
 
@@ -118,7 +116,7 @@ class ItemLogic extends SOY2LogicBase{
     }
 
     function create(SOYShop_Item $item){
-		$dao = self::getItemDAO();
+		$dao = self::_dao();
 
 		//一番IDの小さい詳細ページを紐付ける
 		$detailPageId = SOY2Logic::createInstance("logic.site.page.PageLogic")->getOldestDetailPageId();
@@ -144,7 +142,7 @@ class ItemLogic extends SOY2LogicBase{
     	if(!is_array($itemIds)) $itemIds = array($itemIds);
     	$status = (int)(boolean)$status;	//0 or 1
 
-    	$dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+    	$dao = self::_dao();
     	$dao->begin();
 
     	foreach($itemIds as $id){
@@ -154,14 +152,8 @@ class ItemLogic extends SOY2LogicBase{
     	$dao->commit();
     }
 
-    private function getItemDAO(){
-    	static $dao;
-    	if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-    	return $dao;
-    }
-
     //マルチカテゴリモード
-    function updateCategories($categories, $itemId){
+    function updateCategories(array $categories, int $itemId){
     	$dao = SOY2DAOFactory::create("shop.SOYShop_CategoriesDAO");
     	try{
     		$dao->deleteByItemId($itemId);
@@ -182,8 +174,8 @@ class ItemLogic extends SOY2LogicBase{
     }
 
     /** ダミー商品をたくさん追加 **/
-    function createDummyItems($count = 100){
-    	$dao = self::getItemDAO();
+    function createDummyItems(int $count=100){
+    	$dao = self::_dao();
 
     	for($i = 0; $i < $count; $i++){
     		$code = self::createDummyCode();
@@ -249,12 +241,12 @@ class ItemLogic extends SOY2LogicBase{
 		return $list[$itemId];
 	}
 
-	function getStockListByItemIds($itemIds){
+	function getStockListByItemIds(array $itemIds){
 		if(!count($itemIds)) return array();
 
 		$stocks = array();
 
-		$res = self::getItemDAO()->getStockTotalListByItemIds($itemIds);
+		$res = self::_dao()->getStockTotalListByItemIds($itemIds);
 		if(count($res)){
 			foreach($res as $itemId => $stock){
 				$stocks[$itemId] = $stock;
@@ -270,7 +262,7 @@ class ItemLogic extends SOY2LogicBase{
 		}
 
 		//商品グループの場合
-		$res = self::getItemDAO()->getChildStockListByItemIds($itemIds);
+		$res = self::_dao()->getChildStockListByItemIds($itemIds);
 		if(count($res)){
 			foreach($res as $itemId => $stock){
 				$stocks[$itemId] = $stock;
@@ -287,15 +279,18 @@ class ItemLogic extends SOY2LogicBase{
 
 	function getItemNameListByIds($ids){
 		if(!is_array($ids) || !count($ids)) return array();
-
-		return SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getItemNameListByIds($ids);
+		return self::_dao()->getItemNameListByIds($ids);
 	}
 
 	function getLatestRegisteredItem(){
 		try{
-			return self::getItemDAO()->getLatestRegisteredItem(time());
+			return self::_dao()->getLatestRegisteredItem(time());
 		}catch(Exception $e){
 			return new SOYShop_Item();
 		}
 	}
+
+	private function _dao(){
+		return soyshop_get_hash_table_dao("item");
+    }
 }

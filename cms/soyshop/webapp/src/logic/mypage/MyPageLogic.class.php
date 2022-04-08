@@ -15,12 +15,12 @@ class MyPageLogic extends SOY2LogicBase{
 
 	/**
 	 * マイページを取得
-	 * @param integer $myPageId
+	 * @param string $myPageId
 	 * @return MyPageLogic
 	 */
-	public static function getMyPage($myPageId = null){
+	public static function getMyPage(string $myPageId=""){
 
-		if(!$myPageId)$myPageId = SOYSHOP_CURRENT_MYPAGE_ID;
+		if(!strlen($myPageId)) $myPageId = SOYSHOP_CURRENT_MYPAGE_ID;
 		$userSession = SOY2ActionSession::getUserSession();
 		$myPage = $userSession->getAttribute("soyshop_mypage_" . SOYSHOP_ID . $myPageId);
 		//セッションから直接オブジェクトの形で取得できた場合は、strlen($myPage)ではじくことができる
@@ -113,7 +113,7 @@ class MyPageLogic extends SOY2LogicBase{
 	/**
 	 * 取得したパスの書き換え
 	 */
-	public static function convertPath($path){
+	public static function convertPath(string $path){
 		$array = explode(".", $path);
 		$last = count($array) - 1;
 		if(isset($array[$last])) $array[$last] = ucfirst($array[$last]);
@@ -158,7 +158,7 @@ class MyPageLogic extends SOY2LogicBase{
 	/**
 	 * モジュール削除
 	 */
-	function removeModule($moduleId){
+	function removeModule(string $moduleId){
 		if(isset($this->modules[$moduleId])){
 			$this->modules[$moduleId] = null;
 			unset($this->modules[$moduleId]);
@@ -172,13 +172,13 @@ class MyPageLogic extends SOY2LogicBase{
 		}
 
 		//関連する設定値をクリア
-		$this->clearOrderAttribute($moduleId);
+		//$this->clearOrderAttribute($moduleId);
 	}
 
 	/**
 	 * モジュール取得
 	 */
-	function getModule($moduleId){
+	function getModule(string $moduleId){
 		return (isset($this->modules[$moduleId])) ? $this->modules[$moduleId] : null;
 	}
 
@@ -305,7 +305,7 @@ class MyPageLogic extends SOY2LogicBase{
 	 * @param array args
 	 * @return titleFormat
 	 */
-	function getTitleFormat($args){
+	function getTitleFormat(array $args){
 		SOYShopPlugin::load("soyshop.mypage");
 		$titleFormat = SOYShopPlugin::invoke("soyshop.mypage", array(
 			"mode" => "title"
@@ -399,9 +399,9 @@ class MyPageLogic extends SOY2LogicBase{
 	 * @param string profileId
 	 * @return object SOYShop_User
 	 */
-	private function getProfileUser($profileId){
+	function getProfileUser(string $profileId){
 		try{
-			return SOY2DAOFactory::create("user.SOYShop_UserDAO")->getByProfileId($profileId);
+			return soyshop_get_hash_table_dao("user")->getByProfileId($profileId);
 		}catch(Exception $e){
 			return new SOYShop_User();
 		}
@@ -412,7 +412,7 @@ class MyPageLogic extends SOY2LogicBase{
 	 * @param int userId
 	 * @return string url
 	 */
-	function getProfileUserLink($userId){
+	function getProfileUserLink(int $userId){
 		$user = soyshop_get_user_object($userId);
 		if(is_null($user->getId())) return null;
 
@@ -444,7 +444,7 @@ class MyPageLogic extends SOY2LogicBase{
 	 * @param string password
 	 * #error login_error
 	 */
-	function login($loginId, $password){
+	function login(string $loginId, string $password){
 		//プラグインのログイン周りの拡張ポイントを持つプラグインがあるか？
 		SOYShopPlugin::load("soyshop.mypage.login");
 		$isExtendLogin = SOYShopPlugin::invoke("soyshop.mypage.login")->getResult();
@@ -505,7 +505,7 @@ class MyPageLogic extends SOY2LogicBase{
 		return $res;
 	}
 
-	function noPasswordLogin($userId){
+	function noPasswordLogin(int $userId){
 		/**
 		 * @ログイン周りのチェック
 		 */
@@ -527,12 +527,12 @@ class MyPageLogic extends SOY2LogicBase{
 	 * @param int defult
 	 * @param str defult documentRoot
 	 */
-	function autoLogin($expire = SOYSHOP_AUTOLOGIN_EXPIRE, $url = null){
+	function autoLogin(int $expire=SOYSHOP_AUTOLOGIN_EXPIRE, string $url=""){
 		$userId = $this->getAttribute("userId");	//このコードを読む時に$this->getUserId()が使えない事がある
 		$token = md5(time() . $userId . mt_rand(0, 65535));
 		$expire += time();
 
-		if(is_null($url)) $url = soyshop_get_site_url(true);
+		if(!strlen($url)) $url = soyshop_get_site_url(true);
 
 		if(strpos($url, "http://") === 0 || strpos($url, "https://") === 0){
 			preg_match("/^https?:\\/\\/([^:\\/]+)(?::[0-9]+)?(?:(\\/[^\\?#]*))?/", $url, $matches);
