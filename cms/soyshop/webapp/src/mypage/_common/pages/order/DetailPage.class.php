@@ -39,7 +39,19 @@ class DetailPage extends MainMyPagePageBase{
 
 		DisplayPlugin::toggle("updated", isset($_GET["updated"]));
 
+        self::_upperExtention();
         self::_buildOrder();
+    }
+
+    private function _upperExtention(){
+		SOYShopPlugin::load("soyshop.mypage.order");
+		$contents = SOYShopPlugin::invoke("soyshop.mypage.order")->getContents();
+		if(is_null($contents)) $contents = array();
+		DisplayPlugin::toggle("plugin_btn_area", (count($contents) > 0));
+
+		$this->createAdd("plugin_btn_list", "_common.order.PluginButtonListComponent", array(
+			"list" => $contents
+		));
     }
 
     private function _buildOrder(){

@@ -22,7 +22,7 @@ class SOYShopOrderDetailMailBase implements SOY2PluginAction{
 class SOYShopOrderDetailMailDeletageAction implements SOY2PluginDelegateAction{
 
 	private $_list = array();
-	private $mode;
+	private $mode="order";
 	private $type;	//returnとか
 
 	function run($extetensionId,$moduleId,SOY2PluginAction $action){

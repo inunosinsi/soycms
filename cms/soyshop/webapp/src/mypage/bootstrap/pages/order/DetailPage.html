@@ -1,5 +1,15 @@
-<div class="alert alert-info" role="alert">注文番号『<!-- soy:id="order_number" /-->』の購入履歴詳細</div>
+<div class="alert alert-info" role="alert">注文番号『
+	<!-- soy:id="order_number" /-->』の購入履歴詳細
+</div>
 <div class="alert alert-success" role="alert" soy:display="updated">注文内容を変更しました。</div>
+
+<!-- soy:display="plugin_btn_area" -->
+<div class="mb-3">
+	<!-- soy:id="plugin_btn_list"-->
+	<a soy:id="plugin_btn_link" class="btn btn-info"></a>
+	<!-- /soy:id="plugin_btn_list"-->
+</div>
+<!-- /soy:display="plugin_btn_area" -->
 
 <table class="table table-striped">
 	<thead class="thead-dark">
@@ -16,7 +26,10 @@
 	<tfoot>
 		<tr>
 			<th colspan="4">合計</th>
-			<td colspan="1"><!-- soy:id="order_total_price" -->4,200<!-- /soy:id="order_total_price" -->円</td>
+			<td colspan="1">
+				<!-- soy:id="order_total_price" -->4,200
+				<!-- /soy:id="order_total_price" -->円
+			</td>
 		</tr>
 	</tfoot>
 
@@ -26,13 +39,22 @@
 			<td soy:id="item_code_plain">123456</td>
 			<td>
 				<img src="photos/detail2_2.jpg" width="80" height="60" alt="" soy:id="item_small_image"><br>
-				<a soy:id="item_link"><!-- soy:id="item_name" -->ナノブロック（フレンチブルドッグ）<!-- /soy:id="item_name" --></a><br>
+				<a soy:id="item_link">
+					<!-- soy:id="item_name" -->ナノブロック（フレンチブルドッグ）
+					<!-- /soy:id="item_name" -->
+				</a><br>
 				<!-- soy:id="item_option" /-->
 			</td>
-			<td class="price subsum"><!-- soy:id="item_price" -->2,100<!-- /soy:id="item_price" -->円</td>
+			<td class="price subsum">
+				<!-- soy:id="item_price" -->2,100
+				<!-- /soy:id="item_price" -->円
+			</td>
 			<td class="alC" soy:id="item_count">1</td>
 			<!--td nowrap class="table_btn"><a href="#">同じ商品を注文</a></td-->
-			<td class="price subsum"><!-- soy:id="item_total_price" -->2,100<!-- /soy:id="item_total_price" -->円</td>
+			<td class="price subsum">
+				<!-- soy:id="item_total_price" -->2,100
+				<!-- /soy:id="item_total_price" -->円
+			</td>
 		</tr>
 		<!-- /soy:id="item_list" -->
 
@@ -40,13 +62,22 @@
 		<tr>
 			<th colspan="3">小計</th>
 			<td class="text-center" soy:id="subtotal_item_count">2</td>
-			<td><!-- soy:id="subtotal_price" -->4,200<!-- /soy:id="subtotal_price" -->円</td>
+			<td>
+				<!-- soy:id="subtotal_price" -->4,200
+				<!-- /soy:id="subtotal_price" -->円
+			</td>
 		</tr>
 		<!-- /soy:display="subtotal" -->
 		<!-- soy:id="module_list" -->
 		<tr>
-			<th colspan="4"><!-- soy:id="module_name" -->送料（国内）<!-- /soy:id="module_name" --></th>
-			<td colspan="1"><!-- soy:id="module_price" -->0<!-- /soy:id="module_price" -->円</td>
+			<th colspan="4">
+				<!-- soy:id="module_name" -->送料（国内）
+				<!-- /soy:id="module_name" -->
+			</th>
+			<td colspan="1">
+				<!-- soy:id="module_price" -->0
+				<!-- /soy:id="module_price" -->円
+			</td>
 		</tr>
 		<!-- /soy:id="module_list" -->
 	</tbody>
@@ -65,7 +96,7 @@
 			<th nowrap>ダウンロード<br>
 				期限</th>
 			<th nowrap>ダウンロード<br>
-			回数</th>
+				回数</th>
 			<th>&nbsp;</th>
 		</tr>
 	</thead>
@@ -73,9 +104,18 @@
 	<tbody>
 		<!-- soy:id="download_list" -->
 		<tr>
-			<td nowrap><!-- soy:id="file_name" -->french_nanoblock.zip<!-- /soy:id="file_name" --></td>
-			<td class="text-center"><!-- soy:id="time_limit" -->無期限<!-- /soy:id="time_limit" --></td>
-			<td class="text-center"><!-- soy:id="count" -->無制限<!-- /soy:id="count" --></td>
+			<td nowrap>
+				<!-- soy:id="file_name" -->french_nanoblock.zip
+				<!-- /soy:id="file_name" -->
+			</td>
+			<td class="text-center">
+				<!-- soy:id="time_limit" -->無期限
+				<!-- /soy:id="time_limit" -->
+			</td>
+			<td class="text-center">
+				<!-- soy:id="count" -->無制限
+				<!-- /soy:id="count" -->
+			</td>
 			<td nowrap>
 				<!-- soy:id="is_download" -->
 				<a soy:id="download_link" class="btn btn-warning">ダウンロード</a>
@@ -89,8 +129,14 @@
 		<!-- /soy:id="download_list" -->
 		<!-- soy:id="bonus_list" -->
 		<tr>
-			<td nowrap><!-- soy:id="file_name" -->french_nanoblock.zip<!-- /soy:id="file_name" --></td>
-			<td class="text-center"><!-- soy:id="time_limit" -->無期限<!-- /soy:id="time_limit" --></td>
+			<td nowrap>
+				<!-- soy:id="file_name" -->french_nanoblock.zip
+				<!-- /soy:id="file_name" -->
+			</td>
+			<td class="text-center">
+				<!-- soy:id="time_limit" -->無期限
+				<!-- /soy:id="time_limit" -->
+			</td>
 			<td class="text-center">無制限</td>
 			<td nowrap>
 				<!-- soy:id="is_bonus" -->
@@ -128,7 +174,10 @@
 	</tr>
 	<tr>
 		<th>合計金額</th>
-		<td><!-- soy:id="order_price" -->4,200<!-- /soy:id="order_price" -->円</td>
+		<td>
+			<!-- soy:id="order_price" -->4,200
+			<!-- /soy:id="order_price" -->円
+		</td>
 	</tr>
 	<!-- soy:id="attribute_list" -->
 	<tr>
@@ -162,27 +211,47 @@
 	<col width="180px">
 	<tr soy:id="user_name_show">
 		<th>お名前</th>
-		<td><!-- soy:id="user_name" -->齋藤　毅<!-- /soy:id="user_name" --></td>
+		<td>
+			<!-- soy:id="user_name" -->齋藤　毅
+			<!-- /soy:id="user_name" -->
+		</td>
 	</tr>
 	<tr soy:id="user_reading_show">
 		<th>フリガナ</th>
-		<td><!-- soy:id="user_reading" -->サイトウツヨシ<!-- /soy:id="user_reading" --></td>
+		<td>
+			<!-- soy:id="user_reading" -->サイトウツヨシ
+			<!-- /soy:id="user_reading" -->
+		</td>
 	</tr>
 	<tr soy:id="user_office_show">
 		<th>法人名（勤務先など）</th>
-		<td><!-- soy:id="user_office" -->SOY Shop<!-- /soy:id="user_office" --></td>
+		<td>
+			<!-- soy:id="user_office" -->SOY Shop
+			<!-- /soy:id="user_office" -->
+		</td>
 	</tr>
 	<tr soy:id="user_zipcode_show">
 		<th>郵便番号</th>
-		<td>〒<!-- soy:id="user_zipcode" -->606-8232<!-- /soy:id="user_zipcode" --></td>
+		<td>〒
+			<!-- soy:id="user_zipcode" -->606-8232
+			<!-- /soy:id="user_zipcode" -->
+		</td>
 	</tr>
 	<tr soy:id="user_area_show">
 		<th>ご住所</th>
-		<td><!-- soy:id="user_area" /--><!-- soy:id="user_address1" /--><!-- soy:id="user_address2" /--><!-- soy:id="user_address3" /--></td>
+		<td>
+			<!-- soy:id="user_area" /-->
+			<!-- soy:id="user_address1" /-->
+			<!-- soy:id="user_address2" /-->
+			<!-- soy:id="user_address3" /-->
+		</td>
 	</tr>
 	<tr soy:id="user_telephonenumber_show">
 		<th>電話番号</th>
-		<td><!-- soy:id="user_telephonenumber" -->090-7425-4064<!-- /soy:id="user_telephonenumber" --></td>
+		<td>
+			<!-- soy:id="user_telephonenumber" -->090-7425-4064
+			<!-- /soy:id="user_telephonenumber" -->
+		</td>
 	</tr>
 </table>
 
@@ -195,27 +264,47 @@
 	<col width="180px">
 	<tr soy:id="claimed_name_show">
 		<th>お名前</th>
-		<td><!-- soy:id="claimed_name" -->齋藤　毅<!-- /soy:id="claimed_name" --></td>
+		<td>
+			<!-- soy:id="claimed_name" -->齋藤　毅
+			<!-- /soy:id="claimed_name" -->
+		</td>
 	</tr>
 	<tr soy:id="claimed_reading_show">
 		<th>フリガナ</th>
-		<td><!-- soy:id="claimed_reading" -->サイトウツヨシ<!-- /soy:id="claimed_reading" --></td>
+		<td>
+			<!-- soy:id="claimed_reading" -->サイトウツヨシ
+			<!-- /soy:id="claimed_reading" -->
+		</td>
 	</tr>
 	<tr soy:id="claimed_office_show">
 		<th>法人名（勤務先など）</th>
-		<td><!-- soy:id="claimed_office" -->SOY Shop<!-- /soy:id="claimed_office" --></td>
+		<td>
+			<!-- soy:id="claimed_office" -->SOY Shop
+			<!-- /soy:id="claimed_office" -->
+		</td>
 	</tr>
 	<tr soy:id="claimed_zipcode_show">
 		<th>郵便番号</th>
-		<td>〒<!-- soy:id="claimed_zipcode" -->606-8232<!-- /soy:id="claimed_zipcode" --></td>
+		<td>〒
+			<!-- soy:id="claimed_zipcode" -->606-8232
+			<!-- /soy:id="claimed_zipcode" -->
+		</td>
 	</tr>
 	<tr soy:id="claimed_area_show">
 		<th>ご住所</th>
-		<td><!-- soy:id="claimed_area" /--><!-- soy:id="claimed_address1" /--><!-- soy:id="claimed_address2" /--><!-- soy:id="claimed_address3" /--></td>
+		<td>
+			<!-- soy:id="claimed_area" /-->
+			<!-- soy:id="claimed_address1" /-->
+			<!-- soy:id="claimed_address2" /-->
+			<!-- soy:id="claimed_address3" /-->
+		</td>
 	</tr>
 	<tr soy:id="claimed_telephonenumber_show">
 		<th>電話番号</th>
-		<td><!-- soy:id="claimed_telephonenumber" -->090-7425-4064<!-- /soy:id="claimed_telephonenumber" --></td>
+		<td>
+			<!-- soy:id="claimed_telephonenumber" -->090-7425-4064
+			<!-- /soy:id="claimed_telephonenumber" -->
+		</td>
 	</tr>
 </table>
 
