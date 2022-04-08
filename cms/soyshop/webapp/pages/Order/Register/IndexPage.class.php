@@ -647,15 +647,7 @@ class IndexPage extends WebPage{
 			"cart" => $this->cart
 		))->getList();
 
-		$list = array();
-		if(count($values)){
-			foreach($values as $v){
-				if(!is_array($v)) continue;
-				foreach($v as $key => $obj){
-					$list[$key] = $obj;
-				}
-			}
-		}
+		$list = (count($values)) ? soyshop_shape_extension_point_result_array($values) : array();
 
 		DisplayPlugin::toggle("has_customfield_method", count($list));
 
