@@ -4,7 +4,7 @@ class CustomSearchFieldInstall extends SOYShopPluginInstallerBase{
 	function onInstall(){
 
 		//初期化時のみテーブルを作成する
-		$sqls = self::getSQL();
+		$sqls = self::_sqls();
         $dao = new SOY2DAO();
 
         if(preg_match_all('/CREATE.*?;/mis', $sqls, $tmp)){
@@ -54,9 +54,8 @@ class CustomSearchFieldInstall extends SOYShopPluginInstallerBase{
 	/**
 	 * @return String sql for init
 	 */
-	function getSQL(){
-		$sql = file_get_contents(dirname(__FILE__) . "/sql/init_" . SOYSHOP_DB_TYPE . ".sql");
-		return $sql;
+	private function _sqls(){
+		return file_get_contents(dirname(__FILE__) . "/sql/init_" . SOYSHOP_DB_TYPE . ".sql");
 	}
 }
 SOYShopPlugin::extension("soyshop.plugin.install", "custom_search_field", "CustomSearchFieldInstall");
