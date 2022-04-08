@@ -28,10 +28,10 @@ class IndexPage extends WebPage{
     	if(!count($mailList)) return array();
 
     	$list = array();
-    	foreach($mailList as $values){
-    		if(!is_array($values)) continue;
-   			foreach($values as $value){
-   				$list[] = $value;
+    	foreach($mailList as $arr){
+    		if(!is_array($arr)) continue;
+   			foreach($arr as $v){
+   				$list[$v["id"]] = $v["title"];
    			}
     	}
 
