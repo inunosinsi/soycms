@@ -999,9 +999,7 @@ class EditPage extends WebPage{
 				}
 			}
 
-			$dao = SOY2DAOFactory::create("order.SOYShop_OrderAttributeDAO");
-			$dateDao = SOY2DAOFactory::create("order.SOYShop_OrderDateAttributeDAO");
-		   	foreach($array as $key => $obj){
+			foreach($array as $key => $obj){
 		   		$newValue1 = null;
 				$newValue2 = null;
 
@@ -1051,26 +1049,10 @@ class EditPage extends WebPage{
 							$change[]=self::getHistoryText($obj["label"], $obj["value2"], $newValue2);
 						}
 						//ここで配列を入れてしまう。
-						try{
-							$orderAttr = $dao->get($order->getId(), $key);
-						}catch(Exception $e){
-							$orderAttr = new SOYShop_OrderAttribute();
-							$orderAttr->setOrderId($order->getId());
-							$orderAttr->setFieldId($key);
-						}
-
+						$orderAttr = soyshop_get_order_attribute_object($order->getId(), $key);
 						$orderAttr->setValue1($newValue1);
 						$orderAttr->setValue2($newValue2);
-
-						try{
-							$dao->insert($orderAttr);
-						}catch(Exception $e){
-							try{
-								$dao->update($orderAttr);
-							}catch(Exception $e){
-								//
-							}
-						}
+						soyshop_save_order_attribute_object($orderAttr);
 						break;
 					case SOYShop_OrderDateAttribute::CUSTOMFIELD_TYPE_DATE:
 					case SOYShop_OrderDateAttribute::CUSTOMFIELD_TYPE_PERIOD:
@@ -1090,27 +1072,10 @@ class EditPage extends WebPage{
 							}
 						}
 
-						try{
-							$orderDateAttr = $dateDao->get($order->getId(), $key);
-						}catch(Exception $e){
-							$orderDateAttr = new SOYShop_OrderDateAttribute();
-							$orderDateAttr->setOrderId($order->getId());
-							$orderDateAttr->setFieldId($key);
-						}
-
+						$orderDateAttr = soyshop_get_order_date_attribute_object($order->getId(), $key);
 						$orderDateAttr->setValue1($newValue1);
 						$orderDateAttr->setValue2($newValue2);
-
-						try{
-							$dateDao->insert($orderDateAttr);
-						}catch(Exception $e){
-							try{
-								$dateDao->update($orderDateAttr);
-							}catch(Exception $e){
-								//
-							}
-						}
-
+						soyshop_save_order_date_attribute_object($orderDateAttr);
 						break;
 					default:
 				}

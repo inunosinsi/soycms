@@ -6,9 +6,7 @@ class DetailPage extends WebPage{
 		if(!AUTH_OPERATE || !AUTH_CHANGE) return;	//操作権限がないアカウントの場合は以後のすべての動作を封じる
 
 		if(!empty($_FILES) && empty($_POST)){
-			$dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-			$attrDAO = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-			$item = $dao->getById($this->id);
+			$item = soyshop_get_item_object($this->id);
 
 			$res = array();
 			foreach($_FILES["custom_field"]["name"] as $key => $filename){
@@ -57,17 +55,9 @@ class DetailPage extends WebPage{
 					"message" => "アップロードしました\nURL=" . $item->getAttachmentsUrl() . $name.""
 				);
 
-				try{
-					$field = $attrDAO->get($this->id,$key);
-					$field->setValue($item->getAttachmentsUrl() . $name);
-					$attrDAO->update($field);
-				}catch(Exception $e){
-					$field = new SOYShop_ItemAttribute();
-					$field->setItemId($item->getId());
-					$field->setFieldId($key);
-					$field->setValue($item->getAttachmentsUrl() . $name);
-					$attrDAO->insert($field);
-				}
+				$attr = soyshop_get_item_attribute_object($this->id, $key);
+				$attr->setValue($item->getAttachmentsUrl() . $name);
+				soyshop_save_item_attribute_object($attr);
 			}
 
 			echo json_encode($res);
@@ -90,7 +80,6 @@ class DetailPage extends WebPage{
 				$_POST["Item"]["category"] = $categories[0];
 			}
 
-			$dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 			$logic = SOY2Logic::createInstance("logic.shop.item.ItemLogic");
 
 			$newItem = $_POST["Item"];
@@ -113,7 +102,7 @@ class DetailPage extends WebPage{
 				$newItem["openPeriodEnd"] = soyshop_convert_timestamp($newItem["openPeriodEnd"], "end");
 			}
 
-			$item = $dao->getById($this->id);
+			$item = soyshop_get_item_object($this->id);
 
 			//在庫のチェック
 			$oldStock = $item->getStock();
@@ -252,7 +241,7 @@ class DetailPage extends WebPage{
 	private function _buildForm(int $id){
 
 		$item = ($this->obj) ? $this->obj : soyshop_get_item_object($id);
-		if(is_null($item->getId())){
+		if(!is_numeric($item->getId())){
 			SOY2PageController::jump("Item");
 			exit;
 		}
