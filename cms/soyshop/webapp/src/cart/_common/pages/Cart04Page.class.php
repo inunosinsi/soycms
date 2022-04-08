@@ -227,6 +227,10 @@ class Cart04Page extends MainCartPageBase{
     		"text" => $user->getAddress2(),
     	));
 
+		$this->addLabel("address3", array(
+    		"text" => $user->getAddress3(),
+		));
+
     	$this->addLabel("tel_number", array(
     		"text" => $user->getTelephoneNumber(),
     	));
