@@ -12,6 +12,7 @@ class OrderInvoiceAddInvoiceButtonFunction extends SOYShopOrderFunction{
 	 * @return html
 	 */
 	function getPage(){
+		if(!defined("OUTPUT_INVOICE_MODE")) define("OUTPUT_INVOICE_MODE", "fn");	// fn(soyshop.order.function) or ex(soyshop.order.ex)
 		if(!defined("ORDER_DOCUMENT_MODE")) define("ORDER_DOCUMENT_MODE", "invoice");
 		if(!defined("ORDER_DOCUMENT_LABEL")) define("ORDER_DOCUMENT_LABEL", "請求書");
 

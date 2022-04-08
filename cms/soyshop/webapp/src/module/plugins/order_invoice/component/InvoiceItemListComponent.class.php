@@ -34,7 +34,7 @@ class InvoiceItemListComponent extends HTMLList {
 		));
 
 		$this->addLabel("item_count", array(
-			"text" => soy2_number_format($itemOrder->getItemCount())
+			"text" => (is_numeric($item->getId())) ? soy2_number_format($itemOrder->getItemCount()) : ""
 		));
 
 		$this->addModel("is_item_price", array(

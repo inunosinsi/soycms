@@ -7,6 +7,12 @@ class InvoiceListComponent extends HTMLList{
 	protected function populateItem($order){
 		if(!$order instanceof SOYShop_Order) $order = new SOYShop_Order();
 
+		// soyshop.order.function or soyshop.order.exportのどちらからの出力によって、id="wrapper"のstyleを変える
+		if(!defined("OUTPUT_INVOICE_MODE")) define("OUTPUT_INVOICE_MODE", "ex");
+		$this->addModel("wrapper_style", array(
+			"attr:style" => (OUTPUT_INVOICE_MODE == "ex") ? "page-break-inside: avoid;page-break-after:always;" : ""
+		));
+
 		//軽減税率に対応しているか？
 		$reducedTaxRateMode = OrderInvoiceCommon::checkReducedTaxRateMode($order);
 
@@ -32,7 +38,7 @@ class InvoiceListComponent extends HTMLList{
 		self::buildClaimedArea($order);
 
 		/*** 注文商品 ***/
-		$items = self::_getItemOrders($order->getItems(), $order->getId(), $reducedTaxRateMode);
+		$items = (is_numeric($order->getId())) ? self::_getItemOrders($order->getItems(), $order->getId(), $reducedTaxRateMode) : array();
 	   	$this->createAdd("item_detail", "InvoiceItemListComponent", array(
 			"list" => $items,
 			"reducedTaxRateMode" => $reducedTaxRateMode
@@ -58,7 +64,7 @@ class InvoiceListComponent extends HTMLList{
 			if(!class_exists("GenerateBarcodeUtil")) SOY2::import("module.plugins.generate_barcode_tracking_number.util.GenerateBarcodeUtil");
 			$barcodeSrc = GenerateBarcodeUtil::getBarcodeImagePath($order->getTrackingNumber() . ".jpg");
 		}else{
-			$barcodeSrc = null;
+			$barcodeSrc = "";
 		}
 
 		$this->addModel("is_barcode", array(
@@ -91,7 +97,7 @@ class InvoiceListComponent extends HTMLList{
 		));
 
 		$this->addLabel("subtotal_price", array(
-			"text" => number_format(self::getTotalPrice($order->getId()))
+			"text" => (is_numeric($order->getId())) ? number_format(self::_getTotalPrice($order->getId())) : 0
 		));
 
 		$this->addLabel("order_total_price", array(
@@ -168,7 +174,7 @@ class InvoiceListComponent extends HTMLList{
 		));
 	}
 
-	private function buildReducedTaxRateArea(SOYShop_Order $order, $itemOrders, $reducedTaxRateMode){
+	private function buildReducedTaxRateArea(SOYShop_Order $order, array $itemOrders, bool $reducedTaxRateMode){
 		//軽減税率に関する記述
 		$reducedTaxRateTargetItemTotal = ($reducedTaxRateMode) ? OrderInvoiceCommon::calcReducedTaxRateTargetItemTotal($itemOrders) : 0;
 		$this->addModel("is_reduced_tax_rate_detail", array(
@@ -365,7 +371,7 @@ class InvoiceListComponent extends HTMLList{
 		return array($paymentId, $deliveryId);
 	}
 
-	private function _getItemOrders($itemOrders, $orderId, $reducedTaxRateMode){
+	private function _getItemOrders(array $itemOrders, int $orderId, bool $reducedTaxRateMode){
 		if(count($itemOrders) === 0){
 			try{
 				//一件しか取得できないのがちらほらあるので、再度コンストラクトすることにした
@@ -386,22 +392,21 @@ class InvoiceListComponent extends HTMLList{
 	}
 
 	/**
-	 * @return object#SOYShop_ItemOrder
 	 * @param orderId
+	 * @return object#SOYShop_ItemOrder
 	 */
-	private function getTotalPrice($orderId){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
-
+	private function _getTotalPrice(int $orderId){
 		try{
-			return $dao->getTotalPriceByOrderId($orderId);
+			return soyshop_get_hash_table_dao("item_orders")->getTotalPriceByOrderId($orderId);
 		}catch(Exception $e){
 			return 0;
 		}
 	}
 
 	private function getNormalTaxTargetTotal(SOYShop_Order $order){
-		$total = self::getTotalPrice($order->getId());
+		if(!is_numeric($order->getId())) return 0;
+
+		$total = self::_getTotalPrice($order->getId());
 		$modules = $order->getModuleList();
 		if(!count($modules)) return 0;
 		foreach($modules as $moduleId => $module){

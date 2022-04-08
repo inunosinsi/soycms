@@ -20,6 +20,7 @@ class OrderInvoiceAddReceiptButtonExport extends SOYShopOrderExportBase{
 	 * export エクスポート実行
 	 */
 	function export(array $orders){
+		if(!defined("OUTPUT_INVOICE_MODE")) define("OUTPUT_INVOICE_MODE", "ex");	// fn(soyshop.order.function) or ex(soyshop.order.ex)
 		if(!defined("ORDER_DOCUMENT_MODE")) define("ORDER_DOCUMENT_MODE", "receipt");
 		if(!defined("ORDER_DOCUMENT_LABEL")) define("ORDER_DOCUMENT_LABEL", "領収書");
 
