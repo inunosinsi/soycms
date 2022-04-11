@@ -17,7 +17,7 @@ class SOYShopUtil {
 	/**
 	 *
 	 */
-	public static function switchShopMode($siteId){
+	public static function switchShopMode(string $siteId){
 
 		$old = array();
 
@@ -42,10 +42,10 @@ class SOYShopUtil {
 		SOY2DAOConfig::EntityDir(SOY2::RootDir() . "domain/");
 		SOY2DAOConfig::DaoCacheDir($soyshopRoot . "cache/");
 
-		if(file_exists(SOY2::RootDir() . "/conf/shop/" . $siteId . ".conf.php")){
+		if(file_exists(dirname(SOY2::RootDir()) . "/conf/shop/" . $siteId . ".conf.php")){
 			include_once(dirname(SOY2::RootDir()) . "/conf/shop/" . $siteId . ".conf.php");
 		}else{
-			include_once(dirname(SOY2::RootDir()) . "/conf/shop/" . $siteId . ".php");
+			include_once(dirname(SOY2::RootDir()) . "/conf/shop/" . $siteId . ".admin.conf.php");
 		}
 		
 
