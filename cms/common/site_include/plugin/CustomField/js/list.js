@@ -16,3 +16,12 @@ var CustomFieldListField = {
 		$lastForm.after($div[0]);
 	}
 }
+
+function list_field_move_up(formId, idx){
+	if(idx > 0){	//idxが0の場合はなにもしない
+		var up = idx - 1;
+		var tmp = $("." + formId + "_" + up).val();
+		$("." + formId + "_" + up).val($("." + formId + "_" + idx).val());
+		$("." + formId + "_" + idx).val(tmp);
+	}
+}

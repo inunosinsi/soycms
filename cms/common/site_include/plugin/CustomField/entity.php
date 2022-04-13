@@ -172,7 +172,7 @@ class CustomField{
 
 		$h_formName = htmlspecialchars($this->getFormName(),ENT_QUOTES,"UTF-8");
 		$h_formID = htmlspecialchars($this->getFormId(),ENT_QUOTES,"UTF-8");
-
+		
 		$title = '<label for="'.$h_formID.'">'
 		         .( ($pluginObj->displayTitle) ? 'カスタムフィールド：' : '' )
 		         .htmlspecialchars($this->getLabel(),ENT_QUOTES,"UTF-8")
@@ -399,9 +399,10 @@ class CustomField{
 
 				$html = array();
 				if(count($values)){
-					foreach($values as $v){
+					foreach($values as $idx => $v){
 						$html[] = "<div class=\"form-inline\">";
-						$html[] = "	<input type=\"text\" name=\"" . $h_formName . "[]\" class=\"form-control\" value=\"" . htmlspecialchars($v, ENT_QUOTES, "UTF-8") . "\">";
+						$html[] = "	<input type=\"text\" name=\"" . $h_formName . "[]\" class=\"form-control " . $h_formID . "_" . $idx . "\" value=\"" . htmlspecialchars($v, ENT_QUOTES, "UTF-8") . "\">";
+						if($idx > 0) $html[] = "	<a href=\"javascript:void(0);\" class=\"btn btn-default\" onclick=\"list_field_move_up('" . $h_formID . "', " . $idx . ");\">△</a>";
 						$html[] = "</div>";
 					}
 				}

@@ -1,5 +1,7 @@
 <?php
 
+use function PHPSTORM_META\map;
+
 CustomAliasPlugin::register();
 
 class CustomAliasPlugin{
@@ -9,6 +11,8 @@ class CustomAliasPlugin{
  	private $prefix;
 	private $postfix;
 	private $mode;
+
+	private $aliases = array();
 
 	function getId(){
 		return self::PLUGIN_ID;
@@ -21,7 +25,7 @@ class CustomAliasPlugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.12.2"
+			"version"=>"1.13"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID, array(
@@ -30,7 +34,8 @@ class CustomAliasPlugin{
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
 			if(defined("_SITE_ROOT_")){
-				//無駄な処理を避けて、サイトの表示速度の高速化
+				CMSPlugin::setEvent('onEntryListBeforeOutput', self::PLUGIN_ID, array($this, "onEntryListBeforeOutput"));
+				CMSPlugin::setEvent('onEntryOutput', self::PLUGIN_ID, array($this, "onEntryOutput"));
 			}else{
 				SOY2::import("site_include.plugin.custom_alias.util.CustomAliasUtil");
 				CMSPlugin::setEvent("onEntryCreate", self::PLUGIN_ID, array($this, "onEntryUpdate"));
@@ -40,6 +45,56 @@ class CustomAliasPlugin{
 				CMSPlugin::addCustomFieldFunction(self::PLUGIN_ID, "Blog.Entry", array($this, "onCallCustomField_inBlog"));
 			}
 		}
+	}
+
+	/**
+	 * onEntryListBeforeOutput
+	 */
+	function onEntryListBeforeOutput($arg){
+		$entries = &$arg["entries"];
+		$entryIds = soycms_get_entry_id_by_entries($entries);
+		
+		try{
+			$res = soycms_get_hash_table_dao("entry")->executeQuery(
+				"SELECT id, alias FROM Entry ".
+				"WHERE id IN (" . implode(",", $entryIds) . ")"
+			);
+		}catch(Exception $e){
+			$res = array();
+		}
+
+		foreach($res as $v){
+			$this->aliases[(int)$v["id"]] = $v["alias"];
+		}
+	}
+
+	/**
+	 * onEntryOutput
+	 */
+	function onEntryOutput($arg){
+		$entryId = (int)$arg["entryId"];
+		$htmlObj = $arg["SOY2HTMLObject"];
+
+		$htmlObj->addLabel("entry_alias",array(
+			"soy2prefix" => "cms",
+			"text" => ($entryId > 0) ? self::_getAliasByEntryId($entryId) : ""
+		));
+	}
+
+	private function _getAliasByEntryId(int $entryId){
+		if(isset($this->aliases[$entryId])) return $this->aliases[$entryId];
+
+		try{
+			$res = soycms_get_hash_table_dao("entry")->executeQuery(
+				"SELECT alias FROM Entry ".
+				"WHERE id = :entryId",
+				array(":entryId" => $entryId)
+			);
+		}catch(Exception $e){
+			$res = array();
+		}
+
+		return (isset($res[0]["alias"])) ? $res[0]["alias"] : "";
 	}
 
 	function onEntryCopy($ids){

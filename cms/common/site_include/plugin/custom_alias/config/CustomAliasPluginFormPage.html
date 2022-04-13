@@ -1,10 +1,10 @@
 <h4>設定</h4>
 
 <p class="alert alert-info">
-このプラグインを有効にするだけで記事編集画面で記事のエイリアス（URL）を指定できるようになります。<br>
-重複しないように注意してください。<br>
-数字のみのエイリアスは記事IDと重複しないようにしてください。<br>
-?,#,/,%,\を含むエイリアスを設定しても動作しない恐れがあります。
+	このプラグインを有効にするだけで記事編集画面で記事のエイリアス（URL）を指定できるようになります。<br>
+	重複しないように注意してください。<br>
+	数字のみのエイリアスは記事IDと重複しないようにしてください。<br>
+	?,#,/,%,\を含むエイリアスを設定しても動作しない恐れがあります。
 </p>
 
 <form method="post" soy:id="custom_alias_form">
@@ -13,13 +13,17 @@
 		<p class="alert alert-warning">モードの設定は、新規作成する記事に対して有効になります</p>
 		<p class="alert alert-info">IDモードとハッシュモードを選択した場合、記事投稿画面でエイリアス入力欄は表示されません</p>
 		<input soy:id="mode_manual" type="radio">
-		<span class="help"><i class="fa fa-question-circle fa-fw" data-toggle="tooltip" data-placement="right" title="エイリアスを手動で設定します"></i></span>&nbsp;
+		<span class="help"><i class="fa fa-question-circle fa-fw" data-toggle="tooltip" data-placement="right"
+				title="エイリアスを手動で設定します"></i></span>&nbsp;
 		<input soy:id="mode_id" type="radio">
-		<span class="help"><i class="fa fa-question-circle fa-fw" data-toggle="tooltip" data-placement="right" title="エイリアスは常に記事IDになります"></i></span>&nbsp;
+		<span class="help"><i class="fa fa-question-circle fa-fw" data-toggle="tooltip" data-placement="right"
+				title="エイリアスは常に記事IDになります"></i></span>&nbsp;
 		<input soy:id="mode_hash" type="radio">
-		<span class="help"><i class="fa fa-question-circle fa-fw" data-toggle="tooltip" data-placement="right" title="エイリアスは常に記事タイトルのハッシュ値になります"></i></span>&nbsp;
+		<span class="help"><i class="fa fa-question-circle fa-fw" data-toggle="tooltip" data-placement="right"
+				title="エイリアスは常に記事タイトルのハッシュ値になります"></i></span>&nbsp;
 		<input soy:id="mode_random" type="radio">
-		<span class="help"><i class="fa fa-question-circle fa-fw" data-toggle="tooltip" data-placement="right" title="エイリアスの入力フォームにランダムな値を挿入します"></i></span>
+		<span class="help"><i class="fa fa-question-circle fa-fw" data-toggle="tooltip" data-placement="right"
+				title="エイリアスの入力フォームにランダムな値を挿入します"></i></span>
 	</div>
 
 	<div class="rows" id="mode_id_config">
@@ -29,7 +33,7 @@
 			<input type="text" class="form-control" soy:id="id_cnf_prefix">
 		</div>
 		<div class="form-group">
-			<label>接頭語</label>
+			<label>接尾語</label>
 			<input type="text" class="form-control" soy:id="id_cnf_postfix">
 		</div>
 	</div>
@@ -66,27 +70,29 @@
 <form soy:id="all_change_form">
 	<h4>エイリアスの一括変更</h4>
 	<div class="alert alert-warning">エイリアスの一括変更を実行すると、記事に設定されていたエイリアスの全てが変換されます</div>
-	過去に投稿した記事すべてのエイリアスをIDに変換：<input type="submit" name="all_change" class="btn btn-primary" value="実行" onclick="return confirm('実行しますか？');"><br>
-	過去に投稿した記事すべてのエイリアスを記事タイトルに変換：<input type="submit" name="all_restore" class="btn btn-primary" value="実行" onclick="return confirm('実行しますか？');">
+	過去に投稿した記事すべてのエイリアスをIDに変換：<input type="submit" name="all_change" class="btn btn-primary" value="実行"
+		onclick="return confirm('実行しますか？');"><br>
+	過去に投稿した記事すべてのエイリアスを記事タイトルに変換：<input type="submit" name="all_restore" class="btn btn-primary" value="実行"
+		onclick="return confirm('実行しますか？');">
 </form>
 
 <script>
-toggle_mode($("input[name='mode']:checked").val());
-$("input[name='mode']").click(function(){
-	toggle_mode($(this).val());
-});
+	toggle_mode($("input[name='mode']:checked").val());
+	$("input[name='mode']").click(function () {
+		toggle_mode($(this).val());
+	});
 
-function toggle_mode(mode){
-	var modes = ["manual", "id", "hash", "random"];
-	for(var i = 0; i < modes.length; i++){
-		$cnfArea = $("#mode_" + modes[i] + "_config");
-		if($cnfArea.html()){
-			if(i == mode){
-				$("#mode_" + modes[i] + "_config").show();
-			}else{
-				$("#mode_" + modes[i] + "_config").hide();
+	function toggle_mode(mode) {
+		var modes = ["manual", "id", "hash", "random"];
+		for (var i = 0; i < modes.length; i++) {
+			$cnfArea = $("#mode_" + modes[i] + "_config");
+			if ($cnfArea.html()) {
+				if (i == mode) {
+					$("#mode_" + modes[i] + "_config").show();
+				} else {
+					$("#mode_" + modes[i] + "_config").hide();
+				}
 			}
 		}
 	}
-}
 </script>
