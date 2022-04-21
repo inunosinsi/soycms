@@ -5,12 +5,11 @@ class OrderHistoryLogic extends SOY2LogicBase{
 	/**
 	 * 注文履歴に追加
 	 */
-	public static function add($id, $content, $more = null){
-		static $dao;
-		if(!$dao) $dao = SOY2DAOFactory::create("order.SOYShop_OrderStateHistoryDAO");
+	public static function add(int $id, string $content, string $more=""){		
+		if(!strlen($more)) $more = null;
 
+		$dao = soyshop_get_hash_table_dao("order_state_history");
 		$history = new SOYShop_OrderStateHistory();
-
 		$history->setOrderId($id);
 		$history->setContent($content);
 		$history->setMore($more);
@@ -38,14 +37,14 @@ class OrderHistoryLogic extends SOY2LogicBase{
 	/**
 	 * 注文状態を変更する
 	 */
-	public static function changeOrderStatus($order){
+	public static function changeOrderStatus(SOYShop_Order $order){
 		self::add($order->getId(), "注文状態を<strong>「" . $order->getOrderStatusText() ."」</strong>に変更しました。");
 	}
 
 	/**
 	 * 支払状態を変更する
 	 */
-	public static function changePaymentStatus($order){
+	public static function changePaymentStatus(SOYShop_Order $order){
 		self::add($order->getId(), "支払い状態を<strong>「" . $order->getPaymentStatusText() ."」</strong>に変更しました。");
 	}
 

@@ -17,7 +17,7 @@ function tstrlen($str){
 	return (is_string($str)) ? strlen(trim($str)) : 0;
 }
 
-function isValidEmail($email){
+function isValidEmail(string $email){
 	$ascii  = '[a-zA-Z0-9!#$%&\'*+\-\/=?^_`{|}~.]';//'[\x01-\x7F]';
 	$domain = '(?:[-a-z0-9]+\.)+[a-z]{2,10}';//'([-a-z0-9]+\.)*[a-z]+';
 	$d3     = '\d{1,3}';
@@ -118,7 +118,7 @@ class MainMyPagePageBase extends WebPage{
 	/**
 	 * @TODO 実装箇所の見直し
 	 */
-   	function __call($func,$arguments){
+   	function __call(string $func, array $arguments){
 		if(preg_match('/^add([A-Za-z]+)$/', $func, $tmp) && count($arguments) > 0){
 			$class = "HTML" . $tmp[1];
 			if(class_exists($class)){
@@ -153,13 +153,7 @@ class MainMyPagePageBase extends WebPage{
 
 	function getItemOrdersByOrderId(int $orderId){
 		static $itemOrders;
-		if(is_null($itemOrders)){
-			try{
-	            $itemOrders = soyshop_get_item_orders($orderId);
-	        }catch(Exception $e){
-	            $itemOrders = array();
-	        }
-		}
+		if(is_null($itemOrders)) $itemOrders = soyshop_get_item_orders($orderId);
 		return $itemOrders;
 	}
 
