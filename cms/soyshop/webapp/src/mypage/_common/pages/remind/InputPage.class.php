@@ -45,7 +45,7 @@ class InputPage extends MainMyPagePageBase{
 				//convert title
 				$title = $mailLogic->convertMailContent($config["title"], $user, new SOYShop_Order());
 
-				$query = soyshop_get_mypage_url(true) . "/remind/reset?q=" . $query . "&f=" . rawurlencode($mail);
+				$query = soyshop_get_mypage_url(true) . "/remind/reset?q=" . $query . "&f=" . $user->getId();
 				$text = "\n". MessageManager::get("MYPAGE_LIMIT_TERM_CONTENT", array("limit" => date("Y年m月d日 H:i", $limit))) . "\n";
 
 				//convert content

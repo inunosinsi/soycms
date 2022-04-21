@@ -5,7 +5,7 @@ class ResetPage extends MainMyPagePageBase{
 	private $mypage;
 	private $user;
 	private $query;
-	private $mail;
+	private $userId;
 
 	function doPost(){
 
@@ -45,11 +45,11 @@ class ResetPage extends MainMyPagePageBase{
 		}
 
 		$this->query = $_GET["q"];
-		$this->mail = rawurldecode($_GET["f"]);
+		$this->userId = (int)$_GET["f"];
 
 		$form_visible = false;
 
-    	$this->user = soyshop_get_user_object_by_mailaddress((string)$this->mail);
+    	$this->user = soyshop_get_user_object($this->userId);
 		if(is_numeric($this->user->getId())) $form_visible = $this->checkQuery($this->user);
 
     	parent::__construct();
@@ -78,7 +78,7 @@ class ResetPage extends MainMyPagePageBase{
 		));
 
 		$this->addLabel("address", array(
-			"text" => $this->mail
+			"text" => $this->user->getMailAddress()
 		));
 
 		$this->addInput("password", array(
