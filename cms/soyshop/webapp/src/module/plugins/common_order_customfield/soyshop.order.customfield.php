@@ -164,8 +164,8 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 
 			switch($config->getType()){
 				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_RADIO:
-					$obj->setValue1($value["value"]);
-					$obj->setValue2($value["other"]);
+					if(isset($value["value"])) $obj->setValue1($value["value"]);
+					if(isset($value["other"])) $obj->setValue2($value["other"]);
 					break;
 				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_FILE:
 					//ファイルを各顧客用のフォルダに移動
