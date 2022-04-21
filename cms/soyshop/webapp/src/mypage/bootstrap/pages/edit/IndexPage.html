@@ -43,7 +43,8 @@
 		<div class="form-check">
 			<img soy:id="user_image">
 			<input type="hidden" soy:id="user_image_path" />
-			<!-- soy:id="is_user_image" --><input type="checkbox" soy:id="delete_image"><br><!-- /soy:id="is_user_image" -->
+			<!-- soy:id="is_user_image" --><input type="checkbox" soy:id="delete_image"><br>
+			<!-- /soy:id="is_user_image" -->
 			<input name="image" type="file" />
 		</div>
 	</div>
@@ -79,26 +80,40 @@
 		</div>
 	</div>
 
+	<!-- soy:id="address1_show" -->
 	<div class="form-group row">
-		<label for="city" class="col-sm-2 col-form-label">市区郡</label>
+		<label for="city" class="col-sm-2 col-form-label" soy:id="address1_label">市区郡</label>
 		<div class="col-sm-8">
-			<input type="text" class="input-city form-control" soy:id="user_address1">
+			<input type="text" class="input-city form-control" soy:id="address1">
 		</div>
 	</div>
+	<!-- /soy:id="address1_show" -->
 
+	<!-- soy:id="address2_show" -->
 	<div class="form-group row">
-		<label for="town" class="col-sm-2 col-form-label">町番地</label>
+		<label for="town" class="col-sm-2 col-form-label" soy:id="address2_label">町番地</label>
 		<div class="col-sm-8">
-			<input type="text" class="input-town form-control" soy:id="user_address2">
+			<input type="text" class="input-town form-control" soy:id="address2">
 		</div>
 	</div>
+	<!-- /soy:id="address2_show" -->
 
+	<!-- soy:id="address3_show" -->
 	<div class="form-group row">
-		<label for="town" class="col-sm-2 col-form-label">建物名</label>
+		<label for="town" class="col-sm-2 col-form-label" soy:id="address3_label">建物名</label>
 		<div class="col-sm-8">
-			<input type="text" class="form-control" soy:id="user_address3">
+			<input type="text" class="form-control" soy:id="address3">
 		</div>
 	</div>
+	<!-- /soy:id="address3_show" -->
+	<!-- soy:id="address4_show" -->
+	<div class="form-group row">
+		<label for="town" class="col-sm-2 col-form-label" soy:id="address4_label">その他</label>
+		<div class="col-sm-8">
+			<input type="text" class="form-control" soy:id="address4">
+		</div>
+	</div>
+	<!-- /soy:id="address4_show" -->
 	<!-- /soy:id="address_show" -->
 
 	<!-- soy:id="telephoneNumber_show" -->
@@ -186,7 +201,9 @@
 	<!-- soy:id="has_user_customfield" -->
 	<!-- soy:id="user_customfield_list" -->
 	<div class="form-group">
-		<label for=""><!-- soy:id="customfield_name" /--><span soy:id="customfield_is_required">（必須）</span></label>
+		<label for="">
+			<!-- soy:id="customfield_name" /--><span soy:id="customfield_is_required">（必須）</span>
+		</label>
 		<!-- soy:id="has_customfield_error" -->
 		<p class="alert alert-danger" role="alert" soy:id="customfield_error"></p>
 		<!-- /soy:id="has_customfield_error" -->
@@ -210,4 +227,5 @@
 	</div>
 </form>
 
-<script type="text/javascript" soy:src="themes/common/js/zip2address.js"></script><!--住所検索-->
+<script type="text/javascript" soy:src="themes/common/js/zip2address.js"></script>
+<!--住所検索-->

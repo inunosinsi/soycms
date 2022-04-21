@@ -269,24 +269,31 @@ class Cart04Page extends MainCartPageBase{
 			"text" => $send["reading"]
 		));
 
+		$this->addLabel("send_name_full", array(
+			"text" => $send["name"] . " (" . $send["reading"] . ")"
+		));
+
 		$this->addLabel("send_zip_code", array(
 			"text" => $send["zipCode"]
 		));
 
+		$addrTxt = SOYShop_Area::getAreaText($send["area"]);
 		$this->addLabel("send_area", array(
-			"text" => SOYShop_Area::getAreaText($send["area"])
+			"text" => $addrTxt
 		));
 
-		$this->addLabel("send_address1", array(
-			"text" => $send["address1"]
-		));
+		for($i = 1; $i <= 4; $i++){
+			$this->addLabel("send_address" . $i, array(
+				"text" => (isset($send["address" . $i])) ? $send["address" . $i] : ""
+			));
 
-		$this->addLabel("send_address2", array(
-			"text" => $send["address2"]
-		));
-
-		$this->addLabel("send_address3", array(
-			"text" => (isset($send["address3"])) ? $send["address3"] : ""
+			if(isset($send["address" . $i])){
+				$addrTxt .= " " . $send["address" . $i];
+			}
+		}
+		
+		$this->addLabel("send_address_full", array(
+			"text" => $addrTxt
 		));
 
 		$this->addLabel("send_tel", array(
@@ -327,7 +334,7 @@ class Cart04Page extends MainCartPageBase{
 	/**
 	 * 表示用拡張ポイント
 	 */
-	function addExtensions($cart){
+	function addExtensions(CartLogic $cart){
 
 		/* 購入確認 soyshop.order.confirm */
 		SOYShopPlugin::load("soyshop.order.confirm");

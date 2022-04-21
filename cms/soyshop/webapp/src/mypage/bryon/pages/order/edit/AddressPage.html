@@ -1,9 +1,13 @@
 <section>
-	<h1 class="cart_txt">注文番号『<!-- soy:id="order_number" /-->』の購入履歴詳細</h1>
+	<h1 class="cart_txt">
+		注文番号『<!-- soy:id="order_number" /-->』の購入履歴詳細
+	</h1>
 	<section>
 		<h1><!-- soy:id="mode_name*" /-->先の情報の編集</h1>
 
-		<div class="notice narrow" soy:display="updated"><p>更新しました。</p></div>
+		<div class="notice narrow" soy:display="updated">
+			<p>更新しました。</p>
+		</div>
 
 		<!-- soy:display="has_error" -->
 		<div class="error narrow">
@@ -52,30 +56,58 @@
 						</select>
 
 						<table>
+							<!-- soy:id="address1_show" -->
 							<tr>
-								<td>市区郡：</td>
+								<td>
+									<!-- soy:id="address1_label" -->市区郡
+									<!-- /soy:id="address1_label" -->：
+								</td>
 								<td><input type="text" class="input-city w130" soy:id="address1"></td>
 							</tr>
 							<tr>
 								<td>&nbsp;</td>
-								<td><span class="exmpl">（例）京都市左京区</span></td>
+								<td><span class="exmpl">（例）<!-- soy:id="address1_example" /--><!-- /soy:id="address1_example" --></span></td>
 							</tr>
+							<!-- /soy:id="address1_show" -->
+							<!-- soy:id="address2_show" -->
 							<tr>
-								<td>町番地：</td>
+								<td>
+									<!-- soy:id="address2_label" -->町番地
+									<!-- /soy:id="address2_label" -->：
+								</td>
 								<td><input type="text" class="input-town w300" soy:id="address2"></td>
 							</tr>
 							<tr>
 								<td>&nbsp;</td>
-								<td><span class="exmpl">（例）田中古川町44</span></td>
+								<td><span class="exmpl">（例）<!-- soy:id="address2_example" /--></span></td>
 							</tr>
+							<!-- /soy:id="address2_show" -->
+							<!-- soy:id="address3_show" -->
 							<tr>
-								<td>建物名：</td>
+								<td>
+									<!-- soy:id="address3_label" -->建物名
+									<!-- /soy:id="address3_label" -->：
+								</td>
 								<td><input type="text" class="w300" soy:id="address3"></td>
 							</tr>
 							<tr>
 								<td>&nbsp;</td>
-								<td><span class="exmpl">（例）SOYビル1F</span></td>
+								<td><span class="exmpl">（例）<!-- soy:id="address3_example" /--></span></td>
 							</tr>
+							<!-- /soy:id="address3_show" -->
+							<!-- soy:id="address4_show" -->
+							<tr>
+								<td>
+									<!-- soy:id="address4_label" -->その他
+									<!-- /soy:id="address4_label" -->：
+								</td>
+								<td><input type="text" class="w300" soy:id="address4"></td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td><span class="exmpl"><!-- soy:id="address4_example" /--></span></td>
+							</tr>
+							<!-- /soy:id="address4_show" -->
 						</table>
 					</td>
 				</tr>
@@ -97,4 +129,5 @@
 	</section>
 </section>
 
-<script type="text/javascript" soy:src="themes/common/js/zip2address.js"></script><!--住所検索-->
+<script type="text/javascript" soy:src="themes/common/js/zip2address.js"></script>
+<!--住所検索-->

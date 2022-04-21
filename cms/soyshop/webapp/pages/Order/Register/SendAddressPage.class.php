@@ -18,8 +18,16 @@ class SendAddressPage extends WebPage{
 			if(strlen($address["name"]) < 1) $error[] = "氏名を入力してください。";
 			if(strlen($address["reading"]) < 1) $error[] = "氏名（フリガナ）を入力してください。";
 			if(strlen($address["area"]) < 1) $error[] = "住所の都道府県を選択してください。";
-			if(strlen($address["address1"]) < 1) $error[] = "住所を入力してください。";
 			if(strlen($address["telephoneNumber"]) < 1) $error[] = "電話番号を入力してください。";
+
+			/** @ToDo 必要であれば住所のエラー判定を設ける */
+			SOY2::import("util.SOYShopAddressUtil");
+			$addressItems = SOYShopAddressUtil::getAddressItems();
+			if(isset($addressItems[0]) && isset($addressItems[0]["label"]) && strlen($addressItems[0]["label"])){
+				if(isset($addressItems[0]["required"]) && $addressItems[0]["required"]){
+					if(strlen($address["address1"]) < 1) $error[] = "住所を入力してください。";
+				}
+			}
 
 			if(count($error)){
 				$this->session->setAttribute("order_register.error.send_address", implode("\n", $error));
@@ -77,7 +85,7 @@ class SendAddressPage extends WebPage{
    }
 
 
-    private function addressForm($address){
+    private function addressForm(array $address){
 
 		$this->addInput("name", array(
     		"name" => "Address[name]",
@@ -100,7 +108,15 @@ class SendAddressPage extends WebPage{
     		"value" => (isset($address["area"])) ? $address["area"] : null,
     	));
 
-		for($i = 1; $i <= 3; $i++){
+		SOY2::import("util.SOYShopAddressUtil");
+		$addressItems = SOYShopAddressUtil::getAddressItems();
+		for($i = 1; $i <= 4; $i++){
+			$itemCnf = (isset($addressItems[$i - 1])) ? $addressItems[$i - 1] : SOYShopAddressUtil::getEmptyAddressItem();
+
+			$this->addModel("address" . $i . "_show", array(
+				"visible" => (isset($itemCnf["label"]) && strlen($itemCnf["label"]))
+			));
+
 			$this->addInput("address" . $i, array(
 	    		"name" => "Address[address" . $i . "]",
 	    		"value" => (isset($address["address" . $i])) ? $address["address" . $i] : "",

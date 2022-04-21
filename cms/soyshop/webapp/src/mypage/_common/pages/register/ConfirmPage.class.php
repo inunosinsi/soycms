@@ -47,9 +47,11 @@ class ConfirmPage extends IndexPage{
 					}
 
 					if($tmpUser){
-						$userId = $userDAO->update($user);
+						$userDAO->update($user);
+						$userId = $user->getId();
 					}else{
 						$userId = $userDAO->insert($user);
+						$user->setId($userId);
 					}
 
 					//ユーザカスタムフィールドの値をセッションに入れる
@@ -62,7 +64,7 @@ class ConfirmPage extends IndexPage{
 
 					if($tmpUserMode){
 						//仮登録あり
-						list($token,$limit) = $mypage->createToken($user->getMailAddress());
+						list($token, $limit) = $mypage->createToken($user->getMailAddress());
 						self::_sendTmpRegisterMail($user, $token, $limit);
 						$this->jump("register/tmp");
 
@@ -109,7 +111,7 @@ class ConfirmPage extends IndexPage{
 	 * @param integer $limit 有効期限がtimestamp
 	 */
 	private function _sendTmpRegisterMail(SOYShop_User $user, string $token, int $limit){
-
+		
 		$mailLogic = SOY2Logic::createInstance("logic.mail.MailLogic");
 		$config = $mailLogic->getMyPageMailConfig("tmp_register");
 

@@ -3,7 +3,8 @@
 <!-- soy:id="has_cart_plugin_upper_parts" -->
 
 <!-- soy:id="cart_plugin_upper_parts_list" -->
-<!-- soy:id="content" --><!-- /soy:id="content" -->
+<!-- soy:id="content" -->
+<!-- /soy:id="content" -->
 <!-- /soy:id="cart_plugin_upper_parts_list" -->
 
 <!-- /soy:id="has_cart_plugin_upper_parts" -->
@@ -51,7 +52,8 @@
 						<p class="error" soy:id="zip_code_error">郵便番号が正しく入力されていません。</p>
 						<input type="text" class="input-zip w80" soy:id="zip_code">
 						<span class="note">【半角数字】</span>
-						<span class="search-btn btn"><img alt="郵便番号検索" soy:src="themes/common/images/btn_search.png"></span>
+						<span class="search-btn btn"><img alt="郵便番号検索"
+								soy:src="themes/common/images/btn_search.png"></span>
 					</td>
 				</tr>
 				<!-- soy:id="address_show" -->
@@ -63,30 +65,70 @@
 							<option value="">都道府県名</option>
 						</select>
 						<table>
+							<!-- soy:id="address1_show" -->
 							<tr>
-								<td>市区郡：</td>
+								<td>
+									<!-- soy:id="address1_label" -->市区郡
+									<!-- /soy:id="address1_label" -->：
+								</td>
 								<td><input type="text" class="input-city w130" soy:id="address1"></td>
 							</tr>
 							<tr>
 								<td>&nbsp;</td>
-								<td><span class="exmpl">（例）京都市左京区</span></td>
+								<td><span class="exmpl">（例）
+										<!-- soy:id="address1_example" -->京都市左京区
+										<!-- /soy:id="address1_example" -->
+									</span></td>
 							</tr>
+							<!-- /soy:id="address1_show" -->
+							<!-- soy:id="address2_show" -->
 							<tr>
-								<td>町番地：</td>
+								<td>
+									<!-- soy:id="address2_label" -->町番地
+									<!-- /soy:id="address2_label" -->：
+								</td>
 								<td><input type="text" class="input-town w300" soy:id="address2"></td>
 							</tr>
 							<tr>
 								<td>&nbsp;</td>
-								<td><span class="exmpl">（例）高野東開町8-5</span></td>
+								<td><span class="exmpl">（例）
+										<!-- soy:id="address2_example" -->高野東開町8-5
+										<!-- /soy:id="address2_example" -->
+									</span></td>
 							</tr>
+							<!-- /soy:id="address2_show" -->
+							<!-- soy:id="address3_show" -->
 							<tr>
-								<td>建物名：</td>
+								<td>
+									<!-- soy:id="address3_label" -->建物名
+									<!-- /soy:id="address3_label" -->：
+								</td>
 								<td><input type="text" class="w300" soy:id="address3"></td>
 							</tr>
 							<tr>
 								<td>&nbsp;</td>
-								<td><span class="exmpl">（例）SOYビル1F</span></td>
+								<td><span class="exmpl">（例）
+										<!-- soy:id="address3_example" -->SOYビル1F
+										<!-- /soy:id="address3_example" -->
+									</span></td>
 							</tr>
+							<!-- /soy:id="address3_show" -->
+							<!-- soy:id="address4_show" -->
+							<tr>
+								<td>
+									<!-- soy:id="address4_label" -->その他
+									<!-- /soy:id="address4_label" -->：
+								</td>
+								<td><input type="text" class="w300" soy:id="address4"></td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td><span class="exmpl">（例）
+										<!-- soy:id="address4_example" -->○○宛
+										<!-- /soy:id="address4_example" -->
+									</span></td>
+							</tr>
+							<!-- /soy:id="address4_show" -->
 						</table>
 					</td>
 				</tr>
@@ -114,8 +156,11 @@
 					<td>
 						<p class="error" soy:id="password_invalid">パスワードが違います</p>
 						<input type="password" class="w130" autocomplete="off" soy:id="password">
-            			<span class="note">【半角英数・<!-- soy:id="password_count" -->8<!-- /soy:id="password_count" -->文字以上】</span><br>
-            			パスワードを入力することで、次回からの入力が簡単になります。
+						<span class="note">【半角英数・
+							<!-- soy:id="password_count" -->8
+							<!-- /soy:id="password_count" -->文字以上】
+						</span><br>
+						パスワードを入力することで、次回からの入力が簡単になります。
 					</td>
 				</tr>
 				<!-- /soy:id="password_input" -->
@@ -164,7 +209,9 @@
 				<!-- soy:id="has_user_customfield" -->
 				<!-- soy:id="user_customfield_list" -->
 				<tr>
-					<th nowrap scope="row"><!-- soy:id="customfield_name" /--><span soy:id="customfield_is_required">（必須）</span></th>
+					<th nowrap scope="row">
+						<!-- soy:id="customfield_name" /--><span soy:id="customfield_is_required">（必須）</span>
+					</th>
 					<td>
 						<!-- soy:id="has_customfield_error" -->
 						<p class="error" soy:id="customfield_error"></p>
@@ -185,7 +232,8 @@
 				</tr>
 			</table>
 
-			<p class="btn"><input type="image" name="next" soy:src="themes/common/images/cart/btn_next_payment_off.png" alt="次へ（お支払・配送方法の選択）"></p>
+			<p class="btn"><input type="image" name="next" soy:src="themes/common/images/cart/btn_next_payment_off.png"
+					alt="次へ（お支払・配送方法の選択）"></p>
 			<p class="alC"><input type="submit" name="prev" value="&lt;&lt; 戻る"></p>
 		</section>
 
@@ -237,7 +285,8 @@
 					<td>
 						<input type="text" class="input-send-zip w80" soy:id="send_post_number">
 						<span class="note">【半角数字】</span>
-						<span class="send-search-btn btn"><img alt="郵便番号検索" soy:src="themes/common/images/btn_search.png"></span>
+						<span class="send-search-btn btn"><img alt="郵便番号検索"
+								soy:src="themes/common/images/btn_search.png"></span>
 					</td>
 				</tr>
 				<tr>
@@ -247,30 +296,72 @@
 							<option value="">都道府県名</option>
 						</select>
 						<table>
+							<!-- soy:id="send_address1_show" -->
 							<tr>
-								<td>市区郡：</td>
+								<td>
+									<!-- soy:id="send_address1_label" -->市区郡
+									<!-- /soy:id="send_address1_label" -->：
+								</td>
 								<td><input type="text" class="input-send-city w130" soy:id="send_address1"></td>
 							</tr>
 							<tr>
 								<td>&nbsp;</td>
-								<td><span class="exmpl">（例）京都市左京区</span></td>
+								<td><span class="exmpl">（例）
+										<!-- soy:id="send_address1_example" -->京都市左京区
+										<!-- /soy:id="send_address1_example" -->
+									</span></td>
 							</tr>
+							<!-- /soy:id="send_address1_show" -->
+
+							<!-- soy:id="send_address2_show" -->
 							<tr>
-								<td>町番地：</td>
+								<td>
+									<!-- soy:id="send_address2_label" -->町番地
+									<!-- /soy:id="send_address2_label" -->：
+								</td>
 								<td><input type="text" class="input-send-town w300" soy:id="send_address2"></td>
 							</tr>
 							<tr>
 								<td>&nbsp;</td>
-								<td><span class="exmpl">（例）左京区高野東開町8-5</span></td>
+								<td><span class="exmpl">（例）
+										<!-- soy:id="send_address2_example" -->左京区高野東開町8-5
+										<!-- /soy:id="send_address2_example" -->
+									</span></td>
 							</tr>
+							<!-- /soy:id="send_address2_show" -->
+
+							<!-- soy:id="send_address3_show" -->
 							<tr>
-								<td>建物名：</td>
+								<td>
+									<!-- soy:id="send_address3_label" -->建物名
+									<!-- /soy:id="send_address3_label" -->：
+								</td>
 								<td><input type="text" class="w300" soy:id="send_address3"></td>
 							</tr>
 							<tr>
 								<td>&nbsp;</td>
-								<td><span class="exmpl">（例）SOYビル1F</span></td>
+								<td><span class="exmpl">（例）
+										<!-- soy:id="send_address3_example" -->SOYビル1F
+										<!-- /soy:id="send_address3_example" -->
+									</span></td>
 							</tr>
+							<!-- /soy:id="send_address3_show" -->
+
+							<!-- soy:id="send_address4_show" -->
+							<tr>
+								<td>
+									<!-- soy:id="send_address4_label" -->その他
+									<!-- /soy:id="send_address4_label" -->：
+								</td>
+								<td><input type="text" class="w300" soy:id="send_address4"></td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td><span class="exmpl">（例）
+										<!-- soy:id="send_address4_example" /-->
+									</span></td>
+							</tr>
+							<!-- /soy:id="send_address4_show" -->
 						</table>
 					</td>
 				</tr>
@@ -282,17 +373,20 @@
 					</td>
 				</tr>
 			</table>
-			<p class="btn"><input type="image" name="next" soy:src="themes/common/images/cart/btn_next_payment_off.png" alt="次へ（お支払・配送方法の選択）"></p>
+			<p class="btn"><input type="image" name="next" soy:src="themes/common/images/cart/btn_next_payment_off.png"
+					alt="次へ（お支払・配送方法の選択）"></p>
 			<p class="alC"><input type="submit" name="prev" value="&lt;&lt; 戻る"></p>
 		</section>
 	</section>
 </form soy:id="order_form">
-<script type="text/javascript" soy:src="themes/common/js/zip2address.js"></script><!--住所検索-->
+<script type="text/javascript" soy:src="themes/common/js/zip2address.js"></script>
+<!--住所検索-->
 
 <!-- soy:id="has_cart_plugin" -->
 
 <!-- soy:id="cart_plugin_list" -->
-<!-- soy:id="content" --><!-- /soy:id="content" -->
+<!-- soy:id="content" -->
+<!-- /soy:id="content" -->
 <!-- /soy:id="cart_plugin_list" -->
 
 <!-- /soy:id="has_cart_plugin" -->

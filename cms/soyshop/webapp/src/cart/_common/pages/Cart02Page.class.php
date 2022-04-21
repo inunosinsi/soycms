@@ -43,7 +43,7 @@ class Cart02Page extends MainCartPageBase{
 				}
 
 				//宛先
-				$validAddress = $this->setAddress($cart);
+				$validAddress = self::_setAddress($cart);
 
 				//備考
 				if(isset($_POST["Attributes"]) && isset($_POST["Attributes"]["memo"])){
@@ -279,20 +279,26 @@ class Cart02Page extends MainCartPageBase{
     		"value" => $address["area"],
     	));
 
-    	$this->addInput("send_address1", array(
-    		"name" => "Address[address1]",
-    		"value" => (isset($address["address1"])) ? $address["address1"] : "",
-    	));
+		SOY2::import("util.SOYShopAddressUtil");
+		$addressItems = SOYShopAddressUtil::getAddressItems();
+		for($i = 1; $i <= 4; $i++){
+			$itemCnf = (isset($addressItems[$i - 1])) ? $addressItems[$i - 1] : SOYShopAddressUtil::getEmptyAddressItem();
 
-    	$this->addInput("send_address2", array(
-    		"name" => "Address[address2]",
-    		"value" => (isset($address["address2"])) ? $address["address2"] : "",
-    	));
+			$this->addModel("send_address" . $i . "_show", array(
+				"visible" => (isset($itemCnf["label"]) && strlen($itemCnf["label"]))
+			));
 
-		$this->addInput("send_address3", array(
-    		"name" => "Address[address3]",
-    		"value" => (isset($address["address3"])) ? $address["address3"] : "",
-    	));
+			$this->addInput("send_address" . $i, array(
+				"name" => "Address[address" . $i . "]",
+				"value" => (isset($address["address" . $i])) ? $address["address" . $i] : "",
+			));
+
+			foreach(array("label", "example") as $l){
+				$this->addLabel("send_address" . $i . "_" . $l, array(
+					"text" => (isset($itemCnf[$l])) ? $itemCnf[$l] : ""
+				));
+			}
+		}
 
     	$this->addInput("send_tel_number", array(
     		"name" => "Address[telephoneNumber]",
@@ -414,7 +420,7 @@ class Cart02Page extends MainCartPageBase{
 	 * カートにPOSTされたお届け先情報をセットする
 	 * @return Boolean
 	 */
-	private function setAddress($cart){
+	private function _setAddress(CartLogic $cart){
 		$user = $cart->getCustomerInformation();
 
 		if(isset($_POST["Address"])){

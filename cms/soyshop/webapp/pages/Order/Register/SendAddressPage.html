@@ -35,9 +35,18 @@
 									<select soy:id="area" class="input-pref">
 										<option value="">▼選択</option>
 									</select>
-									<input type="text" soy:id="address1" size="40" class="input-city"><br />
-									<input type="text" soy:id="address2" size="60" class="input-town"><br>
-									<input type="text" soy:id="address3" size="60">
+									<!-- soy:id="address1_show" -->
+									<input type="text" soy:id="address1" class="input-city form-control">
+									<!-- /soy:id="address1_show" -->
+									<!-- soy:id="address2_show" -->
+									<input type="text" soy:id="address2" class="input-town form-control">
+									<!-- /soy:id="address2_show" -->
+									<!-- soy:id="address3_show" -->
+									<input type="text" soy:id="address3" class="form-control">
+									<!-- /soy:id="address3_show" -->
+									<!-- soy:id="address4_show" -->
+									<input type="text" soy:id="address4" class="form-control">
+									<!-- /soy:id="address4_show" -->
 								</td>
 							</tr>
 							<tr>
@@ -58,4 +67,5 @@
 		</div>
 	</div>
 </div>
-<script type="text/javascript" soy:id="zip2address_js"></script><!--住所検索-->
+<script type="text/javascript" soy:id="zip2address_js"></script>
+<!--住所検索-->

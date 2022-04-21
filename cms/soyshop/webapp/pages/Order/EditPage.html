@@ -2,7 +2,8 @@
 	<div class="col-lg-12">
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				注文編集 - <!-- soy:id="order_name_text" /-->
+				注文編集 -
+				<!-- soy:id="order_name_text" /-->
 				<small class="pull-right">
 					<a soy:id="order_detail_link" class="btn btn-default btn-xs">戻る</a>
 				</small>
@@ -20,7 +21,12 @@
 							<tbody>
 								<tr>
 									<th>注文番号（注文ID）</th>
-									<td><!-- soy:id="order_id" -->123-4567-8979<!-- /soy:id="order_id" --> (<!-- soy:id="order_raw_id" -->123<!-- /soy:id="order_raw_id" -->)</td>
+									<td>
+										<!-- soy:id="order_id" -->123-4567-8979
+										<!-- /soy:id="order_id" --> (
+										<!-- soy:id="order_raw_id" -->123
+										<!-- /soy:id="order_raw_id" -->)
+									</td>
 								</tr>
 								<tr>
 									<th>注文日時</th>
@@ -43,8 +49,12 @@
 								<tr>
 									<th>お客様</th>
 									<td>
-										<!-- soy:id="customer_name" -->お客様の名前<!-- /soy:id="customer_name" -->
-										<!-- soy:id="show_customer_area" -->（<!-- soy:id="customer_area" -->京都府<!-- /soy:id="customer_area" -->）<!-- /soy:id="show_customer_area" -->
+										<!-- soy:id="customer_name" -->お客様の名前
+										<!-- /soy:id="customer_name" -->
+										<!-- soy:id="show_customer_area" -->（
+										<!-- soy:id="customer_area" -->京都府
+										<!-- /soy:id="customer_area" -->）
+										<!-- /soy:id="show_customer_area" -->
 										<a soy:id="customer_email">someone@example.com</a>
 										<a soy:id="customer_link" class="btn btn-default btn-sm">詳細</a>
 									</td>
@@ -86,15 +96,24 @@
 								<tr>
 									<th>請求先</th>
 									<td>
-										<!-- soy:id="is_offce_item" --><input tyoe="text" class="form-control" soy:id="claimed_customerinfo_office" /><br /><!-- /soy:id="is_offce_item" -->
-										<input type="text" class="form-control" soy:id="claimed_customerinfo_name" /><br />
-										<input type="text" class="form-control" soy:id="claimed_customerinfo_reading" /><br />
-										〒<input type="text" soy:id="claimed_customerinfo_zip_code" />
-										<select soy:id="claimed_customerinfo_area"><option></option></select><br />
-										<input type="text" class="form-control" soy:id="claimed_customerinfo_address1" /><br />
-										<input type="text" class="form-control" soy:id="claimed_customerinfo_address2" /><br />
-										<input type="text" class="form-control" soy:id="claimed_customerinfo_address3" /><br />
-										<input type="text" class="form-control" soy:id="claimed_customerinfo_tel_number" />
+										<!-- soy:id="is_offce_item" --><input tyoe="text" class="form-control" soy:id="claimed_customerinfo_office"><!-- /soy:id="is_offce_item" -->
+										<input type="text" class="form-control" soy:id="claimed_customerinfo_name">
+										<input type="text" class="form-control" soy:id="claimed_customerinfo_reading">
+										〒<input type="text" soy:id="claimed_customerinfo_zip_code">
+										<select soy:id="claimed_customerinfo_area"><option></option></select><br>
+										<!-- soy:id="claimed_customerinfo_address1_show" -->
+										<input type="text" class="form-control" soy:id="claimed_customerinfo_address1">
+										<!-- /soy:id="claimed_customerinfo_address1_show" -->
+										<!-- soy:id="claimed_customerinfo_address2_show" -->
+										<input type="text" class="form-control" soy:id="claimed_customerinfo_address2">
+										<!-- /soy:id="claimed_customerinfo_address2_show" -->
+										<!-- soy:id="claimed_customerinfo_address3_show" -->
+										<input type="text" class="form-control" soy:id="claimed_customerinfo_address3">
+										<!-- /soy:id="claimed_customerinfo_address3_show" -->
+										<!-- soy:id="claimed_customerinfo_address4_show" -->
+										<input type="text" class="form-control" soy:id="claimed_customerinfo_address4">
+										<!-- /soy:id="claimed_customerinfo_address4_show" -->
+										<input type="text" class="form-control" soy:id="claimed_customerinfo_tel_number">
 									</td>
 								</tr>
 
@@ -104,15 +123,24 @@
 										<span id="address_copy_area"><a href="javascript:void(0);" class="btn btn-primary btn-sm" id="address_copy_button">請求先住所のコピー</a></span>
 									</th>
 									<td>
-										<!-- soy:id="is_offce_item*" --><input type="text" class="form-control" soy:id="order_customerinfo_office" /><br ><!-- /soy:id="is_offce_item*" -->
-										<input type="text" class="form-control" soy:id="order_customerinfo_name" /><br />
-										<input type="text" class="form-control" soy:id="order_customerinfo_reading" /><br />
-										〒<input type="text" soy:id="order_customerinfo_zip_code" />
-										<select soy:id="order_customerinfo_area"><option></option></select><br />
-										<input type="text" class="form-control" soy:id="order_customerinfo_address1" /><br />
-										<input type="text" class="form-control" soy:id="order_customerinfo_address2" /><br />
-										<input type="text" class="form-control" soy:id="order_customerinfo_address3" /><br />
-										<input type="text" class="form-control" soy:id="order_customerinfo_tel_number" />
+										<!-- soy:id="is_offce_item*" --><input type="text" class="form-control" soy:id="order_customerinfo_office"><!-- /soy:id="is_offce_item*" -->
+										<input type="text" class="form-control" soy:id="order_customerinfo_name">
+										<input type="text" class="form-control" soy:id="order_customerinfo_reading">
+										〒<input type="text" soy:id="order_customerinfo_zip_code">
+										<select soy:id="order_customerinfo_area"><option></option></select><br>
+										<!-- soy:id="order_customerinfo_address1_show" -->
+										<input type="text" class="form-control" soy:id="order_customerinfo_address1">
+										<!-- /soy:id="order_customerinfo_address1_show" -->
+										<!-- soy:id="order_customerinfo_address2_show" -->
+										<input type="text" class="form-control" soy:id="order_customerinfo_address2">
+										<!-- /soy:id="order_customerinfo_address2_show" -->
+										<!-- soy:id="order_customerinfo_address3_show" -->
+										<input type="text" class="form-control" soy:id="order_customerinfo_address3">
+										<!-- /soy:id="order_customerinfo_address3_show" -->
+										<!-- soy:id="order_customerinfo_address4_show" -->
+										<input type="text" class="form-control" soy:id="order_customerinfo_address4">
+										<!-- /soy:id="order_customerinfo_address4_show" -->
+										<input type="text" class="form-control" soy:id="order_customerinfo_tel_number">
 									</td>
 								</tr>
 							</tbody>
@@ -260,55 +288,55 @@
 
 
 <script type="text/javascript">
-$('#add_item_by_code_button').click(function(){
-	var origin = $("#add_item_by_code_template");
-	var append = $("<tr>"+(origin.html())+"</tr>").insertBefore(origin);
-	$("td input", append).each(function(i){
-		$(this).removeAttr("disabled");
+	$('#add_item_by_code_button').click(function () {
+		var origin = $("#add_item_by_code_template");
+		var append = $("<tr>" + (origin.html()) + "</tr>").insertBefore(origin);
+		$("td input", append).each(function (i) {
+			$(this).removeAttr("disabled");
+		});
+		return false;
 	});
-	return false;
-});
-$('#add_item_by_name_button').click(function(){
-	var origin = $("#add_item_by_name_template");
-	var append = $("<tr>"+(origin.html())+"</tr>").insertBefore(origin);
-	$("td input", append).each(function(i){
-		$(this).removeAttr("disabled");
+	$('#add_item_by_name_button').click(function () {
+		var origin = $("#add_item_by_name_template");
+		var append = $("<tr>" + (origin.html()) + "</tr>").insertBefore(origin);
+		$("td input", append).each(function (i) {
+			$(this).removeAttr("disabled");
+		});
+		return false;
 	});
-	return false;
-});
-$('#add_module_button').click(function(){
-	var origin = $("#add_module_template");
-	var append = $("<tr>"+(origin.html())+"</tr>").insertBefore(origin);
-	$("td input", append).each(function(i){
-		$(this).removeAttr("disabled");
+	$('#add_module_button').click(function () {
+		var origin = $("#add_module_template");
+		var append = $("<tr>" + (origin.html()) + "</tr>").insertBefore(origin);
+		$("td input", append).each(function (i) {
+			$(this).removeAttr("disabled");
+		});
+		return false;
 	});
-	return false;
-});
-$("#address_copy_button").click(function(){
-	var res = confirm("請求先住所をコピーしますか？");
-	if(res){
+	$("#address_copy_button").click(function () {
+		var res = confirm("請求先住所をコピーしますか？");
+		if (res) {
+			var claimeds = $('[name^="ClaimedAddress"]');
+			for (var i = 0; i < claimeds.length; i++) {
+				var obj = $(claimeds[i]);
+				var addrObj = $($('[name="' + obj.attr("name").replace("Claimed", "") + '"]')[0]);
+				addrObj.val(obj.val());
+			}
+			$("#address_copy_area").css("display", "none");
+		}
+	});
+	(function () {
+		var res = true;	//請求先住所と送付先住所が異なっているか？調べる
 		var claimeds = $('[name^="ClaimedAddress"]');
-		for(var i = 0; i < claimeds.length; i++){
+		for (var i = 0; i < claimeds.length; i++) {
 			var obj = $(claimeds[i]);
 			var addrObj = $($('[name="' + obj.attr("name").replace("Claimed", "") + '"]')[0]);
-			addrObj.val(obj.val());
+			if (obj.val() != addrObj.val()) res = false;
 		}
-		$("#address_copy_area").css("display", "none");
-	}
-});
-(function(){
-	var res = true;	//請求先住所と送付先住所が異なっているか？調べる
-	var claimeds = $('[name^="ClaimedAddress"]');
-	for(var i = 0; i < claimeds.length; i++){
-		var obj = $(claimeds[i]);
-		var addrObj = $($('[name="' + obj.attr("name").replace("Claimed", "") + '"]')[0]);
-		if(obj.val() != addrObj.val()) res = false;
-	}
 
-	if(!res){
-		$("#address_copy_area").css("display", "block");
-	}
-}());
+		if (!res) {
+			$("#address_copy_area").css("display", "block");
+		}
+	}());
 
 </script>
 

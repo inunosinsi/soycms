@@ -89,20 +89,61 @@
 								</td>
 							</tr>
 
-							<tr soy:display="address">
+							<!-- soy:display="address" -->
+							<tr>
 								<th>住所</th>
 								<td>
-									<div class="form-inline">
-										<select soy:id="area" id="area" class="input-pref">
-											<option value="">▼選択</option>
-										</select>
-										<input soy:id="address1" type="text" class="form-control"　style="width:60%;" id="address1" class="input-city"><br>
-										<input soy:id="address2" type="text" class="form-control"　style="width:60%;" id="address2" class="input-town"><br>
-										<input soy:id="address3" type="text" class="form-control"　style="width:60%;" id="address3"><br>
-										<!-- soy:id="advenced_address_list" --><!-- soy:id="form" /--><!-- /soy:id="advenced_address_list" -->
-									</div>
+									<table style="width:60%;">
+										<tr>
+											<td colspan="2">
+												<select soy:id="area" id="area" class="input-pref">
+													<option value="">▼選択</option>
+												</select>
+											</td>
+										</tr>
+										<!-- soy:id="address1_show" -->
+										<tr>
+											<th soy:id="address1_label">市区郡</th>
+											<td>
+												<input soy:id="address1" type="text" id="address1" class="form-control input-city">
+											</td>
+										</tr>
+										<!-- /soy:id="address1_show" -->
+										<!-- soy:id="address2_show" -->
+										<tr>
+											<th soy:id="address2_label">町番地</th>
+											<td>
+												<input soy:id="address2" type="text" id="address2" class="form-control input-town">
+											</td>
+										</tr>
+										<!-- /soy:id="address2_show" -->
+										<!-- soy:id="address3_show" -->
+										<tr>
+											<th soy:id="address3_label">建物名</th>
+											<td>
+												<input soy:id="address3" type="text" class="form-control" id="address3">
+											</td>
+										</tr>
+										<!-- /soy:id="address3_show" -->
+										<!-- soy:id="address4_show" -->
+										<tr>
+											<th soy:id="address4_label">その他</th>
+											<td>
+												<input soy:id="address4" type="text" class="form-control" id="address4">
+											</td>
+										</tr>
+										<!-- /soy:id="address4_show" -->
+										<!-- soy:id="advenced_address_list" -->
+										<tr>
+											<td colspan="2">
+												<!-- soy:id="form" /-->
+											</td>
+										</tr>
+										<!-- /soy:id="advenced_address_list" -->
+									</table>
 								</td>
 							</tr>
+							<!-- /soy:display="address" -->
 
 							<tr soy:display="telephoneNumber">
 								<th>電話番号</th>
@@ -152,8 +193,8 @@
 										<select soy:id="office_area">
 											<option value="">▼選択</option>
 										</select>
-										<input soy:id="office_address1" type="text" class="form-control"　style="width:60%;" /><br>
-										<input soy:id="office_address2" type="text" class="form-control"　style="width:60%;" />
+										<input soy:id="office_address1" type="text" class="form-control" 　style="width:60%;" /><br>
+										<input soy:id="office_address2" type="text" class="form-control" 　style="width:60%;" />
 									</div>
 								</td>
 							</tr>
@@ -201,7 +242,9 @@
 							<!-- soy:id="has_user_customfield" -->
 							<!-- soy:id="user_customfield_list" -->
 							<tr>
-								<th><!-- soy:id="customfield_name" /--></th>
+								<th>
+									<!-- soy:id="customfield_name" /-->
+								</th>
 								<td>
 									<!-- soy:id="customfield_form" /-->
 								</td>
@@ -240,4 +283,5 @@
 	</div>
 </div>
 
-<script type="text/javascript" soy:id="zip2address_js"></script><!--住所検索-->
+<script type="text/javascript" soy:id="zip2address_js"></script>
+<!--住所検索-->

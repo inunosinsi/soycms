@@ -269,25 +269,45 @@ class UserComponent {
 			"text" => SOYShop_Area::getAreaText($user->getArea())
 		));
 
-		//住所入力1
-		$page->addInput("address1", array(
-			"name" => "Customer[address1]",
-			"value" => $user->getAddress1(),
-			"attr:autocomplete" => "false"
-		));
+		SOY2::import("util.SOYShopAddressUtil");
+		$addressItems = SOYShopAddressUtil::getAddressItems();
+		for($i = 1; $i <= 4; $i++){
+			$itemCnf = (isset($addressItems[$i - 1])) ? $addressItems[$i - 1] : SOYShopAddressUtil::getEmptyAddressItem();
+			
+			$page->addModel("address" . $i . "_show", array(
+				"visible" => (isset($itemCnf["label"]) && strlen($itemCnf["label"]))
+			));
 
-		//住所入力2
-		$page->addInput("address2", array(
-			"name" => "Customer[address2]",
-			"value" => $user->getAddress2(),
-			"attr:autocomplete" => "false"
-		));
+			switch($i){
+				case 1:
+					$addrV = $user->getAddress1();
+					break;
+				case 2:
+					$addrV = $user->getAddress2();
+					break;
+				case 3:
+					$addrV = $user->getAddress3();
+					break;
+				case 4:
+					$addrV = $user->getAddress4();
+					break;
+			}
+		
+			$page->addInput("address" . $i, array(
+				"name" => "Customer[address" . $i . "]",
+				"value" => $addrV,
+				"attr:autocomplete" => "false"
+			));
 
-		//住所入力2
-		$page->addInput("address3", array(
-			"name" => "Customer[address3]",
-			"value" => $user->getAddress3(),
-			"attr:autocomplete" => "false"
+			foreach(array("label", "example") as $l){
+				$page->addLabel("address" . $i . "_" . $l, array(
+					"text" => (isset($itemCnf[$l])) ? $itemCnf[$l] : ""
+				));
+			}
+		}
+
+		$page->addLabel("address_full", array(
+			"text" => $user->getFullAddressText()
 		));
 
 		//電話番号
@@ -538,8 +558,31 @@ class UserComponent {
 
 		/* 住所 */
 		if(self::_checkFormConfig("address")){
-			if(tstrlen($user->getArea()) < 1 || tstrlen($user->getAddress1()) < 1){
+			if(tstrlen($user->getArea()) < 1){
 				//住所を入力していない場合
+				$app->addErrorMessage("address", MessageManager::get("ADDRESS_EMPTY"));
+				$res = false;
+			}
+
+			SOY2::import("util.SOYShopAddressUtil");
+			$addressItems = SOYShopAddressUtil::getAddressItems();
+
+			if(isset($addressItems[0]) && $addressItems[0]["required"] && tstrlen($user->getAddress1()) < 1){
+				$app->addErrorMessage("address", MessageManager::get("ADDRESS_EMPTY"));
+				$res = false;
+			}
+
+			if(isset($addressItems[1]) && $addressItems[1]["required"] && tstrlen($user->getAddress2()) < 1){
+				$app->addErrorMessage("address", MessageManager::get("ADDRESS_EMPTY"));
+				$res = false;
+			}
+
+			if(isset($addressItems[2]) && $addressItems[2]["required"] && tstrlen($user->getAddress3()) < 1){
+				$app->addErrorMessage("address", MessageManager::get("ADDRESS_EMPTY"));
+				$res = false;
+			}
+
+			if(isset($addressItems[3]) && $addressItems[3]["required"] && tstrlen($user->getAddress4()) < 1){
 				$app->addErrorMessage("address", MessageManager::get("ADDRESS_EMPTY"));
 				$res = false;
 			}

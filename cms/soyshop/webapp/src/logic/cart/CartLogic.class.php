@@ -509,7 +509,7 @@ class CartLogic extends SOY2LogicBase{
 		$this->orderAttributes = $orderAttributes;
 	}
 
-	function setOrderAttribute($id, $name, $value, $hidden = false, $readonly = false){
+	function setOrderAttribute(string $id, string $name, string $value, bool $hidden=false, bool $readonly=false){
 		if(!is_array($this->orderAttributes)) $this->orderAttributes = array();
 		$this->orderAttributes[$id] = array(
 			"name" => $name,
@@ -519,10 +519,10 @@ class CartLogic extends SOY2LogicBase{
 		);
 		$this->save();
 	}
-	function getOrderAttribute($id){
+	function getOrderAttribute(string $id){
 		return (isset($this->orderAttributes[$id])) ? $this->orderAttributes[$id] : null;
 	}
-	function clearOrderAttribute($id){
+	function clearOrderAttribute(string $id){
 		if(isset($this->orderAttributes[$id])){
 			$this->orderAttributes[$id] = null;
 			unset($this->orderAttributes[$id]);
@@ -589,7 +589,7 @@ class CartLogic extends SOY2LogicBase{
 		return $this->customerInformation->getAddress($key);
 	}
 
-	function getClaimedAddress(SOYShop_User $user){
+	private function _getClaimedAddress(SOYShop_User $user){
 		//$user = $this->customerInformation;
 		return array(
 			"name" => $user->getName(),
@@ -599,6 +599,7 @@ class CartLogic extends SOY2LogicBase{
 			"address1" => $user->getAddress1(),
 			"address2" => $user->getAddress2(),
 			"address3" => $user->getAddress3(),
+			"address4" => $user->getAddress4(),
 			"telephoneNumber" => $user->getTelephoneNumber(),
 			"office" => $user->getJobName(),
 		);
@@ -1175,8 +1176,7 @@ class CartLogic extends SOY2LogicBase{
 		$address = $this->getAddress();
 		$order->setAddress(serialize($address));
 
-		$claimedAddress = $this->getClaimedAddress($this->customerInformation);
-		$order->setClaimedAddress($claimedAddress);
+		$order->setClaimedAddress(self::_getClaimedAddress($this->customerInformation));
 
 		$id = $orderDAO->insert($order);
 		$order->setId($id);

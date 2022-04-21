@@ -240,54 +240,12 @@ class DetailPage extends WebPage{
     		"link" => SOY2PageController::createLink("User.Detail." . $customer->getId())
     	));
 
-		$claimedAddress = $order->getClaimedAddressArray();
-
-    	$customerHTML = "";
-    	if(isset($claimedAddress["office"])){
-    		$customerHTML.= $claimedAddress["office"] ."\n";
-    	}
-    	$customerHTML.= $claimedAddress["name"];
-    	if(isset($claimedAddress["reading"]) && strlen($claimedAddress["reading"])){
-    		$customerHTML.= " (" . $claimedAddress["reading"] . ")";
-    	}
-    	$customerHTML.= "\n";
-    	$customerHTML.= $claimedAddress["zipCode"]. "\n";
-		$addr = "";
-		for($i = 1; $i <= 3; $i++){
-			if(isset($claimedAddress["address" . $i])) $addr .= $claimedAddress["address" . $i];
-		}
-    	$customerHTML.= SOYShop_Area::getAreaText($claimedAddress["area"]) . $addr . "\n";
-    	if(isset($claimedAddress["telephoneNumber"])){
-    		$customerHTML.= $claimedAddress["telephoneNumber"] . "\n";
-    	}
-
     	$this->addLabel("claimed_customerinfo", array(
-    		"html" => nl2br(htmlspecialchars(trim($customerHTML), ENT_QUOTES, "UTF-8"))
-    	));
-
-    	$address = $order->getAddressArray();
-
-    	$customerHTML = ""; //customerHTML変数の初期化
-    	if(isset($address["office"])){
-    		$customerHTML.= $address["office"] . "\n";
-    	}
-    	$customerHTML.= $address["name"];
-    	if(isset($address["reading"]) && strlen($address["reading"])){
-    		$customerHTML.= " (" . $address["reading"] . ")";
-    	}
-    	$customerHTML.= "\n";
-    	$customerHTML.= $address["zipCode"] . "\n";
-		$addr = "";
-		for($i = 1; $i <= 3; $i++){
-			if(isset($address["address" . $i])) $addr .= $address["address" . $i];
-		}
-    	$customerHTML.= SOYShop_Area::getAreaText($address["area"]) . $addr . "\n";
-    	if(isset($address["telephoneNumber"])){
-    		$customerHTML.= $address["telephoneNumber"] . "\n";
-    	}
+			"html" => nl2br(self::_buildAddressInfo($order, "claimed"))
+		));
 
     	$this->addLabel("order_customerinfo", array(
-    		"html" => nl2br(htmlspecialchars(trim($customerHTML), ENT_QUOTES, "UTF-8"))
+    		"html" => nl2br(self::_buildAddressInfo($order))
     	));
 
 		$this->addLink("order_link", array(
@@ -371,6 +329,36 @@ class DetailPage extends WebPage{
 				"orderId" => $order->getId()
 			))->getHTML()
 		));
+    }
+
+	/**
+	 * @param SOYShop_Order, string (請求先:claimed or 送付先:address(空文字可))
+	 * @return string
+	 */
+	private function _buildAddressInfo(SOYShop_Order $order, string $mode=""){
+		switch($mode){
+			case "claimed":
+				$addr = $order->getClaimedAddressArray();
+				$fullAddr = $order->getFullClaimedAddressText();
+				break;
+			default:
+				$addr = $order->getAddressArray();
+				$fullAddr = $order->getFullAddressText();
+		}
+		$html = array();
+
+		if(isset($addr["office"]) && strlen(trim($addr["office"]))) $html[] = $addr["office"];
+		if(isset($addr["name"]) && strlen(trim($addr["name"]))) {
+			$txt = $addr["name"];
+			if(isset($addr["reading"]) && strlen(trim($addr["reading"]))) $txt .= " (" . $addr["reading"] . ")";
+			$html[] = $txt;
+		}
+
+		if(isset($addr["zipCode"]) && strlen(trim($addr["zipCode"]))) $html[] = $addr["zipCode"];
+		if(strlen($fullAddr)) $html[] = $fullAddr;	
+		if(isset($addr["telephoneNumber"]) && strlen(trim($addr["telephoneNumber"]))) $html[] = $addr["telephoneNumber"];
+
+		return htmlspecialchars(implode("\n", $html), ENT_QUOTES, "UTF-8");	
     }
 
     /**

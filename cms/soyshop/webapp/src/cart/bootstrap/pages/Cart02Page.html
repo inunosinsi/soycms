@@ -10,7 +10,8 @@
 <!-- soy:id="has_cart_plugin_upper_parts" -->
 
 <!-- soy:id="cart_plugin_upper_parts_list" -->
-<!-- soy:id="content" --><!-- /soy:id="content" -->
+<!-- soy:id="content" -->
+<!-- /soy:id="content" -->
 <!-- /soy:id="cart_plugin_upper_parts_list" -->
 
 <!-- /soy:id="has_cart_plugin_upper_parts" -->
@@ -70,26 +71,40 @@
 		</div>
 	</div>
 
+	<!-- soy:id="address1_show" -->
 	<div class="form-group row">
-		<label for="city" class="col-sm-2 col-form-label">市区郡</label>
+		<label for="city" class="col-sm-2 col-form-label" soy:id="address1_label">市区郡</label>
 		<div class="col-sm-8">
 			<input type="text" class="input-city form-control" soy:id="address1">
 		</div>
 	</div>
+	<!-- /soy:id="address1_show" -->
 
+	<!-- soy:id="address2_show" -->
 	<div class="form-group row">
-		<label for="town" class="col-sm-2 col-form-label">町番地</label>
+		<label for="town" class="col-sm-2 col-form-label" soy:id="address2_label">町番地</label>
 		<div class="col-sm-8">
 			<input type="text" class="input-town form-control" soy:id="address2">
 		</div>
 	</div>
+	<!-- /soy:id="address2_show" -->
 
+	<!-- soy:id="address3_show" -->
 	<div class="form-group row">
-		<label for="town" class="col-sm-2 col-form-label">建物名</label>
+		<label for="town" class="col-sm-2 col-form-label" soy:id="address3_label">建物名</label>
 		<div class="col-sm-8">
 			<input type="text" class="form-control" soy:id="address3">
 		</div>
 	</div>
+	<!-- /soy:id="address3_show" -->
+	<!-- soy:id="address4_show" -->
+	<div class="form-group row">
+		<label for="town" class="col-sm-2 col-form-label" soy:id="address4_label">その他</label>
+		<div class="col-sm-8">
+			<input type="text" class="form-control" soy:id="address4">
+		</div>
+	</div>
+	<!-- /soy:id="address4_show" -->
 	<!-- /soy:id="address_show" -->
 
 	<!-- soy:id="telephoneNumber_show" -->
@@ -115,7 +130,10 @@
 		<p class="alert alert-info">パスワードを入力することで、次回からの入力が簡単になります。</p>
 		<p class="alert alert-danger" role="alert" soy:id="password_invalid">パスワードが違います</p>
 		<input type="password" class="form-control" autocomplete="off" soy:id="password">
-		<small class="form-text text-muted">【半角英数・<!-- soy:id="password_count" -->8<!-- /soy:id="password_count" -->文字以上】</small>
+		<small class="form-text text-muted">【半角英数・
+			<!-- soy:id="password_count" -->8
+			<!-- /soy:id="password_count" -->文字以上】
+		</small>
 	</div>
 	<!-- /soy:id="password_input" -->
 
@@ -169,7 +187,9 @@
 	<!-- soy:id="has_user_customfield" -->
 	<!-- soy:id="user_customfield_list" -->
 	<div class="form-group">
-		<label for=""><!-- soy:id="customfield_name" /--><span soy:id="customfield_is_required">（必須）</span></label>
+		<label for="">
+			<!-- soy:id="customfield_name" /--><span soy:id="customfield_is_required">（必須）</span>
+		</label>
 		<!-- soy:id="has_customfield_error" -->
 		<p class="alert alert-danger" role="alert" soy:id="customfield_error"></p>
 		<!-- /soy:id="has_customfield_error" -->
@@ -245,26 +265,41 @@
 		</div>
 	</div>
 
+	<!-- soy:id="send_address1_show" -->
 	<div class="form-group row">
-		<label for="" class="col-sm-2 col-form-label">市区郡</label>
+		<label for="" class="col-sm-2 col-form-label" soy:id="send_address1_label">市区郡</label>
 		<div class="col-sm-8">
 			<input type="text" class="input-send-city form-control" soy:id="send_address1">
 		</div>
 	</div>
+	<!-- /soy:id="send_address1_show" -->
 
+	<!-- soy:id="send_address2_show" -->
 	<div class="form-group row">
-		<label for="" class="col-sm-2 col-form-label">町番地</label>
+		<label for="" class="col-sm-2 col-form-label" soy:id="send_address2_label">町番地</label>
 		<div class="col-sm-8">
 			<input type="text" class="input-send-town form-control" soy:id="send_address2">
 		</div>
 	</div>
+	<!-- /soy:id="send_address2_show" -->
 
+	<!-- soy:id="send_address3_show" -->
 	<div class="form-group row">
-		<label for="" class="col-sm-2 col-form-label">建物名</label>
+		<label for="" class="col-sm-2 col-form-label" soy:id="send_address3_label">建物名</label>
 		<div class="col-sm-8">
 			<input type="text" class="form-control" soy:id="send_address3">
 		</div>
 	</div>
+	<!-- /soy:id="send_address3_show" -->
+
+	<!-- soy:id="send_address4_show" -->
+	<div class="form-group row">
+		<label for="" class="col-sm-2 col-form-label" soy:id="send_address4_label">その他</label>
+		<div class="col-sm-8">
+			<input type="text" class="form-control" soy:id="send_address4">
+		</div>
+	</div>
+	<!-- /soy:id="send_address4_show" -->
 
 	<div class="form-group">
 		<label for="">お電話番号<span class="require">（必須）</span></label>
@@ -278,12 +313,14 @@
 	</div>
 	<!-- /soy:id="display_send_form" -->
 </form>
-<script type="text/javascript" soy:id="zip2address_js"></script><!--住所検索-->
+<script type="text/javascript" soy:id="zip2address_js"></script>
+<!--住所検索-->
 
 <!-- soy:id="has_cart_plugin" -->
 
 <!-- soy:id="cart_plugin_list" -->
-<!-- soy:id="content" --><!-- /soy:id="content" -->
+<!-- soy:id="content" -->
+<!-- /soy:id="content" -->
 <!-- /soy:id="cart_plugin_list" -->
 
 <!-- /soy:id="has_cart_plugin" -->

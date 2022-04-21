@@ -83,6 +83,7 @@ class SOYShop_User {
 	private $address1;
 	private $address2;
 	private $address3;
+	private $address4;	//予備
 
 	/**
 	 * @column telephone_number
@@ -129,6 +130,11 @@ class SOYShop_User {
 	 * @column job_address3
 	 */
 	private $jobAddress3;
+
+	/**
+	 * @column job_address4
+	 */
+	private $jobAddress4;
 
 	/**
 	 * @column job_telephone_number
@@ -382,6 +388,12 @@ class SOYShop_User {
 	function setAddress3($address3) {
 		$this->address3 = $address3;
 	}
+	function getAddress4() {
+		return $this->address4;
+	}
+	function setAddress4($address4) {
+		$this->address4 = $address4;
+	}
 	function getTelephoneNumber() {
 		return $this->telephoneNumber;
 	}
@@ -442,6 +454,12 @@ class SOYShop_User {
 	}
 	function setJobAddress3($jobAddress3) {
 		$this->jobAddress3 = $jobAddress3;
+	}
+	function getJobAddress4() {
+		return $this->jobAddress4;
+	}
+	function setJobAddress4($jobAddress4) {
+		$this->jobAddress4 = $jobAddress4;
 	}
 	function getJobTelephoneNumber() {
 		return $this->jobTelephoneNumber;
@@ -561,9 +579,9 @@ class SOYShop_User {
 		return (is_array($array)) ? $array : array();
 	}
 
-	function getAddress($index){
+	function getAddress(int $idx){
 
-		if($index < 0){
+		if($idx < 0){
 			$res = array(
 				"name" => $this->getName(),
 				"reading" => $this->getReading(),
@@ -572,6 +590,7 @@ class SOYShop_User {
 				"address1" => $this->getAddress1(),
 				"address2" => $this->getAddress2(),
 				"address3" => $this->getAddress3(),
+				"address4" => $this->getAddress4(),
 				"telephoneNumber" => $this->getTelephoneNumber(),
 				"office" => $this->getJobName(),
 			);
@@ -580,43 +599,60 @@ class SOYShop_User {
 		}
 
 		$list = $this->getAddressListArray();
-		return (isset($list[$index])) ? $list[$index] : $this->getEmptyAddressArray();
+		return (isset($list[$idx])) ? $list[$idx] : $this->getEmptyAddressArray();
 	}
 
 	/**
 	 * アドレス帳の入力チェック
-	 * 住所２（address2）と法人名（office）以外は必須
+	 * 法人名（office）以外は必須 住所に関しては設定を設ける
 	 * @return -1 | 0 | 1
 	 * -1: 何も入力されていない
 	 * 0 : NG 入力漏れがある
 	 * 1 : OK
 	 *
 	 */
-	function checkValidAddress($address){
-		//何かしら入力があるかどうか確認
+	function checkValidAddress(array $addr){
+		foreach(array("name", "reading", "zipCode", "area", "telephoneNumber") as $idx){
+			if(!isset($addr[$idx])) $addr[$idx] = "";	//空文字を入れておく
+		}
+		for($i = 1; $i <= 4; $i++){
+			if(!isset($addr["address" . $i])) $addr["address" . $i] = "";
+		}
+		/**
+		 * 何かしら入力があるかどうか確認
+		 */
 		$isNotEmpty = (
-			strlen(@$address["name"]) > 0 ||
-			strlen(@$address["reading"]) > 0 ||
-			strlen(@$address["zipCode"]) > 0 ||
-			strlen(@$address["area"]) > 0 ||
-			strlen(@$address["address1"]) > 0 ||
-			/**strlen(@$address["address2"]) > 0 ||**/
-			strlen(@$address["telephoneNumber"]) > 0
+			strlen($addr["name"]) > 0 ||
+			strlen($addr["reading"]) > 0 ||
+			strlen($addr["zipCode"]) > 0 ||
+			strlen($addr["area"]) > 0 ||
+			strlen($addr["telephoneNumber"]) > 0
 		);
 
 		//何も入力されていないなら -1 を返す
-		if(!$isNotEmpty)return -1;
+		if(!$isNotEmpty) return -1;
+
+		//住所に関して
+		SOY2::import("util.SOYShopAddressUtil");
+		$addressItems = SOYShopAddressUtil::getAddressItems();
+		for($i = 1; $i <= 4; $i++){
+			if(!isset($addressItems[$i - 1]) || !isset($addressItems[$i - 1]["required"]) || (bool)$addressItems[$i - 1]["required"] === false) continue;	//調べない
+			if(strlen($addr["address" . $i])) $isNotEmpty = true;
+		}
 
 		if($isNotEmpty && (
-			strlen(@$address["name"]) == 0 ||
-			strlen(@$address["reading"]) == 0 ||
-			strlen(@$address["zipCode"]) == 0 ||
-			strlen(@$address["area"]) == 0 ||
-			strlen(@$address["address1"]) == 0 ||
-			/**strlen(@$address["address2"]) == 0 ||**/
-			strlen(@$address["telephoneNumber"]) == 0
+			strlen($addr["name"]) == 0 ||
+			strlen($addr["reading"]) == 0 ||
+			strlen($addr["zipCode"]) == 0 ||
+			strlen($addr["area"]) == 0 ||
+			strlen($addr["telephoneNumber"]) == 0
 		)){
 			return 0;
+		}
+
+		for($i = 1; $i <= 4; $i++){
+			if(!isset($addressItems[$i - 1]) || !isset($addressItems[$i - 1]["required"]) || (bool)$addressItems[$i - 1]["required"] === false) continue;	//調べない
+			if(strlen($addr["address" . $i]) === 0) return 0;
 		}
 
 		return 1;
@@ -631,9 +667,36 @@ class SOYShop_User {
 			"address1" => "",
 			"address2" => "",
 			"address3" => "",
+			"address4" => "",
 			"telephoneNumber" => "",
 			"office" => ""
 		);
+	}
+
+	/**
+	 * @return string
+	 */
+	function getFullAddressText(bool $isSpace=true){
+		$html = array();
+		if(is_numeric($this->area)) $html[] = SOYShop_Area::getAreaText($this->area);
+		if(isset($this->address1) && strlen($this->address1)) $html[] = $this->address1;
+		if(isset($this->address2) && strlen($this->address2)) $html[] = $this->address2;
+		if(isset($this->address3) && strlen($this->address3)) $html[] = $this->address3;
+		if(isset($this->address4) && strlen($this->address4)) $html[] = $this->address4;
+		return ($isSpace) ? implode(" ", $html) : implode("", $html);
+	}
+
+	/**
+	 * @return string
+	 */
+	function getFullJobAddressText($isSpace=true){
+		$html = array();
+		if(is_numeric($this->jobArea)) $html[] = SOYShop_Area::getAreaText($this->jobArea);
+		if(isset($this->jobAddress1) && strlen($this->jobAddress1)) $html[] = $this->jobAddress1;
+		if(isset($this->jobAddress2) && strlen($this->jobAddress2)) $html[] = $this->jobAddress2;
+		if(isset($this->jobAddress3) && strlen($this->jobAddress3)) $html[] = $this->jobAddress3;
+		if(isset($this->jobAddress4) && strlen($this->jobAddress4)) $html[] = $this->jobAddress4;
+		return ($isSpace) ? implode(" ", $html) : implode("", $html);
 	}
 
 	function getAttributes() {
@@ -701,10 +764,7 @@ class SOYShop_User {
 	 */
 	function getAttachmentsPath(){
 		$dir = SOYSHOP_SITE_DIRECTORY . "files/user/" . $this->getId() . "/";
-		if(!file_exists($dir)){
-			@mkdir($dir,0777,true);
-		}
-
+		if(!file_exists($dir)) @mkdir($dir,0777,true);
 		return $dir;
 	}
 
@@ -725,7 +785,7 @@ class SOYShop_User {
 		$res = array();
 
 		foreach($files as $file){
-			if($file[0] == ".")continue;
+			if($file[0] == ".") continue;
 			$res[] = $url . $file;
 		}
 
@@ -734,12 +794,10 @@ class SOYShop_User {
 
 	function getTmpPath(){
 		$dir = SOYSHOP_SITE_DIRECTORY . "files/tmp/";
-		if(!file_exists($dir)){
-			@mkdir($dir,0777,true);
-		}
-
+		if(!file_exists($dir)) @mkdir($dir,0777,true);
 		return $dir;
 	}
+
 	function getTmpUrl(){
 		return soyshop_get_site_path() . "files/tmp/";
 	}
@@ -752,10 +810,7 @@ class SOYShop_User {
 	function getListName(){
 		$display = $this->getName();
 		$checkDisplay = str_replace(" ","",$display);
-		if(strlen($checkDisplay) == 0){
-			$display = $this->getNickname();
-		}
-
+		if(strlen($checkDisplay) == 0) $display = $this->getNickname();
 		return $display;
 	}
 
@@ -779,11 +834,7 @@ class SOYShop_User {
 	 */
 	function getPointTimeLimit(){
 		SOYShopPlugin::load("soyshop.point");
-
-		$delegate = SOYShopPlugin::invoke("soyshop.point", array(
-				"userId" => $this->id,
-		));
-		return $delegate->getTimeLimit();
+		return SOYShopPlugin::invoke("soyshop.point", array("userId" => $this->id))->getTimeLimit();
 	}
 
 	/**
@@ -828,7 +879,7 @@ class SOYShop_User {
 	 * @param String 入力されたパスワード
 	 * @param String 保存されているハッシュを含む文字列（algo/salt/hash）
 	 */
-	function checkPassword($input){
+	function checkPassword(string $input){
 		$stored = (string)$this->getPassword();
 		$array = explode("/", $stored);
 		if(count($array) == 3){
@@ -848,7 +899,7 @@ class SOYShop_User {
 	 * @return String ハッシュ化された文字列（algo/salt/hash）
 	 *
 	 */
-	function hashPassword($rawPassword){
+	function hashPassword(string $rawPassword){
 		//saltは乱数をmd5にしたもの
 		$salt = md5(mt_rand());
 
@@ -869,7 +920,7 @@ class SOYShop_User {
 	 * @param String ハッシュ化アルゴリズム
 	 * @return String ハッシュ化された文字列（algo/salt/hash）
 	 */
-	private static function _hashString($string, $salt, $algo){
+	private static function _hashString(string $string, $salt, $algo){
 		$algo = strtolower($algo);
 
 		if($algo == "md5"){
@@ -882,7 +933,7 @@ class SOYShop_User {
 		return "$algo/$salt/$hash";
 	}
 
-	private function _hashStringEcCube($input){
+	private function _hashStringEcCube(string $input){
 		if(!isset($input) || !is_string($input)) return "";	//想定していないタイミングで読まれることがある
 
 		//ec cubeから移行した会員のパスワードをそのまま使用するためのチェック

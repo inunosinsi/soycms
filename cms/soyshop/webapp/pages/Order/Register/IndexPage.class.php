@@ -414,6 +414,10 @@ class IndexPage extends WebPage{
 			"text" => $user->getAddress3(),
 		));
 
+		$this->addLabel("address_full_on_admin", array(
+			"text" => $user->getFullAddressText()
+		));
+
 		//電話番号
 		$this->addLabel("telephone_number_on_admin", array(
 			"text" => $user->getTelephoneNumber(),
@@ -499,21 +503,25 @@ class IndexPage extends WebPage{
     		"text" => (isset($address["zipCode"])) ? $address["zipCode"] : "",
     	));
 
+		$addrTxt = (isset($address["area"])) ? SOYShop_Area::getAreaText($address["area"]) : "";
     	$this->addLabel("send_area", array(
-    		"text" => (isset($address["area"])) ? SOYShop_Area::getAreaText($address["area"]) : "",
+    		"text" => $addrTxt,
     	));
 
-    	$this->addLabel("send_address1", array(
-    		"text" => (isset($address["address1"])) ? $address["address1"] : "",
-    	));
+		for($i = 1; $i <= 4; $i++){
+			$this->addLabel("send_address" . $i, array(
+				"text" => (isset($address["address" . $i])) ? $address["address" . $i] : "",
+			));
 
-    	$this->addLabel("send_address2", array(
-    		"text" => (isset($address["address2"])) ? $address["address2"] : "",
-    	));
+			if(isset($address["address". $i]) && strlen($address["address". $i])){
+				$addrTxt .= " " . $address["address". $i];
+			}
+		}
 
-		$this->addLabel("send_address3", array(
-    		"text" => (isset($address["address3"])) ? $address["address3"] : "",
-    	));
+		$this->addLabel("send_address_full", array(
+			"text" => $addrTxt
+		));
+			
 
     	$this->addLabel("send_tel_number", array(
     		"text" => (isset($address["telephoneNumber"])) ? $address["telephoneNumber"] : "",

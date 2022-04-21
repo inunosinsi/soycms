@@ -338,15 +338,39 @@ class SOYShop_Order {
     function getAddressArray(){
 		return self::_address($this->address);
     }
+	function getFullAddressText(){
+		return self::_getFullAddressText();
+	}
     function getClaimedAddressArray(){
 		return self::_address($this->claimedAddress);
     }
+	function getFullClaimedAddressText(){
+		return self::_getFullAddressText("claimed");
+	}
 	private function _address($str){
 		$addr = (is_string($str)) ? soy2_unserialize($str) : array();
 		foreach(array("name", "zipCode", "area", "address1", "address2", "address3") as $l){
 			if(!isset($addr[$l])) $addr[$l] = "";
 		}
 		return $addr;
+	}
+
+	private function _getFullAddressText(string $mode="", bool $isSpace=true){
+		switch($mode){
+			case "claimed":
+				$addr = self::_address($this->claimedAddress);
+				break;
+			default:
+				$addr = self::_address($this->address);
+		}
+		$html = array();
+
+		if(isset($addr["area"]) && is_numeric($addr["area"])) $html[] = SOYShop_Area::getAreaText($addr["area"]);
+		for($i = 1; $i <= 4; $i++){
+			if(isset($addr["address" . $i]) && strlen($addr["address" . $i])) $html[] = $addr["address" . $i];
+		}
+
+		return ($isSpace) ? implode(" ", $html) : implode("", $html);
 	}
 
     function getAttributes() {

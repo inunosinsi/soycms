@@ -9,7 +9,13 @@
 					<!-- /soy:id="user_title_button_list" -->
 
 					<!-- soy:display="orderable_button" -->
-					<a soy:id="order_list_link" class="btn btn-warning btn-xs">この<!-- soy:id="user_label*" /-->の注文履歴 (<!-- soy:id="order_count" /-->)<!-- soy:display="cancel_count" -->(<!-- soy:id="order_cancel_count" /-->)<!-- /soy:display="cancel_count" --></a>
+					<a soy:id="order_list_link" class="btn btn-warning btn-xs">この
+						<!-- soy:id="user_label*" /-->の注文履歴 (
+						<!-- soy:id="order_count" /-->)
+						<!-- soy:display="cancel_count" -->(
+						<!-- soy:id="order_cancel_count" /-->)
+						<!-- /soy:display="cancel_count" -->
+					</a>
 					<a soy:id="order_register_link" class="btn btn-success btn-xs">商品を注文する</a>
 					<!-- soy:display="order_cart_link" --><a soy:id="order_cart_link" class="btn btn-info btn-xs">公開側で注文する</a><!-- /soy:display="order_cart_link" -->
 					<!-- /soy:display="orderable_button" -->
@@ -22,9 +28,15 @@
 			<div class="panel-body">
 				<div class="alert alert-success" soy:display="sended">メールを送信しました</div>
 				<div class="alert alert-success" soy:display="update_message">更新しました</div>
-				<div class="alert alert-danger" soy:display="notice_tmp_register">仮登録の<!-- soy:id="user_label*" /-->です。</div>
-				<div class="alert alert-danger" soy:display="notice_no_publish">非公開の<!-- soy:id="user_label*" /-->です。</div>
-				<div class="alert alert-danger" soy:display="user_code_error">既に登録されている<!-- soy:id="user_label*" /-->コードです。</div>
+				<div class="alert alert-danger" soy:display="notice_tmp_register">仮登録の
+					<!-- soy:id="user_label*" /-->です。
+				</div>
+				<div class="alert alert-danger" soy:display="notice_no_publish">非公開の
+					<!-- soy:id="user_label*" /-->です。
+				</div>
+				<div class="alert alert-danger" soy:display="user_code_error">既に登録されている
+					<!-- soy:id="user_label*" /-->コードです。
+				</div>
 
 				<form soy:id="detail_form">
 					<div class="table-responsive">
@@ -50,7 +62,9 @@
 								</td>
 							</tr>
 							<tr soy:display="userCode">
-								<th><!-- soy:id="user_label*" /-->コード</th>
+								<th>
+									<!-- soy:id="user_label*" /-->コード
+								</th>
 								<td>
 									<input soy:id="user_code" type="text" style="width:50%;">
 								</td>
@@ -58,8 +72,10 @@
 							<tr>
 								<th>パスワード</th>
 								<td>
-									<!-- soy:id="password_is_registered" -->パスワード登録済み<!-- /soy:id="password_is_registered" -->
-									<!-- soy:id="password_is_not_registered" -->パスワード未登録<!-- /soy:id="password_is_not_registered" -->
+									<!-- soy:id="password_is_registered" -->パスワード登録済み
+									<!-- /soy:id="password_is_registered" -->
+									<!-- soy:id="password_is_not_registered" -->パスワード未登録
+									<!-- /soy:id="password_is_not_registered" -->
 									<a href="" soy:id="password_edit_link" class="btn btn-default" id="change_password_button">変更</a>
 								</td>
 							</tr>
@@ -97,7 +113,8 @@
 								<td>
 									<img soy:id="image">
 									<input type="hidden" soy:id="image_path" />
-									<!-- soy:id="is_image" --><input type="checkbox" soy:id="delete_image"><br><!-- /soy:id="is_image" -->
+									<!-- soy:id="is_image" --><input type="checkbox" soy:id="delete_image"><br>
+									<!-- /soy:id="is_image" -->
 									<input type="file" name="image" />
 								</td>
 							</tr>
@@ -134,18 +151,61 @@
 								</td>
 							</tr>
 
-							<tr soy:display="address">
+							<!-- soy:display="address" -->
+							<tr>
 								<th>住所</th>
 								<td>
-									<select soy:id="area" id="area" class="input-pref">
-										<option value="">▼選択</option>
-									</select>
-									<input soy:id="address1" type="text" size="40" id="address1" class="input-city" /><br>
-									<input soy:id="address2" type="text" style="width:95%;" id="address2" class="input-town" /><br>
-									<input soy:id="address3" type="text" style="width:95%;" id="address3"><br>
-									<!-- soy:id="advenced_address_list" --><!-- soy:id="form" /--><!-- /soy:id="advenced_address_list" -->
+									<table style="width:60%;">
+										<tr>
+											<td colspan="2">
+												<select soy:id="area" id="area" class="input-pref">
+													<option value="">▼選択</option>
+												</select>
+											</td>
+										</tr>
+										<!-- soy:id="address1_show" -->
+										<tr>
+											<th soy:id="address1_label"></th>
+											<td>
+												<input soy:id="address1" type="text" class="form-control input-city" id="address1">
+											</td>
+										</tr>
+										<!-- /soy:id="address1_show" -->
+										<!-- soy:id="address2_show" -->
+										<tr>
+											<th soy:id="address2_label"></th>
+											<td>
+												<input soy:id="address2" type="text" class="form-control input-town" id="address2">
+											</td>
+										</tr>
+										<!-- /soy:id="address2_show" -->
+										<!-- soy:id="address3_show" -->
+										<tr>
+											<th soy:id="address3_label"></th>
+											<td>
+												<input soy:id="address3" type="text" class="form-control" id="address3">
+											</td>
+										</tr>
+										<!-- /soy:id="address3_show" -->
+										<!-- soy:id="address4_show" -->
+										<tr>
+											<th soy:id="address4_label"></th>
+											<td>
+												<input soy:id="address4" type="text" class="form-control" id="address4">
+											</td>
+										</tr>
+										<!-- /soy:id="address4_show" -->
+										<!-- soy:id="advenced_address_list" -->
+										<tr>
+											<td colspan="2">
+												<!-- soy:id="form" /-->
+											</td>
+										</tr>
+										<!-- /soy:id="advenced_address_list" -->
+									</table>
 								</td>
 							</tr>
+							<!-- /soy:display="address" -->
 
 							<tr soy:display="telephoneNumber">
 								<th>電話番号</th>
@@ -218,7 +278,7 @@
 							<tr soy:display="url">
 								<th>URL</th>
 								<td>
-									<input soy:id="url" type="text" style="width:95%;"/>
+									<input soy:id="url" type="text" style="width:95%;" />
 								</td>
 							</tr>
 							<tr>
@@ -230,14 +290,16 @@
 								</td>
 							</tr>
 							<!-- soy:display="has_user_customfield" -->
-								<!-- soy:id="user_customfield_list" -->
-								<tr>
-									<th><!-- soy:id="customfield_name" /--></th>
-									<td>
-										<!-- soy:id="customfield_form" /-->
-									</td>
-								</tr>
-								<!-- /soy:id="user_customfield_list" -->
+							<!-- soy:id="user_customfield_list" -->
+							<tr>
+								<th>
+									<!-- soy:id="customfield_name" /-->
+								</th>
+								<td>
+									<!-- soy:id="customfield_form" /-->
+								</td>
+							</tr>
+							<!-- /soy:id="user_customfield_list" -->
 							<!-- /soy:display="has_user_customfield" -->
 							<tr soy:display="active_soymail_connector">
 								<th>メール配信(SOY Mail)</th>
@@ -311,7 +373,9 @@
 					<!-- soy:id="address_list" -->
 					<div class="table-responsive">
 						<table class="table table-striped">
-							<caption>お届け先<!-- soy:id="address_index" /--></caption>
+							<caption>お届け先
+								<!-- soy:id="address_index" /-->
+							</caption>
 							<col style="width:200px;" />
 							<tr>
 								<th>法人名(勤務先)</th>
@@ -375,7 +439,9 @@
 							</tr>
 							<tr>
 								<th>ポイントの有効期限</th>
-								<td><!-- soy:id="time_limit" /-->&nbsp;</td>
+								<td>
+									<!-- soy:id="time_limit" /-->&nbsp;
+								</td>
 							</tr>
 						</table>
 					</div>
@@ -384,12 +450,20 @@
 					<!-- soy:display="ticket" -->
 					<div class="table-responsive">
 						<table class="table table-striped">
-							<caption><!-- soy:id="ticket_label" -->チケット<!-- /soy:id="ticket_label" --></caption>
+							<caption>
+								<!-- soy:id="ticket_label" -->チケット
+								<!-- /soy:id="ticket_label" -->
+							</caption>
 							<col style="width:200px;" />
 							<tr>
-								<th><!-- soy:id="ticket_label*" -->チケット<!-- /soy:id="ticket_label*" --></th>
+								<th>
+									<!-- soy:id="ticket_label*" -->チケット
+									<!-- /soy:id="ticket_label*" -->
+								</th>
 								<td>
-									<input soy:id="ticket_count" type="text">&nbsp;<!-- soy:id="ticket_unit" -->枚<!-- /soy:id="ticket_unit" -->
+									<input soy:id="ticket_count" type="text">&nbsp;
+									<!-- soy:id="ticket_unit" -->枚
+									<!-- /soy:id="ticket_unit" -->
 								</td>
 							</tr>
 						</table>
@@ -414,7 +488,7 @@
 				<h5 class="modal-title">ストレージ</h5>
 			</div>
 			<div class="modal-body">
-				<iframe src="<!-- soy:id="storage_url" /-->" style="width:100%;height:400px;"></iframe>
+				<iframe src="<!-- soy:id=" storage_url" /-->" style="width:100%;height:400px;"></iframe>
 			</div>
 			<div class="modal-footer">
 				<button type="button" id="storageModalClose" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -423,4 +497,5 @@
 	</div>
 </div>
 
-<script type="text/javascript" soy:id="zip2address_js"></script><!--住所検索-->
+<script type="text/javascript" soy:id="zip2address_js"></script>
+<!--住所検索-->

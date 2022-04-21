@@ -131,6 +131,10 @@ class InvoiceListComponent extends HTMLList{
 			));
 		}
 
+		$this->addLabel("customer_address_full", array(
+			"text" => $order->getFullAddressText()
+		));
+
 		//お届け先の法人名
 		$this->addLabel("customer_office", array(
 			"text" => (isset($address["office"])) ? $address["office"] : ""
@@ -157,7 +161,7 @@ class InvoiceListComponent extends HTMLList{
 		));
 
 		//注文者の住所
-		for($i = 1; $i <= 3; $i++){
+		for($i = 1; $i <= 4; $i++){
 			$this->addLabel("address" . $i, array(
 				"text" => (isset($claimedAddress["address" . $i])) ? $claimedAddress["address" . $i] : ""
 			));

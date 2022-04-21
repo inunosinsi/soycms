@@ -10,8 +10,7 @@ class addressPage extends MainMyPagePageBase{
 	private $userId;
 
 	function doPost(){
-		if(soy2_check_token() && soy2_check_referer()){
-
+		if(soy2_check_token()){
 			/*
 			 * 宛先の入力値
 			 */
@@ -24,9 +23,9 @@ class addressPage extends MainMyPagePageBase{
 			$mypage = $this->getMyPage();
 
 			//エラーがなければ確認へ
-			if(!self::checkError($address)){
+			if(!self::_checkError($address)){
 				$order = $this->getOrderByIdAndUserId($this->orderId, $this->userId);
-				$change = self::updateAddress($order, $address);
+				$change = self::_updateAddress($order, $address);
 
 				$orderDao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
 				$orderDao->begin();
@@ -80,18 +79,18 @@ class addressPage extends MainMyPagePageBase{
 			"text" => ($this->mode == self::MODE_SEND) ? "お届け" : "請求"
 		));
 
-		self::buildForm();
+		self::_buildForm();
 
 		$mypage = $this->getMyPage();
 		DisplayPlugin::toggle("has_error", $mypage->hasError());
-		self::appendErrors($mypage);
+		self::_appendErrors($mypage);
 
 		$this->addLink("back_link", array(
 			"link" => soyshop_get_mypage_url() . "/order/detail/" . $this->orderId
 		));
 	}
 
-	private function buildForm(){
+	private function _buildForm(){
 		$order = $this->getOrderByIdAndUserId($this->orderId, $this->userId);
         if(!$order->isOrderDisplay()) $this->jump("order");
 
@@ -110,7 +109,7 @@ class addressPage extends MainMyPagePageBase{
 
 		$this->addForm("form");
 
-		foreach(array("name", "reading", "office", "zipCode", "area", "address1", "address2", "address3", "telephoneNumber") as $t){
+		foreach(array("name", "reading", "office", "zipCode", "area", "telephoneNumber") as $t){
 			switch($t){
 				case "area":
 					$this->addSelect($t, array(
@@ -126,12 +125,33 @@ class addressPage extends MainMyPagePageBase{
 					));
 			}
 		}
+
+		SOY2::import("util.SOYShopAddressUtil");
+		$addressItems = SOYShopAddressUtil::getAddressItems();
+		for($i = 1; $i <= 4; $i++){
+			$itemCnf = (isset($addressItems[$i - 1])) ? $addressItems[$i - 1] : SOYShopAddressUtil::getEmptyAddressItem();
+
+			$this->addModel("address" . $i . "_show", array(
+				"visible" => (isset($itemCnf["label"]) && strlen($itemCnf["label"]))
+			));
+
+			$this->addInput("address" . $i, array(
+				"name" => "Address[address" . $i . "]",
+				"value" => (isset($address["address". $i])) ? $address["address". $i] : "",
+			));
+
+			foreach(array("label", "example") as $idx){
+				$this->addLabel("address". $i . "_" . $idx, array(
+					"text" => (isset($itemCnf[$idx])) ? $itemCnf[$idx] : ""
+				));
+			}
+		}
 	}
 
 	/**
 	 * エラー周りを設定
 	 */
-	private function appendErrors($mypage){
+	private function _appendErrors(MyPageLogic $mypage){
 
 		$this->createAdd("name_error", "ErrorMessageLabel", array(
 			"text" => $mypage->getErrorMessage("name")
@@ -144,7 +164,7 @@ class addressPage extends MainMyPagePageBase{
 		$this->createAdd("zipcode_error", "ErrorMessageLabel", array(
 			"text" => $mypage->getErrorMessage("zipcode")
 		));
-
+		
 		$this->createAdd("address_error", "ErrorMessageLabel", array(
 			"text" => $mypage->getErrorMessage("address")
 		));
@@ -155,7 +175,7 @@ class addressPage extends MainMyPagePageBase{
 
 	}
 
-	private function checkError($address){
+	private function _checkError(array $address){
 		$res = false;
 		$mypage = $this->getMyPage();
 		$mypage->clearErrorMessage();
@@ -181,7 +201,7 @@ class addressPage extends MainMyPagePageBase{
 			$res = true;
 		}
 
-		if(tstrlen($address["area"]) < 1 || tstrlen($address["address1"] . $address["address2"]) < 1){
+		if(tstrlen($address["area"]) < 1){
 			$mypage->addErrorMessage("address", MessageManager::get("ADDRESS_EMPTY"));
 			$res = true;
 		}
@@ -191,32 +211,49 @@ class addressPage extends MainMyPagePageBase{
 			$res = true;
 		}
 
+		SOY2::import("util.SOYShopAddressUtil");
+		$addressItems = SOYShopAddressUtil::getAddressItems();
+		for($i = 1; $i <= 4; $i++){
+			$itemCnf = (isset($addressItems[$i - 1])) ? $addressItems[$i - 1] : SOYShopAddressUtil::getEmptyAddressItem();
+
+			if($itemCnf["required"]){
+				if(tstrlen($address["address" . $i]) < 1){
+					$mypage->addErrorMessage("address", MessageManager::get("ADDRESS_EMPTY"));
+					$res = true;
+					break;
+				}
+			}
+		}
+
 		$mypage->save();
 
 		return $res;
 	}
 
-	private function updateAddress(SOYShop_Order $order, $newAddress){
+	/**
+	 * @param SOYShop_Order, array
+	 * @return array
+	 */
+	private function _updateAddress(SOYShop_Order $order, array $newAddress){
 		$change = array();
 		$label = ($this->mode == self::MODE_SEND) ? "宛先" : "請求先";
 		$address = ($this->mode == self::MODE_SEND) ? $order->getAddressArray() : $order->getClaimedAddressArray();
 
-		if($address["office"] != $newAddress["office"])		$change[]=$this->getHistoryText($label, $address["office"], $newAddress["office"]);
-		if($address["name"] != $newAddress["name"])			$change[]=$this->getHistoryText($label, $address["name"], $newAddress["name"]);
-		if($address["reading"] != $newAddress["reading"])	$change[]=$this->getHistoryText($label, $address["reading"], $newAddress["reading"]);
-		if($address["zipCode"] != $newAddress["zipCode"])	$change[]=$this->getHistoryText($label, $address["zipCode"], $newAddress["zipCode"]);
-		if($address["area"] != $newAddress["area"])			$change[]=$this->getHistoryText($label, SOYShop_Area::getAreaText($address["area"]), SOYShop_Area::getAreaText($newAddress["area"]));
-		if($address["address1"] != $newAddress["address1"]) $change[]=$this->getHistoryText($label, $address["address1"], $newAddress["address1"]);
-		if($address["address2"] != $newAddress["address2"]) $change[]=$this->getHistoryText($label, $address["address2"], $newAddress["address2"]);
-		if($address["address3"] != $newAddress["address3"]) $change[]=$this->getHistoryText($label, $address["address3"], $newAddress["address3"]);
-		if($address["telephoneNumber"] != $newAddress["telephoneNumber"]) $change[]=$this->getHistoryText($label, $address["telephoneNumber"], $newAddress["telephoneNumber"]);
+		foreach(array("office", "name", "reading", "zipCode", "telephoneNumber") as $idx){
+			if(isset($newAddress[$idx]) && $address[$idx] != $newAddress[$idx])	$change[] = $this->getHistoryText($label, $address[$idx], $newAddress[$idx]);
+		}
 
+		for($i = 1; $i <= 4; $i++){
+			if(isset($newAddress["address" . $i]) && $address["address" . $i] != $newAddress["address" . $i]) $change[] = $this->getHistoryText($label, $address["address" . $i], $newAddress["address" . $i]);
+		}
+		
+		if(isset($newAddress["area"]) && $address["area"] != $newAddress["area"]) $change[] = $this->getHistoryText($label, SOYShop_Area::getAreaText($address["area"]), SOYShop_Area::getAreaText($newAddress["area"]));
+		
 		if(($this->mode == self::MODE_SEND)){
 			$order->setAddress($newAddress);
 		}else{
 			$order->setClaimedAddress($newAddress);
 		}
-
 
 		return $change;
 	}

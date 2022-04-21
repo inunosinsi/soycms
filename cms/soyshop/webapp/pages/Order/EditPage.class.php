@@ -569,12 +569,9 @@ class EditPage extends WebPage{
 		SOY2DAOFactory::importEntity("user.SOYShop_User");
 		SOY2DAOFactory::importEntity("config.SOYShop_Area");
 
-		try{
-			$customer = SOY2DAOFactory::create("user.SOYShop_UserDAO")->getById($order->getUserId());
-		}catch(Exception $e){
-			$customer = new SOYShop_User();
-			$customer->setName("[deleted]");
-		}
+		$customer = soyshop_get_user_object((int)$order->getUserId());
+		if($customer->getIsDisabled() != SOYShop_User::USER_IS_DISABLED) $customer->setName("[deleted]");
+
 		$this->addLink("customer", array(
 			"text" => $customer->getName(),
 			"link" => SOY2PageController::createLink("User.Detail." . $customer->getId())
@@ -601,88 +598,53 @@ class EditPage extends WebPage{
 			"visible" => SOYShop_ShopConfig::load()->getDisplayUserOfficeItems()
 		));
 
-		$claimedAddress = $order->getClaimedAddressArray();
+		SOY2::import("util.SOYShopAddressUtil");
+		$addressItems = SOYShopAddressUtil::getAddressItems();
+		foreach(array("claimed", "order") as $l){
+			if($l ==="claimed"){
+				$addrArr = $order->getClaimedAddressArray();
+				$nameProp = "ClaimedAddress";
+			}else{
+				$addrArr = $order->getAddressArray();
+				$nameProp = "Address";
+			}
 
-		$this->addInput("claimed_customerinfo_office", array(
-			"name" => "ClaimedAddress[office]",
-			"value" => (isset($claimedAddress["office"])) ? $claimedAddress["office"] : ""
-		));
-		$this->addInput("claimed_customerinfo_name", array(
-			"name" => "ClaimedAddress[name]",
-			"value" => (isset($claimedAddress["name"])) ? $claimedAddress["name"] : ""
-		));
-		$this->addInput("claimed_customerinfo_reading", array(
-			"name" => "ClaimedAddress[reading]",
-			"value" => (isset($claimedAddress["reading"])) ? $claimedAddress["reading"] : ""
-		));
-		$this->addInput("claimed_customerinfo_zip_code", array(
-			"name" => "ClaimedAddress[zipCode]",
-			"value" => (isset($claimedAddress["zipCode"])) ? $claimedAddress["zipCode"] : "",
-			"size" => 10
-		));
-		$this->addSelect("claimed_customerinfo_area", array(
-			"name" => "ClaimedAddress[area]",
-			"options" => SOYShop_Area::getAreas(),
-			"selected" => (isset($claimedAddress["area"])) ? $claimedAddress["area"] : ""
-		));
-		$this->addInput("claimed_customerinfo_address1", array(
-			"name" => "ClaimedAddress[address1]",
-			"value" => (isset($claimedAddress["address1"])) ? $claimedAddress["address1"] : "",
-		));
-		$this->addInput("claimed_customerinfo_address2", array(
-			"name" => "ClaimedAddress[address2]",
-			"value" => (isset($claimedAddress["address2"])) ? $claimedAddress["address2"] : ""
-		));
-		$this->addInput("claimed_customerinfo_address3", array(
-			"name" => "ClaimedAddress[address3]",
-			"value" => (isset($claimedAddress["address3"])) ? $claimedAddress["address3"] : ""
-		));
-		$this->addInput("claimed_customerinfo_tel_number", array(
-			"name" => "ClaimedAddress[telephoneNumber]",
-			"value" => (isset($claimedAddress["telephoneNumber"])) ? $claimedAddress["telephoneNumber"] : ""
-		));
+			foreach(array("office", "name", "reading") as $idx){
+				$this->addInput($l . "_customerinfo_" . $idx, array(
+					"name" => $nameProp."[" . $idx . "]",
+					"value" => (isset($addrArr[$idx])) ? $addrArr[$idx] : ""
+				));
+			}
 
-		$address = $order->getAddressArray();
+			for($i = 1; $i <= 4; $i++){
+				$itemCnf = (isset($addressItems[$i - 1])) ? $addressItems[$i - 1] : SOYShopAddressUtil::getEmptyAddressItem();
+				
+				$this->addModel($l . "_customerinfo_address" . $i . "_show", array(
+					"visible" => (isset($itemCnf["label"]) && strlen(trim($itemCnf["label"])))
+				));
 
-		$this->addInput("order_customerinfo_office", array(
-			"name" => "Address[office]",
-			"value" => (isset($address["office"])) ? $address["office"] : ""
-		));
-		$this->addInput("order_customerinfo_name", array(
-			"name" => "Address[name]",
-			"value" => (isset($address["name"])) ? $address["name"] : ""
-		));
-		$this->addInput("order_customerinfo_reading", array(
-			"name" => "Address[reading]",
-			"value" => (isset($address["reading"])) ? $address["reading"] : ""
-		));
-		$this->addInput("order_customerinfo_zip_code", array(
-			"name" => "Address[zipCode]",
-			"value" => (isset($address["zipCode"])) ? $address["zipCode"] : "",
-			"size" => 10
-		));
-		$this->addSelect("order_customerinfo_area", array(
-			"name" => "Address[area]",
-			"options" => SOYShop_Area::getAreas(),
-			"selected" => (isset($address["area"])) ? $address["area"] : ""
-		));
-		$this->addInput("order_customerinfo_address1", array(
-			"name" => "Address[address1]",
-			"value" => (isset($address["address1"])) ? $address["address1"] : "",
-		));
-		$this->addInput("order_customerinfo_address2", array(
-			"name" => "Address[address2]",
-			"value" => (isset($address["address2"])) ? $address["address2"] : ""
-		));
-		$this->addInput("order_customerinfo_address3", array(
-			"name" => "Address[address3]",
-			"value" => (isset($address["address3"])) ? $address["address3"] : ""
-		));
-		$this->addInput("order_customerinfo_tel_number", array(
-			"name" => "Address[telephoneNumber]",
-			"value" => (isset($address["telephoneNumber"])) ? $address["telephoneNumber"] : ""
-		));
-
+				$this->addInput($l . "_customerinfo_address" . $i, array(
+					"name" => $nameProp."[address" . $i . "]",
+					"value" => (isset($addrArr["address" . $i])) ? $addrArr["address" . $i] : ""
+				));
+			}
+			
+			$this->addInput($l . "_customerinfo_zip_code", array(
+				"name" => $nameProp."[zipCode]",
+				"value" => (isset($addrArr["zipCode"])) ? $addrArr["zipCode"] : "",
+				"size" => 10
+			));
+			$this->addSelect($l . "_customerinfo_area", array(
+				"name" => $nameProp."[area]",
+				"options" => SOYShop_Area::getAreas(),
+				"selected" => (isset($addrArr["area"])) ? $addrArr["area"] : ""
+			));
+			$this->addInput($l . "_customerinfo_tel_number", array(
+				"name" => $nameProp."[telephoneNumber]",
+				"value" => (isset($addrArr["telephoneNumber"])) ? $addrArr["telephoneNumber"] : ""
+			));
+		}
+		
 		$this->addLink("order_link", array(
 			"link" => SOY2PageController::createLink("Order.Order." . $order->getId()),
 			"style" => "font-weight:normal !important;"
@@ -855,10 +817,8 @@ class EditPage extends WebPage{
 	}
 
 	private function updateItem(SOYShop_Item $item){
-		static $itemDAO;
-		if(!$itemDAO)$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		try{
-			$itemDAO->update($item);
+			soyshop_get_hash_table_dao("item")->update($item);
 		}catch(Exception $e){
 			//var_dump($e);
 		}
@@ -867,47 +827,51 @@ class EditPage extends WebPage{
 	/**
 	 * 請求データ更新関連処理
 	 */
-	private function updateClaimedAddress(SOYShop_Order $order, $newAddress){
-		$change = array();
-
-		$address = $order->getClaimedAddressArray();
-
-		if(isset($address["office"]) && isset($newAddress["office"]) && $address["office"] != $newAddress["office"])		$change[]=self::getHistoryText("請求先",$address["office"],$newAddress["office"]);
-		if(isset($address["name"]) && isset($newAddress["name"]) && $address["name"] != $newAddress["name"])			$change[]=self::getHistoryText("請求先",$address["name"],$newAddress["name"]);
-		if(isset($address["reading"]) && isset($newAddress["reading"]) && $address["reading"] != $newAddress["reading"])	$change[]=self::getHistoryText("請求先",$address["reading"],$newAddress["reading"]);
-		if(isset($address["zipCode"]) && isset($newAddress["zipCode"]) && $address["zipCode"] != $newAddress["zipCode"])	$change[]=self::getHistoryText("請求先",$address["zipCode"],$newAddress["zipCode"]);
-		if(isset($address["area"]) && isset($newAddress["area"]) &&  $address["area"] != $newAddress["area"])			$change[]=self::getHistoryText("請求先",SOYShop_Area::getAreaText($address["area"]) ,SOYShop_Area::getAreaText($newAddress["area"]));
-		if(isset($address["address1"]) && isset($newAddress["address1"]) && $address["address1"] != $newAddress["address1"])$change[]=self::getHistoryText("請求先",$address["address1"] ,$newAddress["address1"]);
-		if(isset($address["address2"]) && isset($newAddress["address2"]) && $address["address2"] != $newAddress["address2"])$change[]=self::getHistoryText("請求先",$address["address2"] ,$newAddress["address2"]);
-		if(isset($address["address3"]) && isset($newAddress["address3"]) && $address["address3"] != $newAddress["address3"])$change[]=self::getHistoryText("請求先",$address["address3"] ,$newAddress["address3"]);
-		if(isset($address["telephoneNumber"]) && isset($newAddress["telephoneNumber"]) && $address["telephoneNumber"] != $newAddress["telephoneNumber"])$change[]=self::getHistoryText("請求先",$address["telephoneNumber"] ,$newAddress["telephoneNumber"]);
-
+	private function updateClaimedAddress(SOYShop_Order $order, array $newAddress){
+		$changes = self::_updateOrderAddressCommon($order->getClaimedAddressArray(), $newAddress, "請求先");
 		$order->setClaimedAddress($newAddress);
-
-		return $change;
+		return $changes;
 	}
 
 	/**
 	 * 注文データ更新関連処理
 	 */
-	private function updateOrderAddress(SOYShop_Order $order, $newAddress){
-		$change = array();
-
-		$address = $order->getAddressArray();
-
-		if(isset($address["office"]) && isset($newAddress["office"]) && $address["office"] != $newAddress["office"])		$change[]=self::getHistoryText("宛先",$address["office"],$newAddress["office"]);
-		if(isset($address["name"]) && isset($newAddress["name"]) && $address["name"] != $newAddress["name"])				$change[]=self::getHistoryText("宛先",$address["name"],$newAddress["name"]);
-		if(isset($address["reading"]) && isset($newAddress["reading"]) && $address["reading"] != $newAddress["reading"])	$change[]=self::getHistoryText("宛先",$address["reading"],$newAddress["reading"]);
-		if(isset($address["zipCode"]) && isset($newAddress["zipCode"]) && $address["zipCode"] != $newAddress["zipCode"])	$change[]=self::getHistoryText("宛先",$address["zipCode"],$newAddress["zipCode"]);
-		if(isset($address["area"]) && isset($newAddress["area"]) && $address["area"] != $newAddress["area"])				$change[]=self::getHistoryText("宛先",SOYShop_Area::getAreaText($address["area"]) ,SOYShop_Area::getAreaText($newAddress["area"]));
-		if(isset($address["address1"]) && isset($newAddress["address1"]) && $address["address1"] != $newAddress["address1"])$change[]=self::getHistoryText("宛先",$address["address1"] ,$newAddress["address1"]);
-		if(isset($address["address2"]) && isset($newAddress["address2"]) && $address["address2"] != $newAddress["address2"])$change[]=self::getHistoryText("宛先",$address["address2"] ,$newAddress["address2"]);
-		if(isset($address["address3"]) && isset($newAddress["address3"]) && $address["address3"] != $newAddress["address3"])$change[]=self::getHistoryText("宛先",$address["address3"] ,$newAddress["address3"]);
-		if(isset($address["telephoneNumber"]) && isset($newAddress["telephoneNumber"]) && $address["telephoneNumber"] != $newAddress["telephoneNumber"])$change[]=self::getHistoryText("宛先",$address["telephoneNumber"] ,$newAddress["telephoneNumber"]);
-
+	private function updateOrderAddress(SOYShop_Order $order, array $newAddress){
+		$changes = self::_updateOrderAddressCommon($order->getAddressArray(), $newAddress, "宛先");
 		$order->setAddress($newAddress);
+		return $changes;
+	}
 
-		return $change;
+	/**
+	 * @param array, array, string
+	 * @return array
+	 */
+	private function _updateOrderAddressCommon(array $addr, array $newAddr, string $label){
+		$changes = array();
+		//単純な比較
+		foreach(array("office", "name", "reading", "area", "address", "telephoneNumber", "zipCode") as $idx){
+			switch($idx){
+				case "area":
+					if(isset($addr[$idx]) && isset($newAddr[$idx]) && ($addr[$idx] != $newAddr[$idx])){
+						$changes[] = self::getHistoryText($label, SOYShop_Area::getAreaText($addr[$idx]), SOYShop_Area::getAreaText($newAddr[$idx]));
+					}
+					break;
+				case "address":
+					for($i = 1; $i <= 4; $i++){
+						$newIdx = $idx . (string)$i;
+						if(isset($addr[$newIdx]) && isset($newAddr[$newIdx]) && ($addr[$newIdx] != $newAddr[$newIdx])){
+							$changes[] = self::getHistoryText($label, $addr[$newIdx], $newAddr[$newIdx]);
+						}
+					}
+					break;
+				default:
+					if(isset($addr[$idx]) && isset($newAddr[$idx]) && ($addr[$idx] != $newAddr[$idx])){
+						$changes[] = self::getHistoryText($label, $addr[$idx],$newAddr[$idx]);
+					}
+			}
+		}
+		
+		return $changes;
 	}
 
 	private function updateOrderPayment(SOYShop_Order $order, $newPayment){
@@ -999,6 +963,8 @@ class EditPage extends WebPage{
 				}
 			}
 
+			SOY2::import("domain.order.SOYShop_OrderAttribute");
+			SOY2::import("domain.order.SOYShop_OrderDateAttribute");
 			foreach($array as $key => $obj){
 		   		$newValue1 = null;
 				$newValue2 = null;

@@ -50,7 +50,8 @@
 					<td>
 						<img soy:id="user_image">
 						<input type="hidden" soy:id="user_image_path" />
-						<!-- soy:id="is_user_image" --><input type="checkbox" soy:id="delete_image"><br><!-- /soy:id="is_user_image" -->
+						<!-- soy:id="is_user_image" --><input type="checkbox" soy:id="delete_image"><br>
+						<!-- /soy:id="is_user_image" -->
 						<input name="image" type="file" />
 					</td>
 				</tr>
@@ -67,7 +68,8 @@
 						<p class="error" soy:id="zip_code_error">郵便番号が正しく入力されていません。</p>
 						<input type="text" class="input-zip w80" soy:id="user_zip_code">
 						<span class="note">【半角数字】</span>
-						<span class="search-btn btn"><img alt="郵便番号検索" soy:src="themes/common/images/btn_search.png"></span>
+						<span class="search-btn btn"><img alt="郵便番号検索"
+								soy:src="themes/common/images/btn_search.png"></span>
 					</td>
 				</tr>
 				<!-- soy:id="address_show" -->
@@ -79,30 +81,69 @@
 							<option value="">都道府県名</option>
 						</select>
 						<table>
+							<!-- soy:id="address1_show" -->
 							<tr>
-								<td>市区郡：</td>
-								<td><input type="text" class="input-city w130" soy:id="user_address1"></td>
+								<td>
+									<!-- soy:id="address1_label" -->市区郡
+									<!-- /soy:id="address1_label" -->：
+								</td>
+								<td><input type="text" class="input-city w130" soy:id="address1"></td>
 							</tr>
 							<tr>
 								<td>&nbsp;</td>
-								<td><span class="exmpl">（例）京都市左京区</span></td>
+								<td><span class="exmpl">（例）
+										<!-- soy:id="address1_example" /-->
+									</span></td>
 							</tr>
+							<!-- /soy:id="address1_show" -->
+
+							<!-- soy:id="address2_show" -->
 							<tr>
-								<td>町番地：</td>
-								<td><input type="text" class="input-town w300" soy:id="user_address2"></td>
+								<td>
+									<!-- soy:id="address2_label" -->町番地
+									<!-- /soy:id="address2_label" -->：
+								</td>
+								<td><input type="text" class="input-town w300" soy:id="address2"></td>
 							</tr>
 							<tr>
 								<td>&nbsp;</td>
-								<td><span class="exmpl">（例）左京区高野東開町8-5</span></td>
+								<td><span class="exmpl">（例）
+										<!-- soy:id="address2_example" /-->
+									</span></td>
 							</tr>
+							<!-- /soy:id="address2_show" -->
+
+							<!-- soy:id="address3_show" -->
 							<tr>
-								<td>建物名：</td>
-								<td><input type="text" class="w300" soy:id="user_address3"></td>
+								<td>
+									<!-- soy:id="address3_label" -->建物名
+									<!-- /soy:id="address3_label" -->：
+								</td>
+								<td><input type="text" class="w300" soy:id="address3"></td>
 							</tr>
 							<tr>
 								<td>&nbsp;</td>
-								<td><span class="exmpl">（例）SOYビル1F</span></td>
+								<td><span class="exmpl">（例）
+										<!-- soy:id="address3_example" /-->
+									</span></td>
 							</tr>
+							<!-- /soy:id="address3_show" -->
+
+							<!-- soy:id="address4_show" -->
+							<tr>
+								<td>
+									<!-- soy:id="address4_label" -->その他
+									<!-- /soy:id="address4_label" -->：
+								</td>
+								<td><input type="text" class="w300" soy:id="address4"></td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td><span class="exmpl">（例）
+										<!-- soy:id="address4_example" /-->
+									</span></td>
+							</tr>
+							<!-- /soy:id="address4_show" -->
 						</table>
 					</td>
 				</tr>
@@ -181,7 +222,9 @@
 				<!-- soy:id="has_user_customfield" -->
 				<!-- soy:id="user_customfield_list" -->
 				<tr>
-					<th nowrap scope="row"><!-- soy:id="customfield_name" /--><span soy:id="customfield_is_required">（必須）</span></th>
+					<th nowrap scope="row">
+						<!-- soy:id="customfield_name" /--><span soy:id="customfield_is_required">（必須）</span>
+					</th>
 					<td>
 						<!-- soy:id="has_customfield_error" -->
 						<p class="error" soy:id="customfield_error"></p>
@@ -202,10 +245,12 @@
 				</tr>
 			</table>
 			<input type="hidden" soy:id="user_mail_address">
-			<p class="btn"><input type="image" name="confirm" soy:src="themes/common/images/mypage/btn_confirm_off.jpg" alt="確認する"></p>
+			<p class="btn"><input type="image" name="confirm" soy:src="themes/common/images/mypage/btn_confirm_off.jpg"
+					alt="確認する"></p>
 			<p class="alC"><a onclick="history.back();" style="cursor: pointer">&lt;&lt; 戻る</a></p>
 		</form>
 	</section>
 </section>
 
-<script type="text/javascript" soy:src="themes/common/js/zip2address.js"></script><!--住所検索-->
+<script type="text/javascript" soy:src="themes/common/js/zip2address.js"></script>
+<!--住所検索-->
