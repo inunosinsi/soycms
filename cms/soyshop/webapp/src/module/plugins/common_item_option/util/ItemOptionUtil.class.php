@@ -2,12 +2,17 @@
 
 class ItemOptionUtil {
 
+	const OPTION_TYPE_SELECT = "select";
+	const OPTION_TYPE_RADIO = "radio";
+	const OPTION_TYPE_TEXT = "text";
+	const OPTION_TYPE_TEXTAREA = "textarea";
+
 	public static function getTypes(){
 		return array(
-			"select" => "セレクトボックス",
-			"radio" => "ラジオボタン",
-			"text" => "テキスト",
-			"textarea" => "複数行テキスト"
+			self::OPTION_TYPE_SELECT => "セレクトボックス",
+			self::OPTION_TYPE_RADIO => "ラジオボタン",
+			self::OPTION_TYPE_TEXT => "テキスト",
+			self::OPTION_TYPE_TEXTAREA => "複数行テキスト"
 		);
 	}
 
@@ -68,11 +73,11 @@ class ItemOptionUtil {
 
 		//選択したタイプによって、HTMLの出力を変える
 		switch($type){
-			case "text":
+			case self::OPTION_TYPE_TEXT:
 				return "<input type=\"text\" name=\"" . $name . "\" value=\"" . $selected . "\" >";
-			case "textarea":
+			case self::OPTION_TYPE_TEXTAREA:
 				return "<textarea name=\"" . $name . "\">" . $selected . "</textarea>";
-			case "radio":
+			case self::OPTION_TYPE_RADIO:
 				$html = array();
 				$first = true;
 				foreach($opts as $opt){
@@ -97,10 +102,19 @@ class ItemOptionUtil {
 
 				}
 				return implode("\n", $html);
-			case "select":
+			case self::OPTION_TYPE_SELECT:
 			default:
+				
 				$html = array();
-				$html[] = "<select name=\"" . $name . "\">";
+				$html[] = "<select name=\"" . $name . "\" required=\"required\">";
+
+				$cnfs = ItemOptionUtil::getOptions();
+				preg_match('/\[(.*?)\]/', $name, $tmp);
+				
+				if(isset($tmp[1]) && isset($cnfs[$tmp[1]])){
+					$isIni = (isset($cnfs[$tmp[1]]["initial_value"])) ? (int)$cnfs[$tmp[1]]["initial_value"] : 0;
+					if($isIni === 1) $html[] = "<option disabled selected value>" . self::_getInitialValue() . "</option>";	/** @ToDo 要望があれば文言の設定を追加 */
+				}
 
 				foreach($opts as $opt){
 					$opt = trim(str_replace(array("\r", "\n"), "", $opt));
@@ -112,6 +126,20 @@ class ItemOptionUtil {
 				}
 				$html[] = "</select>";
 				return implode("\n", $html);
+		}
+	}
+
+	private static function _getInitialValue(){
+		if(!defined("SOYSHOP_PUBLISH_LANGUAGE") || SOYSHOP_PUBLISH_LANGUAGE == "jp") return "選択してください";
+
+		switch(SOYSHOP_PUBLISH_LANGUAGE){
+			case "zh":
+				return "请选择";
+			case "zh-tw":
+				return "請選擇";
+			case "en":
+			default:
+				return "Please select";
 		}
 	}
 

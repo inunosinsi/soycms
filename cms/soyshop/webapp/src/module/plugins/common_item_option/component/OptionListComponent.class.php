@@ -5,17 +5,20 @@ class OptionListComponent extends HTMLList{
 	private $installedLangPlugin;	//多言語化プラグインがアクティブかどうか
 
 	protected function populateItem($entity, $key){
-
+		$optType = (isset($entity["type"])) ? $entity["type"] : ItemOptionUtil::OPTION_TYPE_SELECT;
 		$types = ItemOptionUtil::getTypes();
+		if(!isset($types[$optType])) $optType = ItemOptionUtil::OPTION_TYPE_SELECT;
+
+		$optName = (isset($entity["name"])) ? $entity["name"] : "";
 
 		/* 情報表示用 */
 		$this->addLabel("label", array(
-			"text" => (isset($entity["name"])) ? $entity["name"] : "",
+			"text" => $optName,
 			"attr:id" => "label_text_" . $key,
 		));
 
 		$this->addLabel("type", array(
-			"text"=> (isset($entity["type"])) ? $types[$entity["type"]] : "セレクトボックス",
+			"text"=> $types[$optType],
 			"attr:id" => "type_text_" . $key,
 		));
 
@@ -54,14 +57,14 @@ class OptionListComponent extends HTMLList{
 		$this->addInput("label_input", array(
 			"name" => "obj[name]",
 			"attr:id" => "label_input_" . $key,
-			"value" => (isset($entity["name"])) ? $entity["name"] : "",
+			"value" => $optName,
 		));
 
 		$this->addSelect("type_select", array(
 			"name" => "obj[type]",
 			"options" => $types,
 			"attr:id" => "type_select_" . $key,
-			"selected" => (isset($entity["type"])) ? $entity["type"] : "セレクトボックス"
+			"selected" => $types[$optType]
 		));
 
 		/* 順番変更用 */
@@ -80,7 +83,7 @@ class OptionListComponent extends HTMLList{
 		$this->addLink("delete", array(
 			"text"=>"削除",
 			"link"=>"javascript:void(0);",
-			"onclick"=>'if(confirm("delete \"' . $entity["name"] . '\"?")){$(\'#delete_submit_' . $key . '\').click();}return false;'
+			"onclick"=>'if(confirm("delete \"' . $optName . '\"?")){$(\'#delete_submit_' . $key . '\').click();}return false;'
 		));
 
 		//高度な設定 toggleリンク
@@ -97,6 +100,18 @@ class OptionListComponent extends HTMLList{
 			"attr:id" => "field_config_" . $key
 		));
 
+		// 選択して下さいといった初期値　セレクトボックスのみ
+		$this->addModel("is_initial_value", array(
+			"visible" => ($optType === ItemOptionUtil::OPTION_TYPE_SELECT)
+		));
+
+		$this->addCheckBox("initial_value", array(
+			"name" => "Option[initial_value]",
+			"value" => 1,
+			"selected" => (isset($entity["initial_value"]) && (int)$entity["initial_value"] === 1),
+			"label" => "選択して下さいのoptionを挿入する"
+		));
+
 		$this->createAdd("language_label_list", "LanguageLabelListComponent", array(
 			"list" => $this->languages,
 			"labels" => $entity
@@ -104,12 +119,12 @@ class OptionListComponent extends HTMLList{
 
 		$this->addInput("label_jp_input", array(
 			"name" => "Option[name]",
-			"value" => (isset($entity["name"])) ? $entity["name"] : ""
+			"value" => $optName
 		));
 
 		$this->addInput("option_type", array(
 			"name" => "Option[type]",
-			"value" => (isset($entity["type"])) ? $entity["type"] : "select"
+			"value" => $optType
 		));
 
 		//設定保存 ボタン

@@ -22,57 +22,63 @@
 		<!-- soy:id="option_list" -->
 		<tr>
 			<form method="post">
-			<td soy:id="field_text">ID</td>
-			<td>
-				<span soy:id="label">説明</span>
-				<input soy:id="label_input" style="display:none;" />
-			</td>
-			<td>
-				<span soy:id="type">タイプ</span>
-				<select soy:id="type_select" style="display:none;"></select>
-			</td>
-			<td>
-				<a soy:id="toggle_update" class="btn btn-primary btn-sm">設定変更</a>
-				<a soy:id="update_link" class="btn btn-primary btn-sm" style="display:none;">変更を保存する</a>
-				<input type="submit" soy:id="update_submit" style="display:none;" />
-			</td>
-			<td style="text-align:center;">
-				<input type="hidden" soy:id="option_id" />
-				<input type="submit" name="move_up" class="btn btn-default" value="△" />
-				<input type="submit" name="move_down" class="btn btn-default" value="▽" />
-			</td>
-			<td soy:id="display_form">表示のさせ方</td>
-			<td>
+				<td soy:id="field_text">ID</td>
+				<td>
+					<span soy:id="label">説明</span>
+					<input soy:id="label_input" style="display:none;" />
+				</td>
+				<td>
+					<span soy:id="type">タイプ</span>
+					<select soy:id="type_select" style="display:none;"></select>
+				</td>
+				<td>
+					<a soy:id="toggle_update" class="btn btn-primary btn-sm">設定変更</a>
+					<a soy:id="update_link" class="btn btn-primary btn-sm" style="display:none;">変更を保存する</a>
+					<input type="submit" soy:id="update_submit" style="display:none;" />
+				</td>
+				<td style="text-align:center;">
+					<input type="hidden" soy:id="option_id" />
+					<input type="submit" name="move_up" class="btn btn-default" value="△" />
+					<input type="submit" name="move_down" class="btn btn-default" value="▽" />
+				</td>
+				<td soy:id="display_form">表示のさせ方</td>
+				<td>
 
-				<a soy:id="toggle_config" class="btn btn-warning btn-sm">Detail</a>
-				<a soy:id="delete" class="btn btn-danger btn-sm">Delete</a>
-				<input type="submit" soy:id="delete_submit" style="display:none;" />
-			</td>
+					<a soy:id="toggle_config" class="btn btn-warning btn-sm">Detail</a>
+					<a soy:id="delete" class="btn btn-danger btn-sm">Delete</a>
+					<input type="submit" soy:id="delete_submit" style="display:none;" />
+				</td>
 			</form>
 		</tr>
 		<tr soy:id="field_config" style="display:none;">
-				<td colspan="2"></td>
-				<td colspan="5">
-					<h5 style="margin-bottom:0;">高度な設定</h5>
-					<form method="post">
-						<div class="form-group">
-							<!-- soy:id="language_label_list" -->
-							<label soy:id="label">ラベル</label>
-							<input type="text" class="form-control" soy:id="label_input" />
-							<!-- /soy:id="language_label_list" -->
-						</div>
+			<td colspan="2"></td>
+			<td colspan="5">
+				<h5 style="margin-bottom:0;">高度な設定</h5>
+				<form method="post">
+					<!-- soy:id="is_initial_value" -->
+					<div class="form-group">
+						<input type="hidden" name="Option[initial_value]" value="0">
+						<input type="checkbox" soy:id="initial_value">
+					</div>
+					<!-- /soy:id="is_initial_value" -->
+					<div class="form-group">
+						<!-- soy:id="language_label_list" -->
+						<label soy:id="label">ラベル</label>
+						<input type="text" class="form-control" soy:id="label_input" />
+						<!-- /soy:id="language_label_list" -->
+					</div>
 
-						<input type="hidden" soy:id="label_jp_input">
-						<input type="hidden" soy:id="option_type">
+					<input type="hidden" soy:id="label_jp_input">
+					<input type="hidden" soy:id="option_type">
 
-						<div class="text-right">
-							<input type="button" soy:id="update_advance" class="btn btn-primary btn-lg" value="設定保存">
-						</div>
+					<div class="text-right">
+						<input type="button" soy:id="update_advance" class="btn btn-primary btn-lg" value="設定保存">
+					</div>
 
-						<input type="submit" style="display:none;" soy:id="update_advance_submit" />
-					</form>
-				</td>
-			</tr>
+					<input type="submit" style="display:none;" soy:id="update_advance_submit" />
+				</form>
+			</td>
+		</tr>
 		<!-- /soy:id="option_list" -->
 	</table>
 </div>
@@ -94,17 +100,17 @@
 </pre>
 
 <div class="alert alert-warning">
-<strong>***</strong>にはオプションごとのIDが入ります。<br />
-<strong>&lt;!-- cms:id="***_visible" --&gt;</strong>で囲んだ箇所は商品情報の設定時にoptionの設定があった場合に表示されます。<br />
-<strong>&lt;!-- cms:id="***" /--&gt;</strong>の箇所にセレクトボックスが表示されます。
+	<strong>***</strong>にはオプションごとのIDが入ります。<br />
+	<strong>&lt;!-- cms:id="***_visible" --&gt;</strong>で囲んだ箇所は商品情報の設定時にoptionの設定があった場合に表示されます。<br />
+	<strong>&lt;!-- cms:id="***" /--&gt;</strong>の箇所にセレクトボックスが表示されます。
 </div>
 
 <br>
 
 <h4>CSVインポートとエクスポート</h4>
 <div class="alert alert-info">
-CSVで商品情報を登録する時は、項目の値を改行ではなく、カンマ区切りでカラムに入力しておきます。<br />
-例:色 "赤,青,黄"
+	CSVで商品情報を登録する時は、項目の値を改行ではなく、カンマ区切りでカラムに入力しておきます。<br />
+	例:色 "赤,青,黄"
 </div>
 
 <br>
@@ -121,14 +127,15 @@ CSVで商品情報を登録する時は、項目の値を改行ではなく、�
 					<div>
 						項目名
 						<div class="alL">
-						<input id="custom_new_name" name="option_new_name" type="text" class="text validate">
-						<p class="alert alert-danger" id="option_new_name_error" style="display:none;">必須項目を入力してください</p>
+							<input id="custom_new_name" name="option_new_name" type="text" class="text validate">
+							<p class="alert alert-danger" id="option_new_name_error" style="display:none;">必須項目を入力してください
+							</p>
 						</div>
 
 						項目ID
 						<div class="alL">
-						<input id="custom_id" name="option_id" type="text" class="text validate">
-						<p class="alert alert-danger" id="option_id_error" style="display:none;">必須項目を入力してください</p>
+							<input id="custom_id" name="option_id" type="text" class="text validate">
+							<p class="alert alert-danger" id="option_id_error" style="display:none;">必須項目を入力してください</p>
 						</div>
 
 						項目種別
@@ -137,7 +144,8 @@ CSVで商品情報を登録する時は、項目の値を改行ではなく、�
 						</div>
 					</div>
 					<div class="text-right">
-						<a class="btn btn-primary" href="javascript:void(0);" onclick="$('#create_form').trigger('submit');">追加</a>
+						<a class="btn btn-primary" href="javascript:void(0);"
+							onclick="$('#create_form').trigger('submit');">追加</a>
 					</div>
 				</form>
 			</div>
