@@ -3,7 +3,7 @@
 class ShoppingMallOrderSearch extends SOYShopOrderSearch{
 
 	function setParameter(array $params){
-		if(!SOYMALL_SELLER_ACCOUNT) return array(array(), array());
+		if(!defined("SOYMALL_SELLER_ACCOUNT") || !SOYMALL_SELLER_ACCOUNT) return array(array(), array());
 
 		$adminId = (int)SOY2ActionSession::getUserSession()->getAttribute("userid");
 
