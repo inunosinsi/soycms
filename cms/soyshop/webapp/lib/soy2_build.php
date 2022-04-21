@@ -9199,7 +9199,7 @@ function soy2_check_referer(){
 		$params = array();
 		foreach($array as $value){
 			$v = explode("=", $value);
-			if($v[0] == "pathinfo") continue;
+			if($v[0] == "pathinfo" || !isset($v[1])) continue;
 			$params[$v[0]] = $v[1];
 		}
 

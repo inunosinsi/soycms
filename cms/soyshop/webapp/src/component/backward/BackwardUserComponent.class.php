@@ -338,14 +338,15 @@ class BackwardUserComponent {
     	));
 
 		//パスワード
+		$pw = (string)$user->getPassword();
     	$page->addInput("password", array(
     		"name" => "Customer[password]",
-    		"value" => $user->getPassword(),
+    		"value" => $pw,
     	));
 
     	//パスワードのテキスト
     	$page->addLabel("password_text", array(
-    		"text" => tstrlen($user->getPassword()) ? str_repeat("*", tstrlen($user->getPassword())) . MessageManager::get("NO_DISPLAY_PASSWORD_CHANGE") : MessageManager::get("NO_CHANGE"),
+    		"text" => tstrlen($pw) ? str_repeat("*", tstrlen($pw)) . MessageManager::get("NO_DISPLAY_PASSWORD_CHANGE") : MessageManager::get("NO_CHANGE"),
     	));
 
 		//氏名
@@ -454,21 +455,26 @@ class BackwardUserComponent {
 			"text" => $user->getAreaText()
 		));
 
-		//住所入力1
-    	$page->addInput("user_address1", array(
-    		"name" => "Customer[address1]",
-    		"value" => $user->getAddress1(),
-    	));
-
-		//住所入力2
-    	$page->addInput("user_address2", array(
-    		"name" => "Customer[address2]",
-    		"value" => $user->getAddress2(),
-    	));
-		$page->addInput("user_address3", array(
-    		"name" => "Customer[address3]",
-    		"value" => $user->getAddress3(),
-    	));
+		for($i = 1; $i <= 4; $i++){
+			switch($i){
+				case 1:
+					$addrV = $user->getAddress1();
+					break;
+				case 2:
+					$addrV = $user->getAddress2();
+					break;
+				case 3:
+					$addrV = $user->getAddress3();
+					break;
+				case 4:
+					$addrV = $user->getAddress4();
+					break;
+			}
+			$page->addInput("user_address" . $i, array(
+				"name" => "Customer[address" . $i . "]",
+				"value" => $addrV,
+			));
+		}
 
 		//電話番号
     	$page->addInput("user_tel_number", array(
