@@ -668,8 +668,14 @@ function soyshop_convert_file_path(string $path, SOYShop_Item $item, bool $isAbs
 function soyshop_convert_file_path_on_admin(string $path){
     if(!strlen($path)) return $path;
 
-    if(strpos(SOYSHOP_SITE_URL, $_SERVER["HTTP_HOST"]) === false && strpos(SOYSHOP_SITE_URL, "/" . SOYSHOP_ID) === false){
+    if(is_bool(strpos(SOYSHOP_SITE_URL, $_SERVER["HTTP_HOST"])) && is_bool(strpos(SOYSHOP_SITE_URL, "/" . SOYSHOP_ID))){
         $path = "/" . SOYSHOP_ID . "/" . $path;
+    }
+
+	// /SOYSHOP_ID/の出現回数が2回以上の場合は/SOYSHOP_ID/を削る    
+    if(substr_count($path, "/" . SOYSHOP_ID . "/") > 1){
+    	$path = str_replace("/" . SOYSHOP_ID . "/", "", $path);
+    	$path = "/" . SOYSHOP_ID . "/" . $path;
     }
     return $path;
 }
