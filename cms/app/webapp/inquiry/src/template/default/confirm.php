@@ -26,7 +26,7 @@
 	$class = array();
 	if($column->getType() == "PlainText") $class[] = "title";
 
-	$tr_prop = $obj->getTrProperty();
+	$tr_prop = (string)$obj->getTrProperty();
 	if(count($class)){
 		if(strlen($tr_prop)){
 			if(strpos($tr_prop, "class=") !== false){

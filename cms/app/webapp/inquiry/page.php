@@ -314,8 +314,10 @@ class SOYInquiry_PageApplication{
 
 	/**
 	 * POSTされた値をチェックする
+	 * @param array, array
+	 * @return array
 	 */
-	private function checkPostData($data, $columns){
+	private function checkPostData(array $data, array $columns){
 		$errors = array();
 
 		foreach($columns as $column){
@@ -341,7 +343,11 @@ class SOYInquiry_PageApplication{
 		return $errors;
 	}
 
-	function checkBanMailAddress($data, $columns){
+	/**
+	 * @param array, array
+	 * リダイレクトを行う
+	 */
+	function checkBanMailAddress(array $data, array $columns){
 		foreach($columns as $column){
 
 			if(strpos($column->getType(), "MailAddress") !== false && $column->getRequire() == 1){
@@ -381,9 +387,10 @@ class SOYInquiry_PageApplication{
 
 	/**
 	 * 問い合わせを追加する（メール送信を含む）
-	 *
+	 * @param int, array, array, string
+	 * @return SOYInquiry_Inquiry
 	 */
-	function addInquiry($formId, $columns, $data, $url){
+	function addInquiry(int $formId, array $columns, array $data, string $url){
 
 		$logic = SOY2Logic::createInstance("logic.InquiryLogic", array(
 			"form" => $this->form
@@ -458,7 +465,7 @@ class SOYInquiry_PageApplication{
 	/**
 	 * メールを送る
 	 */
-	function sendEmail($inquiry, $columns, $mailBody){
+	function sendEmail(SOYInquiry_Inquiry $inquiry, array $columns, array $mailBody){
 
 		//メール送信用のロジック作成
 		$mailLogic = SOY2Logic::createInstance("logic.MailLogic", array(

@@ -176,11 +176,11 @@ class FileColumn extends SOYInquiry_ColumnBase{
 		}
 
 		//チェック
-		$name = @$_FILES["data"]["name"][$id];
-		$type = @$_FILES["data"]["type"][$id];
-		$tmp_name = @$_FILES["data"]["tmp_name"][$id];
-		$error = @$_FILES["data"]["error"][$id];
-		$size = @$_FILES["data"]["size"][$id];
+		$name = (isset($_FILES["data"]["name"][$id])) ? $_FILES["data"]["name"][$id] : "";
+		$type = (isset($_FILES["data"]["type"][$id])) ? $_FILES["data"]["type"][$id] : "";
+		$tmp_name = (isset($_FILES["data"]["tmp_name"][$id])) ? $_FILES["data"]["tmp_name"][$id] : "";
+		$error = (isset($_FILES["data"]["error"][$id])) ? $_FILES["data"]["error"][$id] : "";
+		$size = (isset($_FILES["data"]["size"][$id])) ? $_FILES["data"]["size"][$id] : "";
 
 		//必須チェック
 		if($this->getIsRequire() && strlen($name)<1){
@@ -189,7 +189,7 @@ class FileColumn extends SOYInquiry_ColumnBase{
 		}
 
 		//アップロードしていない場合は終了
-		if(strlen($name)<1)return;
+		if(strlen($name) < 1) return;
 
 		//拡張子チェック
 		$pathinfo = pathinfo($name);
