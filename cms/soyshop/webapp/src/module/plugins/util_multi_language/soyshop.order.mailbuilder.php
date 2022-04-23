@@ -132,7 +132,11 @@ class UtilMultiLanguageMailBuilder extends SOYShopOrderMailBuilder{
 		}
 		$mail[] = $this->printColumn(UtilMultiLanguageUtil::translate("zip"), "left", 10) . $address["zipCode"];
 		$mail[] = $this->printColumn(UtilMultiLanguageUtil::translate("address"), "left", 10) . SOYShop_Area::getAreaText($address["area"]) . "," . $address["address1"];
-		$mail[] = $this->printColumn("", "left", 10) . $address["address2"].$address["address3"];
+		$addrTxt = "";
+		for($i = 2; $i <= 4; $i++){
+			if(isset($address["address" . $i])) $addrTxt .= " " . $address["address" . $i];
+		}
+		$mail[] = $this->printColumn("", "left", 10) . $addrTxt;
 		$mail[] = $this->printColumn(UtilMultiLanguageUtil::translate("phone"), "left", 10) . " " . $address["telephoneNumber"];
 		$mail[] = "";
 

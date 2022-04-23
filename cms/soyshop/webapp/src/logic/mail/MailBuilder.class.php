@@ -138,8 +138,7 @@ class MailBuilder implements SOY2LogicInterface,SOYShop_MailBuilder{
 		$mail[] = self::printColumn("お名前","left",10) . $address["name"]." 様";
 		if(isset($address["reading"])&&strlen($address["reading"]))$mail[] = self::printColumn("フリガナ","left",10) . $address["reading"];
 		$mail[] = self::printColumn("郵便番号","left",10) . $address["zipCode"];
-		$mail[] = self::printColumn("住所","left",10) . SOYShop_Area::getAreaText($address["area"]).$address["address1"];
-		$mail[] = self::printColumn("","left",10) . $address["address2"];
+		$mail[] = self::printColumn("住所","left",10) . $order->getFullAddressText();
 		$mail[] = self::printColumn("電話番号","left",10) . $address["telephoneNumber"];
 		$mail[] = "";
 
@@ -164,8 +163,7 @@ class MailBuilder implements SOY2LogicInterface,SOYShop_MailBuilder{
 		$mail[] = self::printColumn("お名前","left",20) . $address["name"] ." 様";
 		if(isset($address["reading"])&&strlen($address["reading"]))$mail[] = self::printColumn("フリガナ","left",20) . $address["reading"];
 		$mail[] = self::printColumn("郵便番号","left",10) . $address["zipCode"];
-		$mail[] = self::printColumn("住所","left",10) . SOYShop_Area::getAreaText($address["area"]).$address["address1"];
-		$mail[] = self::printColumn("","left",10) . $address["address2"];
+		$mail[] = self::printColumn("住所","left",10) . $order->getFullClaimedAddressText();
 		$mail[] = self::printColumn("メールアドレス","left",20) . $user->getMailAddress();
 		$mail[] = self::printColumn("電話番号","left",20) . $address["telephoneNumber"];
 		$mail[] = "";
