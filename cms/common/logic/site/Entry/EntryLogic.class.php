@@ -44,6 +44,7 @@ class EntryLogic extends SOY2LogicBase{
  			$bean->setCdate(SOYCMS_NOW);
  		}
 
+		SOY2::import("util.UserInfoUtil");
  		if(UserInfoUtil::hasEntryPublisherRole() != true){
  			$bean->setOpenPeriodEnd(CMSUtil::encodeDate(null,false));
  			$bean->setOpenPeriodStart(CMSUtil::encodeDate(null,true));
