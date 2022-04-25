@@ -562,7 +562,7 @@ class EditPage extends WebPage{
 		));
 
 		$this->createAdd("customfield_list", "_common.Order.CustomFieldFormListComponent", array(
-			"list" => $this->getCustomfield($order->getId())
+			"list" => self::_getCustomfield($order->getId())
 		));
 
 		/*** 顧客情報 ***/
@@ -570,7 +570,7 @@ class EditPage extends WebPage{
 		SOY2DAOFactory::importEntity("config.SOYShop_Area");
 
 		$customer = soyshop_get_user_object((int)$order->getUserId());
-		if($customer->getIsDisabled() != SOYShop_User::USER_IS_DISABLED) $customer->setName("[deleted]");
+		if((int)$customer->getIsDisabled() === SOYShop_User::USER_IS_DISABLED) $customer->setName("[deleted]");
 
 		$this->addLink("customer", array(
 			"text" => $customer->getName(),
@@ -675,7 +675,7 @@ class EditPage extends WebPage{
 		));
 	}
 
-	private function changeStock(SOYShop_ItemOrder $itemOrder, $stock){
+	private function changeStock(SOYShop_ItemOrder $itemOrder, int $stock){
 		$item = soyshop_get_item_object($itemOrder->getItemId());
 		$item->setStock($item->getStock() - $stock);
 		self::updateItem($item);
@@ -695,7 +695,7 @@ class EditPage extends WebPage{
 		))->getList();
 	}
 
-	private function getSelectedPaymentMethod($modules){
+	private function getSelectedPaymentMethod(array $modules){
 		if(!count($modules)) return null;
 
 		foreach($modules as $moduleId => $module){
@@ -767,7 +767,7 @@ class EditPage extends WebPage{
 		))->getConfig();
 	}
 
-	private function addExtendAttributes($attrs){
+	private function addExtendAttributes(array $attrs){
 		if(!is_array($attrs) || !count($attrs)) return array();
 
 		//注文詳細の編集画面でattributeを増やせる拡張ポイント
@@ -1091,7 +1091,7 @@ class EditPage extends WebPage{
 	 * @param orderId int
 	 * @return array => labelとformの連想配列を入れる
 	 */
-	function getCustomfield($orderId){
+	private function _getCustomfield(int $orderId){
 		$delegate = SOYShopPlugin::invoke("soyshop.order.customfield", array(
 			"mode" => "edit",
 			"orderId" => $orderId
