@@ -2,10 +2,16 @@
 	<section id="cart_detail">
 		<div class="pconly">
 			<ul class="flow">
-				<li>お客様情報の入力</li><!--
-				--><li class="active">お支払・配送方法の選択</li><!--
-				--><li>ご注文内容の確認</li><!--
-				--><li>ご注文確定</li>
+				<li>お客様情報の入力</li>
+				<!--
+				-->
+				<li class="active">お支払・配送方法の選択</li>
+				<!--
+				-->
+				<li>ご注文内容の確認</li>
+				<!--
+				-->
+				<li>ご注文確定</li>
 			</ul>
 		</div>
 
@@ -33,13 +39,17 @@
 					</h3>
 					<ul>
 						<li class="cart_itemid" soy:id="item_id">dummy-001</li>
-						<li class="cart_itemprice"><!-- soy:id="item_price_on_cart" /-->円</li>					
+						<li class="cart_itemprice">
+							<!-- soy:id="item_price_on_cart" /-->円
+						</li>
 						<li class="cart_itemnum">
 							<p class="error" soy:id="item_stock_error"></p>
-							<input name="ItemCount[0]" type="text" class="alR" size="2" value="" soy:id="order_number" />個
+							<input name="ItemCount[0]" type="text" class="alR" size="2" soy:id="order_number" />個
 						</li>
 						<li class="cart_itemdelete"><a soy:id="item_delete">削除</a></li>
-						<li class="cart_itemsubsum"><!-- soy:id="item_total" /-->円</li>
+						<li class="cart_itemsubsum">
+							<!-- soy:id="item_total" /-->円
+						</li>
 					</ul>
 				</div>
 			</div>
@@ -48,15 +58,22 @@
 			<div class="sumelse" soy:id="is_subtotal">
 				<ul>
 					<li class="sumtitle">小計</li>
-					<li class="sumprice"><!-- soy:id="total_item_price" /-->円</li>
+					<li class="sumprice">
+						<!-- soy:id="total_item_price" /-->円
+					</li>
 				</ul>
 			</div>
 
 			<!-- soy:id="module_list" -->
 			<div class="sumelse">
 				<ul>
-					<li class="sumtitle"><!-- soy:id="module_name" -->送料（国内）<!-- /soy:id="module_name" --></li>
-					<li class="sumprice"><!-- soy:id="module_price" /-->円</li>
+					<li class="sumtitle">
+						<!-- soy:id="module_name" -->送料（国内）
+						<!-- /soy:id="module_name" -->
+					</li>
+					<li class="sumprice">
+						<!-- soy:id="module_price" /-->円
+					</li>
 				</ul>
 			</div>
 			<!-- /soy:id="module_list" -->
@@ -64,7 +81,9 @@
 			<div class="sumarea">
 				<ul>
 					<li class="sumtitle">合計金額</li>
-					<li class="sumprice"><!-- soy:id="total_price" /-->円</li>
+					<li class="sumprice">
+						<!-- soy:id="total_price" /-->円
+					</li>
 				</ul>
 			</div>
 		</div>
@@ -84,7 +103,7 @@
 				<!-- soy:id="payment_method_list" -->
 				<dt soy:id="payment_name">代金引換</dt>
 				<dd onclick="$('input[name=payment_module][type=radio]',this).attr('checked',true);">
-					<input type="radio" value="" soy:id="payment_method">
+					<input type="radio" soy:id="payment_method">
 					<p class="remarks" soy:id="payment_description">代金引換でのお支払です。</p>
 					<p class="price" soy:id="payment_charge">手数料：315円</p>
 				</dd>
@@ -105,7 +124,7 @@
 				<!-- soy:id="delivery_method_list" -->
 				<dt soy:id="delivery_name">宅配便</dt>
 				<dd onclick="$('input[name=delivery_module][type=radio]',this).attr('checked',true);">
-					<input type="radio" value="" soy:id="delivery_method">
+					<input type="radio" soy:id="delivery_method">
 					<p class="remarks" soy:id="delivery_description">宅配便で配送します。</p>
 					<p class="price" soy:id="delivery_charge">送料：800円</p>
 				</dd>
@@ -120,14 +139,16 @@
 		<div class="cart_detail_dl">
 			<dl>
 				<!-- soy:id="discount_method_list" -->
-				<dt nowrap scope="row"><!-- soy:id="discount_name" /--></dt>
+				<dt nowrap scope="row">
+					<!-- soy:id="discount_name" /-->
+				</dt>
 				<dd>
 					<!-- soy:id="has_discount_error" -->
 					<p class="error" soy:id="discount_error"></p>
 					<!-- /soy:id="has_discount_error" -->
 					<!-- soy:id="discount_description" /-->
 				</dd>
-			<!-- /soy:id="discount_method_list" -->
+				<!-- /soy:id="discount_method_list" -->
 			</dl>
 		</div>
 		<!-- /soy:id="has_discount_method" -->
@@ -143,7 +164,9 @@
 		<div class="cart_detail_dl">
 			<dl>
 				<!-- soy:id="point_method_list" -->
-				<dt><!-- soy:id="point_name" /--></dt>
+				<dt>
+					<!-- soy:id="point_name" /-->
+				</dt>
 				<dd>
 					<!-- soy:id="has_point_error" -->
 					<p class="error" soy:id="point_error"></p>
@@ -162,7 +185,9 @@
 		<div class="cart_detail_dl">
 			<dl>
 				<!-- soy:id="customfield_method_list" -->
-				<dt><!-- soy:id="customfield_name" /--><span soy:id="customfield_is_required">（必須）</span></dt>
+				<dt>
+					<!-- soy:id="customfield_name" /--><span soy:id="customfield_is_required">（必須）</span>
+				</dt>
 				<dd>
 					<!-- soy:id="has_customfield_error" -->
 					<p class="error" soy:id="customfield_error"></p>
@@ -187,7 +212,8 @@
 <!-- soy:id="has_cart_plugin" -->
 
 <!-- soy:id="cart_plugin_list" -->
-<!-- soy:id="content" --><!-- /soy:id="content" -->
+<!-- soy:id="content" -->
+<!-- /soy:id="content" -->
 <!-- /soy:id="cart_plugin_list" -->
 
 <!-- /soy:id="has_cart_plugin" -->

@@ -1,11 +1,11 @@
 <p><img soy:src="themes/common/images/cart/step_2.png" alt="STEP2.お支払・配送方法の選択"></p>
 
 <form soy:id="order_form">
-	<!-- soy:display="has_error" -->
-	<aside>
-		<p class="error">エラーがあります。</p>
-	</aside>
-	<!-- /soy:id="has_error" -->
+    <!-- soy:display="has_error" -->
+    <aside>
+        <p class="error">エラーがあります。</p>
+    </aside>
+    <!-- /soy:id="has_error" -->
 
     <section id="cart_detail">
         <h1 class="cart_txt">カートに入っている商品</h1>
@@ -83,9 +83,10 @@
                 <!-- soy:id="payment_method_list" -->
                 <tr onclick="$('input[name=payment_module][type=radio]',this).attr('checked',true);">
                     <th scope="row">
-                        <!-- soy:id="payment_name" /--><span class="require"></span></th>
+                        <!-- soy:id="payment_name" /--><span class="require"></span>
+                    </th>
                     <td nowrap>
-                        <input type="radio" value="" soy:id="payment_method">
+                        <input type="radio" soy:id="payment_method">
                     </td>
                     <td>
                         <!-- soy:id="payment_description" /-->&nbsp;
@@ -110,9 +111,10 @@
                 <!-- soy:id="delivery_method_list" -->
                 <tr onclick="$('input[name=delivery_module][type=radio]',this).attr('checked',true);">
                     <th scope="row">
-                        <!-- soy:id="delivery_name" /--><span class="require"></span></th>
+                        <!-- soy:id="delivery_name" /--><span class="require"></span>
+                    </th>
                     <td nowrap>
-                        <input type="radio" value="" soy:id="delivery_method">
+                        <input type="radio" soy:id="delivery_method">
                     </td>
                     <td>
                         <!-- soy:id="delivery_description" /-->&nbsp;
@@ -126,11 +128,11 @@
         <!-- soy:id="has_discount_method" -->
         <section class="soycart_narrow">
             <h1>クーポン</h1>
-			<!-- soy:display="has_payment_error" -->
-			<div class="error">
-				<p soy:id="payment_error">お支払い方法が入力されていません。</p>
-			</div>
-			<!-- /soy:display="has_payment_error" -->
+            <!-- soy:display="has_payment_error" -->
+            <div class="error">
+                <p soy:id="payment_error">お支払い方法が入力されていません。</p>
+            </div>
+            <!-- /soy:display="has_payment_error" -->
 
             <table class="soycart_form">
                 <!-- soy:id="discount_method_list" -->
@@ -188,7 +190,8 @@
             <!-- soy:id="customfield_method_list" -->
             <tr>
                 <th nowrap scope="row">
-                    <!-- soy:id="customfield_name" /--><span soy:id="customfield_is_required">（必須）</span></th>
+                    <!-- soy:id="customfield_name" /--><span soy:id="customfield_is_required">（必須）</span>
+                </th>
                 <td colspan="2">
                     <!-- soy:id="has_customfield_error" -->
                     <p class="error" soy:id="customfield_error"></p>
