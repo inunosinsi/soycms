@@ -33,7 +33,7 @@ class CustomFieldPluginAdvanced{
 	private $properties = array();
 
 	function init(){
-		CMSPlugin::addPluginMenu(CustomFieldPluginAdvanced::PLUGIN_ID,array(
+		CMSPlugin::addPluginMenu(CustomFieldPluginAdvanced::PLUGIN_ID, array(
 			"name" => "カスタムフィールド アドバンスド",
 			"description" => "エントリーにカスタムフィールドを追加します。<br>Entryテーブルのカラムではなく、EntryAttributeテーブルにデータを保持します。<br />このプラグインは、SOY CMS 1.6.0よりご利用頂けます。",
 			"author" => "日本情報化農業研究所",

@@ -1,0 +1,106 @@
+<div class="alert alert-info">任意のブログページの記事一覧のJSONを出力します</div>
+<strong>使い方</strong>
+<ul>
+	<li><a href="https://saitodev.co/article/1246" target="_blank" rel="noopener">SOY CMSで標準ページでも任意のブログページのb_blockを使用できるようにした - saitodev.co</a>のページを参考にしてJSONで出力したいブログページのページIDを調べる</li>
+	<li>
+		<!-- soy:id="url" /-->{ページID}.jsonに上記で調べたページのIDを入れて、JSONの表示を確認する。
+		<!-- soy:display="example" -->
+		<br>例：ページIDが
+		<!-- soy:id="id_example" /--> の場合：
+		<a soy:id="json_output_url_example" target="_blank" rel="noopener"></a>
+		<!-- /soy:display="example" -->
+	</li>
+</ul>
+
+<br>
+
+<strong>使用可能なGETパラメータ</strong>
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>パラメータ名</th>
+			<th>型</th>
+			<th>説明</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>limit</td>
+			<td>整数</td>
+			<td>出力する記事数の指定</td>
+		</tr>
+		<tr>
+			<td>offset</td>
+			<td>整数</td>
+			<td>
+				ページ番号の指定(limitと組み合わせる)<br>
+				※注意：offsetは 0 から始まる連番であるため、2ページ目の表示であれば 1 を指定
+			</td>
+		</tr>
+		<tr>
+			<td>customfield</td>
+			<td>文字列 or 配列</td>
+			<td>
+				任意のカスタムフィールドの項目を追加<br>
+				※カスタムフィールドアドバンスドのみ
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<!-- soy:display="example_usage_pager" -->
+<br>
+<div class="alert alert-info">使用例</div>
+<span>※記事の出力件数が5件の場合</span>
+<ul>
+	<li>1ページ目 : <a soy:id="json_output_pager_0_example" target="_blank" rel="noopener"></a></li>
+	<li>2ページ目 : <a soy:id="json_output_pager_1_example" target="_blank" rel="noopener"></a></li>
+</ul>
+<!-- soy:display="customfield_example" -->
+<strong>カスタムフィールド</strong><br>
+※フィールドの指定が
+<!-- soy:id="field_only" /--> のみの場合<br>
+<ul>
+	<li><a soy:id="field_only_url" target="_blank" rel="noopener"></a></li>
+</ul>
+<!-- soy:display="customfield_example_two" -->
+※フィールドの指定が
+<!-- soy:id="field_two" /--> の場合<br>
+<ul>
+	<li><a soy:id="field_two_url" target="_blank" rel="noopener"></a></li>
+</ul>
+<!-- /soy:display="customfield_example_two" -->
+
+<br>
+<!-- /soy:display="customfield_example" -->
+
+<!-- /soy:display="example_usage_pager" -->
+
+<br>
+<div class="alert alert-info">出力するJSON</div>
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>キー</th>
+			<th>値の型</th>
+			<th>説明</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>total</td>
+			<td>整数</td>
+			<td>記事総数</td>
+		</tr>
+		<tr>
+			<td>is_next</td>
+			<td>整数</td>
+			<td>limitとoffsetを指定した場合、次のページがあるか？(1 or 0)</td>
+		</tr>
+		<tr>
+			<td>entries</td>
+			<td>配列</td>
+			<td>記事一覧を配列型で出力</td>
+		</tr>
+	</tbody>
+</table>
