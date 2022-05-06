@@ -14,9 +14,9 @@ class OutputBlogEntriesJsonPlugin{
 			"name"=>"ブログ記事JSON出力プラグイン",
 			"description"=>"ブログページのIDを指定するとJSON形式で記事一覧を出力する",
 			"author"=>"齋藤毅",
-			"url"=>"",
+			"url"=>"https://saitodev.co/article/4505",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.1"
+			"version"=>"0.5"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -36,7 +36,10 @@ class OutputBlogEntriesJsonPlugin{
 
 		$lim = (isset($_GET["limit"]) && is_numeric($_GET["limit"])) ? (int)$_GET["limit"] : -1;
 		$offset = (isset($_GET["offset"]) && is_numeric($_GET["offset"])) ? (int)$_GET["offset"] : 0;
-		$labelId = soycms_get_page_object((int)$tmp[1])->getBlogLabelId();
+		$blogPage = soycms_get_page_object((int)$tmp[1]);
+		if(!$blogPage instanceof BlogPage) self::_output();
+
+		$labelId = $blogPage->getBlogLabelId();
 		
 		$dao = new SOY2DAO();
 

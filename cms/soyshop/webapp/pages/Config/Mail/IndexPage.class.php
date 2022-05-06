@@ -22,7 +22,7 @@ class IndexPage extends WebPage{
     	));
 	}
 
-	private function _getMailPluginList($mode="order"){
+	private function _getMailPluginList(string $mode="order"){
     	SOYShopPlugin::load("soyshop.order.detail.mail");
     	$mailList = SOYShopPlugin::invoke("soyshop.order.detail.mail", array("mode" => $mode))->getList();
     	if(!count($mailList)) return array();

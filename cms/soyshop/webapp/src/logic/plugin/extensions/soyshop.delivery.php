@@ -107,8 +107,8 @@ class SOYShopDeliveryDeletageAction implements SOY2PluginDelegateAction{
 		// 	throw new Exception("soyshop.delivery needs cart information.");
 		// }
 
-		if(!is_null($this->getCart())) $action->setCart($this->getCart());
-		if(!is_null($this->getOrder())) $action->setOrder($this->getOrder());
+		if($this->getCart() instanceof CartLogic) $action->setCart($this->getCart());
+		if($this->getOrder() instanceof SOYShop_Order) $action->setOrder($this->getOrder());
 
 		switch($this->mode){
 			case "list":

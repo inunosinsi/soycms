@@ -63,7 +63,10 @@ abstract class SOYShop_OrderDateAttributeDAO extends SOY2DAO{
 
 		foreach($fieldIds as $fieldId){
 			if(!isset($list[$fieldId])){
-				$list[$fieldId] = new SOYShop_OrderDateAttribute();
+				$attr = new SOYShop_OrderDateAttribute();
+				$attr->setOrderId($orderId);
+				$attr->setFieldId($fieldId);
+				$list[$fieldId] = $attr;
 			}
 		}
 
