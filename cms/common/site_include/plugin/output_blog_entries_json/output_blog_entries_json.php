@@ -16,8 +16,9 @@ class OutputBlogEntriesJsonPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/4505",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.5"
+			"version"=>"0.6"
 		));
+		
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
 			CMSPlugin::addPluginConfigPage(self::PLUGIN_ID, array(
@@ -41,49 +42,19 @@ class OutputBlogEntriesJsonPlugin{
 
 		$labelId = $blogPage->getBlogLabelId();
 		
-		$dao = new SOY2DAO();
-
 		/** @ToDo sort */
-		$now = time();
 
 		// 記事の合計を調べる
-		$sql = "SELECT COUNT(e.id) AS CNT FROM Entry e ".
-				"INNER JOIN EntryLabel l ".
-				"ON e.id = l.entry_id ".
-				"WHERE l.label_id = :labelId ".
-				"AND e.openPeriodStart <= " . $now . " ".
-				"AND e.openPeriodEnd >= " . $now . " ".
-				"AND e.isPublished = " . Entry::ENTRY_ACTIVE . " ".
-				"ORDER BY e.cdate DESC ";
+		$cnt = self::_calcTotal($labelId);
+		if($cnt <= 0) self::_output();
 		
-		try{
-			$res = $dao->executeQuery($sql, array(":labelId" => $labelId));
-		}catch(Exception $e){
-			$res = array();
-		}
-		
-		if(!isset($res[0]["CNT"])) self::_output();
-
-		$cnt = (int)$res[0]["CNT"];
 		$isNext = ($lim >= 0 && $lim * ($offset + 1) < $cnt);
-		
-		$sql = "SELECT e.id, e.title, e.alias, e.cdate FROM Entry e ".
-				"INNER JOIN EntryLabel l ".
-				"ON e.id = l.entry_id ".
-				"WHERE l.label_id = :labelId ".
-				"AND e.openPeriodStart <= " . $now . " ".
-				"AND e.openPeriodEnd >= " . $now . " ".
-				"AND e.isPublished = " . Entry::ENTRY_ACTIVE . " ".
-				"ORDER BY e.cdate DESC ";
-		if($lim >= 0){
-			$sql .= "LIMIT " . $lim . " ";
-			if($offset > 0){
-				$sql .= "OFFSET " . ($lim * $offset);
-			}
-		}
+
+		// 安全装置
+		if($lim < 0) $lim = 100;
 		
 		try{
-			$res = $dao->executeQuery($sql, array(":labelId" => $labelId));
+			$res = self::_dao()->executeQuery(self::_buildSql($lim, $offset), array(":labelId" => $labelId));
 		}catch(Exception $e){
 			$res = array();
 		}
@@ -103,7 +74,7 @@ class OutputBlogEntriesJsonPlugin{
 					"WHERE entry_id IN (" . implode(",", $entryIds) . ") ".
 					"AND entry_field_id IN ('" . implode("','", $customfieldIds) . "') ";
 			try{
-				$r = $dao->executeQuery($sql);
+				$r = self::_dao()->executeQuery($sql);
 			}catch(Exception $e){
 				$r = array();
 			}
@@ -145,29 +116,131 @@ class OutputBlogEntriesJsonPlugin{
 		self::_output($arr);
 	}
 
-	private function _customfieldIds(){
-		if(!isset($_GET["customfield"]) || !file_exists(_SITE_ROOT_ . "/.plugin/CustomFieldAdvanced.active")) return array();
-		SOY2::import("site_include.plugin.CustomFieldPluginAdvanced.CustomFieldPluginAdvanced", ".php");
-		$customfields = CMSPlugin::loadPluginConfig(CustomFieldPluginAdvanced::PLUGIN_ID)->customFields;
-		if(!is_array($customfields) || !count($customfields)) return array();
-
-
-		$fieldIds = array();
-		if(is_string($_GET["customfield"])){
-			$fieldIds = array(trim($_GET["customfield"]));
-		}else if(is_array($_GET["customfield"])){
-			$fieldIds = $_GET["customfield"];
+	/**
+	 * 合計金額を求める
+	 * @param int
+	 * @return int
+	 */
+	private function _calcTotal(int $labelId){
+		try{
+			$res = self::_dao()->executeQuery(self::_buildTotalSql($labelId), array(":labelId" => $labelId));
+		}catch(Exception $e){
+			$res = array();
 		}
-		if(!count($fieldIds)) return $fieldIds;
+		return (isset($res[0]["CNT"])) ? (int)$res[0]["CNT"] : 0;
+	}
 
-		//存在するフィールドIDであるか？
-		$keys = array_keys($customfields);
+	/**
+	 * 合計金額を求めるためのSQLを発行する
+	 * @param  int
+	 * @return string
+	 */
+	private function _buildTotalSql(int $labelId){
+		$now = true;
+		$sql = "SELECT COUNT(e.id) AS CNT FROM Entry e ".
+			"INNER JOIN EntryLabel l ".
+			"ON e.id = l.entry_id ".
+			"WHERE l.label_id = :labelId ".
+			"AND e.openPeriodStart <= " . $now . " ".
+			"AND e.openPeriodEnd >= " . $now . " ".
+			"AND e.isPublished = " . Entry::ENTRY_ACTIVE . " ";
+	
+		$isCustomfields = self::_isCustomfieldIds();
+		if(count($isCustomfields)){
+			foreach($isCustomfields as $fieldId){
+				$sql .= "AND e.id IN (SELECT entry_id FROM EntryAttribute WHERE entry_field_id = '" . $fieldId . "' AND entry_value IS NOT NULL AND entry_value != '') ";
+			}
+		}
+		$sql .= "ORDER BY e.cdate DESC ";
+		return $sql;
+	}
+
+	/**
+	 * @param int, int
+	 * @return string
+	 */
+	private function _buildSql(int $lim, int $offset){
+		$now = time();
+		$sql = "SELECT e.id, e.title, e.alias, e.cdate FROM Entry e ".
+				"INNER JOIN EntryLabel l ".
+				"ON e.id = l.entry_id ".
+				"WHERE l.label_id = :labelId ".
+				"AND e.openPeriodStart <= " . $now . " ".
+				"AND e.openPeriodEnd >= " . $now . " ".
+				"AND e.isPublished = " . Entry::ENTRY_ACTIVE . " ";
+		
+		$isCustomfields = self::_isCustomfieldIds();
+		if(count($isCustomfields)){
+			foreach($isCustomfields as $fieldId){
+				$sql .= "AND e.id IN (SELECT entry_id FROM EntryAttribute WHERE entry_field_id = '" . $fieldId . "' AND entry_value IS NOT NULL AND entry_value != '') ";
+			}
+		}
+		$sql .= "ORDER BY e.cdate DESC ";
+		if($lim >= 0){
+			$sql .= "LIMIT " . $lim . " ";
+			if($offset > 0){
+				$sql .= "OFFSET " . ($lim * $offset);
+			}
+		}
+		return $sql;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	private function _isCustomfieldIds(){
+		static $fieldIds;
+		if(is_null($fieldIds)){
+			$fieldIds = array();
+			if(isset($_GET["is_customfield"])){
+				if(is_string($_GET["is_customfield"])){
+					$fieldIds = array(trim($_GET["is_customfield"]));
+				}else if(is_array($_GET["is_customfield"])){
+					$fieldIds = $_GET["is_customfield"];
+				}
+				$fieldIds = (count($fieldIds)) ? self::_filterIsCustomfieldId($fieldIds) : array();
+			}
+		}
+		return $fieldIds;
+	}
+
+	/**
+	 * @return array
+	 */
+	private function _customfieldIds(){
+		$fieldIds = array();
+		if(isset($_GET["customfield"])){
+			if(is_string($_GET["customfield"])){
+				$fieldIds = array(trim($_GET["customfield"]));
+			}else if(is_array($_GET["customfield"])){
+				$fieldIds = $_GET["customfield"];
+			}
+		}
+		return (count($fieldIds)) ? self::_filterIsCustomfieldId($fieldIds) : array();
+	}
+
+	/**
+	 * 存在するフィールドIDであるか？
+	 * @param array
+	 * @return array
+	 */
+	private function _filterIsCustomfieldId(array $fieldIds){
+		static $c;
+		if(is_null($c)){
+			$c = array();
+			if(file_exists(_SITE_ROOT_ . "/.plugin/CustomFieldAdvanced.active")) {
+				SOY2::import("site_include.plugin.CustomFieldPluginAdvanced.CustomFieldPluginAdvanced", ".php");
+				$c = CMSPlugin::loadPluginConfig(CustomFieldPluginAdvanced::PLUGIN_ID)->customFields;
+			}
+		}
+
+		$keys = array_keys($c);
 		$tmps = array();
 		foreach($fieldIds as $fieldId){
 			if(is_bool(array_search($fieldId, $keys))) continue;
 			$tmps[] = $fieldId;
 		}
-
 		return $tmps;
 	}
 
@@ -175,10 +248,16 @@ class OutputBlogEntriesJsonPlugin{
 		if(!isset($arr["total"])) $arr["total"] = 0;
 		if(!isset($arr["is_next"])) $arr["is_next"] = 0;
 		if(!isset($arr["entries"])) $arr["entries"] = array();
-
-		header("Content-Type: application/json; charset=utf-8");
-		echo json_encode($arr);
+		var_dump($arr);
+		//header("Content-Type: application/json; charset=utf-8");
+		//echo json_encode($arr);
 		exit;
+	}
+
+	private function _dao(){
+		static $d;
+		if(is_null($d)) $d = new SOY2DAO();
+		return $d;
 	}
 
 	function config_page(){
