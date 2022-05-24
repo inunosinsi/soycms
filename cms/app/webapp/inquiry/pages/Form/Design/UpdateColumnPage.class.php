@@ -73,4 +73,3 @@ class UpdateColumnPage extends WebPage{
     	return (!isset($replacement[$newColumnObject->getReplacement()]))?true:false;
     }
 }
-?>
