@@ -30,7 +30,7 @@ function soyshop_review_page($html, $htmlObj){
 		//現在のページ
 		if(count($args) > 0 && preg_match('/page-([0-9]+)[^0-9]*/', $args[count($args)-1], $tmp)){
 			unset($args[count($args) - 1]);
-            $args = array_values($args);
+			$args = array_values($args);
 			$currentPage = (isset($tmp[1]) && is_numeric($tmp[1])) ? (int)$tmp[1] : 1;
 		}else{
 			$currentPage = 1;
@@ -54,9 +54,9 @@ function soyshop_review_page($html, $htmlObj){
 		$total = $searchLogic->getTotal();
 
 		//total < current * limitの場合は404にリダイレクトする
-        if($total > 0 && $total <= (int)$limit * ((int)$currentPage - 1)) {
-            SOY2PageController::redirect(soyshop_get_site_url(true) . SOYSHOP_404_PAGE_MARKER);
-        }
+		if($total > 0 && $total <= (int)$limit * ((int)$currentPage - 1)) {
+			SOY2PageController::redirect(soyshop_get_site_url(true) . SOYSHOP_404_PAGE_MARKER);
+		}
 
 		//ページャ
 		$page = $htmlObj->getPageObject();
@@ -207,52 +207,52 @@ class SOYShop_ReviewPagePager extends SOYShop_PagerBase{
 	private $total;
 	private $limit;
 
-    function __construct(SOYShop_Page $page){
+	function __construct(SOYShop_Page $page){
 		$this->page = $page;
 	}
 
-    function getTotalPage(){
-        return max(1, ceil($this->total / $this->limit));
-    }
+	function getTotalPage(){
+		return max(1, ceil($this->total / $this->limit));
+	}
 
-    private $_pagerUrl;
+	private $_pagerUrl;
 
-    function getPagerUrl(){
-        if(!$this->_pagerUrl){
+	function getPagerUrl(){
+		if(!$this->_pagerUrl){
 			$url = soyshop_get_page_url($this->page->getUri());
-			$url .= "/" . implode("/", $this->args);
-            if($url[strlen($url) - 1] == "/")$url = substr($url, 0, strlen($url) - 1);
-            $this->_pagerUrl = $url;
-        }
-        if(strpos($this->_pagerUrl, "/" . SOYShop_Page::URI_HOME)){
-            $this->_pagerUrl = str_replace("/" . SOYShop_Page::URI_HOME, "", $this->_pagerUrl);
-        }
-        if(strpos($this->_pagerUrl, "/" . SOYShop_Page::NOT_FOUND)){
-            $this->_pagerUrl = str_replace("/" . SOYShop_Page::NOT_FOUND, "", $this->_pagerUrl);
-        }
-        return $this->_pagerUrl;
-    }
+			if(is_array($this->args) && count($this->args)) $url .= "/" . implode("/", $this->args);
+			if($url[strlen($url) - 1] == "/") $url = substr($url, 0, strlen($url) - 1);
+			$this->_pagerUrl = $url;
+		}
+		if(strpos($this->_pagerUrl, "/" . SOYShop_Page::URI_HOME)){
+			$this->_pagerUrl = str_replace("/" . SOYShop_Page::URI_HOME, "", $this->_pagerUrl);
+		}
+		if(strpos($this->_pagerUrl, "/" . SOYShop_Page::NOT_FOUND)){
+			$this->_pagerUrl = str_replace("/" . SOYShop_Page::NOT_FOUND, "", $this->_pagerUrl);
+		}
+		return $this->_pagerUrl;
+	}
 
-    function getNextPageUrl(){
-        $url = $this->getPagerUrl();
-        $next = $this->currentPage + 1;
-        return $url . "/page-" . $next . ".html";
-    }
+	function getNextPageUrl(){
+		$url = $this->getPagerUrl();
+		$next = $this->currentPage + 1;
+		return $url . "/page-" . $next . ".html";
+	}
 
-    function getPrevPageUrl(){
-        $url = $this->getPagerUrl();
-        $prev = $this->currentPage - 1;
-        if($prev < 0){
-            return "";
-        }elseif($prev == 0){
-            return $url;
-        }else{
-            return $url . "/page-" . $prev . ".html";
-        }
-    }
+	function getPrevPageUrl(){
+		$url = $this->getPagerUrl();
+		$prev = $this->currentPage - 1;
+		if($prev < 0){
+			return "";
+		}elseif($prev == 0){
+			return $url;
+		}else{
+			return $url . "/page-" . $prev . ".html";
+		}
+	}
 
-    function hasNext(){ return $this->getTotalPage() >= ($this->currentPage + 1); }
-    function hasPrev(){ return ($this->currentPage - 1) > 0; }
+	function hasNext(){ return $this->getTotalPage() >= ($this->currentPage + 1); }
+	function hasPrev(){ return ($this->currentPage - 1) > 0; }
 
 	function setArgs($args){
 		$this->args = $args;
