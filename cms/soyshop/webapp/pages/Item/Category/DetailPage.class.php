@@ -56,8 +56,13 @@ class DetailPage extends WebPage{
 			$obj = new SOYShop_Category();
 			$obj->setName($name);
 
-			if(isset($_POST["parent"])){
+			if(isset($_POST["parent"]) && is_numeric($_POST["parent"])){
 				$obj->setParent($_POST["parent"]);
+			}
+
+			// 不要かもしれないけれども念の為
+			if(!is_numeric($obj->getParent()) && isset($_POST["current_category_id"]) && is_numeric($_POST["current_category_id"])){
+				$obj->setParent((int)$_POST["current_category_id"]);
 			}
 
 			try{
@@ -154,6 +159,11 @@ class DetailPage extends WebPage{
 
 		$this->addInput("category_new_name", array(
 			"attr:id" => "category_new_name_" . $id . ""
+		));
+
+		$this->addInput("current_category_id", array(
+			"name" => "current_category_id",
+			"value" => (int)$this->id
 		));
 
 		$this->addModel("category_new_name_error", array(

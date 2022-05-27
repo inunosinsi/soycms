@@ -28,9 +28,9 @@ class CategorySelectComponent extends HTMLSelect{
 	function execute(){
 
 		$this->setOptions(array());
-
+		
 		//嘘を設定
-		if(is_string($this->selected) && strlen($this->selected) > 0){
+		if(is_numeric($this->selected) && $this->selected > 0){
 			$this->setOptions(array($this->selected =>$this->label));
 		}
 

@@ -21,6 +21,7 @@ class DetailMenuPage extends HTMLPage{
 
 		//
 		DisplayPlugin::toggle("is_open", $item->isPublished());
+		DisplayPlugin::toggle("is_open2", $item->isPublished());
 		DisplayPlugin::toggle("no_open", !$item->isPublished());
 
 		//確認ページ
@@ -46,6 +47,10 @@ class DetailMenuPage extends HTMLPage{
 		//注文リンク
 		$this->addLink("item_order_link", array(
 			"link" => SOY2PageController::createLink("Order.Register.Item." . $this->id)
+		));
+
+		$this->addLink("insert_cart_link", array(
+			"link" => soyshop_get_cart_url(true) . "?a=add&count=1&item=" . $this->id
 		));
 
 		DisplayPlugin::toggle("can_copy", (($item->getType() == SOYShop_Item::TYPE_SINGLE || $item->getType() == SOYShop_Item::TYPE_DOWNLOAD)) && !SOYMALL_SELLER_ACCOUNT);
