@@ -30,7 +30,7 @@ class AmazonPayPayment extends SOYShopPayment{
 	}
 
 	function getDescription(){
-		return "Amazon Payで支払います。";
+		return "Amazon Payでのお支払いです。";
 	}
 
 	function hasOptionPage(){
