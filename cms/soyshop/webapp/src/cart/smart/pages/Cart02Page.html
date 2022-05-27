@@ -241,28 +241,39 @@
 
 		<div class="cart_detail_dl">
 			<dl>
-				<dt>お名前<span class="require">（必須）</span></dt>
+				<!-- soy:id="send_name_show" -->
+				<dt>お名前<span soy:id="send_name_required">（必須）</span></dt>
 				<dd>
 					<input type="text" class="w130" soy:id="send_name">
 					<span class="note">【全角】</span>
 				</dd>
+				<!-- /soy:id="send_name_show" -->
 
-				<dt>お名前カナ<span class="require">（必須）</span></dt>
+				<!-- soy:id="send_reading_show" -->
+				<dt>お名前カナ<span soy:id="send_reading_required">（必須）</span></dt>
 				<dd>
-					<input type="text" class="w130" soy:id="send_furigana">
+					<input type="text" class="w130" soy:id="send_reading">
 					<span class="note">【全角カナ】</span>
 				</dd>
+				<!-- /soy:id="send_reading_show" -->
+
+				<!-- soy:id="is_office_item" -->
 				<dt>法人名（勤務先など）</dt>
 				<dd><input type="text" class="w300" soy:id="send_office"></dd>
+				<!-- /soy:id="is_office_item" -->
 
-				<dt>郵便番号<span class="require">（必須）</span></dt>
+				<!-- soy:id="send_zipCode_show" -->
+				<dt>郵便番号<span soy:id="send_zipCode_required">（必須）</span></dt>
 				<dd>
-					<input type="text" class="input-send-zip w80" soy:id="send_post_number">
+					<input type="text" class="input-send-zip w80" soy:id="send_zipCode">
 					<span class="note">【半角数字】</span>
 					<span class="send-search-btn btn"><img alt="郵便番号検索"
 							soy:src="themes/common/images/btn_search.png"></span>
 				</dd>
-				<dt>ご住所<span class="require">（必須）</span></dt>
+				<!-- /soy:id="send_zipCode_show" -->
+
+				<!-- soy:id="send_address_show" -->
+				<dt>ご住所<span soy:id="send_address_required">（必須）</span></dt>
 				<dd>
 					<select class="input-send-pref" soy:id="send_area">
 						<option value="">都道府県名</option>
@@ -317,11 +328,14 @@
 						<!-- /soy:id="send_address4_show" -->
 					</dl>
 				</dd>
-				<dt>お電話番号<span class="require">（必須）</span></dt>
+				<!-- /soy:id="send_address_show" -->
+				<!-- soy:id="send_telephoneNumber_show" -->
+				<dt>お電話番号<span soy:id="send_telephoneNumber_required">（必須）</span></dt>
 				<dd>
-					<input type="text" class="w130" soy:id="send_tel_number">
+					<input type="text" class="w130" soy:id="send_telephoneNumber">
 					<span class="note">【半角数字】</span><span class="exmpl">（例）075-204-4823</span>
 				</dd>
+				<!-- /soy:id="send_telephoneNumber_show" -->
 			</dl>
 		</div>
 		<p class="textcenter"><input type="image" name="next"

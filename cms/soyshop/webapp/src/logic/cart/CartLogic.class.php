@@ -582,11 +582,41 @@ class CartLogic extends SOY2LogicBase{
 
 	/**
 	 * 商品送付先を取得
+	 * $isComplementがtrueの場合は宛先で空の項目を基本情報で補完する
+	 * @param bool
+	 * @return array
 	 */
-	function getAddress(){
+	function getAddress(bool $isComplement=false){
 		$key = $this->getAttribute("address_key");
 		if(is_null($key)) $key = -1;
-		return $this->customerInformation->getAddress($key);
+		$addrs = $this->customerInformation->getAddress($key);
+		
+		// 自動補完は名前と電話番号のみ
+		if($isComplement){
+			$user = $this->customerInformation;
+			
+			SOY2::import("domain.config.SOYShop_ShopConfig");
+			$keys = array_keys(SOYShop_ShopConfig::load()->getSendAddressDisplayFormConfigList());
+			
+			foreach($keys as $key){
+				if($key == "address") continue;
+				if(!isset($addrs[$key])) $addrs[$key] = "";
+				if(strlen(trim($addrs[$key]))) continue;
+				switch($key){
+					case "name":
+						$addrs[$key] = $user->getName();
+						break;
+					case "reading":
+						$addrs[$key] = $user->getReading();
+						break;
+					case "telephoneNumber":
+						$addrs[$key] = $user->getTelephoneNumber();
+						break;
+				}
+			}
+		}
+
+		return $addrs;
 	}
 
 	private function _getClaimedAddress(SOYShop_User $user){
@@ -1173,9 +1203,7 @@ class CartLogic extends SOY2LogicBase{
 		}
 
 		//送信先
-		$address = $this->getAddress();
-		$order->setAddress(serialize($address));
-
+		$order->setAddress(serialize($this->getAddress(true)));
 		$order->setClaimedAddress(self::_getClaimedAddress($this->customerInformation));
 
 		$id = $orderDAO->insert($order);

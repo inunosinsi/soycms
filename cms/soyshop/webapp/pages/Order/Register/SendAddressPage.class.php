@@ -14,23 +14,47 @@ class SendAddressPage extends WebPage{
 		if(isset($_POST["Address"]) && is_array($_POST["Address"])){
 			$address = $_POST["Address"];
 
-			$error = array();
-			if(strlen($address["name"]) < 1) $error[] = "氏名を入力してください。";
-			if(strlen($address["reading"]) < 1) $error[] = "氏名（フリガナ）を入力してください。";
-			if(strlen($address["area"]) < 1) $error[] = "住所の都道府県を選択してください。";
-			if(strlen($address["telephoneNumber"]) < 1) $error[] = "電話番号を入力してください。";
+			$err = array();
 
-			/** @ToDo 必要であれば住所のエラー判定を設ける */
+			SOY2::import("domain.config.SOYShop_ShopConfig");
+			$requiredCnf = SOYShop_ShopConfig::load()->getSendAddressInformationConfig();
+
+			foreach($requiredCnf as $key => $bool){
+				if(!$bool || $key == "address") continue;
+				$address[$key] = trim($address[$key]);
+				if(strlen($address[$key]) < 1){
+					switch($key){
+						case "name":
+							$err[] = "氏名を入力してください。";
+							break;
+						case "reading":
+							$err[] = "フリガナを入力してください。";
+							break;
+						case "telephoneNumber":
+							$err[] = "電話番号を入力してください。";
+							break;
+					}
+				}	
+			}
+
+			if(isset($requiredCnf["address"]) && $requiredCnf["address"]){
+				if(strlen($address["zipCode"]) < 1) $err[] = "郵便番号を入力してください。";
+				if(strlen($address["area"]) < 1) $err[] = "住所の都道府県を選択してください。";
+			}
+			
+			
+			/** 住所のエラー判定を設ける **/
 			SOY2::import("util.SOYShopAddressUtil");
 			$addressItems = SOYShopAddressUtil::getAddressItems();
 			if(isset($addressItems[0]) && isset($addressItems[0]["label"]) && strlen($addressItems[0]["label"])){
 				if(isset($addressItems[0]["required"]) && $addressItems[0]["required"]){
-					if(strlen($address["address1"]) < 1) $error[] = "住所を入力してください。";
+					if(strlen($address["address1"]) < 1) $err[] = "住所を入力してください。";
 				}
 			}
 
-			if(count($error)){
-				$this->session->setAttribute("order_register.error.send_address", implode("\n", $error));
+			$next = false;
+			if(count($err)){
+				$this->session->setAttribute("order_register.error.send_address", implode("\n", $err));
 				$this->session->setAttribute("order_register.input.send_address", soy2_serialize($address));
 			}else{
 				$cart = AdminCartLogic::getCart();
@@ -55,24 +79,21 @@ class SendAddressPage extends WebPage{
 		//入力値を呼び出す
 		$address = $this->session->getAttribute("order_register.input.send_address");
 		if(is_string($address) && strlen($address)) $address = soy2_unserialize($address);
-		
-		if( ! is_array($address)){
-	    	$user = new SOYShop_User();
-	    	$address = $user->getEmptyAddressArray();
-		}
+		if(!is_array($address)) $address = soyshop_get_user_object(0)->getEmptyAddressArray();
 
     	parent::__construct();
 
     	$this->addForm("address_form");
 
-    	self::addressForm($address);
+    	self::_buildAddressForm($address);
+		self::_buildCustomerInformationArea();
 
 		//エラー文言
-		$error = $this->session->getAttribute("order_register.error.send_address");
-		if(!is_string($error)) $error = "";
+		$err = $this->session->getAttribute("order_register.error.send_address");
+		if(!is_string($err)) $err = "";
 		$this->addLabel("error", array(
-			"html" => nl2br(htmlspecialchars($error, ENT_QUOTES, "UTF-8")),
-			"visible" => (strlen($error))
+			"html" => nl2br(htmlspecialchars($err, ENT_QUOTES, "UTF-8")),
+			"visible" => (strlen($err))
 		));
 
 		//クリア
@@ -85,14 +106,14 @@ class SendAddressPage extends WebPage{
    }
 
 
-    private function addressForm(array $address){
+    private function _buildAddressForm(array $address){
 
 		$this->addInput("name", array(
     		"name" => "Address[name]",
     		"value" => (isset($address["name"])) ? $address["name"] : "",
     	));
 
-    	$this->addInput("furigana", array(
+    	$this->addInput("reading", array(
     		"name" => "Address[reading]",
     		"value" => (isset($address["reading"])) ? $address["reading"] : "",
     	));
@@ -123,7 +144,7 @@ class SendAddressPage extends WebPage{
 	    	));
 		}
 
-    	$this->addInput("tel_number", array(
+    	$this->addInput("telephone_number", array(
     		"name" => "Address[telephoneNumber]",
     		"value" => (isset($address["telephoneNumber"])) ? $address["telephoneNumber"] : "",
     	));
@@ -137,6 +158,22 @@ class SendAddressPage extends WebPage{
     		"value" => (isset($address["office"])) ? $address["office"] : "",
     	));
     }
+
+	private function _buildCustomerInformationArea(){
+		$user = AdminCartLogic::getCart()->getCustomerInformation();
+		
+		$this->addInput("customer_name_hidden", array(
+			"value" => $user->getName()
+		));
+
+		$this->addInput("customer_reading_hidden", array(
+			"value" => $user->getReading()
+		));
+
+		$this->addInput("customer_telephone_number_hidden", array(
+			"value" => $user->getTelephoneNumber()
+		));
+	}
 
 	function getBreadcrumb(){
 		return BreadcrumbComponent::build("送付先を指定する", array("Order" => "注文管理", "Order.Register" => "注文を追加する"));

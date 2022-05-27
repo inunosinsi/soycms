@@ -580,9 +580,8 @@ class SOYShop_User {
 	}
 
 	function getAddress(int $idx){
-
 		if($idx < 0){
-			$res = array(
+			return array(
 				"name" => $this->getName(),
 				"reading" => $this->getReading(),
 				"zipCode" => $this->getZipCode(),
@@ -594,8 +593,6 @@ class SOYShop_User {
 				"telephoneNumber" => $this->getTelephoneNumber(),
 				"office" => $this->getJobName(),
 			);
-
-			return $res;
 		}
 
 		$list = $this->getAddressListArray();
@@ -612,47 +609,44 @@ class SOYShop_User {
 	 *
 	 */
 	function checkValidAddress(array $addr){
-		foreach(array("name", "reading", "zipCode", "area", "telephoneNumber") as $idx){
+		SOY2::import("domain.config.SOYShop_ShopConfig");
+		$cnf = SOYShop_ShopConfig::load();
+		$keys = array_keys($cnf->getSendAddressDisplayFormConfigList());
+		$keys[] = "office";	// officeを追加
+
+		$isNotEmpty = false;	//何かしら入力があるかどうか確認
+		foreach($keys as $idx){
+			if($idx === "address") continue;
 			if(!isset($addr[$idx])) $addr[$idx] = "";	//空文字を入れておく
+			$addr[$idx] = trim($addr[$idx]);
+			if(strlen($addr[$idx])) $isNotEmpty = true;
 		}
 		for($i = 1; $i <= 4; $i++){
 			if(!isset($addr["address" . $i])) $addr["address" . $i] = "";
-		}
-		/**
-		 * 何かしら入力があるかどうか確認
-		 */
-		$isNotEmpty = (
-			strlen($addr["name"]) > 0 ||
-			strlen($addr["reading"]) > 0 ||
-			strlen($addr["zipCode"]) > 0 ||
-			strlen($addr["area"]) > 0 ||
-			strlen($addr["telephoneNumber"]) > 0
-		);
-
-		//何も入力されていないなら -1 を返す
-		if(!$isNotEmpty) return -1;
-
-		//住所に関して
-		SOY2::import("util.SOYShopAddressUtil");
-		$addressItems = SOYShopAddressUtil::getAddressItems();
-		for($i = 1; $i <= 4; $i++){
-			if(!isset($addressItems[$i - 1]) || !isset($addressItems[$i - 1]["required"]) || (bool)$addressItems[$i - 1]["required"] === false) continue;	//調べない
+			$addr["address" . $i] = trim($addr["address" . $i]);
 			if(strlen($addr["address" . $i])) $isNotEmpty = true;
 		}
+		
+		//何も入力されていないなら -1 を返す
+		if(!$isNotEmpty) return -1;
+		
+		$displayCnf = $cnf->getSendAddressDisplayFormConfig();
+		$requiredCnf = $cnf->getSendAddressInformationConfig();
 
-		if($isNotEmpty && (
-			strlen($addr["name"]) == 0 ||
-			strlen($addr["reading"]) == 0 ||
-			strlen($addr["zipCode"]) == 0 ||
-			strlen($addr["area"]) == 0 ||
-			strlen($addr["telephoneNumber"]) == 0
-		)){
-			return 0;
+		//必須の項目で何も入力されていないなら 0 を返す
+		foreach($displayCnf as $key => $bool){
+			if(!$bool || !isset($requiredCnf[$key]) || !$requiredCnf[$key] || !isset($addr[$key])) continue;	//調べない
+			if(strlen($addr[$key]) === 0) return 0;
 		}
-
-		for($i = 1; $i <= 4; $i++){
-			if(!isset($addressItems[$i - 1]) || !isset($addressItems[$i - 1]["required"]) || (bool)$addressItems[$i - 1]["required"] === false) continue;	//調べない
-			if(strlen($addr["address" . $i]) === 0) return 0;
+		
+		//住所の各項目の入力チェック
+		if(isset($displayCnf["address"]) && $displayCnf["address"] && isset($requiredCnf["address"]) && $requiredCnf["address"]){
+			SOY2::import("util.SOYShopAddressUtil");
+			$addressItems = SOYShopAddressUtil::getAddressItems();
+			for($i = 1; $i <= 4; $i++){
+				if(!isset($addressItems[$i - 1]) || !isset($addressItems[$i - 1]["required"]) || (bool)$addressItems[$i - 1]["required"] === false) continue;	//調べない
+				if(strlen($addr["address" . $i]) === 0) return 0;
+			}
 		}
 
 		return 1;

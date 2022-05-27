@@ -376,6 +376,23 @@
 							<!-- /soy:id="form_config_list" -->
 						</table>
 
+						<table class="table table-striped" id="send_address_form_config">
+							<caption>お届け先住所の入力フォームの設定</caption>
+							<col style="width:270px;" />
+							<tr>
+								<th class="middle">項目名</th>
+								<th>フォームを表示する</th>
+								<th>必須項目にする</th>
+							</tr>
+							<!-- soy:id="send_form_config_list" -->
+							<tr>
+								<th soy:id="form_name">***</th>
+								<td><input type="checkbox" soy:id="display_form" /></td>
+								<td><input type="checkbox" soy:id="form_required" /></td>
+							</tr>
+							<!-- /soy:id="send_form_config_list" -->
+						</table>
+
 						<table class="table table-striped customer_form">
 							<caption>項目の表示設定</caption>
 							<col style="width:30%" />

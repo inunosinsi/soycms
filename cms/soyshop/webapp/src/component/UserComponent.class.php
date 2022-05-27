@@ -41,21 +41,23 @@ class UserComponent {
 
 		$displayFormConfig = $this->config->getCustomerDisplayFormConfig();
 		$requiredConfig = $this->config->getCustomerInformationConfig();
+		$reqTxt = $this->config->getRequireText();
 
 		//フォームの表示に関して
-		foreach($displayFormConfig as $key => $boolean){
+		foreach($displayFormConfig as $key => $bool){
 			$page->addModel($key . "_show", array(
-				"visible" => ($boolean)
+				"visible" => ($bool)
+			));
+
+			//必須項目に関して
+			$isReq = (isset($requiredConfig[$key]) && $requiredConfig[$key]);
+			$page->addLabel($key . "_required", array(
+				"html" => ($isReq) ? $reqTxt : "",
+				"attr:class" => ($isReq) ? "require" : ""
 			));
 		}
 
-		//必須項目に関して
-		foreach($requiredConfig as $key => $boolean){
-			$page->addLabel($key . "_required", array(
-				"html" => ($boolean) ? $this->config->getRequireText() : "",
-				"attr:class" => ($boolean) ? "require" : ""
-			));
-		}
+		
 
 		//メールアドレス
 		$mailAddress = $user->getMailAddress();
@@ -301,7 +303,7 @@ class UserComponent {
 
 			foreach(array("label", "example") as $l){
 				$page->addLabel("address" . $i . "_" . $l, array(
-					"text" => (isset($itemCnf[$l])) ? $itemCnf[$l] : ""
+					"html" => (isset($itemCnf[$l])) ? $itemCnf[$l] : ""
 				));
 			}
 		}

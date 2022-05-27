@@ -252,7 +252,7 @@ class Cart04Page extends MainCartPageBase{
 			"visible" => (SOYShop_ShopConfig::load()->getDisplaySendInformationForm())
 		));
 
-    	$send = $cart->getAddress();
+    	$send = $cart->getAddress(true);
 
 		$this->addLabel("send_office", array(
 			"text" => (isset($send["office"])) ? $send["office"] : ""
@@ -269,8 +269,10 @@ class Cart04Page extends MainCartPageBase{
 			"text" => $send["reading"]
 		));
 
+		$nameFull = $send["name"];
+		if(isset($send["reading"]) && strlen($send["reading"])) $nameFull .= " (" . $send["reading"] . ")";
 		$this->addLabel("send_name_full", array(
-			"text" => $send["name"] . " (" . $send["reading"] . ")"
+			"text" => $nameFull 
 		));
 
 		$this->addLabel("send_zip_code", array(

@@ -232,32 +232,41 @@
 			別のお届け先を指定する
 		</li>
 	</ul-->
+	<!-- soy:id="send_name_show" -->
 	<div class="form-group">
-		<label for="">お名前<span class="require">（必須）</span></label>
+		<label for="">お名前<span soy:id="send_name_required">（必須）</span></label>
 		<input type="text" class="form-control" soy:id="send_name">
 		<small class="form-text text-muted">【全角】</small>
 	</div>
+	<!-- /soy:id="send_name_show" -->
+	<!-- soy:id="send_reading_show" -->
 	<div class="form-group">
-		<label for="">フリガナ<span class="require">（必須）</span></label>
-		<input type="text" class="form-control" soy:id="send_furigana">
+		<label for="">フリガナ<span soy:id="send_reading_required">（必須）</span></label>
+		<input type="text" class="form-control" soy:id="send_reading">
 		<small class="form-text text-muted">【全角カナ】</small>
 	</div>
-	<div class="form-group" soy:id="is_offce_item">
+	<!-- /soy:id="send_reading_show" -->
+	<!-- soy:id="is_office_item" -->
+	<div class="form-group">
 		<label for="">法人名（勤務先など）</label>
 		<input type="text" class="form-control" soy:id="send_office">
 	</div>
+	<!-- /soy:id="is_office_item" -->
 
+	<!-- soy:id="send_zipCode_show" -->
 	<div class="form-group" id="zipcode2">
-		<label for="">郵便番号<span class="require">（必須）</span></label>
+		<label for="">郵便番号<span soy:id="send_zipCode_required">（必須）</span></label>
 		<div class="form-inline">
-			<input type="text" class="input-send-zip form-control" soy:id="send_post_number" style="width:60%;">&nbsp;
+			<input type="text" class="input-send-zip form-control" soy:id="send_zipCode" style="width:60%;">&nbsp;
 			<a href="javascript:void(0);" class="send-search-btn btn btn-primary">郵便番号検索</a>
 		</div>
 		<small class="form-text text-muted">【半角数字】</small>
 	</div>
+	<!-- /soy:id="send_zipCode_show" -->
 
+	<!-- soy:id="send_address_show" -->
 	<div class="form-group">
-		<label for="">ご住所<span class="require">（必須）</span></label>
+		<label for="">ご住所<span soy:id="send_address_required">（必須）</span></label>
 		<div class="form-inline">
 			<select class="input-send-pref form-control" soy:id="send_area">
 				<option value="">都道府県名</option>
@@ -300,12 +309,15 @@
 		</div>
 	</div>
 	<!-- /soy:id="send_address4_show" -->
+	<!-- /soy:id="send_address_show" -->
 
+	<!-- soy:id="send_telephoneNumber_show" -->
 	<div class="form-group">
-		<label for="">お電話番号<span class="require">（必須）</span></label>
-		<input type="text" class="form-control" soy:id="send_tel_number">
+		<label for="">お電話番号<span soy:id="send_telephoneNumber_required">（必須）</span></label>
+		<input type="text" class="form-control" soy:id="send_telephoneNumber">
 		<small class="form-text text-muted">【半角数字】</small>
 	</div>
+	<!-- /soy:id="send_telephoneNumber_show" -->
 
 	<div class="text-center">
 		<input type="submit" name="prev" class="btn btn-warning btn-lg" value="戻る">&nbsp;

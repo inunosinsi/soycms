@@ -155,6 +155,24 @@ class SOYShop_ShopConfig {
 		"memo"			=> true
 	);
 
+	private $sendAddressDisplayConfig = array();
+	public static $sendAddressDisplayConfigDefault = array(
+		"name"			=>	true,
+		"reading"		=>	true,
+		"zipCode"		=>	true,
+		"address"		=>	true,
+		"telephoneNumber"	=> true
+	);
+
+	private $sendAddressInformationConfig = array();
+	public static $sendAddressInformationConfigDefault = array(
+		"name"			=>	true,
+		"reading"		=>	true,
+		"zipCode"		=>	true,
+		"address"		=>	true,
+		"telephoneNumber"	=> true
+	);
+
 	function getCustomerDisplayFormConfigList(){
 		return array(
 			"mailAddress"	=>	"メールアドレス",
@@ -174,6 +192,16 @@ class SOYShop_ShopConfig {
 			"jobName"		=> "職業",
 			"memo"			=> "備考"
 		);;
+	}
+
+	function getSendAddressDisplayFormConfigList(){
+		return array(
+			"name" => "名前",
+			"reading" => "フリガナ",
+			"zipCode" => "郵便番号",
+			"address" => "住所",
+			"telephoneNumber" => "電話番号"
+		);
 	}
 
 	private $requireText = "(必須)";
@@ -357,6 +385,38 @@ class SOYShop_ShopConfig {
 		//は必須
 		$this->customerAdminConfig["mailAddress"] = true;
 		$this->customerAdminConfig["name"] = true;
+	}
+
+	function getSendAddressDisplayFormConfig(){
+		if(count($this->sendAddressDisplayConfig)){
+			return $this->sendAddressDisplayConfig;
+		}else{
+			return SOYShop_ShopConfig::$sendAddressDisplayConfigDefault;
+		}
+	}
+
+	function setSendAddressDisplayFormConfig($array){
+		$this->sendAddressDisplayConfig = SOYShop_ShopConfig::$sendAddressDisplayConfigDefault;
+
+		foreach($this->sendAddressDisplayConfig as $key => $value){
+			$this->sendAddressDisplayConfig[$key] = (boolean)@$array[$key];
+		}
+	}
+
+	function getSendAddressInformationConfig() {
+		if(count($this->sendAddressInformationConfig)){
+			return $this->sendAddressInformationConfig;
+		}else{
+			return SOYShop_ShopConfig::$sendAddressInformationConfigDefault;
+		}
+
+	}
+	function setSendAddressInformationConfig($array) {
+		$this->sendAddressInformationConfig = SOYShop_ShopConfig::$sendAddressInformationConfigDefault;
+
+		foreach($this->sendAddressInformationConfig as $key => $value){
+			$this->sendAddressInformationConfig[$key] = (boolean)@$array[$key];
+		}
 	}
 
 	function getOrderItemConfig(){

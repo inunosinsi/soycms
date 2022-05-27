@@ -260,36 +260,45 @@
 				</li>
 			</ul-->
 			<table class="soycart_form">
+				<!-- soy:id="send_name_show" -->
 				<tr>
-					<th nowrap scope="row">お名前<span class="require">（必須）</span></th>
+					<th nowrap scope="row">お名前<span soy:id="send_name_required">（必須）</span></th>
 					<td>
 						<input type="text" class="w130" soy:id="send_name">
 						<span class="note">【全角】</span>
 					</td>
 				</tr>
+				<!-- /soy:id="send_name_show" -->
+				<!-- soy:id="send_reading_show" -->
 				<tr>
-					<th nowrap scope="row">お名前カナ<span class="require">（必須）</span></th>
+					<th nowrap scope="row">お名前カナ<span soy:id="send_reading_required">（必須）</span></th>
 					<td>
-						<input type="text" class="w130" soy:id="send_furigana">
+						<input type="text" class="w130" soy:id="send_reading">
 						<span class="note">【全角カナ】</span>
 					</td>
 				</tr>
-				<tr soy:id="is_offce_item">
+				<!-- /soy:id="send_reading_show" -->
+				<!-- soy:id="is_office_item" -->
+				<tr>
 					<th nowrap scope="row">法人名（勤務先など）</th>
 					<td><input type="text" class="w300" soy:id="send_office"></td>
 				</tr>
+				<!-- /soy:id="is_office_item" -->
 
+				<!-- soy:id="send_zipCode_show" -->
 				<tr id="zipcode2">
-					<th nowrap scope="row">郵便番号<span class="require">（必須）</span></th>
+					<th nowrap scope="row">郵便番号<span soy:id="send_zipCode_required">（必須）</span></th>
 					<td>
-						<input type="text" class="input-send-zip w80" soy:id="send_post_number">
+						<input type="text" class="input-send-zip w80" soy:id="send_zipCode">
 						<span class="note">【半角数字】</span>
 						<span class="send-search-btn btn"><img alt="郵便番号検索"
 								soy:src="themes/common/images/btn_search.png"></span>
 					</td>
 				</tr>
+				<!-- /soy:id="send_zipCode_show" -->
+				<!-- soy:id="send_address_show" -->
 				<tr>
-					<th nowrap scope="row">ご住所<span class="require">（必須）</span></th>
+					<th nowrap scope="row">ご住所<span soy:id="send_address_required">（必須）</span></th>
 					<td>
 						<select class="input-send-pref" soy:id="send_area">
 							<option value="">都道府県名</option>
@@ -364,13 +373,16 @@
 						</table>
 					</td>
 				</tr>
+				<!-- /soy:id="send_address_show" -->
+				<!-- soy:id="send_telephoneNumber_show" -->
 				<tr>
-					<th nowrap scope="row">お電話番号<span class="require">（必須）</span></th>
+					<th nowrap scope="row">お電話番号<span soy:id="send_telephoneNumber_required">（必須）</span></th>
 					<td>
-						<input type="text" class="w130" soy:id="send_tel_number">
+						<input type="text" class="w130" soy:id="send_telephoneNumber">
 						<span class="note">【半角数字】</span><span class="exmpl">（例）075-204-4823</span>
 					</td>
 				</tr>
+				<!-- /soy:id="send_telephoneNumber_show" -->
 			</table>
 			<p class="btn"><input type="image" name="next" soy:src="themes/common/images/cart/btn_next_payment_off.png" alt="次へ（お支払・配送方法の選択）"></p>
 			<p class="alC"><input type="submit" name="prev" value="&lt;&lt; 戻る"></p>

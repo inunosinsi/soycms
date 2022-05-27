@@ -30,7 +30,7 @@ class Cart02Page extends MainCartPageBase{
 				));
 
 				//ユーザー情報
-				$this->setCustomerInformation($cart);
+				self::_setCustomerInformation($cart);
 
 				//ユーザカスタムフィールドの値をセッションに入れる
 				if(isset($_POST["user_customfield"]) || isset($_POST["user_custom_search"])){
@@ -63,7 +63,7 @@ class Cart02Page extends MainCartPageBase{
 				}
 
 				//エラーがなければ次へ
-				if($validAddress && self::checkError($cart)){
+				if($validAddress && self::_checkError($cart)){
 					$cart->setAttribute("prev_page", "Cart02");
 					$cart->setAttribute("page", "Cart03");
 				}else{
@@ -73,8 +73,8 @@ class Cart02Page extends MainCartPageBase{
 				//宛先の情報を入れておく
 				$user = $cart->getCustomerInformation();
 
-				$address = (isset($_POST["Address"])) ? $_POST["Address"] : array();
-				$user->setAddressList(array($address));
+				$addr = (isset($_POST["Address"])) ? $_POST["Address"] : array();
+				$user->setAddressList(array($addr));
 
 
 				$cart->save();
@@ -101,7 +101,7 @@ class Cart02Page extends MainCartPageBase{
 			$user = SOY2::cast("SOYShop_User", $customer);
 
 			//宛先
-			$address = $_POST["Address"];
+			$addr = $_POST["Address"];
 
 			//備考
 			if(isset($_POST["Attributes"]) && isset($_POST["Attributes"]["memo"])){
@@ -117,16 +117,16 @@ class Cart02Page extends MainCartPageBase{
 				$anchor = "zipcode1";
 
 			}else{
-				$code = soyshop_cart_address_validate($address["zipCode"]);
+				$code = soyshop_cart_address_validate($addr["zipCode"]);
 				$res = $logic->search($code);
-				$address["area"] = SOYShop_Area::getAreaByText($res["prefecture"]);
-				$address["address1"] = $res["address1"];
-				$address["address2"] = $res["address2"];
+				$addr["area"] = SOYShop_Area::getAreaByText($res["prefecture"]);
+				$addr["address1"] = $res["address1"];
+				$addr["address2"] = $res["address2"];
 				$anchor = "zipcode2";
 			}
 
 			$cart->setAttribute("address_key", 0);
-			$user->setAddressList(array($address));
+			$user->setAddressList(array($addr));
 			$cart->setCustomerInformation($user);
 			$cart->save();
 
@@ -187,11 +187,8 @@ class Cart02Page extends MainCartPageBase{
 
 		$customer = $cart->getCustomerInformation();
 
-		//顧客情報フォーム
-		$this->buildForm($cart, $customer);
-
-		//送付先フォーム
-		$this->buildSendForm($cart, $customer);
+		self::_buildForm($cart, $customer);	//顧客情報フォーム
+		self::_buildSendForm($cart, $customer);	//送付先フォーム
 
 		//zip2address_js
 		$this->addModel("zip2address_js", array(
@@ -214,7 +211,7 @@ class Cart02Page extends MainCartPageBase{
 
 		//エラー周り
 		DisplayPlugin::toggle("has_error", $cart->hasError());
-		$this->appendErrors($cart);
+		self::_appendErrors($cart);
 
 		$cart->clearErrorMessage();
 	}
@@ -224,7 +221,7 @@ class Cart02Page extends MainCartPageBase{
 	 * @param SOYShop_User $user
 	 * @param string $mode ユーザカスタムフィールドのモード指定
 	 */
-	function buildForm(CartLogic $cart, SOYShop_User $user, $mode=UserComponent::MODE_CUSTOM_FORM){
+	private function _buildForm(CartLogic $cart, SOYShop_User $user, $mode=UserComponent::MODE_CUSTOM_FORM){
 		//共通コンポーネントに移し替え  soyshop/component/UserComponent.class.php buildFrom()
 		//後方互換性確保は soyshop/component/backward/BackwardUserComponent
 
@@ -247,36 +244,42 @@ class Cart02Page extends MainCartPageBase{
 	/**
 	 * お届け先フォーム
 	 */
-	function buildSendForm(CartLogic $cart, SOYShop_User $customer){
+	private function _buildSendForm(CartLogic $cart, SOYShop_User $customer){
 
-		$config = SOYShop_ShopConfig::load();
+		$cnf = SOYShop_ShopConfig::load();
 
 		//お届け先情報のフォームを表示するか？
 		$this->addModel("display_send_form", array(
-			"visible" => ($config->getDisplaySendInformationForm())
+			"visible" => ($cnf->getDisplaySendInformationForm())
 		));
 
-		$address = ($cart->isUseCutomerAddress()) ? $cart->getAddress() : $cart->getCustomerInformation()->getEmptyAddressArray();
+		$addr = ($cart->isUseCutomerAddress()) ? $cart->getAddress() : $cart->getCustomerInformation()->getEmptyAddressArray();
+		self::_buildCompatibleSendForm($addr);
 
-		$this->addInput("send_name", array(
-    		"name" => "Address[name]",
-    		"value" => (isset($address["name"])) ? $address["name"] : "",
-    	));
+		$displayCnf = $cnf->getSendAddressDisplayFormConfig();
+		$requiredCnf = $cnf->getSendAddressInformationConfig();
+		$reqTxt = $cnf->getRequireText();
+		foreach($displayCnf as $key => $bool){
+			$this->addModel("send_" . $key . "_show", array(
+				"visible" => $bool
+			));
 
-    	$this->addInput("send_furigana", array(
-    		"name" => "Address[reading]",
-    		"value" => (isset($address["reading"])) ? $address["reading"] : "",
-    	));
+			$this->addInput("send_" . $key, array(
+				"name" => "Address[" . $key . "]",
+				"value" => (isset($addr[$key])) ? $addr[$key] : "",
+			));	
 
-    	$this->addInput("send_post_number", array(
-    		"name" => "Address[zipCode]",
-    		"value" => (isset($address["zipCode"])) ? $address["zipCode"] : "",
-    	));
+			$isReq = (isset($requiredCnf[$key]) && $requiredCnf[$key]);
+			$this->addLabel("send_" . $key . "_required", array(
+				"html" => ($isReq) ? $reqTxt : "",
+				"attr:class" => ($isReq) ? "require" : ""
+			));
+		}
 
     	$this->addSelect("send_area", array(
     		"name" => "Address[area]",
     		"options" => SOYShop_Area::getAreas(),
-    		"value" => $address["area"],
+    		"value" => $addr["area"],
     	));
 
 		SOY2::import("util.SOYShopAddressUtil");
@@ -290,29 +293,24 @@ class Cart02Page extends MainCartPageBase{
 
 			$this->addInput("send_address" . $i, array(
 				"name" => "Address[address" . $i . "]",
-				"value" => (isset($address["address" . $i])) ? $address["address" . $i] : "",
+				"value" => (isset($addr["address" . $i])) ? $addr["address" . $i] : "",
 			));
 
 			foreach(array("label", "example") as $l){
 				$this->addLabel("send_address" . $i . "_" . $l, array(
-					"text" => (isset($itemCnf[$l])) ? $itemCnf[$l] : ""
+					"html" => (isset($itemCnf[$l])) ? $itemCnf[$l] : ""
 				));
 			}
 		}
 
-    	$this->addInput("send_tel_number", array(
-    		"name" => "Address[telephoneNumber]",
-    		"value" => (isset($address["telephoneNumber"])) ? $address["telephoneNumber"] : "",
-    	));
-
 		//法人(勤務先等)を表示するか？
-		$this->addModel("is_offce_item", array(
-			"visible" => $config->getDisplayUserOfficeItems()
+		$this->addModel("is_office_item", array(
+			"visible" => $cnf->getDisplayUserOfficeItems()
 		));
 
     	$this->addInput("send_office", array(
     		"name" => "Address[office]",
-    		"value" => (isset($address["office"])) ? $address["office"] : "",
+    		"value" => (isset($addr["office"])) ? $addr["office"] : "",
     	));
 
     	$memo = $cart->getOrderAttribute("memo");
@@ -324,9 +322,30 @@ class Cart02Page extends MainCartPageBase{
 	}
 
 	/**
+	 * 一部soy:idで互換性をもたせる
+	 * @param array
+	 */
+	private function _buildCompatibleSendForm(array $addr){
+		$this->addInput("send_furigana", array(
+    		"name" => "Address[reading]",
+    		"value" => (isset($addr["reading"])) ? $addr["reading"] : "",
+    	));
+
+    	$this->addInput("send_post_number", array(
+    		"name" => "Address[zipCode]",
+    		"value" => (isset($addr["zipCode"])) ? $addr["zipCode"] : "",
+    	));
+
+		$this->addInput("send_tel_number", array(
+    		"name" => "Address[telephoneNumber]",
+    		"value" => (isset($addr["telephoneNumber"])) ? $addr["telephoneNumber"] : "",
+    	));
+	}
+
+	/**
 	 * エラー周りを設定
 	 */
-	function appendErrors(CartLogic $cart){
+	private function _appendErrors(CartLogic $cart){
 		//共通エラーメッセージ
 		$this->component->appendErrors($this, $cart);
 	}
@@ -336,7 +355,7 @@ class Cart02Page extends MainCartPageBase{
 	 * エラーがなければtrue
 	 * @return boolean
 	 */
-	private function checkError(CartLogic $cart){
+	private function _checkError(CartLogic $cart){
 		$user = $cart->getCustomerInformation();
 
 		$res = true;
@@ -367,8 +386,9 @@ class Cart02Page extends MainCartPageBase{
 
 	/**
 	 * カートにPOSTされて顧客情報をセットする
+	 * @param CartLogic
 	 */
-	private function setCustomerInformation(CartLogic $cart){
+	private function _setCustomerInformation(CartLogic $cart){
 		$user = new SOYShop_User();
 
 		//POSTデータ
@@ -409,9 +429,9 @@ class Cart02Page extends MainCartPageBase{
 		SOY2::cast($user,$customer);
 
 		//宛先
-		$address = (isset($_POST["Address"])) ? $_POST["Address"] : array();
+		$addr = (isset($_POST["Address"])) ? $_POST["Address"] : array();
 		$cart->setAttribute("address_key", 0);
-		$user->setAddressList(array($address));
+		$user->setAddressList(array($addr));
 
 		$cart->setCustomerInformation($user);
 	}
@@ -424,10 +444,10 @@ class Cart02Page extends MainCartPageBase{
 		$user = $cart->getCustomerInformation();
 
 		if(isset($_POST["Address"])){
-			$address = $_POST["Address"];
-			$address["name"] = $this->_trim($address["name"]);
-			$address["reading"] = $this->convertKana($address["reading"]);
-			$res = $user->checkValidAddress($address);
+			$addr = $_POST["Address"];
+			$addr["name"] = $this->_trim($addr["name"]);
+			$addr["reading"] = $this->convertKana($addr["reading"]);
+			$res = $user->checkValidAddress($addr);
 			$validAddress = true;
 		}else{
 			$res = -1;
@@ -441,7 +461,7 @@ class Cart02Page extends MainCartPageBase{
 			$cart->clearAttribute("address_key");
 		}else{
 			$cart->setAttribute("address_key", 0);
-			$user->setAddressList(array($address));
+			$user->setAddressList(array($addr));
 			if(!$res){
 				//宛先の入力エラー
 				$validAddress = false;

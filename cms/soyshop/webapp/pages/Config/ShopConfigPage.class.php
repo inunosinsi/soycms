@@ -64,6 +64,10 @@ class ShopConfigPage extends WebPage{
 		}
 
 		SOY2::cast($config, (object)$_POST["Config"]);
+
+		//お届け先住所が空の場合の対策
+		if(!isset($_POST["Config"]["sendAddressDisplayFormConfig"])) $config->setSendAddressDisplayFormConfig(array());
+		if(!isset($_POST["Config"]["sendAddressInformationConfig"])) $config->setSendAddressInformationConfig(array());
 		SOYShop_ShopConfig::save($config);
 
 		SOY2PageController::jump("Config.ShopConfig?updated");
@@ -613,6 +617,12 @@ class ShopConfigPage extends WebPage{
 			"formConfig" => $config->getCustomerDisplayFormConfig(),
 			"customerConfig" => $config->getCustomerInformationConfig(),
 			"adminConfig" => $config->getCustomerAdminConfig()
+		));
+
+		$this->createAdd("send_form_config_list", "_common.Config.SendAddressFormListComponent", array(
+			"list" => $config->getSendAddressDisplayFormConfigList(),
+			"formConfig" => $config->getSendAddressDisplayFormConfig(),
+			"requiredConfig" => $config->getSendAddressInformationConfig(),
 		));
 
 		$this->addInput("require_text", array(
