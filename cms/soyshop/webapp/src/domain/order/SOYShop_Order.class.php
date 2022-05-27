@@ -401,6 +401,7 @@ class SOYShop_Order {
 
 		return $res;
     }
+
     function getAttribute($key) {
     	$attributes = $this->getAttributeList();
     	if(array_key_exists($key, $attributes)){

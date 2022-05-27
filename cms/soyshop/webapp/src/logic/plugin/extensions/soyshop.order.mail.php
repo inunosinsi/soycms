@@ -49,7 +49,7 @@ class SOYShopOrderMailDeletageAction implements SOY2PluginDelegateAction{
 		$action->setIsUse(false);		//メール送信時に複数選択されているように見える不具合があるため、都度falseに初期化しておく
 
 		//注文時に選択されていればisUseフラグを立てる
-		if($order){
+		if($order instanceof SOYShop_Order){
 			$moduleList = $order->getModuleList();
 			if(isset($moduleList[$moduleId])){
 				$action->setIsUse(true);
