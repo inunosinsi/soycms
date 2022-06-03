@@ -66,14 +66,10 @@ class SOYShop_Area {
 		//ショップによって名前を変える要件があるため、拡張ポイントで対応
 		if(!class_exists("SOYShopPlugin")) SOY2::import("logic.plugin.SOYShopPlugin");
 		SOYShopPlugin::load("soyshop.area");
-		$delegate = SOYShopPlugin::invoke("soyshop.area", array(
+		$extAreas = SOYShopPlugin::invoke("soyshop.area", array(
 			"mode" => "area"
-		));
-		if(is_array($delegate->getArea()) && count($delegate->getArea())){
-			return $delegate->getArea();
-		}else{
-			return self::$areas;
-		}
+		))->getArea();
+		return (is_array($extAreas) && count($extAreas)) ? $extAreas : self::$areas;
 	}
 
 	/**
@@ -83,28 +79,31 @@ class SOYShop_Area {
 		return array_values(self::$areas);
 	}
 
+	/**
+	 * @param int|string
+	 * @return string
+	 */
 	public static function getArea($area){
 		$areas = self::getAreas();
 		$areas = array_flip($areas);
-		if(!isset($areas[$area])){
-			return "";
-		}else{
-			return $areas[$area];
-		}
+		return (isset($areas[$area])) ? $areas[$area] : "";
 	}
 
-	public static function getAreaText($code){
+	/**
+	 * @param int
+	 * @return string
+	 */
+	public static function getAreaText(int $code=0){
 		$areas = self::getAreas();
-		if(!isset($areas[$code])){
-			return "";
-		}else{
-			return $areas[$code];
-		}
+		return (isset($areas[$code])) ? $areas[$code] : "";
 	}
 
-	public static function getAreaByText($text){
-		$areas = self::getAreas();
-		$res = array_search($text, $areas);
-		return $res;
+	/**
+	 * @param string
+	 * @return int
+	 */
+	public static function getAreaByText(string $str){
+		$res = array_search($str, self::getAreas());
+		return (is_numeric($res)) ? (int)$res : 0;
 	}
 }

@@ -149,24 +149,19 @@ class CommonMailbuilder extends SOYShopOrderMailBuilder{
 
 	protected function buildAddressArray(SOYShop_Order $order, $type = "address"){
 
-		if($type == "claimed"){
-			$array = $order->getClaimedAddressArray();
-		}else{
-			$array = $order->getAddressArray();
-		}
-
+		$arr = ($type == "claimed") ? $order->getClaimedAddressArray() : $order->getAddressArray();
+		
 		//念のために空のキーをチェックしておく
-		$array["name"] = (isset($array["name"])) ? $array["name"] : "";
-		$array["reading"] = (isset($array["reading"])) ? $array["reading"] : "";
-		$array["zipCode"] = (isset($array["zipCode"])) ? $array["zipCode"] : "";
-		$array["area"] = (isset($array["area"])) ? SOYShop_Area::getAreaText($array["area"]) : "";
-		for($i = 1; $i <= 4; $i++){
-			$array["address" . $i] = (isset($array["address" . $i])) ? $array["address" . $i] : "";
+		foreach(array("name", "reading", "zipCode", "telephoneNumber", "office") as $idx){
+			$arr[$idx] = (isset($arr[$idx])) ? $arr[$idx] : "";
 		}
-		$array["telephoneNumber"] = (isset($array["telephoneNumber"])) ? $array["telephoneNumber"] : "";
-		$array["office"] = (isset($array["office"])) ? $array["office"] : "";
-
-		return $array;
+		
+		$arr["area"] = (isset($arr["area"]) && is_numeric()) ? SOYShop_Area::getAreaText($arr["area"]) : "";
+		for($i = 1; $i <= 4; $i++){
+			$arr["address" . $i] = (isset($arr["address" . $i])) ? $arr["address" . $i] : "";
+		}
+		
+		return $arr;
 	}
 
 	/**

@@ -364,10 +364,10 @@ class SOYShop_User {
 		$this->zipCode = $zipCode;
 	}
 	function getArea() {
-		return $this->area;
+		return (is_numeric($this->area)) ? $this->area : -1;
 	}
 	function setArea($area) {
-		if(!is_numeric($area))$area = SOYShop_Area::getArea($area);
+		if(!is_numeric($area)) $area = SOYShop_Area::getArea($area);
 		$this->area = $area;
 	}
 	function getAddress1() {

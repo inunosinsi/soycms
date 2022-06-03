@@ -255,7 +255,7 @@ class Cart02Page extends MainCartPageBase{
 
 		$addr = ($cart->isUseCutomerAddress()) ? $cart->getAddress() : $cart->getCustomerInformation()->getEmptyAddressArray();
 		self::_buildCompatibleSendForm($addr);
-
+		
 		$displayCnf = $cnf->getSendAddressDisplayFormConfig();
 		$requiredCnf = $cnf->getSendAddressInformationConfig();
 		$reqTxt = $cnf->getRequireText();
@@ -275,11 +275,11 @@ class Cart02Page extends MainCartPageBase{
 				"attr:class" => ($isReq) ? "require" : ""
 			));
 		}
-
+		
     	$this->addSelect("send_area", array(
     		"name" => "Address[area]",
     		"options" => SOYShop_Area::getAreas(),
-    		"value" => $addr["area"],
+    		"selected" => (isset($addr["area"]) && is_numeric($addr["area"])) ? (int)$addr["area"] : 0,
     	));
 
 		SOY2::import("util.SOYShopAddressUtil");

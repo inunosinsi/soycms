@@ -264,7 +264,7 @@ class UserComponent {
 		$page->addSelect("area", array(
 			"name" => "Customer[area]",
 			"options" => SOYShop_Area::getAreas(),
-			"selected" => (!is_null($user->getArea())) ? $user->getArea() : $this->config->getDefaultArea()
+			"selected" => (is_numeric($user->getArea())) ? $user->getArea() : $this->config->getDefaultArea()
 		));
 
 		$page->addLabel("area_text", array(

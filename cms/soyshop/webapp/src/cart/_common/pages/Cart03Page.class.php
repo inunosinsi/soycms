@@ -329,7 +329,7 @@ class Cart03Page extends MainCartPageBase{
 		));
 
 		$this->addLabel("send_area", array(
-			"text" => (isset($send["area"])) ? SOYShop_Area::getAreaText($send["area"]) : ""
+			"text" => (isset($send["area"]) && is_numeric($send["area"])) ? SOYShop_Area::getAreaText((int)$send["area"]) : ""
 		));
 
 		$this->addLabel("send_address1", array(

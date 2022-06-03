@@ -121,7 +121,7 @@ class InvoiceListComponent extends HTMLList{
 
 		//お届け先の都道府県
 		$this->addLabel("customer_area", array(
-			"text" => (isset($address["area"])) ? SOYShop_Area::getAreaText($address["area"]) : ""
+			"text" => (isset($address["area"])) ? SOYShop_Area::getAreaText((int)$address["area"]) : ""
 		));
 
 		//お届け先の住所

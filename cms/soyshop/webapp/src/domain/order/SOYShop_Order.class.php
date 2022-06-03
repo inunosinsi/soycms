@@ -352,6 +352,7 @@ class SOYShop_Order {
 		foreach(array("name", "zipCode", "area", "address1", "address2", "address3") as $l){
 			if(!isset($addr[$l])) $addr[$l] = "";
 		}
+		if(!is_numeric($addr["area"])) $addr["area"] = 0;
 		return $addr;
 	}
 
@@ -365,7 +366,7 @@ class SOYShop_Order {
 		}
 		$html = array();
 
-		if(isset($addr["area"]) && is_numeric($addr["area"])) $html[] = SOYShop_Area::getAreaText($addr["area"]);
+		if(isset($addr["area"]) && is_numeric($addr["area"]) && $addr["area"] > 0) $html[] = SOYShop_Area::getAreaText($addr["area"]);
 		for($i = 1; $i <= 4; $i++){
 			if(isset($addr["address" . $i]) && strlen($addr["address" . $i])) $html[] = $addr["address" . $i];
 		}

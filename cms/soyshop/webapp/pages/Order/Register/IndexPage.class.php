@@ -503,7 +503,7 @@ class IndexPage extends WebPage{
     		"text" => (isset($address["zipCode"])) ? $address["zipCode"] : "",
     	));
 
-		$addrTxt = (isset($address["area"])) ? SOYShop_Area::getAreaText($address["area"]) : "";
+		$addrTxt = (isset($address["area"]) && is_numeric($address["area"])) ? SOYShop_Area::getAreaText((int)$address["area"]) : "";
     	$this->addLabel("send_area", array(
     		"text" => $addrTxt,
     	));

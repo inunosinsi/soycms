@@ -279,7 +279,7 @@ class Cart04Page extends MainCartPageBase{
 			"text" => $send["zipCode"]
 		));
 
-		$addrTxt = SOYShop_Area::getAreaText($send["area"]);
+		$addrTxt = SOYShop_Area::getAreaText((int)$send["area"]);
 		$this->addLabel("send_area", array(
 			"text" => $addrTxt
 		));
