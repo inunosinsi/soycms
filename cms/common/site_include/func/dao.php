@@ -209,6 +209,22 @@ function soycms_save_entry_attribute_object(EntryAttribute $attr){
 	}
 }
 
+/** ラベルIDからラベルオブジェクト **/
+function soycms_get_label_object(int $labelId){
+	$dao = soycms_get_hash_table_dao(__FUNCTION__);
+	if((int)$labelId <= 0) return new Label();
+
+	$idx = soycms_get_hash_index((string)$labelId, __FUNCTION__);
+	if(isset($GLOBALS["soycms_label_hash_table"][$idx])) return $GLOBALS["soycms_label_hash_table"][$idx];
+
+	try{
+        $GLOBALS["soycms_label_hash_table"][$idx] = $dao->getById($labelId);
+    }catch(Exception $e){
+        $GLOBALS["soycms_label_hash_table"][$idx] = new Label();
+    }
+	return $GLOBALS["soycms_label_hash_table"][$idx];
+}
+
 /** 
  * ページIDからページオブジェクト 
  * isPriorityBlogPageModeをtrueにすると、ブログページを優先的に検索する

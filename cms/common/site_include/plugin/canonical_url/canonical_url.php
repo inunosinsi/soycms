@@ -19,7 +19,7 @@ class CanonicalUrlPlugin{
 			"author"=>"齋藤 毅",
 			"url"=>"https://saitodev.co/",
 			"mail"=>"info@saitodev.co",
-			"version"=>"0.5"
+			"version"=>"1.0"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
@@ -50,25 +50,42 @@ class CanonicalUrlPlugin{
 		if(stripos($html, "</head>") === false) return $html;
 
 		//既にCMSBlogPage.class.phpやCMSPage.class.phpでカノニカルURLを組み立てているので、パラメータなしでURLを呼び出せる
-		$canonicalUrl = SOY2Logic::createInstance("logic.site.Page.PageLogic")->buildCanonicalUrl();
+		$pageLogic = SOY2Logic::createInstance("logic.site.Page.PageLogic");
+		$canonicalUrl = self::_decorateUrl($pageLogic->buildCanonicalUrl());
+
+		$tag = "<link rel=\"canonical\" href=\"" . $canonicalUrl . "\">";
+
+		//shortlinkがあれば
+		$shortLink = self::_decorateUrl($pageLogic->buildShortLinkUrl());
+		if(strlen($shortLink) && $shortLink != $canonicalUrl){
+			$tag .= "\n<link rel=\"shortlink\" href=\"" . $shortLink . "\">";
+		}
+
+		return str_ireplace('</head>', $tag."\n".'</head>', $html);
+	}
+
+	/**
+	 * urlにトライリンクスラッシュとか付与する
+	 * @param string
+	 * @return string
+	 */
+	private function _decorateUrl(string $url){
+		if(!strlen($url)) return "";
 
 		//末尾が拡張子ではない場合
-		preg_match('/.+\.(html|htm|php?)/i', $canonicalUrl, $tmp);
+		preg_match('/.+\.(html|htm|php?)/i', $url, $tmp);
 		if(!count($tmp) && (int)$this->isTrailingSlash === 1){
-			$canonicalUrl = rtrim(trim($canonicalUrl), "/") . "/";
+			$url = rtrim(trim($url), "/") . "/";
 		}
 
 		//wwwなし設定
 		if((int)$this->isWww === 0){
-			preg_match('/^https?:\/\/www\./', $canonicalUrl, $tmp);
+			preg_match('/^https?:\/\/www\./', $url, $tmp);
 			if(isset($tmp[0])){
-				$canonicalUrl = str_replace("//www.", "//", $canonicalUrl);
+				$url = str_replace("//www.", "//", $url);
 			}
 		}
-
-		$tag = "<link rel=\"canonical\" href=\"" . $canonicalUrl . "\">";
-
-		return str_ireplace('</head>', $tag."\n".'</head>', $html);
+		return $url;
 	}
 
 	function config_page($message){

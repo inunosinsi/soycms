@@ -411,19 +411,36 @@ class CMSBlogPage extends CMSPage{
 			}
 		}
 
-		//カノニカルを組み立てる上で必要な値
+		//カノニカルURLを生成するスクリプトはここで実行する必要がある
+		self::_executeCanonicalUrlCreate();
+
+		WebPage::__construct($args);
+	}
+
+	/**
+	 * カノニカルURLを生成する
+	 */
+	private function _executeCanonicalUrlCreate(){
+		// カノニカルを組み立てる上で必要な値
 		$params = array();
 		if(isset($this->mode)) $params["mode"] = $this->mode;
-		if(isset($this->entry)) $params["entry"] = $this->entry->getAlias();
-		if(isset($this->label)) $params["label"] = $this->label->getAlias();
+		if(isset($this->entry)) {
+			$params["entry"] = $this->entry->getAlias();
+			$params["id"] = $this->entry->getId();
+		}
+		if(isset($this->label)) {
+			$params["label"] = $this->label->getAlias();
+			$params["id"] = $this->label->getId();
+		}
 		if(isset($this->year)) $params["year"] = $this->year;
 		if(isset($this->month)) $params["month"] = $this->month;
 		if(isset($this->day)) $params["day"] = $this->day;
 
 		//カノニカルタグ用のURLの出力　ここで一度呼んでおく　CMSPage.class.phpの方でcms:idタグを出力
-		SOY2Logic::createInstance("logic.site.Page.PageLogic", array("page" => $this->page, "siteUrl" => $this->siteConfig->getConfigValue("url"), "params" => $params))->buildCanonicalUrl();
-
-		WebPage::__construct($args);
+		$pageLogic = SOY2Logic::createInstance("logic.site.Page.PageLogic", array("page" => $this->page, "siteUrl" => $this->siteConfig->getConfigValue("url"), "params" => $params));
+		$_dust = $pageLogic->buildCanonicalUrl();
+		$_dust = $pageLogic->buildShortLinkUrl();
+		unset($_dust);
 	}
 
 	function getCacheFilePath($extension = ".html.php"){

@@ -115,7 +115,10 @@ class CMSPage extends WebPage{
 		));
 
 		//canonical ブログページのみCMSBlogPage.class.phpの__construct内で一度読み込んで、canonical urlを組み立てている
-		$canonicalUrl = SOY2Logic::createInstance("logic.site.Page.PageLogic", array("page" => $this->page, "siteUrl" => $this->siteConfig->getConfigValue("url")))->buildCanonicalUrl();
+		$pageLogic = SOY2Logic::createInstance("logic.site.Page.PageLogic", array("page" => $this->page, "siteUrl" => $this->siteConfig->getConfigValue("url")));
+		$canonicalUrl = $pageLogic->buildCanonicalUrl();
+		$_dust = $pageLogic->buildShortLinkUrl();
+		unset($_dust);
 
 		$this->addLabel("page_link", array(
 			"text" => $canonicalUrl,
