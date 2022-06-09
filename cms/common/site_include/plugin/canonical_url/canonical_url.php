@@ -6,6 +6,7 @@ class CanonicalUrlPlugin{
 
 	private $isTrailingSlash = 1;	//URLの末尾にスラッシュを付けるか？
 	private $isWww = 1;
+	private $isShortLink = 1;		//shortlinkのメタタグを自動挿入するか？
 
 	function getId(){
 		return self::PLUGIN_ID;
@@ -19,7 +20,7 @@ class CanonicalUrlPlugin{
 			"author"=>"齋藤 毅",
 			"url"=>"https://saitodev.co/",
 			"mail"=>"info@saitodev.co",
-			"version"=>"1.0"
+			"version"=>"1.1"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
@@ -56,11 +57,13 @@ class CanonicalUrlPlugin{
 		$tag = "<link rel=\"canonical\" href=\"" . $canonicalUrl . "\">";
 
 		//shortlinkがあれば
-		$shortLink = self::_decorateUrl($pageLogic->buildShortLinkUrl());
-		if(strlen($shortLink) && $shortLink != $canonicalUrl){
-			$tag .= "\n<link rel=\"shortlink\" href=\"" . $shortLink . "\">";
+		if($this->isShortLink){
+			$shortLink = self::_decorateUrl($pageLogic->buildShortLinkUrl());
+			if(strlen($shortLink) && $shortLink != $canonicalUrl){
+				$tag .= "\n<link rel=\"shortlink\" href=\"" . $shortLink . "\">";
+			}
 		}
-
+		
 		return str_ireplace('</head>', $tag."\n".'</head>', $html);
 	}
 
@@ -108,6 +111,13 @@ class CanonicalUrlPlugin{
 	}
 	function setIsWww($isWww){
 		$this->isWww = $isWww;
+	}
+
+	function getIsShortLink(){
+		return $this->isShortLink;
+	}
+	function setIsShortLink($isShortLink){
+		$this->isShortLink = $isShortLink;
 	}
 
 	public static function register(){
