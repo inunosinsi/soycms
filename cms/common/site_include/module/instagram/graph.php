@@ -43,60 +43,62 @@ function soycms_graph($html, $htmlObj){
 	$obj->display();
 }
 
-class InstagramGraphAPIPostListComponent extends HTMLList {
+if(!class_exists("InstagramGraphAPIPostListComponent")){
+	class InstagramGraphAPIPostListComponent extends HTMLList {
 		
-	protected function populateItem($entity){
-		$mediaUrl = (isset($entity["media_url"]) && is_string($entity["media_url"])) ? $entity["media_url"] : "";
-		$mediaType = (isset($entity["media_type"]) && is_string($entity["media_type"])) ? $entity["media_type"] : "";
-
-		$this->addLabel("caption", array(
-			"soy2prefix" => "cms",
-			"html" => (isset($entity["caption"]) && is_string($entity["caption"])) ? nl2br(htmlspecialchars($entity["caption"], ENT_QUOTES, "UTF-8")) : ""
-		));
-
-		$this->addLabel("media_url_text", array(
-			"soy2prefix" => "cms",
-			"text" => $mediaUrl
-		));
-
-		$this->addModel("media_type_image", array(
-			"soy2prefix" => "cms",
-			"visible" => ($mediaType == "IMAGE")
-		));
-
-		$this->addImage("media_url_image", array(
-			"soy2prefix" => "cms",
-			"src" => $mediaUrl
-		));
-
-		$this->addModel("media_type_carousel_album", array(
-			"soy2prefix" => "cms",
-			"visible" => ($mediaType == "CAROUSEL_ALBUM")
-		));
-
-		$this->addImage("media_url_carousel_album", array(
-			"soy2prefix" => "cms",
-			"src" => $mediaUrl
-		));
-
-		$this->addImage("media_url_image", array(
-			"soy2prefix" => "cms",
-			"src" => $mediaUrl
-		));
-
-		$this->addModel("media_type_video", array(
-			"soy2prefix" => "cms",
-			"visible" => ($mediaType == "VIDEO")
-		));
-
-		$this->addModel("media_url_video", array(
-			"soy2prefix" => "cms",
-			"attr:src" => $mediaUrl,
-		));
-
-		$this->addLink("permalink", array(
-			"soy2prefix" => "cms",
-			"link" => (isset($entity["permalink"]) && is_string($entity["permalink"])) ? $entity["permalink"] : ""
-		));
-	}	
+		protected function populateItem($entity){
+			$mediaUrl = (isset($entity["media_url"]) && is_string($entity["media_url"])) ? $entity["media_url"] : "";
+			$mediaType = (isset($entity["media_type"]) && is_string($entity["media_type"])) ? $entity["media_type"] : "";
+	
+			$this->addLabel("caption", array(
+				"soy2prefix" => "cms",
+				"html" => (isset($entity["caption"]) && is_string($entity["caption"])) ? nl2br(htmlspecialchars($entity["caption"], ENT_QUOTES, "UTF-8")) : ""
+			));
+	
+			$this->addLabel("media_url_text", array(
+				"soy2prefix" => "cms",
+				"text" => $mediaUrl
+			));
+	
+			$this->addModel("media_type_image", array(
+				"soy2prefix" => "cms",
+				"visible" => ($mediaType == "IMAGE")
+			));
+	
+			$this->addImage("media_url_image", array(
+				"soy2prefix" => "cms",
+				"src" => $mediaUrl
+			));
+	
+			$this->addModel("media_type_carousel_album", array(
+				"soy2prefix" => "cms",
+				"visible" => ($mediaType == "CAROUSEL_ALBUM")
+			));
+	
+			$this->addImage("media_url_carousel_album", array(
+				"soy2prefix" => "cms",
+				"src" => $mediaUrl
+			));
+	
+			$this->addImage("media_url_image", array(
+				"soy2prefix" => "cms",
+				"src" => $mediaUrl
+			));
+	
+			$this->addModel("media_type_video", array(
+				"soy2prefix" => "cms",
+				"visible" => ($mediaType == "VIDEO")
+			));
+	
+			$this->addModel("media_url_video", array(
+				"soy2prefix" => "cms",
+				"attr:src" => $mediaUrl,
+			));
+	
+			$this->addLink("permalink", array(
+				"soy2prefix" => "cms",
+				"link" => (isset($entity["permalink"]) && is_string($entity["permalink"])) ? $entity["permalink"] : ""
+			));
+		}	
+	}
 }
