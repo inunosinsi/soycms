@@ -60,7 +60,7 @@ class HistoryList extends HTMLList{
 
 		$this->createAdd("date","HTMLLink",array(
 			"link" => SOY2PageController::createLink("Blog.TemplateHistoryDetail.{$this->pageId}.{$entity->getId()}.{$this->mode}"),
-			"text"=> date("Y-m-d H:i:s", $entity->getUpdateDate())
+			"text"=> date("Y-m-d H:i:s", (int)$entity->getUpdateDate())
 		));
 
 		$this->createAdd("contents","HTMLLabel",array(
