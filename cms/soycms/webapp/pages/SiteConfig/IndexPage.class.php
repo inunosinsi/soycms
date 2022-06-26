@@ -22,7 +22,7 @@ class IndexPage extends CMSWebPageBase{
 	function __construct(){
 		parent::__construct();
 
-		$this->createAdd("index_form","HTMLForm",array(
+		$this->addForm("index_form", array(
 			"action"=>SOY2PageController::createLink("SiteConfig")
 		));
 
@@ -30,15 +30,22 @@ class IndexPage extends CMSWebPageBase{
 		$result = $action->run();
 		$entity = $result->getAttribute("entity");
 
-		$this->createAdd("name","HTMLInput",array("value"=>$entity->getName()));
-		$this->createAdd("description","HTMLTextArea",array("text"=>$entity->getDescription(),"name"=>"description"));
-		$this->createAdd("charset","HTMLSelect",array(
+		$this->addInput("name", array(
+			"value" => $entity->getName()
+		));
+		
+		$this->addTextArea("description", array(
+			"text" => $entity->getDescription(),
+			"name" => "description"
+		));
+		
+		$this->addSelect("charset", array(
 			"selected"=>$entity->getCharset(),
 			"options"=>SiteConfig::getCharsetLists()
 		));
 
 		//hidden
-		$this->createAdd("url", "HTMLInput", array(
+		$this->addInput("url", array(
 			"name" => "url",
 			"value" => $entity->getConfigValue("url")
 		));
