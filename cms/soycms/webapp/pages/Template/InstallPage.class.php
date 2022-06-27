@@ -9,11 +9,10 @@ class InstallPage extends CMSWebPageBase{
 		
 			$id = $this->id;
 			
-			$fileList = @$_POST["fileList"];
-			$logic = SOY2Logic::createInstance("logic.site.Template.TemplateLogic");
+			$fileList = (isset($_POST["fileList"])) ? $_POST["fileList"] : array();
 			
 			try{
-	    		$template = $logic->installTemplate($id,@$_POST["fileList"]);
+	    		$template = SOY2Logic::createInstance("logic.site.Template.TemplateLogic")->installTemplate($id, $fileList);
 	    	}catch(Exception $e){
 	    		$this->jump("Template");
 	    	}  	

@@ -5,25 +5,25 @@ class TemplateLogic extends SOY2LogicBase{
 	const SITE_ROOT_MARKER = "@@SITE_ROOT@@";
 
 	function get(){
-		if(!$this->isSimpleXmlEnabled()) return array();
+		if(!self::_isSimpleXmlEnabled()) return array();
 		$dao = SOY2DAOFactory::create("cms.TemplateDAO");
 		return $dao->get();
 	}
 
 	function getByFileName($filename){
-		if(!$this->isSimpleXmlEnabled()) return null;
+		if(!self::_isSimpleXmlEnabled()) return null;
 		$dao = SOY2DAOFactory::create("cms.TemplateDAO");
 		return $dao->getByFileName($filename);
 	}
 
 	function getByPageType($pageType){
-		if(!$this->isSimpleXmlEnabled()) return null;
+		if(!self::_isSimpleXmlEnabled()) return null;
 		$dao = SOY2DAOFactory::create("cms.TemplateDAO");
 		return $dao->get($pageType);
 	}
 
 	function getById($id){
-		if(!$this->isSimpleXmlEnabled()) return null;
+		if(!self::_isSimpleXmlEnabled()) return null;
 		$dao = SOY2DAOFactory::create("cms.TemplateDAO");
 		return $dao->getById($id);
 	}
@@ -52,7 +52,7 @@ class TemplateLogic extends SOY2LogicBase{
 	 * simplexml_load_fileが利用可能かどうか
 	 * @return boolean
 	 */
-	private function isSimpleXmlEnabled(){
+	private function _isSimpleXmlEnabled(){
 		return function_exists("simplexml_load_file");
 	}
 
@@ -62,17 +62,13 @@ class TemplateLogic extends SOY2LogicBase{
 	 * @param id
 	 * @param installFileList インストールするファイル名
 	 */
-	function installTemplate($id,$installFileList){
-
+	function installTemplate(string $id, array $installFileList){
 		$template = $this->getById($id);
 		if($template->isActive())throw new Exception("Already installed");
 
 		$className = CMSUtil::checkZipEnable(true);
-
-    	if($className === false){
-    		throw new Exception("Can not create Zip_Archive");
-    	}
-
+    	if(is_bool($className)) throw new Exception("Can not create Zip_Archive");
+		
     	//Pear版
     	if($className == "Archive_Zip"){
 
@@ -143,7 +139,7 @@ class TemplateLogic extends SOY2LogicBase{
 	    			$path = $templateDir . $detect;
 	    			@rename($tempDir."/".$detect,$path);
 
-	    			$this->replaceSiteRootMarker($path);
+	    			self::_replaceSiteRootMarker($path);
 
 	    			continue;
 	    		}
@@ -159,10 +155,7 @@ class TemplateLogic extends SOY2LogicBase{
 
 			//ファイルの設置
 	    	$zip = zip_open($template->getArchieveFileName());
-
-	    	if($zip === false){
-	    		return false;
-	    	}
+	    	if(is_bool($zip)) return false;
 
 	    	$siteRoot = UserInfoUtil::getSiteDirectory();
 	    	$templateDir = UserInfoUtil::getSiteDirectory() . ".template/" . $template->getId() ."/";
@@ -175,16 +168,15 @@ class TemplateLogic extends SOY2LogicBase{
 	    	$fileList = $template->getFileList();
 	    	$templateList = $template->getTemplate();
 
-
 	    	while(true){
 	    		$entry = zip_read($zip);
-	    		if(!$entry)break;
+	    		if(!$entry) break;
 
 	    		$name = zip_entry_name($entry);
 
 	    		$detect = $name;
-
-	    		if(isset($fileList[$detect]) && in_array($detect,$installFileList)){
+				
+	    		if(isset($fileList[$detect]) && in_array($detect, $installFileList)){
 	    			if($fileList[$detect]["path"][0] == "/"){
 	    				$path = $siteRoot . substr($fileList[$detect]["path"],1);
 	    			}else{
@@ -201,17 +193,16 @@ class TemplateLogic extends SOY2LogicBase{
 
 	    			while($counter > 0){
 	    				$tmpPath = $path;
-	    				for($i=0;$i<$counter;++$i){
+	    				for($i = 0; $i < $counter; ++$i){
 	    					$tmpPath = dirname($tmpPath);
 	    				}
 	    				mkdir($tmpPath);
-
 	    				
 	    				$counter--;
 	    			}
 
-	    			//$buf = zip_entry_read($entry, zip_entry_filesize($entry));
-	    			file_put_contents($path,$buf);
+	    			$buf = zip_entry_read($entry, zip_entry_filesize($entry));
+	    			file_put_contents($path, $buf);
 	    			continue;
 	    		}
 
@@ -221,9 +212,9 @@ class TemplateLogic extends SOY2LogicBase{
 	    			$buf = zip_entry_read($entry, zip_entry_filesize($entry));
 
 
-	    			file_put_contents($path,$buf);
+	    			file_put_contents($path, $buf);
 
-	    			$this->replaceSiteRootMarker($path);
+	    			self::_replaceSiteRootMarker($path);
 	    			continue;
 	    		}
 	    	}
@@ -311,9 +302,9 @@ class TemplateLogic extends SOY2LogicBase{
 	function uploadTemplate($file,$filepath = null){
 
 		if($filepath){
-			$res = $this->checkValidTemplatePack($filepath);
+			$res = self::_checkValidTemplatePack($filepath);
 		}else{
-			$res = $this->checkValidTemplatePack($file["tmp_name"]);
+			$res = self::_checkValidTemplatePack($file["tmp_name"]);
 		}
 
 		if($res === false){
@@ -352,7 +343,7 @@ class TemplateLogic extends SOY2LogicBase{
 	/**
      * Zipファイルが有効なテンプレートかどうかを判断
      */
-    function checkValidTemplatePack($filepath){
+    private function _checkValidTemplatePack($filepath){
 
     	$className = CMSUtil::checkZipEnable(true);
 
@@ -495,16 +486,12 @@ class TemplateLogic extends SOY2LogicBase{
     function replaceURL($siteUrl,$templateFileList,$fileReplaceList){
 
     	foreach($templateFileList as $filepath){
-
     		$content = file_get_contents($filepath);
 
     		foreach($fileReplaceList as $url => $replace){
-
     			$content = str_replace($siteUrl,"",$content);
     			$content = str_replace($url,self::SITE_ROOT_MARKER.$replace, $content);
-
     		}
-
 
     		file_put_contents($filepath,$content);
     	}
@@ -513,7 +500,7 @@ class TemplateLogic extends SOY2LogicBase{
     /**
      * SITE_ROOT_MARKERをリプレースする
      */
-    function replaceSiteRootMarker($path){
+    private function _replaceSiteRootMarker(string $path){
 
     	$content = file_get_contents($path);
 
@@ -526,6 +513,3 @@ class TemplateLogic extends SOY2LogicBase{
 
     }
 }
-
-
-?>

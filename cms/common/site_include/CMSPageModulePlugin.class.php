@@ -26,7 +26,10 @@ class CMSPageModulePlugin extends PluginBase{
 		$siteRoot = _SITE_ROOT_;
 
 		//隠しモード用にパスの書き換え
-		if(!is_null($siteId)) $siteRoot = substr($siteRoot, 0, strrpos($siteRoot, "/")) . "/" . $siteId;
+		if(!is_null($siteId)) {
+			$siteRoot = substr($siteRoot, 0, strrpos($siteRoot, "/")) . "/" . $siteId;
+			/** @ToDo 元サイトのサイトルートを移動している時対策 **/
+		}
 		$modulePath = soy2_realpath($siteRoot) . ".module/" . str_replace(".", "/", $soyValue) . ".php";
 
 		$this->setInnerHTML(
