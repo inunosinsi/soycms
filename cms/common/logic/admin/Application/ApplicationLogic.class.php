@@ -4,6 +4,7 @@ class ApplicationLogic extends SOY2LogicBase{
 
 	function getApplications(){
 		$applicationDir = self::getApplicationDir();
+		if(!file_exists($applicationDir)) mkdir($applicationDir);
 
 		$files = scandir($applicationDir);
 

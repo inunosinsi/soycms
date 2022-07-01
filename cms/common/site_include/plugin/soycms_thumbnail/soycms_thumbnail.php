@@ -26,7 +26,7 @@ class SOYCMSThumbnailPlugin{
 			"author"=>"日本情報化農業研究所",
 			"url"=>"http://www.n-i-agroinformatics.com/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.3"
+			"version"=>"1.5"
 		));
 
 		if(CMSPlugin::activeCheck($this->getId())){
@@ -108,7 +108,6 @@ class SOYCMSThumbnailPlugin{
 	 * 記事作成時、記事更新時
 	 */
 	function onEntryUpdate($arg){
-
 		$entry = $arg["entry"];
 		$entryId = $entry->getId();
 
@@ -139,11 +138,14 @@ class SOYCMSThumbnailPlugin{
 		}
 
 		if($resizeFlag && $imageFilePath){
-			$dir = substr(UserInfoUtil::getSiteDirectory(), 0, strrpos(UserInfoUtil::getSiteDirectory(), "/" . UserInfoUtil::getSite()->getSiteId()));
-			$path = $dir . $imageFilePath;
-
+			//$dir = substr(UserInfoUtil::getSiteDirectory(), 0, strrpos(UserInfoUtil::getSiteDirectory(), "/" . UserInfoUtil::getSite()->getSiteId()));
+			$path = $_SERVER["DOCUMENT_ROOT"] . $imageFilePath;
+	
+			// /ドキュメントルート/hoge/siteId/index.phpのようなサイト設定の場合でも対応できるようにする
+			$siteDir = ThumbnailPluginUtil::getSiteDirectoryName();
+			
 			//念の為、指定のパスに画像があるか調べる
-			if(!file_exists($path)) $path = $dir . "/" . UserInfoUtil::getSite()->getSiteId() . $imageFilePath;
+			if(!file_exists($path)) $path = $_SERVER["DOCUMENT_ROOT"] . "/" . $siteDir . "/" . $imageFilePath;
 
 			if(file_exists($path)){
 				$imageInfoArray = (getimagesize($path));
@@ -168,7 +170,7 @@ class SOYCMSThumbnailPlugin{
 					$imageFileName = substr($imageFilePath, strrpos($imageFilePath, "/") + 1);
 					$resizePath = $resizeDir . "/" . $imageFileName;
 					soy2_resizeimage($path, $resizePath, $w, $h);
-					$images[ThumbnailPluginUtil::RESIZE_IMAGE] = "/" . UserInfoUtil::getSite()->getSiteId() . $uploadDir . "/resize/" . $imageFileName;
+					$images[ThumbnailPluginUtil::RESIZE_IMAGE] = "/" . $siteDir . $uploadDir . "/resize/" . $imageFileName;
 				}else{
 					$images[ThumbnailPluginUtil::RESIZE_IMAGE] = "";
 				}
@@ -177,11 +179,10 @@ class SOYCMSThumbnailPlugin{
 		}else{
 			$images[ThumbnailPluginUtil::RESIZE_IMAGE] = trim($_POST["jcrop_resize_field"]);
 		}
-
+		
 		foreach($images as $fieldId => $path){
-			if(is_null($path) || !strlen($path)) continue;
 			$attr = soycms_get_entry_attribute_object($entryId, $fieldId);
-			$attr->setValue($path);
+			$attr->setValue((string)$path);
 			soycms_save_entry_attribute_object($attr);
 		}
 
@@ -390,6 +391,12 @@ class SOYCMSThumbnailPlugin{
 		$siteUrl = (string)ThumbnailPluginUtil::getSiteConfig()->getConfigValue("url");
 		$siteId = UserInfoUtil::getSite()->getSiteId();
 		if(is_numeric(strpos($siteUrl, "/" . $siteId . "/"))) $siteUrl = str_replace("/" . $siteId . "/", "/" , $siteUrl);
+
+		//サイトディレクトリの階層をルートドメインから一つ下の階層にした場合
+		if(is_numeric(strpos(ThumbnailPluginUtil::getSiteDirectoryName(), "/"))){
+			$siteUrl = dirname($siteUrl) . "/";
+		}
+
 		return $siteUrl;
 	}
 

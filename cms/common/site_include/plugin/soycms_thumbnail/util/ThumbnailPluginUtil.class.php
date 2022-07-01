@@ -97,11 +97,21 @@ class ThumbnailPluginUtil {
 		return $attrValues;
 	}
 
+	/**
+	 * @return SiteConfig
+	 */
 	public static function getSiteConfig(){
 		try{
 			return SOY2DAOFactory::create("cms.SiteConfigDAO")->get();
 		}catch(Exception $e){
 			return new SiteConfig();
 		}
+	}
+
+	/**
+	 * @return string
+	 */
+	public static function getSiteDirectoryName(){
+		return trim(str_replace($_SERVER["DOCUMENT_ROOT"], "", UserInfoUtil::getSiteDirectory()), "/");
 	}
 }

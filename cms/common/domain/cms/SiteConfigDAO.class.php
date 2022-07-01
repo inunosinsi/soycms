@@ -77,6 +77,4 @@ abstract class SiteConfigDAO extends SOY2DAO{
 		
 		return array($query,$bind);
 	}
-	
 }
-?>

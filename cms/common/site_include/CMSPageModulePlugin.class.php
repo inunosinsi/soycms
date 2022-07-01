@@ -8,7 +8,10 @@ class CMSPageModulePlugin extends PluginBase{
 		$soyValue = $this->soyValue;
 		$array = explode(".", $soyValue);
 
-		//隠しモード：別のサイトのモジュールを取得する
+		/**
+		 * 隠しモード：別のサイトのモジュールを取得する
+		 * 別サイトのモジュールを呼び出す時は<!-- cms:module="{siteId}.****" -->にする
+		 */
 		$siteId = null;
 		if(count($array) && preg_match('/\{(.*)\}/', $array[0], $tmp)){
 			$dust = array_shift($array);	//配列を一つずらす
@@ -26,10 +29,24 @@ class CMSPageModulePlugin extends PluginBase{
 		$siteRoot = _SITE_ROOT_;
 
 		//隠しモード用にパスの書き換え
-		if(!is_null($siteId)) {
-			$siteRoot = substr($siteRoot, 0, strrpos($siteRoot, "/")) . "/" . $siteId;
-			/** @ToDo 元サイトのサイトルートを移動している時対策 **/
+		if(is_string($siteId)) {
+
+			/** 元サイトのサイトルートを移動している時対策 **/
+			
+			$try = 0;
+			$tmp = dirname($siteRoot) . "/";
+			for(;;){
+				if($try++ > 2) break;
+				//任意のディレクトリに.modulesディレクトリがあるか？
+				$dir = $tmp . $siteId . "/.module/";
+				if(file_exists($dir) && is_dir($dir)){
+					$siteRoot = $tmp . $siteId;
+					break;
+				}
+				$tmp = dirname($tmp) . "/";
+			}
 		}
+
 		$modulePath = soy2_realpath($siteRoot) . ".module/" . str_replace(".", "/", $soyValue) . ".php";
 
 		$this->setInnerHTML(

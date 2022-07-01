@@ -29,7 +29,8 @@ class TrimmingPage extends CMSWebPageBase {
 
 			$jpeg_quality = 90;
 
-			$src = $uploadFileDir . $imageFileName;
+			//$src = $uploadFileDir . $imageFileName;
+			$src = $_SERVER["DOCUMENT_ROOT"] . htmlspecialchars($_GET["path"], ENT_QUOTES, "UTF-8");
 
 			$targ_w = $_POST['w'];
 			$targ_h = $_POST['h'];
@@ -43,7 +44,9 @@ class TrimmingPage extends CMSWebPageBase {
 
 			imagedestroy($dst_r);
 
-			$uploadImagePath = "/" . UserInfoUtil::getSite()->getSiteId() . "/" . self::_getDefaultUpload() . "/thumb/";
+			// /ドキュメントルート/hoge/siteId/index.php のような一つ下の階層にサイトディレクトリがある場合
+			$siteDir = trim(str_replace($_SERVER["DOCUMENT_ROOT"], "", UserInfoUtil::getSiteDirectory()), "/");
+			$uploadImagePath = "/" . $siteDir . "/" . self::_getDefaultUpload() . "/thumb/";
 
 			$responseObject->result = true;
 			$responseObject->imagePath = $uploadImagePath . $imageFileName;

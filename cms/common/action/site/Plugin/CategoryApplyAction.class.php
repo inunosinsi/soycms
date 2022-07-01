@@ -40,4 +40,3 @@ class CategoryApplyActionForm extends SOY2ActionForm{
 		$this->plugin_id = $plugin_id;
 	}
 }
-?>
