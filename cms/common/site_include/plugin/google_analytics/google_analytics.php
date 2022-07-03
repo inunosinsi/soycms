@@ -42,7 +42,7 @@ class GoogleAnalytics{
 			"modifier"=>"Jun Okada",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.10"
+			"version"=>"1.11"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -79,10 +79,10 @@ class GoogleAnalytics{
 		$html = &$arg["html"];
 
 		//ダイナミック編集では挿入しない
-		if(defined("CMS_PREVIEW_MODE") && CMS_PREVIEW_MODE){
-			return null;
-		}
+		if(defined("CMS_PREVIEW_MODE") && CMS_PREVIEW_MODE) return null;
 
+		if(defined("PLUGIN_PREVIEW_MODE") && PLUGIN_PREVIEW_MODE) return null;
+		
 		//トラックコードが空なら挿入しない
 		if(!strlen(trim($this->google_analytics_track_code.$this->google_analytics_track_code_smartphone.$this->google_analytics_track_code_mobile))){
 			return null;

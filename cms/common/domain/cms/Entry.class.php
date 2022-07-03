@@ -174,6 +174,16 @@ class Entry {
    	}
 
    	function getStateMessage(){
+		//拡張ポイント
+		$onLoads = CMSPlugin::getEvent('onEntryStateMessage');
+		if(is_array($onLoads) && count($onLoads)){
+			foreach($onLoads as $plugin){
+				$func = $plugin[0];
+				$res = call_user_func($func, array('entryId' => $this->id));
+				if(is_string($res) && strlen($res)) return $res;
+			}
+		}
+
    		switch($this->isActive()){
    			case self::ENTRY_ACTIVE:
    				return CMSMessageManager::get("SOYCMS_STAY_PUBLISHED");

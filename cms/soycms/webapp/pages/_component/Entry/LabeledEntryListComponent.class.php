@@ -17,6 +17,7 @@ class LabeledEntryListComponent extends HTMLList{
 
 	public function populateItem($entity){
 		$id = (is_numeric($entity->getId())) ? (int)$entity->getId() : 0;
+
 		$this->addInput("entry_check", array(
 			"type"=>"checkbox",
 			"name"=>"entry[]",

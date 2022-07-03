@@ -1,0 +1,20 @@
+<form soy:id="form">
+    <div class="form-group">
+        <label>記事IDに付ける接尾語</label>
+        <div class="form-inline">
+            <input type="text" soy:id="postfix" class="form-control">
+        </div>
+        <div class="alert alert-warning">ブログ記事にのみ有効です</div>
+    </div>
+
+    <div>
+        <input type="submit" class="btn btn-primary" value="更新">
+    </div>
+</form>
+
+<br>
+
+<div class="alert alert-info">
+    記事管理画面で「記事プレビューを使用する」にチェックを入れると、ここで入力したテキストが、記事ページの閲覧に必要となります。<br>
+    仮に記事のIDが「123」で、接尾語を「test」とする場合、その記事を閲覧するためのページのURLの末尾に「_test」を付けるとブログ記事ページで表示できます。
+</div>

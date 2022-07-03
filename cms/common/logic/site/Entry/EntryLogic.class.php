@@ -363,12 +363,13 @@ class EntryLogic extends SOY2LogicBase{
 
 	/**
 	 * ブログのエントリーを取得
+	 * @param int int|string
+	 * @return Entry
 	 */
-	function getBlogEntry($blogLabelId,$entryId){
+	function getBlogEntry(int $blogLabelId,$entryId){
 		$dao = self::entryDao();
 
 		try{
-
 			if(defined("CMS_PREVIEW_ALL")){
 				if(is_numeric($entryId)){
 					try{
@@ -393,7 +394,7 @@ class EntryLogic extends SOY2LogicBase{
 			}
 
 			$entry = SOY2::cast("LabeledEntry",$entry);
-
+			
 			//ブログに所属しているエントリーかどうかチェックする
 			$labelIds = $this->getLabelIdsByEntryId($entry->getId());
 			if(!in_array($blogLabelId,$labelIds)){
@@ -408,7 +409,10 @@ class EntryLogic extends SOY2LogicBase{
 		return $entry;
 	}
 
-	function getBlogEntryWithoutExecption($blogLabelId,$entryId){
+	/**
+	 * @param int, int|string
+	 */
+	function getBlogEntryWithoutExecption(int $blogLabelId, $entryId){
 		$dao = self::entryDao();
 		if(is_numeric($entryId)){
 			try{

@@ -144,7 +144,7 @@ class CMSBlogPage extends CMSPage{
 
 		//モードの取得、モード別の動作など
 		$arguments = implode("/",$this->arguments);
-
+		
 		//ページの取得
 		if(preg_match('/(\/?page-([0-9]*))$/',$arguments,$tmp)){
 			$this->offset = $tmp[2];
@@ -873,12 +873,26 @@ class CMSBlogPage extends CMSPage{
 	 * @param mixed int|string
 	 */
 	private function _entry($alias){
-
-		$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
 		$blogLabelId = $this->page->getBlogLabelId();
 
+		$entry = null;
+		$onLoads = CMSPlugin::getEvent('onEntryGet');
+		if(is_array($onLoads) && count($onLoads)){
+			foreach($onLoads as $plugin){
+				$func = $plugin[0];
+				$res = call_user_func($func, array('blogLabelId' => &$blogLabelId, 'alias' => $alias));
+				if($res instanceof LabeledEntry && is_numeric($res->getId()) && $res->getId() > 0){
+					$entry = $res;
+					unset($res);
+					break;
+				}
+			}
+		}
+		
+		$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
+
 		//ブログのエントリーをIDまたはエイリアスで取得
-		$entry = $logic->getBlogEntry($blogLabelId, $alias);
+		if(!$entry instanceof LabeledEntry) $entry = $logic->getBlogEntry($blogLabelId, $alias);
 		
 		//表示順の投入
 		$entryLabelDAO = SOY2DAOFactory::create("cms.EntryLabelDAO");

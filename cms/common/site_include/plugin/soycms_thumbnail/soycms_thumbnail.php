@@ -254,6 +254,7 @@ class SOYCMSThumbnailPlugin{
 		$uploadImagePath = $attrValues[ThumbnailPluginUtil::UPLOAD_IMAGE];
 
 		$html = array();
+		$html[] = "<div class=\"alert alert-success\">サムネイル</div>";
 		$html[] = "<div class=\"form-inline\">";
 		$html[] = "<label for=\"custom_field_img\">サムネイルの生成</label>";
 		$html[] = '<div class="table-responsive"><table class="table">';

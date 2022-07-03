@@ -30,6 +30,7 @@ class CMSPlugin {
 		"onAdminTop" => array(),		//管理画面トップページの拡張	@params array()、@return array("title" => "", "content" => "")
 
 		//エントリー関連
+		"onEntryGet"=>array(),			//エントリーを取得する時			array(blogLabelId, entryId)
 		"onEntryLoad"=>array(),			//*エントリーが読み込まれる直前		array(entry)
 		"onEntryCreate"=>array(),		//エントリーが作成される直後		array(entry)
 		"onEntryUpdate"=>array(),		//エントリーが更新される直後		array(entry)
@@ -39,6 +40,7 @@ class CMSPlugin {
 		"onEntryCopy"=>array(),			//エントリー複製時に呼び出される	array(oldId,newId)
 		"onSetupWYSIWYG"=>array(),		//WYSIWYGエディタをセットアップしている時 array(entryId, labelIds)
 		"onEntryListBeforeOutput"=>array(),	//エントリーリストが呼び出される直前 array(&entries)
+		"onEntryStateMessage"=>array(),	//エントリーの状態を出力する時		array(entryId)
 
 		//記事のCSV
 		"onEntryCSVExImport"=>array(),			//インポート、エクスポート時に対象となるプラグインを探す array()
