@@ -19,7 +19,7 @@ class EntryPreviewPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/4610",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.1"
+			"version"=>"0.5"
 		));
 
 		CMSPlugin::addPluginConfigPage($this->getId(),array(
@@ -91,43 +91,9 @@ class EntryPreviewPlugin{
 
 	function onCallCustomField(){$arg = SOY2PageController::getArguments();
 		$entryId = (isset($arg[0])) ? (int)$arg[0] : 0;
-
-		try{
-			$entryLabels = SOY2DAOFactory::create("cms.EntryLabelDAO")->getByEntryId($entryId);
-		}catch(Exception $e){
-			$entryLabels = array();
-		}
-
-		if(!count($entryLabels)) return "";
-
-		//ページIDがあるか？
-		$labelIds = array();
-		foreach($entryLabels as $entryLabel){
-			$labelIds[] = $entryLabel->getLabelId();
-		}
+		$pageId = EntryPreviewUtil::getPageIdOnEntryCreatePage($entryId);
 		
-		try{
-			$list = SOY2DAOFactory::create("cms.BlogPageDAO")->getBlogPageUriListCorrespondingToBlogLabelId();
-		}catch(Exception $e){
-			$list = array();
-		}
-
-		$blogUri = "";
-		foreach($labelIds as $labelId){
-			if(isset($list[$labelId])) {
-				$blogUri = $list[$labelId][0];
-			}
-		}
-
-		if(!strlen($blogUri)) return "";
-		
-		try{
-			$pageId = SOY2DAOFactory::create("cms.PageDAO")->getByUri($blogUri)->getId();
-		}catch(Exception $e){
-			$pageId = 0;
-		}
-		
-		return ($pageId > 0) ? self::_buildForm($entryId, $pageId) : "";
+		return ($pageId > 0) ? self::_buildForm($entryId, $pageId) : self::_buildNoPreviewForm();
 	}
 
 	/**
@@ -142,46 +108,69 @@ class EntryPreviewPlugin{
 		return self::_buildForm($entryId, $pageId);
 	}
 
+	/**
+	 * @param int, int
+	 * @return html
+	 */
 	private function _buildForm(int $entryId, int $pageId){
 		$on = EntryPreviewUtil::checkPreviewMode($entryId);
 
 		$html = array();
 		$html[] = "<div class=\"alert alert-success\">記事プレビュー</div>";
-		$html[] = "<div class=\"form-group\">";
-		$html[] = "	<label>記事プレビューを使用する</label>";
-		if($on){
-			$html[] = "	<input type=\"checkbox\" name=\"PreviewConfig[on]\" value=\"1\" checked=\"checked\" id=\"soycms_preview_check\">";
-		}else{
-			$html[] = "	<input type=\"checkbox\" name=\"PreviewConfig[on]\" value=\"1\" id=\"soycms_preview_check\">";
-		}
-		$html[] = "</div>";
 
-		$postfix = EntryPreviewUtil::getPreviewPostfix($entryId);
-		$html[] = "<div class=\"form-group\" id=\"soycms_preview_url_postfix\">";
-		$html[] = "<label>プレビューURLの接尾語</label><br>";
-		$html[] = "<div class=\"form-inline\">";
-		$html[] = "<input type=\"text\" name=\"PreviewConfig[postfix]\" class=\"form-control\" value=\"" . $postfix . "\" placeholder=\"" . $this->postfix . "\">";
-		$html[] = "</div>";
-		$html[] = "</div>";
-
-		// プレビューのURL
-		if(!strlen($postfix)) $postfix = $this->postfix;
-		$url = EntryPreviewUtil::buildPreviewPageUrl($pageId) . $entryId . "_" . $postfix;
-		$html[] = "<div class=\"form-group\" id=\"soycms_preview_url_area\">";
-		$html[] = "<label>プレビューURL</label>";
-		if($entryId > 0){
-			$html[] = $url;
+		if(soycms_get_entry_object($entryId)->getIsPublished() < Entry::ENTRY_ACTIVE){
+			$html[] = "<div class=\"form-group\">";
+			$html[] = "	<label>記事プレビューを使用する</label>";
 			if($on){
-				$html[] = "<a href=\"" . $url . "\" class=\"btn btn-info\" target=\"_blank\" rel=\"noopener\">確認</a>";
+				$html[] = "	<input type=\"checkbox\" name=\"PreviewConfig[on]\" value=\"1\" checked=\"checked\" id=\"soycms_preview_check\">";
+			}else{
+				$html[] = "	<input type=\"checkbox\" name=\"PreviewConfig[on]\" value=\"1\" id=\"soycms_preview_check\">";
 			}
+			$html[] = "</div>";
+
+			$postfix = EntryPreviewUtil::getPreviewPostfix($entryId);
+			$html[] = "<div class=\"form-group\" id=\"soycms_preview_url_postfix\">";
+			$html[] = "<label>プレビューURLの接尾語</label><br>";
+			$html[] = "<div class=\"form-inline\">";
+			$html[] = "<input type=\"text\" name=\"PreviewConfig[postfix]\" class=\"form-control\" value=\"" . $postfix . "\" placeholder=\"" . $this->postfix . "\">";
+			$html[] = "</div>";
+			$html[] = "</div>";
+
+			// プレビューのURL
+			if(!strlen($postfix)) $postfix = $this->postfix;
+			$url = EntryPreviewUtil::buildPreviewPageUrl($pageId) . $entryId . "_" . $postfix;
+			$html[] = "<div class=\"form-group\" id=\"soycms_preview_url_area\">";
+			$html[] = "<label>プレビューURL</label>";
+			if($entryId > 0){
+				$html[] = $url;
+				if($on){
+					$html[] = "<a href=\"" . $url . "\" class=\"btn btn-info\" target=\"_blank\" rel=\"noopener\">確認</a>";
+				}
+			}else{
+				$html[] = "---";
+			}
+			
+			$html[] = "</div>";
+
+			$html[] = "<script>" . file_get_contents(dirname(__FILE__) . "/js/preview.js") . "</script>";
 		}else{
-			$html[] = "---";
+			$html[] = "記事の公開設定が公開中の時はプレビューの設定を行うことはできません。<br><br>";
 		}
-		
-		$html[] = "</div>";
 
-		$html[] = "<script>" . file_get_contents(dirname(__FILE__) . "/js/preview.js") . "</script>";
+		return implode("\n", $html);
+	}
 
+	private function _buildNoPreviewForm(){
+		$html = array();
+		$html[] = "<div class=\"alert alert-success\">記事プレビュー</div>";
+		$html[] = "<strong>記事プレビューを使用する手順</strong>";
+		$html[] = "<ul style=\"list-style-type:decimal;\">";
+		$html[] = "<li>ブログで設定しているラベルを選択した上で（記事の）作成ボタンを押します。公開設定は下書きのままでOKです。</li>";
+		$html[] = "<li><strong>記事プレビューを使用する</strong>にチェックをつけます。</li>";
+		$html[] = "<li><strong>プレビューURLの接尾語</strong>を必要であれば変更してから（記事の）更新ボタンを押します。</li>";
+		$html[] = "<li><strong>プレビューURL</strong>に続いて確認ボタンが表示されるので押します。</li>";
+		$html[] = "</ul>";
+		$html[] = "<br>";
 		return implode("\n", $html);
 	}
 

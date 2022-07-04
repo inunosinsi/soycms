@@ -22,6 +22,48 @@ class EntryPreviewUtil {
 	}
 
 	/**
+	 * 記事投稿画面(ブログではない)で記事IDからページIDを取得する
+	 * @param int
+	 * @return int
+	 */
+	public static function getPageIdOnEntryCreatePage(int $entryId){
+		try{
+			$entryLabels = SOY2DAOFactory::create("cms.EntryLabelDAO")->getByEntryId($entryId);
+		}catch(Exception $e){
+			$entryLabels = array();
+		}
+		if(!count($entryLabels)) return 0;
+
+		try{
+			$list = SOY2DAOFactory::create("cms.BlogPageDAO")->getBlogPageUriListCorrespondingToBlogLabelId();
+		}catch(Exception $e){
+			$list = array();
+		}
+		if(!count($list)) return 0;
+
+		//ページIDがあるか？
+		$labelIds = array();
+		foreach($entryLabels as $entryLabel){
+			$labelIds[] = $entryLabel->getLabelId();
+		}
+
+		$blogUri = "";
+		foreach($labelIds as $labelId){
+			if(isset($list[$labelId])) {
+				$blogUri = $list[$labelId][0];
+			}
+		}
+
+		if(!strlen($blogUri)) return 0;
+		
+		try{
+			return SOY2DAOFactory::create("cms.PageDAO")->getByUri($blogUri)->getId();
+		}catch(Exception $e){
+			return 0;
+		}
+	}
+
+	/**
 	 * @param int, bool
 	 */
 	public static function savePreviewMode(int $entryId, bool $on=false){
