@@ -12,11 +12,9 @@ class ReserveCalendarCart extends SOYShopCartBase{
 		if(isset($_REQUEST["a"]) && $_REQUEST["a"] == "add"){
 
 			if(isset($_REQUEST["schId"]) && is_numeric($_REQUEST["schId"])){
-				SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ScheduleDAO");
-
 				//スケジュールが登録されているか確認してから商品IDを$_REQUESTに渡す
 				try{
-					$sch = SOY2DAOFactory::create("SOYShopReserveCalendar_ScheduleDAO")->getById($_REQUEST["schId"]);
+					$sch = soyshop_get_hash_table_dao("schedule_calendar")->getById($_REQUEST["schId"]);
 				}catch(Exception $e){
 					$sch = new SOYShopReserveCalendar_Schedule();
 				}

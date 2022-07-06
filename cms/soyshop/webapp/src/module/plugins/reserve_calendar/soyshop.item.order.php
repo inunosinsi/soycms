@@ -4,8 +4,7 @@ class ReserveCalendarItemOrder extends SOYShopItemOrderBase{
 
 	function edit(SOYShop_ItemOrder $itemOrder){
 		//itemorderに合わせて残席数を変更
-		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ReserveDAO");
-		$resDao = SOY2DAOFactory::create("SOYShopReserveCalendar_ReserveDAO");
+		$resDao = soyshop_get_hash_table_dao("reserve_calendar");
 		try{
 			$reserves = $resDao->getByOrderId($itemOrder->getOrderId());
 		}catch(Exception $e){

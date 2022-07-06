@@ -10,11 +10,15 @@ class SlipNumberUtil {
 		));
 	}
 
-	public static function saveConfig($values){
+	public static function saveConfig(array $values){
 		return SOYShop_DataSets::put(self::PLUGIN_ID . ".config", $values);
 	}
 
-	public static function checkIsPon($line){
+	/**
+	 * @param string 
+	 * @return bool
+	 */
+	public static function checkIsPon(string $line){
 		$values = explode(",", $line);
 		$h = self::_getPonHeader();
 		foreach($values as $i => $v){

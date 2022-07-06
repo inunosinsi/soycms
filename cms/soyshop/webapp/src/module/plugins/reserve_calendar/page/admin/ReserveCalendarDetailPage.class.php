@@ -35,13 +35,10 @@ class ReserveCalendarDetailPage extends WebPage{
 		$this->backward = new BackwardUserComponent();
 		$this->component = new UserComponent();
 
-		$this->userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
+		$this->userDao = soyshop_get_hash_table_dao("user");
 
 		//多言語
 		MessageManager::addMessagePath("admin");
-
-		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ScheduleDAO");
-		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ReserveDAO");
 	}
 
 	function doPost(){
@@ -97,7 +94,7 @@ class ReserveCalendarDetailPage extends WebPage{
 				}
 
 				/** 予約する **/
-				$resDao = SOY2DAOFactory::create("SOYShopReserveCalendar_ReserveDAO");
+				$resDao = soyshop_get_hash_table_dao("reserve_calendar");
 				$res = new SOYShopReserveCalendar_Reserve();
 				$res->setScheduleId($this->schId);
 				$res->setOrderId($orderId);
@@ -152,7 +149,7 @@ class ReserveCalendarDetailPage extends WebPage{
 			if(isset($_POST["Change"]) && is_numeric($_POST["Change"]["seat"])){
 				$this->schedule->setUnsoldSeat((int)$_POST["Change"]["seat"]);
 				try{
-					SOY2DAOFactory::create("SOYShopReserveCalendar_ScheduleDAO")->update($this->schedule);
+					soyshop_get_hash_table_dao("schedule_calendar")->update($this->schedule);
 					SOY2PageController::jump("Extension.Detail.reserve_calendar." . $this->schId . "?updated");
 				}catch(Exception $e){
 					//var_dump($e);

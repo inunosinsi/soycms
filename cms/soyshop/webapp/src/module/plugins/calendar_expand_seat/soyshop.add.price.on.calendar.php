@@ -18,8 +18,7 @@ class CalendarExpandSeatAddPriceOnCalendar extends SOYShopAddPriceOnCalendarBase
 
 	function doPost(int $scheduleId){
 		if(isset($_POST["ChildPrice"]) && is_numeric($_POST["ChildPrice"]) && (int)$_POST["ChildPrice"] >= 0){
-			SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_SchedulePriceDAO");
-			$dao = SOY2DAOFactory::create("SOYShopReserveCalendar_SchedulePriceDAO");
+			$dao = soyshop_get_hash_table_dao("schedule_price");
 
 			$obj = new SOYShopReserveCalendar_SchedulePrice();
 			$obj->setScheduleId($scheduleId);
@@ -35,9 +34,8 @@ class CalendarExpandSeatAddPriceOnCalendar extends SOYShopAddPriceOnCalendarBase
 	}
 
 	function list(int $scheduleId){
-		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_SchedulePriceDAO");
 		try{
-			$price = SOY2DAOFactory::create("SOYShopReserveCalendar_SchedulePriceDAO")->get($scheduleId, "child_price")->getPrice();
+			$price = soyshop_get_hash_table_dao("schedule_price")->get($scheduleId, "child_price")->getPrice();
 		}catch(Exception $e){
 			return array();
 		}

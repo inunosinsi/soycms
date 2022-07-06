@@ -210,7 +210,7 @@ class SOYShop_Item {
 		if(!SOYShopPluginUtil::checkIsActive("reserve_calendar")) return (int)$this->stock;
 
 		//予約カレンダーモード
-		$unseat = self::_scheduleDao()->getScheduleUnseatCountByItemId($this->getId()) - $this->getOrderCount();
+		$unseat = (soyshop_get_hash_table_dao("schedule_calendar")->getScheduleUnseatCountByItemId($this->getId()) - $this->getOrderCount());
 		return ($unseat >= 0) ? $unseat : 0;
 	}
 	function setStock($stock) {
@@ -360,11 +360,11 @@ class SOYShop_Item {
 	function getOrderCount(){
 		//予約カレンダーの場合
 		if(SOYShopPluginUtil::checkIsActive("reserve_calendar")){
-			return self::_reserveDao()->getReservedCountByItemId($this->getId());
+			return soyshop_get_hash_table_dao("reserve_calendar")->getReservedCountByItemId($this->getId());
 		//通常
 		}else{
 			try{
-				return self::_itemOrderDao()->countByItemId($this->getId());
+				return soyshop_get_hash_table_dao("item_orders")->countByItemId($this->getId());
 			}catch(Exception $e){
 				return 0;
 			}
@@ -527,31 +527,5 @@ class SOYShop_Item {
 		}
 
 		return true;
-	}
-
-	/** DAO **/
-
-	private function _itemOrderDao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
-		return $dao;
-	}
-
-	private function _reserveDao(){
-		static $dao;
-		if(is_null($dao)){
-			SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ReserveDAO");
-			$dao = SOY2DAOFactory::create("SOYShopReserveCalendar_ReserveDAO");
-		}
-		return $dao;
-	}
-
-	private function _scheduleDao(){
-		static $dao;
-		if(is_null($dao)){
-			SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ScheduleDAO");
-			$dao = SOY2DAOFactory::create("SOYShopReserveCalendar_ScheduleDAO");
-		}
-		return $dao;
 	}
 }

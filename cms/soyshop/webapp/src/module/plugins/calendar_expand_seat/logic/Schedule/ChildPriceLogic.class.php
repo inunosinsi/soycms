@@ -2,18 +2,16 @@
 
 class ChildPriceLogic extends SOY2LogicBase {
 
-	function __construct(){
-		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_SchedulePriceDAO");
-	}
+	function __construct(){}
 
-	function getLowPriceAndHighPriceByItemId($itemId){
+	function getLowPriceAndHighPriceByItemId(int $itemId){
 		static $list;
 		if(is_null($list)) $list = array();
 		if(is_null($itemId) || !is_numeric($itemId)) return array(0, 0);
 		if(isset($list[$itemId])) return $list[$itemId];
 
 		//子供料金を調べる
-		list($low, $high) = self::dao()->getLowPriceAndHighPriceByItemIdAndFieldId($itemId, "child_price");
+		list($low, $high) = soyshop_get_hash_table_dao("schedule_price")->getLowPriceAndHighPriceByItemIdAndFieldId($itemId, "child_price");
 
 		//通常の料金を調べる
 		list($pLow, $pHigh) = self::logic()->getLowPriceAndHighPriceByItemId($itemId);
@@ -22,12 +20,6 @@ class ChildPriceLogic extends SOY2LogicBase {
 
 		$list[$itemId] = array($low, $high);
 		return $list[$itemId];
-	}
-
-	private function dao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("SOYShopReserveCalendar_SchedulePriceDAO");
-		return $dao;
 	}
 
 	private function logic(){

@@ -23,12 +23,10 @@ class DetailPage extends MainMyPagePageBase{
             "text" => $user->getName()
         ));
 
-		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ScheduleDAO");
-		$schedule = SOY2DAOFactory::create("SOYShopReserveCalendar_ScheduleDAO")->getScheduleByReserveId($resId);
-		self::buildScheduleInfoArea($schedule);
+		self::_buildScheduleInfoArea(soyshop_get_hash_table_dao("schedule_calendar")->getScheduleByReserveId($resId));
 	}
 
-	private function buildScheduleInfoArea(SOYShopReserveCalendar_Schedule $schedule){
+	private function _buildScheduleInfoArea(SOYShopReserveCalendar_Schedule $schedule){
 
 		$item = soyshop_get_item_object($schedule->getItemId());
 		$this->addLink("item_name", array(

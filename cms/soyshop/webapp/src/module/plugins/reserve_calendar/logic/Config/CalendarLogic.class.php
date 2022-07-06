@@ -13,8 +13,7 @@ class CalendarLogic extends CalendarBaseComponent{
 		$this->month = $m;
 
 		//金額の拡張があるか？調べる
-		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_SchedulePriceDAO");
-		$this->extPrices = SOY2DAOFactory::create("SOYShopReserveCalendar_SchedulePriceDAO")->getPriceListByYearAndMonth($y, $m);
+		$this->extPrices = soyshop_get_hash_table_dao("schedule_price")->getPriceListByYearAndMonth($y, $m);
 
 		return parent::build($y, $m, $dspOtherMD, $dspCaption, $dspRegHol, $dspMonthLink, $isBefore, $isNextMonth);
 	}

@@ -2,13 +2,10 @@
 
 class CancelLogic extends SOY2LogicBase{
 
-	function __construct(){
-		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ReserveDAO");
-		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_CancelDAO");
-	}
+	function __construct(){}
 
-	function cancel($reserveId){
-		$resDao = self::dao();
+	function cancel(int $reserveId){
+		$resDao = soyshop_get_hash_table_dao("reserve_calendar");
 		try{
 			$reserve = $resDao->getById($reserveId);
 		}catch(Exception $e){
@@ -24,7 +21,7 @@ class CancelLogic extends SOY2LogicBase{
 			return false;
 		}
 
-		$canDao = SOY2DAOFactory::create("SOYShopReserveCalendar_CancelDAO");
+		$canDao = soyshop_get_hash_table_dao("reserve_cancel");
 		$cancel = new SOYShopReserveCalendar_Cancel();
 		$cancel->setScheduleId($reserve->getScheduleId());
 		$cancel->setOrderId($reserve->getOrderId());
@@ -36,17 +33,11 @@ class CancelLogic extends SOY2LogicBase{
 		}
 
 		//予約に紐付いた注文をキャンセルにする
-		$orderDao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
-		try{
-			$order = $orderDao->getById($reserve->getOrderId());
-		}catch(Exception $e){
-			//
-		}
-
+		$order = soyshop_get_order_object($reserve->getOrderId());		
 		if($order->getStatus() != SOYShop_Order::ORDER_STATUS_CANCELED){
 			$order->setStatus(SOYShop_Order::ORDER_STATUS_CANCELED);
 			try{
-				$orderDao->update($order);
+				soyshop_get_hash_table_dao("order")->update($order);
 			}catch(Exception $e){
 				//
 			}
@@ -56,13 +47,7 @@ class CancelLogic extends SOY2LogicBase{
 		return true;
 	}
 
-	function getCancelListByScheduleId($scheduleId){
-		return SOY2DAOFactory::create("SOYShopReserveCalendar_CancelDAO")->getCancelListByScheduleId($scheduleId);
-	}
-
-	private function dao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("SOYShopReserveCalendar_ReserveDAO");
-		return $dao;
+	function getCancelListByScheduleId(int $scheduleId){
+		return soyshop_get_hash_table_dao("reserve_cancel")->getCancelListByScheduleId($scheduleId);
 	}
 }

@@ -19,9 +19,10 @@ class DetailMenuPage extends HTMLPage{
 		$page = soyshop_get_page_object($item->getDetailPageId());
 		$url = (is_numeric($page->getId())) ? soyshop_get_page_url($page->getUri(), $item->getAlias()) : "";
 
-		//
-		DisplayPlugin::toggle("is_open", $item->isPublished());
-		DisplayPlugin::toggle("is_open2", $item->isPublished());
+		$isOrderable = ($item->isPublished() && $item->isOrderable());
+		DisplayPlugin::toggle("is_open", $isOrderable);
+		DisplayPlugin::toggle("is_open2", $isOrderable);
+		DisplayPlugin::toggle("is_open3", $isOrderable);
 		DisplayPlugin::toggle("no_open", !$item->isPublished());
 
 		//確認ページ

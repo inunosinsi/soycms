@@ -9,7 +9,29 @@ function soyshop_generate_hash_value(string $str, int $length=12){
 
 function soyshop_get_hash_table_types(){
 	static $types;
-	if(is_null($types)) $types = array("item", "item_children", "item_attribute", "category", "category_attribute", "user", "user_attribute", "order", "order_attribute", "order_date_attribute", "order_state_history", "item_orders", "page", "plugin");
+	if(is_null($types)) {
+		$types = array(
+			"item", 
+			"item_children", 
+			"item_attribute", 
+			"category", 
+			"category_attribute", 
+			"user", 
+			"user_attribute", 
+			"order", 
+			"order_attribute", 
+			"order_date_attribute", 
+			"order_state_history", 
+			"item_orders", 
+			"page", 
+			"plugin", 
+			"schedule_calendar", 
+			"schedule_search",
+			"schedule_price",
+			"reserve_calendar",
+			"reserve_cancel"
+		);
+	}
 	return $types;
 }
 
@@ -79,6 +101,27 @@ function soyshop_get_hash_table_dao(string $fnName){
 		case 13:
 			$path = "plugin.SOYShop_PluginConfigDAO";
 			break;
+		case 14:	// schedule_calendar
+			SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ScheduleDAO");
+			$path = "SOYShopReserveCalendar_ScheduleDAO";
+			break;
+		case 15:	// schedule_search
+			SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ScheduleSearchDAO");
+			$path = "SOYShopReserveCalendar_ScheduleSearchDAO";
+			break;
+		case 16:	// schedule_price
+			SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_SchedulePriceDAO");
+			$path = "SOYShopReserveCalendar_SchedulePriceDAO";
+			break;
+		case 17:	// reserve_calendar
+			SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ReserveDAO");
+			$path = "SOYShopReserveCalendar_ReserveDAO";
+			break;
+		case 18:	// reserve_cancel
+			SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_CancelDAO");
+			$path = "SOYShopReserveCalendar_CancelDAO";
+			break;
+
 	}
 	$daos[$idx] = SOY2DAOFactory::create($path);
 	return $daos[$idx];

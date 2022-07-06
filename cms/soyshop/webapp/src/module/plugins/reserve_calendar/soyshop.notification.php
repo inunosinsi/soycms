@@ -7,8 +7,7 @@ class ReserveCalendarOrderNotification extends SOYShopNotification{
 		}
 
 		$token = trim($_GET["token"]);
-		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ReserveDAO");
-		$dao = SOY2DAOFactory::create("SOYShopReserveCalendar_ReserveDAO");
+		$dao = soyshop_get_hash_table_dao("reserve_calendar");
 
 		try{
 			$orderId = $dao->getByToken($token)->getOrderId();
@@ -30,7 +29,7 @@ class ReserveCalendarOrderNotification extends SOYShopNotification{
 		}
 
 		//注文の方も仮登録を解除
-		$orderDao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
+		$orderDao = soyshop_get_hash_table_dao("order");
 		try{
 			$order = $orderDao->getById($orderId);
 			$order->setStatus(SOYShop_Order::ORDER_STATUS_REGISTERED);

@@ -20,7 +20,7 @@ class CalendarFormPage extends WebPage{
 	function doPost(){
 
 		if(soy2_check_token()){
-			$schDao = self::schDao();
+			$schDao = soyshop_get_hash_table_dao("schedule_calendar");
 
 			//自動登録
 			$auto = (isset($_POST["auto_register"]) && $_POST["auto_register"]) ? 1 : 0;
@@ -235,12 +235,6 @@ class CalendarFormPage extends WebPage{
 		$html[] = "<br style=\"clear:both;\">";
 
 		return implode("\n", $html);
-	}
-
-	private function schDao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("SOYShopReserveCalendar_ScheduleDAO");
-		return $dao;
 	}
 
 	function setConfigObj($obj) {

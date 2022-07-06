@@ -2,9 +2,7 @@
 
 class DateLogic extends SOY2LogicBase {
 
-	function __construct(){
-		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ScheduleSearchDAO");
-	}
+	function __construct(){}
 
 	function getSchedulePeriodByItemId(int $itemId){
 		static $list;
@@ -29,14 +27,8 @@ class DateLogic extends SOY2LogicBase {
 			}
 		}
 
-		list($min, $max) = self::dao()->getSchedulePeriodByItemId($itemId, $start, $end);
+		list($min, $max) = soyshop_get_hash_table_dao("schedule_search")->getSchedulePeriodByItemId($itemId, $start, $end);
 		$list[$itemId] = array($min, $max);
 		return $list[$itemId];
-	}
-
-	private function dao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("SOYShopReserveCalendar_ScheduleSearchDAO");
-		return $dao;
 	}
 }

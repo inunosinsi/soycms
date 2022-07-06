@@ -88,7 +88,7 @@ class ReserveCalendarOption extends SOYShopItemOptionBase{
         $schId = $cart->getAttribute($obj);
 
         //予約として登録
-        $resDao = self::resDao();
+        $resDao = soyshop_get_hash_table_dao("reserve_calendar");
         $res = new SOYShopReserveCalendar_Reserve();
         $res->setScheduleId($schId);
         $res->setOrderId($cart->getAttribute("order_id"));
@@ -118,7 +118,7 @@ class ReserveCalendarOption extends SOYShopItemOptionBase{
     function display(SOYShop_ItemOrder $itemOrder){
         $attributes = $itemOrder->getAttributeList();
         if(isset($attributes["reserve_id"]) && is_numeric($attributes["reserve_id"])){
-            $sch = self::schDao()->getScheduleByReserveId((int)$attributes["reserve_id"]);
+            $sch = soyshop_get_hash_table_dao("schedule_calendar")->getScheduleByReserveId((int)$attributes["reserve_id"]);
 
             $list = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getLabelList($itemOrder->getItemId());
 
@@ -130,28 +130,10 @@ class ReserveCalendarOption extends SOYShopItemOptionBase{
 
     private function getScheduleById(int $schId){
         try{
-            return self::schDao()->getById($schId);
+            return soyshop_get_hash_table_dao("schedule_calendar")->getById($schId);
         }catch(Exception $e){
             return new SOYShopReserveCalendar_Schedule();
         }
-    }
-
-    private function schDao(){
-        static $dao;
-        if(is_null($dao)){
-            SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ScheduleDAO");
-            $dao = SOY2DAOFactory::create("SOYShopReserveCalendar_ScheduleDAO");
-        }
-        return $dao;
-    }
-
-    private function resDao(){
-        static $dao;
-        if(is_null($dao)){
-            SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ReserveDAO");
-            $dao = SOY2DAOFactory::create("SOYShopReserveCalendar_ReserveDAO");
-        }
-        return $dao;
     }
 }
 

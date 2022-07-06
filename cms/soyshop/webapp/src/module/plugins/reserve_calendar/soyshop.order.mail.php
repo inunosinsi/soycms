@@ -18,8 +18,7 @@ class ReserveCalendarOrderMail extends SOYShopOrderMail{
 
 		//プラン詳細
 		if(count($itemOrders)){
-			SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ScheduleDAO");
-			$schDao = SOY2DAOFactory::create("SOYShopReserveCalendar_ScheduleDAO");
+			$schDao = soyshop_get_hash_table_dao("schedule_calendar");
 
 			$bodies[] = "";
 			$bodies[] = "予約詳細";

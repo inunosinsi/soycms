@@ -2,9 +2,7 @@
 
 class PriceLogic extends SOY2LogicBase {
 
-	function __construct(){
-		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ScheduleDAO");
-	}
+	function __construct(){}
 
 	function getLowPriceAndHighPriceByItemId(int $itemId){
 		static $list;
@@ -29,14 +27,8 @@ class PriceLogic extends SOY2LogicBase {
 			}
 		}
 
-		list($low, $high) = self::dao()->getLowPriceAndHighPriceByItemId($itemId, $start, $end);
+		list($low, $high) = soyshop_get_hash_table_dao("schedule_calendar")->getLowPriceAndHighPriceByItemId($itemId, $start, $end);
 		$list[$itemId] = array($low, $high);
 		return $list[$itemId];
-	}
-
-	private function dao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("SOYShopReserveCalendar_ScheduleDAO");
-		return $dao;
 	}
 }

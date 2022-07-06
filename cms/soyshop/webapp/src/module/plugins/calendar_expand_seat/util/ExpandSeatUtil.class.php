@@ -3,13 +3,12 @@
 class ExpandSeatUtil {
 
 	public static function getScheduleIdByReserveId($reserveId){
-		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ScheduleDAO");
-		return (int)SOY2DAOFactory::create("SOYShopReserveCalendar_ScheduleDAO")->getScheduleByReserveId($reserveId)->getId();
+		return (int)soyshop_get_hash_table_dao("schedule_calendar")->getScheduleByReserveId($reserveId)->getId();
 	}
 
 	public static function extractSeatCompositionByOrderId($orderId){
 		try{
-			$attrs = SOY2DAOFactory::create("order.SOYShop_OrderDAO")->getById($orderId)->getAttributeList();
+			$attrs = soyshop_get_hash_table_dao("order")->getById($orderId)->getAttributeList();
 		}catch(Exception $e){
 			$attrs = array();
 		}
@@ -60,13 +59,8 @@ class ExpandSeatUtil {
 	}
 
 	private static function _getChildPrice($scheduleId){
-		static $dao;
-		if(is_null($dao)){
-			SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_SchedulePriceDAO");
-			$dao = SOY2DAOFactory::create("SOYShopReserveCalendar_SchedulePriceDAO");
-		}
 		try{
-			return $dao->get($scheduleId, "child_price")->getPrice();
+			return soyshop_get_hash_table_dao("schedule_price")->get($scheduleId, "child_price")->getPrice();
 		}catch(Exception $e){
 			return null;
 		}

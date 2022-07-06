@@ -184,10 +184,8 @@ class CommonMailbuilder extends SOYShopOrderMailBuilder{
 
 	//予約カレンダー連携
 	protected function buildReservedScheduleInfo($orderItems){
-		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_Schedule");
-		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ScheduleDAO");
 		$labelLogic = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic");
-		$schDao = SOY2DAOFactory::create("SOYShopReserveCalendar_ScheduleDAO");
+		$schDao = soyshop_get_hash_table_dao("schedule_calendar");
 
 		$contents = array();
 

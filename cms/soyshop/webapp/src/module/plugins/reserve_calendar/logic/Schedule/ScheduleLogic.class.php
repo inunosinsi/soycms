@@ -8,14 +8,14 @@ class ScheduleLogic extends SOY2LogicBase{
 
     function getScheduleById(int $scheduleId){
         try{
-            return self::dao()->getById($scheduleId);
+            return soyshop_get_hash_table_dao("schedule_calendar")->getById($scheduleId);
         }catch(Exception $e){
             return new SOYShopReserveCalendar_Schedule();
         }
     }
 
     function getScheduleList(int $itemId, int $year, int $month){
-        $list = self::dao()->getScheduleList($itemId, $year, $month);
+        $list = soyshop_get_hash_table_dao("schedule_calendar")->getScheduleList($itemId, $year, $month);
 
 		$nextY = $year;
 		$nextM = $month + 1;
@@ -27,7 +27,7 @@ class ScheduleLogic extends SOY2LogicBase{
         //スケジュールの自動登録 指定の年月でスケジュールの登録がない場合は自動登録
         if(!count($list) && (mktime(0, 0, 0, $nextM, 1, $nextY) - 1) > time()){
 			self::_autoInsert($itemId, $year, $month);
-            $list = self::dao()->getScheduleList($itemId, $year, $month);
+            $list = soyshop_get_hash_table_dao("schedule_calendar")->getScheduleList($itemId, $year, $month);
         }
 
         return $list;
@@ -44,7 +44,7 @@ class ScheduleLogic extends SOY2LogicBase{
         $logic = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.HolidayLogic", array("itemId" => $itemId));
         $d = $logic->getDayCount($year, $month);
 
-        $dao = self::dao();
+        $dao = soyshop_get_hash_table_dao("schedule_calendar");
 
         $labelList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getLabelList($itemId);
 
@@ -72,17 +72,23 @@ class ScheduleLogic extends SOY2LogicBase{
     }
 
 	function findLatestScheduleDate(int $year, int $month){
-		return self::dao()->findLatestScheduleDate($year, $month);
+		return soyshop_get_hash_table_dao("schedule_calendar")->findLatestScheduleDate($year, $month);
 	}
 
-	//指定の日から○日分の予定を取得する
-	function getScheduleListFromDays(int $itemId, int $now=0, int $days=30, int $deadline=0){
+	/**
+     * 指定の日から○日分の予定を取得する
+     * 5番目の引数には想定された件数を取得できなかった場合はスケジュールの自動登録を行う
+     * @param int, int, int, int, int
+     * @return array
+     */
+	function getScheduleListFromDays(int $itemId, int $now=0, int $days=30, int $deadline=0, int $assumption=0){
 		if($now === 0) $now = time();
 		$now = soyshop_shape_timestamp($now);	//整形
-		$list = self::dao()->getScheduleListFromDays($itemId, $now, $days, $deadline);
+		$list = soyshop_get_hash_table_dao("schedule_calendar")->getScheduleListFromDays($itemId, $now, $days, $deadline);
+        $cnt = count($list);
 
 		//自動登録
-		if(!count($list)){
+		if($cnt === 0 || ($assumption > 0 && $cnt < $assumption)){
 			$month = date("n", $now);
 			self::_autoInsert($itemId, date("Y", $now), $month);
 
@@ -90,14 +96,8 @@ class ScheduleLogic extends SOY2LogicBase{
 			if(date("n", $future) != $month){
 				self::_autoInsert($itemId, date("Y", $future), date("n", $future));
 			}
-			$list = self::dao()->getScheduleListFromDays($itemId, $now, $days, $deadline);
+			$list = soyshop_get_hash_table_dao("schedule_calendar")->getScheduleListFromDays($itemId, $now, $days, $deadline);
 		}
 		return $list;
 	}
-
-    private function dao(){
-        static $dao;
-        if(is_null($dao)) $dao = SOY2DAOFactory::create("SOYShopReserveCalendar_ScheduleDAO");
-        return $dao;
-    }
 }

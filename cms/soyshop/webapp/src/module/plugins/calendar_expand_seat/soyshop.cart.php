@@ -10,7 +10,6 @@ class CalendarExpandSeatCart extends SOYShopCartBase{
 		$items = $cart->getItems();
 		if(count($items)){
 			$schLogic = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Schedule.ScheduleLogic");
-			SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_SchedulePriceDAO");
 			foreach($items as $idx => $itemOrder){
 				$adultSeat = $cart->getAttribute(ReserveCalendarUtil::getCartAttributeId("seat_div_adult", $idx, $itemOrder->getItemId()));
 				$childSeat = $cart->getAttribute(ReserveCalendarUtil::getCartAttributeId("seat_div_child", $idx, $itemOrder->getItemId()));
@@ -22,7 +21,7 @@ class CalendarExpandSeatCart extends SOYShopCartBase{
 
 				//子供料金
 				try{
-					$childPrice = SOY2DAOFactory::create("SOYShopReserveCalendar_SchedulePriceDAO")->get($schId, "child_price")->getPrice();
+					$childPrice = soyshop_get_hash_table_dao("schedule_price")->get($schId, "child_price")->getPrice();
 				}catch(Exception $e){
 					$childPrice = null;
 				}

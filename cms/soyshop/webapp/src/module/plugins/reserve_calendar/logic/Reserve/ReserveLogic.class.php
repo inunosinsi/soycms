@@ -2,30 +2,27 @@
 
 class ReserveLogic extends SOY2LogicBase{
 
-	function __construct(){
-		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ReserveDAO");
+	function __construct(){}
+
+	function getReservedSchedules(int $time=0, int $limit=16){
+		if($time === 0) $time = time();
+		return soyshop_get_hash_table_dao("reserve_calendar")->getReservedSchedules($time, $limit);
 	}
 
-	function getReservedSchedules($time = null, $limit = 16){
-		if(is_null($time)) $time = time();
-
-		return self::dao()->getReservedSchedules($time, $limit);
+	function getReservedListByScheduleId(int $scheduleId, bool $isTmp=false){
+		return soyshop_get_hash_table_dao("reserve_calendar")->getReservedListByScheduleId($scheduleId, $isTmp);
 	}
 
-	function getReservedListByScheduleId($scheduleId, $isTmp = false){
-		return self::dao()->getReservedListByScheduleId($scheduleId, $isTmp);
+	function getReservedCountByScheduleId(int $scheduleId, bool $isTmp=false){
+		return soyshop_get_hash_table_dao("reserve_calendar")->getReservedCountByScheduleId($scheduleId, $isTmp);
 	}
 
-	function getReservedCountByScheduleId($scheduleId, $isTmp = false){
-		return self::dao()->getReservedCountByScheduleId($scheduleId, $isTmp);
-	}
-
-	function getReservedSchedulesByPeriod($year = null, $month = null, $isTmp = false){
+	function getReservedSchedulesByPeriod($year=null, $month=null, $isTmp=false){
 		//どちらかが指定されていない時は動きません
 		if(is_null($year) || is_null($month)) return array();
 
 		//schedule_idと予約数を返す
-		return self::dao()->getReservedSchedulesByPeriod($year, $month, $isTmp);
+		return soyshop_get_hash_table_dao("reserve_calendar")->getReservedSchedulesByPeriod($year, $month, $isTmp);
 	}
 
 	//予約済みのスケジュールオブジェクトを取得する
@@ -34,24 +31,24 @@ class ReserveLogic extends SOY2LogicBase{
 		if(is_null($year) || is_null($month)) return array();
 
 		//schedule_idと予約数を返す
-		return self::dao()->getReservedScheduleListByUserIdAndPeriod($userId, $year, $month, $isTmp);
+		return soyshop_get_hash_table_dao("reserve_calendar")->getReservedScheduleListByUserIdAndPeriod($userId, $year, $month, $isTmp);
 	}
 
 	//指定の日から○日分の予定を取得する
-	function getReservedCountListFromDaysByItemId($itemId, $now=null, $days=30, $isTmp=false){
-		if(is_null($now)) $now = time();
+	function getReservedCountListFromDaysByItemId(int $itemId, int $now=0, int $days=30, bool $isTmp=false){
+		if($now === 0) $now = time();
 		$now = soyshop_shape_timestamp($now);	//整形
-		return self::dao()->getReservedCountListFromDaysByItemId($itemId, $now, $days, $isTmp);
+		return soyshop_get_hash_table_dao("reserve_calendar")->getReservedCountListFromDaysByItemId($itemId, $now, $days, $isTmp);
 	}
 
-	function checkIsUnsoldSeatByScheduleId($scheduleId){
+	function checkIsUnsoldSeatByScheduleId(int $scheduleId){
 		//boolean
-		return self::dao()->checkIsUnsoldSeatByScheduleId($scheduleId);
+		return soyshop_get_hash_table_dao("reserve_calendar")->checkIsUnsoldSeatByScheduleId($scheduleId);
 	}
 
 	//管理画面で本登録
-	function registration($reserveId){
-		$resDao = self::dao();
+	function registration(int $reserveId){
+		$resDao = soyshop_get_hash_table_dao("reserve_calendar");
 		try{
 			$reserve = $resDao->getById($reserveId);
 		}catch(Exception $e){
@@ -77,7 +74,7 @@ class ReserveLogic extends SOY2LogicBase{
 		$order = soyshop_get_order_object($reserve->getorderId());
 		$order->setStatus(SOYShop_Order::ORDER_STATUS_RECEIVED);
 		try{
-			SOY2DAOFactory::create("order.SOYShop_OrderDAO")->update($order);
+			soyshop_get_hash_table_dao("order")->update($order);
 		}catch(Exception $e){
 			$resDao->rollback();
 			error_log($e, 0);
@@ -95,20 +92,14 @@ class ReserveLogic extends SOY2LogicBase{
 		return true;
 	}
 
-	function getTokensByOrderId($orderId){
-		return self::dao()->getTokensByOrderId($orderId);
+	function getTokensByOrderId(int $orderId){
+		return soyshop_get_hash_table_dao("reserve_calendar")->getTokensByOrderId($orderId);
 	}
 
 	/** マイページ **/
 
 	//ページを開いているユーザの予約であるか調べる
-	function checkReserveByUserId($reserveId, $userId){
-		return self::dao()->checkReserveByUserId($reserveId, $userId);
-	}
-
-	private function dao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("SOYShopReserveCalendar_ReserveDAO");
-		return $dao;
+	function checkReserveByUserId(int $reserveId, int $userId){
+		return soyshop_get_hash_table_dao("reserve_calendar")->checkReserveByUserId($reserveId, $userId);
 	}
 }

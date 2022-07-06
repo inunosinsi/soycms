@@ -65,7 +65,7 @@ class SlipNumberListPage extends WebPage {
 				//PONであるか調べる
 				SOY2::import("module.plugins.slip_number.util.SlipNumberUtil");
 				$isPon = SlipNumberUtil::checkIsPon($lines[0]);
-
+				
 				array_shift($lines);	//必ず先頭行を削除
 
 		        //先頭行削除
@@ -80,8 +80,22 @@ class SlipNumberListPage extends WebPage {
 					if(count($v)){
 						//PON対応
 						if($isPon && isset($v[2])){
+							$statV = trim($v[2], "\"");
 							//04/26のような日付が無い場合は処理を止める
-							preg_match('/^[0-9]*\/[0-9]*/', trim($v[2], "\""), $tmp);
+							preg_match('/^[0-9]*\/[0-9]*/', $statV, $tmp);
+							if(!isset($tmp[0])) {
+								//  2022年6月7日仕様変更 日付　時間　○○
+								preg_match('/^[0-9]*月[0-9]日/', $statV, $tmp);
+							}
+							if(!isset($tmp[0])){
+								// 最初の2文字が数字の場合はOK
+								preg_match('/^[0-9]{2}/', $statV, $tmp);
+
+								// 時刻の方も確認しておく
+								if(isset($tmp[0])){
+									preg_match('/[0-9]{2}:[0-9]{2}/', $statV, $tmp);
+								}
+							}
 							if(!isset($tmp[0])) continue;
 						}
 
@@ -99,6 +113,7 @@ class SlipNumberListPage extends WebPage {
 						$slipLogic->changeStatus((int)$slip->getId(), "delivery");
 					}
 				}
+				exit;
 
 				SOY2PageController::jump("Extension.slip_number?updated");
 			}

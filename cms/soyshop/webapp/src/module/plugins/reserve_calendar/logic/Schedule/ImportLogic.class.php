@@ -4,9 +4,7 @@ class ImportLogic extends SOY2LogicBase {
 
 	private $itemId;
 
-	function __construct(){
-		SOY2::imports("module.plugins.reserve_calendar.domain.*");
-	}
+	function __construct(){}
 
 	function import(){
 		if(!isset($_FILES["import"]["name"]) || !stripos($_FILES["import"]["name"], ".csv")) return false;
@@ -24,21 +22,21 @@ class ImportLogic extends SOY2LogicBase {
 		$lines = $logic->GET_CSV_LINES($fileContent);    //fix multiple lines
 		if(!count($lines)) return true;		//登録する情報なし
 
-		$schDao = SOY2DAOFactory::create("SOYShopReserveCalendar_ScheduleDAO");
-		$schPriceDao = SOY2DAOFactory::create("SOYShopReserveCalendar_SchedulePriceDAO");
-		$extLabels = self::extentionLabels();	//金額の拡張分
+		$schDao = soyshop_get_hash_table_dao("schedule_calendar");
+		$schPriceDao = soyshop_get_hash_table_dao("schedule_price");
+		$extLabels = self::_extentionLabels();	//金額の拡張分
 
 		foreach($lines as $line){
 			$line = $logic->encodeFrom($line);
 			$values = explode(",", $line);
 			if(!isset($values[0])) continue;
-			$dateValue = self::convert($values[0]);
+			$dateValue = self::_convert($values[0]);
 			if(!strlen($dateValue)) continue;
 			preg_match('/^\d{4}/', $dateValue, $tmp);	//配列の0の値で西暦(2019)の値があるか？
 			if(!isset($tmp[0])) continue;
 
 			//諸々の値が数字であるかをチェック
-			if(!self::checkInteger($values)) continue;
+			if(!self::_checkInteger($values)) continue;
 
 			if(!isset($labelList[$values[1]])) continue;	//ラベルのチェック
 
@@ -83,7 +81,10 @@ class ImportLogic extends SOY2LogicBase {
 		return true;
 	}
 
-	private function extentionLabels(){
+	/**
+	 * @return array
+	 */
+	private function _extentionLabels(){
 		//プラグインで項目を更に増やせるようにしたい
 		SOYShopPlugin::load("soyshop.add.price.on.calendar");
 		$items = SOYShopPlugin::invoke("soyshop.add.price.on.calendar", array(
@@ -99,7 +100,11 @@ class ImportLogic extends SOY2LogicBase {
 		return $list;
 	}
 
-	private function convert($v){
+	/**
+	 * @param string
+	 * @return string
+	 */
+	private function _convert(string $v){
 		$before = array("０", "１", "２", "３", "４", "５", "６", "７", "８", "９", "ー");
 		$after = array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "-");
 		for($i = 0; $i < count($before); $i++){
@@ -108,7 +113,11 @@ class ImportLogic extends SOY2LogicBase {
 		return $v;
 	}
 
-	private function checkInteger($values){
+	/**
+	 * @param array
+	 * @return bool
+	 */
+	private function _checkInteger(array $values){
 		if(count($values) < 2) return false;
 		for($i = 1; $i < count($values); $i++){
 			if($i >= 3) continue;	//金額の拡張分から調べない
