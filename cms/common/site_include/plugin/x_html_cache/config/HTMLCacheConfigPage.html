@@ -1,9 +1,9 @@
-<h4>プラグインの使い方</h4>
-<!-- soy:id="page_controller_path" /-->のexecute_site();をexecute_site_static_cache();に変更するとブログページの記事詳細も静的化の対象になります。
+<div class="alert alert-info">プラグインの使い方</div>
+<p><strong><!-- soy:id="page_controller_path" /--></strong>の<strong>execute_site();</strong>を<strong>execute_site_static_cache();</strong>に変更するとブログページの記事詳細も静的化の対象になります。</p>
 
-<br><br>
+<br>
 
-<h4>ページ毎のキャッシュの設定(検索結果のページはチェックをいれてもキャッシュ化の対象外です)</h4>
+<div class="alert alert-info">ページ毎のキャッシュの設定(検索結果のページはチェックをいれてもキャッシュ化の対象外です)</div>
 <form soy:id="form">
 	<ul>
 		<li soy:id="page_list" style="list-style:none">
@@ -44,5 +44,4 @@
 <br>
 
 <div class="alert alert-info">キャッシュの自動削除設定</div>
-<p>crontabに下記のコマンドを登録します。</p>
-<pre>php <!-- soy:id="job_path" /--></pre>
+設定方法は<strong>キャッシュ自動削除プラグイン</strong>の詳細画面に記載があります。

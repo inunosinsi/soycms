@@ -1,4 +1,5 @@
 <?php
+set_time_limit(0);
 
 //soy2 etc
 $commonDir = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
@@ -10,15 +11,5 @@ SOY2DAOConfig::dsn(ADMIN_DB_DSN);
 SOY2DAOConfig::user(ADMIN_DB_USER);
 SOY2DAOConfig::pass(ADMIN_DB_PASS);
 
-try{
-	$sites = SOY2DAOFactory::create("admin.SiteDAO")->get();
-}catch(Exception $e){
-	$sites = array();
-}
-
-if(count($sites)){
-	SOY2::import("util.CMSUtil");
-	foreach($sites as $site){
-		CMSUtil::unlinkAllIn($site->getPath() . ".cache/", true);
-	}
-}
+SOY2::import("util.CMSUtil");
+SOY2Logic::createInstance("logic.cache.CacheLogic")->clearCache();
