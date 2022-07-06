@@ -76,8 +76,8 @@ abstract class SOYShop_OrderStateHistoryDAO extends SOY2DAO{
     			$author = UserInfoUtil::getUserName();
 				if(!strlen($author)) $author = UserInfoUtil::getUserId();
     		}else{
-    			$author = SOY2ActionSession::getUserSession()->getAttribute("username");
-				if(!strlen($author)) $author = SOY2ActionSession::getUserSession()->getAttribute("userid");
+    			$author = (string)SOY2ActionSession::getUserSession()->getAttribute("username");
+				if(!strlen($author)) $author = (string)SOY2ActionSession::getUserSession()->getAttribute("userid");
     		}
 
 			//カートからの注文の場合は設定画面で決めたauthorにする
