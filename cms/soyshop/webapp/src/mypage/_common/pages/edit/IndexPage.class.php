@@ -98,11 +98,14 @@ class IndexPage extends MainMyPagePageBase{
 				//ユーザカスタムフィールドの値をセッションに入れる
 				if(isset($_POST["user_customfield"]) || isset($_POST["user_custom_search"])){
 					SOYShopPlugin::load("soyshop.user.customfield");
-					SOYShopPlugin::invoke("soyshop.user.customfield", array(
-						"mode" => "post",
-						"app" => $mypage,
-						"param" => $_POST["user_customfield"]
-					));
+					foreach(array("user_customfield", "user_custom_search") as $usrKey){
+						if(!isset($_POST[$usrKey])) continue;
+						SOYShopPlugin::invoke("soyshop.user.customfield", array(
+							"mode" => "post",
+							"app" => $mypage,
+							"param" => $_POST[$usrKey]
+						));
+					}
 				}
 
 				$mypage->setUserInfo($user);
