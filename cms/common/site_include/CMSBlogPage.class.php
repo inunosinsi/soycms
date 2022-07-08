@@ -140,7 +140,7 @@ class CMSBlogPage extends CMSPage{
 		$this->siteUrl = $this->getSiteUrl();
 
 		//ページのURL
-		$this->pageUrl = $this->getPageUrl();
+		$this->pageUrl = self::_getPageUrl();
 
 		//モードの取得、モード別の動作など
 		$arguments = implode("/",$this->arguments);
@@ -179,6 +179,9 @@ class CMSBlogPage extends CMSPage{
 					"UTF-8,ASCII,JIS,Shift_JIS,EUC-JP,SJIS,SJIS-win"
 				);
 				list($this->entry,$this->nextEntry,$this->prevEntry) = self::_entry($alias);
+				if(!is_numeric($this->entry->getId())){
+					throw new Exception("EntryPageは表示できません");
+				}
 				
 				//表示しているページの絶対URL
 				$this->currentAbsoluteURL = $this->getEntryPageURL(true) . rawurlencode($this->entry->getAlias());
@@ -751,7 +754,7 @@ class CMSBlogPage extends CMSPage{
 	 * ページのURLを返す
 	 * 末尾に必ずスラッシュを付ける
 	 */
-	function getPageUrl($isAbsoluteUrl = false){
+	private function _getPageUrl(bool $isAbsoluteUrl=false){
 		if(defined("CMS_PREVIEW_MODE") && CMS_PREVIEW_MODE == true){
 			$pageUrl = SOY2PageController::createLink("Page.Preview")."?uri=";
 			if(strlen($this->page->getUri()) >0){
@@ -777,16 +780,16 @@ class CMSBlogPage extends CMSPage{
 	/**
 	 * トップページのURL
 	 */
-	function getTopPageURL($isAbsoluteUrl = false){
-		$url = $this->getPageUrl($isAbsoluteUrl);
+	function getTopPageURL(bool $isAbsoluteUrl=false){
+		$url = self::_getPageUrl($isAbsoluteUrl);
 		$url .= $this->page->getTopPageURL(false);
 		return $url;
 	}
 	/**
 	 * エントリーページのURLを取得
 	 */
-	function getEntryPageURL($isAbsoluteUrl = false){
-		$url = $this->getPageUrl($isAbsoluteUrl);
+	function getEntryPageURL(bool $isAbsoluteUrl=false){
+		$url = self::_getPageUrl($isAbsoluteUrl);
 		if(strlen($this->page->getEntryPageURL()) >0){
 			$url .= $this->page->getEntryPageURL(false);//末尾はスラッシュ付き
 		}
@@ -795,8 +798,8 @@ class CMSBlogPage extends CMSPage{
 	/**
 	 * カテゴリーアーカイブのURL
 	 */
-	function getCategoryPageURL($isAbsoluteUrl = false){
-		$url = $this->getPageUrl($isAbsoluteUrl);
+	function getCategoryPageURL(bool $isAbsoluteUrl=false){
+		$url = self::_getPageUrl($isAbsoluteUrl);
 		if(strlen($this->page->getCategoryPageURL()) >0){
 			$url .= $this->page->getCategoryPageURL(false);//末尾はスラッシュ付き
 		}
@@ -805,8 +808,8 @@ class CMSBlogPage extends CMSPage{
 	/**
 	 * 月別アーカイブのURL
 	 */
-	function getMonthPageURL($isAbsoluteUrl = false){
-		$url = $this->getPageUrl($isAbsoluteUrl);
+	function getMonthPageURL(bool $isAbsoluteUrl=false){
+		$url = self::_getPageUrl($isAbsoluteUrl);
 		if(strlen($this->page->getMonthPageURL()) >0){
 			$url .= $this->page->getMonthPageURL(false);//末尾はスラッシュ付き
 		}
@@ -815,8 +818,8 @@ class CMSBlogPage extends CMSPage{
 	/**
 	 * RSSページのURL
 	 */
-	function getRssPageURL($isAbsoluteUrl = false){
-		$url = $this->getPageUrl($isAbsoluteUrl);
+	function getRssPageURL(bool $isAbsoluteUrl=false){
+		$url = self::_getPageUrl($isAbsoluteUrl);
 		$url .= $this->page->getRssPageURL(false);
 		return $url;
 	}
@@ -896,7 +899,12 @@ class CMSBlogPage extends CMSPage{
 		
 		//表示順の投入
 		$entryLabelDAO = SOY2DAOFactory::create("cms.EntryLabelDAO");
-		$entryLabel = $entryLabelDAO->getByParam($blogLabelId,$entry->getId());
+		try{
+			$entryLabel = $entryLabelDAO->getByParam($blogLabelId,$entry->getId());
+		}catch(Exception $e){
+			$entryLabel = new EntryLabel();
+		}
+		
 		$entry->setDisplayOrder($entryLabel->getDisplayOrder());
 
 		//コメント数、トラックバック数の投入

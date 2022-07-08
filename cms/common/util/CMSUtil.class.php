@@ -65,7 +65,32 @@ class CMSUtil {
     	return $siteUrlBySiteUrl;
 	}
 
-	public static function getEntryHiddenInputHTML($entryId,$title){
+	/**
+	 * サイトIDやルート設定の有無の定数を定義しておく
+	 */
+	public static function defineSiteConstant(){
+		$siteRoot = rtrim(_SITE_ROOT_, "/");
+		$siteId = ltrim(substr($siteRoot, strrpos($siteRoot, "/")), "/");
+		define("SOYCMS_SITE_ID", $siteId);
+		
+		//ルート設定の有無 ドキュメントルート直下にあるindex.phpから判定する
+		$isDocumentRoot = false;
+		$controllerPath = $_SERVER["DOCUMENT_ROOT"] . "/index.php";
+		if(file_exists($controllerPath)){
+			$lines = explode("\n", file_get_contents($controllerPath));
+			foreach($lines as $line){
+				if(is_bool(strpos($line, "include_once"))) continue;
+				preg_match('/include_once\("(.*)\/index.php"\)/', $line, $tmp);
+				if(isset($tmp[1]) && $tmp[1] == SOYCMS_SITE_ID) $isDocumentRoot = true;
+			}
+		}
+		
+		/** @ToDo データベースからサイトオブジェクトを取得して、ドキュメントルートの設定の確認が必要かもしれない */
+
+		define("SOYCMS_IS_DOCUMENT_ROOT", $isDocumentRoot);
+	}
+
+	public static function getEntryHiddenInputHTML(int $entryId, string $title){
 		$str = CMSMessageManager::get("SOYCMS_PREVIEW_EDIT_BUTTON");
 		$str = str_replace("%TITLE%", "[".$title."]", $str);
 		return "<button type=\"button\" class=\"cms_hidden_entry_id\" entryid=\"$entryId\" style=\"display:none;\">".$str."</button>";
@@ -89,8 +114,9 @@ class CMSUtil {
 
 	/**
 	 * ディレクトリ内のファイルを全削除（キャッシュ削除用）
+	 * @param string, bool, bool
 	 */
-	public static function unlinkAllIn($dir, $recursive = false, $rmdir = false){
+	public static function unlinkAllIn(string $dir, bool $recursive=false, bool $rmdir=false){
 		if(file_exists($dir) && is_dir($dir)){
 			if($dir[strlen($dir)-1] != "/") $dir .= "/";
 			$files = @scandir($dir);
@@ -272,7 +298,7 @@ class CMSUtil {
 		if(is_numeric($id)) return $id;
 
 		$old = self::switchDsn();
-		$siteId = (defined("_SITE_ROOT_")) ? (int)trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/") : UserInfoUtil::getSite()->getSiteId();
+		$siteId = (defined("SOYCMS_SITE_ID")) ? SOYCMS_SITE_ID : UserInfoUtil::getSite()->getSiteId();
 
 		try{
 			$id = (int)SOY2DAOFactory::create("admin.SiteDAO")->getBySiteId($siteId)->getId();
@@ -283,6 +309,10 @@ class CMSUtil {
 		return $id;
 	}
 
+	/**
+	 * @param bool
+	 * @return array
+	 */
 	public static function getSiteIdList(bool $isAll=false){
 		static $list;
 		if(is_array($list)) return $list;

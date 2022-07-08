@@ -369,41 +369,41 @@ class EntryLogic extends SOY2LogicBase{
 	function getBlogEntry(int $blogLabelId,$entryId){
 		$dao = self::entryDao();
 
-		try{
-			if(defined("CMS_PREVIEW_ALL")){
-				if(is_numeric($entryId)){
-					try{
-						$entry = $dao->getById($entryId);
-					}catch(Exception $e){
-						$entry = $dao->getByAlias($entryId);
-					}
-				}else{
+		if(defined("CMS_PREVIEW_ALL")){
+			if(is_numeric($entryId)){
+				try{
+					$entry = $dao->getById($entryId);
+				}catch(Exception $e){
 					$entry = $dao->getByAlias($entryId);
 				}
 			}else{
-				if(is_numeric($entryId)){
-					try{
-						$entry = $dao->getOpenEntryById($entryId,SOYCMS_NOW);
-					}catch(Exception $e){
-						//記事IDで取得できなければ、エイリアスの方でも取得を試みる
-						$entry = $dao->getOpenEntryByAlias($entryId,SOYCMS_NOW);
-					}
-				}else{
+				$entry = $dao->getByAlias($entryId);
+			}
+		}else{
+			if(is_numeric($entryId)){
+				try{
+					$entry = $dao->getOpenEntryById($entryId,SOYCMS_NOW);
+				}catch(Exception $e){
+					//記事IDで取得できなければ、エイリアスの方でも取得を試みる
 					$entry = $dao->getOpenEntryByAlias($entryId,SOYCMS_NOW);
 				}
+			}else{
+				try{
+					$entry = $dao->getOpenEntryByAlias($entryId,SOYCMS_NOW);
+				}catch(Exception $e){
+					$entry = new Entry();
+				}
+				
 			}
+		}
 
-			$entry = SOY2::cast("LabeledEntry",$entry);
-			
-			//ブログに所属しているエントリーかどうかチェックする
-			$labelIds = $this->getLabelIdsByEntryId($entry->getId());
-			if(!in_array($blogLabelId,$labelIds)){
-				throw new Exception("This entry (id: {$entryId}) does not belong to the designated blog (label: {$blogLabelId}).");
-			}
-
-		}catch(Exception $e){
-			//該当エントリーが見つからない場合は
-			throw $e;
+		$entry = SOY2::cast("LabeledEntry",$entry);
+		
+		//ブログに所属しているエントリーかどうかチェックする
+		$labelIds = $this->getLabelIdsByEntryId($entry->getId());
+		if(!in_array($blogLabelId,$labelIds)){
+			//throw new Exception("This entry (id: {$entryId}) does not belong to the designated blog (label: {$blogLabelId}).");
+			$entry = new LabeledEntry();
 		}
 
 		return $entry;

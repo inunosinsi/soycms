@@ -119,27 +119,9 @@ if(!function_exists("convertUrlOnModuleBlogParts")){
 	function convertUrlOnModuleBlogParts(string $url){
 		static $siteUrl;
 		if(is_null($siteUrl)){
-			if(defined("SOYCMS_SITE_ID")){
-				$siteId = SOYCMS_SITE_ID;
-			}else{
-				//SOY CMSの場合
-				if(defined("_SITE_ROOT_")){
-					$siteId = trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/");
-				}else{
-					$siteId = UserInfoUtil::getSite()->getSiteId();
-				}
-			}
-	
-			$old = CMSUtil::switchDsn();
-			try{
-				$site = SOY2DAOFactory::create("admin.SiteDAO")->getBySiteId($siteId);
-			}catch(Exception $e){
-				$site = new Site();
-			}
-			CMSUtil::resetDsn($old);
 			$siteUrl = "/";
-			if(!$site->getIsDomainRoot()) $siteUrl .= $site->getSiteId() . "/";
+			if(!SOYCMS_IS_DOCUMENT_ROOT) $siteUrl .= SOYCMS_SITE_ID . "/";
 		}
 		return $siteUrl . $url;
-	}	
+	}
 }
