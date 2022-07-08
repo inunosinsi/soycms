@@ -8,7 +8,7 @@ class RemovePage extends WebPage{
     		SOY2PageController::jump("User");
     	}
 
-    	$id = @$args[0];
+    	$id = (isset($args[0])) ? (int)$args[0] : 0;
 		SOY2Logic::createInstance("logic.user.UserLogic")->remove($id);
 
     	SOY2PageController::jump("User");

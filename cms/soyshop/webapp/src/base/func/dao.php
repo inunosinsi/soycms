@@ -378,7 +378,9 @@ function soyshop_get_user_object_by_mailaddress(string $mailAddress){
 	try{
 		$user = $dao->getByMailAddress($mailAddress);
 	}catch(Exception $e){
-		return new SOYShop_User();
+		$user = new SOYShop_User();
+		$user->setMailAddress($mailAddress);
+		return $user;
 	}
 
 	$idx = soyshop_get_hash_index((string)$user->getId(), __FUNCTION__);

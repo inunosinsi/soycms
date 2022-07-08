@@ -6,12 +6,13 @@ class UserLogic extends SOY2LogicBase{
 		$user = soyshop_get_user_object($userId);
 		if(is_null($user->getId())) return false;
 
+		$userDao = soyshop_get_hash_table_dao("user");
     	$mailAddress = $user->getMailAddress();
+		if(!is_string($mailAddress) || !strlen($mailAddress)) $mailAddress = md5((string)$userId) . "@" . DUMMY_MAIL_ADDRESS_DOMAIN;
 
     	//ユーザが存在していた場合
 		$res = false;
     	if(isset($mailAddress)){
-			$userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 			$i = 0;
 			for(;;){
 				$deleteAddress = $mailAddress . "_delete_" . $i;
