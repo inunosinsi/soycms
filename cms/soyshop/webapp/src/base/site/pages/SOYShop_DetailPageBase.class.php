@@ -16,7 +16,7 @@ class SOYShop_DetailPageBase extends SOYShopPageBase{
 
 		$alias = implode("/", $args);
 
-		$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+		$itemDAO = soyshop_get_hash_table_dao("item");
 		try{
 			$item = $itemDAO->getByAlias($alias);
 		}catch(Exception $e){
@@ -46,43 +46,38 @@ class SOYShop_DetailPageBase extends SOYShopPageBase{
 			throw new Exception("The specified product does not have publishing authority.");
 		}
 
-		try{
-			$logic = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil");
-			list($items, $total) = $logic->getByCategoryId($item->getCategory());
-			$this->setTotalItemCount($total);
+		$logic = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil");
+		list($items, $total) = $logic->getByCategoryId($item->getCategory());
+		$this->setTotalItemCount($total);
 
-			$counter = 1;
-			$prev_item = false;
-			$next_item = false;
-			foreach($items as $tmp){
-				if($tmp->getId() == $item->getId()){
-					$next_item = true;
-					continue;
-				}
-
-				if($next_item){
-					$next_item = $tmp;
-					break;
-				}
-				$prev_item = $tmp;
-				$counter++;
+		$counter = 1;
+		$prev_item = false;
+		$next_item = false;
+		foreach($items as $tmp){
+			if($tmp->getId() == $item->getId()){
+				$next_item = true;
+				continue;
 			}
 
-			$this->setCurrentIndex($counter);
-			$this->setPrevItem($prev_item);
-			if($next_item && $next_item !== true) $this->setNextItem($next_item);
-
-			//keywords
-			$keywords = $item->getAttribute("keywords");
-			if(is_string($keywords) && strlen($keywords)) $this->getHeadElement()->insertMeta("keywords", $keywords . ",");
-
-			//description
-			$description = $item->getAttribute("description");
-			if(is_string($description) && strlen($description)) $this->getHeadElement()->insertMeta("description", $description . " ");
-
-		}catch(Exception $e){
-			throw new Exception("unknown error.");
+			if($next_item){
+				$next_item = $tmp;
+				break;
+			}
+			$prev_item = $tmp;
+			$counter++;
 		}
+
+		$this->setCurrentIndex($counter);
+		$this->setPrevItem($prev_item);
+		if($next_item && $next_item !== true) $this->setNextItem($next_item);
+
+		//keywords
+		$keywords = $item->getAttribute("keywords");
+		if(is_string($keywords) && strlen($keywords)) $this->getHeadElement()->insertMeta("keywords", $keywords . ",");
+
+		//description
+		$description = $item->getAttribute("description");
+		if(is_string($description) && strlen($description)) $this->getHeadElement()->insertMeta("description", $description . " ");
 
 		if(!defined("SOYSHOP_PAGE_TYPE")) define("SOYSHOP_PAGE_TYPE", get_class($obj));
 

@@ -55,45 +55,50 @@ class SOYShopSiteController extends SOY2PageController{
         try{
             //URIからページを取得
 			$page = get_page_object_on_controller($uri);
-
-            //ページIDを放り込んでおく
-            define("SOYSHOP_PAGE_ID", $page->getId());
-
-			//メンテナンス ここに入れるべきか？
-			if(SOYSHOP_MAINTENANCE_PAGE_MARKER == $page->getUri()){
-				header("HTTP/1.0 503 Service Temporarily Unavailable");
-			}
-
-			try{
-				//404
-	            if(SOYSHOP_404_PAGE_MARKER == $page->getUri()){
-					throw new Exception("404 Not Found.");
-	            }
-
-				//ページ種別によって読み込むページクラスを変える
-				include_page_class($page->getType());
-
-	            /*
-	             * 出力
-	             * soyshop.site.onload
-	             * soyshop.site.beforeoutput
-	             * soyshop.site.onoutput
-	             */
-				include_once("controller/output.php");
-	            output_page($uri, $args, $page);
-			}catch(Exception $e){
-				self::_onNotFound();
-			}
-        }catch(Exception $e){
-			header("HTTP/1.0 500 Internal Server Error");
-	        echo "<h1>500 Internal Server Error</h1>";
-	        if(DEBUG_MODE){
-	            echo "<pre>";
-	            var_dump($e);
-	            echo "</pre>";
-	        }
+		}catch(Exception $e){
+			self::_onInternalServerError();
         }
+
+		//ページIDを放り込んでおく
+		define("SOYSHOP_PAGE_ID", $page->getId());
+
+		//メンテナンス ここに入れるべきか？
+		if(SOYSHOP_MAINTENANCE_PAGE_MARKER == $page->getUri()){
+			header("HTTP/1.0 503 Service Temporarily Unavailable");
+		}
+
+		//404
+		if(SOYSHOP_404_PAGE_MARKER == $page->getUri()){
+			self::_onNotFound();
+		}
+
+		//ページ種別によって読み込むページクラスを変える
+		include_page_class($page->getType());
+
+		include_once("controller/output.php");
+
+		try{
+			/*
+				* 出力
+				* soyshop.site.onload
+				* soyshop.site.beforeoutput
+				* soyshop.site.onoutput
+				*/
+			output_page($uri, $args, $page);
+		}catch(Exception $e){
+			self::_onNotFound();
+		}
     }
+
+	private function _onInternalServerError(){
+		header("HTTP/1.0 500 Internal Server Error");
+		echo "<h1>500 Internal Server Error</h1>";
+		if(DEBUG_MODE){
+			echo "<pre>";
+			var_dump($e);
+			echo "</pre>";
+		}
+	}
 
 	private function _onNotFound(){
 		SOYShopPlugin::load("soyshop.site.404notfound");
@@ -104,7 +109,8 @@ class SOYShopSiteController extends SOY2PageController{
 		$page = soyshop_get_page_object_by_uri(SOYSHOP_404_PAGE_MARKER);
 		
 		include_page_class($page->getType());
-		include_once("controller/output.php");
+		if(!function_exists("output_page")) include_once("controller/output.php");
 		output_page(SOYShop_Page::NOT_FOUND, array(), $page);
+		exit;
 	}
 }
