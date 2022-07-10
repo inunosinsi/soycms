@@ -226,11 +226,10 @@ class SOYInquiry_ServerConfig {
     }
 
     function getUploadDir() {
-
-    	if(strlen($this->uploadDir)<1){
+        if(!is_string($this->uploadDir)) $this->uploadDir = "";
+    	if(strlen($this->uploadDir) < 1){
     		$this->uploadDir = "/";
     	}
-
     	return $this->uploadDir;
     }
     function setUploadDir($uploadDir) {
