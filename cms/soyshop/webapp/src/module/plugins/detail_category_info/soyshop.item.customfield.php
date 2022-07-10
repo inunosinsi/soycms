@@ -6,7 +6,7 @@ class DetailCategoryInfoCustomField extends SOYShopItemCustomFieldBase{
 	 * onOutput
 	 */
 	function onOutput($htmlObj, SOYShop_Item $item){
-		$category = soyshop_get_category_object(($item->getCategoryId());
+		$category = soyshop_get_category_object((int)$item->getCategoryId());
 		$categoryName = $category->getName();					//カテゴリ名の取得
 		$categoryAlias = $category->getAlias();					//カテゴリエイリアスの取得
 		$categoryTree = self::_getCategoryRelation($category);	//カテゴリツリーの取得

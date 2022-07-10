@@ -9,7 +9,7 @@ SOY2::import("module.site.common.output_item",".php");
 class ItemDetailBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
 	function beforeOutput($page){
-		$alias = null;
+		$alias = "";
 
 		//カートページとマイページでは読み込まない
 		$pageObj = $page->getPageObject();
@@ -25,7 +25,7 @@ class ItemDetailBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		//item
 		SOY2::import("module.plugins.parts_item_detail.util.PartsItemDetailUtil");
 		$page->createAdd("item_by_alias", "SOYShop_ItemListComponent", array(
-			"list" => array(PartsItemDetailUtil::getItemByAlias($alias)),
+			"list" => (strlen($alias)) ? array(PartsItemDetailUtil::getItemByAlias($alias)) : array(),
 			"soy2prefix" => "block"
 		));
 	}
