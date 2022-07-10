@@ -35,39 +35,38 @@ class CMSPage extends WebPage{
 		parent::__construct();
 	}
 
-	function main(){
+	function main(){		
+		$blocks = soycms_get_hash_table_dao("block")->getByPageId($this->id);
 
-		$dao = SOY2DAOFactory::create("cms.BlockDAO");
-		
-		$blocks = $dao->getByPageId($this->id);
-
-		foreach($blocks as $block){
-			$object = $block->getBlockComponent();
-			if(!is_object($object)){
-				continue;
+		if(count($blocks)){
+			foreach($blocks as $block){
+				$object = $block->getBlockComponent();
+				if(!is_object($object)){
+					continue;
+				}
+				$soy2HtmlObject = $object->getViewPage($this);
+				/*
+				 * ブロック
+				 * block:id="xxx"
+				 */
+				$this->add($block->getSoyId(),$soy2HtmlObject);
+				/*
+				 * 記事がなければ表示しない領域
+				 * if_has_entry_in:id="xxx"
+				 */
+				$this->addModel($block->getSoyId().":has_entry", array(
+					"visible"    => (isset($soy2HtmlObject->list) && count($soy2HtmlObject->list)),
+					"soy2prefix" => "if",
+				));
+				/*
+				 * 記事があるときに表示しない領域
+				 * if_no_entry_in:id="xxx"
+				 */
+				$this->addModel($block->getSoyId().":no_entry", array(
+					"visible"    => (isset($soy2HtmlObject->list) && !count($soy2HtmlObject->list)),
+					"soy2prefix" => "if",
+				));
 			}
-			$soy2HtmlObject = $object->getViewPage($this);
-			/*
-			 * ブロック
-			 * block:id="xxx"
-			 */
-			$this->add($block->getSoyId(),$soy2HtmlObject);
-			/*
-			 * 記事がなければ表示しない領域
-			 * if_has_entry_in:id="xxx"
-			 */
-			$this->addModel($block->getSoyId().":has_entry", array(
-				"visible"    => (isset($soy2HtmlObject->list) && count($soy2HtmlObject->list)),
-				"soy2prefix" => "if",
-			));
-			/*
-			 * 記事があるときに表示しない領域
-			 * if_no_entry_in:id="xxx"
-			 */
-			$this->addModel($block->getSoyId().":no_entry", array(
-				"visible"    => (isset($soy2HtmlObject->list) && !count($soy2HtmlObject->list)),
-				"soy2prefix" => "if",
-			));
 		}
 
 		CMSPlugin::callEventFunc('onPageOutput',$this);
@@ -217,7 +216,6 @@ class CMSPage extends WebPage{
 
 			$this->_soy2_content = $this->getContent($plugin,$this->_soy2_content);
 		}
-
 	}
 
 	/**

@@ -35,8 +35,8 @@ class CMSPageController extends SOY2PageController{
 		CMSPlugin::callEventFunc('onSiteAccess', array("controller" => $this));
 
 		//文字コード変換
-		$_GET = $this->convertEncoding($_GET);
-		$_POST = $this->convertEncoding($_POST);
+		$_GET = self::_convertEncoding($_GET);
+		$_POST = self::_convertEncoding($_POST);
 
 		//ヘッダー送信（先に送信しておかないと後で上書きできない）
 		header("Content-Type: text/html; charset=" . $this->siteConfig->getCharsetText());
@@ -89,12 +89,20 @@ class CMSPageController extends SOY2PageController{
 				/*
 				 * URIが空のページに対して、/index.html以外（hoge.htmlなど）でアクセスした場合
 				 */
-				if(empty($uri) && count($args) > 0 && strstr($args[0], "index.htm") === false){
+				if(empty($uri) && count($args) > 0 && is_bool(strstr($args[0], "index.htm"))){
 					$this->onNotFound();
 					//throw new Exception("存在しないページ");
 				}
 				$pageClass = "CMSPage";
 				break;
+		}
+
+		// ブログページ以外ではargsにページャに関するもの以外がないことを確認
+		if($pageClass != "CMSBlogPage" && count($args) && strlen($args[0])){
+			preg_match('/^page-\d*/', $args[0], $tmp);
+			if(!isset($tmp[0])){
+				$this->onNotFound();
+			}
 		}
 
 		SOY2::import("site_include." . $pageClass);
@@ -106,7 +114,7 @@ class CMSPageController extends SOY2PageController{
 		}catch(Exception $e){
 			$this->onNotFound();
 		}
-
+		
 		$this->webPage->main();
 
 		//プラグインonLoadイベントの呼び出し
@@ -237,21 +245,22 @@ class CMSPageController extends SOY2PageController{
 
 	/**
 	 * POSTデータの文字コード変換
+	 * @param array
+	 * @return array
 	 */
-	function convertEncoding($obj = null){
-		if(!$obj) $obj = $_POST;
+	private function _convertEncoding(array $arr=array()){
+		if(!count($arr)) $arr = $_POST;
+		if(!is_array($arr)) return array();
 
-		if(!is_array($obj)) return;
-
-		foreach($obj as $key => $value){
+		foreach($arr as $key => $value){
 			if(is_array($value)){
-				$obj[$key] = $this->convertEncoding($value);
+				$arr[$key] = self::_convertEncoding($value);
 			}else{
-				$obj[$key] = $this->siteConfig->convertFromSiteCharset($value);
+				$arr[$key] = $this->siteConfig->convertFromSiteCharset($value);
 			}
 		}
 
-		return $obj;
+		return $arr;
 	}
 
 	/**

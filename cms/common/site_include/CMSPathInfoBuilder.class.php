@@ -16,8 +16,10 @@ class CMSPathInfoBuilder extends SOY2_PathInfoPathBuilder{
 
 	/**
 	 * パスからページのURI部分とパラメータ部分を抽出する
+	 * @param string
+	 * @return array(string, array)
 	 */
-	public static function parsePath($path){
+	public static function parsePath(string $path=""){
 		$uri = "";
 		$args = array();
 
@@ -72,8 +74,12 @@ class CMSPathInfoBuilder extends SOY2_PathInfoPathBuilder{
 		return array($uri, $args);
 	}
 
-	//$_uriの0番目の引数から候補となるページ一覧を取得する
-	private static function _getCandidatePageList($uri){
+	/**
+	 * $_uriの0番目の引数から候補となるページ一覧を取得する
+	 * @param string
+	 * @return array
+	 */
+	private static function _getCandidatePageList(string $uri){
 		$dao = new SOY2DAO();
 
 		//トップページの場合
@@ -101,8 +107,10 @@ class CMSPathInfoBuilder extends SOY2_PathInfoPathBuilder{
 
 	/**
 	 * フロントコントローラーからの相対パスを解釈してURLを生成する
+	 * @param string, bool
+	 * @return string
 	 */
-	function createLinkFromRelativePath($path, $isAbsoluteUrl = false){
+	function createLinkFromRelativePath(string $path, bool $isAbsoluteUrl=false){
 		//scheme
 		$scheme = (isset($_SERVER["HTTPS"]) || defined("SOY2_HTTPS") && SOY2_HTTPS) ? "https" : "http";
 

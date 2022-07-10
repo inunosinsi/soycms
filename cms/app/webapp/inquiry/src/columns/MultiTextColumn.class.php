@@ -44,7 +44,9 @@ class MultiTextColumn extends SOYInquiry_ColumnBase{
 
 		$html = array();
 		//<textarea>直後の改行は必須
-		$html[] = "<textarea name=\"data[".$this->getColumnId()."]\" " . implode(" ",$attributes) . $required . ">\n".htmlspecialchars($value, ENT_QUOTES, "UTF-8")."</textarea>";
+		$v = trim(htmlspecialchars($value, ENT_QUOTES, "UTF-8"));
+		if(strlen($v)) $v = "\n" . $v;
+		$html[] = "<textarea name=\"data[".$this->getColumnId()."]\" " . implode(" ",$attributes) . $required . ">".$v."</textarea>";
 
 		return implode("\n",$html);
 	}

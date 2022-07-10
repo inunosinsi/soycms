@@ -28,31 +28,28 @@ class CMSApplicationPage extends CMSPage{
 		$oldUser = SOY2DAOConfig::user();
 		$oldPass = SOY2DAOConfig::pass();
 
+		//定数の作成
+		define("CMS_APPLICATION_ROOT_DIR", dirname(SOY2::RootDir()) . "/app/");
+		define("CMS_COMMON", SOY2::RootDir());
+
+		include_once(CMS_APPLICATION_ROOT_DIR . "base/CMSApplication.class.php");
+
+		$applicationId = $this->page->getApplicationId();
+
+		//存在しなかったら何もしない
+		if(!file_exists(CMS_APPLICATION_ROOT_DIR . "webapp/" . $applicationId . "/page.php")){
+			return parent::main();
+		}
+
+		//読み込み
+		include_once(CMS_APPLICATION_ROOT_DIR . "webapp/" . $applicationId . "/page.php");
+
     	try{
-
-	    	//定数の作成
-	    	define("CMS_APPLICATION_ROOT_DIR", dirname(SOY2::RootDir()) . "/app/");
-			define("CMS_COMMON", SOY2::RootDir());
-
-			include_once(CMS_APPLICATION_ROOT_DIR . "base/CMSApplication.class.php");
-
-			$applicationId = $this->page->getApplicationId();
-
-			//存在しなかったら何もしない
-	    	if(!file_exists(CMS_APPLICATION_ROOT_DIR . "webapp/" . $applicationId . "/page.php")){
-	    		return parent::main();
-	    	}
-
-	    	//読み込み
-	    	include_once(CMS_APPLICATION_ROOT_DIR . "webapp/" . $applicationId . "/page.php");
-
-	    	//実行
-	    	CMSApplication::page($this,$this->arguments);
+			//実行
+			CMSApplication::page($this,$this->arguments);
 
 	    	parent::main();
-
     	}catch(Exception $e){
-
     		SOY2::RootDir($oldRooDir);
 			SOY2HTMLConfig::PageDir($oldPagDir);
 			SOY2HTMLConfig::CacheDir($oldCacheDir);

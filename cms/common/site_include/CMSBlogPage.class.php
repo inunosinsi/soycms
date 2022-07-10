@@ -468,10 +468,9 @@ class CMSBlogPage extends CMSPage{
 		if(strlen($this->page->getTopPageUri())<1)$default = CMSBlogPage::MODE_TOP;
 
 		//空の時はトップページ
-		if(strlen($arguments)<1)return CMSBlogPage::MODE_TOP;
+		if(strlen($arguments) < 1) return CMSBlogPage::MODE_TOP;
 
 		switch(true){
-
 			case (strpos($arguments,$this->page->getEntryPageUri()."/") === 0):
 				return CMSBlogPage::MODE_ENTRY;
 				break;
