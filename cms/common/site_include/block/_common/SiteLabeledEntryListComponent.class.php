@@ -47,7 +47,7 @@ class SiteLabeledEntryListComponent extends HTMLList{
 		$id = (is_numeric($entity->getId())) ? (int)$entity->getId() : 0;
 
 		$hTitle = htmlspecialchars($entity->getTitle(), ENT_QUOTES, "UTF-8");
-		$entryUrl = $this->articlePageUrl.rawurlencode($entity->getAlias());
+		$entryUrl = rtrim($this->articlePageUrl, "/") . "/" . rawurlencode($entity->getAlias());
 
 		if($this->isStickUrl){
 			$hTitle = "<a href=\"".htmlspecialchars($entryUrl, ENT_QUOTES, "UTF-8")."\">".$hTitle."</a>";

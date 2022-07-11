@@ -32,7 +32,11 @@ class EntryCalendarComponent extends HTMLList {
 		));
 	}
 
-	private function _convertUrlOnModuleBlogParts($url){
+	/**
+	 * @param string
+	 * @return string
+	 */
+	private function _convertUrlOnModuleBlogParts(string $url){
 		static $siteUrl;
 		if(is_null($siteUrl)){
 			$siteUrl = "/";

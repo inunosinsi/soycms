@@ -191,6 +191,7 @@ class BlockEntryListComponent extends HTMLList{
 		CMSPlugin::callEventFunc('onEntryOutput',array("entryId" => $id, "SOY2HTMLObject" => $this, "entry" => $entity, "blockId" => $this->blockId));
 	}
 
+
 	private function _getArticleUrl(Entry $entry){
 		//プラグインブロックから記事詳細ページのURLを制御する
 		if(isset($GLOBALS["plugin_block_correspondence_table"]) && is_array($GLOBALS["plugin_block_correspondence_table"]) && isset($GLOBALS["plugin_block_correspondence_table"][$entry->getId()])){
@@ -200,7 +201,7 @@ class BlockEntryListComponent extends HTMLList{
 		}else{
 			$articlePageUrl = $this->articlePageUrl;
 		}
-		return $articlePageUrl.($entry->getAlias());
+		return rtrim($articlePageUrl, "/"). "/" . rawurlencode($entry->getAlias());
 	}
 
 	private function _labelLogic(){

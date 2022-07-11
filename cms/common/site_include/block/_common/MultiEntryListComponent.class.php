@@ -53,7 +53,7 @@ class MultiEntryListComponent extends HTMLList{
 		$url = (isset($this->url[$id])) ? $this->url[$id] : "" ;
 
 		$hTitle = htmlspecialchars($entity->getTitle(), ENT_QUOTES, "UTF-8");
-		$entryUrl = ( strlen($url) > 0 ) ? $url.rawurlencode($entity->getAlias()) : "" ;
+		$entryUrl = ( strlen($url) > 0 ) ? rtrim($url , "/") . "/" . rawurlencode($entity->getAlias()) : "" ;
 
 		if(strlen($entryUrl) > 0){
 			$hTitle = "<a href=\"".htmlspecialchars($entryUrl, ENT_QUOTES, "UTF-8")."\">".$hTitle."</a>";
