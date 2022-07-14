@@ -16,13 +16,10 @@ class ConfirmPage extends IndexPage{
 					}
 				}
 
-				$attr = TransferInfoUtil::getUserAttr($this->getUser()->getId(), TransferInfoUtil::BANK_INFO);
-				if($isEmpty){
-					$attr->setValue("");
-				}else{
-					$attr->setValue(soy2_serialize($values));
-				}
-				TransferInfoUtil::saveAttr($attr);
+				$attr = soyshop_get_user_attribute_object($this->getUser()->getId(), TransferInfoUtil::BANK_INFO);
+				$v = ($isEmpty) ? "" : soy2_serialize($values);
+				$attr->setValue($v);
+				soyshop_save_user_attribute_object($attr);
 
 				$this->jump("bank/complete");
 			}else if(isset($_POST["back"])){

@@ -77,7 +77,7 @@ class LogPage extends WebPage{
     	foreach($mailList as $values){
     		if(!is_array($values)) continue;
    			foreach($values as $value){
-   				$list[] = $value;
+   				$list[$value["id"]] = $value["title"];
    			}
     	}
     	return $list;

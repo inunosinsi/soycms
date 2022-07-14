@@ -28,7 +28,7 @@ class DetailPage extends MainMyPagePageBase{
 		SOY2::import("util.SOYAppUtil");
 
 		if(soy2_check_token()){
-			self::_approval($purcahse);
+			self::_approval();
 		}
 
         parent::__construct();

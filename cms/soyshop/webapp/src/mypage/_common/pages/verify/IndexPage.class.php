@@ -25,15 +25,14 @@ class IndexPage extends MainMyPagePageBase{
 						soy2_resizeimage($filepath, $filepath, PurchaseAppUtil::RESIZE_WIDTH);
 					}
 
-					$attr = PurchaseAppUtil::getUserAttr($userId, $prop);
+					$attr = soyshop_get_user_attribute_object($userId, $prop);
 					$attr->setValue($imgName);
-
-					PurchaseAppUtil::saveAttr($attr);
+					soyshop_save_user_attribute_object($attr);
 
 					//運営側の確認を外す
-					$attr = PurchaseAppUtil::getUserAttr($userId, PurchaseAppUtil::VERIFIED_IDENTITY);
+					$attr = soyshop_get_user_attribute_object($userId, PurchaseAppUtil::VERIFIED_IDENTITY);
 					$attr->setValue("");
-					PurchaseAppUtil::saveAttr($attr);
+					soyshop_save_user_attribute_object($attr);
 
 					$doExe = true;
 				}
@@ -48,9 +47,9 @@ class IndexPage extends MainMyPagePageBase{
 			for($i = 1; $i <= 2; $i++){
 				$prop = ($i == 1) ? PurchaseAppUtil::UPLOAD_PROP : PurchaseAppUtil::UPLOAD_PROP_2;
 				if(isset($_POST[$prop . "_delete"])){
-					$attr = PurchaseAppUtil::getUserAttr($userId, $prop);
+					$attr = soyshop_get_user_attribute_object($userId, $prop);
 					$attr->setValue("");
-					PurchaseAppUtil::saveAttr($attr);
+					soyshop_save_user_attribute_object($attr);
 				}
 			}
 
@@ -100,7 +99,7 @@ class IndexPage extends MainMyPagePageBase{
 		DisplayPlugin::toggle("updated", isset($_GET["updated"]));
 
 		//本人確認用画像
-		$imgName = PurchaseAppUtil::getUserAttr($user->getId(), PurchaseAppUtil::UPLOAD_PROP)->getValue();
+		$imgName = soyshop_get_user_attribute_object($user->getId(), PurchaseAppUtil::UPLOAD_PROP)->getValue();
 		$imgPath = $user->getAttachmentsPath() . $imgName;
 		$isIdImg = (strlen($imgName) && file_exists($imgPath));
 		DisplayPlugin::toggle("is_identity", $isIdImg);

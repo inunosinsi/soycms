@@ -372,9 +372,10 @@ class SOYShop_Item {
 	}
 
 	function getCodeOnAdmin(){
+		if(!is_string($this->code)) $this->code = "";
 		if(!self::_isConvertParentNameConfig()) return $this->code;
 
-		$parentId = (is_numeric($this->id)) ? soyshop_get_item_object($this->id)->getType() : 0;
+		$parentId = (is_numeric($this->id)) ? (int)soyshop_get_item_object($this->id)->getType() : 0;
 		return ($parentId > 0) ? soyshop_get_item_object($parentId)->getCode() : $this->code;;
 	}
 

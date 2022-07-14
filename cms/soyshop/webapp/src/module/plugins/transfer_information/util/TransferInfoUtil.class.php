@@ -16,11 +16,18 @@ class TransferInfoUtil {
 		);
 	}
 
+	/**
+	 * @return array
+	 */
 	public static function getDepositTypeList(){
 		return self::_depositTypes();
 	}
 
-	public static function getDepositType($t){
+	/**
+	 * @param string
+	 * @return string
+	 */
+	public static function getDepositType(string $t){
 		$list = self::_depositTypes();
 		return (isset($list[$t])) ? $list[$t] : $list["ordinary"];
 	}

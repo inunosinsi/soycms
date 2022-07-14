@@ -184,7 +184,7 @@ class ReserveCalendarUtil{
 			$label = str_replace($old[$i], $new[$i], $label);
 		}
 
-		if(strpos($label, "時") !== false){
+		if(is_numeric(strpos($label, "時"))){
 			preg_match('/\d{1,2}時$/', $label, $tmp);
 			if(isset($tmp[0])){
 				$label = str_replace("時", ":00", $label);

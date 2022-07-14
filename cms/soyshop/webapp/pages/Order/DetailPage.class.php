@@ -125,7 +125,7 @@ class DetailPage extends WebPage{
 		DisplayPlugin::toggle("copy", isset($_GET["copy"]));
 
 		$order = soyshop_get_order_object($this->id);
-		if(!$order) SOY2PageController::jump("Order");
+		if(!$order instanceof SOYShop_Order || !is_numeric($order->getId())) SOY2PageController::jump("Order");
 
 		$user = soyshop_get_user_object($order->getUserId());
 
