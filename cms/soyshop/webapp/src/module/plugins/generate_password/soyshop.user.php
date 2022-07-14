@@ -28,6 +28,8 @@ class GeneratePasswordUser extends SOYShopUserBase{
 		//パスワードの自動生成
 		foreach($userIds as $userId){
 			$user = soyshop_get_user_object($userId);
+			if(strlen((string)$user->getPassword())) continue;	//既にパスワードが登録されている場合はパスワードの自動生成を行わない
+
 			$pw = soyshop_create_random_string($len, $isIncludeSymbol);
 			GeneratePasswordUtil::saveAutoGeneratePassword($user->getMailAddress(), $pw);
 			$user->setPassword($user->hashPassword($pw));

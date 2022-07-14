@@ -316,27 +316,29 @@ class SOYInquiryUtil{
 		return $url . $rel->getEntryId();
 	}
 
-	/** Parsely.js連携 **/
-	public static function checkIsParsely(){
-		static $isParsely;
-		if(is_null($isParsely)){
-			$isParsely = false;
-			if(defined("SOYSHOP_INQUIRY_FORM_THEME")){
-				$path = self::_getTemplateDir(SOYSHOP_INQUIRY_FORM_THEME) . "form.php";
-				if(file_exists($path)){
-					$lines = explode("\n", file_get_contents($path));
-					if(count($lines)){
-						foreach($lines as $line){
-							if(stripos($line, "<form") !== false) {
-								$isParsely = (is_numeric(strpos($line, "data-parsley-validate")));
-								break;
-							}
-						}
-					}
-				}
+	/** Parsley.js連携 **/
+	public static function checkIsParsley(){
+		static $isParsley;
+		if(is_bool($isParsley)) return $isParsley;
+		
+		$isParsley = false;
+		
+		if(!defined("SOYSHOP_INQUIRY_FORM_THEME")) return false;
+		
+		$path = self::_getTemplateDir(SOYSHOP_INQUIRY_FORM_THEME) . "form.php";
+		if(!file_exists($path)) return false;
+		
+		$lines = explode("\n", file_get_contents($path));
+		if(!count($lines)) return false;
+		
+		foreach($lines as $line){
+			if(is_numeric(stripos($line, "<form"))) {
+				$isParsley = (is_numeric(strpos($line, "data-parsley-validate")));
+				break;
 			}
 		}
-		return $isParsely;
+		
+		return $isParsley;
 	}
 
 	/** セッション関連 **/

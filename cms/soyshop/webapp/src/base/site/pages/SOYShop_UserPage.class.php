@@ -124,10 +124,11 @@ class SOYShop_UserPage extends SOYShopPageBase{
     }
 
     /**
-     * @return String ページクラス
+	 * @param
+	 * @return String ページクラス
      */
-    function createPagePath($indexPage = false){
-    	$res = array();
+    function createPagePath(bool $isIndexPage=false){
+    	$arr = array();
     	$args = $this->getArgs();
 
     	//argsの整理。最後が数字の場合は配列から除く
@@ -138,38 +139,36 @@ class SOYShop_UserPage extends SOYShopPageBase{
 
     	$count = count($args);
 
-    	for($i=0;$i<$count;++$i){
+    	for($i = 0; $i < $count; $i++){
+    		if(!isset($args[$i]) || is_numeric($args[$i])) continue;//念の為、数字はスキップ
 
-    		if(is_numeric($args[$i]))continue;//念の為、数字はスキップ
-
-    		if($i == ($count-1) && !$indexPage){
-    			$res[] = ucfirst($args[$i]);
+    		if($i == ($count-1) && !$isIndexPage){
+    			$arr[] = ucfirst($args[$i]);
     		}else{
-    			$res[] = strtolower($args[$i]);
+    			$arr[] = strtolower($args[$i]);
     		}
     	}
 
     	//IndexPage
-    	if($indexPage)$res[] = "Index";
+    	if($isIndexPage) $arr[] = "Index";
 
-    	return implode(".",$res);
+    	return implode(".", $arr);
     }
 
     /**
      * @return Array(numeric)
      */
     function getPageArgs(){
-    	$res = array();
+    	$arr = array();
     	$args = $this->getArgs();
     	$count = count($args);
 
-    	for($i=0;$i<$count;++$i){
+    	for($i = 0; $i < $count; ++$i){
     		if(is_numeric($args[$i])){
-    			$res[] = $args[$i];
-
+    			$arr[] = $args[$i];
     		}
     	}
 
-    	return $res;
+    	return $arr;
     }
 }

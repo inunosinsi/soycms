@@ -61,7 +61,8 @@ class DetailPage extends MainMyPagePageBase{
 		));
 
 		//@ToDo 発送済み
-		DisplayPlugin::toggle("approval_button", ($isPdfFile && ($status < PurchaseAppUtil::STATUS_APPROVAL || $status == PurchaseAppUtil::STATUS_END)));	//ユーザ側で査定書の確認後のボタン
+		//DisplayPlugin::toggle("approval_button", ($isPdfFile && ($status < PurchaseAppUtil::STATUS_APPROVAL || $status == PurchaseAppUtil::STATUS_END)));	//ユーザ側で査定書の確認後のボタン
+		DisplayPlugin::toggle("approval_button", ($isPdfFile && $status < PurchaseAppUtil::STATUS_APPROVAL));	//ユーザ側で査定書の確認後のボタン
 		$this->addActionLink("approval_link", array(
 			"link" => soyshop_get_mypage_url() . "/purchase/detail/" . $purchase->getId(),
 			"style" => "color:#FFFFFF;",

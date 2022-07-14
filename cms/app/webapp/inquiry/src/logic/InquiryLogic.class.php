@@ -269,20 +269,27 @@ class InquiryLogic extends SOY2LogicBase{
 				}
 
 				if(strlen($mailAddress)){
-					include_once(SOY2::RootDir() . "base/func/common.php");
-					SOY2::import("module.plugins.generate_password.util.GeneratePasswordUtil");
-					$cnf = GeneratePasswordUtil::getConfig();
-					$len = (isset($cnf["password_strlen"]) && is_numeric($cnf["password_strlen"])) ? (int)$cnf["password_strlen"] : 12;
-					$pw = soyshop_create_random_string($len);
-
 					$userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 					try{
 						$user = $userDao->getByMailAddress($mailAddress);
+					}catch(Exception $e){
+						$user = new SOYShop_User();
+					}
+					
+					//パスワードが既に登録されている場合はパスワードの自動生成は行わない
+					if(is_numeric($user->getId()) && !strlen(trim((string)$user->getPassword()))){
+						include_once(SOY2::RootDir() . "base/func/common.php");
+						SOY2::import("module.plugins.generate_password.util.GeneratePasswordUtil");
+						$cnf = GeneratePasswordUtil::getConfig();
+						$len = (isset($cnf["password_strlen"]) && is_numeric($cnf["password_strlen"])) ? (int)$cnf["password_strlen"] : 12;
+						$pw = soyshop_create_random_string($len);
 						GeneratePasswordUtil::saveAutoGeneratePassword($user->getMailAddress(), $pw);
 						$user->setPassword($user->hashPassword($pw));
-						$userDao->update($user);
-					}catch(Exception $e){
-						//
+						try{
+							$userDao->update($user);
+						}catch(Exception $e){
+							//
+						}
 					}
 				}
 			}

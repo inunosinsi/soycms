@@ -50,13 +50,13 @@ class RadioColumn extends SOYInquiry_ColumnBase{
 			}
 
 			$radioReq = ($key == 0) ? $required : "";
-			if(strlen($radioReq) && SOYInquiryUtil::checkIsParsely()) $radioReq .= " data-parsley-errors-container=\"#parsely-error-" . $this->getColumnId() . "\"";
+			if(strlen($radioReq) && SOYInquiryUtil::checkIsParsley()) $radioReq .= " data-parsley-errors-container=\"#parsley-error-" . $this->getColumnId() . "\" ";
 			$html[] = "<input type=\"radio\" id=\"data_".$this->getColumnId() . "_" . $key. "\" name=\"data[".$this->getColumnId()."]\" value=\"".$item."\" " . implode(" ",$attributes). " ". $checked . " " . $radioReq . ">";
 			$html[] = "<label for=\"data_".$this->getColumnId() . "_" . $key. "\">".$item."</label>";
 
 			if($this->isBr) $html[] = "<br>";
 		}
-		if(SOYInquiryUtil::checkIsParsely()) $html[] = "<span id=\"parsely-error-" . $this->getColumnId() . "\"></span>";
+		if(SOYInquiryUtil::checkIsParsley()) $html[] = "<span id=\"parsley-error-" . $this->getColumnId() . "\"></span>";
 
 		return implode("\n",$html);
 	}

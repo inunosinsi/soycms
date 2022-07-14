@@ -43,12 +43,12 @@ class CheckBoxWithImageColumn extends SOYInquiry_ColumnBase{
 				$checked = 'checked="checked"';
 			}
 
-			$parselyProp = ($key == 0 && SOYInquiryUtil::checkIsParsely()) ? "data-parsley-errors-container=\"#parsely-error-" . $this->getColumnId() . "\"" : "";
-			$html[] = "<input type=\"checkbox\" id=\"data_".$this->getColumnId() . "_" . $key. "\" name=\"data[".$this->getColumnId()."][]\" value=\"".$item."\" " . implode(" ",$attributes). " ".$checked." " . $parselyProp . ">";
+			$parsleyProp = ($key == 0 && SOYInquiryUtil::checkIsParsley()) ? "data-parsley-errors-container=\"#parsley-error-" . $this->getColumnId() . "\"" : "";
+			$html[] = "<input type=\"checkbox\" id=\"data_".$this->getColumnId() . "_" . $key. "\" name=\"data[".$this->getColumnId()."][]\" value=\"".$item."\" " . implode(" ",$attributes). " ".$checked." " . $parsleyProp . ">";
 			$html[] = "<label for=\"data_".$this->getColumnId() . "_" . $key. "\">".$item."</label>";
 			if($this->isBr) $html[] = "<br>";
 		}
-		if(SOYInquiryUtil::checkIsParsely()) $html[] = "<span id=\"parsely-error-" . $this->getColumnId() . "\"></span>";
+		if(SOYInquiryUtil::checkIsParsley()) $html[] = "<span id=\"parsley-error-" . $this->getColumnId() . "\"></span>";
 
 		return implode("\n",$html);
 

@@ -5,33 +5,27 @@ class SOYShopConnectLogic extends SOY2LogicBase{
 	private $checkVersion;
 
 	function getSOYShopSiteList(){
-
-		$sites = array();
-
 		if(!$this->checkVersion) $this->checkVersion = $this->checkVersion();
 
-		$old = SOYInquiryUtil::switchConfig();
-
-		if($this->checkVersion === true){
+		$sites = array();
+		if($this->checkVersion){
+			$old = SOYInquiryUtil::switchConfig();
 			if(file_exists(SOY2::RootDir() . "domain/SOYShop_SiteDAO.class.php")){
-				$siteDao = SOY2DAOFactory::create("SOYShop_SiteDAO");
 				try{
 					//SOY Shopがインストールされていない可能性がある
-					$sites = $siteDao->get();
+					$sites = SOY2DAOFactory::create("SOYShop_SiteDAO")->get();
 				}catch(Exception $e){
 					//
 				}
 			}
+			SOYInquiryUtil::resetConfig($old);
 		}
 
-		SOYInquiryUtil::resetConfig($old);
+		if(!count($sites)) return array();
 
 		$list = array();
-
-		if(count($sites) > 0){
-			foreach($sites as $site){
-				$list[$site->getId()] = $site->getName();
-			}
+		foreach($sites as $site){
+			$list[$site->getId()] = $site->getName();
 		}
 
 		return $list;
@@ -78,6 +72,7 @@ class SOYShopConnectLogic extends SOY2LogicBase{
 
 			SOY2::import("domain.config.SOYShop_DataSets");
 			include_once(SOY2::RootDir() . "base/func/common.php");
+			include_once(SOY2::RootDir() . "base/func/dao.php");
 			if(!defined("SOYSHOP_CURRENT_MYPAGE_ID")) define("SOYSHOP_CURRENT_MYPAGE_ID", soyshop_get_mypage_id());
 
 			SOY2::import("logic.mypage.MyPageLogic");
@@ -86,15 +81,8 @@ class SOYShopConnectLogic extends SOY2LogicBase{
 			$isLoggedIn = $mypage->getIsLoggedin();
 			$userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 
-			if(!$isLoggedIn){
-				$user = new SOYShop_User();
-			}else{
-				try{
-					$user = $userDao->getById($mypage->getUserId());
-				}catch(Exception $e){
-					$user = new SOYShop_User();
-				}
-			}
+			$userId = ($isLoggedIn) ? $mypage->getUserId() : 0;
+			$user = soyshop_get_user_object($userId);
 
 			SOYInquiryUtil::resetConfig($old);
 		}
