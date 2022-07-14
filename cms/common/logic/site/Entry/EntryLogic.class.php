@@ -385,7 +385,11 @@ class EntryLogic extends SOY2LogicBase{
 					$entry = $dao->getOpenEntryById($entryId,SOYCMS_NOW);
 				}catch(Exception $e){
 					//記事IDで取得できなければ、エイリアスの方でも取得を試みる
-					$entry = $dao->getOpenEntryByAlias($entryId,SOYCMS_NOW);
+					try{
+						$entry = $dao->getOpenEntryByAlias($entryId,SOYCMS_NOW);
+					}catch(Exception $e){
+						$entry = new Entry();
+					}
 				}
 			}else{
 				try{
@@ -393,7 +397,6 @@ class EntryLogic extends SOY2LogicBase{
 				}catch(Exception $e){
 					$entry = new Entry();
 				}
-				
 			}
 		}
 

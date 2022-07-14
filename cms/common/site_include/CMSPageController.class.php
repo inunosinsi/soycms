@@ -106,12 +106,12 @@ class CMSPageController extends SOY2PageController{
 		}
 
 		SOY2::import("site_include." . $pageClass);
-		try{
-			$this->webPage = &SOY2HTMLFactory::createInstance($pageClass, array(
-				"arguments" => array($page->getId(), $args, $siteConfig),
-				"siteRoot" => SOY2PageController::createLink("")
-			));
-		}catch(Exception $e){
+		$this->webPage = &SOY2HTMLFactory::createInstance($pageClass, array(
+			"arguments" => array($page->getId(), $args, $siteConfig),
+			"siteRoot" => SOY2PageController::createLink("")
+		));
+		
+		if($this->webPage->getError() instanceof Exception){
 			$this->onNotFound();
 		}
 		

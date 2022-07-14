@@ -10,6 +10,7 @@ class CMSPage extends WebPage{
 	var $siteRoot;
 	var $parseTime;
 	var $title;
+	var $error;
 
 	protected $siteUrl;
 	protected $pageUrl;
@@ -443,4 +444,8 @@ class CMSPage extends WebPage{
 			return CMSPageController::createRelativeLink($path, true);
 		}
     }
+
+	function getError(){
+		return $this->error;
+	}
 }

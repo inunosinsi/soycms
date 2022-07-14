@@ -2,6 +2,8 @@
 SOY2::import('site_include.CMSPage');
 class CMSApplicationPage extends CMSPage{
 
+	var $error;
+
 	function __construct($args) {
 
   		$id = $args[0];
@@ -59,7 +61,11 @@ class CMSApplicationPage extends CMSPage{
 			SOY2DAOConfig::user($oldUser);
 			SOY2DAOConfig::pass($oldPass);
 
-    		throw $e;
+    		$this->error = $e;
     	}
     }
+
+	function getError(){
+		return $this->error;
+	}
 }

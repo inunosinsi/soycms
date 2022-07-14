@@ -25,6 +25,7 @@ class CMSBlogPage extends CMSPage{
 	var $limit;
 	var $entryComment;
 	var $currentAbsoluteURL;
+	var $error;
 
 	function doPost(){
 		//comment
@@ -56,12 +57,10 @@ class CMSBlogPage extends CMSPage{
 			);
 			soy2_setcookie("soycms_comment", http_build_query($array));
 
-			try{
-				//error check for length of body
-				if(strlen($entryComment->getBody())==0){
-					throw new Exception("");
-				}
-
+			//error check for length of body
+			if(strlen($entryComment->getBody())==0){
+				$this->error = new Exception("");
+			}else{
 				//CMS:PLUGIN callEventFunction
 				$result = CMSPlugin::callEventFunc('onSubmitComment',array("entryComment"=>$entryComment, "page" => $this),true);
 
@@ -81,9 +80,6 @@ class CMSBlogPage extends CMSPage{
 					header("Location: ".$redirect);
 					exit;
 				}
-
-			}catch(Exception $e){
-				//?
 			}
 		}
 
@@ -165,7 +161,8 @@ class CMSBlogPage extends CMSPage{
 		switch($this->mode){
 			case CMSBlogPage::MODE_ENTRY:
 				if(!$this->page->getGenerateEntryFlag()){
-					throw new Exception("EntryPageは表示できません");
+					$tihs->error = new Exception("EntryPageは表示できません");
+					return;
 				}
 				$this->mode = CMSBlogPage::MODE_ENTRY;
 				
@@ -180,7 +177,8 @@ class CMSBlogPage extends CMSPage{
 				);
 				list($this->entry,$this->nextEntry,$this->prevEntry) = self::_entry($alias);
 				if(!is_numeric($this->entry->getId())){
-					throw new Exception("EntryPageは表示できません");
+					$this->error = new Exception("EntryPageは表示できません");
+					return;
 				}
 				
 				//表示しているページの絶対URL
@@ -209,7 +207,8 @@ class CMSBlogPage extends CMSPage{
 
 			case CMSBlogPage::MODE_CATEGORY_ARCHIVE:
 				if(!$this->page->getGenerateCategoryFlag()){
-					throw new Exception("CategoryPageは表示できません");
+					$this->error = new Exception("CategoryPageは表示できません");
+					return;
 				}
 				$this->mode = CMSBlogPage::MODE_CATEGORY_ARCHIVE;
 				$this->limit = $this->page->getCategoryDisplayCount();
@@ -242,7 +241,8 @@ class CMSBlogPage extends CMSPage{
 
 			case CMSBlogPage::MODE_MONTH_ARCHIVE:
 				if(!$this->page->getGenerateMonthFlag()){
-					throw new Exception("MonthPageは表示できません");
+					$this->error = new Exception("MonthPageは表示できません");
+					return;
 				}
 				$this->mode = CMSBlogPage::MODE_MONTH_ARCHIVE;
 				$this->limit = $this->page->getMonthDisplayCount();
@@ -281,7 +281,8 @@ class CMSBlogPage extends CMSPage{
 
 			case CMSBlogPage::MODE_RSS:
 				if(!$this->page->getGenerateRssFlag()){
-					throw new Exception("RssPageは表示できません");
+					$this->error = new Exception("RssPageは表示できません");
+					return;
 				}
 
 				$this->mode = CMSBlogPage::MODE_RSS;
@@ -332,14 +333,16 @@ class CMSBlogPage extends CMSPage{
 			case CMSBlogPage::MODE_TOP:
 				//トップページURLが設定されているのに、argsが0の場合はおかしい
 				if(strlen($this->page->getTopPageUri()) && count($this->arguments) === 0){
-					throw new Exception("Argument Values Is None.");
+					$this->error = new Exception("Argument Values Is None.");
+					return;
 				}
 
 				//argsが1つで、uriとページャが融合した値はおかしい
 				if(count($this->arguments) == 1 && strlen($this->page->getTopPageUri()) && strpos($this->arguments[0], $this->page->getTopPageUri()) === 0){
 					preg_match('/^' . $this->page->getTopPageUri() .  'page-[\d]+?/', $this->arguments[0], $tmp);
 					if(isset($tmp[0])){
-						throw new Exception("Invalid Argument Value.");
+						$this->error = new Exception("Invalid Argument Value.");
+						return;
 					}
 				}
 
@@ -355,13 +358,17 @@ class CMSBlogPage extends CMSPage{
 						//ブログページのトップページのuriが有りでページャの場合も調べる
 						if(count($this->arguments) === 2 && strpos($this->arguments[0], "page-") === false) $argsError = false;
 
-						if($argsError) throw new Exception("Too Many Argument Values.");
+						if($argsError) {
+							$this->error = new Exception("Too Many Argument Values.");
+							return;
+						}
 						unset($argsError);
 					}
 				}
 
 				if(!$this->page->getGenerateTopFlag()){
-					throw new Exception("TOPPageは表示できません");
+					$this->error = new Exception("TOPPageは表示できません");
+					return;
 				}
 
 				$this->mode = CMSBlogPage::MODE_TOP;
@@ -388,9 +395,11 @@ class CMSBlogPage extends CMSPage{
 				break;
 
 			default:
-				throw new Exception("Invalid URL");
+				$this->error = new Exception("Invalid URL");
 				break;
 		}
+
+		if($this->error instanceof Exception) return;
 
 		//記事がなかったら404
 		if($this->total > 0 && (!is_array($this->entries) || !count($this->entries))){
@@ -398,14 +407,14 @@ class CMSBlogPage extends CMSPage{
 				case CMSBlogPage::MODE_TOP:
 					// countが0件の場合は特殊な設定をしている場合がある
 					if($this->page->getTopDisplayCount() > 0){
-						throw new Exception("HTTP/1.1 404 Not Found.");
+						$this->error = new Exception("HTTP/1.1 404 Not Found.");
 					}
 					break;
 				case CMSBlogPage::MODE_CATEGORY_ARCHIVE:
 				case CMSBlogPage::MODE_MONTH_ARCHIVE:
 				case CMSBlogPage::MODE_RSS:
 					//下記の条件でブログの新規作成時の確認の時は404を避けることができる
-					throw new Exception("HTTP/1.1 404 Not Found.");
+					$this->error = new Exception("HTTP/1.1 404 Not Found.");
 					break;
 				case CMSBlogPage::MODE_ENTRY://記事ページは記事が取得できなければ例外となり404ページが表示される
 				case CMSBlogPage::MODE_POPUP:
@@ -413,6 +422,8 @@ class CMSBlogPage extends CMSPage{
 					break;
 			}
 		}
+
+		if($this->error instanceof Exception) return;
 
 		//カノニカルURLを生成するスクリプトはここで実行する必要がある
 		self::_executeCanonicalUrlCreate();
@@ -719,10 +730,14 @@ class CMSBlogPage extends CMSPage{
 
 	}
 
-	private function _checkUseBBlock($tag){
-		static $conf;
-		if(is_null($conf)) $conf = $this->page->getBBlockConfig();
-		return (isset($conf[$tag]) && (int)$conf[$tag] === 1);
+	/**
+	 * @param string
+	 * @return bool
+	 */
+	private function _checkUseBBlock(string $tag){
+		static $cnf;
+		if(is_null($cnf)) $cnf = $this->page->getBBlockConfig();
+		return (isset($cnf[$tag]) && (int)$cnf[$tag] === 1);
 	}
 
 	//サイドナビ系
@@ -1104,6 +1119,10 @@ class CMSBlogPage extends CMSPage{
 	 */
 	function getRssTemplate(){
 		return '<!-- soy:id="feed" /-->';
+	}
+
+	function getError(){
+		return $this->error;
 	}
 
 	private function getEntryLogic(){

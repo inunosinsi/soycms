@@ -8,6 +8,7 @@ class CMSMobilePage extends CMSPage{
 	var $pager = 0;
 	var $pagerMax = 0;
 	var $imageUrl = "";
+	var $error;
 
 	function __construct($args){
 		$id = $args[0];
@@ -32,11 +33,17 @@ class CMSMobilePage extends CMSPage{
 			}
 
 			$this->virtualTree = $this->page->getVirtualTreeByAlias($this->virtualPageId);
-			if(!$this->virtualTree)throw new Exception("Invalid Virtual Page Id");
+			if(!$this->virtualTree) {
+				$this->error = new Exception("Invalid Virtual Page Id");
+				return;
+			}
 			$this->virtualPageId = $this->virtualTree->getId();
 		}
 
-		if(!$this->virtualTree)throw new Exception("Invalid Virtual Page Id");
+		if(!$this->virtualTree){
+			$this->error = new Exception("Invalid Virtual Page Id");
+			return;
+		}
 
 		$siteRootUrl = CMSPageController::createRelativeLink(".");
 		if(strlen($siteRootUrl) ==0 OR $siteRootUrl[strlen($siteRootUrl)-1] != "/") $siteRootUrl .= "/";
@@ -335,7 +342,10 @@ class CMSMobilePage extends CMSPage{
 		}
 
 		return $return;
+	}
 
+	function getError(){
+		return $this->error;
 	}
 
 }
