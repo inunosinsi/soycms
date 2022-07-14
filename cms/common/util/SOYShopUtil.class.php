@@ -44,20 +44,24 @@ class SOYShopUtil {
 
 		if(file_exists(dirname(SOY2::RootDir()) . "/conf/shop/" . $siteId . ".conf.php")){
 			include_once(dirname(SOY2::RootDir()) . "/conf/shop/" . $siteId . ".conf.php");
-		}else{
+		}else if(file_exists(dirname(SOY2::RootDir()) . "/conf/shop/" . $siteId . ".admin.conf.php")){
 			include_once(dirname(SOY2::RootDir()) . "/conf/shop/" . $siteId . ".admin.conf.php");
+		}else{
+			//
 		}
 		
+		// エラーメッセージはこのメソッドの後のページの方に任せる
+		if(defined("SOYSHOP_SITE_DSN")){
+			SOY2DAOConfig::Dsn(SOYSHOP_SITE_DSN);
+			SOY2DAOConfig::user(SOYSHOP_SITE_USER);
+			SOY2DAOConfig::pass(SOYSHOP_SITE_PASS);
 
-		SOY2DAOConfig::Dsn(SOYSHOP_SITE_DSN);
-		SOY2DAOConfig::user(SOYSHOP_SITE_USER);
-		SOY2DAOConfig::pass(SOYSHOP_SITE_PASS);
 
-
-		//SOYShop_ShopConfig::saveで利用するクラスの読み込み
-		SOY2::import("domain.config.SOYShop_DataSetsDAO");
-		SOY2::import("domain.config.SOYShop_DataSets");
-		SOY2::import("domain.config.SOYShop_ShopConfig");
+			//SOYShop_ShopConfig::saveで利用するクラスの読み込み
+			SOY2::import("domain.config.SOYShop_DataSetsDAO");
+			SOY2::import("domain.config.SOYShop_DataSets");
+			SOY2::import("domain.config.SOYShop_ShopConfig");
+		}
 
 		return $old;
 	}

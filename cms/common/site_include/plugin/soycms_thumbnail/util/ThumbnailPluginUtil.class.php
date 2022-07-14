@@ -37,7 +37,7 @@ class ThumbnailPluginUtil {
 				"SELECT entry_id, entry_field_id, entry_value ".
 				"FROM EntryAttribute ".
 				"WHERE entry_id IN (" . implode(",", $entryIds) . ") ".
-				"AND entry_field_id IN (\"" . implode("\",\"", self::_getFieldIds()) . "\")", 
+				"AND entry_field_id IN (\"" . implode("\",\"", self::_getFieldIds()) . "\")"
 			);
 		}catch(Exception $e){
 			$res = array();
