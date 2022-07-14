@@ -36,9 +36,17 @@ class InquiryListPage extends WebPage {
 		$searchLogic->setOffset($offset);
 		$results = $searchLogic->search();
 
+		$userIds = array();
+		if(count($results)){
+			foreach($results as $inq){
+				$userIds[] = $inq->getUserId();
+			}
+		}
+
 		SOY2::import("module.plugins.inquiry_on_mypage.component.InquiryListComponent");
 		$this->createAdd("inquiry_list", "InquiryListComponent", array(
-			"list" => $results
+			"list" => $results,
+			"userNameList" => SOY2Logic::createInstance("logic.user.UserLogic")->getUserNameListByUserIds($userIds)
 		));
 
 		$total = $searchLogic->getTotal();
