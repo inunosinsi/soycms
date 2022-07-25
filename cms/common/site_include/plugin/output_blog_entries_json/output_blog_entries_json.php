@@ -16,10 +16,9 @@ class OutputBlogEntriesJsonPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/4505",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.6"
+			"version"=>"0.6.1"
 		));
 		
-
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
 			CMSPlugin::addPluginConfigPage(self::PLUGIN_ID, array(
 				$this, "config_page"
@@ -248,9 +247,9 @@ class OutputBlogEntriesJsonPlugin{
 		if(!isset($arr["total"])) $arr["total"] = 0;
 		if(!isset($arr["is_next"])) $arr["is_next"] = 0;
 		if(!isset($arr["entries"])) $arr["entries"] = array();
-		var_dump($arr);
-		//header("Content-Type: application/json; charset=utf-8");
-		//echo json_encode($arr);
+		//var_dump($arr);
+		header("Content-Type: application/json; charset=utf-8");
+		echo json_encode($arr);
 		exit;
 	}
 
