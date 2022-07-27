@@ -7,6 +7,7 @@ class MultiEntryListComponent extends HTMLList{
 	private $blogTitle = array();
 	private $blogUrl = array();
 	private $blogCategoryUrl = array();
+	private $isCallEventFunc = true;	//カスタムフィールドの拡張ポイントを実行するか？
 
 	private $dsn;
 
@@ -28,6 +29,9 @@ class MultiEntryListComponent extends HTMLList{
 
 	public function setBlogCategoryUrl($blogCategoryUrl){
 		$this->blogCategoryUrl = $blogCategoryUrl;
+	}
+	public function setIsCallEventFunc($isCallEventFunc){
+		$this->isCallEventFunc = $isCallEventFunc;
 	}
 
 	public function getStartTag(){
@@ -129,16 +133,17 @@ class MultiEntryListComponent extends HTMLList{
 		));
 
 		//1.2.7～
+		$more = (is_string($entity->getMore())) ? $entity->getMore() : "";
 		$this->addLink("more_link", array(
 			"soy2prefix" => "cms",
 			"link" => $entryUrl ."#more",
-			"visible"=>(strlen($entity->getMore()) != 0)
+			"visible"=>(strlen($more) != 0)
 		));
 
 		$this->addLink("more_link_no_anchor", array(
 			"soy2prefix" => "cms",
 			"link" => $entryUrl,
-			"visible"=>(strlen($entity->getMore()) != 0)
+			"visible"=>(strlen($more) != 0)
 		));
 
 		//Blog Title link
@@ -190,7 +195,9 @@ class MultiEntryListComponent extends HTMLList{
 			"soy2prefix" => "cms"
 		));
 
-		CMSPlugin::callEventFunc('onEntryOutput', array("entryId" => $id, "SOY2HTMLObject" => $this, "entry" => $entity));
+		//ブロックの高速化　カスタムフィールド用の拡張ポイントを実行するか？
+		if(!is_bool($this->isCallEventFunc)) $this->isCallEventFunc = true;
+		if($this->isCallEventFunc) CMSPlugin::callEventFunc('onEntryOutput', array("entryId" => $id, "SOY2HTMLObject" => $this, "entry" => $entity));
 	}
 
 	private function _labelLogic(){

@@ -4,9 +4,13 @@
  */
 class PluginBlockComponent implements BlockComponent{
 
+	const ON = 1;
+	const OFF = 0;
+
     private $pluginId;
 	private $isStickUrl = false;
 	private $blogPageId;
+	private $isCallEventFunc = self::ON;	//公開側でHTMLの表示の際にカスタムフィールドの拡張ポイントを読み込むか？
 
 	/**
 	 * @return SOY2HTML
@@ -15,11 +19,13 @@ class PluginBlockComponent implements BlockComponent{
 	function getFormPage(){
 
         $pluginIds = array();
-        $onLoad = CMSPlugin::getEvent('onPluginBlockAdminReturnPluginId');
-		foreach($onLoad as $plugin){
-			$func = $plugin[0];
-            $res = call_user_func($func);
-            if(isset($res) && strlen($res)) $pluginIds[] = htmlspecialchars($res, ENT_QUOTES, "UTF-8");
+        $onLoads = CMSPlugin::getEvent('onPluginBlockAdminReturnPluginId');
+		if(count($onLoads)){
+			foreach($onLoads as $plugin){
+				$func = $plugin[0];
+				$res = call_user_func($func);
+				if(isset($res) && strlen($res)) $pluginIds[] = htmlspecialchars($res, ENT_QUOTES, "UTF-8");
+			}
 		}
 
 		return SOY2HTMLFactory::createInstance("PluginBlockComponent_FormPage",array(
@@ -47,22 +53,20 @@ class PluginBlockComponent implements BlockComponent{
         $articlePageUrl = "";
 		$categoryPageUrl = "";
 		if($this->isStickUrl){
-			try{
-				$pageDao = SOY2DAOFactory::create("cms.BlogPageDAO");
-				$blogPage = $pageDao->getById($this->blogPageId);
-
+			$blogPage = soycms_get_blog_page_object((int)$this->blogPageId);
+			if(is_numeric($blogPage->getId())){
 				if(defined("CMS_PREVIEW_MODE")){
 					$articlePageUrl = SOY2PageController::createLink("Page.Preview") ."/". $blogPage->getId() . "?uri=". $blogPage->getEntryPageURL();
 				}else{
 					$articlePageUrl = $page->getSiteRootUrl() . $blogPage->getEntryPageURL();
 					$categoryPageUrl = $page->getSiteRootUrl() . $blogPage->getCategoryPageURL();
 				}
-			}catch(Exception $e){
+			}else{
 				$this->isStickUrl = false;
 			}
 		}
 
-		CMSPlugin::callEventFunc('onEntryListBeforeOutput', array("entries" => &$array));
+		if($this->isCallEventFunc == self::ON) CMSPlugin::callEventFunc('onEntryListBeforeOutput', array("entries" => &$array));
 
 		SOY2::import("site_include.block._common.BlockEntryListComponent");
 		SOY2::import("site_include.blog.component.CategoryListComponent");
@@ -73,6 +77,7 @@ class PluginBlockComponent implements BlockComponent{
 			"categoryPageUrl" => $categoryPageUrl,
 			"blogPageId" => $this->blogPageId,
 			"soy2prefix"=>"block",
+			"isCallEventFunc" => ($this->isCallEventFunc == self::ON)
 		));
 
 	}
@@ -135,6 +140,13 @@ class PluginBlockComponent implements BlockComponent{
 		$cnt = (strlen($displayCountTo) && is_numeric($displayCountTo)) ? (int)$displayCountTo : null;
 		$this->displayCountTo = $cnt;
 	}
+
+	public function getIsCallEventFunc(){
+		return $this->isCallEventFunc;
+	}
+	public function setIsCallEventFunc($isCallEventFunc){
+		$this->isCallEventFunc = $isCallEventFunc;
+	}
 }
 
 
@@ -187,6 +199,13 @@ class PluginBlockComponent_FormPage extends HTMLPage{
             "options" => $this->pluginIds,
             "visible" => (count($this->pluginIds) > 0)
         ));
+
+		$this->addCheckBox("is_call_event_func", array(
+			"name" => "object[isCallEventFunc]",
+			"value" => 1,
+			"label" => "カスタムフィールドの拡張ポイントを実行します",
+			"selected" => $this->entity->getIsCallEventFunc()
+		));
 
 		$this->addForm("main_form", array());
 

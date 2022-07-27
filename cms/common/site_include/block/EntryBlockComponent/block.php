@@ -22,30 +22,22 @@ class EntryBlockComponent implements BlockComponent{
 	 * TODO 公開期間チェック
 	 */
 	public function getViewPage($page){
+		$entryIds = (is_array($this->getEntryId())) ? $this->getEntryId() : array($this->getEntryId());
 		return SOY2HTMLFactory::createInstance("EntryBlockComponent_ViewPage",array(
-			"list" => $this->getEntries($this->getEntryId()),
+			"list" => self::_getEntries($entryIds),
 			"soy2prefix"=>"block"
 		));
 	}
 
-	private function getEntries($entries){
-		$dao = SOY2DAOFactory::create("cms.EntryDAO");
+	private function _getEntries(array $entryIds){
 		$return = array();
-		foreach($entries as $entryId){
-			try{
-				$entry = $dao->getById($entryId);
-
-				//Check opening status
-				if($entry->isActive() == Entry::ENTRY_ACTIVE){
-				 	$return[] = $entry;
-				}else if(defined("CMS_PREVIEW_ALL") && CMS_PREVIEW_ALL){
-					$return[] = $entry;
-				}
-
-
-			}catch(Exception $e){
-				//do nothing
-				//No entry is searched.
+		foreach($entryIds as $entryId){
+			$entry = soycms_get_entry_object((int)$entryId);
+			//Check opening status
+			if($entry->isActive() == Entry::ENTRY_ACTIVE){
+			 	$return[] = $entry;
+			}else if(defined("CMS_PREVIEW_ALL") && CMS_PREVIEW_ALL){
+				$return[] = $entry;
 			}
 		}
 		return $return;
@@ -57,7 +49,6 @@ class EntryBlockComponent implements BlockComponent{
 	 * 一覧表示に出力する文字列
 	 */
 	public function getInfoPage(){
-
 		if(is_null($this->getEntryId()) || count($this->getEntryId()) == 0){
 			return CMSMessageManager::get("SOYCMS_NO_SETTING");
 		}else{
@@ -163,10 +154,8 @@ class EntryBlockComponent_FormPage extends HTMLPage{
 
 
 	private function getAllEntry(){
-		$dao = SOY2DAOFactory::create("cms.EntryDAO");
-		$array = $dao->get();
+		$array = soycms_get_hash_table_dao("entry")->get();
 		$ret_val = array();
-
 
 		foreach($array as $key => $value){
 			$ret_val[$key] = array();
@@ -178,20 +167,15 @@ class EntryBlockComponent_FormPage extends HTMLPage{
 		return $ret_val;
 	}
 
-	private function getLabelIdsByEntryId($entryId){
-		static $dao = null;
-		if($dao == null){
-			$dao = SOY2DAOFactory::create("cms.EntryLabelDAO");
-		}
+	private function getLabelIdsByEntryId(int $entryId){
+		static $dao;
+		if(is_null($dao)) $dao = SOY2DAOFactory::create("cms.EntryLabelDAO");
 		return $dao->getByEntryId($entryId);
 	}
 
-	private function getLabelIdsFromEntryId($entryId){
-		static $labels = null;
-		if($labels == null){
-			$dao = SOY2DAOFactory::create("cms.LabelDAO");
-			$labels = $dao->get();
-		}
+	private function getLabelIdsFromEntryId(int $entryId){
+		static $labels;
+		if(is_null($labels)) $labels = soycms_get_hash_table_dao("label")->get();
 		$labelIds = $this->getLabelIdsByEntryid($entryId);
 		$return = array();
 		foreach($labelIds as $key => $value){
@@ -200,14 +184,11 @@ class EntryBlockComponent_FormPage extends HTMLPage{
 				$return[] = $tmp->getId();
 			}
 		}
-
 		return $return;
 	}
 
 	private function getLabelCaptions(){
-		$dao = SOY2DAOFactory::create("cms.LabelDAO");
-		$array = $dao->get();
-		return $array;
+		return soycms_get_hash_table_dao("label")->get();
 	}
 
 	public function getTemplateFilePath(){
@@ -232,8 +213,6 @@ class EntryBlockComponent_FormPage extends HTMLPage{
 	public function getEntity(){
 		return $this->entity;
 	}
-
-
 }
 
 

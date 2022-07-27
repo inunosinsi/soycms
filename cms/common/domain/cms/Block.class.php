@@ -88,10 +88,8 @@ class Block {
 	 *
 	 */
 	function getBlockComponent(){
-		try{
-			if(strlen($this->getClass()) < 1) throw new Exception();
-
-			if(!class_exists($this->getClass())) include_once(CMS_BLOCK_DIRECTORY . $this->getClass() . "/block.php");
+		if(strlen($this->getClass()) > 1){
+			if(!class_exists($this->getClass()) && file_exists(CMS_BLOCK_DIRECTORY . $this->getClass() . "/block.php")) include_once(CMS_BLOCK_DIRECTORY . $this->getClass() . "/block.php");
 
 			if ($this->getObject()) {
 				return unserialize($this->object);
@@ -99,8 +97,6 @@ class Block {
 				$className = $this->getClass();
 				return new $className;
 			}
-		}catch(Exception $e){
-			//
 		}
 
 		return new BrokenBlockComponent();
@@ -110,22 +106,12 @@ class Block {
 	 * @return Array ブロックプラグインリスト
 	 */
 	public static function getBlockComponentList(){
-
-		$dir = CMS_BLOCK_DIRECTORY;
-
 		$files = (defined("SOYCMS_BLOCK_LIST")) ? explode(",",SOYCMS_BLOCK_LIST) : explode(",",self::BLOCK_LIST);
 
 		$array = array();
 		foreach($files as $key => $file){
-
-			if(!is_dir(CMS_BLOCK_DIRECTORY . $file)){
-				continue;
-			}
-
-			if(strstr($file,"."))continue;
-
+			if(!is_dir(CMS_BLOCK_DIRECTORY . $file) || strstr($file,".")) continue;
 			include_once(CMS_BLOCK_DIRECTORY . $file . "/block.php");
-
 			$array[$file] = new $file;
 		}
 
@@ -143,7 +129,6 @@ class Block {
 	function setIsUse($value){
 		$this->isUse = (boolean)$value;
 	}
-
 }
 
 
@@ -216,7 +201,4 @@ class BrokenBlockComponent implements BlockComponent{
 	 * @return string コンポーネント説明
 	 */
 	function getComponentDescription(){return ""; }
-
-
 }
-?>

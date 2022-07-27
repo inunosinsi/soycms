@@ -10,6 +10,7 @@ class BlockEntryListComponent extends HTMLList{
 	private $editable = true;
 	private $labelId;
 	private $dsn = false;
+	private $isCallEventFunc = true;	//カスタムフィールドの拡張ポイントを実行するか？
 
 	public function setIsStickUrl($flag){
 		$this->isStickUrl = $flag;
@@ -44,6 +45,9 @@ class BlockEntryListComponent extends HTMLList{
 	}
 	public function setDsn($dsn) {
 		$this->dsn = $dsn;
+	}
+	public function setIsCallEventFunc($isCallEventFunc){
+		$this->isCallEventFunc = $isCallEventFunc;
 	}
 
 	public function getStartTag(){
@@ -149,13 +153,13 @@ class BlockEntryListComponent extends HTMLList{
 		$this->addLink("more_link", array(
 			"soy2prefix"=>"cms",
 			"link" => $entryUrl ."#more",
-			"visible"=>(strlen($entity->getMore()) != 0)
+			"visible"=>($moreLen != 0)
 		));
 
 		$this->addLink("more_link_no_anchor", array(
 			"soy2prefix"=>"cms",
 			"link" => $entryUrl,
-			"visible"=>(strlen($entity->getMore()) != 0)
+			"visible"=>($moreLen != 0)
 		));
 
 		//1.7.5~
@@ -188,7 +192,9 @@ class BlockEntryListComponent extends HTMLList{
 			"soy2prefix" => "cms"
 		));
 
-		CMSPlugin::callEventFunc('onEntryOutput',array("entryId" => $id, "SOY2HTMLObject" => $this, "entry" => $entity, "blockId" => $this->blockId));
+		//ラベルブロックの高速化　カスタムフィールド用の拡張ポイントを実行するか？
+		if(!is_bool($this->isCallEventFunc)) $this->isCallEventFunc = true;
+		if($this->isCallEventFunc) CMSPlugin::callEventFunc('onEntryOutput',array("entryId" => $id, "SOY2HTMLObject" => $this, "entry" => $entity, "blockId" => $this->blockId));
 	}
 
 

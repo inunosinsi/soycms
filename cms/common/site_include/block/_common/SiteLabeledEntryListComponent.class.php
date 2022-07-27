@@ -7,6 +7,7 @@ class SiteLabeledEntryListComponent extends HTMLList{
 	var $categoryPageUrl;
 	var $blogPageId;
 	private $dsn = false;
+	private $isCallEventFunc = true;	//カスタムフィールドの拡張ポイントを実行するか？
 
 	public function setIsStickUrl($flag){
 		$this->isStickUrl = $flag;
@@ -22,6 +23,9 @@ class SiteLabeledEntryListComponent extends HTMLList{
 
 	public function setBlogPageId($id){
 		$this->blogPageId = $id;
+	}
+	public function setIsCallEventFunc($isCallEventFunc){
+		$this->isCallEventFunc = $isCallEventFunc;
 	}
 
 	public function getStartTag(){
@@ -40,7 +44,6 @@ class SiteLabeledEntryListComponent extends HTMLList{
 
 		if($this->dsn)SOY2DAOConfig::Dsn($old);
 	}
-
 
 
 	protected function populateItem($entity){
@@ -153,7 +156,9 @@ class SiteLabeledEntryListComponent extends HTMLList{
 			"soy2prefix" => "cms"
 		));
 
-		CMSPlugin::callEventFunc('onEntryOutput',array("entryId"=>$id,"SOY2HTMLObject"=>$this,"entry"=>$entity));
+		//ブロックの高速化　カスタムフィールド用の拡張ポイントを実行するか？
+		if(!is_bool($this->isCallEventFunc)) $this->isCallEventFunc = true;
+		if($this->isCallEventFunc) CMSPlugin::callEventFunc('onEntryOutput',array("entryId"=>$id,"SOY2HTMLObject"=>$this,"entry"=>$entity));
 	}
 
 	private function _labelLogic(){

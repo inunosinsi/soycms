@@ -50,9 +50,8 @@ class DetailPage extends CMSWebPageBase {
 	}
 
 	function __construct($args) {
-		$id = $args[0];
-		$this->id = $id;
-		$block = $this->getBlock($id);
+		$this->id = (isset($args[0]) && is_numeric($args[0])) ? (int)$args[0] : 0;
+		$block = self::_getBlock($this->id);
 		$this->pageId = $block->getPageId();
 
 		parent::__construct();
@@ -60,19 +59,19 @@ class DetailPage extends CMSWebPageBase {
 		$component = $block->getBlockComponent();
 		//Block ID will be required in some cases.
 		if(method_exists($component,"setBlockId")){
-			$component->setBlockId($id);
+			$component->setBlockId($this->id);
 		}else{
-			$component->blockId = $id;
+			$component->blockId = $this->id;
 		}
 		$this->add("block_form",$component->getFormPage());
 
-		$this->createAdd("block_id","HTMLLabel",array(
+		$this->addLabel("block_id", array(
 			"text" => "ID: ".$block->getSoyId()
 		));
-		$this->createAdd("block_name","HTMLLabel",array(
+		$this->addLabel("block_name", array(
 			"text" => $component->getComponentName()
 		));
-		$this->createAdd("block_description","HTMLLabel",array(
+		$this->addLabel("block_description", array(
 			"html" => $component->getComponentDescription()
 		));
 	}
@@ -82,8 +81,7 @@ class DetailPage extends CMSWebPageBase {
 	 * @param $id Block ID
 	 * @return Block
 	 */
-	private function getBlock($id){
-		$result = $this->run("Block.DetailAction",array("id"=>$id));
-		return $result->getAttribute("Block");
+	private function _getBlock(int $id){
+		return $this->run("Block.DetailAction",array("id"=>$id))->getAttribute("Block");
 	}
 }

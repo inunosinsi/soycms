@@ -4,6 +4,9 @@
  */
 class LabeledBlockComponent implements BlockComponent{
 
+	const ON = 1;
+	const OFF = 0;
+
 	private $labelId;
 	private $displayCountFrom;
 	private $displayCountTo;
@@ -12,19 +15,16 @@ class LabeledBlockComponent implements BlockComponent{
 	private $isStickUrl = false;
 	private $blogPageId;
 	private $order = self::ORDER_DESC;//記事の並び順
+	private $isCallEventFunc = self::ON;	//公開側でHTMLの表示の際にカスタムフィールドの拡張ポイントを読み込むか？
 
 	/**
 	 * @return SOY2HTML
 	 * 設定画面用のHTMLPageComponent
 	 */
 	public function getFormPage(){
-
-		$logic = SOY2Logic::createInstance("logic.site.Page.BlogPageLogic");
-		$blogPages = $logic->getBlogPageList();
-
 		return SOY2HTMLFactory::createInstance("LabeledBlockComponent_FormPage",array(
 			"entity" => $this,
-			"blogPages" => $blogPages
+			"blogPages" => SOY2Logic::createInstance("logic.site.Page.BlogPageLogic")->getBlogPageList()
 		));
 	}
 
@@ -68,9 +68,9 @@ class LabeledBlockComponent implements BlockComponent{
 		if($this->enablePaging){
 			try{
 				if(defined("CMS_PREVIEW_ALL")){
-					$array = $logic->getByLabelId($this->labelId);
+					$array = $logic->getByLabelId((int)$this->labelId);
 				}else{
-					$array = $logic->getOpenEntryByLabelId($this->labelId);
+					$array = $logic->getOpenEntryByLabelId((int)$this->labelId);
 				}
 				$total = count($array);
 			}catch(Exception $e){
@@ -84,42 +84,29 @@ class LabeledBlockComponent implements BlockComponent{
 		if(isset($offset)) $logic->setOffset($offset);
 		try{
 			if(defined("CMS_PREVIEW_ALL")){
-				$array = $logic->getByLabelId($this->labelId);
+				$array = $logic->getByLabelId((int)$this->labelId);
 			}else{
-				$array = $logic->getOpenEntryByLabelId($this->labelId);
+				$array = $logic->getOpenEntryByLabelId((int)$this->labelId);
 			}
 		}catch(Exception $e){
 			//do nothing
 		}
 
 		//エントリー管理者が変更できるかどうか
-		$editable = true;
-		if(defined("CMS_PREVIEW_MODE")){
-			if(!UserInfoUtil::hasSiteAdminRole()){
-				try{
-					$label = SOY2DAOFactory::create("cms.LabelDAO")->getById($this->labelId);
-					$editable = $label->isEditableByNormalUser();
-				}catch(Exception $e){
-					//安全側に倒しておく
-					$editable = false;
-				}
-			}
-		}
+		$editable = (defined("CMS_PREVIEW_MODE") && !UserInfoUtil::hasSiteAdminRole()) ? soycms_get_label_object((int)$this->labelId)->isEditableByNormalUser() : true;
 
 		$articlePageUrl = "";
 		$categoryPageUrl = "";
 		if($this->isStickUrl){
-			try{
-				$pageDao = SOY2DAOFactory::create("cms.BlogPageDAO");
-				$blogPage = $pageDao->getById($this->blogPageId);
-
+			$blogPage = soycms_get_blog_page_object((int)$this->blogPageId);	
+			if(is_numeric($blogPage->getId())){
 				if(defined("CMS_PREVIEW_MODE")){
 					$articlePageUrl = SOY2PageController::createLink("Page.Preview") ."/". $blogPage->getId() . "?uri=". $blogPage->getEntryPageURL();
 				}else{
 					$articlePageUrl = $page->siteRoot . $blogPage->getEntryPageURL();
 					$categoryPageUrl = $page->siteRoot . $blogPage->getCategoryPageURL();
 				}
-			}catch(Exception $e){
+			}else{
 				$this->isStickUrl = false;
 			}
 		}
@@ -141,7 +128,7 @@ class LabeledBlockComponent implements BlockComponent{
 			}
 		}
 
-		CMSPlugin::callEventFunc('onEntryListBeforeOutput', array("entries" => &$array));
+		if($this->isCallEventFunc == self::ON) CMSPlugin::callEventFunc('onEntryListBeforeOutput', array("entries" => &$array));
 
 		SOY2::import("site_include.block._common.BlockEntryListComponent");
 		SOY2::import("site_include.blog.component.CategoryListComponent");
@@ -153,7 +140,8 @@ class LabeledBlockComponent implements BlockComponent{
 			"blogPageId"=>$this->blogPageId,
 			"soy2prefix"=>"block",
 			"editable" => $editable,
-			"labelId" => $this->labelId
+			"labelId" => $this->labelId,
+			"isCallEventFunc" => ($this->isCallEventFunc == self::ON)
 		));
 	}
 
@@ -162,11 +150,8 @@ class LabeledBlockComponent implements BlockComponent{
 	 * 一覧表示に出力する文字列
 	 */
 	public function getInfoPage(){
-		$dao = SOY2DAOFactory::create("cms.LabelDAO");
-
 		try{
-			$label = $dao->getById($this->labelId);
-			return $label->getCaption() ." ".( (strlen($this->displayCountFrom) OR strlen($this->displayCountTo)) ? $this->displayCountFrom."-".$this->displayCountTo : "" );
+			return soycms_get_label_object((int)$this->labelId)->getCaption() ." ".( (strlen($this->displayCountFrom) OR strlen($this->displayCountTo)) ? $this->displayCountFrom."-".$this->displayCountTo : "" );
 		}catch(Exception $e){
 			return CMSMessageManager::get("SOYCMS_NO_SETTING");
 		}
@@ -240,6 +225,13 @@ class LabeledBlockComponent implements BlockComponent{
 	}
 	public function setOrder($order){
 		$this->order = $order;
+	}
+
+	public function getIsCallEventFunc(){
+		return $this->isCallEventFunc;
+	}
+	public function setIsCallEventFunc($isCallEventFunc){
+		$this->isCallEventFunc = $isCallEventFunc;
 	}
 }
 
@@ -331,6 +323,13 @@ class LabeledBlockComponent_FormPage extends HTMLPage{
 			"style" => $style
 		));
 
+		$this->addCheckBox("is_call_event_func", array(
+			"name" => "object[isCallEventFunc]",
+			"value" => 1,
+			"label" => "カスタムフィールドの拡張ポイントを実行します",
+			"selected" => $this->entity->getIsCallEventFunc()
+		));
+
 		$this->addForm("main_form", array());
 
 		if(count($this->blogPages) === 0){
@@ -359,8 +358,7 @@ class LabeledBlockComponent_FormPage extends HTMLPage{
 	 *  NOTE:個数に考慮していない。ラベルの量が多くなるとpagerの実装が必要？
 	 */
 	private function getLabelList(){
-		$dao = SOY2DAOFactory::create("cms.LabelDAO");
-		return $dao->get();
+		return soycms_get_hash_table_dao("label")->get();
 	}
 
 	public function getTemplateFilePath(){

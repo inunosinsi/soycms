@@ -28,7 +28,7 @@ class RecentEntryListByLabelId extends SOY2Action{
     	$dao = SOY2DAOFactory::create("cms.EntryDAO");
 
     	$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic", array("limit" => $this->limit));
-		$entries = $logic->getRecentEntriesByLabelId($this->labelId);
+		$entries = $logic->getRecentEntriesByLabelId((int)$this->labelId);
 
 		//記事管理者の場合
 		if(count($entries) && isset($prohibitedLabelIds) && count($prohibitedLabelIds)){

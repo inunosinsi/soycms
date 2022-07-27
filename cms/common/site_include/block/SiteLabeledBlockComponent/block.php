@@ -4,6 +4,9 @@
  */
 class SiteLabeledBlockComponent implements BlockComponent{
 
+	const ON = 1;
+	const OFF = 0;
+
 	private $siteId;
 	private $labelId;
 	private $displayCountFrom;
@@ -11,6 +14,7 @@ class SiteLabeledBlockComponent implements BlockComponent{
 	private $isStickUrl = false;
 	private $blogPageId;
 	private $order = self::ORDER_DESC;//記事の並び順
+	private $isCallEventFunc = self::ON;	//公開側でHTMLの表示の際にカスタムフィールドの拡張ポイントを読み込むか？
 
 	/**
 	 * @return SOY2HTML
@@ -57,73 +61,65 @@ class SiteLabeledBlockComponent implements BlockComponent{
 		//ASPでは使用不可
 		if(defined("SOYCMS_ASP_MODE")) return false;
 
-		$oldDsn = SOY2DAOConfig::Dsn();
-		SOY2DAOConfig::Dsn(ADMIN_DB_DSN);
-		$siteDAO = SOY2DAOFactory::create("admin.SiteDAO");
-
 		$array = array();
 		$articlePageUrl = "";
 		$siteDsn = null;
 
+		$oldDsn = SOY2DAOConfig::Dsn();
+		SOY2DAOConfig::Dsn(ADMIN_DB_DSN);
+		
 		try{
-			$site = $siteDAO->getById($this->siteId);
-			SOY2DAOConfig::Dsn($site->getDataSourceName());
-
-			$siteDsn = $site->getDataSourceName();
-
-			$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
-			$logic->setBlockClass(get_class($this));
-
-			$this->displayCountFrom = max($this->displayCountFrom,1);//0件目は認めない→１件目に変更
-
-			if(is_numeric($this->displayCountTo)){
-				$logic->setLimit($this->getDisplayCountTo() - (int)$this->getDisplayCountFrom() + 1);//n件目～m件目はm-n+1個のエントリ
-			}
-
-			if(is_numeric($this->displayCountFrom)){
-				$logic->setOffset($this->displayCountFrom - 1);//offsetは0スタートなので、n件目=offset:n-1
-			}
-
-			if($this->order == self::ORDER_ASC){
-				$logic->setReverse(true);
-			}
-
-			if(defined("CMS_PREVIEW_ALL")){
-				$array = $logic->getByLabelId($this->labelId);
-			}else{
-				$array = $logic->getOpenEntryByLabelId($this->labelId);
-			}
-
-			$articlePageUrl = "";
-			$categoryPageUrl = "";
-			if($this->isStickUrl){
-				try{
-					$pageDao = SOY2DAOFactory::create("cms.BlogPageDAO");
-					$blogPage = $pageDao->getById($this->blogPageId);
-
-					$siteUrl = $site->getUrl();
-
-					if($site->getIsDomainRoot()){
-						$siteUrl = "/";
-					}
-
-					//アクセスしているサイトと同じドメインなら / からの絶対パスにしておく（ケータイでURLに自動でセッションIDが付くように）
-					if(strpos($siteUrl,"http://".$_SERVER["SERVER_NAME"]."/")===0){
-						$siteUrl = substr($siteUrl,strlen("http://".$_SERVER["SERVER_NAME"]));
-					}
-					if(strpos($siteUrl,"https://".$_SERVER["SERVER_NAME"]."/")===0){
-						$siteUrl = substr($siteUrl,strlen("https://".$_SERVER["SERVER_NAME"]));
-					}
-
-					$articlePageUrl = $siteUrl . $blogPage->getEntryPageURL();
-					$categoryPageUrl = $siteUrl . $blogPage->getCategoryPageURL();
-
-				}catch(Exception $e){
-					$this->isStickUrl = false;
-				}
-			}
+			$site = SOY2DAOFactory::create("admin.SiteDAO")->getById($this->siteId);
 		}catch(Exception $e){
-			//do nothing
+			$site = new Site();
+		}
+
+		SOY2DAOConfig::Dsn($site->getDataSourceName());
+		$siteDsn = $site->getDataSourceName();
+
+		$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
+		$logic->setBlockClass(get_class($this));
+
+		$this->displayCountFrom = max($this->displayCountFrom,1);//0件目は認めない→１件目に変更
+
+		if(is_numeric($this->displayCountTo)){
+			$logic->setLimit($this->getDisplayCountTo() - (int)$this->getDisplayCountFrom() + 1);//n件目～m件目はm-n+1個のエントリ
+		}
+
+		if(is_numeric($this->displayCountFrom)){
+			$logic->setOffset($this->displayCountFrom - 1);//offsetは0スタートなので、n件目=offset:n-1
+		}
+
+		if($this->order == self::ORDER_ASC){
+			$logic->setReverse(true);
+		}
+
+		if(defined("CMS_PREVIEW_ALL")){
+			$array = $logic->getByLabelId($this->labelId);
+		}else{
+			$array = $logic->getOpenEntryByLabelId($this->labelId);
+		}
+
+		$articlePageUrl = "";
+		$categoryPageUrl = "";
+		if($this->isStickUrl){
+			$blogPage = soycms_get_blog_page_object($this->blogPageId);
+			if(is_numeric($blogPage->getId())){
+				$siteUrl = ($site->getIsDomainRoot()) ? "/" : $site->getUrl();
+
+				//アクセスしているサイトと同じドメインなら / からの絶対パスにしておく（ケータイでURLに自動でセッションIDが付くように）
+				if(strpos($siteUrl,"http://".$_SERVER["SERVER_NAME"]."/")===0){
+					$siteUrl = substr($siteUrl,strlen("http://".$_SERVER["SERVER_NAME"]));
+				}
+				if(strpos($siteUrl,"https://".$_SERVER["SERVER_NAME"]."/")===0){
+					$siteUrl = substr($siteUrl,strlen("https://".$_SERVER["SERVER_NAME"]));
+				}
+
+				$articlePageUrl = $siteUrl . $blogPage->getEntryPageURL();
+				$categoryPageUrl = $siteUrl . $blogPage->getCategoryPageURL();
+			}else{
+				$this->isStickUrl = false;
+			}
 		}
 
 		SOY2DAOConfig::Dsn($oldDsn);
@@ -137,7 +133,8 @@ class SiteLabeledBlockComponent implements BlockComponent{
 			"categoryPageUrl" => $categoryPageUrl,
 			"blogPageId"=>$this->blogPageId,
 			"soy2prefix"=>"block",
-			"dsn" => $siteDsn
+			"dsn" => $siteDsn,
+			"isCallEventFunc" => ($this->isCallEventFunc == self::ON)
 		));
 	}
 
@@ -233,6 +230,13 @@ class SiteLabeledBlockComponent implements BlockComponent{
 	}
 	public function setOrder($order){
 		$this->order = $order;
+	}
+
+	public function getIsCallEventFunc(){
+		return $this->isCallEventFunc;
+	}
+	public function setIsCallEventFunc($isCallEventFunc){
+		$this->isCallEventFunc = $isCallEventFunc;
 	}
 }
 

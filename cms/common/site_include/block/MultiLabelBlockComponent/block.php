@@ -4,6 +4,9 @@
  */
 class MultiLabelBlockComponent implements BlockComponent{
 
+	const ON = 1;
+	const OFF = 0;
+
 	private $siteId = null;
 	private $oldSiteId = null;
 	private $mapping = array();
@@ -12,6 +15,7 @@ class MultiLabelBlockComponent implements BlockComponent{
 	private $displayCountFrom;
 	private $displayCountTo;
 	private $order = self::ORDER_DESC;//記事の並び順
+	private $isCallEventFunc = self::ON;	//公開側でHTMLの表示の際にカスタムフィールドの拡張ポイントを読み込むか？
 
 	/**
 	 * @return SOY2HTML
@@ -58,13 +62,7 @@ class MultiLabelBlockComponent implements BlockComponent{
 
 		//$siteIdプロパティがnullの場合がある
 		if(is_null($this->siteId) && defined("_SITE_ID_")) $this->siteId = _SITE_ID_;
-
-		//古いDSNのバックアップ
-		$oldDsn = null;
-
-		//siteのDsn
-		$dsn = null;
-
+		
 		$array = array();
 		$urlMapping = array();
 		$blogIdMapping = array();
@@ -72,28 +70,27 @@ class MultiLabelBlockComponent implements BlockComponent{
 		$blogUrlMapping = array();
 		$blogCategoryUrlMapping = array();
 
-		try{
-			//DSNを切り替える、ついでにサイトのURLを取得
-			//自サイトでもサイトのURL取得
-			$oldDsn = SOY2DAOConfig::Dsn();
-			SOY2DAOConfig::Dsn(ADMIN_DB_DSN);
-			$siteDAO = SOY2DAOFactory::create("admin.SiteDAO");
+		//DSNを切り替える、ついでにサイトのURLを取得
+		//自サイトでもサイトのURL取得
+		$oldDsn = SOY2DAOConfig::Dsn();
+		SOY2DAOConfig::Dsn(ADMIN_DB_DSN);
+		$siteDAO = SOY2DAOFactory::create("admin.SiteDAO");
 
+		try{
 			if(is_numeric($this->siteId)){
 				$site = $siteDAO->getById($this->siteId);
 			}else{
 				$site = $siteDAO->getBySiteId($this->siteId);
 			}
+		}catch(Exception $e){
+			$site = new Site();
+		}
+			
+		$dsn = $site->getDataSourceName();
+		if(isset($dsn)){
+			SOY2DAOConfig::Dsn($dsn);
 
-			SOY2DAOConfig::Dsn($site->getDataSourceName());
-
-			$dsn = $site->getDataSourceName();
-
-			$siteUrl = $site->getUrl();
-
-			if($site->getIsDomainRoot()){
-				$siteUrl = "/";
-			}
+			$siteUrl = ($site->getIsDomainRoot()) ? "/" : $site->getUrl();
 
 			//アクセスしているサイトと同じドメインなら / からの絶対パスにしておく（ケータイでURLに自動でセッションIDが付くように）
 			if(strpos($siteUrl,"http://".$_SERVER["SERVER_NAME"]."/")===0){
@@ -117,42 +114,37 @@ class MultiLabelBlockComponent implements BlockComponent{
 			}
 
 			//エントリー取得
-
 			if(defined("CMS_PREVIEW_ALL")){
 				$array = $logic->getByLabelIds($this->getLabelIds());
 			}else{
-				$array = $logic->getOpenEntryByLabelIds($this->getLabelIds(),false);
+				$array = $logic->getOpenEntryByLabelIds($this->getLabelIds(), false);
 			}
 
 			//ブログページを作る
 			$entryLabelDAO= SOY2DAOFactory::create("cms.EntryLabelDAO");
-
-			$blogPageDAO = SOY2DAOFactory::create("cms.BlogPageDAO");
 			foreach($array as $key => $entry){
 				foreach($this->mapping as $labelId => $blogId){
 					try{
 						$entryLabelDAO->getByParam($labelId,$entry->getId());
-						$blogPage = $blogPageDAO->getById($blogId);
-						$url = $siteUrl . $blogPage->getEntryPageURL();
-						$urlMapping[$entry->getId()] = $url;
-						$blogTitle = $blogPage->getTitle();
-						$blogIdMapping[$entry->getId()] = $blogId;
-						$blogTitleMapping[$entry->getId()] = $blogTitle;
-						$blogUrlMapping[$entry->getId()] = $siteUrl . $blogPage->getTopPageURL();
-						$blogCategoryUrlMapping[$entry->getId()] = $siteUrl . $blogPage->getCategoryPageURL();
-						continue;
 					}catch(Exception $e){
-
+						continue;
 					}
+
+					$blogPage = soycms_get_blog_page_object((int)$blogId);
+					if(!is_numeric($blogPage->getId())) continue;
+
+					$url = $siteUrl . $blogPage->getEntryPageURL();
+					$urlMapping[$entry->getId()] = $url;
+					$blogTitle = $blogPage->getTitle();
+					$blogIdMapping[$entry->getId()] = $blogId;
+					$blogTitleMapping[$entry->getId()] = $blogTitle;
+					$blogUrlMapping[$entry->getId()] = $siteUrl . $blogPage->getTopPageURL();
+					$blogCategoryUrlMapping[$entry->getId()] = $siteUrl . $blogPage->getCategoryPageURL();
 				}
 			}
-
-			$entryLabelDAO = null;
-			$blogPageDAO = null;
-		}catch(Exception $e){
-			//do nothing
+			unset($entryLabelDAO);
 		}
-
+		
 		SOY2::import("site_include.block._common.MultiEntryListComponent");
 		SOY2::import("site_include.blog.component.CategoryListComponent");
 		$inst = SOY2HTMLFactory::createInstance("MultiEntryListComponent",array(
@@ -163,7 +155,8 @@ class MultiLabelBlockComponent implements BlockComponent{
 			"blogUrl" => $blogUrlMapping,
 			"blogCategoryUrl" => $blogCategoryUrlMapping,
 			"soy2prefix"=>"block",
-			"dsn" => $dsn
+			"dsn" => $dsn,
+			"isCallEventFunc" => ($this->isCallEventFunc == self::ON)
 		));
 
 		//Dsn戻す
@@ -177,7 +170,6 @@ class MultiLabelBlockComponent implements BlockComponent{
 	 * 一覧表示に出力する文字列
 	 */
 	public function getInfoPage(){
-
 		try{
 			$res = count($this->mapping) . CMSMessageManager::get("SOYCMS_NUMBER_OF_SET_LABELS");
 			$res .= (strlen($this->displayCountFrom) OR strlen($this->displayCountTo)) ? " ". $this->displayCountFrom."-".$this->displayCountTo : "" ;
@@ -185,7 +177,6 @@ class MultiLabelBlockComponent implements BlockComponent{
 			$res = CMSMessageManager::get("SOYCMS_NO_SETTING");
 		}
 		return $res;
-
 	}
 
 	/**
@@ -246,6 +237,13 @@ class MultiLabelBlockComponent implements BlockComponent{
 	}
 	public function setOrder($order){
 		$this->order = $order;
+	}
+
+	public function getIsCallEventFunc(){
+		return $this->isCallEventFunc;
+	}
+	public function setIsCallEventFunc($isCallEventFunc){
+		$this->isCallEventFunc = $isCallEventFunc;
 	}
 }
 

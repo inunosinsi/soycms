@@ -4,6 +4,9 @@
  */
 class ScriptModuleBlockComponent implements BlockComponent{
 
+	const ON = 1;
+	const OFF = 0;
+
 	private $scriptPath;
 	private $functionName;
 
@@ -11,6 +14,7 @@ class ScriptModuleBlockComponent implements BlockComponent{
 	private $isStickUrl = false;
 	private $blogPageId;
 	private $blockId;
+	private $isCallEventFunc = self::ON;	//公開側でHTMLの表示の際にカスタムフィールドの拡張ポイントを読み込むか？
 
 	/**
 	 * @return SOY2HTML
@@ -52,70 +56,64 @@ class ScriptModuleBlockComponent implements BlockComponent{
 	 */
 	public function getViewPage($page){
 
-		$oldDsn = SOY2DAOConfig::Dsn();
-		SOY2DAOConfig::Dsn(ADMIN_DB_DSN);
-		$siteDAO = SOY2DAOFactory::create("admin.SiteDAO");
-
 		$array = array();
 
-		$articlePageUrl = "";
-
+		$oldDsn = SOY2DAOConfig::Dsn();
+		SOY2DAOConfig::Dsn(ADMIN_DB_DSN);
 		try{
-			$site = $siteDAO->getById($this->siteId);
-			SOY2DAOConfig::Dsn($site->getDataSourceName());
-
-			$siteDsn = $site->getDataSourceName();
-
-			$scriptPath = $this->getScriptFullPath();
-			$functioName = $this->getFunctionName();
-
-
-			$array = array();
-
-			//処理の要
-			if(file_exists($scriptPath)){
-				include_once($scriptPath);
-				if(function_exists($functioName)){
-					$array = call_user_func($functioName);
-					if(!is_array($array))$array = array();
-				}
-			}
-
-			$articlePageUrl = "";
-			$categoryPageUrl = "";
-			if($this->isStickUrl){
-				try{
-					$pageDao = SOY2DAOFactory::create("cms.BlogPageDAO");
-					$blogPage = $pageDao->getById($this->blogPageId);
-
-					$siteUrl = $site->getUrl();
-
-					if($site->getIsDomainRoot()){
-						$siteUrl = "/";
-					}
-
-					//アクセスしているサイトと同じドメインなら / からの絶対パスにしておく（ケータイでURLに自動でセッションIDが付くように）
-					if(strpos($siteUrl,"http://".$_SERVER["SERVER_NAME"]."/")===0){
-						$siteUrl = substr($siteUrl,strlen("http://".$_SERVER["SERVER_NAME"]));
-					}
-					if(strpos($siteUrl,"https://".$_SERVER["SERVER_NAME"]."/")===0){
-						$siteUrl = substr($siteUrl,strlen("https://".$_SERVER["SERVER_NAME"]));
-					}
-
-					$articlePageUrl = $siteUrl . $blogPage->getEntryPageURL();
-					$categoryPageUrl = $siteUrl . $blogPage->getCategoryPageURL();
-
-				}catch(Exception $e){
-					$this->isStickUrl = false;
-				}
-			}
+			$site =SOY2DAOFactory::create("admin.SiteDAO")->getById($this->siteId);
 		}catch(Exception $e){
-
+			$site = new Site();
 		}
 
+		$dsn = $site->getDataSourceName();
+		SOY2DAOConfig::Dsn($dsn);
+		
+		
+		$scriptPath = $this->getScriptFullPath();
+		$functioName = $this->getFunctionName();
+		
+		$array = array();
+		//処理の要
+		if(file_exists($scriptPath)){
+			include_once($scriptPath);
+			if(function_exists($functioName)){
+				$array = call_user_func($functioName);
+				if(!is_array($array)) $array = array();
+			}
+		}
+		
+		$articlePageUrl = "";
+		$categoryPageUrl = "";
+		
+		if($this->isStickUrl){
+			$blogPage = soycms_get_blog_page_object((int)$this->blogPageId);
+			if(is_numeric($blogPage->getId())){
+				$siteUrl = $site->getUrl();
+
+				if($site->getIsDomainRoot()){
+					$siteUrl = "/";
+				}
+
+				//アクセスしているサイトと同じドメインなら / からの絶対パスにしておく（ケータイでURLに自動でセッションIDが付くように）
+				if(strpos($siteUrl,"http://".$_SERVER["SERVER_NAME"]."/")===0){
+					$siteUrl = substr($siteUrl,strlen("http://".$_SERVER["SERVER_NAME"]));
+				}
+				if(strpos($siteUrl,"https://".$_SERVER["SERVER_NAME"]."/")===0){
+					$siteUrl = substr($siteUrl,strlen("https://".$_SERVER["SERVER_NAME"]));
+				}
+
+				$articlePageUrl = $siteUrl . $blogPage->getEntryPageURL();
+				$categoryPageUrl = $siteUrl . $blogPage->getCategoryPageURL();
+			}else{
+				$this->isStickUrl = false;
+			}
+		}
+		
 		SOY2DAOConfig::Dsn($oldDsn);
 
 		SOY2::import("site_include.block._common.BlockEntryListComponent");
+		SOY2::import("site_include.blog.component.CategoryListComponent");
 		return SOY2HTMLFactory::createInstance("BlockEntryListComponent",array(
 			"list" => $array,
 			"isStickUrl" => $this->isStickUrl,
@@ -123,8 +121,9 @@ class ScriptModuleBlockComponent implements BlockComponent{
 			"categoryPageUrl" => $categoryPageUrl,
 			"blogPageId"=>$this->blogPageId,
 			"soy2prefix"=>"block",
-			"dsn" => (isset($siteDsn)) ? $siteDsn : null,
-			"blockId" => $this->getBlockId()
+			"dsn" => (isset($dsn)) ? $dsn : null,
+			"blockId" => $this->getBlockId(),
+			"isCallEventFunc" => ($this->isCallEventFunc == self::ON)
 		));
 
 	}
@@ -247,6 +246,13 @@ class ScriptModuleBlockComponent implements BlockComponent{
 	public function setDisplayCountTo($displayCountTo) {
 		$cnt = (strlen($displayCountTo) && is_numeric($displayCountTo)) ? (int)$displayCountTo : null;
 		$this->displayCountTo = $cnt;
+	}
+
+	public function getIsCallEventFunc(){
+		return $this->isCallEventFunc;
+	}
+	public function setIsCallEventFunc($isCallEventFunc){
+		$this->isCallEventFunc = $isCallEventFunc;
 	}
 }
 
