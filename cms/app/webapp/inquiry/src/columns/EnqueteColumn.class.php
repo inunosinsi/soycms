@@ -16,8 +16,10 @@ class EnqueteColumn extends SOYInquiry_ColumnBase{
 
 	/**
 	 * ユーザに表示するようのフォーム
+	 * @param array
+	 * @return string
 	 */
-	function getForm($attr = array()){
+	function getForm($attrs=array()){
 
 		$items = explode("\n",$this->items);
 		$value = $this->getValue();
@@ -97,7 +99,7 @@ class EnqueteColumn extends SOYInquiry_ColumnBase{
 	/**
 	 * 保存された設定値を渡す
 	 */
-	function setConfigure($config){
+	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
 		$this->question = (isset($config["question"])) ? $config["question"] : "";
 		$this->items = (isset($config["items"])) ? $config["items"] : "*項目１\n項目２\n項目３";

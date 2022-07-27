@@ -6,11 +6,12 @@ class FormLogic extends SOY2LogicBase{
     /**
      * フォームの新規作成
      */
-    function createForm($form){
+    function createForm(SOYInquiry_Form $form){
     	$this->form = $form;
 
     	try{
 	    	$dao = SOY2DAOFactory::create("SOYInquiry_FormDAO");
+			$dummyFormObject = new SOYInquiry_Form();
 
 	    	$this->setNotifyMailSubject($form);
 	    	$this->setIsUseCaptcha($form);
@@ -26,7 +27,7 @@ class FormLogic extends SOY2LogicBase{
     		$column->setLabel("お名前");
     		$column->setType("SingleText");
     		$column->setRequire(true);
-			$columnObject = $column->getColumn();
+			$columnObject = $column->getColumn($dummyFormObject);
 			$columnObject->setReplacement("#NAME#");
    			$column->setColumn($columnObject);
     		$columnDao->insert($column);
@@ -36,7 +37,7 @@ class FormLogic extends SOY2LogicBase{
     		$column->setLabel("メールアドレス");
     		$column->setType("MailAddress");
     		$column->setRequire(true);
-    		$columnObject = $column->getColumn();
+    		$columnObject = $column->getColumn($dummyFormObject);
 			$columnObject->setReplacement("#EMAIL#");
 			$columnObject->setSOYMailTo(SOYMailConverter::SOYMAIL_MAIL);
    			$column->setColumn($columnObject);
@@ -47,7 +48,7 @@ class FormLogic extends SOY2LogicBase{
     		$column->setLabel("件名");
     		$column->setType("SingleText");
     		$column->setRequire(false);
-			$columnObject = $column->getColumn();
+			$columnObject = $column->getColumn($dummyFormObject);
 			$columnObject->setReplacement("#TITLE#");
    			$column->setColumn($columnObject);
     		$columnDao->insert($column);
@@ -57,7 +58,7 @@ class FormLogic extends SOY2LogicBase{
     		$column->setLabel("問い合わせ内容");
     		$column->setType("MultiText");
     		$column->setRequire(true);
-			$columnObject = $column->getColumn();
+			$columnObject = $column->getColumn($dummyFormObject);
 			$columnObject->setReplacement("#CONTENT#");
    			$column->setColumn($columnObject);
     		$columnDao->insert($column);

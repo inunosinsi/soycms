@@ -36,14 +36,16 @@ class PrivacyPolicyColumn extends SOYInquiry_ColumnBase{
 
     /**
 	 * ユーザに表示するようのフォーム
+	 * @param array
+	 * @return string
 	 */
-	function getForm($attr = array()){
+	function getForm(array $attrs=array()){
 
 		$attributes = array();
 		$attributes[] = ($this->cols) ? "cols=\"".$this->cols."\"" : 'style="width:90%;"';
 		if($this->rows)$attributes[] = "rows=\"".$this->rows."\"";
 
-		foreach($attr as $key => $value){
+		foreach($attrs as $key => $value){
 			$attributes[] = htmlspecialchars($key,ENT_QUOTES,"UTF-8") . "=\"".htmlspecialchars($value,ENT_QUOTES,"UTF-8")."\"";
 		}
 
@@ -99,7 +101,7 @@ class PrivacyPolicyColumn extends SOYInquiry_ColumnBase{
 	/**
 	 * 保存された設定値を渡す
 	 */
-	function setConfigure($config){
+	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
 		$this->mode = (isset($config["mode"]) && is_numeric($config["mode"])) ? (int)$config["mode"] : self::MODE_TEXTAREA;
 		$this->cols = (isset($config["cols"]) && is_numeric($config["cols"])) ? (int)$config["cols"] : null;

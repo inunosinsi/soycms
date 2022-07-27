@@ -51,7 +51,7 @@ class ColumnListComponent extends HTMLList{
 			"onmouseup" => 'changeColor(this.parentNode,this);changeRepalce($(\''."#column_replace_" . $entity->getId().'\'),$(\''."#column_require_" . $entity->getId().'\'));'
 		));
 
-		$column = $entity->getColumn();
+		$column = $entity->getColumn(new SOYInquiry_Form());
 		$this->createAdd("configure","HTMLLabel",array(
 			"html" => $column->getConfigForm()
 		));

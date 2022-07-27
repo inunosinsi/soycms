@@ -2,13 +2,16 @@
 
 class InquiryLogic extends SOY2LogicBase{
 
+	const MODE_MAIL = 0;
+	const MODE_SHOP = 1;
+
 	private $dao;
 	private $form;
 
     /**
      * カラム→問い合わせ本文作成
      */
-    function getInquiryBody($inquiry,$columns,$useMailBody = false){
+    function getInquiryBody(SOYInquiry_Inquiry $inquiry, array $columns, bool $useMailBody=false){
 
     	$body = array();
 
@@ -35,7 +38,7 @@ class InquiryLogic extends SOY2LogicBase{
 				SOY2::import("util.SOYInquiryUtil");
 				$value = SOYInquiryUtil::buildSerialNumber(soy2_unserialize((string)$column->getConfig()));
 			}else{
-				$value = ($useMailBody) ? $column->getColumn()->getMailText() : $column->getContent();
+				$value = ($useMailBody) ? $column->getColumn(new SOYInquiry_Form())->getMailText() : $column->getContent();
 			}
 
     		//改行が含まれる場合は空白をあける
@@ -79,7 +82,7 @@ class InquiryLogic extends SOY2LogicBase{
     /**
      * 問い合わせメール本文作成
      */
-    function getInquiryMailBody($inquiry,$columns){
+    function getInquiryMailBody(SOYInquiry_Inquiry $inquiry, array $columns){
     	return $this->getInquiryBody($inquiry,$columns,true);
     }
 
@@ -88,7 +91,7 @@ class InquiryLogic extends SOY2LogicBase{
      *
      * @return SOYInquiry_Inquiry
      */
-    function addInquiry($formId){
+    function addInquiry(int $formId){
 
     	$inquiryDao = $this->getDAO();
     	$inquiry = new SOYInquiry_Inquiry();
@@ -130,7 +133,7 @@ class InquiryLogic extends SOY2LogicBase{
     /**
      * 問い合わせ情報を更新
      */
-    function updateInquiry(SOYInquiry_Inquiry $inquiry, $body, $data, $url){
+    function updateInquiry(SOYInquiry_Inquiry $inquiry, string $body, array $data, string $url){
 		$inquiryDao = $this->getDAO();
 
     	$inquiry->setContent($body);
@@ -148,7 +151,7 @@ class InquiryLogic extends SOY2LogicBase{
      * 未読問い合わせを数える
      * @return number
      */
-    function countUnreadInquiryByFormId($formId){
+    function countUnreadInquiryByFormId(int $formId){
     	return $this->getDAO()->countUnreadInquiryByFormId($formId);
     }
 
@@ -156,7 +159,7 @@ class InquiryLogic extends SOY2LogicBase{
      * フラグ別の問い合わせを数える
      * @return number
      */
-    function countInquiryByFormIdByFlag($formId, $flag){
+    function countInquiryByFormIdByFlag(int $formId, int $flag){
     	return $this->getDAO()->countInquiryByFormIdByFlag($formId, $flag);
     }
 
@@ -164,7 +167,7 @@ class InquiryLogic extends SOY2LogicBase{
      * 問い合わせを数える（削除分を除く）
      * @return number
      */
-    function countUndeletedInquiryByFormId($formId){
+    function countUndeletedInquiryByFormId(int $formId){
     	return $this->getDAO()->countUndeletedInquiryByFormId($formId);
     }
 
@@ -180,7 +183,7 @@ class InquiryLogic extends SOY2LogicBase{
     /**
      * onSend
      */
-    function invokeOnSend($inquiry, $columns){
+    function invokeOnSend(SOYInquiry_Inquiry $inquiry, array $columns){
     	foreach($columns as $column){
 			$obj = $column->getColumn($this->form);
 			$obj->onSend($inquiry);
@@ -195,7 +198,7 @@ class InquiryLogic extends SOY2LogicBase{
      *
      * @return array
      */
-    function buildCSVData($inquiry, $columns){
+    function buildCSVData(SOYInquiry_Inquiry $inquiry, array $columns){
 
 		$res = array();
 
@@ -212,8 +215,8 @@ class InquiryLogic extends SOY2LogicBase{
     /**
      * SOYMailと同期して更新する
      */
-    private function _updateToSOYMail($columns){
-		list($sql, $binds) = self::_buildQueryAndBinds($columns, "mail");
+    private function _updateToSOYMail(array $columns){
+		list($sql, $binds) = self::_buildQueryAndBinds($columns, self::MODE_MAIL);
 		if(!strlen($sql)) return;
 
 		//DSNの書き換え
@@ -233,8 +236,8 @@ class InquiryLogic extends SOY2LogicBase{
     /**
      * SOYShopと同期する
      */
-    private function _updateToSOYShop($columns){
-		list($sql, $binds) = self::_buildQueryAndBinds($columns, "shop");
+    private function _updateToSOYShop(array $columns){
+		list($sql, $binds) = self::_buildQueryAndBinds($columns, self::MODE_SHOP);
 		if(!strlen($sql)) return;
 
 		if(defined("SOYINQUERY_SOYSHOP_CONNECT_SITE_ID") && strlen(SOYINQUERY_SOYSHOP_CONNECT_SITE_ID)){
@@ -245,7 +248,7 @@ class InquiryLogic extends SOY2LogicBase{
 			}catch(Exception $e){
 				$site = new SOYShop_Site();
 			}
-			if(!defined("SOYSHOP_SITE_ID")) define("SOYSHOP_SITE_ID", $site->getSiteId());
+			if(!defined("SOYSHOP_SITE_ID")) define("SOYSHOP_SITE_ID", (string)$site->getSiteId());
 			SOYInquiryUtil::resetConfig($old);
 
 			//ここからSOY Shopの顧客名簿に値を放り込む作業
@@ -299,9 +302,9 @@ class InquiryLogic extends SOY2LogicBase{
     }
 
 	/**
-	 * @modeにはmail or shopが入る
+	 * @param array, int
 	 */
-	private function _buildQueryAndBinds($columns, $mode="mail"){
+	private function _buildQueryAndBinds(array $columns, int $mode=self::MODE_MAIL){
 		if(!is_array($columns) || !count($columns)) return array("", array());
 
 		$values = array();
@@ -309,11 +312,11 @@ class InquiryLogic extends SOY2LogicBase{
 			$obj = $column->getColumn($this->form);
 
 			switch($mode){
-				case "shop":
+				case self::MODE_SHOP:
 					$data = $obj->convertToSOYShop();
 					break;
 				default:
-				case "mail":
+				case self::MODE_MAIL:
 					$data = $obj->convertToSOYMail();
 			}
 			if($data) $values = array_merge($values, $data);
@@ -383,7 +386,7 @@ class InquiryLogic extends SOY2LogicBase{
      *
      * [3桁以上FormId]-
      */
-    function getTrackingNumber($inquiry){
+    function getTrackingNumber(SOYInquiry_Inquiry $inquiry){
     	for($i = 0;;$i++){
 	    	$seed = $inquiry->getId().$inquiry->getCreateDate().$i;
    	 		$hash = base_convert(md5($seed),16,10);
@@ -406,7 +409,7 @@ class InquiryLogic extends SOY2LogicBase{
 	/**
 	 * 問い合わせのフラグを一括更新
 	 */
-	function bulk_update_flag($ids, $flag){
+	function bulk_update_flag(array $ids, int $flag){
     	switch($flag){
     		case SOYInquiry_Inquiry::FLAG_NEW :
     		case SOYInquiry_Inquiry::FLAG_READ :
@@ -434,7 +437,7 @@ class InquiryLogic extends SOY2LogicBase{
 	/**
 	 * 一括削除
 	 */
-	function bulk_delete($ids){
+	function bulk_delete(array $ids){
     	try{
 	    	$dao = $this->getDAO();
 	    	$dao->begin();
@@ -463,7 +466,7 @@ class InquiryLogic extends SOY2LogicBase{
     /**#@-*/
 
 	/** カートをIPアドレスで制限 **/
-	function checkRecentInquiryCount($ipAddress){
+	function checkRecentInquiryCount(string $ipAddress){
 		SOY2::import("domain.SOYInquiry_DataSetsDAO");
 
 		//IPアドレス除外リスト
@@ -486,7 +489,7 @@ class InquiryLogic extends SOY2LogicBase{
 		return ($cnt >= SOYInquiry_DataSets::get("form_ban_count", 30));
 	}
 
-	function banIPAddress($ipAddress){
+	function banIPAddress(string $ipAddress){
 		$dao = SOY2DAOFactory::create("SOYInquiry_BanIpAddressDAO");
 		$banObj = new SOYInquiry_BanIpAddress();
 		$banObj->setIpAddress($ipAddress);

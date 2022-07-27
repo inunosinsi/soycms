@@ -4,33 +4,34 @@ class SOYShopColumn extends SOYInquiry_ColumnBase{
 
     /**
 	 * ユーザに表示するようのフォーム
+	 * @param array
+	 * @return string
 	 */
-	function getForm($attr = array()){
-		$itemName = null;
-		if(SOYInquiryUtil::checkSOYShopInstall() && SOYINQUERY_SOYSHOP_CONNECT_SITE_ID && isset($_GET["item_id"]) && is_numeric($_GET["item_id"])){
-			$itemName = self::_getItemName($itemId);
-		}
+	function getForm(array $attrs=array()){
+		if(!defined("SOYINQUERY_SOYSHOP_CONNECT_SITE_ID")) return "";
+		$itemName = (SOYInquiryUtil::checkSOYShopInstall() && SOYINQUERY_SOYSHOP_CONNECT_SITE_ID && isset($_GET["item_id"]) && is_numeric($_GET["item_id"])) ? self::_getItemName($_GET["item_id"]) : "";
 
-		if(strlen($itemName)) $itemName = htmlspecialchars($itemName, ENT_QUOTES, "UTF-8");
 		$html = array();
 		$html[] = $itemName;
 		$html[] = "<input type=\"hidden\" name=\"data[" . $this->getColumnId() . "]\" value=\"" . $itemName . "\" />";
-
-		return implode("\n",$html);
-
+		return implode("\n", $html);
 	}
 
-	private function _getItemName(){
+	/**
+	 * @param int
+	 * @return string
+	 */
+	private function _getItemName(int $itemId){
 		$old = SOYInquiryUtil::switchSOYShopConfig(SOYInquiryUtil::getSOYShopSiteId());
-		$name = null;
+		$name = "";
 		try{
-			$item = SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getById((int)$_GET["item_id"]);
+			$item = SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getById($itemId);
 			if($item->isPublished()) $name = trim($item->getOpenItemName());
 		}catch(Exception $e){
 			//
 		}
 		SOYInquiryUtil::resetConfig($old);
-		return $name;
+		return htmlspecialchars($name, ENT_QUOTES, "UTF-8");
 	}
 
 	/**
@@ -41,7 +42,7 @@ class SOYShopColumn extends SOYInquiry_ColumnBase{
 	/**
 	 * 保存された設定値を渡す
 	 */
-	function setConfigure($config){
+	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
 	}
 

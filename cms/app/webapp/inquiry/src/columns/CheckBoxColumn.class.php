@@ -14,14 +14,18 @@ class CheckBoxColumn extends SOYInquiry_ColumnBase{
 	//公開側で各項目毎に改行の<br>を加えるか？
 	private $isBr = false;
 
+	//各項目にサムネイルを設定する
+	private $isThumbnail = false;
+
     /**
 	 * ユーザに表示するようのフォーム
+	 * @param array
+	 * @return string
 	 */
-	function getForm($attr = array()){
-
+	function getForm(array $attrs=array()){
 		$items = explode("\n",$this->items);
 		$value = $this->getValue();
-		if(!is_array($value))$value=array();
+		if(!is_array($value)) $value=array();
 
 		$attributes = $this->getAttributes();
 
@@ -39,11 +43,19 @@ class CheckBoxColumn extends SOYInquiry_ColumnBase{
 				}
 			}
 
-			if(in_array($item,$value)){
-				$checked = 'checked="checked"';
-			}
+			if(in_array($item, $value)) $checked = 'checked="checked"';
 
 			$parsleyProp = ($key == 0 && SOYInquiryUtil::checkIsParsley()) ? "data-parsley-errors-container=\"#parsley-error-" . $this->getColumnId() . "\"" : "";
+
+			//サムネイル @ToDo 表示方法は要検討
+			if($this->isThumbnail){
+				$path = SOYInquiryUtil::getThumbnailFilePath($this->getFormId(), $this->getColumnId(), $key, $item);
+				if(file_exists($path)){
+					$path = "/" . ltrim(str_replace($_SERVER["DOCUMENT_ROOT"], "", $path), "/");
+					$html[] = "<img src=\"" . $path . "\">";
+				}
+			}
+
 			$html[] = "<input type=\"checkbox\" id=\"data_".$this->getColumnId() . "_" . $key. "\" name=\"data[".$this->getColumnId()."][]\" value=\"".$item."\" " . implode(" ",$attributes). " ".$checked." " . $parsleyProp . ">";
 			$html[] = "<label for=\"data_".$this->getColumnId() . "_" . $key. "\">".$item."</label>";
 			if($this->isBr) $html[] = "<br>";
@@ -51,7 +63,6 @@ class CheckBoxColumn extends SOYInquiry_ColumnBase{
 		if(SOYInquiryUtil::checkIsParsley()) $html[] = "<span id=\"parsley-error-" . $this->getColumnId() . "\"></span>";
 
 		return implode("\n",$html);
-
 	}
 
 	function getAttributes(){
@@ -92,6 +103,21 @@ class CheckBoxColumn extends SOYInquiry_ColumnBase{
 
 		$checked = ($this->isBr) ? " checked=\"checked\"" : "";
 		$html .= "<label><input type=\"checkbox\" name=\"Column[config][isBr]\" value=\"1\"" . $checked. "> 各項目毎に改行コード&lt;br&gt;を追加する。</label>";
+		$html .= "<br>";
+
+		$checked = ($this->isThumbnail) ? " checked=\"checked\"" : "";
+		$html .= "<label><input type=\"checkbox\" name=\"Column[config][isThumbnail]\" value=\"1\"" . $checked. "> 各項目毎にサムネイルを設定する</label>";
+		if($this->isThumbnail){	//サムネイルに関する説明文
+			$html .= "<br>";
+			$items = explode("\n", trim((string)$this->items));
+			if(count($items)){
+				$html .= "下記のように画像ファイルを配置します。<br>";
+				$html .= SOYInquiryUtil::buildThumbnailPathListTable($items, $this->getFormId(), $this->getColumnId());
+			}else{
+				$html .= "<strong style=\"color:red;\">先に項目の設定を行ってください。</strong>";
+			}
+			
+		}
 
 		$html .= "<br><br>";
 
@@ -110,13 +136,15 @@ class CheckBoxColumn extends SOYInquiry_ColumnBase{
 
 	/**
 	 * 保存された設定値を渡す
+	 * @param array
 	 */
-	function setConfigure($config){
+	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
 		$this->items = (isset($config["items"])) ? $config["items"] : "*項目１\n項目２\n項目３";
 		$this->style = (isset($config["style"])) ? $config["style"] : null ;
 		$this->attribute = (isset($config["attribute"])) ? str_replace("\"","&quot;",$config["attribute"]) : null;
 		$this->isBr = (isset($config["isBr"]) && $config["isBr"] == 1);
+		$this->isThumbnail = (isset($config["isThumbnail"]) && $config["isThumbnail"] == 1);
 	}
 	function getConfigure(){
 		$config = parent::getConfigure();
@@ -124,11 +152,11 @@ class CheckBoxColumn extends SOYInquiry_ColumnBase{
 		$config["style"] = $this->style;
 		$config["attribute"] = $this->attribute;
 		$config["isBr"] = $this->isBr;
+		$config["isThumbnail"] = $this->isThumbnail;
 		return $config;
 	}
 
 	function validate(){
-
 		$value = $this->getValue();
 		if(is_array($value))$value = implode(",",$value);
 

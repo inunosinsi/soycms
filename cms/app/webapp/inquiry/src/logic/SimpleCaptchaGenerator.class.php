@@ -6,10 +6,13 @@
  */
 class SimpleCaptchaGenerator{
 
+	const WIDTH = 200;
+	const HEIGHT = 50;
+
 	private $fonts = array("Arial");
 
-	private $width = 200;					//ディフォルトの幅
-	private $height = 50;					//ディフォルトの高さ
+	private $width = self::WIDTH;					//ディフォルトの幅
+	private $height = self::HEIGHT;					//ディフォルトの高さ
 	private $bgRange = array(60, 160);		//背景色の範囲
 	private $borderRange = array(60,160); //邪魔線の範囲
 	private $fgRange = array(100, 255);	//文字色の範囲
@@ -40,17 +43,16 @@ class SimpleCaptchaGenerator{
 
 	public static function getInstance(){
 		static $_inst;
-		if(!$_inst)$_inst = new SimpleCaptchaGenerator();
-
+		if(is_null($_inst)) $_inst = new SimpleCaptchaGenerator();
 		return $_inst;
 	}
 
 	/**
 	 * 画像を出力して終了
 	 */
-	function output($text, $width = null, $height = null){
+	function output(string $text, int $width=self::WIDTH, int $height=self::HEIGHT){
 
-		$img = $this->generate($text, $width, $height);
+		$img = self::generate($text, $width, $height);
 
 		if($this->debug){
 			imagejpeg($img,"test.jpg");
@@ -68,16 +70,18 @@ class SimpleCaptchaGenerator{
 	/**
 	 * 画像生成
 	 */
-	function generate($text, $width = null, $height = null){
+	function generate(string $text, int $width=self::WIDTH, int $height=self::HEIGHT){
 		$self = $this;
 
-		if(!is_null($width))$self->width = $width;
-		if(!is_null($height))$self->height = $height;
+		if(is_numeric($width)) $self->width = $width;
+		if(is_numeric($height)) $self->height = $height;
 
 		$width = $self->width;
 		$height = $self->height;
 
-		$im = imagecreate($width, $height);
+		$im = imagecreate($width, $height);	//falseが返ってくることがある
+		if(!$im instanceof GDImage) return new GDImage();
+
 		$data = array();
 
 		$maxWidth = $width / strlen($text) - 5;
@@ -85,7 +89,7 @@ class SimpleCaptchaGenerator{
 		/*
 		 * 文字の大きさとかの準備
 		 */
-		for($i=0; $i<strlen($text); $i++) {
+		for($i = 0; $i < strlen($text); $i++) {
 			$char = substr($text, $i, 1);
 			$size = mt_rand($height * $self->sizeRange[0], $height * $self->sizeRange[1]);
 			$angle = mt_rand($self->rotRange[0], $self->rotRange[1]);
@@ -136,19 +140,19 @@ class SimpleCaptchaGenerator{
 		//色の準備
 		$color_bg=imagecolorallocate($im, $self->getBgColor(), $self->getBgColor(), $self->getBgColor());
 		$color_border=imagecolorallocate($im, 0,0,0);
-		for($i=0; $i<strlen($text); $i++) {
+		for($i = 0; $i < strlen($text); $i++) {
 			$data[$i]['color'] = imagecolorallocate($im, $self->getFgColor(), $self->getFgColor(), $self->getFgColor());
 		}
 		$line_color = array();
-		for($i=0;$i<$lineCount; $i++){
+		for($i = 0; $i < $lineCount; $i++){
 			$line_color[$i]=imagecolorallocate($im, $self->getBorderColor(), $self->getBorderColor(), $self->getBorderColor());
 		}
 
 		/*
 		 * 邪魔線の記述
 		 */
-		if($self->lines)$self->drawLines($im, $lineCount, $line_color);
-
+		if($self->lines) $self->drawLines($im, $lineCount, $line_color);
+		
 		/*
 		 * 文字の出力
 		 */
@@ -157,25 +161,22 @@ class SimpleCaptchaGenerator{
 		/*
 		 * ノイズの出力
 		 */
-		if($self->noise)$self->drawNoise($im);
+		if($self->noise) $self->drawNoise($im);
 
 		/*
 		 * ゆがませる
 		 */
 		//$self->drawWrap($im);
 
-
-
 		/*
 		 * 枠線を記述
 		 */
 		imagerectangle($im, 0, 0, $width-1, $height-1, $color_border);
 
-
 		return $im;
 	}
 
-	function drawWords($im, $data){
+	function drawWords(GDImage $im, array $data){
 		$l=0;
 		foreach($data as $d) {
 			imagettftext($im, $d['size'], $d['angle'], $d['pos_x'], $d['pos_y'], $d['color'], $d['font'], $d['char'] );
@@ -186,7 +187,7 @@ class SimpleCaptchaGenerator{
 		}
 	}
 
-	function drawLines($im,$lineCount,$line_color){
+	function drawLines(GDImage $im, int $lineCount, array $line_color){
 		$width = $this->width;
 		$height = $this->height;
 
@@ -215,9 +216,9 @@ class SimpleCaptchaGenerator{
 		}
 	}
 
-	function drawWrap($im){
+	function drawWrap(GDImage $im){
 
-		if($this->wrapCount < 1)return;
+		if($this->wrapCount < 1) return;
 
 		$cycle = $this->width / ($this->wrapCount * pi() * 2);
 
@@ -257,7 +258,7 @@ class SimpleCaptchaGenerator{
 		return $this->contrast * $this->getRandomColor($this->fgRange[0],$this->fgRange[1]);
 	}
 
-	function getRandomColor($min, $max){
+	function getRandomColor(int $min, int $max){
 		$min = max(0,min(255,$min));
 		$max = max(0,min(255,$max));
 		$out = mt_rand($min,$max);
@@ -360,4 +361,3 @@ class SimpleCaptchaGenerator{
 		$this->borderRange = func_get_args();
 	}
 }
-?>

@@ -8,9 +8,11 @@ class SerialNumberColumn extends SOYInquiry_ColumnBase{
 
     /**
 	 * ユーザに表示するようのフォーム
+	 * @param array
+	 * @return string
 	 */
-	function getForm($attr = array()){
-		return null;
+	function getForm(array $attrs=array()){
+		return "";
 	}
 
 	/**
@@ -42,7 +44,7 @@ class SerialNumberColumn extends SOYInquiry_ColumnBase{
 	/**
 	 * 保存された設定値を渡す
 	 */
-	function setConfigure($config){
+	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
 		$this->serialNumber = (isset($config["serialNumber"]) && is_numeric($config["serialNumber"])) ? (int)$config["serialNumber"] : 1;
 		$this->prefix = (isset($config["prefix"])) ? $config["prefix"] : "";

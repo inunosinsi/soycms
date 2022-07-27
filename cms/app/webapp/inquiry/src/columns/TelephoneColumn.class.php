@@ -18,8 +18,10 @@ class TelephoneColumn extends SOYInquiry_ColumnBase{
 
 	/**
 	 * ユーザに表示するようのフォーム
+	 * @param array
+	 * @return string
 	 */
-	function getForm($attr = array()){
+	function getForm(array $attrs=array()){
 
 		$values = $this->getValue();
 		$required = $this->getRequiredProp();
@@ -85,7 +87,7 @@ class TelephoneColumn extends SOYInquiry_ColumnBase{
 	/**
 	 * 保存された設定値を渡す
 	 */
-	function setConfigure($config){
+	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
 		$this->size1 = (isset($config["size1"]) && is_numeric($config["size1"])) ? (int)$config["size1"] : null;
 		$this->size2 = (isset($config["size2"]) && is_numeric($config["size2"])) ? (int)$config["size2"] : null;
@@ -141,9 +143,7 @@ class TelephoneColumn extends SOYInquiry_ColumnBase{
 	 */
 	function getView(){
 		$value = $this->getValue();
-		if(empty($value)){
-			return "";
-		}
+		if(empty($value)) return "";
 		return htmlspecialchars(implode("-",$value), ENT_QUOTES, "UTF-8");
 	}
 

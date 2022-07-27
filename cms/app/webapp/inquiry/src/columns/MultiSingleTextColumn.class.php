@@ -34,8 +34,10 @@ class MultiSingleTextColumn extends SOYInquiry_ColumnBase{
 
     /**
 	 * ユーザに表示するようのフォーム
+	 * @param array
+	 * @return string
 	 */
-	function getForm($attr = array()){
+	function getForm(array $attrs=array()){
 
 		$attributes = $this->getAttributes();
 		$required = $this->getRequiredProp();
@@ -44,7 +46,7 @@ class MultiSingleTextColumn extends SOYInquiry_ColumnBase{
 		if($this->ime_mode) $attributes[] = $this->getAttributeForInputMode();
 		if($this->mobile_ime_mode) $attributes[] = $this->getAttributeForMobileInputMode();
 
-		foreach($attr as $key => $value){
+		foreach($attrs as $key => $value){
 			$attributes[] = htmlspecialchars($key, ENT_QUOTES, "UTF-8") . "=\"".htmlspecialchars($value, ENT_QUOTES, "UTF-8")."\"";
 		}
 
@@ -147,7 +149,7 @@ class MultiSingleTextColumn extends SOYInquiry_ColumnBase{
 	/**
 	 * 保存された設定値を渡す
 	 */
-	function setConfigure($config){
+	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
 
 		$this->maxLength = (isset($config["maxLength"]) && is_numeric($config["maxLength"])) ? (int)$config["maxLength"] : null;
@@ -178,6 +180,7 @@ class MultiSingleTextColumn extends SOYInquiry_ColumnBase{
 	}
 	function validate(){
 		$values = $this->getValue();
+		if(is_null($values)) return true;
 
 		foreach($values as $value){
 			$value = trim($value);
@@ -232,6 +235,8 @@ class MultiSingleTextColumn extends SOYInquiry_ColumnBase{
 		    	}
 			}
 		}
+
+		return true;
 	}
 
 	/**

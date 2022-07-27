@@ -61,11 +61,13 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 
 	/**
 	 * ユーザに表示するようのフォーム
+	 * @param array
+	 * @return string
 	 */
-	function getForm($attr = array()){
+	function getForm(array $attrs=array()){
 
 		$attributes = array();
-		foreach($attr as $key => $value){
+		foreach($attrs as $key => $value){
 			$attributes[] = htmlspecialchars($key, ENT_QUOTES, "UTF-8") . "=\"".htmlspecialchars($value, ENT_QUOTES, "UTF-8")."\"";
 		}
 		$required = $this->getRequiredProp();
@@ -243,7 +245,7 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 	/**
 	 * 保存された設定値を渡す
 	 */
-	function setConfigure($config){
+	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
 		$this->requiredProp = (isset($config["requiredProp"])) ? $config["requiredProp"] : null;
 		$this->zipDivide = (isset($config["zipDivide"])) ? $config["zipDivide"] : null;

@@ -9,6 +9,8 @@
 </table>
 
 <?php
+$dummyFormObj = new SOYInquiry_Form();
+
 //各項目の出力行を取得する
 $columnCount = count($columns);
 $raws = array();
@@ -19,7 +21,7 @@ foreach($columns as $key => $column){
 	$output = "";
 
 	$id = $column->getId();
-	$obj = $column->getColumn();
+	$obj = $column->getColumn($dummyFormObj);
 	$label = ($column->getType() != "Enquete" && $column->getType() != "EnqueteFree") ? $obj->getLabel() : null;
 	$annotation = $obj->getAnnotation();
 

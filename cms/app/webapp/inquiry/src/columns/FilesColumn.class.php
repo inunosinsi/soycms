@@ -14,8 +14,10 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 
 	/**
 	 * ユーザに表示するようのフォーム
+	 * @param array
+	 * @return string
 	 */
-	function getForm($attr = array()){
+	function getForm(array $attrs=array()){
 
 		$html = array();
 
@@ -33,7 +35,7 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 
 		$attributes = array();
 
-		foreach($attr as $key => $value){
+		foreach($attrs as $key => $value){
 			$attributes[] = htmlspecialchars($key, ENT_QUOTES, "UTF-8") . "=\"".htmlspecialchars($value, ENT_QUOTES, "UTF-8")."\"";
 		}
 
@@ -54,7 +56,6 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 			$html[] = "}";
 			$html[] = "</script>";
 		}
-
 
 		return implode("\n",$html);
 	}
@@ -203,8 +204,9 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 
 	/**
 	 * onSend
+	 * @param SOYInquiry_Inquiry
 	 */
-	function onSend($inquiry){
+	function onSend(SOYInquiry_Inquiry $inquiry){
 		$values = self::getValues();
 		if(is_array($values) && count($values)){
 			$new_dir = SOY_INQUIRY_UPLOAD_DIR . "/" . $this->getFormId() . "/" . date("Ym") . "/";
@@ -280,7 +282,11 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 		return $values;
 	}
 
-	private function setError($v, $mes=null){
+	/**
+	 * @param array, string
+	 * @return array
+	 */
+	private function setError(array $v, string $mes=""){
 		$v["tmp_name"] = null;
 		$v["size"] = 0;
 
@@ -294,7 +300,7 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 	/**
 	 * 保存された設定値を渡す
 	 */
-	function setConfigure($config){
+	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
 
 		$this->uploadsize  = (isset($config["uploadsize"]) && is_numeric($config["uploadsize"])) ? (int)$config["uploadsize"] : 500;

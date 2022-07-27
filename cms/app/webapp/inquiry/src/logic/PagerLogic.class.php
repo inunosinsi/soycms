@@ -117,7 +117,7 @@ class SimplePager extends HTMLList{
 
 	protected function populateItem($bean){
 
-		$this->createAdd("target_link","HTMLLink",array(
+		$this->addLink("target_link", array(
 			"text" => $bean,
 			"link" => $this->url . "/" . $bean . $this->queryString,
 			"class" => ($this->current == $bean) ? "pager_current" : ""

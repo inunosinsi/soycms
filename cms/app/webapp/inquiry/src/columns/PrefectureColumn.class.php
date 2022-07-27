@@ -61,15 +61,17 @@ class PrefectureColumn extends SOYInquiry_ColumnBase{
 
     /**
 	 * ユーザに表示するようのフォーム
+	 * @param array
+	 * @return string
 	 */
-	function getForm($attr = array()){
+	function getForm(array $attrs=array()){
 
 		$attributes = array();
 		if($this->size)$attributes[] = "size=\"".$this->size."\"";
 
 		$required = $this->getRequiredProp();
 
-		foreach($attr as $key => $value){
+		foreach($attrs as $key => $value){
 			$attributes[] = htmlspecialchars($key) . "=\"".htmlspecialchars($value)."\"";
 		}
 
@@ -112,7 +114,7 @@ class PrefectureColumn extends SOYInquiry_ColumnBase{
 	/**
 	 * 保存された設定値を渡す
 	 */
-	function setConfigure($config){
+	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
 		$this->size = (isset($config["size"]) && is_numeric($config["size"])) ? (int)$config["size"] : null;
 		$this->requiredProp = (isset($config["requiredProp"])) ? $config["requiredProp"] : null;

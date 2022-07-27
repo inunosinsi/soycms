@@ -12,14 +12,16 @@ class QuestionColumn extends SOYInquiry_ColumnBase{
 
     /**
 	 * ユーザに表示するようのフォーム
+	 * @param array
+	 * @return string
 	 */
-	function getForm($attr = array()){
+	function getForm($attrs=array()){
 
 		$attributes = array();
-		if($this->maxLength)$attributes[] = "maxlength=\"".$this->maxLength."\"";
-		if($this->size)$attributes[] = "size=\"".$this->size."\"";
+		if($this->maxLength) $attributes[] = "maxlength=\"".$this->maxLength."\"";
+		if($this->size) $attributes[] = "size=\"".$this->size."\"";
 
-		foreach($attr as $key => $value){
+		foreach($attrs as $key => $value){
 			$attributes[] = htmlspecialchars($key,ENT_QUOTES,"UTF-8") . "=\"".htmlspecialchars($value,ENT_QUOTES,"UTF-8")."\"";
 		}
 
@@ -46,7 +48,7 @@ class QuestionColumn extends SOYInquiry_ColumnBase{
 	/**
 	 * 保存された設定値を渡す
 	 */
-	function setConfigure($config){
+	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
 		$this->maxLength = (isset($config["maxLength"]) && is_numeric($config["maxLength"])) ? (int)$config["maxLength"] : null;
 		$this->size = (isset($config["size"]) && is_numeric($config["size"])) ? (int)$config["size"] : null;
@@ -80,7 +82,7 @@ class QuestionColumn extends SOYInquiry_ColumnBase{
 			$this->setErrorMessage($this->getLabel()."への回答が間違っています。");
 			return false;
 		}
-
+		return true;
 	}
 
 	function getLinkagesSOYMailTo() {

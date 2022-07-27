@@ -72,7 +72,7 @@ class SOYInquiry_Form {
 
     	$list = array();
     	foreach($files as $file){
-    		if($file[0] == "." || strpos($file[0], "_") === 0)continue;
+    		if($file[0] == "." || strpos($file[0], "_") === 0) continue;
     		$list[] = $file;
     	}
 
@@ -168,7 +168,9 @@ class SOYInquiry_FormConfig{
 		$this->confirmMail = $confirmMail;
 	}
 	function getDesign() {
-		return $this->design;
+		$design = $this->design;
+		if(!isset($design["theme"]) || !strlen((string)$design["theme"])) $design["theme"] = "default";
+		return $design;
 	}
 	function setDesign($design) {
 		$this->design = $design;
@@ -210,7 +212,7 @@ class SOYInquiry_FormConfig{
 	 * theme
 	 */
 	function getTheme(){
-		return (@$this->design["theme"]) ? @$this->design["theme"] : "default";
+		return (isset($this->design["theme"]) && strlen((string)$this->design["theme"])) ? $this->design["theme"] : "default";
 	}
 
 	/**
@@ -226,11 +228,7 @@ class SOYInquiry_FormConfig{
 	 * @return boolean
 	 */
 	function enabledGD(){
-		if( function_exists("imagejpeg") && function_exists("imagettftext") && function_exists("imagettfbbox") ){
-			return true;
-		}
-
-		return false;
+		return ( function_exists("imagejpeg") && function_exists("imagettftext") && function_exists("imagettfbbox") );
 	}
 
 	function getFromAddress() {

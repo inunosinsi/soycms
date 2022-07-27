@@ -26,8 +26,10 @@ class MailAddressColumn extends SOYInquiry_ColumnBase{
 
     /**
 	 * ユーザに表示するようのフォーム
+	 * @param array
+	 * @return string
 	 */
-	function getForm($attr = array()){
+	function getForm(array $attrs=array()){
 
 		$attributes = $this->getAttributes();
 		$required = $this->getRequiredProp();
@@ -36,7 +38,7 @@ class MailAddressColumn extends SOYInquiry_ColumnBase{
 		if($this->ime_mode) $attributes[] = $this->getAttributeForInputMode();
 		if($this->mobile_ime_mode) $attributes[] = $this->getAttributeForMobileInputMode();
 
-		foreach($attr as $key => $value){
+		foreach($attrs as $key => $value){
 			$attributes[] = htmlspecialchars($key) . "=\"".htmlspecialchars($value)."\"";
 		}
 
@@ -120,7 +122,7 @@ class MailAddressColumn extends SOYInquiry_ColumnBase{
 	/**
 	 * 保存された設定値を渡す
 	 */
-	function setConfigure($config){
+	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
 		$this->maxLength = (isset($config["maxLength"]) && is_numeric($config["maxLength"])) ? (int)$config["maxLength"] : null;
 		$this->size = (isset($config["size"]) && is_numeric($config["size"])) ? (int)$config["size"] : null;

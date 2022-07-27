@@ -68,6 +68,7 @@ class SOYShopConnectLogic extends SOY2LogicBase{
 		static $user;
 		if(is_null($user)){
 			$shopId = SOYInquiryUtil::getSOYShopSiteId();
+			if(!is_string($shopId)) $shopId = "";
 			$old = SOYInquiryUtil::switchSOYShopConfig($shopId);
 
 			SOY2::import("domain.config.SOYShop_DataSets");

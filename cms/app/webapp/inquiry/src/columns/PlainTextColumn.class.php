@@ -14,8 +14,10 @@ class PlainTextColumn extends SOYInquiry_ColumnBase{
 
 	/**
 	 * フォーム用
+	 * @param array
+	 * @return string
 	 */
-	function getForm($attr = array()){
+	function getForm(array $attrs=array()){
 		return $this->label;
 	}
 
@@ -40,7 +42,7 @@ class PlainTextColumn extends SOYInquiry_ColumnBase{
 	/**
 	 * 保存された設定値を渡す
 	 */
-	function setConfigure($config){
+	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
 		$this->noPersistent = (isset($config["noPersistent"])) ? str_replace("\"","&quot;",$config["noPersistent"]) : null;
 	}

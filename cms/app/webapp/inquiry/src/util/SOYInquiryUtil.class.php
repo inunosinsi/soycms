@@ -40,7 +40,11 @@ class SOYInquiryUtil{
 		return $old;
 	}
 
-	public static function switchSOYShopConfig($shopId="shop"){
+	/**
+	 * @param string
+	 * @return array
+	 */
+	public static function switchSOYShopConfig(string $shopId="shop"){
 		$old["root"] = SOY2::RootDir();
 		$old["dao"] = SOY2DAOConfig::DaoDir();
 		$old["entity"] = SOY2DAOConfig::EntityDir();
@@ -48,7 +52,7 @@ class SOYInquiryUtil{
 		$old["user"] = SOY2DAOConfig::user();
 		$old["pass"] = SOY2DAOConfig::pass();
 
-		if(is_null($shopId)) $shopId = "shop";
+		if(!strlen($shopId)) $shopId = "shop";
 		$soyshopWebapp = dirname(CMS_COMMON) . "/soyshop/webapp/";
 		if(!defined("SOYSHOP_SITE_DIRECTORY")) {
 			if(file_exists($soyshopWebapp."conf/shop/" . $shopId . ".conf.php")){
@@ -80,7 +84,7 @@ class SOYInquiryUtil{
 		return $old;
 	}
 
-	public static function resetConfig($old){
+	public static function resetConfig(array $old){
 
 		SOY2::RootDir($old["root"]);
 		SOY2DAOConfig::DaoDir($old["dao"]);
@@ -117,7 +121,7 @@ class SOYInquiryUtil{
 	}
 
 	/** tr_propertyが使用可能なフォームを選択しているか？ **/
-	public static function checkUsabledTrProperty($theme){
+	public static function checkUsabledTrProperty(string $theme){
 		static $isTrProp;
 		if(isset($isTrProp) && is_bool($isTrProp)) return $isTrProp;
 		$dir = self::_getTemplateDir($theme);
@@ -142,11 +146,11 @@ class SOYInquiryUtil{
 		return $isTrProp;
 	}
 
-	public static function getTemplateDir($theme){
+	public static function getTemplateDir(string $theme){
 		return self::_getTemplateDir($theme);
 	}
 
-	private static function _getTemplateDir($theme){
+	private static function _getTemplateDir(string $theme){
 		$dir = SOY2::RootDir() . "template/" . $theme . "/";
 		if(file_exists($dir)) return $dir;
 		return SOY2::RootDir() . "template/default/";
@@ -155,7 +159,7 @@ class SOYInquiryUtil{
 	/** 管理画面確認用の便利な関数 **/
 	const INQUIRY_LABEL_LENGTH = 20;
 
-	public static function shapeInquiryContent($txt){
+	public static function shapeInquiryContent(string $txt){
 		$lines = explode("\n", $txt);
 		if(!count($lines)) return "";
 
@@ -220,7 +224,7 @@ class SOYInquiryUtil{
 	}
 
 	/** 連番カラム用の便利な関数 **/
-	public static function buildSerialNumber($cnf){
+	public static function buildSerialNumber(array $cnf){
 		if(!isset($cnf["serialNumber"])) return "";
 		$num = ((int)$cnf["serialNumber"] > 0) ? $cnf["serialNumber"] : 1;
 
@@ -249,7 +253,7 @@ class SOYInquiryUtil{
 		return $str;
 	}
 
-	public static function getBlogEntryUrlByInquiryId($inquiryId){
+	public static function getBlogEntryUrlByInquiryId(int $inquiryId){
 		try{
 			$rel = SOY2DAOFactory::create("SOYInquiry_EntryRelationDAO")->getByInquiryId($inquiryId);
 		}catch(Exception $e){
@@ -314,6 +318,19 @@ class SOYInquiryUtil{
 		if(strlen($blogPage->getEntryPageUri())) $url .= $blogPage->getEntryPageUri() . "/";
 
 		return $url . $rel->getEntryId();
+	}
+
+	/** サムネイル関連 */
+	public static function buildThumbnailPathListTable(array $items, int $formId, string $columnId){
+		return SOY2Logic::createInstance("logic.ThumbnailLogic")->buildPathListTable($items, $formId, $columnId);
+	}
+
+	/**
+	 * @param int, string, int, string
+	 * @return string
+	 */
+	public static function getThumbnailFilePath(int $formId, string $columnId, int $idx, string $itemname){
+		return SOY2Logic::createInstance("logic.ThumbnailLogic")->getThumbnailFilePath($formId, $columnId, $idx, $itemname);
 	}
 
 	/** Parsley.js連携 **/

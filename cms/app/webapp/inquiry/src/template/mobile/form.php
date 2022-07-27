@@ -9,12 +9,13 @@
 
     <table id="inquiry_form">
 <?php
+$dummyFormObj = new SOYInquiry_Form();
 foreach($columns as $column){
 	//連番カラムは表示しない
 	if($column->getType() == "SerialNumber") continue;
 
 	$id = $column->getId();
-    $obj = $column->getColumn();
+    $obj = $column->getColumn($dummyFormObj);
     $label = $obj->getLabel();
     $annotation = $obj->getAnnotation();
 

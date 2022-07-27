@@ -1,7 +1,7 @@
 <?php
-
 SOY2::import("domain.SOYMailConverter");
 SOY2::import("domain.SOYShopConnector");
+SOY2::import("domain.SOYInquiry_Form");
 
 /**
  * @table soyinquiry_column
@@ -30,7 +30,7 @@ class SOYInquiry_Column{
 	 */
 	private $type;
 
-	private $config;
+	private $config = array();
 
 	/**
 	 * @column display_order
@@ -105,8 +105,7 @@ class SOYInquiry_Column{
 	/**
 	 * #factory
 	 */
-	function getColumn(SOYInquiry_Form $form = null){
-
+	function getColumn(SOYInquiry_Form $form){
 		if($this->type) SOY2::import("columns." . $this->type . "Column");
 		$className = $this->type . "Column";
 
@@ -114,6 +113,7 @@ class SOYInquiry_Column{
 			$column = new SOYInquiry_ColumnBase();
 		}else{
 			$column = new $className();
+			if(!is_array($this->config)) $this->config = array();
 			$column->setConfigure($this->config);
 		}
 
@@ -124,7 +124,7 @@ class SOYInquiry_Column{
 		}else{
 			$column->setColumnId($this->id);
 		}
-		if($form)$column->setFormObject($form);
+		if(is_numeric($form->getId())) $column->setFormObject($form);
 		$column->setInquiry($this->getInquiry());
 		$column->setLabel($this->label);
 		$column->setValue($this->value);
@@ -194,8 +194,7 @@ class SOYInquiry_Column{
 	 * 保存用
 	 */
 	function getContent(){
-		$obj = $this->getColumn();
-		return $obj->getContent();
+		return $this->getColumn(new SOYInquiry_Form())->getContent();
 	}
 
 	public static function getTypes(){
@@ -222,7 +221,7 @@ class SOYInquiry_Column{
 	}
 
 	function getNoPersistent(){
-		return $this->getColumn()->getNoPersistent();
+		return $this->getColumn(new SOYInquiry_Form())->getNoPersistent();
 	}
 }
 
@@ -230,8 +229,10 @@ interface ISOYInquiry_Column{
 
 	/**
 	 * ユーザに表示するようのフォーム
+	 * @param array
+	 * @return string
 	 */
-	function getForm($attribute = array());
+	function getForm(array $attributes=array());
 
 	/**
 	 * 確認画面で呼び出す
@@ -266,8 +267,9 @@ interface ISOYInquiry_Column{
 
 	/**
 	 * 保存された設定値を渡す
+	 * @param array
 	 */
-	function setConfigure($config);
+	function setConfigure(array $config);
 
 	/**
 	 * 保存に必要な設定を取得する
@@ -296,8 +298,10 @@ class SOYInquiry_ColumnBase implements ISOYInquiry_Column{
 
 	/**
 	 * ユーザに表示するようのフォーム
+	 * @param array
+	 * @return string
 	 */
-	function getForm($attributes = array()){}
+	function getForm(array $attributes=array()){}
 
 	/**
 	 * 確認画面で呼び出す
@@ -412,7 +416,7 @@ class SOYInquiry_ColumnBase implements ISOYInquiry_Column{
 	/**
 	 * onSend
 	 */
-	function onSend($obj){}
+	function onSend(SOYInquiry_Inquiry $obj){}
 
 
 
@@ -430,7 +434,7 @@ class SOYInquiry_ColumnBase implements ISOYInquiry_Column{
 	/**
 	 * 保存された設定値を渡す
 	 */
-	function setConfigure($config){
+	function setConfigure(array $config){
 		$this->isLinkageSOYMail = isset($config["isLinkageSOYMail"]) ? $config["isLinkageSOYMail"] : false;
 		$this->isLinkageSOYShop = isset($config["isLinkageSOYShop"]) ? $config["isLinkageSOYShop"] : false;
 		$this->SOYMailTo = isset($config["SOYMailTo"]) ? $config["SOYMailTo"] : null;

@@ -10,11 +10,12 @@ class SOYCMSBlogEntryPageColumn extends SOYInquiry_ColumnBase{
 
     /**
 	 * ユーザに表示するようのフォーム
+	 * @param array
+	 * @return string
 	 */
-	function getForm($attr = array()){
-
+	function getForm(array $attrs=array()){
 		//エラーで入力画面に戻って来たときはすでに値が入っている
-		$value = $this->getValue();
+		$value = (string)$this->getValue();
 
 		//なければ取得
 		if(!strlen($value)){
@@ -49,9 +50,8 @@ class SOYCMSBlogEntryPageColumn extends SOYInquiry_ColumnBase{
 	/**
 	 * 保存された設定値を渡す
 	 */
-	function setConfigure($config){
+	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
-
 		$this->cms_id = isset($config["cms_id"]) ? $config["cms_id"] : null;
 	}
 

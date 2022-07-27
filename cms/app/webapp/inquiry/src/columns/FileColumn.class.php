@@ -13,8 +13,10 @@ class FileColumn extends SOYInquiry_ColumnBase{
 
 	/**
 	 * ユーザに表示するようのフォーム
+	 * @param array
+	 * @return string
 	 */
-	function getForm($attr = array()){
+	function getForm(array $attrs=array()){
 
 		$values = $this->getValue();
 		if(!is_array($values)) $values = array("name" => "", "size" => "");
@@ -34,7 +36,7 @@ class FileColumn extends SOYInquiry_ColumnBase{
 
 		$attributes = array();
 
-		foreach($attr as $key => $value){
+		foreach($attrs as $key => $value){
 			$attributes[] = htmlspecialchars($key, ENT_QUOTES, "UTF-8") . "=\"".htmlspecialchars($value, ENT_QUOTES, "UTF-8")."\"";
 		}
 
@@ -97,8 +99,9 @@ class FileColumn extends SOYInquiry_ColumnBase{
 
 	/**
 	 * onSend
+	 * @param SOYInquiry_Inquiry
 	 */
-	function onSend($inquiry){
+	function onSend(SOYInquiry_Inquiry $inquiry){
 
 		$values = $this->getValue();
 
@@ -276,7 +279,7 @@ class FileColumn extends SOYInquiry_ColumnBase{
 	/**
 	 * 保存された設定値を渡す
 	 */
-	function setConfigure($config){
+	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
 
 		$this->uploadsize  = (isset($config["uploadsize"]) && is_numeric($config["uploadsize"])) ? (int)$config["uploadsize"] : 500;

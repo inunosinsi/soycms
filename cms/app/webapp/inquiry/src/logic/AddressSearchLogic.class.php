@@ -2,12 +2,9 @@
 
 class AddressSearchLogic extends SOY2LogicBase{
 
-    function search($zip1,$zip2){
-    	if(empty($zip2)){
-    		$zip = $zip1 . "0000";
-    	}else{
-    		$zip = $zip1 . $zip2;
-    	}
+    function search(string $zip1, string $zip2){
+    	if(empty($zip2)) $zip2 = "0000";
+		$zip = $zip1 . $zip2;
     	
     	$file = dirname(__FILE__) . "/address.csv";
     	

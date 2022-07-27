@@ -6,7 +6,10 @@
 
 <div class="soy_iqnuiry_responsive">
 	<dl>
-<?php $counter = 0; ?>
+<?php 
+$counter = 0;
+$dummyFormObj = new SOYInquiry_Form();
+?>
 <?php $columnCount = count($columns); ?>
 <?php foreach($columns as $column){
 	//連番カラムは表示しない
@@ -17,7 +20,7 @@
 	 */
 
 	$id = $column->getId();
-	$obj = $column->getColumn();
+	$obj = $column->getColumn($dummyFormObj);
 	$label = $obj->getLabel();
 	$annotation = $obj->getAnnotation();
 

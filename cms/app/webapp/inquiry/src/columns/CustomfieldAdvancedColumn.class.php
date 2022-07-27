@@ -5,13 +5,7 @@ class CustomfieldAdvancedColumn extends SOYInquiry_ColumnBase{
     /**
 	 * ユーザに表示するようのフォーム
 	 */
-	function getForm($attributes = array()){
-
-		// $attributes = $this->getAttributes();
-		// $required = $this->getRequiredProp();
-		//
-		// $values = $this->getValue();
-
+	function getForm(array $attrs=array()){
 		//サイトid
 		$site = self::_getSiteObject();
 		$v = self::_getEntryAttrValue($site->getDataSourceName());
@@ -23,6 +17,9 @@ class CustomfieldAdvancedColumn extends SOYInquiry_ColumnBase{
 		return implode("\n", $html);
 	}
 
+	/**
+	 * @return Site
+	 */
 	private function _getSiteObject(){
 		$siteId = trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/");
 
@@ -37,7 +34,7 @@ class CustomfieldAdvancedColumn extends SOYInquiry_ColumnBase{
 		return $site;
 	}
 
-	private function _getEntryAttrValue($dsn){
+	private function _getEntryAttrValue(string $dsn){
 		$old["dsn"] = SOY2DAOConfig::dsn();
 		$old["user"] = SOY2DAOConfig::user();
 		$old["pass"] = SOY2DAOConfig::pass();
@@ -104,14 +101,12 @@ class CustomfieldAdvancedColumn extends SOYInquiry_ColumnBase{
 	/**
 	 * 保存された設定値を渡す
 	 */
-	function setConfigure($config){
+	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
-		//$this->attribute = (isset($config["attribute"])) ? str_replace("\"","&quot;",$config["attribute"]) : null;
 	}
 
 	function getConfigure(){
 		$config = parent::getConfigure();
-		//$config["attribute"] = $this->attribute;
 		return $config;
 	}
 

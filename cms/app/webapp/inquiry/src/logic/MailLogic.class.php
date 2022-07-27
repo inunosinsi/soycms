@@ -81,19 +81,15 @@ class MailLogic extends SOY2LogicBase{
 	 * @param <String> replyTo
 	 * @param Boolean replyToOnly 返信先をユーザのメールアドレスのみにする
 	 */
-	function sendMail($sendTo,$title,$body,$sendToName,$replyTo = null, $replyToOnly=false){
+	function sendMail(string $sendTo, string $title, string $body, string $sendToName, array $replyTo=array(), bool $replyToOnly=false){
 
 		//リセット
 		$this->reset();
 
 		$replyToArray = array();
-		if($replyTo) $replyToArray = $replyTo;
-		if($replyToOnly){
-			//何もしない
-		}else{
-			if($this->replyTo) $replyToArray[] = $this->replyTo->getString();
-		}
-
+		if(count($replyTo)) $replyToArray = $replyTo;
+		if(!$replyToOnly && $this->replyTo) $replyToArray[] = $this->replyTo->getString();
+	
 		$this->send->setHeader("Reply-To", implode(",", $replyToArray));
 
 		$this->send->setSubject($title);
@@ -140,7 +136,7 @@ class MailLogic extends SOY2LogicBase{
 	 * @param Array $mailBody 0=>管理者宛のメール本文, 1=>ユーザ宛のメール本文
 	 *
 	 */
-	function sendNotifyMail($columns,$userMailAddress,$mailBody){
+	function sendNotifyMail(array $columns, array $userMailAddress, array $mailBody){
 		$serverConfig = $this->getServerConfig();
 		$formConfig = $this->getFormConfig();
 
@@ -184,8 +180,8 @@ class MailLogic extends SOY2LogicBase{
 							$email,
 							$title,
 							$content,
-							null,
-							($formConfig->getIsReplyToUser() ? $userMailAddress : null ),
+							"",
+							($formConfig->getIsReplyToUser() ? $userMailAddress : array() ),
 							($formConfig->getIsReplyToUser())	//返信先をユーザのメールアドレスのみにする
 						);
 					}catch(Exception $e){
@@ -238,8 +234,8 @@ class MailLogic extends SOY2LogicBase{
 							$email,
 							$title,
 							$content,
-							null,
-							null
+							"",
+							array()
 						);
 
 					}catch(Exception $e){
@@ -291,15 +287,16 @@ class MailLogic extends SOY2LogicBase{
 		$this->receive = $receive;
 	}
 	/**#@-*/
-	private function replaceText($columns,$text){
+	private function replaceText(array $columns, string $text){
 		//tracking number だけ先に変換
 		$confirm = $this->formConfig->getConfirmMail();
 		$replace = $confirm['replaceTrackingNumber'];
 		if(strlen($replace)>0 && strpos($text, $replace) !== false){
 			$text = str_replace($replace,$columns[0]->getInquiry()->getTrackingNumber(),$text);
 		}
+		$dummyFormObject = new SOYInquiry_Form();
 		foreach($columns as $column){
-			$obj = $column->getColumn();
+			$obj = $column->getColumn($dummyFormObject);
 			$replace = $obj->getReplacement();
 			if(strlen($replace)>0 && strpos($text, $replace) !== false) $text = str_replace($replace,htmlspecialchars_decode($obj->getMailText(), ENT_QUOTES),$text);
 		}
@@ -309,7 +306,7 @@ class MailLogic extends SOY2LogicBase{
 	/**
 	 * @return boolean
 	 */
-	function isValidEmail($email){
+	function isValidEmail(string $email){
 		$ascii  = '[a-zA-Z0-9!#$%&\'*+\-\/=?^_`{|}~.]';//'[\x01-\x7F]';
     	$domain = '(?:[-a-z0-9]+\.)+[a-z]{2,10}';//'([-a-z0-9]+\.)*[a-z]+';
 		$d3     = '\d{1,3}';

@@ -17,10 +17,12 @@ class DateColumn extends SOYInquiry_ColumnBase{
 
     /**
 	 * ユーザに表示するようのフォーム
+	 * @param array
+	 * @return string
 	 */
-	function getForm($attributes = array()){
+	function getForm(array $attrs=array()){
 
-		$config = $this->getDateConfig();
+		$config = self::_getDateConfig();
 		$startYear = $config["startYear"];
 		$endYear = $config["endYear"];
 
@@ -156,7 +158,7 @@ class DateColumn extends SOYInquiry_ColumnBase{
 	/**
 	 * 保存された設定値を渡す
 	 */
-	function setConfigure($config){
+	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
 
 		$this->startYear = (isset($config["startYear"]) && is_numeric($config["startYear"])) ? (int)$config["startYear"] : null;
@@ -225,8 +227,9 @@ class DateColumn extends SOYInquiry_ColumnBase{
 
 	/**
 	 * 日付表示の設定を取得する
+	 * @return array
 	 */
-	function getDateConfig(){
+	private function _getDateConfig(){
 
 		$startYear = $this->startYear;
 		$endYear = $this->endYear;

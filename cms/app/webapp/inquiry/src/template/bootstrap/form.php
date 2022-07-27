@@ -4,9 +4,11 @@
 	<?php $message = $config->getMessage(); echo $message["information"]; ?>
 </div>
 
-<?php $counter = 0; ?>
-<?php $columnCount = count($columns); ?>
-<?php foreach($columns as $column){
+<?php 
+$counter = 0;
+$columnCount = count($columns);
+$dummyFormObj = new SOYInquiry_Form();
+foreach($columns as $column){
 	//連番カラムは表示しない
 	if($column->getType() == "SerialNumber") continue;
 
@@ -17,7 +19,7 @@
 	echo "<div class=\"form-group\">\n";
 
 	$id = $column->getId();
-	$obj = $column->getColumn();
+	$obj = $column->getColumn($dummyFormObj);
 	$label = $obj->getLabel();
 	$annotation = $obj->getAnnotation();
 

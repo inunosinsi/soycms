@@ -13,8 +13,10 @@ class SOYCMSBlogEntryColumn extends SOYInquiry_ColumnBase{
 
     /**
 	 * ユーザに表示する用のフォーム
+	 * @param array
+	 * @return string
 	 */
-	function getForm($attr = array()){
+	function getForm(array $attrs=array()){
 		$title = $this->getValue();
 		if(is_null($title)) $title = self::_getEntryTitle();
 		if(strlen($title)) $title = htmlspecialchars($title, ENT_QUOTES, "UTF-8");
@@ -27,7 +29,7 @@ class SOYCMSBlogEntryColumn extends SOYInquiry_ColumnBase{
 			$attributes = self::_getAttributes();
 			$required = self::_getRequiredProp();
 
-			foreach($attr as $key => $value){
+			foreach($attrs as $key => $value){
 				$attributes[] = htmlspecialchars($key, ENT_QUOTES, "UTF-8") . "=\"".htmlspecialchars($value, ENT_QUOTES, "UTF-8")."\"";
 			}
 
@@ -141,7 +143,7 @@ class SOYCMSBlogEntryColumn extends SOYInquiry_ColumnBase{
 	/**
 	 * 保存された設定値を渡す
 	 */
-	function setConfigure($config){
+	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
 		$this->isEditable = (isset($config["isEditable"])) ? $config["isEditable"] : null;
 		$this->attribute = (isset($config["attribute"])) ? str_replace("\"","&quot;",$config["attribute"]) : null;

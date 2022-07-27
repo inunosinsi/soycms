@@ -251,6 +251,8 @@ class SOYInquiry_PageApplication{
 	    	$errors = array();	//エラーデータは空にする
 	    }
 
+		SOY2::import("domain.SOYInquiry_Form");	//form.phpやconfirm.php内で利用する
+
 	    //確認画面表示（Captcha判定に失敗したときのためにこのIF文は分離しておく必要がある）
 		if(isset($_POST["confirm"]) || isset($_POST["confirm_x"])){
 			$errors = self::checkPostData($_POST["data"], $columns);

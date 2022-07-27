@@ -10,7 +10,7 @@ class ColumnListComponent extends HTMLList{
 	protected function populateItem($entity){
 		if(!$entity instanceof SOYInquiry_Column) $entity = new SOYInquiry_Column();
 
-		$obj = $entity->getColumn();
+		$obj = $entity->getColumn(new SOYInquiry_Form());
 		$label = (is_string($obj->getLabel())) ? $obj->getLabel() : "";
 
 		$this->addLabel("label", array(

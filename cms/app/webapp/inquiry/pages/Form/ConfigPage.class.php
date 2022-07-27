@@ -450,8 +450,7 @@ class ConfigPage extends FormPageBase{
     	));
 
     	$design = $this->form->getConfigObject()->getDesign();
-
-
+		
     	$this->addInput("design_notoutput_stylesheet", array(
     		"name" => "Design[isOutputStylesheet]",
     		"value" => "0"

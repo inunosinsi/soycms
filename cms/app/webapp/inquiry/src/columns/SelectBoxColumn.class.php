@@ -24,8 +24,10 @@ class SelectBoxColumn extends SOYInquiry_ColumnBase{
 
     /**
 	 * ユーザに表示するようのフォーム
+	 * @param array
+	 * @return string
 	 */
-	function getForm($attr = array()){
+	function getForm($attrs=array()){
 
 		$items = explode("\n",$this->items);
 		$value = $this->getValue();
@@ -34,7 +36,7 @@ class SelectBoxColumn extends SOYInquiry_ColumnBase{
 		$attributes = $this->getAttributes();
 		$required = $this->getRequiredProp();
 
-		foreach($attr as $key => $attr_value){
+		foreach($attrs as $key => $attr_value){
 			$attributes[] = htmlspecialchars($key, ENT_QUOTES) . "=\"".htmlspecialchars($attr_value, ENT_QUOTES)."\"";
 		}
 
@@ -131,7 +133,7 @@ class SelectBoxColumn extends SOYInquiry_ColumnBase{
 	/**
 	 * 保存された設定値を渡す
 	 */
-	function setConfigure($config){
+	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
 		$this->items = (isset($config["items"])) ? $config["items"] : "*項目１\n項目２\n項目３";
 		$this->emptyOption = (isset($config["emptyOption"]) && $config["emptyOption"] == 1) ? 1 : 0;

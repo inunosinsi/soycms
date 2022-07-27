@@ -20,16 +20,17 @@ class UpdateColumnPage extends WebPage{
     	if(isset($_POST["update"])){
     		$this->post = $_POST["Column"];
 
-			$columnObject = $column->getColumn();
+			SOY2::import("domain.SOYInquiry_Form");
+			$columnObject = $column->getColumn(new SOYInquiry_Form());
    			SOY2::cast($column,(object)$this->post);
    			
-   			$newColumnObject = $column->getColumn();
+   			$newColumnObject = $column->getColumn(new SOYInquiry_Form());
  
-    		if(!$this->SOYMailValidate()){
+    		if(!self::_SOYMailValidate()){
     			//失敗した。
     		}
     		
-   			if(!$this->replacementValidate($column,$newColumnObject,$formId)) {
+   			if(!self::_replacementValidate($column,$newColumnObject,$formId)) {
    				//リプレースがかぶってた！その場合もとの値を保存
    				$newColumnObject->setReplacement($columnObject->getReplacement());
    			}
@@ -45,11 +46,11 @@ class UpdateColumnPage extends WebPage{
     	exit;
     }
     
-    function SOYMailValidate() {
+    private function _SOYMailValidate() {
     	// TODO　フォーム内の全カラムについて、SOYMailの登録先が重複していないか、またメールアドレスの登録がされているかをチェックする
     	return true;
     }
-    function replacementValidate($column,$newColumnObject,$formId) {
+	private function _replacementValidate(SOYInquiry_Column $column, $newColumnObject, int $formId) {
    		if(!$column->getRequire()){
    			//必須でない場合は空を保存
    			$newColumnObject->setReplacement("");
@@ -58,6 +59,8 @@ class UpdateColumnPage extends WebPage{
    			//空ならそのまま保存
    			return true;
    		}
+
+		$dummyFormObject = new SOYInquiry_Form();
    
     	//リプレース記号が重複しないか
     	
@@ -65,11 +68,11 @@ class UpdateColumnPage extends WebPage{
     	$replacement = array();
    		foreach($columns as $entity){
    			if($entity->getId() == $column->getId()) continue;
-    		$columnObject = $entity->getColumn();
+    		$columnObject = $entity->getColumn($dummyFormObject);
     		if(!isset($replacement[$columnObject->getReplacement()])) {
     			$replacement[$columnObject->getReplacement()] = "1";
     		}
     	}
-    	return (!isset($replacement[$newColumnObject->getReplacement()]))?true:false;
+    	return (!isset($replacement[$newColumnObject->getReplacement()]));
     }
 }
