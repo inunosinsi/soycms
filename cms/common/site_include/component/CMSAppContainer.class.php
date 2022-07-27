@@ -55,16 +55,16 @@ class CMSAppContainer extends SOY2HTML{
 	}
 
 	private function getApplicationIds(){
-		$appIds = trim($this->getAttribute("cms:app"));
+		$appIds = trim((string)$this->getAttribute("cms:app"));
 
 		$applicationIds = array($appIds);
-		if(strpos($appIds, " ") !== false){
+		if(is_numeric(strpos($appIds, " "))){
 			$applicationIds = explode(" ", $appIds);
-		}elseif(strpos($appIds, ";") !== false){
+		}elseif(is_numeric(strpos($appIds, ";"))){
 			$applicationIds = explode(";", $appIds);
-		}elseif(strpos($appIds, ":") !== false){
+		}elseif(is_numeric(strpos($appIds, ":"))){
 			$applicationIds = explode(":", $appIds);
-		}elseif(strpos($appIds, ",") !== false){
+		}elseif(is_numeric(strpos($appIds, ",")) !== false){
 			$applicationIds = explode(",", $appIds);
 		}
 

@@ -24,7 +24,7 @@ class PluginBlockUtil {
 			$uri = str_replace("/" . $_SERVER["SOYCMS_PAGE_URI"] . "/", "", $uri);
 
 			//トップページ
-			if(strlen($blog->getTopPageUri()) && $uri === (string)$blog->getTopPageUri()){
+			if(strlen((string)$blog->getTopPageUri()) && $uri === (string)$blog->getTopPageUri()){
 				if(strlen(trim($blog->getTopTemplate())) > 0){
 					$templates[$pageId] = $blog->getTopTemplate();
 				}
