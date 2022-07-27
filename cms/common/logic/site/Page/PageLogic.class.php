@@ -284,7 +284,7 @@ class PageLogic extends SOY2LogicBase{
 							}
 							break;
 						default:
-							if(strlen($this->page->getTopPageUri())){
+							if(strlen((string)$this->page->getTopPageUri())){
 								$url .= "/" . $this->page->getTopPageUri();
 							}
 					}

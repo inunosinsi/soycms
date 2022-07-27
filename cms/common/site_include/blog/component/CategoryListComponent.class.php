@@ -10,9 +10,10 @@ class CategoryListComponent extends HTMLList{
 
 	protected function populateItem($entry){
 		$id = (is_numeric($entry->getId())) ? (int)$entry->getId() : 0;
+		$encodeAlias = (is_string($entry->getAlias())) ? rawurlencode($entry->getAlias()) : "";
 
 		$this->addLink("category_link", array(
-			"link"=>$this->categoryUrl . rawurlencode($entry->getAlias()),
+			"link"=>$this->categoryUrl . $encodeAlias,
 			"soy2prefix"=>"cms"
 		));
 
@@ -41,15 +42,13 @@ class CategoryListComponent extends HTMLList{
 			"soy2prefix" => "cms"
 		));
 
-
 		$arg = substr(rtrim($_SERVER["REQUEST_URI"], "/"), strrpos(rtrim($_SERVER["REQUEST_URI"], "/"), "/") + 1);
-		$alias = rawurlencode($entry->getAlias());
-		$this->createAdd("is_current_category", "HTMLModel", array(
-			"visible" => ($arg === $alias),
+		$this->addModel("is_current_category", array(
+			"visible" => ($arg === $encodeAlias),
 			"soy2prefix" => "cms"
 		));
-		$this->createAdd("no_current_category", "HTMLModel", array(
-			"visible" => ($arg !== $alias),
+		$this->addModel("no_current_category", array(
+			"visible" => ($arg !== $encodeAlias),
 			"soy2prefix" => "cms"
 		));
 

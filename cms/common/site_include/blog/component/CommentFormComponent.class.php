@@ -20,7 +20,7 @@ class CommentFormComponent extends HTMLForm{
 
 		$this->addInput("author", array(
 			"name" => "author",
-			"value" => (strlen($this->entryComment->getAuthor()) > 0) ? $this->entryComment->getAuthor() : @$array["author"],
+			"value" => (is_string($this->entryComment->getAuthor()) && strlen($this->entryComment->getAuthor()) > 0) ? $this->entryComment->getAuthor() : @$array["author"],
 			"soy2prefix" => "cms"
 		));
 
@@ -32,19 +32,18 @@ class CommentFormComponent extends HTMLForm{
 
 		$this->addInput("mail_address", array(
 			"name" => "mail_address",
-			"value" => (strlen($this->entryComment->getMailAddress()) > 0) ? $this->entryComment->getMailAddress() : @$array["mailaddress"],
+			"value" => (is_string($this->entryComment->getMailAddress()) && strlen($this->entryComment->getMailAddress()) > 0) ? $this->entryComment->getMailAddress() : @$array["mailaddress"],
 			"soy2prefix" => "cms"
 		));
 
 		$this->addInput("url", array(
 			"name" => "url",
-			"value" => (strlen($this->entryComment->getUrl()) > 0) ? $this->entryComment->getUrl() : @$array["url"],
+			"value" => (is_string($this->entryComment->getUrl()) && strlen($this->entryComment->getUrl()) > 0) ? $this->entryComment->getUrl() : @$array["url"],
 			"soy2prefix" => "cms"
 		));
 
 		parent::execute();
 	}
-
 
 	function getEntryComment() {
 		return $this->entryComment;
