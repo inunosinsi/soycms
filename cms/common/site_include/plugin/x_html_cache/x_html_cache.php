@@ -9,6 +9,8 @@ class HTMLCachePlugin{
 	var $config_per_page = array();
 	var $config_per_blog = array();
 
+	private $isGetParameterMode = 1;
+
 	function getId(){
 		return self::PLUGIN_ID;
 	}
@@ -20,7 +22,7 @@ class HTMLCachePlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/3096",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.8"
+			"version"=>"0.9"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
@@ -45,6 +47,10 @@ class HTMLCachePlugin{
 
 	function onOutput($arg){
 		$html = &$arg["html"];
+
+		// GETパラメータがある場合はどんな場合でも対象外
+		if((int)$this->isGetParameterMode !== 1 && count($_GET) > 0) return $html;
+		
 		$page = &$arg["page"];
 
 		//アプリケーションページと404ページの場合は静的化しない
@@ -162,6 +168,13 @@ class HTMLCachePlugin{
 		$form->setPluginObj($this);
 		$form->execute();
 		return $form->getObject();
+	}
+
+	function getIsGetParameterMode(){
+		return $this->isGetParameterMode;
+	}
+	function setIsGetParameterMode($isGetParameterMode){
+		$this->isGetParameterMode = $isGetParameterMode;
 	}
 
 	public static function register(){

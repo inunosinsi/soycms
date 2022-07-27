@@ -12,6 +12,8 @@ class HTMLCacheConfigPage extends WebPage {
 
 	function doPost(){
 		if(soy2_check_token()){
+			$on = (isset($_POST["is_get_parameter_mode"]) && $_POST["is_get_parameter_mode"] == 1) ? 1 : 0;
+			$this->pluginObj->setIsGetParameterMode($on);
 			$this->pluginObj->config_per_page = (isset($_POST["config_per_page"])) ? $_POST["config_per_page"] : array();
 			$this->pluginObj->config_per_blog = (isset($_POST["config_per_blog"])) ? $_POST["config_per_blog"] : array();
 
@@ -29,6 +31,13 @@ class HTMLCacheConfigPage extends WebPage {
 		));
 
 		$this->addForm("form");
+
+		$this->addCheckBox("is_get_parameter_mode", array(
+			"name" => "is_get_parameter_mode",
+			"value" => 1,
+			"selected" => ((int)$this->pluginObj->getIsGetParameterMode() === 1),
+			"label" => "URLにGETパラメータが付与されていてもHTMLキャッシュを生成する"
+		));
 
 		//挿入するページの指定
 		$this->createAdd("page_list","PageListComponent",array(

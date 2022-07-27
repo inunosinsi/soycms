@@ -3,8 +3,15 @@
 
 <br>
 
-<div class="alert alert-info">ページ毎のキャッシュの設定(検索結果のページはチェックをいれてもキャッシュ化の対象外です)</div>
 <form soy:id="form">
+	<div class="alert alert-info">HTMLキャッシュの設定</div>
+	<input type="checkbox" soy:id="is_get_parameter_mode">
+	<div class="alert alert-warning">検索ページやpathinfoの付与は設定関係なくHTMLキャッシュは生成されません</div>
+
+	<br>
+
+	<div class="alert alert-info">ページ毎のキャッシュの設定(検索結果のページはチェックをいれてもキャッシュ化の対象外です)</div>
+
 	<ul>
 		<li soy:id="page_list" style="list-style:none">
 			<input type="checkbox" soy:id="page_item">
