@@ -107,8 +107,8 @@ class BlogPage extends Page{
 	/**
 	* @param startWithSlash /で始まるかどうか
 	*/
-	function getEntryPageUri($startWithSlash = false) {
-		if($startWithSlash && strlen($this->entryPageUri)>0){
+	function getEntryPageUri(bool $startWithSlash=false) {
+		if($startWithSlash && strlen((string)$this->entryPageUri)>0){
 			return "/" . $this->entryPageUri;
 		}else{
 			return $this->entryPageUri;
@@ -128,9 +128,9 @@ class BlogPage extends Page{
 	/**
 	* トップページのURL
 	*/
-	function getTopPageURL($withPageUri = true){
-		if($withPageUri && strlen($this->getUri()) >0){
-			if(strlen($this->getTopPageUri()) >0){
+	function getTopPageURL(bool $withPageUri=true){
+		if($withPageUri && strlen((string)$this->getUri()) >0){
+			if(strlen((string)$this->getTopPageUri()) >0){
 				return $this->getUri() . "/" . $this->getTopPageUri();
 			}else{
 				return $this->getUri();
@@ -144,12 +144,12 @@ class BlogPage extends Page{
 	*
 	* @param withPageUri ページのUriを追加するかどうか
 	*/
-	function getEntryPageURL($withPageUri = true){
+	function getEntryPageURL(bool $withPageUri=true){
 		$url = "";
-		if($withPageUri && strlen($this->getUri()) >0){
+		if($withPageUri && strlen((string)$this->getUri()) >0){
 			$url .= $this->getUri() . "/";
 		}
-		if(strlen($this->getEntryPageUri()) >0){
+		if(strlen((string)$this->getEntryPageUri()) >0){
 			$url .= $this->getEntryPageUri() . "/";
 		}
 		return $url;
@@ -157,12 +157,12 @@ class BlogPage extends Page{
 	/**
 	* カテゴリーアーカイブのURL（末尾はスラッシュ付き）
 	*/
-	function getCategoryPageURL($withPageUri = true){
+	function getCategoryPageURL(bool $withPageUri=true){
 		$url = "";
-		if($withPageUri && strlen($this->getUri()) >0){
+		if($withPageUri && strlen((string)$this->getUri()) >0){
 			$url .= $this->getUri() . "/";
 		}
-		if(strlen($this->getCategoryPageUri()) >0){
+		if(strlen((string)$this->getCategoryPageUri()) >0){
 			$url .= $this->getCategoryPageUri() . "/";
 		}
 		return $url;
@@ -170,12 +170,12 @@ class BlogPage extends Page{
 	/**
 	* 月別アーカイブのURL（末尾はスラッシュ付き）
 	*/
-	function getMonthPageURL($withPageUri = true){
+	function getMonthPageURL(bool $withPageUri=true){
 		$url = "";
-		if($withPageUri && strlen($this->getUri()) >0){
+		if($withPageUri && strlen((string)$this->getUri()) >0){
 			$url .= $this->getUri() . "/";
 		}
-		if(strlen($this->getMonthPageUri()) >0){
+		if(strlen((string)$this->getMonthPageUri()) >0){
 			$url .= $this->getMonthPageUri() . "/";
 		}
 		return $url;
@@ -183,8 +183,8 @@ class BlogPage extends Page{
 	/**
 	* RSSページのURL
 	*/
-	function getRssPageURL($withPageUri = true){
-		if($withPageUri && strlen($this->getUri()) >0){
+	function getRssPageURL(bool $withPageUri=true){
+		if($withPageUri && strlen((string)$this->getUri()) >0){
 			return $this->getUri() . "/" . $this->getRssPageUri();
 		}else{
 			return $this->getRssPageUri();
@@ -240,19 +240,16 @@ class BlogPage extends Page{
 	}
 
 	function _getTemplate(){
+		$tmp = (is_string($this->getTemplate())) ? $this->getTemplate() : "";
+		$array = (strlen($tmp)) ? unserialize($tmp) : array();
+		if(is_array($array) && count($array)) return $array;
 
-		$array = @unserialize($this->getTemplate());
-
-		if(!is_array($array)){
-			$array = array(
-				BlogPage::TEMPLATE_ARCHIVE => "",
-				BlogPage::TEMPLATE_TOP => "",
-				BlogPage::TEMPLATE_ENTRY => "",
-				BlogPage::TEMPLATE_POPUP => "",
-			);
-		}
-
-		return $array;
+		return array(
+			BlogPage::TEMPLATE_ARCHIVE => "",
+			BlogPage::TEMPLATE_TOP => "",
+			BlogPage::TEMPLATE_ENTRY => "",
+			BlogPage::TEMPLATE_POPUP => "",
+		);
 	}
 
 	/**
@@ -489,7 +486,7 @@ class BlogPage extends Page{
 	}
 
 	function getTopPageUri() {
-		return $this->topPageUri;
+		return (is_string($this->topPageUri)) ? $this->topPageUri : "";
 	}
 	function setTopPageUri($topPageUri) {
 		$this->topPageUri = $topPageUri;

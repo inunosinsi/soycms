@@ -176,8 +176,8 @@ class EntryLogic extends SOY2LogicBase{
 	 *
 	 * 2007/12/21 getByLabelIdsのエイリアスとして定義
 	 */
-	function getByLabelId($labelid){
-		return $this->getByLabelIds(array($labelid));
+	function getByLabelId(int $labelId){
+		return $this->getByLabelIds(array($labelId));
 	}
 
 	/**
@@ -241,7 +241,7 @@ class EntryLogic extends SOY2LogicBase{
 	/**
 	 * ラベルを複数指定してエントリーをすべて取得
 	 */
-	function getByLabelIds($labelIds,$flag = true, $start = null, $end = null){
+	function getByLabelIds(array $labelIds, bool $flag=true, int $start=Entry::PERIOD_START, int $end=Entry::PERIOD_END){
 		$dao = self::labeledEntryDao();
 
 		$array = $dao->getByLabelIdsOnlyId($labelIds, $this->reverse, $this->limit, $this->offset);
@@ -249,7 +249,7 @@ class EntryLogic extends SOY2LogicBase{
 
 		//ラベルを取得
 		foreach($array as $key => $entry){
-			$array[$key] = $this->getById($key,false);
+			$array[$key] = $this->getById($key, false);
 			$array[$key]->setLabels($this->getLabelIdsByEntryId($entry->getId()));
 		}
 
@@ -259,7 +259,7 @@ class EntryLogic extends SOY2LogicBase{
 	/**
 	 * エントリーに割り当てているラベルIDを全て取得
 	 */
-	function getLabelIdsByEntryId($entryId){
+	function getLabelIdsByEntryId(int $entryId){
 		$dao = self::entryLabelDao();
 
 		$entryLabels = $dao->getByEntryId($entryId);
@@ -271,7 +271,7 @@ class EntryLogic extends SOY2LogicBase{
 		return $result;
 	}
 
-	function getLabeledEntryByEntryId($entryId){
+	function getLabeledEntryByEntryId(int $entryId){
 		return self::entryLabelDao()->getByEntryId($entryId);
 	}
 
@@ -285,21 +285,21 @@ class EntryLogic extends SOY2LogicBase{
 	/**
 	 * エントリーにラベルを割り当てる
 	 */
-	function setEntryLabel($entryId,$labelId){
+	function setEntryLabel(int $entryId, int $labelId){
 		self::entryLabelDao()->setByParams($entryId,$labelId);
 	}
 
 	/**
 	 * エントリーについているラベルを全て削除
 	 */
-	function clearEntryLabel($entryId){
+	function clearEntryLabel(int $entryId){
 		self::entryLabelDao()->deleteByEntryId($entryId);
 	}
 
 	/**
 	 * エントリーからラベルを削除
 	 */
-	function unsetEntryLabel($entryId,$labelId){
+	function unsetEntryLabel(int $entryId, int $labelId){
 		self::entryLabelDao()->deleteByParams($entryId,$labelId);
 	}
 
@@ -307,7 +307,7 @@ class EntryLogic extends SOY2LogicBase{
 	/**
 	 * 表示順の更新
 	 */
-	function updateDisplayOrder($entryId,$labelId,$displayOrder){
+	function updateDisplayOrder(int $entryId, int $labelId, int $displayOrder){
 		$dao = self::entryLabelDao();
 		$dao->deleteByParams($entryId,$labelId);
 		$dao->setByParams($entryId,$labelId,$displayOrder);
@@ -316,7 +316,7 @@ class EntryLogic extends SOY2LogicBase{
 	/**
 	 * ラベルとエントリーに対応する表示順を返す
 	 */
-	function getDisplayOrder($entryId,$labelId){
+	function getDisplayOrder(int $entryId, int $labelId){
 		try{
 			return self::entryLabelDao()->getByEntryIdLabelId($entryId,$labelId)->getDisplayOrder();
 		}catch(Exception $e){
@@ -327,20 +327,22 @@ class EntryLogic extends SOY2LogicBase{
 	/**
 	 * 表示期間を含めたラベル付けされたエントリーを取得
 	 */
-	function getOpenEntryByLabelId($labelId){
+	function getOpenEntryByLabelId(int $labelId){
 		$dao = self::labeledEntryDao();
 		$dao->setLimit($this->limit);
 		$dao->setOffset($this->offset);
 		//仕様変更により、記事取得関数実行時に念の為にlimitとoffsetを渡しておく
-		$array = $dao->getOpenEntryByLabelId($labelId,SOYCMS_NOW,$this->reverse, $this->limit, $this->offset);
+		$lim = (is_numeric($this->limit)) ? (int)$this->limit : -1;
+		$offset = (is_numeric($this->offset)) ? (int)$this->offset : -1;
+		$arr = $dao->getOpenEntryByLabelId((int)$labelId, SOYCMS_NOW, $this->reverse, $lim, $offset);
 		$this->totalCount = $dao->getRowCount();
-		return $array;
+		return $arr;
 	}
 
 	/**
 	 * 表示期間を含めてラベル付けされたエントリーを取得（ラベルIDを複数指定）
 	 */
-	function getOpenEntryByLabelIds($labelIds,$isAnd = true, $start = null, $end = null){
+	function getOpenEntryByLabelIds(array $labelIds, bool $isAnd=true, int $start=Entry::PERIOD_START, int $end=Entry::PERIOD_END){
 		$dao = self::labeledEntryDao();
 		$dao->setBlockClass($this->blockClass);
 
@@ -364,9 +366,9 @@ class EntryLogic extends SOY2LogicBase{
 	/**
 	 * ブログのエントリーを取得
 	 * @param int int|string
-	 * @return Entry
+	 * @return LabeledEntry
 	 */
-	function getBlogEntry(int $blogLabelId,$entryId){
+	function getBlogEntry(int $blogLabelId, $entryId){
 		$dao = self::entryDao();
 
 		if(defined("CMS_PREVIEW_ALL")){
@@ -374,46 +376,51 @@ class EntryLogic extends SOY2LogicBase{
 				try{
 					$entry = $dao->getById($entryId);
 				}catch(Exception $e){
-					$entry = $dao->getByAlias($entryId);
-				}
-			}else{
-				$entry = $dao->getByAlias($entryId);
-			}
-		}else{
-			if(is_numeric($entryId)){
-				try{
-					$entry = $dao->getOpenEntryById($entryId,SOYCMS_NOW);
-				}catch(Exception $e){
-					//記事IDで取得できなければ、エイリアスの方でも取得を試みる
 					try{
-						$entry = $dao->getOpenEntryByAlias($entryId,SOYCMS_NOW);
+						$entry = $dao->getByAlias($entryId);
 					}catch(Exception $e){
 						$entry = new Entry();
 					}
 				}
 			}else{
 				try{
-					$entry = $dao->getOpenEntryByAlias($entryId,SOYCMS_NOW);
+					$entry = $dao->getByAlias($entryId);
+				}catch(Exception $e){
+					$entry = new Entry();
+				}
+			}
+		}else{
+			if(is_numeric($entryId)){
+				try{
+					$entry = $dao->getOpenEntryById($entryId, SOYCMS_NOW);
+				}catch(Exception $e){
+					//記事IDで取得できなければ、エイリアスの方でも取得を試みる
+					try{
+						$entry = $dao->getOpenEntryByAlias($entryId, SOYCMS_NOW);
+					}catch(Exception $e){
+						$entry = new Entry();
+					}
+				}
+			}else{
+				try{
+					$entry = $dao->getOpenEntryByAlias($entryId, SOYCMS_NOW);
 				}catch(Exception $e){
 					$entry = new Entry();
 				}
 			}
 		}
 
-		$entry = SOY2::cast("LabeledEntry",$entry);
+		$entry = SOY2::cast("LabeledEntry", $entry);
+		if(!is_numeric($entry->getId())) return $entry;
 		
 		//ブログに所属しているエントリーかどうかチェックする
 		$labelIds = $this->getLabelIdsByEntryId($entry->getId());
-		if(!in_array($blogLabelId,$labelIds)){
-			//throw new Exception("This entry (id: {$entryId}) does not belong to the designated blog (label: {$blogLabelId}).");
-			$entry = new LabeledEntry();
-		}
-
-		return $entry;
+		return (in_array($blogLabelId, $labelIds)) ? $entry : new LabeledEntry();	//throw new Exception("This entry (id: {$entryId}) does not belong to the designated blog (label: {$blogLabelId}).");
 	}
 
 	/**
 	 * @param int, int|string
+	 * @return Entry
 	 */
 	function getBlogEntryWithoutExecption(int $blogLabelId, $entryId){
 		$dao = self::entryDao();
@@ -427,7 +434,6 @@ class EntryLogic extends SOY2LogicBase{
 				}catch(Exception $e){
 					//
 				}
-
 			}
 		}else{
 			try{
@@ -442,7 +448,7 @@ class EntryLogic extends SOY2LogicBase{
 	/**
 	 * 次のエントリーを取得
 	 */
-	function getNextOpenEntry($blogLabelId,$entry){
+	function getNextOpenEntry(int $blogLabelId, LabeledEntry $entry){
 		$dao = self::labeledEntryDao();
 		$dao->setLimit(1);
 
@@ -459,7 +465,7 @@ class EntryLogic extends SOY2LogicBase{
 	/**
 	 * 前のエントリーを取得
 	 */
-	function getPrevOpenEntry($blogLabelId,$entry){
+	function getPrevOpenEntry(int $blogLabelId, LabeledEntry $entry){
 		$dao = self::labeledEntryDao();
 		$dao->setLimit(1);
 
@@ -474,15 +480,17 @@ class EntryLogic extends SOY2LogicBase{
 
 	/**
 	 * 指定されたIDの公開状態をpublicに変更
+	 * @param int|array, int
+	 * @return bool
 	 */
-	function setPublish($id,$publish){
+	function setPublish($id, int $publish){
 		$dao = self::entryDao();
 		if(is_array($id)){
 			//配列だったらそれぞれを設定
 			try{
 				$dao->begin();
 				foreach($id as $pId){
-					$dao->setPublish($pId,$publish);
+					$dao->setPublish($pId, $publish);
 				}
 				$dao->commit();
 				return true;
@@ -493,7 +501,7 @@ class EntryLogic extends SOY2LogicBase{
 		}else{
 			//IDだったらそれを設定
 			try{
-				$dao->setPublish($id,$publish);
+				$dao->setPublish($id, $publish);
 				return true;
 			}catch(Exception $e){
 				return false;
@@ -504,25 +512,25 @@ class EntryLogic extends SOY2LogicBase{
 	/**
 	 * 月別アーカイブを数える
 	 */
-	function getCountMonth($labelIds){
+	function getCountMonth(array $labelIds){
 		return self::labeledEntryDao()->getCountMonth($labelIds);
 	}
 
-	function getMonth($labelIds){
+	function getMonth(array $labelIds){
 		return self::labeledEntryDao()->getMonth($labelIds);
 	}
 
 	/**
 	 * 年別アーカイブを数える
 	 */
-	function getCountYear($labelIds){
+	function getCountYear(array $labelIds){
 		return self::labeledEntryDao()->getCountYear($labelIds);
 	}
 
 	/**
 	 * ラベルIDを複数指定し、公開しているエントリー数を数え上げる
 	 */
-	function getOpenEntryCountByLabelIds($labelIds){
+	function getOpenEntryCountByLabelIds(array $labelIds){
 		$dao = self::labeledEntryDao();
 		$dao->getOpenEntryCountByLabelIds($labelIds,SOYCMS_NOW);
 		$count = $dao->getRowCount();
@@ -532,7 +540,7 @@ class EntryLogic extends SOY2LogicBase{
 	/**
 	 * ラベルID（複数）からエントリーを取得
 	 */
-	function getEntryByLabelIds($labelIds){
+	function getEntryByLabelIds(array $labelIds){
 		$dao = self::entryDao();
 
 		$dao->setLimit($this->limit);
@@ -571,7 +579,7 @@ class EntryLogic extends SOY2LogicBase{
 	/**
 	 * 最近使用されたエントリーを取得（管理側で使用）
 	 */
-	function getRecentEntriesByLabelId($labelId){
+	function getRecentEntriesByLabelId(int $labelId){
 		$dao = self::labeledEntryDao();
 		$dao->setLimit($this->limit);
 		return $dao->getRecentEntriesByLabelId($labelId);
@@ -606,30 +614,30 @@ class EntryLogic extends SOY2LogicBase{
 	/**
 	 * コメント数を取得
 	 */
-	function getCommentCount($entryId){
-		return SOY2DAOFactory::create("cms.EntryCommentDAO")->getCommentCountByEntryId($entryId);
+	function getCommentCount(int $entryId){
+		return ($entryId > 0) ? SOY2DAOFactory::create("cms.EntryCommentDAO")->getCommentCountByEntryId($entryId) : 0;
 	}
 
-	function getApprovedCommentCountByEntryId($entryId){
-		return SOY2DAOFactory::create("cms.EntryCommentDAO")->getApprovedCommentCountByEntryId($entryId);
+	function getApprovedCommentCountByEntryId(int $entryId){
+		return ($entryId > 0) ? SOY2DAOFactory::create("cms.EntryCommentDAO")->getApprovedCommentCountByEntryId($entryId) : 0;
 	}
 
 	/**
 	 * トラックバック数を取得
 	 */
-	function getTrackbackCount($entryId){
-		return SOY2DAOFactory::create("cms.EntryTrackbackDAO")->getTrackbackCountByEntryId($entryId);
+	function getTrackbackCount(int $entryId){
+		return ($entryId > 0) ? SOY2DAOFactory::create("cms.EntryTrackbackDAO")->getTrackbackCountByEntryId($entryId) : 0;
 	}
 
-	function getCertificatedTrackbackCountByEntryId($entryId){
-		return SOY2DAOFactory::create("cms.EntryTrackbackDAO")->getCertificatedTrackbackCountByEntryId($entryId);
+	function getCertificatedTrackbackCountByEntryId(int $entryId){
+		return ($entryId > 0) ? SOY2DAOFactory::create("cms.EntryTrackbackDAO")->getCertificatedTrackbackCountByEntryId($entryId) : 0;
 	}
 
 	/**
 	 * getUniqueAlias
 	 * ユニークなエイリアスを取得
 	 */
-	function getUniqueAlias($id,$title){
+	function getUniqueAlias(int $id, string $title){
 		$dao = self::entryDao();
 
 		//[?#\/%\&]は取り除く
@@ -643,11 +651,7 @@ class EntryLogic extends SOY2LogicBase{
 		}
 
 		try{
-			$bean = $dao->getByAlias($title);
-
-			if($bean->getId() == $id){
-				return $title;
-			}
+			if($dao->getByAlias($title)->getId() == $id) return $title;
 		}catch(Exception $e){
 			//none
 			return $title;

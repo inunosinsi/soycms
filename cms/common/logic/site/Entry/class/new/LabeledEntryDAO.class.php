@@ -34,7 +34,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	/**
 	 * getByLabelIdsだと重すぎる場所があったので追加
 	 */
-	function getByLabelIdsOnlyId($labelIds, $orderReverse = false, $limit = null, $offset = null){
+	function getByLabelIdsOnlyId(array $labelIds, bool $orderReverse=false, int $limit=-1, int $offset=-1){
 		$sql = "SELECT entry.* FROM Entry entry ";
 		$sql .= "WHERE entry.id IN (SELECT entry_id FROM EntryLabel WHERE label_id IN (" .implode(",", $labelIds) . ") GROUP BY entry_id HAVING count(*) = " . count($labelIds) . ") ";
 
@@ -45,8 +45,8 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 			$sql .= self::_addOrder("DESC", $labelIds);
 		}
 
-		if(is_numeric($limit)) $sql .= " LIMIT " . $limit;
-		if(is_numeric($offset)) $sql .= " OFFSET " . $offset;	/** @ToDo 作成日時順に並べて高速化 **/
+		if($limit >= 0) $sql .= " LIMIT " . $limit;
+		if($offset >= 0) $sql .= " OFFSET " . $offset;	/** @ToDo 作成日時順に並べて高速化 **/
 		
 		try{
 			$results = $this->executeQuery($sql);
@@ -64,7 +64,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 		return $list;
 	}
 
-	function countByLabelIdsOnlyId($labelIds){
+	function countByLabelIdsOnlyId(array $labelIds){
 		$sql = "SELECT count(DISTINCT entry.id) AS COUNT FROM Entry entry ".
 				"INNER JOIN EntryLabel label ".
 				"ON entry.id = label.entry_id ";
@@ -92,8 +92,8 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	/**
 	 * getOpenEntrybyLabeIdへのエイリアス
 	 */
-	function getOpenEntryByLabelId($labelId,$now,$orderReverse = false,$limit = null, $offset = null){
-		return $this->getOpenEntryByLabelIds(array($labelId),$now,null,null,$orderReverse, $limit, $offset);
+	function getOpenEntryByLabelId($labelId, int $now, bool $orderReverse=false, int $limit=0, int $offset=0){
+		return $this->getOpenEntryByLabelIds(array($labelId), $now, Entry::PERIOD_START, Entry::PERIOD_END, $orderReverse, $limit, $offset);
 	}
 
 	/**
@@ -107,7 +107,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	 *
 	 * @final
 	 */
-	function getOpenEntryByLabelIds($labelIds,$now,$start = null, $end = null, $orderReverse = false, $limit = null, $offset = null){
+	function getOpenEntryByLabelIds(array $labelIds, int $now, int $start=Entry::PERIOD_START, $end=Entry::PERIOD_END, bool $orderReverse=false, int $limit=-1, int $offset=-1){
 		return 	$this->getOpenEntryByLabelIdsImplements($labelIds, $now, true, $start, $end, $orderReverse, $limit, $offset);
 	}
 
@@ -116,31 +116,25 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	 * ラベルの絞り込みをアンドとオアを切り替える
 	 * ORのときの表示順は保証できない（？）
 	 */
-	function getOpenEntryByLabelIdsImplements($labelIds, $now, $isAnd, $start = null, $end = null, $orderReverse = false, $limit = null, $offset = null){
+	function getOpenEntryByLabelIdsImplements(array $labelIds, int $now, bool $isAnd, int $start=Entry::PERIOD_START, int $end=Entry::PERIOD_END, bool $orderReverse=false, int $limit=-1, int $offset=-1){
 		$sql = "SELECT entry.* FROM Entry entry ";
 		$binds = array();
 		$where = array();
 
-		if(is_array($labelIds)){
-			//nullや空文字を削除
-			if(count($labelIds)){
-				$labelIds = array_diff($labelIds, array(null));
+		//null、空文字や0を削除
+		if(count($labelIds)) $labelIds = array_diff($labelIds, array(null));
+		if(count($labelIds)) $labelIds = array_diff($labelIds, array(0));
+		
+		//数値のみ
+		$labelIds = array_map(function($val) {return (int)$val; }, $labelIds);
+		if(count($labelIds)){
+			//ブログページ等
+			if($isAnd){
+				$where[] = "entry.id IN (SELECT entry_id FROM EntryLabel WHERE label_id IN (" .implode(",", $labelIds) . ") GROUP BY entry_id HAVING count(*) = " . count($labelIds) . ")";
+			//ブログリンクブロック等
+			}else{
+				$where[] = "entry.id IN (SELECT entry_id FROM EntryLabel WHERE label_id IN (" .implode(",", $labelIds) . "))";
 			}
-
-			//数値のみ
-			$labelIds = array_map(function($val) {return (int)$val; }, $labelIds);
-			if(count($labelIds)){
-				//ブログページ等
-				if($isAnd){
-					$where[] = "entry.id IN (SELECT entry_id FROM EntryLabel WHERE label_id IN (" .implode(",", $labelIds) . ") GROUP BY entry_id HAVING count(*) = " . count($labelIds) . ")";
-				//ブログリンクブロック等
-				}else{
-					$where[] = "entry.id IN (SELECT entry_id FROM EntryLabel WHERE label_id IN (" .implode(",", $labelIds) . "))";
-				}
-			}
-		}else{
-			//保険（ラベル指定なし）
-			$where[] = "true";
 		}
 
 		if(!defined("CMS_PREVIEW_ALL")){
@@ -149,12 +143,10 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 			$binds[":now"] = $now;
 		}
 
-		if(strlen($start) && strlen($end)){
-			//endに等号は付けない
-			$where[] = "(entry.cdate >= :start AND entry.cdate < :end)";
-			$binds[":start"] = $start;
-			$binds[":end"] = $end;
-		}
+		//endに等号は付けない
+		$where[] = "(entry.cdate >= :start AND entry.cdate < :end)";
+		$binds[":start"] = $start;
+		$binds[":end"] = $end;
 
 		if(count($where)){
 			$sql .= "WHERE " . implode(" AND ", $where);
@@ -167,9 +159,9 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 			$sql .= self::_addOrder("DESC", $labelIds);
 		}
 
-		if(is_numeric($limit)) {
+		if($limit > 0) {
 			$sql .= " LIMIT " . $limit;
-			if(is_numeric($offset)) {
+			if($offset > 0) {
 				$sql .= " OFFSET " . $offset;	/** @ToDo 作成日時順に並べて高速化 **/
 			}
 		}
@@ -195,34 +187,29 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 		return $list;
 	}
 
-	function countOpenEntryByLabelIds($labelIds, $now, $isAnd, $start = null, $end = null){
+	function countOpenEntryByLabelIds(array $labelIds, int $now, bool $isAnd, int $start=Entry::PERIOD_START, int $end=Entry::PERIOD_END){
 		$sql = "SELECT count(DISTINCT entry.id) AS COUNT FROM Entry entry ".
 				"INNER JOIN EntryLabel label ".
 				"ON entry.id = label.entry_id ";
 		$binds = array();
 		$where = array();
 
-		if(is_array($labelIds)){
-			//nullや空文字を削除
-			if(count($labelIds)){
-				$labelIds = array_diff($labelIds,array(null));
-			}
+		//null、空文字や0を削除
+		if(count($labelIds)) $labelIds = array_diff($labelIds, array(null));
+		if(count($labelIds)) $labelIds = array_diff($labelIds, array(0));
 
-			//数値のみ
-			$labelIds = array_map(function($val) {return (int)$val; }, $labelIds);
-			if(count($labelIds)){
-				//ブログページ等
-				if($isAnd){
-					$where[] = "entry.id IN (SELECT entry_id FROM EntryLabel WHERE label_id IN (" .implode(",", $labelIds) . ") GROUP BY entry_id HAVING count(*) = " . count($labelIds) . ")";
-				//ブログリンクブロック等
-				}else{
-					$where[] = "entry.id IN (SELECT entry_id FROM EntryLabel WHERE label_id IN (" .implode(",", $labelIds) . "))";
-				}
+		//数値のみ
+		$labelIds = array_map(function($val) {return (int)$val; }, $labelIds);
+		if(count($labelIds)){
+			//ブログページ等
+			if($isAnd){
+				$where[] = "entry.id IN (SELECT entry_id FROM EntryLabel WHERE label_id IN (" .implode(",", $labelIds) . ") GROUP BY entry_id HAVING count(*) = " . count($labelIds) . ")";
+			//ブログリンクブロック等
+			}else{
+				$where[] = "entry.id IN (SELECT entry_id FROM EntryLabel WHERE label_id IN (" .implode(",", $labelIds) . "))";
 			}
-		}else{
-			//保険（ラベル指定なし）
-			$where[] = "true";
 		}
+		
 
 		if(!defined("CMS_PREVIEW_ALL")){
 			$where[] = "entry.isPublished = 1";
@@ -230,13 +217,11 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 			$binds[":now"] = $now;
 		}
 
-		if(strlen($start) && strlen($end)){
-			//endに等号は付けない
-			$where[] = "(entry.cdate >= :start AND entry.cdate < :end)";
-			$binds[":start"] = $start;
-			$binds[":end"] = $end;
-		}
-
+		//endに等号は付けない
+		$where[] = "(entry.cdate >= :start AND entry.cdate < :end)";
+		$binds[":start"] = $start;
+		$binds[":end"] = $end;
+		
 		if(count($where)){
 			$sql .= "WHERE " . implode(" AND ", $where);
 		}
@@ -265,7 +250,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	abstract function getOpenEntryCountByLabelIds($labelids,$now);
 
 	//ソート
-	private function _addOrder($sort="ASC", $labelIds){
+	private function _addOrder(string $sort="ASC", array $labelIds=array()){
 		if(!is_array($labelIds) || !count($labelIds)) return " Order By entry.cdate " . $sort . ", entry.id " . $sort;
 		$labelId = (int)$labelIds[count($labelIds) - 1];	//末尾のラベルID
 		if(count($labelIds) === 1 && $labelId === 0) return " Order By entry.cdate " . $sort . ", entry.id " . $sort;	//記事毎の表示順が使えるブロックはラベルブロックのみ
@@ -276,18 +261,17 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 		return " Order By (SELECT display_order FROM EntryLabel WHERE label_id = " . $labelId . " AND entry_id = entry.id), entry.cdate " . $sort . ", entry.id " . $sort;
 	}
 
-
 	/**
 	 * @final
 	 * ブログページ用
 	 * 公開しているエントリーの次のエントリーを取得する（次＝管理画面の表示順で上）
 	 */
-	function getNextOpenEntry($labelId,$entry,$now){
+	function getNextOpenEntry(int $labelId, LabeledEntry $entry, int $now){
 		if(is_null($entry->getDisplayOrder())){
 			$entry = clone($entry);
 			$entry->setMaxDisplayOrder();
 		}
-		return $this->getNextOpenEntryImpl($labelId,$entry,$now);
+		return $this->getNextOpenEntryImpl($labelId, $entry, $now);
 	}
 
 	/**
@@ -296,19 +280,19 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	 * @order EntryLabel.display_order desc, Entry.cdate asc,Entry.id asc
 	 * @return object
 	 */
-	abstract function getNextOpenEntryImpl($labelId,$entry,$now);
+	abstract function getNextOpenEntryImpl($labelId, $entry, $now);
 
 	/**
 	 * @final
 	 * ブログページ用
 	 * 公開しているエントリーの前のエントリーを取得する（前＝管理画面の表示順で下）
 	 */
-	function getPrevOpenEntry($labelId,$entry,$now){
+	function getPrevOpenEntry(int $labelId, LabeledEntry $entry, int $now){
 		if(is_null($entry->getDisplayOrder())){
 			$entry = clone($entry);
 			$entry->setMaxDisplayOrder();
 		}
-		return $this->getPrevOpenEntryImpl($labelId,$entry,$now);
+		return $this->getPrevOpenEntryImpl($labelId, $entry, $now);
 	}
 
 	/**
@@ -317,12 +301,12 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	 * @order EntryLabel.display_order asc, Entry.cdate desc, Entry.id desc
 	 * @return object
 	 */
-	abstract function getPrevOpenEntryImpl($labelId,$entry,$now);
+	abstract function getPrevOpenEntryImpl($labelId, $entry, $now);
 
 	/**
 	 * 月毎のエントリー数を数え上げる
 	 */
-	function getCountMonth($labelIds){
+	function getCountMonth(array $labelIds){
 
 		$labelIds = array_map(function($val) { return (int)$val; }, $labelIds);
 
@@ -380,7 +364,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 		return $ret_val;
 	}
 
-	function getMonth($labelIds){
+	function getMonth(array $labelIds){
 		$labelIds = array_map(function($val) { return (int)$val; }, $labelIds);
 
 		$binds = array(":now"=>SOYCMS_NOW);
@@ -423,7 +407,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	/**
 	 * 年毎のエントリー数を数え上げる
 	 */
-	function getCountYear($labelIds){
+	function getCountYear(array $labelIds){
 
 		$labelIds = array_map(function($val) { return (int)$val; }, $labelIds);
 

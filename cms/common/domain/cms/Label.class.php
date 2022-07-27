@@ -54,10 +54,7 @@ class Label {
 	}
 
 	function getAlias() {
-   		if(strlen($this->alias)<1){
-   			return $this->getId();
-   		}
-		return $this->alias;
+   		return (strlen((string)$this->alias) > 0) ? $this->alias : $this->getId();
 	}
 	function setAlias($alias) {
 		$this->alias = $alias;
@@ -81,13 +78,9 @@ class Label {
 	}
 
 	function getIconUrl(){
-
 		$icon = $this->getIcon();
-
-		if(!$icon)$icon = "default.gif";
-
+		if(is_null($icon) || !strlen((string)$icon)) $icon = "default.gif";
 		return CMS_LABEL_ICON_DIRECTORY_URL . $icon;
-
 	}
 
 	function getEntryCount() {

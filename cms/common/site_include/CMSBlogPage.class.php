@@ -224,6 +224,10 @@ class CMSBlogPage extends CMSPage{
 				);
 
 				$this->label = self::_label((string)$alias);
+				if(!is_numeric($this->label->getId())){
+					$this->error = new Exception("ラベルの取得を失敗しました");
+					return;
+				}
 				$this->entries = self::getEntriesByLabel($this->label);
 
 				$pageFormat = $this->page->getCategoryTitleFormat();
@@ -545,8 +549,6 @@ class CMSBlogPage extends CMSPage{
 				exit;
 			}
 		}
-
-
 	}
 
 	function main(){
@@ -912,9 +914,8 @@ class CMSBlogPage extends CMSPage{
 		if(!$entry instanceof LabeledEntry) $entry = $logic->getBlogEntry($blogLabelId, $alias);
 		
 		//表示順の投入
-		$entryLabelDAO = SOY2DAOFactory::create("cms.EntryLabelDAO");
 		try{
-			$entryLabel = $entryLabelDAO->getByParam($blogLabelId,$entry->getId());
+			$entryLabel = SOY2DAOFactory::create("cms.EntryLabelDAO")->getByParam($blogLabelId,$entry->getId());
 		}catch(Exception $e){
 			$entryLabel = new EntryLabel();
 		}
@@ -922,8 +923,8 @@ class CMSBlogPage extends CMSPage{
 		$entry->setDisplayOrder($entryLabel->getDisplayOrder());
 
 		//コメント数、トラックバック数の投入
-		$entry->setCommentCount($logic->getApprovedCommentCountByEntryId($entry->getId()));
-		$entry->setTrackbackCount($logic->getCertificatedTrackbackCountByEntryId($entry->getId()));
+		$entry->setCommentCount($logic->getApprovedCommentCountByEntryId((int)$entry->getId()));
+		$entry->setTrackbackCount($logic->getCertificatedTrackbackCountByEntryId((int)$entry->getId()));
 
 		//ラベルの投入
 		$entry->setLabels($this->getLabelsInBlog($entry));
@@ -939,21 +940,16 @@ class CMSBlogPage extends CMSPage{
 	 * ラベルを取得
 	 */
 	private function _label(string $alias){
-		$dao = soycms_get_hash_table_dao("label");
-
-		try{
-			//0から始まる場合は文字列とみなす
-			if($alias[0] != "0" && is_numeric($alias)){
-				$label = $dao->getById($alias);
-			}else{
-				$label = $dao->getByAlias($alias);
+		//0から始まる場合は文字列とみなす
+		if($alias[0] != "0" && is_numeric($alias)){
+			return soycms_get_label_object($alias);
+		}else{
+			try{
+				return soycms_get_hash_table_dao("label")->getByAlias($alias);
+			}catch(Exception $e){
+				return new Label();
 			}
-		}catch(Exception $e){
-			//$label = new Label();
-			throw $e;
 		}
-
-		return $label;
 	}
 
 	/**
@@ -1045,7 +1041,7 @@ class CMSBlogPage extends CMSPage{
 	/**
 	 * 年、月、日を指定してエントリーを取得
 	 */
-	function getEntriesByDate($year = null, $month = null, $day = null){
+	function getEntriesByDate(int $year=0, int $month=0, int $day=0){
 		$logic = self::getEntryLogic();
 
 		//表示件数を指定
@@ -1058,17 +1054,15 @@ class CMSBlogPage extends CMSPage{
 		}
 
 		//指定がないなら今月
-		if(!$year){
-			list($year, $month) = explode("/", date("Y/m"));
-		}
+		if($year === 0) list($year, $month) = explode("/", date("Y/m"));
 
 		//期間
 		//2008-10-14 endは次の日または次の月の１日の00:00:00
 		//           LabeledEntry::getOpenEntryByLabelIdsImplementsではendには等号は入っていない
-		if(!$month){
+		if($month === 0){
 			$start = mktime(0,0,0,1,1,$year);
 			$end = mktime(0,0,0,1,1,$year+1);
-		}elseif(!$day){
+		}elseif($day === 0){
 			$start = mktime(0,0,0,$month,1,$year);
 			$end = mktime(0,0,0,$month+1,1,$year);
 		}else{
@@ -1103,7 +1097,7 @@ class CMSBlogPage extends CMSPage{
 		}
 
 		$labels = $_labels;
-		$entryLabelIds = self::getEntryLogic()->getLabelIdsByEntryId($entry->getId());
+		$entryLabelIds = self::getEntryLogic()->getLabelIdsByEntryId((int)$entry->getId());
 		foreach($labels as $id => $label){
 			//記事に付いていないラベル、カテゴリーと関係ないラベルを除外する
 			if(!in_array($id, $entryLabelIds) || !in_array($id, $this->page->getCategoryLabelList())){
