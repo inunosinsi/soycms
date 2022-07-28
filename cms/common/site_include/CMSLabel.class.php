@@ -28,7 +28,7 @@ class CMSLabel extends HTMLLabel{
 
             $suffix = "";
             if(strlen($shortText) < strlen($text)){
-                $suffix = $this->getAttribute("cms:suffix");
+                $suffix = (string)$this->getAttribute("cms:suffix");
                 if(strlen($suffix)==0){
                     $suffix = $this->defaultSuffix;
                 }
@@ -38,7 +38,6 @@ class CMSLabel extends HTMLLabel{
         }
 
         parent::execute();
-
     }
 
 

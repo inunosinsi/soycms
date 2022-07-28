@@ -440,7 +440,7 @@ class BlogPage extends Page{
 	}
 
 	function getDescription() {
-		return $this->description;
+		return (is_string($this->description)) ? $this->description : "";
 	}
 	function setDescription($description) {
 		$this->description = $description;

@@ -10,7 +10,7 @@ class DateLabel extends HTMLLabel{
 	function execute(){
 		//日時データ：textまたはyear,month,dayで指定
 		if(is_null($this->time) || strlen($this->time) === 0){
-			if(strlen($this->text)){
+			if(is_string($this->text) && strlen($this->text)){
 				$this->time = $this->text;
 				$this->year = date("Y",$this->time);
 				$this->month = date("n",$this->time);

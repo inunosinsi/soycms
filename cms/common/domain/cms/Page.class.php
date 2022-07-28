@@ -350,11 +350,8 @@ class Page {
    	}
 
 	function getPageTitleFormat() {
-   		$config = $this->getPageConfigObject();
-   		if(!property_exists($config, "PageTitleFormat")){
-   			$config->PageTitleFormat = "";
-   		}
-   		return $config->PageTitleFormat;
+   		$cnf = $this->getPageConfigObject();
+   		return (property_exists($cnf, "PageTitleFormat") && is_string($cnf->PageTitleFormat)) ? $cnf->PageTitleFormat : "";
    	}
    	function setPageTitleFormat($pageTitleFormat) {
    		$pageConfig = $this->getPageConfigObject();

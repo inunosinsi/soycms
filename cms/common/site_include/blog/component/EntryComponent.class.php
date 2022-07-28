@@ -240,16 +240,17 @@ class EntryComponent extends SOYBodyComponentBase{
 			"text" => $this->entryPageUri . $id
 		));
 
+		$more = (is_string($entry->getMore())) ? $entry->getMore() : "";
 		$this->addLink("more_link", array(
 			"soy2prefix"=>"cms",
 			"link" => $link ."#more",
-			"visible"=>(strlen($entry->getMore()) != 0)
+			"visible"=>(strlen($more) != 0)
 		));
 
 		$this->addLink("more_link_no_anchor", array(
 			"soy2prefix"=>"cms",
 			"link" => $link,
-			"visible"=>(strlen($entry->getMore()) != 0)
+			"visible"=>(strlen($more) != 0)
 		));
 
 		$this->addLink("trackback_link", array(

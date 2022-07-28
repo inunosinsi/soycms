@@ -16,7 +16,7 @@ class BlockPluginPagerComponent extends HTMLList{
      */
     function execute(){
         //ページャーの表示件数（デフォルトは10）
-        $pager_display_number = $this->getAttribute("cms:pager_num");
+        $pager_display_number = (string)$this->getAttribute("cms:pager_num");
         if(strlen($pager_display_number) == 0) $pager_display_number = 10;
 
         $display_start = max(1, min($this->current - floor($pager_display_number/2), $this->last - $pager_display_number+1));

@@ -73,10 +73,8 @@ class CMSPage extends WebPage{
 		CMSPlugin::callEventFunc('onPageOutput',$this);
 
 		$pageFormat = $this->page->getPageTitleFormat();
-		if(strlen($pageFormat) == 0){
-			//空っぽだったらデフォルト追加
-			$pageFormat = '%PAGE%';
-		}
+		if(strlen($pageFormat) == 0) $pageFormat = '%PAGE%'; //空っぽだったらデフォルト追加
+			
 		$pageFormat = preg_replace('/%SITE%/',$this->siteConfig->getName(),$pageFormat);
 		$pageFormat = preg_replace('/%PAGE%/',$this->page->getTitle(),$pageFormat);
 		$onLoads = CMSPlugin::getEvent('onPageTitleFormat');
