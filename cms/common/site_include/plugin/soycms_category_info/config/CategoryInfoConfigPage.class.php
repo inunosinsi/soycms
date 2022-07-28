@@ -4,9 +4,7 @@ class CategoryInfoConfigPage extends WebPage {
 
 	private $pluginObj;
 
-	function __construct(){
-
-	}
+	function __construct(){}
 
 	function doPost(){
 		if(soy2_check_token()){
@@ -22,7 +20,6 @@ class CategoryInfoConfigPage extends WebPage {
 		parent::__construct();
 
 		$this->addForm("form");
-
 
 		$this->addCheckBox("is_wygiwyg", array(
 			"name" => "isWYGIWYG",

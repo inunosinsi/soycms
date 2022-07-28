@@ -44,10 +44,10 @@ class Label {
 		$this->id = $id;
 	}
 	function getCaption() {
-		return $this->caption;
+		return (is_string($this->caption)) ? $this->caption : "";
 	}
 	function getDisplayCaption() {
-		return htmlspecialchars($this->caption, ENT_QUOTES, "UTF-8");
+		return htmlspecialchars($this->getCaption(), ENT_QUOTES, "UTF-8");
 	}
 	function setCaption($caption) {
 		$this->caption = $caption;
@@ -61,10 +61,10 @@ class Label {
 	}
 
 	function getDescription() {
-		return $this->description;
+		return (is_string($this->description)) ? $this->description : "";
 	}
 	function getDisplayDescription() {
-		return htmlspecialchars($this->description, ENT_QUOTES, "UTF-8");
+		return htmlspecialchars($this->getDescription(), ENT_QUOTES, "UTF-8");
 	}
 	function setDescription($description) {
 		$this->description = $description;
@@ -116,8 +116,8 @@ class Label {
 	function compare($label){
 		$a1 = $this->getDisplayOrder();
 		$b1 = $label->getDisplayOrder();
-		if(is_null($a1))$a1 = Label::ORDER_MAX;
-		if(is_null($b1))$b1 = Label::ORDER_MAX;
+		if(is_null($a1)) $a1 = Label::ORDER_MAX;
+		if(is_null($b1)) $b1 = Label::ORDER_MAX;
 
 		if($a1 === $b1){
 			return ($this->getId() < $label->getId()) ? +1 : -1;

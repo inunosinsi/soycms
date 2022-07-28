@@ -1,10 +1,4 @@
 <?php
-/*
- * Created on 2009/10/30
- *
- * To change the template for this generated file go to
- * Window - Preferences - PHPeclipse - PHP - Code Templates
- */
 CategoryInfoPlugin::register();
 
 class CategoryInfoPlugin{
@@ -13,20 +7,18 @@ class CategoryInfoPlugin{
 
 	private $isWYSIWYG = false;
 
-
     function getId(){
         return self::PLUGIN_ID;
     }
 
     function init(){
-
         CMSPlugin::addPluginMenu($this->getId(),array(
             "name"=>"カテゴリー詳細表示プラグイン",
             "description"=>"ブログページのカテゴリーページにカテゴリーの説明を表示する",
             "author"=>"日本情報化農業研究所",
             "url"=>"http://www.n-i-agroinformatics.com",
             "mail"=>"soycms@soycms.net",
-            "version"=>"1.1"
+            "version"=>"1.2"
         ));
         CMSPlugin::addPluginConfigPage($this->getId(),array(
             $this,"config_page"
@@ -56,13 +48,11 @@ class CategoryInfoPlugin{
 
     /**
      * ラベルのdescriptionを取得
-     *
-     * @return
+     * @param CMSBlogPage
+     * @return string
      */
-    function getCategoryDescription($obj){
-
-        $label = $obj->label;
-        return $label->getDescription();
+    function getCategoryDescription(CMSBlogPage $page){
+        return (string)$page->label->getDescription();
     }
 
     /**
@@ -71,27 +61,20 @@ class CategoryInfoPlugin{
     function onPageOutput($obj){
 
         //ブログではない時は動作しません
-        if(false == ($obj instanceof CMSBlogPage)){
-            return;
-        }
+        if(!$obj instanceof CMSBlogPage) return;
 
-        //カテゴリページ以外では空にしておく
-        $labelDescription = "";
-
-        //カテゴリーアーカイブページでしか動作しません
-        if($obj->mode == CMSBlogPage::MODE_CATEGORY_ARCHIVE){
-            $labelDescription = $this->getCategoryDescription($obj);
-        }
-
+        //カテゴリーアーカイブページでしか動作しません カテゴリページ以外では空にしておく
+        $labelDsp = ($obj->mode == CMSBlogPage::MODE_CATEGORY_ARCHIVE) ? $this->getCategoryDescription($obj) : "";
+        
         $obj->addModel("is_description", array(
             "soy2prefix" => "b_block",
-            "visible" => (isset($labelDescription) && strlen($labelDescription) > 0)
+            "visible" => (strlen($labelDsp) > 0)
         ));
 
         //categoryラベルのメモを表示する
         $obj->addLabel("category_description", array(
             "soy2prefix" => "b_block",
-            "html" => nl2br($labelDescription)
+            "html" => nl2br($labelDsp)
         ));
     }
 
@@ -106,12 +89,8 @@ class CategoryInfoPlugin{
      * プラグインの登録
      */
     public static function register(){
-
         $obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
-        if(!$obj){
-            $obj = new CategoryInfoPlugin();
-        }
-
+        if(!$obj) $obj = new CategoryInfoPlugin();
         CMSPlugin::addPlugin(self::PLUGIN_ID,array($obj,"init"));
     }
 }
