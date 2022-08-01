@@ -53,13 +53,13 @@ class Entry {
    		$this->title = $title;
    	}
    	function getContent() {
-   		return $this->content;
+   		return (is_string($this->content)) ? $this->content : "";
    	}
    	function setContent($content) {
    		$this->content = $content;
    	}
    	function getMore() {
-   		return $this->more;
+   		return (is_string($this->more)) ? $this->more : "";
    	}
    	function setMore($more) {
    		$this->more = $more;
@@ -131,7 +131,7 @@ class Entry {
    		$this->alias = $alias;
    	}
    	function isEmptyAlias(){
-   		return (strlen($this->alias)==0);
+   		return (strlen($this->getAlias())==0);
    	}
 
    	function getStyle() {
@@ -197,7 +197,7 @@ class Entry {
    	}
 
    	function getDescription() {
-   		return $this->description;
+   		return (is_string($this->description)) ? $this->description : "";
    	}
    	function setDescription($description) {
    		$this->description = $description;

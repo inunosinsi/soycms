@@ -13,10 +13,16 @@ class EntryLogic extends SOY2LogicBase{
 		SOY2::import("logic.site.Entry.class.new.LabeledEntryDAO");
 	}
 
+	function getLimit(){
+		return (is_numeric($this->limit)) ? (int)$this->limit : -1;
+	}
 	function setLimit($limit){
 		$this->limit = $limit;
 	}
 
+	function getOffset(){
+		return (is_numeric($this->offset)) ? (int)$this->offset : -1;
+	}
 	function setOffset($offset){
 		$this->offset  =$offset;
 	}
@@ -56,7 +62,7 @@ class EntryLogic extends SOY2LogicBase{
  		if($bean->getId() == $bean->getAlias()) $bean->setAlias((string)time());
 		$id = $dao->insert($bean);
 		
-		$newAlias = $this->getUniqueAlias($id,$bean->getTitle());		
+		$newAlias = $this->getUniqueAlias($id, (string)$bean->getTitle());		
 		if($bean->getAlias() != $newAlias){
 			$bean->setId($id);//updateを実行するため
 			$bean->setAlias($newAlias);
@@ -106,7 +112,7 @@ class EntryLogic extends SOY2LogicBase{
 		return $bean->getId();
 	}
 
-	function deleteByIds($ids){
+	function deleteByIds(array $ids){
 		$dao = self::entryDao();
 		$entryLabelDao = self::entryLabelDao();
 		$entryTrackbackDAO = SOY2DAOFactory::create("cms.EntryTrackbackDAO");
@@ -137,7 +143,7 @@ class EntryLogic extends SOY2LogicBase{
 	 * エントリーを1件取得
 	 * 2008-10-29 内部使用のため、無限遠時刻の変換処理の追加
 	 */
-	function getById($id,$flag = true) {
+	function getById($id, bool $flag=true) {
 		$dao = self::entryDao();
 		$entry = $dao->getById($id);
 
@@ -158,8 +164,8 @@ class EntryLogic extends SOY2LogicBase{
 	function get(){
 		$dao = self::entryDao();
 
-		$dao->setLimit($this->limit);
-		$dao->setOffset($this->offset);
+		$dao->setLimit($this->getLimit());
+		$dao->setOffset($this->getOffset());
 		$array = $dao->get();
 		$this->totalCount = $dao->getRowCount();
 
@@ -185,8 +191,8 @@ class EntryLogic extends SOY2LogicBase{
 	 */
 	function getClosedEntryList(){
 		$dao = self::labeledEntryDao();
-		$dao->setLimit($this->limit);
-		$dao->setOffset($this->offset);
+		$dao->setLimit($this->getLimit());
+		$dao->setOffset($this->getOffset());
 
 		$array = $dao->getClosedEntries();
 		$this->totalCount = $dao->getRowCount();
@@ -204,8 +210,8 @@ class EntryLogic extends SOY2LogicBase{
 	 */
 	function getOutOfDateEntryList(){
 		$dao = self::labeledEntryDao();
-		$dao->setLimit($this->limit);
-		$dao->setOffset($this->offset);
+		$dao->setLimit($this->getLimit());
+		$dao->setOffset($this->getOffset());
 
 		$array = $dao->getOutOfDateEntries(SOYCMS_NOW);
 		$this->totalCount = $dao->getRowCount();
@@ -223,8 +229,8 @@ class EntryLogic extends SOY2LogicBase{
 	 */
 	function getNoLabelEntryList(){
 		$dao = self::labeledEntryDao();
-		$dao->setLimit($this->limit);
-		$dao->setOffset($this->offset);
+		$dao->setLimit($this->getLimit());
+		$dao->setOffset($this->getOffset());
 
 		$array = $dao->getNoLabelEntries();
 		$this->totalCount = $dao->getRowCount();
@@ -244,7 +250,7 @@ class EntryLogic extends SOY2LogicBase{
 	function getByLabelIds(array $labelIds, bool $flag=true, int $start=Entry::PERIOD_START, int $end=Entry::PERIOD_END){
 		$dao = self::labeledEntryDao();
 
-		$array = $dao->getByLabelIdsOnlyId($labelIds, $this->reverse, $this->limit, $this->offset);
+		$array = $dao->getByLabelIdsOnlyId($labelIds, $this->reverse, $this->getLimit(), $this->getOffset());
 		$this->totalCount = $dao->countByLabelIdsOnlyId($labelIds);
 
 		//ラベルを取得
@@ -329,12 +335,10 @@ class EntryLogic extends SOY2LogicBase{
 	 */
 	function getOpenEntryByLabelId(int $labelId){
 		$dao = self::labeledEntryDao();
-		$dao->setLimit($this->limit);
-		$dao->setOffset($this->offset);
+		$dao->setLimit($this->getLimit());
+		$dao->setOffset($this->getOffset());
 		//仕様変更により、記事取得関数実行時に念の為にlimitとoffsetを渡しておく
-		$lim = (is_numeric($this->limit)) ? (int)$this->limit : -1;
-		$offset = (is_numeric($this->offset)) ? (int)$this->offset : -1;
-		$arr = $dao->getOpenEntryByLabelId((int)$labelId, SOYCMS_NOW, $this->reverse, $lim, $offset);
+		$arr = $dao->getOpenEntryByLabelId((int)$labelId, SOYCMS_NOW, $this->reverse, $this->getLimit(), $this->getOffset());
 		$this->totalCount = $dao->getRowCount();
 		return $arr;
 	}
@@ -348,11 +352,11 @@ class EntryLogic extends SOY2LogicBase{
 
 		if($isAnd){
 			//$labelIdsのラベルがすべて設定されている記事のみ取得
-			$array = $dao->getOpenEntryByLabelIds($labelIds,SOYCMS_NOW,$start,$end,$this->reverse, $this->limit, $this->offset);
+			$array = $dao->getOpenEntryByLabelIds($labelIds,SOYCMS_NOW,$start,$end,$this->reverse, $this->getLimit(), $this->getOffset());
 			$this->totalCount = $dao->countOpenEntryByLabelIds($labelIds, SOYCMS_NOW, $isAnd, $start, $end);
 		}else{
 			//$labelIdsのラベルがどれか１つでも設定されている記事を取得
-			$array = $dao->getOpenEntryByLabelIdsImplements($labelIds,SOYCMS_NOW,false,$start,$end,$this->reverse, $this->limit, $this->offset);
+			$array = $dao->getOpenEntryByLabelIdsImplements($labelIds,SOYCMS_NOW,false,$start,$end,$this->reverse, $this->getLimit(), $this->getOffset());
 			$this->totalCount = $dao->countOpenEntryByLabelIds($labelIds, SOYCMS_NOW, $isAnd, $start, $end);
 		}
 		foreach($array as $key => $entry){
@@ -543,8 +547,8 @@ class EntryLogic extends SOY2LogicBase{
 	function getEntryByLabelIds(array $labelIds){
 		$dao = self::entryDao();
 
-		$dao->setLimit($this->limit);
-		$dao->setOffset($this->offset);
+		$dao->setLimit($this->getLimit());
+		$dao->setOffset($this->getOffset());
 		$array = $dao->getEntryByLabelIds($labelIds);
 		$this->totalCount = $dao->getRowCount();
 
@@ -561,7 +565,7 @@ class EntryLogic extends SOY2LogicBase{
 	 */
 	function getRecentLabelIds(){
 		$dao = self::labeledEntryDao();
-		$dao->setLimit($this->limit);
+		$dao->setLimit($this->getLimit());
 		try{
 			$array = $dao->getRecentLabelIds();
 
@@ -581,7 +585,7 @@ class EntryLogic extends SOY2LogicBase{
 	 */
 	function getRecentEntriesByLabelId(int $labelId){
 		$dao = self::labeledEntryDao();
-		$dao->setLimit($this->limit);
+		$dao->setLimit($this->getLimit());
 		return $dao->getRecentEntriesByLabelId($labelId);
 	}
 
@@ -590,8 +594,8 @@ class EntryLogic extends SOY2LogicBase{
 	 */
 	function getRecentEntries(){
 		$dao = self::entryDao();
-		$dao->setLimit($this->limit);
-		$dao->setOffset($this->offset);
+		$dao->setLimit($this->getLimit());
+		$dao->setOffset($this->getOffset());
 		$array = $dao->getRecentEntries();
 		$this->totalCount = $dao->getRowCount();
 

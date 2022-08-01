@@ -263,7 +263,7 @@ class DetailPage extends CMSEntryEditorPageBase{
 			"name"=>"style",
 		));
 
-		$this->createAdd("state_draft","HTMLCheckBox",array(
+		$this->addCheckBox("state_draft", array(
 			"name" =>"isPublished",
 			"value" => "0",
 			"type"=>"radio",
@@ -271,7 +271,7 @@ class DetailPage extends CMSEntryEditorPageBase{
 			"selected"=>!$entry->getIsPublished()
 		));
 
-		$this->createAdd("state_public","HTMLCheckBox",array(
+		$this->addCheckBox("state_public", array(
 			"name"=>"isPublished",
 			"value"=>"1",
 			"type"=>"radio",
@@ -279,22 +279,22 @@ class DetailPage extends CMSEntryEditorPageBase{
 			"selected"=>$entry->getIsPublished()
 		));
 
-		$this->createAdd("publish_info","HTMLLabel",array(
+		$this->addLabel("publish_info", array(
 			"text"=>($entry->getIsPublished()) ? CMSMessageManager::get("SOYCMS_STAY_PUBLISHED") : CMSMessageManager::get("SOYCMS_DRAFT")
 		));
 
 
-		$this->createAdd("createdate","HTMLInput",array(
+		$this->addInput("createdate", array(
 			"name" =>"cdate",
-			"value" => date('Y-m-d H:i:s',$entry->getCdate())
+			"value" => (is_numeric($entry->getCdate())) ? date('Y-m-d H:i:s',$entry->getCdate()) : ""
 		));
 
-		$this->createAdd("createdate_show","HTMLLabel",array(
-			"text" => date('Y-m-d H:i:s',$entry->getCdate())
+		$this->addLabel("createdate_show", array(
+			"text" => (is_numeric($entry->getCdate())) ? date('Y-m-d H:i:s',$entry->getCdate()) : ""
 		));
 
-		$this->createAdd("updatedate_show","HTMLLabel",array(
-			"text" => strlen($entry->getUdate()) ? date('Y-m-d H:i:s',$entry->getUdate()) : "-",
+		$this->addLabel("updatedate_show", array(
+			"text" => (is_numeric($entry->getUdate())) ? date('Y-m-d H:i:s',$entry->getUdate()) : "-",
 		));
 
 		$start = $entry->getOpenPeriodStart();
@@ -302,33 +302,35 @@ class DetailPage extends CMSEntryEditorPageBase{
 
 
 		//公開期間フォームの表示
-		$this->createAdd("start_date","HTMLInput",array(
-			"value"=>(is_null($start)) ? "" : date('Y-m-d H:i:s',$start),
+		$this->addInput("start_date", array(
+			"value"=>(is_numeric($start)) ? date('Y-m-d H:i:s',$start) : "",
 			"name"=>"openPeriodStart"
 		));
-		$this->createAdd("end_date","HTMLInput",array(
-			"value"=>(is_null($end)) ? "" : date('Y-m-d H:i:s',$end),
+		$this->addInput("end_date", array(
+			"value"=>(is_numeric($end)) ? date('Y-m-d H:i:s',$end) : "",
 			"name"=>"openPeriodEnd"
 		));
 
 		$open_period_text = CMSUtil::getOpenPeriodMessage($start, $end);
 
-		$this->createAdd("open_period_show","HTMLLabel",array(
+		$this->addLabel("open_period_show", array(
 			"html" => $open_period_text
 		));
 
-		$this->createAdd("period_info","HTMLLabel",array("html"=>$open_period_text));
+		$this->addLabel("period_info", array(
+			"html"=>$open_period_text
+		));
 
 		//公開期間フォームここまで
 
-		$this->createAdd("update_button","HTMLInput",array(
+		$this->addInput("update_button", array(
 			"value" => ($this->id) ? CMSMessageManager::get("SOYCMS_UPDATE") : CMSMessageManager::get("SOYCMS_CREATE"),
 			"name"=>"modify",
 			"type"=>"submit",
 			"disabled" => ((boolean)!UserInfoUtil::hasEntryPublisherRole() && $entry->getIsPublished())
 		));
 
-		$this->createAdd("create_button","HTMLInput",array(
+		$this->addInput("create_button", array(
 			"visible" => false,//(boolean)$this->id, 新規保存は廃止
 			"type"	=>"submit",
 			"name"	=> "as_new",
@@ -336,7 +338,7 @@ class DetailPage extends CMSEntryEditorPageBase{
 			"onclick" => ((boolean)UserInfoUtil::hasEntryPublisherRole()) ? 'return confirm_open();' : "",
 		));
 
-		$this->createAdd("label_categories", "CategorizedLabelList", array(
+		$this->createAdd("label_categories", "_component.Entry.CategorizedLabelListComponent", array(
 			"list" => $this->getCategorizedLabelList(),
 			"selectedLabelList" => $this->initLabelList ? $this->initLabelList : $entry->getLabels(),
 		));
@@ -349,7 +351,7 @@ class DetailPage extends CMSEntryEditorPageBase{
 		$this->addModel("has_entry_template",array(
 			"visible" => is_array($this->getEntryTemplateList()) && count($this->getEntryTemplateList()),
 		));
-		$this->createAdd("list_templates","HTMLSelect",array(
+		$this->addSelect("list_templates", array(
 			"name"=>"template",
 			"options"=> $this->getEntryTemplateList(),
 			"property"=>"name",
@@ -357,108 +359,21 @@ class DetailPage extends CMSEntryEditorPageBase{
 		));
 
 		//記事ラベルのメモ
-		$this->createAdd("entry_label_memos","EntryLabelMemoList",array(
+		$this->createAdd("entry_label_memos", "_component.Entry.EntryLabelMemoListComponent",array(
 			"selectedLabelList" => $entry->getLabels(),
 			"list" =>  $this->getLabelList()
 		));
 
 		//記事のメモ
-		$this->createAdd("description","HTMLInput",array(
+		$this->addInput("description", array(
 				"value"=>$entry->getDescription()
 		));
-		$this->createAdd("entry_memo_wrapper","HTMLModel",array(
+		$this->addModel("entry_memo_wrapper", array(
 			"style" => strlen($entry->getDescription()) ? "" : "display:none;"
 		));
-		$this->createAdd("entry_memo_input","HTMLInput",array(
+		$this->addInput("entry_memo_input", array(
 				"value" => $entry->getDescription(),
 				"readonly" => true,
 		));
-
 	}
-}
-
-class CategorizedLabelList extends HTMLList{
-	private $selectedLabelList = array();
-
-	public function populateItem($entity, $key){
-		$this->addLabel("category_name",array(
-			"text" => $key,
-		));
-		$this->createAdd("labels", "LabelList", array(
-			"list" => $entity,
-			"selectedLabelList" => $this->selectedLabelList
-		));
-	}
-
-	public function setSelectedLabelList($array){
-		if(is_array($array)){
-			$this->selectedLabelList = $array;
-		}
-	}
-}
-
-class LabelList extends HTMLList{
-
-	private $selectedLabelList = array();
-
-	public function setIncludeParentTag($inc){
-		$this->setAttribute("includeParentTag",$inc);
-	}
-
-	public function setSelectedLabelList($array){
-		if(is_array($array)){
-			$this->selectedLabelList = $array;
-		}
-	}
-
-	public function populateItem($entity){
-
-		$elementID = "label_".$entity->getId();
-
-		$this->createAdd("label_check","HTMLCheckBox",array(
-			"name"	  => "label[]",
-			"value"	 => $entity->getId(),
-			"selected"  => in_array($entity->getId(),$this->selectedLabelList),
-			"elementId" => $elementID,
-			"onclick" => 'toggle_labelmemo(this.value,this.checked);'
-		));
-		$this->createAdd("label_label","HTMLModel",array(
-			"for" => $elementID,
-		));
-		$this->createAdd("label_caption","HTMLLabel",array(
-			"text" => $entity->getBranchName(),
-			"style"=> "color:#" . sprintf("%06X",$entity->getColor()).";"
-					 ."background-color:#" . sprintf("%06X",$entity->getBackgroundColor()).";",
-			"title" => $entity->getBranchName(),
-		));
-
-		$this->createAdd("label_icon","HTMLImage",array(
-			"src" => $entity->getIconUrl(),
-			"alt" => $entity->getBranchName(),
-			"title" => $entity->getBranchName(),
-		));
-
-	}
-
-}
-
-class EntryLabelMemoList extends HTMLList{
-
-	private $selectedLabelList = array();
-
-	public function setSelectedLabelList($array){
-		if(is_array($array)){
-			$this->selectedLabelList = $array;
-		}
-	}
-
-	public function populateItem($entity){
-		$this->addLabel("entry_label_memo",array(
-				"id" => "entry_label_memo_".$entity->getId(),
-				"text" => $entity->getCaption(),
-				"title" => $entity->getDescription(),
-				"style"=> ( in_array($entity->getId(),$this->selectedLabelList) ? "" : "display:none;" )."color:#" . sprintf("%06X",$entity->getColor()).";background-color:#" . sprintf("%06X",$entity->getBackgroundColor()) . ";"
-		));
-	}
-
 }

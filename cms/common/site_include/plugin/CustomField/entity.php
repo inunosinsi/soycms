@@ -136,7 +136,7 @@ class CustomField{
 		$this->output = $output;
 	}
 	function getDescription(){
-		return $this->description;
+		return (is_string($this->description)) ? $this->description : "" ;
 	}
 	function setDescription($description){
 		$this->description = $description;
@@ -454,13 +454,13 @@ class CustomField{
 	}
 
 	function getDefaultValue() {
-		return $this->defaultValue;
+		return (is_string($this->defaultValue)) ? $this->defaultValue : "";
 	}
 	function setDefaultValue($defaultValue) {
 		$this->defaultValue = $defaultValue;
 	}
 	function getEmptyValue() {
-		return $this->emptyValue;
+		return (is_string($this->emptyValue)) ? $this->emptyValue : "";
 	}
 	function setEmptyValue($emptyValue) {
 		$this->emptyValue = $emptyValue;
@@ -479,13 +479,13 @@ class CustomField{
 	}
 
 	function getExtraOutputs() {
-		return $this->extraOutputs;
+		return (is_string($this->extraOutputs)) ? $this->extraOutputs : "";
 	}
 	function setExtraOutputs($extraOutputs) {
 		$this->extraOutputs = $extraOutputs;
 	}
 	function getExtraValues() {
-		return $this->extraValues;
+		return (is_string($this->extraValues)) ? $this->extraValues : "";
 	}
 	function setExtraValues($extraValues) {
 		$this->extraValues = $extraValues;

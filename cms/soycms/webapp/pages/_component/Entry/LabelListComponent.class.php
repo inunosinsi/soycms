@@ -4,6 +4,7 @@ class LabelListComponent extends HTMLList{
 
 	function populateItem($entity){
 		$id = (is_numeric($entity->getId())) ? (int)$entity->getId() : 0;
+		
 		$this->addLabel("label_name", array(
 			"text"  =>  $entity->getBranchName(),
 // 			"style"=> "color:#" . sprintf("%06X",$entity->getColor()).";"
