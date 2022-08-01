@@ -95,12 +95,12 @@ class CustomFieldListComponent extends HTMLList {
 		$this->addModel("field_config", array(
 			"id" => "field_config_" . $entity->getId()
 		));
-
+		
 		//表示の切り替え：表示/非表示/ラベルと連動
 		$this->addCheckBox("editer_show", array(
 			"name" => "config[showInput]",
 			"value" => CustomFieldPluginFormPage::SHOW_INPUT_YES,
-			"selected" => $entity->getShowInput() && strlen($entity->getLabelId())==0,
+			"selected" => $entity->getShowInput() && (is_null($entity->getLabelId()) || strlen($entity->getLabelId())==0),
 			"label" => "常に表示",
 		));
 		$this->addCheckBox("editer_hide", array(
@@ -112,7 +112,7 @@ class CustomFieldListComponent extends HTMLList {
 		$this->addCheckBox("editer_label", array(
 			"name" => "config[showInput]",
 			"value" => CustomFieldPluginFormPage::SHOW_INPUT_LABEL,
-			"selected" => (strlen($entity->getLabelId()) || count($entity->getLabelIds())),
+			"selected" => (is_string($entity->getLabelId()) && strlen($entity->getLabelId()) || count($entity->getLabelIds())),
 			"label" => "ラベルと連動",
 		));
 		$this->addSelect("labels", array(

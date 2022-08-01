@@ -131,13 +131,13 @@ class CustomField{
 	}
 	/** /関連するラベル複数 **/
 	function getOutput() {
-		return $this->output;
+		return (is_string($this->output)) ? $this->output : "";
 	}
 	function setOutput($output) {
 		$this->output = $output;
 	}
 	function getDescription(){
-		return $this->description;
+		return (is_string($this->description)) ? $this->description : "";
 	}
 	function setDescription($description){
 		$this->description = $description;
@@ -434,13 +434,13 @@ class CustomField{
  	}
 
 	function getDefaultValue() {
-		return $this->defaultValue;
+		return (is_string($this->defaultValue)) ? $this->defaultValue : "";
 	}
 	function setDefaultValue($defaultValue) {
 		$this->defaultValue = $defaultValue;
 	}
 	function getEmptyValue() {
-		return $this->emptyValue;
+		return (is_string($this->emptyValue)) ? $this->emptyValue : "";
 	}
 	function setEmptyValue($emptyValue) {
 		$this->emptyValue = $emptyValue;
@@ -465,7 +465,7 @@ class CustomField{
 		$this->extraOutputs = $extraOutputs;
 	}
 	function getExtraValues() {
-		return $this->extraValues;
+		return (is_string($this->extraValues)) ? $this->extraValues : "";
 	}
 	function setExtraValues($extraValues) {
 		$this->extraValues = $extraValues;

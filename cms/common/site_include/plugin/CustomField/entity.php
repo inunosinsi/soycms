@@ -130,7 +130,7 @@ class CustomField{
 	}
 	/** /関連するラベル複数 **/
 	function getOutput() {
-		return $this->output;
+		return (is_string($this->output)) ? $this->output : "";
 	}
 	function setOutput($output) {
 		$this->output = $output;

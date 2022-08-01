@@ -315,12 +315,7 @@ class ListPage extends CMSUpdatePageBase{
 	private function getLabelList(){
 		$action = SOY2ActionFactory::createInstance("Label.LabelListAction");
 		$result = $action->run();
-
-		if($result->success()){
-			return $result->getAttribute("list");
-		}else{
-			return array();
-		}
+		return ($result->success()) ? $result->getAttribute("list") : array();
 	}
 
 	/**
