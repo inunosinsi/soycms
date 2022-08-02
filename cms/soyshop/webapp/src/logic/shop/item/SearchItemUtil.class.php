@@ -98,7 +98,6 @@ class SearchItemUtil extends SOY2LogicBase{
 	 *
 	 */
 	function getSortQuery(){
-
 		$session = SOY2ActionSession::getUserSession();
 		if(method_exists($this, "getObject")){
 			$pageId = $this->getSort()->getObject()->getPage()->getId();
@@ -125,21 +124,20 @@ class SearchItemUtil extends SOY2LogicBase{
 			$suffix = ($_GET["r"] == 1) ? " desc" : "";
 			$session->setAttribute("soyshop_" . SOYSHOP_ID . "_suffix" . $pageId, $suffix);
 		}
-
+		
 		//default
-		if(!$sort && !$csort && $this->getSort()){
-
+		if(!isset($sort) && !isset($csort) && $this->getSort()){
 			$obj = $this->getSort();
 			$defaultSort = $obj->getDefaultSort();
 			$suffix = ($obj->getIsReverse()) ? " desc" : "";
-
+			
 			//カテゴリによってソートの設定を出し分ける
 			SOYShopPlugin::load("soyshop.item.list");
 			$extSort = SOYShopPlugin::invoke("soyshop.item.list", array(
 				"mode" => "sort"
 			))->getSort();
-
-			if(!is_null($extSort) && is_array($extSort)){
+			
+			if(is_array($extSort) && count($extSort)){
 				$sort = (isset($extSort["sort"])) ? $extSort["sort"] : $defaultSort;
 				$csort = (isset($extSort["csort"])) ? $extSort["csort"] : null;
 				//suffixの上書き
@@ -151,7 +149,17 @@ class SearchItemUtil extends SOY2LogicBase{
 			}
 		}
 
-		if($sort){
+		// 先にcsortの方を調べる
+		if(is_string($csort) && strlen($csort)){
+			SOY2::import("domain.shop.SOYShop_ItemAttribute");
+			$fields = SOYShop_ItemAttributeConfig::getIndexFields();
+			if(!in_array($csort, $fields)){
+				$csort = $obj->getCustomSort();
+			}
+			return SOYShop_ItemDAO::getSortColumnName($csort) . $suffix;
+		}
+
+		if(is_string($sort) && strlen($sort)){
 			switch($sort){
 				case "id":
 					return "id" . $suffix;
@@ -175,7 +183,7 @@ class SearchItemUtil extends SOY2LogicBase{
 					//ソート用のカラムがあるか調べる
 					if(SOY2DAOConfig::type() == "mysql"){
 						try{
-							$res = SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->executeQuery("SHOW COLUMNS FROM soyshop_item LIKE :pattern", array(":pattern" => $sort));
+							$res = soyshop_get_hash_table_dao("item")->executeQuery("SHOW COLUMNS FROM soyshop_item LIKE :pattern", array(":pattern" => $sort));
 							if(count($res)) return $sort . $suffix;
 						}catch(Exception $e){
 							//
@@ -186,17 +194,6 @@ class SearchItemUtil extends SOY2LogicBase{
 					}
 			}
 		}
-
-		if($csort){
-			SOY2::import("domain.shop.SOYShop_ItemAttribute");
-			$fields = SOYShop_ItemAttributeConfig::getIndexFields();
-			if(!in_array($csort, $fields)){
-				$csort = $obj->getCustomSort();
-			}
-
-			return SOYShop_ItemDAO::getSortColumnName($csort) . $suffix;
-		}
-
 
 		return null;
 	}
@@ -218,39 +215,49 @@ class SearchItemUtil extends SOY2LogicBase{
 			$ids = array($categoryId);
 		}
 
-		$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+		$itemDAO = soyshop_get_hash_table_dao("item");
 
-		try{
-			/* まずoffset,limit,sortなしでカウントだけ行う */
+		/* まずoffset,limit,sortなしでカウントだけ行う */
 
-			//マルチカテゴリモード
-			if($useMultiCategory){
-				$categoriesDAO = SOY2DAOFactory::create("shop.SOYShop_CategoriesDAO");
-				//TODO 非公開商品をカウントしない
-				$total = $categoriesDAO->countItemsByCategoryIds($ids);
-			//通常モード
-			}else{
+		//マルチカテゴリモード
+		if($useMultiCategory){
+			try{
+				$total = SOY2DAOFactory::create("shop.SOYShop_CategoriesDAO")->countItemsByCategoryIds($ids);
+			}catch(Exception $e){
+				$total = 0;
+			}
+		}else{	//通常モード
+			try{
+				// @ToDo 非公開商品をカウントしない
 				$total = $itemDAO->countOpenItemByCategories($ids);
+			}catch(Exception $e){
+				$total = 0;
 			}
+		}
+		if($total <= 0) return array(array(), 0);
 
-			/* offset,limit,sortを反映してデータを取得する */
+		if(is_numeric($offset) && $offset >= 0) $itemDAO->setOffset($offset);
+		if(is_numeric($limit) && $limit >= 0) $itemDAO->setLimit($limit);
+		
+		$sort = $this->getSortQuery();
+		if(is_string($sort) && strlen($sort)) $itemDAO->setOrder($sort);
 
-			if($offset)$itemDAO->setOffset($offset);
-			if($limit)$itemDAO->setLimit($limit);
-
-	   		$sort = $this->getSortQuery();
-	   		if($sort)$itemDAO->setOrder($sort);
-
-			//マルチカテゴリモードならここでカテゴリIDから商品IDを取得する
-			if($useMultiCategory){
-				$itemIds = $categoriesDAO->getItemIdsByCategoryIds($ids);
+		//マルチカテゴリモードならここでカテゴリIDから商品IDを取得する
+		if($useMultiCategory){
+			try{
+				$itemIds = SOY2DAOFactory::create("shop.SOYShop_CategoriesDAO")->getItemIdsByCategoryIds($ids);
 				$items = $itemDAO->getOpenItemByMultiCategories($itemIds);
-			}else{
-				$items = $itemDAO->getOpenItemByCategories($ids);
+			}catch(Exception $e){
+				$items = array();
+				$total = 0;
 			}
-		}catch(Exception $e){
-			$total = 0;
-			$items = array();
+		}else{
+			try{
+				$items = $itemDAO->getOpenItemByCategories($ids);
+			}catch(Exception $e){
+				$items = array();
+				$total = 0;
+			}
 		}
 
 		return array($items, $total);
@@ -259,19 +266,14 @@ class SearchItemUtil extends SOY2LogicBase{
 	/**
 	 * カテゴリ指定して数え上げ
 	 */
-    function countByCategoryId($categoryId, $withChild = false){
-
+    function countByCategoryId(int $categoryId, bool $withChild=false){
 		if($withChild){
-			$mapping = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->getMapping();
+			$mapping = soyshop_get_hash_table_dao("category")->getMapping();
 			$ids = $mapping[$categoryId];
 		}else{
 			$ids = array($categoryId);
 		}
-
-		$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-		$total = $itemDAO->countOpenItemByCategories($ids);
-
-		return $total;
+		return soyshop_get_hash_table_dao("item")->countOpenItemByCategories($ids);
     }
 
     /**
