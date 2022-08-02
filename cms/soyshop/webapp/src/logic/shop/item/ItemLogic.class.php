@@ -137,8 +137,9 @@ class ItemLogic extends SOY2LogicBase{
 
 	/**
 	 * 公開状態を変更する
+	 * @param int|array, int
 	 */
-    function changeOpen($itemIds, $status){
+    function changeOpen($itemIds, int $status){
     	if(!is_array($itemIds)) $itemIds = array($itemIds);
     	$status = (int)(boolean)$status;	//0 or 1
 
