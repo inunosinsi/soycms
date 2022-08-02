@@ -25,7 +25,7 @@
  * 記事の詳細情報を出力します。
  *
  */
-function soy_cms_blog_output_entry($page,$entry){
+function soy_cms_blog_output_entry($page, Entry $entry){
 
 	if(!class_exists("CategoryListComponent")) SOY2::import("site_include.blog.component.CategoryListComponent");
 	if(!class_exists("PagerListComponent")) SOY2::import("site_include.blog.component.PagerListComponent");
@@ -37,7 +37,7 @@ function soy_cms_blog_output_entry($page,$entry){
 		"categoryPageUri" => $page->getCategoryPageURL(true),
 		"blogLabelId" => $page->page->getBlogLabelId(),
 		"categoryLabelList" => $page->page->getCategoryLabelList(),
-		"labels" => SOY2DAOFactory::create("cms.LabelDAO")->get(),
+		"labels" => soycms_get_hash_table_dao("label")->get(),
 		"entryLogic" => SOY2Logic::createInstance("logic.site.Entry.EntryLogic"),
 		"visible" => ($entry->getId()),
 		"entry" => $entry

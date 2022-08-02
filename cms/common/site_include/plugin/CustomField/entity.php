@@ -280,7 +280,7 @@ class CustomField{
 					}
 				}
 
-				$extraOutputs = explode("\n", str_replace(array("\r\n", "\r"), "\n", $this->extraOutputs));
+				$extraOutputs = explode("\n", str_replace(array("\r\n", "\r"), "\n", $this->getExtraOutputs()));
 
 				foreach($extraOutputs as $key => $extraOutput){
 					$extraOutput = trim($extraOutput);

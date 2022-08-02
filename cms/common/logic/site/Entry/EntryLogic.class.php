@@ -536,9 +536,12 @@ class EntryLogic extends SOY2LogicBase{
 	 */
 	function getOpenEntryCountByLabelIds(array $labelIds){
 		$dao = self::labeledEntryDao();
-		$dao->getOpenEntryCountByLabelIds($labelIds,SOYCMS_NOW);
-		$count = $dao->getRowCount();
-		return $count;
+		try{
+			$dao->getOpenEntryCountByLabelIds($labelIds, SOYCMS_NOW);
+			return $dao->getRowCount();
+		}catch(Exception $e){
+			return 0;
+		}
 	}
 
 	/**
@@ -549,9 +552,15 @@ class EntryLogic extends SOY2LogicBase{
 
 		$dao->setLimit($this->getLimit());
 		$dao->setOffset($this->getOffset());
-		$array = $dao->getEntryByLabelIds($labelIds);
-		$this->totalCount = $dao->getRowCount();
-
+		try{
+			$array = $dao->getEntryByLabelIds($labelIds);
+			$this->totalCount = $dao->getRowCount();
+		}catch(Exception $e){
+			$this->totalCount = 0;
+			$array = array();
+		}
+		if(!count($array)) return array();
+		
 		//ラベルを取得
 		foreach($array as $key => $entry){
 			$array[$key]->setLabels($this->getLabelIdsByEntryId($entry->getId()));

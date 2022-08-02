@@ -148,13 +148,13 @@ function soy_cms_blog_output_feed_link($page){
 
 	$url = $page->getRssPageURL(true);
 
-	$page->createAdd("rss_link","HTMLLink",array(
+	$page->addLink("rss_link", array(
 		"link" => $url ."?feed=rss",
 		"visible" => $page->page->getGenerateRssFlag(),
 		"soy2prefix" => "b_block"
 	));
 
-	$page->createAdd("atom_link","HTMLLink",array(
+	$page->addLink("atom_link", array(
 		"link" => $url ."?feed=atom",
 		"visible" => $page->page->getGenerateRssFlag(),
 		"soy2prefix" => "b_block"

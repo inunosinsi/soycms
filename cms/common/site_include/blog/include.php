@@ -34,13 +34,7 @@ function soy_cms_blog_output_category_link($page){
 	foreach($labels as $labelId => $label){
 		if(in_array($labelId, $categories)){
 			$categoryLabel[] =  $label;
-			try{
-				//記事の数を数える。
-				$counts = $logic->getOpenEntryCountByLabelIds(array_unique(array($blogLabelId,$labelId)));
-			}catch(Exception $e){
-				$counts= 0;
-			}
-			$entryCount[$labelId] = $counts;
+			$entryCount[$labelId] = $logic->getOpenEntryCountByLabelIds(array_unique(array($blogLabelId,$labelId)));	//記事の数を数える。
 		}
 	}
 
@@ -78,13 +72,10 @@ function soy_cms_blog_output_archive_link($page, $readOnly = false){
 		//取得までできているので、整形や表示を設定する
 		$month_list = SOY2Logic::createInstance("logic.site.Entry.EntryLogic")->getCountMonth(array($page->page->getBlogLabelId()));
 		foreach($month_list as $key => $month){
-			if($month == 0){
-				unset($month_list[$key]);
-			}
+			if($month == 0) unset($month_list[$key]);
 		}
 
 		if(!class_exists("MonthArciveListComponent")) SOY2::import("site_include.blog.component.MonthArciveListComponent");
-
 		$page->createAdd("archive","MonthArciveListComponent",array(
 			"list" => $month_list,
 			"monthPageUri" => $page->getMonthPageURL(true),

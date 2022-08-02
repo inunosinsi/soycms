@@ -64,26 +64,24 @@ function soy_cms_blog_get_current_url($page, $offset = 0){
 </div>
 <!-- /b_block:id="entry_list" -->
 */
-function soy_cms_blog_output_entry_list($page,$entries){
+function soy_cms_blog_output_entry_list($page, array $entries){
 
     if(!class_exists("CategoryListComponent")) SOY2::import("site_include.blog.component.CategoryListComponent");
     if(!class_exists("EntryListComponent")) SOY2::import("site_include.blog.component.EntryListComponent");
 
-	$labels = SOY2DAOFactory::create("cms.LabelDAO")->get();
+    $labels = soycms_get_hash_table_dao("label")->get();
+    
 	$entryLogic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
 
-	$categoryLabel = array();
-	$entryCount = array();
-	foreach($labels as $labelId => $label){
-		if(in_array($labelId, $page->page->getCategoryLabelList())){
-			$categoryLabel[] =  $label;
-			try{
+    $categoryLabels = array();
+	// $entryCount = array();   //不要
+	if(count($labels)){
+		foreach($labels as $labelId => $label){
+			if(in_array($labelId, $page->page->getCategoryLabelList())){
+                $categoryLabels[$labelId] = $label;
 				//記事の数を数える。
-				$counts = $entryLogic->getOpenEntryCountByLabelIds(array_unique(array((int)$page->page->getBlogLabelId(),$labelId)));
-			}catch(Exception $e){
-				$counts= 0;
+				//$entryCount[$labelId] = $entryLogic->getOpenEntryCountByLabelIds(array_unique(array((int)$page->page->getBlogLabelId(),$labelId)));
 			}
-			$entryCount[$labelId] = $counts;
 		}
 	}
 
@@ -94,8 +92,9 @@ function soy_cms_blog_output_entry_list($page,$entries){
         "entryPageUrl" => $page->getEntryPageURL(true),
         "categoryPageUrl" => $page->getCategoryPageURL(true),
         "blogLabelId" => (int)$page->page->getBlogLabelId(),
-        "categoryLabelList" => $page->page->getCategoryLabelList(),
-		"entryCount" => $entryCount,
+        "categoryLabelList" => $categoryLabels,
+		//"entryCount" => $entryCount,
+        "entryCount" => array(),
         "soy2prefix" => "b_block"
     ));
 }

@@ -139,7 +139,7 @@ class EntryListComponent extends HTMLList{
 		$this->createAdd("category_list","CategoryListComponent",array(
 			"list" => $entry->getLabels(),
 			"categoryUrl" => $this->categoryPageUrl,
-			"entryCount" => $this->entryCount,
+			"entryCount" => (is_array($this->entryCount)) ? $this->entryCount : array(),
 			"soy2prefix" => "cms"
 		));
 

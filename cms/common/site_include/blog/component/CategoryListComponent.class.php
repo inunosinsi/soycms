@@ -6,7 +6,7 @@
 class CategoryListComponent extends HTMLList{
 
 	var $categoryUrl;
-	var $entryCount = 0;
+	var $entryCount = array();
 
 	protected function populateItem($entry){
 		$id = (is_numeric($entry->getId())) ? (int)$entry->getId() : 0;
@@ -63,7 +63,7 @@ class CategoryListComponent extends HTMLList{
 		));
 
 		$this->addLabel("entry_count", array(
-			"text" => (isset($this->entryCount[$id])) ? $this->entryCount[$id] : 0,
+			"text" => (is_array($this->entryCount) && isset($this->entryCount[$id]) && is_numeric($this->entryCount[$id])) ? $this->entryCount[$id] : 0,
 			"soy2prefix" => "cms"
 		));
 

@@ -585,13 +585,7 @@ class CMSBlogPage extends CMSPage{
 			SOY2::import("site_include.blog.top_archive", ".php");
 
 			//entry_list
-			if($this->limit > 0){
-				try{
-					soy_cms_blog_output_entry_list($this,$this->entries);
-				}catch(Exception $e){
-
-				}
-			}
+			if($this->limit > 0) soy_cms_blog_output_entry_list($this, $this->entries);
 
 			//次のページへのリンク　next_page (next_link)
 			if($this->limit > 0) soy_cms_blog_output_next_link($this,$this->offset,$this->limit,$this->total);

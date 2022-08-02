@@ -195,33 +195,32 @@ function soy_cms_blog_output_prev_next_month($page){
     }
 
     //翌月のページへ
-    $page->createAdd("next_month","HTMLLink",array(
+    $page->addLink("next_month", array(
         "soy2prefix" => "b_block",
         "visible" => $hasNext,
         "link" => $url.$nextMonthDate
     ));
     //翌月のページがあれば表示
-    $page->createAdd("has_next_month","HTMLModel",array(
+    $page->addModel("has_next_month", array(
         "soy2prefix" => "b_block",
         "visible" => $hasNext,
     ));
 
     //前月のページへ
-    $page->createAdd("prev_month","HTMLLink",array(
+    $page->addLink("prev_month", array(
         "soy2prefix" => "b_block",
         "visible" => $hasPrev,
         "link" => $url.$prevMonthDate
     ));
     //前月のページがあれば表示
-    $page->createAdd("has_prev_month","HTMLModel",array(
+    $page->addModel("has_prev_month", array(
         "soy2prefix" => "b_block",
         "visible" => $hasPrev,
     ));
 
     //翌月または前月のページがあれば表示
-    $page->createAdd("has_prev_or_next_month","HTMLModel",array(
+    $page->addModel("has_prev_or_next_month", array(
         "soy2prefix" => "b_block",
-        "visible" => $hasPrev || $hasNext,
+        "visible" => ($hasPrev || $hasNext),
     ));
-
 }

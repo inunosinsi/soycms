@@ -274,17 +274,12 @@ class EntryComponent extends SOYBodyComponentBase{
 		));
 
 		$categoryLabel = array();
-		$entryCount = array();
+		//$entryCount = array();	//不要
 		foreach($this->labels as $labelId => $label){
 			if(in_array($labelId, $this->categoryLabelList)){
 				$categoryLabel[] =  $label;
-				try{
-					//記事の数を数える。
-					$counts = $this->entryLogic->getOpenEntryCountByLabelIds(array_unique(array($this->blogLabelId,$labelId)));
-				}catch(Exception $e){
-					$counts= 0;
-				}
-				$entryCount[$labelId] = $counts;
+				//記事の数を数える。
+				//$entryCount[$labelId] = $this->entryLogic->getOpenEntryCountByLabelIds(array_unique(array($this->blogLabelId,$labelId)));
 			}
 		}
 
@@ -292,7 +287,8 @@ class EntryComponent extends SOYBodyComponentBase{
 		$this->createAdd("category_list", "CategoryListComponent", array(
 			"list" => $entry->getLabels(),
 			"categoryUrl" => $this->categoryPageUri,
-			"entryCount" => $entryCount,
+			//"entryCount" => $entryCount,
+			"entryCount" => array(),
 			"soy2prefix" => "cms"
 		));
 

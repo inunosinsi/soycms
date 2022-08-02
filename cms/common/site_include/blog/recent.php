@@ -28,17 +28,12 @@ function soy_cms_blog_output_recent_entry_list($page, $entries){
 	$entryLogic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
 
 	$categoryLabel = array();
-	$entryCount = array();
+	//$entryCount = array();	不要
 	foreach($labels as $labelId => $label){
 		if(in_array($labelId, $page->page->getCategoryLabelList())){
 			$categoryLabel[] =  $label;
-			try{
-				//記事の数を数える。
-				$counts = $entryLogic->getOpenEntryCountByLabelIds(array_unique(array((int)$page->page->getBlogLabelId(),$labelId)));
-			}catch(Exception $e){
-				$counts= 0;
-			}
-			$entryCount[$labelId] = $counts;
+			//記事の数を数える。
+			//$entryCount[$labelId] = $entryLogic->getOpenEntryCountByLabelIds(array_unique(array((int)$page->page->getBlogLabelId(),$labelId)));
 		}
 	}
 
@@ -48,7 +43,8 @@ function soy_cms_blog_output_recent_entry_list($page, $entries){
 		"categoryPageUrl" => $page->getCategoryPageURL(true),
 		"blogLabelId" => $page->page->getBlogLabelId(),
 		"categoryLabelList" => $page->page->getCategoryLabelList(),
-		"entryCount" => $entryCount,
+		//"entryCount" => $entryCount,
+		"entryCount" => array(),
 		"soy2prefix" => "b_block"
 	));
 
