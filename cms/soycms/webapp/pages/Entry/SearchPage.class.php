@@ -202,6 +202,20 @@ class SearchPage extends CMSWebPageBase{
 			"value" => (isset($_GET["freeword_text"])) ? $_GET["freeword_text"] : ""
 		));
 
+		foreach(array("cdate", "udate") as $col){
+			foreach(array("start", "end") as $typ){
+				$v = (isset($_GET[$col][$typ])) ? $_GET[$col][$typ] : "";
+				//formatに従っているか？yy/mm/dd
+				preg_match('/[\d]{4}\/[\d]{2}\/[\d]{2}/', $v, $tmp);
+				if(!isset($tmp[0])) $v = "";
+				$this->addInput($col . "_" . $typ, array(
+					"name" => $col."[".$typ."]",
+					"value" => $v
+				));
+			}
+		}
+		
+
 		$this->addForm("main_form", array(
 			"method" =>"get"
 		));
@@ -213,6 +227,34 @@ class SearchPage extends CMSWebPageBase{
 		$this->createAdd("customfield_list", "_component.Entry.SearchCustomfieldListComponent", array(
 			"list" => $cfaItems,
 			"conditions" => (isset($_GET["customfield"]) && is_array($_GET["customfield"])) ? $_GET["customfield"] : array()
+		));
+
+		$this->addCheckBox("sort_type_cdate", array(
+			"name" => "sort[type]",
+			"value" => "cdate",
+			"selected" => (isset($_GET["sort"]["type"]) && $_GET["sort"]["type"] == "cdate"),
+			"label" => "作成日時"
+		));
+
+		$this->addCheckBox("sort_type_udate", array(
+			"name" => "sort[type]",
+			"value" => "udate",
+			"selected" => (!isset($_GET["sort"]["type"]) || (isset($_GET["sort"]["type"]) && $_GET["sort"]["type"] == "udate")),
+			"label" => "更新日時"
+		));
+
+		$this->addCheckBox("sort_sort_asc", array(
+			"name" => "sort[sort]",
+			"value" => "asc",
+			"selected" => (isset($_GET["sort"]["sort"]) && $_GET["sort"]["sort"] == "asc"),
+			"label" => "昇順"
+		));
+
+		$this->addCheckBox("sort_sort_desc", array(
+			"name" => "sort[sort]",
+			"value" => "desc",
+			"selected" => (!isset($_GET["sort"]["sort"]) || (isset($_GET["sort"]["sort"]) && $_GET["sort"]["sort"] == "desc")),
+			"label" => "降順"
 		));
 	}
 

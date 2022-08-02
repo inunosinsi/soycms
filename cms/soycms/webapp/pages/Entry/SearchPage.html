@@ -63,14 +63,22 @@
 										<!-- /soy:id="label_list" -->
 									</td>
 								</tr>
-								<!--tr>
+								<tr>
 									<th>作成日時</th>
-									<td></td>
+									<td class="form-inline">
+										<input type="text" class="datepicker form-control" soy:id="cdate_start">
+										&nbsp;〜&nbsp;
+										<input type="text" class="datepicker form-control" soy:id="cdate_end">
+									</td>
 								</tr>
 								<tr>
 									<th>更新日時</th>
-									<td></td>
-								</tr-->
+									<td class="form-inline">
+										<input type="text" class="datepicker form-control" soy:id="udate_start">
+										&nbsp;〜&nbsp;
+										<input type="text" class="datepicker form-control" soy:id="udate_end">
+									</td>
+								</tr>
 								<!-- soy:display="customfield_advanced_items" -->
 								<tr>
 									<th>カスタムフィールド</th>
@@ -90,6 +98,15 @@
 									</td>
 								</tr>
 								<!-- /soy:display="customfield_advanced_items" -->
+								<tr>
+									<th>検索結果の並び順</th>
+									<td>
+										<input type="radio" soy:id="sort_type_cdate">&nbsp;
+										<input type="radio" soy:id="sort_type_udate"><br>
+										<input type="radio" soy:id="sort_sort_asc">&nbsp;
+										<input type="radio" soy:id="sort_sort_desc">
+									</td>
+								</tr>
 							</table>
 						</div>
 					</div>
@@ -242,7 +259,13 @@
 
 	<script soy:id="parameters"></script>
 	<script soy:id="entry_list"></script>
-
+	<script>
+		$( function() {
+		  $(".datepicker").datepicker({
+			"dateFormat":"yy/mm/dd"
+		  });
+		} );
+	</script>
 </body>
 
 </html>
