@@ -84,6 +84,13 @@ class DetailPage extends MainMyPagePageBase{
 	private function _approval(){
 		SOY2::import("module.plugins.purchase_manager.util.PurchaseAppUtil");
 		SOY2Logic::createInstance("module.plugins.purchase_manager.logic.PurchaseLogic")->changeStatus($this->purchaseId, PurchaseAppUtil::STATUS_APPROVAL);
+
+		/** 管理者にメールを送信 */
+		SOY2::import("domain.config.SOYShop_ShopConfig");
+		$title = "[" . SOYShop_ShopConfig::load()->getShopName() . "]査定額承認通知メール";
+		$body = $this->getUser()->getName() . "様が査定額の承認をしました。";
+		SOY2Logic::createInstance("logic.mail.MailLogic")->sendMail("admin", $title, $body);
+
 		$this->jump("purchase/detail/" . $this->purchaseId);
 	}
 }

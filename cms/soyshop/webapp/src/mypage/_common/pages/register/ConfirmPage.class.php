@@ -10,7 +10,8 @@ class ConfirmPage extends IndexPage{
 			if(isset($_POST["register"]) || isset($_POST["register_x"])){
 
 				$mypage = $this->getMyPage();
-				$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
+
+				$userDAO = soyshop_get_hash_table_dao("user");
 				$user = $mypage->getUserInfo();
 
 				//パスワード
@@ -25,35 +26,45 @@ class ConfirmPage extends IndexPage{
 					$user->setPassword($pw);
 				}
 
+				$isTmpUser = false;
 				try{
 					$tmpUser = $userDAO->getTmpUserByEmail($user->getMailAddress());
 					$user->setId($tmpUser->getId());
 					$user->setPassword($user->hashPassword($user->getPassword()));
-					$tmpUser = true;
+					$isTmpUser = true;
 				}catch(Exception $e){
-					$tmpUser = false;
+					//
 				}
 
-				try{
-					$tmpUserMode = SOYShop_DataSets::get("config.mypage.tmp_user_register", 1);
-					if($tmpUserMode){
-						//仮登録あり
-						$user->setUserType(SOYShop_User::USERTYPE_TMP);
+				$tmpUserMode = SOYShop_DataSets::get("config.mypage.tmp_user_register", 1);
+				if($tmpUserMode){
+					//仮登録あり
+					$user->setUserType(SOYShop_User::USERTYPE_TMP);
 
-					}else{
-						//仮登録なし
-						$user->setUserType(SOYShop_User::USERTYPE_REGISTER);
-						$user->setRealRegisterDate(time());
-					}
+				}else{
+					//仮登録なし
+					$user->setUserType(SOYShop_User::USERTYPE_REGISTER);
+					$user->setRealRegisterDate(time());
+				}
 
-					if($tmpUser){
+				$userId = 0;
+				if($isTmpUser){
+					try{
 						$userDAO->update($user);
 						$userId = $user->getId();
-					}else{
+					}catch(Exception $e){
+						//
+					}
+				}else{
+					try{
 						$userId = $userDAO->insert($user);
 						$user->setId($userId);
+					}catch(Exception $e){
+						//
 					}
+				}
 
+				if($userId > 0){
 					//ユーザカスタムフィールドの値をセッションに入れる
 					SOYShopPlugin::load("soyshop.user.customfield");
 					SOYShopPlugin::invoke("soyshop.user.customfield", array(
@@ -62,22 +73,15 @@ class ConfirmPage extends IndexPage{
 						"userId" => $userId
 					));
 
-					if($tmpUserMode){
-						//仮登録あり
+					if($tmpUserMode){	//仮登録あり
 						list($token, $limit) = $mypage->createToken($user->getMailAddress());
 						self::_sendTmpRegisterMail($user, $token, $limit);
 						$this->jump("register/tmp");
-
-					}else{
-						//仮登録なし
+					}else{	//仮登録なし
 						self::_sendRegisterMail($user);
 						$this->jump("register/complete");
-
 					}
-
-				}catch(Exception $e){
-
-				}
+				}	
 			}
 
 			if(isset($_POST["back"]) || isset($_POST["back_x"])){

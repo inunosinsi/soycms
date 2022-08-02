@@ -280,14 +280,14 @@ class SOYShop_ServerConfig {
     function setEncodingConfig($encodingConfig) {
     	$this->encodingConfig = $encodingConfig;
     }
-    function getEncodingByEmailAddress($address){
-    	$targetDomain = substr($address,strpos($address, "@"));
+    function getEncodingByEmailAddress(string $address){
+    	$targetDomain = substr($address, strpos($address, "@"));
     	$config = $this->getEncodingConfig();
     	$config = explode("\n", $config);
 
     	foreach($config as $line){
     		$line = trim($line);
-    		if(empty($line))continue;
+    		if(empty($line)) continue;
     		$array = explode(",",$line);
     		$domain = $array[0];
 
