@@ -32,7 +32,7 @@ foreach($columns as $key => $column){
 	$tr_prop = $obj->getTrProperty();
 	if(count($class)){
 		if(strlen($tr_prop)){
-			if(strpos($tr_prop, "class=") !== false){
+			if(is_numeric(strpos($tr_prop, "class="))){
 				preg_match('/class="(.*?)"/', $tr_prop, $tmp);
 				if(isset($tmp[1])){
 					$tr_prop = preg_replace('/class="(.*?)"/', "class=\"" . trim($tmp[1]) . " " . implode(" ", $class) . "\"", $tr_prop);

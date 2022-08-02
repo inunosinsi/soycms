@@ -41,10 +41,10 @@ foreach($columns as $column){
 	if($column->getType() == "AddressJs"){
 
 	}else{
-		if(!strpos($form, "class=")){
+		if(is_bool(strpos($form, "class="))){
 			$form = preg_replace("/>/", " class=\"form-control\">", $form, 1);
 		}else{
-			if(!strpos($form, "form-control")){
+			if(is_bool(strpos($form, "form-control"))){
 				preg_match('/class=\".*?\"/', $form, $tmp);
 				if(isset($tmp[0])){
 					$prop = trim($tmp[0], "\"") . " form-control\"";
