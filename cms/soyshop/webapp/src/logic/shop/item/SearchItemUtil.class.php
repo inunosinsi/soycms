@@ -144,11 +144,19 @@ class SearchItemUtil extends SOY2LogicBase{
 				if(isset($extSort["suffix"])) $suffix = $extSort["suffix"];
 			//通常
 			}else{
-				if($defaultSort != "custom") $sort = $defaultSort;
-				$csort = $obj->getCustomSort();
+				switch($defaultSort){
+					case "custom":	//カスタムフィールドでソート
+					case "_custom":
+						$sort = null;
+						$csort = $obj->getCustomSort();
+						break;
+					default:
+						$sort = $defaultSort;
+						$csort = null;
+				}
 			}
 		}
-
+		
 		// 先にcsortの方を調べる
 		if(is_string($csort) && strlen($csort)){
 			SOY2::import("domain.shop.SOYShop_ItemAttribute");
@@ -312,8 +320,8 @@ class SearchItemUtil extends SOY2LogicBase{
 
 		list($isParent, $isChild) = self::getDisplayGroupItemMode($params);
 
-    	$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-    	$itemAttributeDAO = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
+    	$itemDAO = soyshop_get_hash_table_dao("item");
+    	$itemAttributeDAO = soyshop_get_hash_table_dao("item_attribute");
 
     	$table = SOYShop_Item::getTableName();
     	$attrTable = SOYShop_ItemAttribute::getTableName();
