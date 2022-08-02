@@ -89,7 +89,7 @@ class CustomField{
 		$this->type = $type;
 	}
 	function getOption() {
-		return $this->option;
+		return (is_string($this->option)) ? $this->option : "";
 	}
 	function setOption($option) {
 		$this->option = $option;

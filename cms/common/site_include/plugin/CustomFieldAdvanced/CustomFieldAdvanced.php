@@ -39,7 +39,7 @@ class CustomFieldPluginAdvanced{
 			"author" => "日本情報化農業研究所",
 			"url" => "http://www.n-i-agroinformatics.com/",
 			"mail" => "soycms@soycms.net",
-			"version"=>"1.15.2"
+			"version"=>"1.16"
 		));
 
 		//プラグイン アクティブ
