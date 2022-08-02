@@ -396,22 +396,17 @@ class MailLogic extends SOY2LogicBase{
 	 */
 	function convertMailContent($content, SOYShop_User $user, SOYShop_Order $order){
 		//ユーザー情報
-		if(is_numeric($user->getId())){
-			$content = str_replace("#NAME#", (string)$user->getName(), $content);
-			$content = str_replace("#READING#", (string)$user->getReading(), $content);
-			$content = str_replace("#MAILADDRESS#", (string)$user->getMailAddress(), $content);
-			$content = str_replace("#BIRTH_YEAR#", (string)$user->getBirthdayYear(), $content);
-			$content = str_replace("#BIRTH_MONTH#", (string)$user->getBirthdayMonth(), $content);
-			$content = str_replace("#BIRTH_DAY#", (string)$user->getBirthdayDay(), $content);
-		}
-
+		$content = str_replace("#NAME#", (string)$user->getName(), $content);
+		$content = str_replace("#READING#", (string)$user->getReading(), $content);
+		$content = str_replace("#MAILADDRESS#", (string)$user->getMailAddress(), $content);
+		$content = str_replace("#BIRTH_YEAR#", (string)$user->getBirthdayYear(), $content);
+		$content = str_replace("#BIRTH_MONTH#", (string)$user->getBirthdayMonth(), $content);
+		$content = str_replace("#BIRTH_DAY#", (string)$user->getBirthdayDay(), $content);
 
 		//注文情報
-		if(is_numeric($order->getId())){
-			$content = str_replace("#ORDER_RAWID#", (string)$order->getId(), $content);
-			$content = str_replace("#ORDER_ID#", (string)$order->getTrackingNumber(), $content);
-		}
-
+		$content = str_replace("#ORDER_RAWID#", (string)$order->getId(), $content);
+		$content = str_replace("#ORDER_ID#", (string)$order->getTrackingNumber(), $content);
+		
 		$config = $this->getShopConfig();
 		if(!$config){
 			SOY2::import("domain.config.SOYShop_ShopConfig");
