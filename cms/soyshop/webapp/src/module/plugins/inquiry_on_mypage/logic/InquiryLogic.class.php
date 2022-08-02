@@ -45,7 +45,6 @@ class InquiryLogic extends SOY2LogicBase {
 			$this->inqDao->update($inquiry);
 			$this->inqDao->commit();
 		}catch(Exception $e){
-			var_dump($e);
 			return null;
 		}
 
