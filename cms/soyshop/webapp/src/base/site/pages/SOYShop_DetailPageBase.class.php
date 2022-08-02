@@ -8,8 +8,9 @@ class SOYShop_DetailPageBase extends SOYShopPageBase{
 	private $prevItem;
 	private $currentIndex = 1;
 	private $totalItemCount = 0;
+	private $error;
 
-	function build($args){
+	function build(array $args){
 
 		$page = $this->getPageObject();
 		$obj = $page->getPageObject();
@@ -20,14 +21,16 @@ class SOYShop_DetailPageBase extends SOYShopPageBase{
 		try{
 			$item = $itemDAO->getByAlias($alias);
 		}catch(Exception $e){
-			throw new Exception("The specified product cannot be found.");
+			$this->error =  new Exception("The specified product cannot be found.");
+			return;
 		}
 
 		$forAdminOnly = self::getForAdminOnly($item);
 
 		//非公開(非公開プレビューモードは除く) && 削除フラグのチェック
 		if((!$forAdminOnly && $item->getIsOpen() != SOYShop_Item::IS_OPEN)  || $item->getIsDisabled() == SOYShop_Item::IS_DISABLED){
-			throw new Exception("The specified product does not have publishing authority.");
+			$this->error = new Exception("The specified product does not have publishing authority.");
+			return;
 		}
 
 		//子商品だった場合は、親商品の詳細ページにリダイレクト
@@ -43,7 +46,8 @@ class SOYShop_DetailPageBase extends SOYShopPageBase{
 		soyshop_convert_item_detail_page_id($item, $page);
 
 		if(strlen($item->getDetailPageId()) > 0 && $item->getDetailPageId() != $page->getId()){
-			throw new Exception("The specified product does not have publishing authority.");
+			$this->error = new Exception("The specified product does not have publishing authority.");
+			return;
 		}
 
 		$logic = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil");
@@ -96,14 +100,11 @@ class SOYShop_DetailPageBase extends SOYShopPageBase{
 	 * @return boolean or null ← どうにかしたい
 	 */
 	function getForAdminOnly(SOYShop_Item $item){
-
 		if(!$item->isPublished() && isset($_GET["foradminonly"])){
 			$session = SOY2ActionSession::getUserSession();
-			$forAdminOnly = (!is_null($session->getAttribute("loginid")));
-		}else{
-			$forAdminOnly = null;
+			return (!is_null($session->getAttribute("loginid")));
 		}
-		return $forAdminOnly;
+		return null;
 	}
 
 	function getNextItem() {
@@ -141,6 +142,10 @@ class SOYShop_DetailPageBase extends SOYShopPageBase{
 
 	function getPager(){
 		return new SOYShop_DetailPagePager($this);
+	}
+
+	function getError(){
+		return ($this->error instanceof Exception) ? $this->error : parent::getError();
 	}
 }
 

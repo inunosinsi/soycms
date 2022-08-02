@@ -10,12 +10,9 @@ class SOYShop_UserPage extends SOYShopPageBase{
 		$this->setArgs($args[1]);
 
 		parent::__construct();
-
 	}
 
-	function doOperation(){
-
-	}
+	function doOperation(){}
 
 	function checkSSL(){
 		$isUseSSL = SOYShop_DataSets::get("config.mypage.use_ssl", 0);
@@ -48,14 +45,14 @@ class SOYShop_UserPage extends SOYShopPageBase{
 		$this->checkSSL();
 
 		SOYShopPlugin::load("soyshop.mypage");
-        $canonical = SOYShopPlugin::invoke("soyshop.mypage", array(
+		$canonical = SOYShopPlugin::invoke("soyshop.mypage", array(
 			"mode" => "canonical"
 		))->getCanonicalUrl();
 		if(!empty($canonical)){
 			$this->getHeadElement()->appendHTML(
-                '<link rel="canonical" href="' . $canonical . '" />' . "\n"
-            );
-        }
+				'<link rel="canonical" href="' . $canonical . '" />' . "\n"
+			);
+		}
 
 		$this->buildModules();
 		//マイページのタイトルフォーマットで置換文字列を使用
@@ -65,19 +62,19 @@ class SOYShop_UserPage extends SOYShopPageBase{
 
 	function display(){
 		ob_start();
-    	parent::display();
-    	$html = ob_get_contents();
-    	ob_end_clean();
+		parent::display();
+		$html = ob_get_contents();
+		ob_end_clean();
 
-    	if(defined("SOYSHOP_IS_MOBILE") && SOYSHOP_IS_MOBILE){
-    		$charset = SOYShop_DataSets::get("config.mypage.mobile.charset","Shift_JIS");
-    	}elseif(defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE){
-    		$charset = SOYShop_DataSets::get("config.mypage.smartphone.charset","UTF-8");
-    	}else{
-    		$charset = SOYShop_DataSets::get("config.mypage.charset","UTF-8");
-    	}
+		if(defined("SOYSHOP_IS_MOBILE") && SOYSHOP_IS_MOBILE){
+			$charset = SOYShop_DataSets::get("config.mypage.mobile.charset","Shift_JIS");
+		}elseif(defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE){
+			$charset = SOYShop_DataSets::get("config.mypage.smartphone.charset","UTF-8");
+		}else{
+			$charset = SOYShop_DataSets::get("config.mypage.charset","UTF-8");
+		}
 
-    	echo mb_convert_encoding($html,$charset,"UTF-8");
+		echo mb_convert_encoding($html,$charset,"UTF-8");
 	}
 
 	function getTemplateFilePath(){
@@ -89,9 +86,9 @@ class SOYShop_UserPage extends SOYShopPageBase{
 		}
 
 		return $templateDir . $this->getMyPageId() . ".html";
-    }
+	}
 
-    /**
+	/**
 	 * キャッシュファイルのパス
 	 *
 	 * @return キャッシュファイルのパス
@@ -102,73 +99,73 @@ class SOYShop_UserPage extends SOYShopPageBase{
 			"cache_" . get_class($this) .'_'. $this->myPageId .'_' . $this->getId() .'_'. $this->getParentPageParam() . md5($this->getClassPath().$this->getTemplateFilePath()) . SOY2HTMLConfig::Language() . $extension;
 	}
 
-    function getMyPageId() {
-    	return $this->myPageId;
-    }
-    function setMyPageId($myPageId) {
-    	$this->myPageId = $myPageId;
-    }
+	function getMyPageId() {
+		return $this->myPageId;
+	}
+	function setMyPageId($myPageId) {
+		$this->myPageId = $myPageId;
+	}
 
-    function getMyPage() {
-    	return $this->myPage;
-    }
-    function setMyPage($myPage) {
-    	$this->myPage = $myPage;
-    }
+	function getMyPage() {
+		return $this->myPage;
+	}
+	function setMyPage($myPage) {
+		$this->myPage = $myPage;
+	}
 
-    function getArgs() {
-    	return $this->args;
-    }
-    function setArgs($args) {
-    	$this->args = $args;
-    }
+	function getArgs() {
+		return $this->args;
+	}
+	function setArgs($args) {
+		$this->args = $args;
+	}
 
-    /**
+	/**
 	 * @param
 	 * @return String ページクラス
-     */
-    function createPagePath(bool $isIndexPage=false){
-    	$arr = array();
-    	$args = $this->getArgs();
+	 */
+	function createPagePath(bool $isIndexPage=false){
+		$arr = array();
+		$args = $this->getArgs();
 
-    	//argsの整理。最後が数字の場合は配列から除く
+		//argsの整理。最後が数字の場合は配列から除く
 		$argsCnt = count($args);
-    	for($i = 0; $i < $argsCnt; ++$i){
-    		if(is_numeric($args[$i])) unset($args[$i]);
-    	}
+		for($i = 0; $i < $argsCnt; ++$i){
+			if(is_numeric($args[$i])) unset($args[$i]);
+		}
 
-    	$count = count($args);
+		$count = count($args);
 
-    	for($i = 0; $i < $count; $i++){
-    		if(!isset($args[$i]) || is_numeric($args[$i])) continue;//念の為、数字はスキップ
+		for($i = 0; $i < $count; $i++){
+			if(!isset($args[$i]) || is_numeric($args[$i])) continue;//念の為、数字はスキップ
 
-    		if($i == ($count-1) && !$isIndexPage){
-    			$arr[] = ucfirst($args[$i]);
-    		}else{
-    			$arr[] = strtolower($args[$i]);
-    		}
-    	}
+			if($i == ($count-1) && !$isIndexPage){
+				$arr[] = ucfirst($args[$i]);
+			}else{
+				$arr[] = strtolower($args[$i]);
+			}
+		}
 
-    	//IndexPage
-    	if($isIndexPage) $arr[] = "Index";
+		//IndexPage
+		if($isIndexPage) $arr[] = "Index";
 
-    	return implode(".", $arr);
-    }
+		return implode(".", $arr);
+	}
 
-    /**
-     * @return Array(numeric)
-     */
-    function getPageArgs(){
-    	$arr = array();
-    	$args = $this->getArgs();
-    	$count = count($args);
+	/**
+	 * @return Array(numeric)
+	 */
+	function getPageArgs(){
+		$arr = array();
+		$args = $this->getArgs();
+		$count = count($args);
 
-    	for($i = 0; $i < $count; ++$i){
-    		if(is_numeric($args[$i])){
-    			$arr[] = $args[$i];
-    		}
-    	}
+		for($i = 0; $i < $count; ++$i){
+			if(is_numeric($args[$i])){
+				$arr[] = $args[$i];
+			}
+		}
 
-    	return $arr;
-    }
+		return $arr;
+	}
 }

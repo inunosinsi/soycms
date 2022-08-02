@@ -8,7 +8,7 @@ class SOYShop_SearchPageBase extends SOYShopPageBase{
 	private $total = 0;
 
 
-	function build($args){
+	function build(array $args){
 
 		$page = $this->getPageObject();
 		$obj = $page->getPageObject();

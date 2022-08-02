@@ -72,22 +72,14 @@ class SOYShopSiteController extends SOY2PageController{
 			self::_onNotFound();
 		}
 
-		//ページ種別によって読み込むページクラスを変える
-		include_page_class($page->getType());
-
 		include_once("controller/output.php");
-
-		try{
-			/*
-				* 出力
-				* soyshop.site.onload
-				* soyshop.site.beforeoutput
-				* soyshop.site.onoutput
-				*/
-			output_page($uri, $args, $page);
-		}catch(Exception $e){
+		$webPage = common_process_before_output($page, $args);
+		if(is_null($webPage) || $webPage->getError() instanceof Exception){
 			self::_onNotFound();
 		}
+
+		output_page($webPage);
+		exit;
     }
 
 	private function _onInternalServerError(){
@@ -106,11 +98,8 @@ class SOYShopSiteController extends SOY2PageController{
 		header("HTTP/1.0 404 Not Found");
 
 		// 404ページを取得し直す
-		$page = soyshop_get_page_object_by_uri(SOYSHOP_404_PAGE_MARKER);
-		
-		include_page_class($page->getType());
 		if(!function_exists("output_page")) include_once("controller/output.php");
-		output_page(SOYShop_Page::NOT_FOUND, array(), $page);
+		output_page(common_process_before_output(soyshop_get_page_object_by_uri(SOYSHOP_404_PAGE_MARKER), array()));
 		exit;
 	}
 }

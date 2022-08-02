@@ -7,9 +7,9 @@ class SOYShop_MemberPageBase extends SOYShopPageBase{
 	private $prevUser;
 	private $currentIndex = 1;
 	private $totalUserCount = 0;
+	private $error;
 
-	function build($args){
-
+	function build(array $args){
 		$page = $this->getPageObject();
 		$obj = $page->getPageObject();
 
@@ -25,58 +25,16 @@ class SOYShop_MemberPageBase extends SOYShopPageBase{
 				try{
 					$user = $userDAO->getById($alias);
 				}catch(Exception $e){
-					header("HTTP/1.0 404 Not Found");
-					echo "error";
-					exit;
+					$this->error = $e;
 				}
 			}
 		}
+		if($this->error instanceof Exception) return;
 
 		$this->setUser($user);
 
 		//現在の商品を保存
 		$obj->setCurrentUser($user);
-
-
-//		try{
-//			$logic = SOY2Logic::createInstance("logic.user.SearchUserUtil");
-//			list($items, $total) = $logic->getById($item->getCategory());
-//			$this->setTotalItemCount($total);
-
-//			$counter = 1;
-//			$prev_item = null;
-//			$next_item = false;
-//			foreach($items as $tmp){
-//				if($tmp->getId() == $item->getId()){
-//					$next_item = true;
-//					continue;
-//				}
-//
-//				if($next_item){
-//					$next_item = $tmp;
-//					break;
-//				}
-//				$prev_item = $tmp;
-//				$counter++;
-//			}
-//
-//			$this->setCurrentIndex($counter);
-//			$this->setPrevItem($prev_item);
-//			if($next_item && $next_item !== true) $this->setNextItem($next_item);
-
-			//keywords
-//			$keywords = $item->getAttribute("keywords");
-//			if(strlen($keywords)) $this->getHeadElement()->insertMeta("keywords", $keywords . ",");
-//
-//			//description
-//			$description = $item->getAttribute("description");
-//			if(strlen($description)) $this->getHeadElement()->insertMeta("description", $description . " ");
-//
-//		}catch(Exception $e){
-//			header("HTTP/1.0 500 Internal Server Error");
-//			echo "error";
-//			exit;
-//		}
 
 		//user
 		$this->createAdd("user", "SOYShop_UserListComponent", array(
@@ -122,6 +80,10 @@ class SOYShop_MemberPageBase extends SOYShopPageBase{
 
 	function getPager(){
 		return new SOYShop_MemberPagePager($this);
+	}
+
+	function getError(){
+		return ($this->error instanceof Exception) ? $this->error : parent::getError();
 	}
 }
 

@@ -1,47 +1,53 @@
 <?php
 /**
- * ページ出力
- * @param String $uri
- * @param Array $args
- * @param WebPage $page
+ * ページ出力前の共通処理
+ * @param page, array
+ * @return webPage
  */
-function output_page(string $uri, array $args, $page){
-    if(DEBUG_MODE) count_timer("Search");
-
-    $webPage = $page->getWebPageObject($args);
-    if(is_null($webPage)) return "";	//名前無しページオブジェクトの取得を試みることがあるので処理を停止する
-	
-    $webPage->setArguments($args);
-
-    /* Event OnLoad */
-    SOYShopPlugin::load("soyshop.site.onload");
-    SOYShopPlugin::invoke("soyshop.site.onload", array("page" => $webPage));
+function common_process_before_output($page, array $args){
+	//ページ種別によって読み込むページクラスを変える
+	include_page_class($page->getType());
+	if(DEBUG_MODE) count_timer("Search");
+	$webPage = $page->getWebPageObject($args);	
+	if(is_null($webPage)) return null; //名前無しページオブジェクトの取得を試みることがあるので処理を停止する
+		
+	$webPage->setArguments($args);
+		
+	/* Event OnLoad */
+	SOYShopPlugin::load("soyshop.site.onload");
+	SOYShopPlugin::invoke("soyshop.site.onload", array("page" => $webPage));
 
 	$webPage->build($args);
-    if(DEBUG_MODE) count_timer("Build");
+	if($webPage->getError() instanceof Exception) return $webPage;
 
-    $webPage->main($args);
-    $webPage->common_execute();
+	if(DEBUG_MODE) count_timer("Build");
 
-    if(DEBUG_MODE) count_timer("Main");
-    if(DEBUG_MODE) append_debug_info($webPage);
+	$webPage->main($args);
+	$webPage->common_execute();
+	
+	if(DEBUG_MODE) count_timer("Main");
+	if(DEBUG_MODE) append_debug_info($webPage);
+	return $webPage;
+}
 
-    /* Event BeforeOutput */
-    SOYShopPlugin::load("soyshop.site.beforeoutput");
-    SOYShopPlugin::invoke("soyshop.site.beforeoutput", array("page" => $webPage));
+/**
+ * ページ出力
+ * @param WebPage $webPage
+ */
+function output_page($webPage){
+	/* Event BeforeOutput */
+	SOYShopPlugin::load("soyshop.site.beforeoutput");
+	SOYShopPlugin::invoke("soyshop.site.beforeoutput", array("page" => $webPage));
 
-    ob_start();
-    $webPage->display();
-    $html = ob_get_contents();
-    ob_end_clean();
+	ob_start();
+	$webPage->display();
+	$html = ob_get_contents();
+	ob_end_clean();
 
-    if(DEBUG_MODE) count_timer("Render");
-    if(DEBUG_MODE) replace_render_time($html);
+	if(DEBUG_MODE) count_timer("Render");
+	if(DEBUG_MODE) replace_render_time($html);
 
-    /* EVENT onOutput */
-    SOYShopPlugin::load("soyshop.site.onoutput");
-    $delegate = SOYShopPlugin::invoke("soyshop.site.onoutput", array("html" => $html, "page" => $webPage));
-    $html = $delegate->getHtml();
-
-    echo $html;
+	/* EVENT onOutput */
+	SOYShopPlugin::load("soyshop.site.onoutput");
+	echo  SOYShopPlugin::invoke("soyshop.site.onoutput", array("html" => $html, "page" => $webPage))->getHtml();
 }

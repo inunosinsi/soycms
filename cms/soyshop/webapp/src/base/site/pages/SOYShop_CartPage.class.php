@@ -58,25 +58,25 @@ class SOYShop_CartPage extends SOYShopPageBase{
 
 	function display(){
 		ob_start();
-    	parent::display();
-    	$html = ob_get_contents();
-    	ob_end_clean();
+		parent::display();
+		$html = ob_get_contents();
+		ob_end_clean();
 
-    	if(defined("SOYSHOP_IS_MOBILE") && SOYSHOP_IS_MOBILE){
-    		$charset = SOYShop_DataSets::get("config.cart.mobile_cart_charset", "Shift_JIS");
-    	}elseif(defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE){
-    		$charset = SOYShop_DataSets::get("config.cart.smartphone_cart_charset", "UTF-8");
-    	}else{
-    		$charset = SOYShop_DataSets::get("config.cart.cart_charset", "UTF-8");
-    	}
+		if(defined("SOYSHOP_IS_MOBILE") && SOYSHOP_IS_MOBILE){
+			$charset = SOYShop_DataSets::get("config.cart.mobile_cart_charset", "Shift_JIS");
+		}elseif(defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE){
+			$charset = SOYShop_DataSets::get("config.cart.smartphone_cart_charset", "UTF-8");
+		}else{
+			$charset = SOYShop_DataSets::get("config.cart.cart_charset", "UTF-8");
+		}
 
-    	echo mb_convert_encoding($html, $charset, "UTF-8");
+		echo mb_convert_encoding($html, $charset, "UTF-8");
 	}
 
 	function getTemplateFilePath(){
 		$templateDir = SOYSHOP_SITE_DIRECTORY . ".template/";
 		return $templateDir . "cart/" . $this->getCartId() . ".html";
-    }
+	}
 
 	/**
 	 * キャッシュファイルのパス
@@ -89,15 +89,15 @@ class SOYShop_CartPage extends SOYShopPageBase{
 			"cache_" . get_class($this) . '_' . $this->cartId . '_' . $this->getId() .'_' . $this->getParentPageParam() . md5($this->getClassPath() . $this->getTemplateFilePath()) . SOY2HTMLConfig::Language() . $extension;
 	}
 
-    function getCartId() {
-    	return $this->cartId;
-    }
-    function setCartId($cartId) {
-    	$this->cartId = $cartId;
-    }
+	function getCartId() {
+		return $this->cartId;
+	}
+	function setCartId($cartId) {
+		$this->cartId = $cartId;
+	}
 
-    function getCartURL(){
-    	$this->checkSSL();
-    	return soyshop_get_cart_url(false, true);
-    }
+	function getCartURL(){
+		$this->checkSSL();
+		return soyshop_get_cart_url(false, true);
+	}
 }

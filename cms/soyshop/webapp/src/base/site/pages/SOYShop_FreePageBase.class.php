@@ -2,9 +2,15 @@
 
 class SOYShop_FreePageBase extends SOYShopPageBase{
 
-	function build($args){
+	private $error;
+
+	function build(array $args){
 		$page = $this->getPageObject();
-		if(!$page instanceof SOYShop_Page) throw new Exception("failed SOYShop_Page Object on SOYShop_FreePageBase");
+		if(!$page instanceof SOYShop_Page) {
+			$this->error = new Exception("failed SOYShop_Page Object on SOYShop_FreePageBase");
+			return;
+		}
+		
 		$obj = $page->getPageObject();
 
 		$this->addLabel("free_title", array(
@@ -26,6 +32,10 @@ class SOYShop_FreePageBase extends SOYShopPageBase{
 			"page" => $this,
 			"soy2prefix" => "cms"
 		));
+	}
+
+	function getError(){
+		return ($this->error instanceof Exception) ? $this->error : parent::getError();
 	}
 }
 

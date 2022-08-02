@@ -3,8 +3,8 @@
 class SOYShop_ComplexPageBase extends SOYShopPageBase{
 
 	private $logic;
-
-	function build($args){
+	
+	function build(array $args){
 		if($this->getPageObject() instanceof SOYShop_Page){
 			$obj = $this->getPageObject()->getPageObject();
 
@@ -26,11 +26,9 @@ class SOYShop_ComplexPageBase extends SOYShopPageBase{
 				}
 			}
 		}
-
 	}
 
 	private function getItems(SOYShop_ComplexPageBlock $block){
-
 		$isAnd = $block->isAndCustomFieldCordination();
 
 		//表示件数が無記入だった場合、1～10件を表示する
