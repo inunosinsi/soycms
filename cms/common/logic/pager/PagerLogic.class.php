@@ -63,7 +63,7 @@ class PagerLogic extends SOY2LogicBase{
 
 	function getNextParam(){
 		$link = ($this->total > $this->end) ? $this->pageURL . ($this->page + 1) : $this->pageURL . $this->page;
-		if(strlen($this->getQuery()))$link .= "?" . $this->getQuery();
+		if(is_string($this->getQuery()) && strlen($this->getQuery())) $link .= "?" . $this->getQuery();
 
 		return array(
     		"link" => $link,
@@ -72,7 +72,7 @@ class PagerLogic extends SOY2LogicBase{
 	}
 	function getPrevParam(){
 		$link = ($this->page > 1) ? $this->pageURL . ($this->page - 1) : $this->pageURL . ($this->page);
-		if(strlen($this->getQuery())) $link .= "?" . $this->getQuery();
+		if(is_string($this->getQuery()) && strlen($this->getQuery())) $link .= "?" . $this->getQuery();
 		return array(
     		"link" => $link,
     		"class" => ($this->page <= 1) ? "pager_disable" : ""
@@ -170,7 +170,7 @@ class PagerLogic extends SOY2LogicBase{
 	}
 
 	function getQuery() {
-		return $this->query;
+		return (is_string($this->query)) ? $this->query : "";
 	}
 	function setQuery($query) {
 		$this->query = $query;
