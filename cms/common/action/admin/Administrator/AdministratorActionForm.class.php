@@ -37,7 +37,4 @@ class AdministratorActionForm extends SOY2ActionForm{
 	function setEmail($value){
 		$this->email = $value;
 	}
-
-
 }
-?>

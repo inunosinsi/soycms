@@ -70,7 +70,4 @@ class ChangePasswordActionForm extends SOY2ActionForm{
 	function setNewPasswordConfirm($newPasswordConfirm) {
 		$this->newPasswordConfirm = $newPasswordConfirm;
 	}
-
 }
-
-?>
