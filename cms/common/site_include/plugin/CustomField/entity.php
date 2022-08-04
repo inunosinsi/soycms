@@ -30,6 +30,9 @@ class CustomField{
 	//入力欄の表示/非表示
 	private $showInput = true;
 
+	//記事検索の設定 記事検索の項目にするか？
+	private $isSearchItem = false;
+
 	//ラベルIDとの関連付け
 	private $labelId;
 	private $labelIds;
@@ -92,6 +95,12 @@ class CustomField{
 	}
 	function setOption($option) {
 		$this->option = $option;
+	}
+	function getIsSearchItem(){
+		return $this->isSearchItem;
+	}
+	function setIsSearchItem($isSearchItem){
+		$this->isSearchItem = $isSearchItem;
 	}
 	function getLabelId() {
 		return $this->labelId;

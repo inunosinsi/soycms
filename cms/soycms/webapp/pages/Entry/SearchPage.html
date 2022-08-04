@@ -81,25 +81,29 @@
 								</tr>
 								<!-- soy:display="customfield_advanced_items" -->
 								<tr>
-									<th>カスタムフィールド</th>
+									<th nowrap>カスタムフィールド</th>
 									<td>
 										<table>
-											<!-- soy:id="customfield_list" -->
 											<tr>
-												<th>
+												<!-- soy:id="customfield_list" -->
+												<th style="padding:5px;">
 													<!-- soy:id="field_label" /-->
 												</th>
-												<td>
+												<td soy:id="colspan_last">
 													<input type="text" class="form-control" soy:id="field_input">
 												</td>
+											<!-- soy:id="loop" step="2" -->
 											</tr>
-											<!-- /soy:id="customfield_list" -->
+											<tr>
+											<!-- /soy:id="loop" -->
+												<!-- /soy:id="customfield_list" -->
+											</tr>
 										</table>
 									</td>
 								</tr>
 								<!-- /soy:display="customfield_advanced_items" -->
 								<tr>
-									<th>検索結果の並び順</th>
+									<th nowrap>検索結果の並び順</th>
 									<td>
 										<input type="radio" soy:id="sort_type_cdate">&nbsp;
 										<input type="radio" soy:id="sort_type_udate"><br>

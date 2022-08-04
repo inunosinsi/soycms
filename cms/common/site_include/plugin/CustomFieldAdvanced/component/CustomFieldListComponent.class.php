@@ -115,6 +115,12 @@ class CustomFieldListComponent extends HTMLList {
 			"selected" => (is_string($entity->getLabelId()) && strlen($entity->getLabelId()) || count($entity->getLabelIds())),
 			"label" => "ラベルと連動",
 		));
+		$this->addCheckBox("is_search_item", array(
+			"name" => "config[isSearchItem]",
+			"value" => 1,
+			"selected" => ($entity->getIsSearchItem()),
+			"label" => "記事検索の項目にする"
+		));
 		$this->addSelect("labels", array(
 			"options" => $this->labels,
 			"property" => "caption",

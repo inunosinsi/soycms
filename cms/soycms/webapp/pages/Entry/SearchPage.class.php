@@ -222,11 +222,13 @@ class SearchPage extends CMSWebPageBase{
 
 		//カスタムフィールドアドバンスド
 		$cfaItems = self::_getCustomFieldItems();
-		DisplayPlugin::toggle("customfield_advanced_items", count($cfaItems));
+		$cfaCnt = count($cfaItems);
+		DisplayPlugin::toggle("customfield_advanced_items", $cfaCnt);
 
 		$this->createAdd("customfield_list", "_component.Entry.SearchCustomfieldListComponent", array(
 			"list" => $cfaItems,
-			"conditions" => (isset($_GET["customfield"]) && is_array($_GET["customfield"])) ? $_GET["customfield"] : array()
+			"conditions" => (isset($_GET["customfield"]) && is_array($_GET["customfield"])) ? $_GET["customfield"] : array(),
+			"last" => $cfaCnt
 		));
 
 		$this->addCheckBox("sort_type_cdate", array(
@@ -267,6 +269,7 @@ class SearchPage extends CMSWebPageBase{
 				
 		$items = array();
 		foreach($advObj->customFields as $fieldId => $field){
+			if(!$field->getIsSearchItem()) continue;
 			$items[$fieldId] = $field->getLabel();
 		}
 
