@@ -13,7 +13,7 @@ class SearchAction extends SOY2Action{
     	$entries = self::searchEntries((string)$form->getFreeword_text(),array(
     		"op" => $form->getLabelOperator(),
     		"labels" => $form->getLabel()
-       	), $form->getCdate(), $form->getUdate(), $form->getSort(), $form->getCustomFields());
+       	), $form->getCdate(), $form->getUdate(), $form->getSort(), $form->getCustomFields(), $form->getSearchFields());
 
     	$count = $this->totalCount;
 
@@ -32,12 +32,12 @@ class SearchAction extends SOY2Action{
 		$this->setAttribute("form",$form);
     }
 
-    private function searchEntries(string $freewordText, array $label, array $cdate, array $udate, array $sort, array $customfields=array(), $others = null){
+    private function searchEntries(string $freewordText, array $label, array $cdate, array $udate, array $sort, array $customfields=array(), array $searchfields=array(), $others = null){
     	$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
     	$dao = SOY2DAOFactory::create("LabeledEntryDAO");
     	$dao->setLimit($this->limit);
     	$dao->setOffset($this->offset);
-
+		
     	$query = new SOY2DAO_Query();
     	$query->prefix = "select";
 		$query->distinct = true;
@@ -147,7 +147,8 @@ class SearchAction extends SOY2Action{
 			foreach($customfields as $fieldId => $fieldValue){
 				$fieldValue = trim($fieldValue);
 				if(!strlen($fieldValue)) continue;
-				$queries[] = "(entry_field_id = '" . trim($fieldId) . "' AND entry_value LIKE '%" . htmlspecialchars($fieldValue, ENT_QUOTES, "UTF-8") . "%')";
+				$queries[] = "(entry_field_id = '" . trim($fieldId) . "' AND entry_value LIKE :cfa" . $fieldId . ")";
+				$binds[":cfa".$fieldId] = "%" . htmlspecialchars($fieldValue, ENT_QUOTES, "UTF-8") . "%";
 			}
 			
 			if(count($queries)){
@@ -160,6 +161,42 @@ class SearchAction extends SOY2Action{
 				$where[] = 'Entry.id IN ('.$customQuery.')';
 			}
 		}
+
+		if(count($searchfields)){
+			$queries = array();
+			foreach($searchfields as $fieldId => $fieldValue){
+				if(is_string($fieldValue)){
+					$fieldValue = trim($fieldValue);
+					if(!strlen($fieldValue)) continue;
+					$queries[] = $fieldId . " LIKE :csf" . $fieldId;
+					$binds[":csf".$fieldId] = "%" . htmlspecialchars($fieldValue, ENT_QUOTES, "UTF-8") . "%";
+				}else if(is_array($fieldValue)){
+					$keys = array_keys($fieldValue);
+					if($keys[0] == "start"){	//range
+						if(is_numeric($fieldValue["start"])) $queries[] = $fieldId . " >= " . (int)$fieldValue["start"];
+						if(is_numeric($fieldValue["end"])) $queries[] = $fieldId . " <= " . (int)$fieldValue["end"];
+					}else{	//checkbox
+						if(count($fieldValue)){
+							foreach($fieldValue as $idx => $fieldV){
+								$queries[] = $fieldId . " LIKE :csf".$fieldId.$idx;
+								$binds[":csf".$fieldId.$idx] = "%" . htmlspecialchars($fieldV, ENT_QUOTES, "UTF-8") . "%";
+							}
+						}
+					}
+				}
+			}
+			
+			if(count($queries)){
+				$customQuery = new SOY2DAO_Query();
+				$customQuery->prefix = "select";
+				$customQuery->sql = "entry_id";
+				$customQuery->table = "EntryCustomSearch";
+				$customQuery->distinct = true;
+				$customQuery->where = implode(" AND ", $queries);
+				$where[] = 'Entry.id IN ('.$customQuery.')';
+			}
+		}
+		
 
 		$query->where = implode(" AND ",$where);
 
@@ -210,6 +247,7 @@ class SearchActionForm extends SOY2ActionForm{
 	private $udate=array();
 	private $sort=array();
 	private $customfields;
+	private $searchfields;
 	private $limit;
 	private $offset;
 
@@ -273,6 +311,27 @@ class SearchActionForm extends SOY2ActionForm{
 		}
 
 		$this->customfields = $customfields;
+	}
+
+	function getSearchFields(){
+		if(!is_array($this->searchfields) && isset($_COOKIE["ENTRY_SEARCH_SEARCHFIELDS"])){
+			$this->customfields = soy2_unserialize($_COOKIE["ENTRY_SEARCH_SEARCHFIELDS"]);
+		}
+		if(!is_array($this->searchfields)) $this->searchfields = array();
+		return $this->searchfields;
+	}
+
+	function setSearchfields($searchfields){
+		if(isset($_GET["searchfield"]) && is_array($_GET["searchfield"])){
+			soy2_setcookie("ENTRY_SEARCH_SEARCHFIELDS", soy2_serialize($_GET["searchfield"]));
+			$searchfields = $_GET["searchfield"];
+		}
+
+		if(is_null($searchfields) && isset($_COOKIE["ENTRY_SEARCH_SEARCHFIELDS"])){
+			$searchfields = soy2_unserialize($_COOKIE["ENTRY_SEARCH_SEARCHFIELDS"]);
+		}
+
+		$this->searchfields = $searchfields;
 	}
 
 	function getFreeword_text(){

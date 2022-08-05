@@ -29,14 +29,11 @@
 								<tr>
 									<th style="min-width:8em;">文字列検索</th>
 									<td>
-										<div class="input-group">
-											<input class="form-control" type="text" name="freeword_text"
-												soy:id="freewordText">
-											<span class="input-group-btn">
-												<button class="btn btn-success" id="search_button"><i
-														class="fa fa-search"></i>&nbsp;検索</button>
-											</span>
-										</div>
+										<input class="form-control" type="text" name="freeword_text"
+											soy:id="freewordText">
+										<span class="input-group-btn">
+											
+										</span>
 									</td>
 								</tr>
 								<tr>
@@ -89,7 +86,7 @@
 												<th style="padding:5px;">
 													<!-- soy:id="field_label" /-->
 												</th>
-												<td soy:id="colspan_last">
+												<td soy:id="colspan_last" class="form-inline">
 													<input type="text" class="form-control" soy:id="field_input">
 												</td>
 											<!-- soy:id="loop" step="2" -->
@@ -102,6 +99,29 @@
 									</td>
 								</tr>
 								<!-- /soy:display="customfield_advanced_items" -->
+								<!-- soy:display="custom_search_field_items" -->
+								<tr>
+									<th nowrap>サーチフィールド</th>
+									<td>
+										<table>
+											<tr>
+												<!-- soy:id="custom_search_field_list" -->
+												<th style="padding:5px;">
+													<!-- soy:id="field_label" /-->
+												</th>
+												<td soy:id="colspan_last" class="form-inline">
+													<!-- soy:id="field_input_html" /-->
+												</td>
+											<!-- soy:id="loop" step="2" -->
+											</tr>
+											<tr>
+											<!-- /soy:id="loop" -->
+												<!-- /soy:id="custom_search_field_list" -->
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<!-- /soy:display="custom_search_field_items" -->
 								<tr>
 									<th nowrap>検索結果の並び順</th>
 									<td>
@@ -112,6 +132,12 @@
 									</td>
 								</tr>
 							</table>
+							<div class="text-center">
+								<button class="btn btn-success btn-lg" id="search_button"><i
+									class="fa fa-search"></i>&nbsp;検索</button>&nbsp;
+								<a soy:link="Entry.Search" class="btn btn-warning btn-lg">リセット</a>
+							</div>
+							<br>
 						</div>
 					</div>
 					<!-- /.col-lg-12 -->

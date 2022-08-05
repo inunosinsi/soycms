@@ -50,6 +50,15 @@ class CustomSearchFieldListComponent extends HTMLList{
             "onclick"=>'if(confirm("delete \"' . $entity["label"] . '\"?")){$(\'#delete_submit_' . $key . '\').click();}return false;'
         ));
 
+        /** 詳細設定 */
+
+        $this->addCheckBox("is_search_item", array(
+			"name" => "config[isSearchItem]",
+			"value" => 1,
+            "selected" => (isset($entity["isSearchItem"]) && (int)$entity["isSearchItem"] === 1),
+			"label" => "記事検索の項目にする"
+		));
+
         $this->addModel("with_options", array(
             "visible" => (isset($entity["type"])) ? self::_checkDisplayOptionsForm($entity["type"]) : false
         ));

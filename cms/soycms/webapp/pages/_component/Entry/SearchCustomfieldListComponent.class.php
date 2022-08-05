@@ -17,7 +17,7 @@ class SearchCustomfieldListComponent extends HTMLList{
 		));
 
 		$this->addInput("field_input", array(
-			"name" => "customfield[" . (string)$key . "]",
+			"name" => "customfield[" . $fieldId . "]",
 			"value" => (is_array($this->conditions) && strlen($fieldId) && isset($this->conditions[$fieldId])) ? $this->conditions[$fieldId] : ""
 		));
 	}

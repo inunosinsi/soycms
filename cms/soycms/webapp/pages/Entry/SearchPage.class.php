@@ -231,6 +231,17 @@ class SearchPage extends CMSWebPageBase{
 			"last" => $cfaCnt
 		));
 
+		$csfItems = self::_getCustomSearchFieldItems();
+		$csfCnt = count($csfItems);
+		DisplayPlugin::toggle("custom_search_field_items", $csfCnt);
+
+		$this->createAdd("custom_search_field_list", "_component.Entry.SearchCustomSearchfieldListComponent", array(
+			"list" => $csfItems,
+			"conditions" => (isset($_GET["searchfield"]) && is_array($_GET["searchfield"])) ? $_GET["searchfield"] : array(),
+			"last" => $csfCnt,
+			"configs" => ($csfCnt > 0) ? CustomSearchFieldUtil::getConfig() : array()
+		));
+
 		$this->addCheckBox("sort_type_cdate", array(
 			"name" => "sort[type]",
 			"value" => "cdate",
@@ -271,6 +282,22 @@ class SearchPage extends CMSWebPageBase{
 		foreach($advObj->customFields as $fieldId => $field){
 			if(!$field->getIsSearchItem()) continue;
 			$items[$fieldId] = $field->getLabel();
+		}
+
+		return $items;
+	}
+
+	private function _getCustomSearchFieldItems(){
+		if(!file_exists(UserInfoUtil::getSiteDirectory() . ".plugin/CustomSearchField.active")) return array();
+		SOY2::import("site_include.plugin.CustomSearchField.util.CustomSearchFieldUtil");
+		$cnfs = CustomSearchFieldUtil::getConfig();
+		if(!count($cnfs)) return array();
+				
+		$items = array();
+		foreach($cnfs as $fieldId => $field){
+			if(!isset($field["label"])) continue;
+			if(!isset($field["isSearchItem"]) || (int)$field["isSearchItem"] != 1) continue;
+			$items[$fieldId] = array("label" => $field["label"], "type" => $field["type"]);
 		}
 
 		return $items;
