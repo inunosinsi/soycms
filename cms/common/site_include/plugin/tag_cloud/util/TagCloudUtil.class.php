@@ -16,6 +16,7 @@ class TagCloudUtil {
 
 	public static function saveConfig(array $values){
 		if(isset($values["tags"]) && strlen($values["tags"])) $values["tags"] = self::_shapeTags($values["tags"]);
+		$values["isSearchItem"] = (isset($values["isSearchItem"])) ? (int)$values["isSearchItem"] : 0;
 		SOY2::import("domain.cms.DataSets");
 		DataSets::put("tag_cloud.config", $values);
 	}

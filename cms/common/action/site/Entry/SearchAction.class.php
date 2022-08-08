@@ -13,7 +13,7 @@ class SearchAction extends SOY2Action{
     	$entries = self::searchEntries((string)$form->getFreeword_text(),array(
     		"op" => $form->getLabelOperator(),
     		"labels" => $form->getLabel()
-       	), $form->getCdate(), $form->getUdate(), $form->getSort(), $form->getCustomFields(), $form->getSearchFields());
+       	), $form->getCdate(), $form->getUdate(), $form->getSort(), $form->getCustomFields(), $form->getSearchFields(), $form->getTagCloudTags());
 
     	$count = $this->totalCount;
 
@@ -32,7 +32,7 @@ class SearchAction extends SOY2Action{
 		$this->setAttribute("form",$form);
     }
 
-    private function searchEntries(string $freewordText, array $label, array $cdate, array $udate, array $sort, array $customfields=array(), array $searchfields=array(), $others = null){
+    private function searchEntries(string $freewordText, array $label, array $cdate, array $udate, array $sort, array $customfields=array(), array $searchfields=array(), array $tagCloudTags, $others = null){
     	$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
     	$dao = SOY2DAOFactory::create("LabeledEntryDAO");
     	$dao->setLimit($this->limit);
@@ -196,6 +196,22 @@ class SearchAction extends SOY2Action{
 				$where[] = 'Entry.id IN ('.$customQuery.')';
 			}
 		}
+
+		//タグクラウド
+		if(count($tagCloudTags)){
+			$queries = array();
+			foreach($tagCloudTags as $tagId){
+				$queries[] = "word_id = " . (int)$tagId;
+			}
+
+			$tagQuery = new SOY2DAO_Query();
+			$tagQuery->prefix = "select";
+			$tagQuery->sql = "entry_id";
+			$tagQuery->table = "TagCloudLinking";
+			$tagQuery->distinct = true;
+			$tagQuery->where = implode(" AND ", $queries);
+			$where[] = 'Entry.id IN ('.$tagQuery.')';
+		}
 		
 
 		$query->where = implode(" AND ",$where);
@@ -248,6 +264,7 @@ class SearchActionForm extends SOY2ActionForm{
 	private $sort=array();
 	private $customfields;
 	private $searchfields;
+	private $tagCloudTags;
 	private $limit;
 	private $offset;
 
@@ -332,6 +349,25 @@ class SearchActionForm extends SOY2ActionForm{
 		}
 
 		$this->searchfields = $searchfields;
+	}
+
+	function getTagCloudTags(){
+		if(!is_array($this->tagCloudTags) && isset($_COOKIE["ENTRY_SEARCH_TAG_CLOUD"]) && is_string($_COOKIE["ENTRY_SEARCH_TAG_CLOUD"])){
+			$this->tagCloudTags = explode(",", $_COOKIE["ENTRY_SEARCH_TAG_CLOUD"]);
+		}
+		if(!is_array($this->tagCloudTags)) $this->tagCloudTags = array();
+		return $this->tagCloudTags;
+	}
+	function setTagCloudTags($tagCloudTags){
+		if(isset($_GET["tag_cloud"]) && is_string($_GET["tag_cloud"])){
+			soy2_setcookie("ENTRY_SEARCH_TAG_CLOUD", $_GET["tag_cloud"]);
+			$tagCloudTags = explode(",", $_GET["tag_cloud"]);
+		}
+
+		if(is_null($tagCloudTags) && isset($_COOKIE["ENTRY_SEARCH_TAG_CLOUD"])){
+			$tagCloudTags = soy2_unserialize($_COOKIE["ENTRY_SEARCH_TAG_CLOUD"]);
+		}
+		$this->tagCloudTags = $tagCloudTags;
 	}
 
 	function getFreeword_text(){

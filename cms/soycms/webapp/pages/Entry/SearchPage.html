@@ -60,22 +60,6 @@
 										<!-- /soy:id="label_list" -->
 									</td>
 								</tr>
-								<tr>
-									<th>作成日時</th>
-									<td class="form-inline">
-										<input type="text" class="datepicker form-control" soy:id="cdate_start">
-										&nbsp;〜&nbsp;
-										<input type="text" class="datepicker form-control" soy:id="cdate_end">
-									</td>
-								</tr>
-								<tr>
-									<th>更新日時</th>
-									<td class="form-inline">
-										<input type="text" class="datepicker form-control" soy:id="udate_start">
-										&nbsp;〜&nbsp;
-										<input type="text" class="datepicker form-control" soy:id="udate_end">
-									</td>
-								</tr>
 								<!-- soy:display="customfield_advanced_items" -->
 								<tr>
 									<th nowrap>カスタムフィールド</th>
@@ -122,6 +106,33 @@
 									</td>
 								</tr>
 								<!-- /soy:display="custom_search_field_items" -->
+								<!-- soy:display="tag_cloud_items" -->
+								<tr>
+									<th nowrap>タグクラウド</th>
+									<td>
+										<!-- soy:id="tag_cloud_tag_list" -->
+										<a soy:id="tag">tag</a>
+										<!-- /soy:id="tag_cloud_tag_list" -->
+										<input type="hidden" name="tag_cloud" id="tag_cloud" soy:id="tag_cloud_hidden">
+									</td>
+								</tr>
+								<!-- /soy:display="tag_cloud_items" -->
+								<tr>
+									<th>作成日時</th>
+									<td class="form-inline">
+										<input type="text" class="datepicker form-control" soy:id="cdate_start">
+										&nbsp;〜&nbsp;
+										<input type="text" class="datepicker form-control" soy:id="cdate_end">
+									</td>
+								</tr>
+								<tr>
+									<th>更新日時</th>
+									<td class="form-inline">
+										<input type="text" class="datepicker form-control" soy:id="udate_start">
+										&nbsp;〜&nbsp;
+										<input type="text" class="datepicker form-control" soy:id="udate_end">
+									</td>
+								</tr>
 								<tr>
 									<th nowrap>検索結果の並び順</th>
 									<td>
@@ -295,7 +306,34 @@
 			"dateFormat":"yy/mm/dd"
 		  });
 		} );
+		function toggle_on_tag_cloud(tagId){
+			var $anchor = $("#tag_cloud_" + tagId);
+			if($anchor.hasClass("btn-default")){	//未選択
+				$anchor.removeClass("btn-default");
+				$anchor.addClass("btn-primary");
+			} else {	//選択
+				$anchor.removeClass("btn-primary");
+				$anchor.addClass("btn-default");
+			}
+
+			//tag_cloudの値を更新
+			var $tagCloudIpt = $("#tag_cloud");
+			$tagCloudIpt.val("");
+
+			var selected = [];
+			$(".tag_cloud_anchor").each(function(){
+				if($(this).hasClass("btn-primary")){
+					selected.push($(this).prop("id").replace("tag_cloud_", ""));
+				}
+			});
+			$tagCloudIpt.val(selected.join(","));
+		}
 	</script>
 </body>
+<style>
+	.btn-default{
+		color:#000000 !important;
+	}
+</style>
 
 </html>

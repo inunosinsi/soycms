@@ -231,6 +231,7 @@ class SearchPage extends CMSWebPageBase{
 			"last" => $cfaCnt
 		));
 
+		// カスタムサーチフィールド
 		$csfItems = self::_getCustomSearchFieldItems();
 		$csfCnt = count($csfItems);
 		DisplayPlugin::toggle("custom_search_field_items", $csfCnt);
@@ -240,6 +241,22 @@ class SearchPage extends CMSWebPageBase{
 			"conditions" => (isset($_GET["searchfield"]) && is_array($_GET["searchfield"])) ? $_GET["searchfield"] : array(),
 			"last" => $csfCnt,
 			"configs" => ($csfCnt > 0) ? CustomSearchFieldUtil::getConfig() : array()
+		));
+
+		// タグクラウド
+		$tags = self::_getTagCloudTags();
+		DisplayPlugin::toggle("tag_cloud_items", count($tags));
+
+		$this->createAdd("tag_cloud_tag_list", "_component.Entry.SearchTagCloudTagListComponent", array(
+			"list" => $tags,
+			"conditions" => (isset($_GET["tag_cloud"]) && is_string($_GET["tag_cloud"])) ? explode(",", $_GET["tag_cloud"]) : array()
+		));
+
+		$this->addInput("tag_cloud_hidden", array(
+			"type" => "hidden",
+			"name" => "tag_cloud",
+			"value" => (isset($_GET["tag_cloud"]) && is_string($_GET["tag_cloud"])) ? $_GET["tag_cloud"] : "",
+			"attr:id" => "tag_cloud"
 		));
 
 		$this->addCheckBox("sort_type_cdate", array(
@@ -301,6 +318,24 @@ class SearchPage extends CMSWebPageBase{
 		}
 
 		return $items;
+	}
+
+	/**
+	 * @return array
+	 */
+	private function _getTagCloudTags(){
+		if(!file_exists(UserInfoUtil::getSiteDirectory() . ".plugin/TagCloud.active")) return array();
+
+		SOY2::import("site_include.plugin.tag_cloud.util.TagCloudUtil");
+		$cnf = TagCloudUtil::getConfig();
+		if(!isset($cnf["isSearchItem"]) || (int)$cnf["isSearchItem"] !== 1) return array();
+
+		SOY2::import("site_include.plugin.tag_cloud.domain.TagCloudDictionaryDAO");
+		try{
+			return SOY2DAOFactory::create("TagCloudDictionaryDAO")->get();
+		}catch(Exception $e){
+			return array();
+		}
 	}
 
 	/**

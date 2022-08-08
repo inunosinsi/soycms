@@ -16,6 +16,8 @@ abstract class TagCloudDictionaryDAO extends SOY2DAO{
 	 */
 	abstract function update(TagCloudDictionary $bean);
 
+	abstract function get();
+
 	/**
 	 * @return object
 	 */

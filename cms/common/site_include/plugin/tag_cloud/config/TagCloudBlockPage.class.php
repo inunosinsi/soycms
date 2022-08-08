@@ -21,6 +21,12 @@ class TagCloudBlockPage extends WebPage{
 
 		$this->addForm("form");
 
+		$this->addCheckBox("is_search_item", array(
+			"name" => "Config[isSearchItem]",
+			"value" => 1,
+			"selected" => (isset($cnf["isSearchItem"]) && (int)$cnf["isSearchItem"] === 1)
+		));
+		
 		$this->addInput("rank_divide", array(
 			"name" => "Config[divide]",
 			"value" => (isset($cnf["divide"])) ? (int)$cnf["divide"] : 10,
