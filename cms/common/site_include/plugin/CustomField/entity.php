@@ -234,7 +234,7 @@ class CustomField{
 			case "select":
 			case "pair":
 				$options = explode("\n",str_replace(array("\r\n","\r"),"\n",$this->option));
-				$value = (is_null($fieldValue)) ? $this->getDefaultValue() : $fieldValue ;
+				$value = (is_null($fieldValue)) ? (string)$this->getDefaultValue() : $fieldValue ;
 
 				$body = '<div class="form-inline">' . "\n";
 				$body .= "\t" . '<select class="cstom_field_select form-control" name="'.$h_formName.'" id="'.$h_formID.'">' . "\n";
@@ -254,7 +254,7 @@ class CustomField{
 				break;
 			case "textarea":
 				if(is_null($fieldValue)) $fieldValue = $this->getDefaultValue();
-				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
+				$h_value = htmlspecialchars((string)$fieldValue,ENT_QUOTES,"UTF-8");
 				$body = '<textarea class="custom_field_textarea form-control" style="width:100%;"'
 				        .' id="'.$h_formID.'"'
 				        .' name="'.$h_formName.'"'
@@ -263,7 +263,7 @@ class CustomField{
 				break;
 			case "richtext":
 				if(is_null($fieldValue)) $fieldValue = $this->getDefaultValue();
-				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
+				$h_value = htmlspecialchars((string)$fieldValue,ENT_QUOTES,"UTF-8");
 				$body = '<textarea class="custom_field_textarea mceEditor" style="width:100%;"'
 				        .' id="'.$h_formID.'"'
 				        .' name="'.$h_formName.'"'
@@ -272,7 +272,7 @@ class CustomField{
 				break;
 			case "image":
 			case "file":
-				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
+				$h_value = htmlspecialchars((string)$fieldValue,ENT_QUOTES,"UTF-8");
 				$body = '<input type="text" class="custom_field_input" style="width:50%"'
 				       .' id="'.$h_formID.'"'
 				       .' name="'.$h_formName.'"'
@@ -463,7 +463,7 @@ class CustomField{
 	}
 
 	function getDefaultValue() {
-		return (is_string($this->defaultValue)) ? $this->defaultValue : "";
+		return (is_string($this->defaultValue)) ? (string)$this->defaultValue : "";
 	}
 	function setDefaultValue($defaultValue) {
 		$this->defaultValue = $defaultValue;

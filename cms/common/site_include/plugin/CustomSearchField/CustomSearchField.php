@@ -5,6 +5,7 @@ CustomSearchFieldPlugin::register();
 class CustomSearchFieldPlugin{
 
 	const PLUGIN_ID = "CustomSearchField";
+	const GLOBAL_INDEX = "customsearchfield_acceleration_key";
 
 	function getId(){
 		return self::PLUGIN_ID;
@@ -17,7 +18,7 @@ class CustomSearchFieldPlugin{
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co",
 			"mail" => "tsuyoshi@saitodev.co",
-			"version"=>"0.10"
+			"version"=>"0.12"
 		));
 
 		//プラグイン アクティブ
@@ -40,6 +41,7 @@ class CustomSearchFieldPlugin{
 
 			//公開側
 			}else{
+				CMSPlugin::setEvent('onEntryListBeforeOutput', self::PLUGIN_ID, array($this, "onEntryListBeforeOutput"));
 				CMSPlugin::setEvent('onEntryOutput', self::PLUGIN_ID, array($this, "onEntryOutput"));
 				CMSPlugin::setEvent('onPageOutput', self::PLUGIN_ID, array($this, "onPageOutput"));
 			}
@@ -53,17 +55,34 @@ class CustomSearchFieldPlugin{
 	}
 
 	/**
+	 * onEntryListBeforeOutput
+	 */
+	function onEntryListBeforeOutput($arg){
+		$entries = &$arg["entries"];
+		$entryIds = soycms_get_entry_id_by_entries($entries);
+		
+		// カスタムサーチフィールドの値を一気に取得
+		$arr = self::_logic()->getByEntryIds($entryIds);
+		if(count($arr)){
+			$GLOBALS[self::GLOBAL_INDEX] = array();
+			foreach($arr as $entryId => $values){
+				$GLOBALS[self::GLOBAL_INDEX][$entryId] = $values;
+			}
+		}
+	}
+
+	/**
 	 * onEntryOutput
 	 */
 	function onEntryOutput($arg){
-		$entryId = $arg["entryId"];
+		$entryId = (int)$arg["entryId"];
 		$htmlObj = $arg["SOY2HTMLObject"];
-
-		$values = SOY2Logic::createInstance("site_include.plugin.CustomSearchField.logic.DataBaseLogic")->getByEntryId($entryId);
-
-		$configs = CustomSearchFieldUtil::getConfig();
-		if(isset($configs) && count($configs)){
-			foreach($configs as $key => $field){
+	
+		$values = ($entryId > 0) ? self::_getFieldValues($entryId) : array();
+		
+		$cnfs= CustomSearchFieldUtil::getConfig();
+		if(isset($cnfs) && count($cnfs)){
+			foreach($cnfs as $key => $field){
 
 				$csfValue = (isset($values[$key])) ? $values[$key] : "";
 				if(isset($csfValue) && $field["type"] == CustomSearchFieldUtil::TYPE_TEXTAREA){
@@ -119,6 +138,14 @@ class CustomSearchFieldPlugin{
 				}
 			}
 		}
+	}
+
+	/**
+	 * @param int
+	 * @return array
+	 */
+	private function _getFieldValues(int $entryId){
+		return (isset($GLOBALS[self::GLOBAL_INDEX][$entryId])) ? $GLOBALS[self::GLOBAL_INDEX][$entryId] : self::_logic()->getByEntryId($entryId);
 	}
 
 	function onPageOutput($obj){
@@ -223,9 +250,8 @@ class CustomSearchFieldPlugin{
 	 */
 	function onEntryUpdate($arg){
 		if(isset($_POST["custom_search"])){
-			$arg = SOY2PageController::getArguments();
-			$entryId = (isset($arg[0])) ? (int)$arg[0] : null;
-			SOY2Logic::createInstance("site_include.plugin.CustomSearchField.logic.DataBaseLogic")->save($entryId, $_POST["custom_search"]);
+			$entry = $arg["entry"];
+			SOY2Logic::createInstance("site_include.plugin.CustomSearchField.logic.DataBaseLogic")->save((int)$entry->getId(), $_POST["custom_search"]);
         }
 
 		return true;
@@ -245,7 +271,7 @@ class CustomSearchFieldPlugin{
 	 */
 	function onCallCustomField(){
 		$arg = SOY2PageController::getArguments();
-		$entryId = (isset($arg[0])) ? (int)$arg[0] : null;
+		$entryId = (isset($arg[0])) ? (int)$arg[0] : 0;
 		return self::buildFormOnEntryPage($entryId);
 	}
 
@@ -255,12 +281,12 @@ class CustomSearchFieldPlugin{
 	 */
 	function onCallCustomField_inBlog(){
 		$arg = SOY2PageController::getArguments();
-		$entryId = (isset($arg[1])) ? (int)$arg[1] : null;
+		$entryId = (isset($arg[1])) ? (int)$arg[1] : 0;
 		return self::buildFormOnEntryPage($entryId);
 	}
 
-	private function buildFormOnEntryPage($entryId){
-		$values = SOY2Logic::createInstance("site_include.plugin.CustomSearchField.logic.DataBaseLogic")->getByEntryId($entryId);
+	private function buildFormOnEntryPage(int $entryId){
+		$values = ($entryId > 0) ? SOY2Logic::createInstance("site_include.plugin.CustomSearchField.logic.DataBaseLogic")->getByEntryId($entryId) : array();
 		$html = array();
 
 		SOY2::import("site_include.plugin.CustomSearchField.component.FieldFormComponent");
@@ -353,6 +379,12 @@ class CustomSearchFieldPlugin{
 		}
 	}
 
+	private function _logic(){
+		static $l;
+		if(is_null($l)) $l = SOY2Logic::createInstance("site_include.plugin.CustomSearchField.logic.DataBaseLogic");
+		return $l;
+	}
+
 	/**
 	 * プラグイン管理画面の表示
 	 */
@@ -366,10 +398,7 @@ class CustomSearchFieldPlugin{
 
 	public static function register(){
 		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
-		if(is_null($obj)){
-			$obj = new CustomSearchFieldPlugin();
-		}
-
+		if(is_null($obj)) $obj = new CustomSearchFieldPlugin();
 		CMSPlugin::addPlugin(self::PLUGIN_ID, array($obj, "init"));
 	}
 }

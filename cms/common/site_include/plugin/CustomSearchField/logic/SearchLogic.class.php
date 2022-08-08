@@ -105,7 +105,7 @@ class SearchLogic extends SOY2LogicBase{
 		
         if(!count($this->where)){
             //記事検索
-			$q = (is_string($q)) ? trim($q) : null;
+			$q = (is_string($q)) ? trim($q) : "";
 			if(strlen($q)){
 				$this->where["query"] = " (ent.title LIKE :query OR ent.content LIKE :query OR ent.more LIKE :query) ";
 				$this->binds[":query"] = "%" . $q . "%";
