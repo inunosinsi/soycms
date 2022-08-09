@@ -80,6 +80,7 @@ class CustomSearchFieldPlugin{
 	
 		$values = ($entryId > 0) ? self::_getFieldValues($entryId) : array();
 		
+		if(!class_exists("CustomSearchFieldUtil")) SOY2::import("site_include.plugin.CustomSearchField.util.CustomSearchFieldUtil");
 		$cnfs= CustomSearchFieldUtil::getConfig();
 		if(isset($cnfs) && count($cnfs)){
 			foreach($cnfs as $key => $field){

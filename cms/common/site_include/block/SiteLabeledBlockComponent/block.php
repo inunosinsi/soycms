@@ -322,6 +322,13 @@ class SiteLabeledBlockComponent_FormPage extends HTMLPage{
 			"value" => $this->siteId
 		));
 
+		$this->addCheckBox("is_call_event_func", array(
+			"name" => "object[isCallEventFunc]",
+			"value" => 1,
+			"label" => "カスタムフィールドの拡張ポイントを実行します",
+			"selected" => $this->entity->getIsCallEventFunc()
+		));
+
 		$this->addForm("main_form");
 
 		//サイト変更機能

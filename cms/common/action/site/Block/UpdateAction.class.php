@@ -17,6 +17,7 @@ class UpdateAction extends SOY2Action{
 			case "LabeledBlockComponent":
 			case "PluginBlockComponent":
 			case "SiteLabeledBlockComponent":
+			case "MultiLabelBlockComponent":
 				$isCallEventFunc = (isset($_POST["object"]["isCallEventFunc"]) && $_POST["object"]["isCallEventFunc"] == 1) ? 1 : 0;
 				$form->object->isCallEventFunc = $isCallEventFunc;
 				break;

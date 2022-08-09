@@ -332,9 +332,7 @@ class LabeledBlockComponent_FormPage extends HTMLPage{
 
 		$this->addForm("main_form", array());
 
-		if(count($this->blogPages) === 0){
-			DisplayPlugin::hide("blog_link");
-		}
+		if(count($this->blogPages) === 0) DisplayPlugin::hide("blog_link");
 	}
 
 	/**
