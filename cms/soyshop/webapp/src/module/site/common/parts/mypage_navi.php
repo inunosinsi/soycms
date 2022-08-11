@@ -1,18 +1,16 @@
 <?php
 function soyshop_parts_mypage_navi($html, $page){
 
-	SOY2::import("util.SOYShopPluginUtil");
-
 	$obj = $page->create("soyshop_parts_mypage_navi", "HTMLTemplatePage", array(
 		"arguments" => array("soyshop_mypage_navi", $html)
 	));
 
-	if(!defined("SOYSHOP_CURRENT_MYPAGE_ID")){
-		define("SOYSHOP_CURRENT_MYPAGE_ID", soyshop_get_mypage_id());
-	}
+	if(!defined("SOYSHOP_CURRENT_MYPAGE_ID")) define("SOYSHOP_CURRENT_MYPAGE_ID", soyshop_get_mypage_id());
 
 	$mypage = MyPageLogic::getMyPage();
 	if($mypage->getIsLoggedin()){
+		SOY2::import("util.SOYShopPluginUtil");
+
 		$html = array();
 		$html[] = "<ul class=\"nav nav-tabs\">";
 		$pages = array(

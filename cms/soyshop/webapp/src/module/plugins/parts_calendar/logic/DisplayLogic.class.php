@@ -7,43 +7,30 @@ class DisplayLogic extends SOY2LogicBase{
 	}
 
 	function getCurrentCalendar(){
-
-		//今月のカレンダーを表示するためのフラグ
-		$flag = true;
-
-		//今日の日付を取得する
-		$time = time();
-
-		return $this->createCalendar($flag,$time);
+		return self::_build(true, time());
 	}
 
 	function getNextCalendar(){
-
-		//来月のカレンダーを表示するためのフラグ
-		$flag = false;
-
-		$time = time();
-
-		$year = date("Y",$time);
-		$month = date("n",$time);
+		$year = date("Y");
+		$month = date("n");
 
 		if($month !== "12"){
-			$month = $month + 1;
+			$month++;
 		}else{
-			$year = $year + 1;
+			$year++;
 			$month = 1;
 		}
 
-		$time = mktime(0,0,0,$month,1,$year);
-
-		return $this->createCalendar($flag,$time);
+		return self::_build(false, mktime(0,0,0,$month,1,$year));
 	}
 
 	/**
-	 * @param bool flag, int timestamp
+	 * @param bool flag(来月を表示するフラグ), int timestamp
 	 * @return html
 	 */
-	function createCalendar(bool $flag, int $timestamp){
+	private function _build(bool $flag, int $timestamp){
+		//キャッシュファイルがあればキャッシュから
+		if(self::_checkIsCacheFile($timestamp)) return self::_readCacheFile($timestamp);
 
 		//その月の日付の数（最後の日）：28-31
 		$num = date("t", $timestamp);
@@ -80,7 +67,7 @@ class DisplayLogic extends SOY2LogicBase{
 					$html[] = "<td>&nbsp;</td>";
 					$counter++;
 				}
-				$html[] = $this->createDayColumn($i,$getDay,$day,$num,$flag,$getToday);
+				$html[] = self::_createDayColumn($i,$getDay,$day,$num,$flag,$getToday);
 				$counter++;
 				//土曜日の場合は</tr>で閉じる
 				if($getDay == 6){
@@ -91,7 +78,7 @@ class DisplayLogic extends SOY2LogicBase{
 				if($getDay == 0){
 					$html[] = "<tr>";
 				}
-				$html[] = $this->createDayColumn($i,$getDay,$day,$num,$flag,$getToday);
+				$html[] = self::_createDayColumn($i,$getDay,$day,$num,$flag,$getToday);
 				$counter++;
 				if($getDay == 6 || $i == $num){
 					if($counter !== 6){
@@ -106,7 +93,12 @@ class DisplayLogic extends SOY2LogicBase{
 		$html[] = "</tbody>";
 		$html[] = "</table>";
 
-		return implode("\n", $html);
+		$html = implode("\n", $html);
+
+		//キャッシュを残す
+		self::_createCache($html, $timestamp);
+
+		return $html;
 	}
 
 	/**
@@ -119,7 +111,7 @@ class DisplayLogic extends SOY2LogicBase{
 	 * @param Integer タイムスタンプ
 	 * @return Text
 	 */
-	function createDayColumn(int $i,int $w, int $day, int $num, int $thisMonth, int $dateTime){
+	private function _createDayColumn(int $i,int $w, int $day, int $num, int $thisMonth, int $dateTime){
 
 		$today = false;
 		if($i == $day && $thisMonth == true) $today = true;
@@ -150,6 +142,46 @@ class DisplayLogic extends SOY2LogicBase{
 		$attr = count($class) ? ' class="'.implode(" ",$class).'"' : '' ;
 
 		return "<td{$attr}>" . $i."</td>";
+	}
+
+	private function _createCache(string $html, int $timestamp){
+		file_put_contents(self::_cacheDir() . date("Ymd", $timestamp) . ".html", $html);
+	}
+
+	private function _checkIsCacheFile(int $timestamp){
+		//古いキャッシュは削除する
+		self::_removeCacheFiles();
+		
+		$cacheFile = self::_cacheDir() . date("Ymd", $timestamp) . ".html";
+		return (file_exists($cacheFile));
+	}
+
+	private function _readCacheFile($timestamp){
+		return file_get_contents(self::_cacheDir() . date("Ymd", $timestamp) . ".html");
+	}
+
+	function removeCacheFiles(bool $isAll=false){
+		self::_removeCacheFiles($isAll);
+	}
+
+	private function _removeCacheFiles(bool $isAll=false){
+		$cacheDir = self::_cacheDir();
+		$files = soy2_scandir($cacheDir);
+
+		//キャッシュファイルをどれくらい残すか？
+		$cnt = ($isAll) ? 3 : 0;	// $isAllがtrueの場合はすべて削除
+		if(count($files) >= $cnt){
+			$t = ($isAll) ? time() : soyshop_shape_timestamp(strtotime("-1 day"), "end");
+			foreach($files as $file){
+				if(filemtime($cacheDir . $file) < $t) unlink($cacheDir . $file);
+			}
+		}
+	}
+
+	private function _cacheDir(){
+		$dir = SOYSHOP_SITE_DIRECTORY . ".cache/calendar/";
+		if(!file_exists($dir)) mkdir($dir);
+		return $dir;
 	}
 
 	private function _logic(){

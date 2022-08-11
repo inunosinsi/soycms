@@ -11,18 +11,21 @@ class CommonThisIsNew extends SOYShopItemCustomFieldBase{
 	 * onOutput
 	 */
 	function onOutput($htmlObj, SOYShop_Item $item){
-
 		$htmlObj->addModel("this_is_new", array(
-			"visible" => (isset($item) && self::compareTime($item) > time()),
+			"visible" => ($item instanceof SOYShop_Item && self::_compareTime($item) > time()),
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 		));
 	}
 
 	function onDelete(int $itemId){}
 
-	private function compareTime(SOYShop_Item $item){
-		$config = SOYShop_DataSets::get("common_this_is_new", array("date" => 7));
-		return $item->getCreateDate() + $config["date"] * 60*60*24;
+	private function _compareTime(SOYShop_Item $item){
+		static $d;
+		if(is_null($d)){
+			$cnf = SOYShop_DataSets::get("common_this_is_new", array("date" => 7));
+			$d = (int)$cnf["d"];
+		}
+		return $item->getCreateDate() + ($d*60*60*24);
 	}
 }
 

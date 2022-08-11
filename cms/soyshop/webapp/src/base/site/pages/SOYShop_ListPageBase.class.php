@@ -49,6 +49,9 @@ class SOYShop_ListPageBase extends SOYShopPageBase{
 
 		if(!defined("SOYSHOP_PAGE_TYPE")) define("SOYSHOP_PAGE_TYPE", get_class($obj));
 
+		SOYShopPlugin::load("soyshop.item.customfield");
+		SOYShopPlugin::invoke("soyshop.item.customfield", array("items" => &$items));
+        
 		//item_list
 		$this->createAdd("item_list", "SOYShop_ItemListComponent", array(
 			"list" => $items,

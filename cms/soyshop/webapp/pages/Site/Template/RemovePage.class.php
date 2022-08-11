@@ -17,6 +17,8 @@ class RemovePage extends WebPage{
 
 		}
 
+		SOYShopCacheUtil::clearCache();
+
     	SOY2PageController::jump("Site.Template");
 
     	exit;

@@ -21,12 +21,35 @@ class ItemOptionUtil {
 	}
 
 	public static function saveOptions(array $opts){
-		SOYShop_DataSets::put("item_option", soy2_serialize($opts));
+		//  soy2_serializeを外す
+		//SOYShop_DataSets::put("item_option", soy2_serialize($opts));
+		SOYShop_DataSets::put("item_option", $opts);
 	}
 
+	/**
+	 * @return array
+	 */
 	private static function _getOptions(){
 		static $opts;
-		if(is_null($opts)) $opts = soy2_unserialize(SOYShop_DataSets::get("item_option", ""));
+		if(is_null($opts)) {
+			$opts = SOYShop_DataSets::get("item_option", array());
+			if(!is_array($opts)){	//2回シリアライズ問題の回避
+				try{
+					$res = soyshop_get_hash_table_dao("data_sets")->executeQuery("SELECT object_data FROM soyshop_data_sets WHERE class_name = 'item_option'");
+				}catch(Exception $e){
+					$res = array();
+				}
+				if(count($res) && isset($res[0]["object_data"]) && strlen($res[0]["object_data"])){
+					$d = $res[0]["object_data"];
+					preg_match('/\"(.*)\"/', $d, $tmp);
+					if(isset($tmp[0])){
+						$d = trim($tmp[0], "\"");
+						$opts = soy2_unserialize($d);
+					}
+				}
+			}
+			if(!is_array($opts)) $opts = array();
+		}
 		return $opts;
 	}
 

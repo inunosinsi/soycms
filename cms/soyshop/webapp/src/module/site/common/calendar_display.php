@@ -7,9 +7,9 @@ function soyshop_calendar_display($html, $page){
 	));
 
 	if(SOYShopPluginUtil::checkIsActive("parts_calendar")){
-		$displayLogic = SOY2Logic::createInstance("module.plugins.parts_calendar.logic.DisplayLogic");
-		$currentCalendar = $displayLogic->getCurrentCalendar();
-		$nextCalendar = $displayLogic->getNextCalendar();
+		$logic = SOY2Logic::createInstance("module.plugins.parts_calendar.logic.DisplayLogic");
+		$currentCalendar = $logic->getCurrentCalendar();
+		$nextCalendar = $logic->getNextCalendar();
 	}else{
 		$currentCalendar = "";
 		$nextCalendar = "";

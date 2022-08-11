@@ -24,6 +24,14 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 		if(!defined("SOYSHOP_PUBLISH_LANGUAGE_POSTFIX")) define("SOYSHOP_PUBLISH_LANGUAGE_POSTFIX", SOYSHOP_PUBLISH_LANGUAGE);
 	}
 
+	function onEntryListBeforeOutput(array $items){
+		//$itemIds = soyshop_get_item_id_by_items($itemIds);
+		
+		// カスタムフィールドの値を一気に取得
+//		$fieldIds = array_keys($this->customFields);
+//		if(count($entryIds)) CustomfieldAdvancedUtil::setValuesByEntryIdsAndFieldIds($entryIds, $fieldIds);
+	}
+
 	function doPost(SOYShop_Item $item){
 		$list = (isset($_POST["custom_field"])) ? $_POST["custom_field"] : array();
 		$extraFields = (isset($_POST["custom_field_extra"])) ? $_POST["custom_field_extra"] : null;
@@ -91,7 +99,7 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 		if(!$associationMode) return implode("\n", $html);
 
 		//カテゴリマップ
-		$map = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->getMapping();
+		$map = soyshop_get_hash_table_dao("category")->getMapping();
 		if(!count($map)) return implode("\n", $html);
 
 		//カテゴリとの関連付けのJavaScript
@@ -133,7 +141,8 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 	 * onOutput
 	 */
 	function onOutput($htmlObj, SOYShop_Item $item){
-		$list = SOYShop_ItemAttributeConfig::load(true);
+		static $list;
+		if(is_null($list)) $list = SOYShop_ItemAttributeConfig::load(true);
 		if(!count($list)) return;
 
 		SOY2::import("module.plugins.common_customfield.util.CustomfieldUtil");
@@ -283,7 +292,7 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 	}
 
 	function onDelete(int $itemId){
-		SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO")->deleteByItemId($id);
+		soyshop_get_hash_table_dao("item_attribute")->deleteByItemId($itemId);
 	}
 
 	private function getFieldValue(string $fieldId, $emptyValue=null){
@@ -311,4 +320,4 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 	}
 }
 
-SOYShopPlugin::extension("soyshop.item.customfield","common_customfield","CommonItemCustomField");
+SOYShopPlugin::extension("soyshop.item.customfield", "common_customfield", "CommonItemCustomField");

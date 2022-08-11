@@ -95,11 +95,22 @@ function get_uri_and_args(){
 	return array($uri, $args);
 }
 
+/**
+ * @param string
+ * @return SOYShop_Page
+ */
 function get_page_object_on_controller(string $uri){
 	//ルートでページャ対策
-	if(strpos($uri, "page-") === 0) {
+	$tmp = array();
+	if(strlen($uri) > 5 && is_numeric(strpos($uri, "page-"))) preg_match('/^page-[\d]*/', $uri, $tmp);
+	
+	if(isset($tmp[0])) {
+		SOY2::import("domain.site.SOYShop_Page");
 		$page = soyshop_get_page_object_by_uri(SOYShop_Page::URI_HOME);
-		if(is_numric($page->getId())){
+		
+		if(is_numeric($page->getId())){
+			if($page->getId() == -1) return $page;	//DBの接続エラー等の場合はID:-1のページになっている
+
 			//ページのタイプが一覧もしくは検索結果ページの場合は返す
 			switch($page->getType()){
 				case SOYShop_Page::TYPE_LIST:
@@ -107,17 +118,20 @@ function get_page_object_on_controller(string $uri){
 					return $page;
 			}
 		}
-	}else{
-		$page = soyshop_get_page_object_by_uri($uri);
-		if(is_numeric($page->getId())) return $page;
 	}
-
+	
+	//ページャの候補以外
+	$page = soyshop_get_page_object_by_uri($uri);
+	if(is_numeric($page->getId())) return $page;
+	
+	//404ページ
+	if(!class_exists("SOYShop_Page")) SOY2::import("domain.site.SOYShop_Page");
 	$page = soyshop_get_page_object_by_uri(SOYSHOP_404_PAGE_MARKER);
 	$page->setUri(SOYShop_Page::NOT_FOUND);
 	return $page;
 }
 
-function include_page_class($pageType){
+function include_page_class(string $pageType){
 	SOY2::imports("base.site.classes.*");
 	SOY2::import("base.site.SOYShopPageBase");
 	switch($pageType){

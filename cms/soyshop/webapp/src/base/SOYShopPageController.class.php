@@ -13,7 +13,11 @@ class SOYShopPageController extends SOY2PageController{
 		SOYShopAuthUtil::setAuthConstant();
 
 		//キャッシュの削除
-		if(isset($_GET["clear_cache"])) self::_clearCache();
+		if(isset($_GET["clear_cache"])) {
+			SOYShopCacheUtil::clearCache();
+			header("Location:" . $_SERVER["HTTP_REFERER"]);
+			exit;
+		}
 
 		//SOY Appのリンク表示
 		define("SHOW_LOGOUT_LINK", self::_isDirectLogin());
@@ -153,27 +157,6 @@ class SOYShopPageController extends SOY2PageController{
 			include(SOY2::RootDir() . "layout/main.php");
 
 			exit;
-		}
-	}
-
-	private function _clearCache(){
-		self::_clearCacheRecursion(SOYSHOP_SITE_DIRECTORY . ".cache/");
-		header("Location:" . $_SERVER["HTTP_REFERER"]);
-		exit;
-	}
-
-	private function _clearCacheRecursion(string $dir){
-		$files = soy2_scandir($dir);
-		if(!count($files)) return;
-
-		foreach($files as $file){
-			if(!file_exists($dir . $file)) continue;
-			if(is_dir($dir . $file)){
-				self::_clearCacheRecursion($dir . $file . "/");
-				rmdir($dir . $file . "/");
-			}else{
-				unlink($dir . $file);
-			}
 		}
 	}
 

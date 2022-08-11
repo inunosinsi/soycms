@@ -42,6 +42,8 @@ class EditorPage extends WebPage{
 			$array[] = "}"."\n";
 			$array[] = "?>";
 			file_put_contents($this->modulePath, implode("", $array));
+
+			SOYShopCacheUtil::clearCache();
 		}
 
 		SOY2PageController::jump("Site.Template.Module.EditorPage?updated&moduleId=" . $this->moduleId);

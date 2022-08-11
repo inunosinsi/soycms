@@ -5,7 +5,6 @@
 class SOYShopSiteController extends SOY2PageController{
 
     function execute(){
-
 		if(DEBUG_MODE) include_once("controller/debug.php");
 		if(DEBUG_MODE) count_timer("Start");
 
@@ -52,15 +51,12 @@ class SOYShopSiteController extends SOY2PageController{
 		// include_once("controller/ssl.php");
         // check_ssl($uri, $args);
 
-        try{
-            //URIからページを取得
-			$page = get_page_object_on_controller($uri);
-		}catch(Exception $e){
-			self::_onInternalServerError();
-        }
+        //URIからページを取得
+		$page = get_page_object_on_controller($uri);
+		if(is_numeric($page->getId()) && $page->getId() == -1) self::_onInternalServerError();
 
 		//ページIDを放り込んでおく
-		define("SOYSHOP_PAGE_ID", $page->getId());
+		define("SOYSHOP_PAGE_ID", (int)$page->getId());
 
 		//メンテナンス ここに入れるべきか？
 		if(SOYSHOP_MAINTENANCE_PAGE_MARKER == $page->getUri()){
@@ -85,11 +81,12 @@ class SOYShopSiteController extends SOY2PageController{
 	private function _onInternalServerError(){
 		header("HTTP/1.0 500 Internal Server Error");
 		echo "<h1>500 Internal Server Error</h1>";
-		if(DEBUG_MODE){
-			echo "<pre>";
-			var_dump($e);
-			echo "</pre>";
-		}
+		// if(DEBUG_MODE){
+		// 	echo "<pre>";
+		// 	var_dump($e);
+		// 	echo "</pre>";
+		// }
+		exit;
 	}
 
 	private function _onNotFound(){

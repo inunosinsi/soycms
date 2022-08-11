@@ -11,7 +11,7 @@ class CommonNoticeArrivalCustomField extends SOYShopItemCustomFieldBase{
 
 		//該当する商品が入荷通知希望に登録されているか？
 		$isRegistered = (is_numeric($item->getId()) && $item->getStock() <= 0) ? self::_logic()->checkRegistered((int)$item->getId(), $loggedInUserId) : false;
-
+		
 		$htmlObj->addActionLink("notice_arrival_register_link", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"link" => "?notice=" . $item->getId() ."&a=add",

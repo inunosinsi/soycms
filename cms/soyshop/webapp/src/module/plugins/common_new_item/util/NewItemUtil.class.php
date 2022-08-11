@@ -14,4 +14,3 @@ class NewItemUtil{
 		SOYShop_DataSets::put("new_item.config", $values);
 	}
 }
-?>

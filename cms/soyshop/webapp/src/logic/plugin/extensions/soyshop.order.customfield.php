@@ -7,28 +7,24 @@ class SOYShopOrderCustomfield implements SOY2PluginAction{
 	/**
 	 * セッションの削除
 	 */
-	function clear(CartLogic $cart){
-	}
+	function clear(CartLogic $cart){}
 
 	/**
 	 * @param array $param 中身は$_POST["customfield_module"]
 	 */
-	function doPost(array $param){
-	}
+	function doPost(array $param){}
 
 	/**
 	 * 注文前に何らかの処理を行う
 	 * @param CartLogic $cart
 	 */
-	function order(CartLogic $cart){
-	}
+	function order(CartLogic $cart){}
 
 	/**
 	 * 注文後に何らかの処理を行う
 	 * @param CartLogic $cart
 	 */
-	function complete(CartLogic $cart){
-	}
+	function complete(CartLogic $cart){}
 
 	/**
 	 * エラーチェック
@@ -44,8 +40,7 @@ class SOYShopOrderCustomfield implements SOY2PluginAction{
 	 * @param CartLogic $cart
 	 * @return Array("name" => "", "description" => "", "error" => "")
 	 */
-	function getForm(CartLogic $cart){
-	}
+	function getForm(CartLogic $cart){}
 
 	/**
 	 * 管理画面で表示する値
@@ -53,17 +48,13 @@ class SOYShopOrderCustomfield implements SOY2PluginAction{
 	 * @param Integer OrderId
 	 * @return Array array(array("name" => "", "value" => "", "style" => "")) ※styleはなしで良い
 	 */
-	function display(int $orderId){
-
-	}
+	function display(int $orderId){}
 
 	/**
 	 * @param int $orderID
 	 * @return Array labelとformの連想配列を格納 array(array("label" => "", "form" => ""))
 	 */
-	function edit(int $orderId){
-
-	}
+	function edit(int $orderId){}
 
 	/**
 	 * @param int $orderID
@@ -80,9 +71,7 @@ class SOYShopOrderCustomfield implements SOY2PluginAction{
 	/**
 	 * saveする際のconfigを取得して返す
 	 */
-	function config(int $orderId){
-
-	}
+	function config(int $orderId){}
 
 	function getCart() {
 		return $this->cart;

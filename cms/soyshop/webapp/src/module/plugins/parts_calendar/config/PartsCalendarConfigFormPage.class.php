@@ -32,6 +32,9 @@ class PartsCalendarConfigFormPage extends WebPage{
 		PartsCalendarCommon::saveConfig("business_day", PartsCalendarCommon::ymd($_POST["business_day"]));	//営業日
 		PartsCalendarCommon::saveConfig("other_day", PartsCalendarCommon::ymd($_POST["other_day"]));	//その他
 
+		//キャッシュファイルの削除
+		SOYShopCacheUtil::clearCache();
+
 		$this->config->redirect("updated");
 	}
 

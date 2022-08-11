@@ -5,7 +5,6 @@ class CommonNewItemConfig extends SOYShopConfigPageBase{
 	 * @return string
 	 */
 	function getConfigPage(){
-
 		SOY2::import("module.plugins.common_new_item.config.NewItemConfigPage");
 		$form = SOY2HTMLFactory::createInstance("NewItemConfigPage");
 		$form->setConfigObj($this);
@@ -20,7 +19,5 @@ class CommonNewItemConfig extends SOYShopConfigPageBase{
 	function getConfigPageTitle(){
 		return "新着商品設定";
 	}
-
 }
-SOYShopPlugin::extension("soyshop.config","common_new_item","CommonNewItemConfig");
-?>
+SOYShopPlugin::extension("soyshop.config", "common_new_item", "CommonNewItemConfig");

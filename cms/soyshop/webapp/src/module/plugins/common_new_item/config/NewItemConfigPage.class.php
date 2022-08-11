@@ -10,7 +10,6 @@ class NewItemConfigPage extends WebPage{
 	
 	function doPost(){
 		if(soy2_check_token()){
-			
 			NewItemUtil::saveConfig($_POST["Page"]);
 			$this->configObj->redirect("updated");
 		}
@@ -61,12 +60,9 @@ class NewItemConfigPage extends WebPage{
             "name" => "Page[tryCount]",
             "value" => (isset($config["tryCount"])) ? (int)$config["tryCount"] : 3
         ));
-		
 	}
 	
 	function setConfigObj($obj) {
 		$this->configObj = $obj;
 	}
-		
 }
-?>

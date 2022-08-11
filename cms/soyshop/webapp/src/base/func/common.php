@@ -240,8 +240,10 @@ function soyshop_display_price($price){
 
 /**
  * カートのURLを取得
+ * @param bool, bool
+ * @return string
  */
-function soyshop_get_cart_url($operation = false, $isAbsolute = false){
+function soyshop_get_cart_url(bool $operation=false, bool $isAbsolute=false){
     $isUseSSL = SOYShop_DataSets::get("config.cart.use_ssl", 0);
 
     if($isUseSSL){
@@ -460,14 +462,13 @@ function soyshop_get_mypage_uri(){
 	}
 
     define("SOYSHOP_MYPAGE_URI", $mypageUri);
-
     return SOYSHOP_MYPAGE_URI;
 }
 
 /**
  * マイページのURL
  */
-function soyshop_get_mypage_url($isAbsolute = false){
+function soyshop_get_mypage_url(bool $isAbsolute=false){
 
     $isUseSSL = SOYShop_DataSets::get("config.mypage.use_ssl", 0);
 
@@ -485,7 +486,7 @@ function soyshop_get_mypage_url($isAbsolute = false){
 /**
  * マイページトップのURL
  */
-function soyshop_get_mypage_top_url($isAbsolute = false){
+function soyshop_get_mypage_top_url(bool $isAbsolute=false){
 
     $url = soyshop_get_mypage_url($isAbsolute);
 
@@ -506,7 +507,7 @@ function soyshop_get_mypage_top_url($isAbsolute = false){
 /**
  * マイページのログインページ
  */
-function soyshop_get_mypage_login_url($isAbsolute=false, $isRedirectParam=false){
+function soyshop_get_mypage_login_url(bool $isAbsolute=false, bool $isRedirectParam=false){
 	$url = soyshop_get_mypage_url($isAbsolute) . "/login";
 	if($isRedirectParam) $url .= "?r=" . rawurldecode($_SERVER["REQUEST_URI"]);
 	return $url;
@@ -515,7 +516,7 @@ function soyshop_get_mypage_login_url($isAbsolute=false, $isRedirectParam=false)
 /**
  * マイページのページタイトルを取得
  */
-function soyshop_get_mypage_page_title($args){
+function soyshop_get_mypage_page_title(array $args){
 	if(defined("SOYSHOP_PUBLISH_LANGUAGE") && SOYSHOP_PUBLISH_LANGUAGE != "jp" && class_exists("UtilMultiLanguageUtil")){
 		return UtilMultiLanguageUtil::getPageTitle("mypage", SOYSHOP_PUBLISH_LANGUAGE);
 	}else{
@@ -587,7 +588,7 @@ function soyshop_remove_get_value($param){
  * @param string url
  * @return string url
  */
-function soyshop_add_get_value($url){
+function soyshop_add_get_value(string $url){
     if(count($_GET) > 0){
 		$query = http_build_query($_GET);
         if(strpos($url, "?")){
@@ -1015,4 +1016,19 @@ function soyshop_shape_extension_point_result_array(array $results){
 		}
 	}
 	return $list;
+}
+
+/**
+ * 商品一覧から商品IDの一覧を取得
+ * @param array
+ * @return array
+ */
+function soyshop_get_item_id_by_items(array $items){
+	if(!count($items)) return array();
+
+	$ids = array();
+	foreach($items as $items){
+		$ids[] = (int)$item->getId();
+	}
+	return $ids;
 }

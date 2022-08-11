@@ -27,7 +27,7 @@
 &lt;section id="new_items"&gt;
     &lt;h1&gt;新着の商品&lt;/h1&gt;
     &lt;div class="item_list"&gt;
-        &lt;!-- block:id="new_item_list" cms:count="3" --&gt;</strong>&lt;!-- ←cms:countで表示数を指定できます。 --&gt;
+        &lt;!-- block:id="new_item_list" <strong>cms:count="3"</strong> <strong>cms:customfield="off"</strong> --&gt;
         &lt;article&gt;
             &lt;a href="detail1.html" cms:id="item_link"&gt;&lt;img cms:id="item_small_image" src="/bryon/themes/photos/list_sample1.jpg" width="150" height="113" alt="苔オブジェ"&gt;
             &lt;h1 cms:id="item_name"&gt;苔オブジェ&lt;/h1&gt;&lt;/a&gt;
@@ -42,5 +42,7 @@
 &lt;/section&gt;
 &lt;!-- /shop:module="common.new_items" --&gt;
 </pre>
+※cms:countで表示件数を指定できます。<br>
+※cms:customfield="off"にすることで、カスタムフィールドの拡張ポイントの実行をOFFにし、表示速度の高速化をはかります。
 
  <br />

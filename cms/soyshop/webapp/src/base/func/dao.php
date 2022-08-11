@@ -25,6 +25,7 @@ function soyshop_get_hash_table_types(){
 			"item_orders", 
 			"page", 
 			"plugin", 
+			"data_sets",
 			"schedule_calendar", 
 			"schedule_search",
 			"schedule_price",
@@ -101,23 +102,26 @@ function soyshop_get_hash_table_dao(string $fnName){
 		case 13:
 			$path = "plugin.SOYShop_PluginConfigDAO";
 			break;
-		case 14:	// schedule_calendar
+		case 14:
+			$path = "config.SOYShop_DataSetsDAO";
+			break;
+		case 15:	// schedule_calendar
 			SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ScheduleDAO");
 			$path = "SOYShopReserveCalendar_ScheduleDAO";
 			break;
-		case 15:	// schedule_search
+		case 16:	// schedule_search
 			SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ScheduleSearchDAO");
 			$path = "SOYShopReserveCalendar_ScheduleSearchDAO";
 			break;
-		case 16:	// schedule_price
+		case 17:	// schedule_price
 			SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_SchedulePriceDAO");
 			$path = "SOYShopReserveCalendar_SchedulePriceDAO";
 			break;
-		case 17:	// reserve_calendar
+		case 18:	// reserve_calendar
 			SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ReserveDAO");
 			$path = "SOYShopReserveCalendar_ReserveDAO";
 			break;
-		case 18:	// reserve_cancel
+		case 19:	// reserve_cancel
 			SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_CancelDAO");
 			$path = "SOYShopReserveCalendar_CancelDAO";
 			break;
@@ -644,11 +648,12 @@ function soyshop_get_page_object(int $pageId){
 function soyshop_get_page_object_by_uri(string $uri){
 	$dao = soyshop_get_hash_table_dao(__FUNCTION__);
 	if(!strlen($uri)) return new SOYShop_Page();
-
 	try{
 		$page = $dao->getByUri($uri);
 	}catch(Exception $e){
-		return new SOYShop_Page();
+		$page = new SOYShop_Page();
+		if(is_bool(strpos($e->getMessage(), "Failed to return Object"))) $page->setId(-1);	// 任意のuriでページが取得できなかった場合はID:-1を指定
+		return $page;
 	}
 
 	$idx = soyshop_get_hash_index((string)$page->getId(), __FUNCTION__);
@@ -719,12 +724,10 @@ function soyshop_dummy_item_code(){
 //ダミーのメールアドレスを取得する
 function soyshop_dummy_mail_address(){
     //ランダムなメールアドレスを取得する。一応重複チェックも行う
+	$mailAddress = "";
     for(;;){
         $mailAddress = soyshop_create_random_string(10) . "@" . DUMMY_MAIL_ADDRESS_DOMAIN;
-		$oldUser = soyshop_get_user_object_by_mailaddress($mailAddress);
-		if(!is_numeric($oldUser->getId())){
-			break;
-		}
+		if(!is_numeric(soyshop_get_user_object_by_mailaddress($mailAddress)->getId())) break;
     }
     return $mailAddress;
 }

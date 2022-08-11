@@ -21,8 +21,9 @@ class EditorPage extends WebPage{
 		$url = self::getRedirectUrl() . "?updated";
 		if(isset($_GET["id"])) $url .= "&id=" . (int)($_GET["id"]);
 
-		SOY2PageController::redirect($url);
+		SOYShopCacheUtil::clearCache();
 
+		SOY2PageController::redirect($url);
 	}
 
 	function __construct($args){

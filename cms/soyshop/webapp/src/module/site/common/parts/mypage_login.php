@@ -7,9 +7,7 @@ function soyshop_parts_mypage_login($html, $page){
 		"arguments" => array("soyshop_mypage_login", $html)
 	));
 
-	if(!defined("SOYSHOP_CURRENT_MYPAGE_ID")){
-		define("SOYSHOP_CURRENT_MYPAGE_ID", soyshop_get_mypage_id());
-	}
+	if(!defined("SOYSHOP_CURRENT_MYPAGE_ID")) define("SOYSHOP_CURRENT_MYPAGE_ID", soyshop_get_mypage_id());
 
 	$mypage = MyPageLogic::getMyPage();
 

@@ -91,7 +91,7 @@ class OptionListComponent extends HTMLList{
 			"link" => "javascript:void(0)",
 			"text" => "高度な設定",
 			"onclick" => '$(\'#field_config_' . $key . '\').toggle();',
-			"style" => (count($entity) > 2) ? "background-color:yellow;" : "",
+			"style" => (is_array($entity) && count($entity) > 2) ? "background-color:yellow;" : "",
 			"visible" => ($this->installedLangPlugin)
 		));
 

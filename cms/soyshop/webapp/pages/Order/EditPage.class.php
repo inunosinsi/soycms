@@ -368,7 +368,7 @@ class EditPage extends WebPage{
 	}
 
 	//税金の計算 $reducedRateTotalは軽減税率商品金額の合算
-	private function _calculateConsumptionTax($price, $modulePrice, $reducedRateTotal){
+	private function _calculateConsumptionTax(int $price, int $modulePrice, int $reducedRateTotal){
 		$config = SOYShop_ShopConfig::load();
 
 		$total = $price;
@@ -394,7 +394,7 @@ class EditPage extends WebPage{
 	}
 
 	//外税 $reducedRateTotalは軽減税率商品金額の合算
-	private function _setConsumptionTax($config, $total, $reducedRateTotal){
+	private function _setConsumptionTax(SOYShop_ShopConfig $config, int $total, int $reducedRateTotal){
 		$pluginId = $config->getConsumptionTaxModule();
 		if(!isset($pluginId)) return null;
 
@@ -410,7 +410,7 @@ class EditPage extends WebPage{
 	}
 
 	//内税
-	private function _setConsumptionTaxInclusivePricing($config, $total){
+	private function _setConsumptionTaxInclusivePricing(SOYShop_ShopConfig $config, int $total){
 		$taxRate = (int)$config->getConsumptionTaxInclusivePricingRate();	//内税率
 
 		if($taxRate === 0) return null;
@@ -438,7 +438,7 @@ class EditPage extends WebPage{
 		return $empty;
 	}
 
-	private function getHistoryText($label, $old, $new){
+	private function getHistoryText(string $label, string $old, string $new){
 		return $label . "を『" . $old . "』から『" . $new . "』に変更しました";
 	}
 
@@ -704,7 +704,7 @@ class EditPage extends WebPage{
 		return null;
 	}
 
-	private function isDeliveryTimeItem($attrs){
+	private function isDeliveryTimeItem(array $attrs){
 		if(!count($attrs)) return false;
 		foreach($attrs as $key => $attr){
 			if(
@@ -853,7 +853,7 @@ class EditPage extends WebPage{
 			switch($idx){
 				case "area":
 					if(isset($addr[$idx]) && isset($newAddr[$idx]) && ($addr[$idx] != $newAddr[$idx])){
-						$changes[] = self::getHistoryText($label, SOYShop_Area::getAreaText($addr[$idx]), SOYShop_Area::getAreaText($newAddr[$idx]));
+						$changes[] = self::getHistoryText($label, SOYShop_Area::getAreaText((int)$addr[$idx]), SOYShop_Area::getAreaText((int)$newAddr[$idx]));
 					}
 					break;
 				case "address":
@@ -908,7 +908,7 @@ class EditPage extends WebPage{
 		return $change;
 	}
 
-	private function updateOrderAttribute(SOYShop_Order $order, $newAttributes){
+	private function updateOrderAttribute(SOYShop_Order $order, array $newAttributes){
 		$change = array();
 		$attributes = self::addExtendAttributes($order->getAttributeList());
 
@@ -944,7 +944,7 @@ class EditPage extends WebPage{
 	 * @param SOYShop_Order $order, newCustomfields($_POST["customfield"]の配列)
 	 * @return array $change
 	 */
-	private function updateOrderCustomfield(SOYShop_Order $order, $newCustomfields){
+	private function updateOrderCustomfield(SOYShop_Order $order, array $newCustomfields){
 		$change = array();
 
 		$list = SOYShopPlugin::invoke("soyshop.order.customfield", array(
@@ -1008,6 +1008,8 @@ class EditPage extends WebPage{
 					case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_CHECKBOX:
 					case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_RADIO:
 					case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_SELECT:
+						if(!is_string($obj["value1"])) $obj["value1"] = "";
+						if(!is_string($obj["value2"])) $obj["value2"] = "";
 						if($newValue1 != $obj["value1"]){
 							$change[]=self::getHistoryText($obj["label"], $obj["value1"], $newValue1);
 						}
@@ -1051,7 +1053,7 @@ class EditPage extends WebPage{
 		return $change;
 	}
 
-	private function updateOrderModules(SOYShop_Order $order, $newModules){
+	private function updateOrderModules(SOYShop_Order $order, array $newModules){
 		$change = array();
 		$modules = $order->getModuleList();
 
@@ -1092,21 +1094,20 @@ class EditPage extends WebPage{
 	 * @return array => labelとformの連想配列を入れる
 	 */
 	private function _getCustomfield(int $orderId){
-		$delegate = SOYShopPlugin::invoke("soyshop.order.customfield", array(
+		$labels = SOYShopPlugin::invoke("soyshop.order.customfield", array(
 			"mode" => "edit",
 			"orderId" => $orderId
-		));
+		))->getLabel();
+		if(!count($labels)) return array();
 
-		$array = array();
-		foreach($delegate->getLabel() as $obj){
-			if(is_array($obj)){
-				foreach($obj as $values){
-					$array[] = $values;
-				}
+		$arr = array();
+		foreach($labels as $obj){
+			if(!is_array($obj)) continue;
+			foreach($obj as $values){
+				$arr[] = $values;
 			}
 		}
-
-		return $array;
+		return $arr;
 	}
 
 	function getBreadcrumb(){

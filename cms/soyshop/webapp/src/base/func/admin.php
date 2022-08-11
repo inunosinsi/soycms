@@ -145,3 +145,22 @@ function soyshop_get_user_ids_by_orders(array $orders){
 	}
 	return $ids;
 }
+
+/**
+ * @param string
+ */
+function soyshop_clear_cache(string $dir=""){
+	if(!strlen($dir)) $dir = SOYSHOP_SITE_DIRECTORY . ".cache/";
+	$files = soy2_scandir($dir);
+	if(!count($files)) return;
+
+	foreach($files as $f){
+		if(!file_exists($dir . $f)) continue;
+		if(is_dir($dir . $f)){
+			soyshop_clear_cache($dir . $f . "/");
+			rmdir($dir . $f . "/");
+		}else{
+			unlink($dir . $f);
+		}
+	}
+}

@@ -8,6 +8,7 @@ class SOYShop_ItemListComponent extends HTMLList{
 	private $pageClassName;
 	private $iteration;
 	private $forAdminOnly;
+	private $isCallCustomfield=true;
 
 	function execute(){
 		$iteration = $this->getAttribute("cms:count");
@@ -17,12 +18,12 @@ class SOYShop_ItemListComponent extends HTMLList{
 
 	protected function populateItem($entity, $key, $counter, $length){
 		if(false == ($entity instanceof SOYShop_Item)) $entity = new SOYShop_Item();
-
+		
 		//指定の表示回数を超えていたら表示しない
 		if($this->iteration > 0 && $counter > $this->iteration) return false;
 
 		//実行
-		soyshop_output_item($this, $entity, $this->obj);
+		soyshop_output_item($this, $entity, $this->obj, $this->isCallCustomfield);
 
 		//非公開は表示しない。ただし、商品詳細確認モードがtrueの場合は表示する。
 		return self::_isDisplay($entity);
@@ -57,6 +58,9 @@ class SOYShop_ItemListComponent extends HTMLList{
 
 	function setForAdminOnly($forAdminOnly){
 		$this->forAdminOnly = $forAdminOnly;
+	}
+	function setIsCallCustomfield($isCallCustomfield){
+		$this->isCallCustomfield = $isCallCustomfield;
 	}
 
 	public function getPageClassName(){

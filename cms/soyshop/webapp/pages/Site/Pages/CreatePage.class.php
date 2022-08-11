@@ -18,6 +18,9 @@ class CreatePage extends WebPage{
 
 			if($logic->validate($obj)){
 				$id = $logic->create($obj);
+
+				SOYShopCacheUtil::clearCache();
+
 				SOY2PageController::jump("Site.Pages.Detail." . $id . "?updated=created");
 				exit;
 			}

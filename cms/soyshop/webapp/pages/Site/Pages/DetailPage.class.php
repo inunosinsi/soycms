@@ -30,6 +30,8 @@ class DetailPage extends WebPage{
 					"pageId" => $page->getId()
 				));
 
+                SOYShopCacheUtil::clearCache();
+
                 SOY2PageController::jump("Site.Pages.Detail." . $this->id . "?updated");
             }
 

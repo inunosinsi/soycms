@@ -103,7 +103,7 @@ class CommonItemOptionCustomField extends SOYShopItemCustomFieldBase{
 	 * 管理画面でフォームを出力する
 	 * @param object htmlObj, object SOYShop_Item
 	 */
-	function outputFormForAdmin($htmlObj, SOYShop_Item $item, $nameBase, $itemIndex){
+	function outputFormForAdmin($htmlObj, SOYShop_Item $item, string $nameBase, int $itemIndex){
 		self::prepare();
 
 		$opts = ItemOptionUtil::getOptions();

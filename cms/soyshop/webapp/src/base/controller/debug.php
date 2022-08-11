@@ -21,9 +21,9 @@ function append_debug_info($webPage){
 		if(isset($GLOBALS["debug_timer"]) && is_array($GLOBALS["debug_timer"]) && count($GLOBALS["debug_timer"])){
 			$debugInfo = "";
 
-			$previous = null;
+			$previous = 0;
 			foreach($GLOBALS["debug_timer"] as $label => $time){
-				if(!$previous){
+				if($previous === 0){
 					$previous = $time;
 					continue;
 				}
@@ -43,7 +43,7 @@ function append_debug_info($webPage){
  * レンダリング時間を置換する
  * @param String $html (リファレンス渡し)
  */
-function replace_render_time(&$html){
+function replace_render_time(string &$html){
 	if(DEBUG_MODE){
 		if(isset($GLOBALS["debug_timer"]) && is_array($GLOBALS["debug_timer"]) && count($GLOBALS["debug_timer"])){
 			$html = str_replace("##########RENDER_TIME#########", $GLOBALS["debug_timer"]["Render"] - $GLOBALS["debug_timer"]["Main"], $html);

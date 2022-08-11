@@ -239,7 +239,7 @@ class SOYShop_ShopConfig {
 	const DATASETS_KEY = "soyshop.ShopConfig";
 
 	public static function load(){
-		return SOYShop_DataSets::get(self::DATASETS_KEY,new SOYShop_ShopConfig());
+		return SOYShop_DataSets::get(self::DATASETS_KEY, new SOYShop_ShopConfig());
 	}
 
 	//siteUrlはcms側の各dbに入れるURL
