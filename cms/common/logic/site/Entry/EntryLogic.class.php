@@ -80,13 +80,9 @@ class EntryLogic extends SOY2LogicBase{
 		$dao = self::entryDao();
 
 		//数値以外（空文字列を含む）がcdateに入っていれば現在時刻を作成日時にする
-		if(!is_numeric($bean->getCdate())){
-			$bean->setCdate(SOYCMS_NOW);
-		}
+		if(!is_numeric($bean->getCdate())) $bean->setCdate(SOYCMS_NOW);
 		
-		if($bean->isEmptyAlias()){
-			$bean->setAlias($this->getUniqueAlias($bean->getId(),$bean->getTitle()));
-		}
+		if($bean->isEmptyAlias()) $bean->setAlias($this->getUniqueAlias((int)$bean->getId(),(string)$bean->getTitle()));
 
 		if(is_string($bean->getContent())) $bean->setContent(self::_cleanupMCETags($bean->getContent()));
 		if(is_string($bean->getMore())) $bean->setMore(self::_cleanupMCETags($bean->getMore()));
