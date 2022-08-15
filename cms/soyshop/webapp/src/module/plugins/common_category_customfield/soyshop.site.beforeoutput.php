@@ -11,7 +11,7 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 		$obj = $page->getPageObject();
 
 		//カートページとマイページでは読み込まない
-		if(!is_object($obj) || get_class($obj) != "SOYShop_Page") return;
+		if(!is_object($obj) || !$obj instanceof SOYShop_Page) return;
 
 		if(
 			$obj->getType() == SOYShop_Page::TYPE_COMPLEX ||
@@ -60,142 +60,136 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 			"text" => $name
 		));
 
+		$dummyItem = soyshop_get_item_object(0);
 
-		$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO");
-		try{
-			$array = $dao->getByCategoryId($category->getId());
-		}catch(Exception $e){
-			$array = array();
-		}
+		soyshop_get_hash_table_dao("category_attribute");
+		$list = SOYShop_CategoryAttributeConfig::load(true);
+		if(count($list)){
+			foreach($list as $fieldId => $config){
+				$field = soyshop_get_category_attribute_object((int)$category->getId(), $fieldId);
 
-		SOY2::import("domain.shop.SOYShop_Item");
-		$dummyItem = new SOYShop_Item();
+				$value = (string)$field->getValue();
+				$value2 = (string)$field->getValue2();
 
-		$list = SOYShop_CategoryAttributeConfig::load();
-
-		foreach($list as $config){
-			$value = (isset($array[$config->getFieldId()])) ? $array[$config->getFieldId()]->getValue() : "";
-			$value2 = (isset($array[$config->getFieldId()])) ? $array[$config->getFieldId()]->getValue2() : "";
-
-			//空の時の挙動
-			if(!is_null($config->getConfig()) && (is_null($value) || !strlen($value))){
-				$fieldConf = $config->getConfig();
-				if(isset($fieldConf["hideIfEmpty"]) && !$fieldConf["hideIfEmpty"] && isset($fieldConf["emptyValue"])){
-					$value = $fieldConf["emptyValue"];
+				//空の時の挙動
+				if(!is_null($config->getConfig()) && (is_null($value) || !strlen($value))){
+					$fieldConf = $config->getConfig();
+					if(isset($fieldConf["hideIfEmpty"]) && !$fieldConf["hideIfEmpty"] && isset($fieldConf["emptyValue"])){
+						$value = $fieldConf["emptyValue"];
+					}
 				}
-			}
 
-			$valueLength = strlen(trim(strip_tags($value)));
+				$valueLength = strlen(trim(strip_tags($value)));
 
-			$page->addModel($config->getFieldId() . "_visible", array(
-				"visible" => ($valueLength > 0),
-				"soy2prefix" => SOYSHOP_SITE_PREFIX
-			));
+				$page->addModel($config->getFieldId() . "_visible", array(
+					"visible" => ($valueLength > 0),
+					"soy2prefix" => SOYSHOP_SITE_PREFIX
+				));
 
-			$page->addModel($config->getFieldId() . "_is_not_empty", array(
-				"visible" => ($valueLength > 0),
-				"soy2prefix" => SOYSHOP_SITE_PREFIX
-			));
+				$page->addModel($config->getFieldId() . "_is_not_empty", array(
+					"visible" => ($valueLength > 0),
+					"soy2prefix" => SOYSHOP_SITE_PREFIX
+				));
 
-			$page->addModel($config->getFieldId() . "_is_empty", array(
-				"visible" => ($valueLength === 0),
-				"soy2prefix" => SOYSHOP_SITE_PREFIX
-			));
+				$page->addModel($config->getFieldId() . "_is_empty", array(
+					"visible" => ($valueLength === 0),
+					"soy2prefix" => SOYSHOP_SITE_PREFIX
+				));
 
-			switch($config->getType()){
+				switch($config->getType()){
+					case "image":
+						/**
+						 * 隠し機能:携帯自動振り分け、多言語化プラグイン用で画像の配置場所を別で用意する
+						 * @ToDo 管理画面でもいじれる様にしたい
+						 */
+						$value = (is_string($value)) ? soyshop_convert_file_path($value, $dummyItem) : null;
 
-				case "image":
-					/**
-					 * 隠し機能:携帯自動振り分け、多言語化プラグイン用で画像の配置場所を別で用意する
-					 * @ToDo 管理画面でもいじれる様にしたい
-					 */
-					$value = (is_string($value)) ? soyshop_convert_file_path($value, $dummyItem) : null;
-
-					if(is_string($config->getOutput()) && strlen($config->getOutput()) > 0){
-						$page->addModel($config->getFieldId(), array(
-							"attr:" . htmlspecialchars($config->getOutput()) => $value,
-							"soy2prefix" => SOYSHOP_SITE_PREFIX
-						));
-					}else{
-						//imgタグにalt属性を追加するか？
-						if(isset($value2) && is_string($value2) && strlen($value2) > 0){
-							$page->addImage($config->getFieldId(), array(
-								"src" => $value,
-								"attr:alt" => $value2,
-								"soy2prefix" => SOYSHOP_SITE_PREFIX,
-								"visible" => (isset($value))
-							));
-						}else{
-							$page->addImage($config->getFieldId(), array(
-								"src" => $value,
-								"soy2prefix" => SOYSHOP_SITE_PREFIX,
-								"visible" => (isset($value))
-							));
-						}
-					}
-					$page->addLink($config->getFieldId() . "_link", array(
-						"link" => $value,
-						"soy2prefix" => SOYSHOP_SITE_PREFIX
-					));
-
-					$page->addLabel($config->getFieldId() . "_text", array(
-						"text" => $value,
-						"soy2prefix" => SOYSHOP_SITE_PREFIX
-					));
-					break;
-
-				case "textarea":
-					if(strlen($config->getOutput()) > 0){
-						$page->addModel($config->getFieldId(), array(
-							"attr:" . htmlspecialchars($config->getOutput()) => (is_string($value)) ? soyshop_customfield_nl2br($value) : "",
-							"soy2prefix" => SOYSHOP_SITE_PREFIX
-						));
-					}else{
-						$page->addLabel($config->getFieldId(), array(
-							"html" => (is_string($value)) ? soyshop_customfield_nl2br($value) : "",
-							"soy2prefix" => SOYSHOP_SITE_PREFIX
-						));
-					}
-					break;
-
-				case "link":
-					if(strlen($config->getOutput()) > 0){
-						$page->addModel($config->getFieldId(), array(
-							"attr:" . htmlspecialchars($config->getOutput()) => $value,
-							"soy2prefix" => SOYSHOP_SITE_PREFIX
-						));
-					}else{
-						$page->addLink($config->getFieldId(), array(
-							"link" => $value,
-							"soy2prefix" => SOYSHOP_SITE_PREFIX
-						));
-					}
-
-					$page->addLabel($config->getFieldId() . "_text", array(
-						"text" => $value,
-						"soy2prefix" => SOYSHOP_SITE_PREFIX
-					));
-					break;
-
-				default:
-					if(strlen($config->getOutput()) > 0){
-						if($config->getOutput() == "href" && $config->getType() != "link"){
-							$page->addLink($config->getFieldId(), array(
-								"link" => $value,
-								"soy2prefix" => SOYSHOP_SITE_PREFIX
-							));
-						}else{
+						if(is_string($config->getOutput()) && strlen($config->getOutput()) > 0){
 							$page->addModel($config->getFieldId(), array(
 								"attr:" . htmlspecialchars($config->getOutput()) => $value,
 								"soy2prefix" => SOYSHOP_SITE_PREFIX
 							));
+						}else{
+							//imgタグにalt属性を追加するか？
+							if(isset($value2) && is_string($value2) && strlen($value2) > 0){
+								$page->addImage($config->getFieldId(), array(
+									"src" => $value,
+									"attr:alt" => $value2,
+									"soy2prefix" => SOYSHOP_SITE_PREFIX,
+									"visible" => (isset($value))
+								));
+							}else{
+								$page->addImage($config->getFieldId(), array(
+									"src" => $value,
+									"soy2prefix" => SOYSHOP_SITE_PREFIX,
+									"visible" => (isset($value))
+								));
+							}
 						}
-					}else{
-						$page->addLabel($config->getFieldId(), array(
-							"html" => $value,
+						$page->addLink($config->getFieldId() . "_link", array(
+							"link" => $value,
 							"soy2prefix" => SOYSHOP_SITE_PREFIX
 						));
-					}
+
+						$page->addLabel($config->getFieldId() . "_text", array(
+							"text" => $value,
+							"soy2prefix" => SOYSHOP_SITE_PREFIX
+						));
+						break;
+
+					case "textarea":
+						if(strlen($config->getOutput()) > 0){
+							$page->addModel($config->getFieldId(), array(
+								"attr:" . htmlspecialchars($config->getOutput()) => (is_string($value)) ? soyshop_customfield_nl2br($value) : "",
+								"soy2prefix" => SOYSHOP_SITE_PREFIX
+							));
+						}else{
+							$page->addLabel($config->getFieldId(), array(
+								"html" => (is_string($value)) ? soyshop_customfield_nl2br($value) : "",
+								"soy2prefix" => SOYSHOP_SITE_PREFIX
+							));
+						}
+						break;
+
+					case "link":
+						if(strlen($config->getOutput()) > 0){
+							$page->addModel($config->getFieldId(), array(
+								"attr:" . htmlspecialchars($config->getOutput()) => $value,
+								"soy2prefix" => SOYSHOP_SITE_PREFIX
+							));
+						}else{
+							$page->addLink($config->getFieldId(), array(
+								"link" => $value,
+								"soy2prefix" => SOYSHOP_SITE_PREFIX
+							));
+						}
+
+						$page->addLabel($config->getFieldId() . "_text", array(
+							"text" => $value,
+							"soy2prefix" => SOYSHOP_SITE_PREFIX
+						));
+						break;
+
+					default:
+						if(strlen($config->getOutput()) > 0){
+							if($config->getOutput() == "href" && $config->getType() != "link"){
+								$page->addLink($config->getFieldId(), array(
+									"link" => $value,
+									"soy2prefix" => SOYSHOP_SITE_PREFIX
+								));
+							}else{
+								$page->addModel($config->getFieldId(), array(
+									"attr:" . htmlspecialchars($config->getOutput()) => $value,
+									"soy2prefix" => SOYSHOP_SITE_PREFIX
+								));
+							}
+						}else{
+							$page->addLabel($config->getFieldId(), array(
+								"html" => $value,
+								"soy2prefix" => SOYSHOP_SITE_PREFIX
+							));
+						}
+				}
 			}
 		}
 	}

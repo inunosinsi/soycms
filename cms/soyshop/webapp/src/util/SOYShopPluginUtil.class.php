@@ -18,12 +18,13 @@ class SOYShopPluginUtil {
 			$others = array();
 
 			if(!class_exists("SOYShop_PluginConfig")) SOY2::import("domain.plugin.SOYShop_PluginConfig");
+			if(!file_exists("soyshop_get_hash_table_dao")) include_once(SOY2::RootDir() . "base/func/dao.php");
+			
 			$sql = "SELECT plugin_id FROM soyshop_plugins WHERE is_active = " . SOYShop_PluginConfig::PLUGIN_ACTIVE;
+			
 			// 公開側で関係ない(arrival_から始まるpluginId等)を省く
-			if(!defined("SOYSHOP_ADMIN_PAGE") || !SOYSHOP_ADMIN_PAGE){
-				$sql .= " AND plugin_id NOT LIKE 'arrival_%'";
-			}
-
+			if(!defined("SOYSHOP_ADMIN_PAGE") || !SOYSHOP_ADMIN_PAGE) $sql .= " AND plugin_id NOT LIKE 'arrival_%'";
+			
 			try{
 				$res = soyshop_get_hash_table_dao("plugin")->executeQuery($sql);
 			}catch(Exception $e){

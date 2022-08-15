@@ -65,10 +65,10 @@ class SOYShop_DataSets {
 				$res = soyshop_get_hash_table_dao("data_sets")->executeQuery(
 					"SELECT class_name, object_data ".
 					"FROM soyshop_data_sets ".
-					"WHERE class_name NOT LIKE 'mail%' ".
-					"AND class_name NOT LIKE '%attributes' ".
-					"AND class_name NOT LIKE 'item%' ".
-					"AND class_name NOT LIKE '%.config'"
+					"WHERE class_name = 'soyshop.ShopConfig' ".
+					"OR class_name LIKE 'config.mypage.%' ".
+					"OR class_name LIKE 'config.cart.%' ".
+					"OR class_name LIKE '%.mapping' "
 				);
 			}catch(Exception $e){
 				$res = array();
@@ -77,18 +77,41 @@ class SOYShop_DataSets {
 			if(count($res)){
 				foreach($res as $arr){
 					$classTable[] = $arr["class_name"];
-					$dataTable[] = soy2_unserialize($arr["object_data"]);
+					$dataTable[] = unserialize($arr["object_data"]);
 				}
 			}
 			unset($res);
 		}
-
+		
 		$idx = array_search($className, $classTable);
 		if(is_numeric($idx) && isset($dataTable[$idx])){
 			return $dataTable[$idx];
 		}else{
+			//プラグイン毎の設定で複数の値を持つものがあるので一括で取得しておく
+			preg_match('/(.*)\..*/', $className, $tmp);
+			if(isset($tmp[1]) && $tmp[1] !== "plugin" && $tmp[1] != "common"){
+				try{
+					$res = soyshop_get_hash_table_dao("data_sets")->executeQuery("SELECT class_name, object_data FROM soyshop_data_sets WHERE class_name LIKE '" . $tmp[1] . "%' AND class_name NOT IN('" . implode("','", $classTable) . "')");
+				}catch(Exception $e){
+					$res = array();
+				}
+				if(count($res)){
+					foreach($res as $arr){
+						if(is_numeric(array_search($arr["class_name"], $classTable))) continue;
+						$classTable[] = $arr["class_name"];
+						$dataTable[] = unserialize($arr["object_data"]);
+					}
+				}
+				// 一括取得で設定データを取得できなかった場合はdataTableに$onNullを入れておく
+				if(is_bool(array_search($className, $classTable))){
+					$classTable[] = $className;
+					$dataTable[] = $onNull;
+				}
+				return $dataTable[array_search($className, $classTable)];
+			}
+
 			try{
-				return soy2_unserialize(soyshop_get_hash_table_dao("data_sets")->getByClass($className)->getObject());
+				return unserialize(soyshop_get_hash_table_dao("data_sets")->getByClass($className)->getObject());
 			}catch(Exception $e){
 				if($onNull !== false) return $onNull;
 				throw $e;

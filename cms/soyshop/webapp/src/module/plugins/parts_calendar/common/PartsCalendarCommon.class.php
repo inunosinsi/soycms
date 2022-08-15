@@ -40,15 +40,17 @@ class PartsCalendarCommon{
 		return $week;	
 	}
 
+	/**
+	 * @param string
+	 * @return array
+	 */
 	public static function getDayOfWeekConfig(string $base=""){
 		if(!strlen($base)) $base = "calendar.config";
-		try{
-			$dow = SOYShop_DataSets::get($base . ".day_of_week");
-		}catch(Exception $e){
-			$dow = array();	//default
-			for($i = 1; $i < 6; $i++){
-				$dow[$i] = array();
-			}
+		$dow = SOYShop_DataSets::get($base . ".day_of_week");
+		if(is_array($dow)) return $dow;
+		$dow = array();	//default
+		for($i = 1; $i < 6; $i++){
+			$dow[$i] = array();
 		}
 		return $dow;
 	}

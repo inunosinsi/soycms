@@ -107,9 +107,8 @@ class SOYShop_ItemAttributeConfig{
 	 * @return array
 	 * @param boolean is map
 	 */
-	public static function load($flag = false){
+	public static function load(bool $flag=false){
 		$array = SOYShop_DataSets::get(self::DATASETS_KEY, array());
-
 		if(!$flag)return $array;
 
 		$map = array();
