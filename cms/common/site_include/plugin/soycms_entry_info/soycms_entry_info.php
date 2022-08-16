@@ -31,11 +31,11 @@ class EntryInfoPlugin{
 			if(!defined("_SITE_ROOT_")){
 
 				//記事作成時にキーワードとdescriptinをDBに挿入する
-				CMSPlugin::setEvent('onEntryUpdate',$this->getId(),array($this, "onEntryUpdate"));
-				CMSPlugin::setEvent('onEntryCreate',$this->getId(),array($this, "onEntryUpdate"));
+				CMSPlugin::setEvent('onEntryUpdate', $this->getId(), array($this, "onEntryUpdate"));
+				CMSPlugin::setEvent('onEntryCreate', $this->getId(), array($this, "onEntryUpdate"));
 
 				//記事複製時にキーワードとdescriptionもDBに挿入する
-				CMSPlugin::setEvent('onEntryCopy',CustomFieldPlugin::PLUGIN_ID,array($this, "onEntryCopy"));
+				CMSPlugin::setEvent('onEntryCopy', $this->getId(), array($this, "onEntryCopy"));
 
 				//記事投稿画面にフォームを表示する
 				CMSPlugin::addCustomFiledFunction($this->getId(),"Entry.Detail",array($this, "onCallCustomField"));
@@ -44,7 +44,7 @@ class EntryInfoPlugin{
 			//公開側設定
 			}else{
 				//公開側のページを表示させたときに、メタデータを表示する
-				CMSPlugin::setEvent('onPageOutput',$this->getId(),array($this,"onPageOutput"));
+				CMSPlugin::setEvent('onPageOutput', $this->getId(), array($this,"onPageOutput"));
 			}
 
 		}else{
