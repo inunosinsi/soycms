@@ -1,18 +1,16 @@
 <?php
 
 class CMSAdminPageController extends SOY2PageController{
-	function onNotFound($path = null, $args = null, $classPath = null){
+	function onNotFound(string $path="", array $args=array(), string $classPath=""){
 		/**
 		 * ページがなかったらr=[REQUEST_URI]としてルートに転送
 		 * 非ログイン時にログインしていないと見られないURIへアクセスしようとしているのを想定している
 		 */
 
 		//デフォルトパスの場合はすでにルートにアクセスしているので転送しない（無限リダイレクト回避）
-		if($this->getRequestPath() == "Index"){
-			parent::onNotFound(null, null, null);
-		}
+		if($this->getRequestPath() == "Index") parent::onNotFound();
 
-		if(strpos($_SERVER["REQUEST_URI"],"Logout")===false){
+		if(is_bool(strpos($_SERVER["REQUEST_URI"],"Logout"))){
 			$redirectParam = "?r=".rawurlencode(self::createRelativeLink($_SERVER["REQUEST_URI"]));
 		}else{
 			$redirectParam = "";

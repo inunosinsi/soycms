@@ -281,6 +281,4 @@ class CMSUpdateForm extends HTMLForm{
 			.'<input soy:id="'.CMSUpdatePageBase::SOYCMS_SITE.'" />'//サイトID
 			.$this->_soy2_innerHTML;
 	}
-
 }
-?>
