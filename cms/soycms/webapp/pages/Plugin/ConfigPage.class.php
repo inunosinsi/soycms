@@ -15,49 +15,49 @@ class ConfigPage extends CMSWebPageBase{
 
 		parent::__construct();
 
-		$this->createAdd("plugin_name","HTMLLabel",array(
+		$this->addLabel("plugin_name", array(
 			"text" => $plugin->getName()
 		));
 
-		$this->createAdd("plugin_email","HTMLLink",array(
+		$this->addLink("plugin_email", array(
 			"text"=> (strlen($plugin->getMail())) ? $plugin->getMail() : "-",
 			"link"=> "mailto:" . $plugin->getMail(),
 			"target"=>"_blank"
 		));
 
-		$this->createAdd("plugin_url","HTMLLink",array(
+		$this->addLink("plugin_url", array(
 			"text"=> (strlen($plugin->getUrl())) ? $plugin->getUrl() : "-",
 			"link"=> $plugin->getUrl(),
 			"target"=>"_blank"
 		));
 
-		$this->createAdd("plugin_author","HTMLLabel",array(
+		$this->addLabel("plugin_author", array(
 			"text"=> (strlen($plugin->getAuthor())) ? $plugin->getAuthor() : "-"
 		));
 
-		$this->createAdd("plugin_description","HTMLLabel",array(
+		$this->addLabel("plugin_description", array(
 			"html"=>$plugin->getDescription()
 		));
 
-		$this->createAdd("plugin_version","HTMLLabel",array(
+		$this->addLabel("plugin_version", array(
 			"text"=> (strlen($plugin->getVersion())) ? $plugin->getVersion() : "-"
 		));
 
-		$this->createAdd("plugin_config_form","HTMLForm",array(
+		$this->addForm("plugin_config_form", array(
 			"action"=>SOY2PageController::createLink("Plugin.ConfigModifyPage")
 		));
 
-		$this->createAdd("back_url","HTMLInput",array(
+		$this->addInput("back_url", array(
 			"name"=>"back_url",
 			"value"=>SOY2PageController::createLink("Plugin.ConfigPage")."?".$this->id
 		));
 
-		$this->createAdd("plugin_id","HTMLInput",array(
+		$this->addInput("plugin_id", array(
 			"name"=>"plugin_id",
 			"value"=>$this->id
 		));
 
-		$this->createAdd("category_select","HTMLSelect",array(
+		$this->addSelect("category_select", array(
 			"options"=>array_keys($this->run("Plugin.PluginCategoryListAction")->getAttribute("list")),
 			"selected"=>$plugin->getCategory(),
 			"name"=>"category"
@@ -77,7 +77,7 @@ class ConfigPage extends CMSWebPageBase{
 		}else{
 			$html = "";
 		}
-		$this->createAdd("plugin_config","HTMLLabel",array(
+		$this->addLabel("plugin_config", array(
 			"html" => $html
 		));
 	}

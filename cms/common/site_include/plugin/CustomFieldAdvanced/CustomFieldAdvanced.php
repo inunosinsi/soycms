@@ -251,7 +251,7 @@ class CustomFieldPluginAdvanced{
 						));
 
 						//サムネイルプラグイン
-						if(file_exists(_SITE_ROOT_ . "/.plugin/soycms_thumbnail.active")){
+						if(CMSPlugin::activeCheck("soycms_thumbnail")){
 							SOY2::import("site_include.plugin.soycms_thumbnail.util.ThumbnailPluginUtil");
 							$tmbImagePathes = ThumbnailPluginUtil::getThumbnailPathesByEntryId((int)$entry->getId());
 

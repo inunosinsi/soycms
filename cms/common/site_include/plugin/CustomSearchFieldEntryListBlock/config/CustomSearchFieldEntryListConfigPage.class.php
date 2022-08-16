@@ -10,7 +10,7 @@ class CustomSearchFieldEntryListConfigPage extends WebPage {
 
 	function execute(){
 		parent::__construct();
-		DisplayPlugin::toggle("noinstalled_customSearchField", !file_exists(UserInfoUtil::getSiteDirectory(true) . ".plugin/CustomSearchField.active"));
+		DisplayPlugin::toggle("noinstalled_customSearchField", !CMSPlugin::activeCheck("CustomSearchField"));
 	}
 
 	function setPluginObj($pluginObj){

@@ -326,7 +326,7 @@ class SitemapPlugin{
 		static $is;
 		if(is_bool($is)) return $is;
 
-		if(file_exists(_SITE_ROOT_ . "/.plugin/canonical_url.active")){
+		if(CMSPlugin::activeCheck("canonical_url")){
 			if(!class_exists("CanonicalUrlPlugin")) SOY2::import("site_include.plugin.canonical_url.canonical_url", ".php");
 			$cnf = soy2_unserialize(file_get_contents(_SITE_ROOT_ . "/.plugin/canonical_url.config"));
 			$is = ($cnf->getIsTrailingSlash() == 1);

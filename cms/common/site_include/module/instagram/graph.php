@@ -9,7 +9,7 @@ function soycms_graph($html, $htmlObj){
 	));
 
 	$arr = array();
-	if(file_exists(_SITE_ROOT_ . "/.plugin/instagram_graph_api.active")){
+	if(CMSPlugin::activeCheck("instagram_graph_api")){
 		SOY2::import("site_include.plugin.instagram_graph_api.util.InstagramGraphAPIUtil");
 		$cnf = InstagramGraphAPIUtil::getConfig();
 		if(strlen($cnf["token"]) && strlen($cnf["bizId"])){

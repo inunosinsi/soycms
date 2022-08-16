@@ -11,7 +11,7 @@ function soycms_entry_calendar_prev($html, $page){
 	}
 
 	//プラグインがアクティブかどうか？
-	if(file_exists(_SITE_ROOT_ . "/.plugin/entry_calendar.active")){
+	if(CMSPlugin::activeCheck("entry_calendar")){
 		$y = (isset($_GET["y"]) && is_numeric($_GET["y"])) ? (int)$_GET["y"] : (int)date("Y");
 		$m = (isset($_GET["m"]) && is_numeric($_GET["m"])) ? (int)$_GET["m"] - 1 : (int)date("n") - 1;
 		if($m < 1) {

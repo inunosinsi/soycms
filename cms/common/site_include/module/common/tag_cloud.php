@@ -12,7 +12,7 @@ function soycms_tag_cloud($html, $page){
 	$rankDivide = 1;
 
 	//プラグインがアクティブかどうか？
-	if(file_exists(_SITE_ROOT_ . "/.plugin/TagCloud.active")){
+	if(CMSPlugin::activeCheck("TagCloud")){
 		//タグクラウドブロックを設置しているページを調べる
 		SOY2::import("site_include.plugin.tag_cloud.util.TagCloudUtil");
 		$pageId = TagCloudUtil::getPageIdSettedTagCloudBlock();

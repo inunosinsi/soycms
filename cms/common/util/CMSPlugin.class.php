@@ -136,12 +136,10 @@ class CMSPlugin {
 	 */
 	private static function &getInstance(){
 		static $_static;
-
-		if(!$_static){
+		if(is_null($_static)){
 			$_static = new CMSPlugin();
 			$_static->loadPlugins();
 		}
-
 		return $_static;
 	}
 
@@ -152,14 +150,16 @@ class CMSPlugin {
 	 * CMS_PLUGIN_DIR_/XXXX/XXXX.php
 	 */
 	function loadPlugins(){
-		$dir = CMS_PAGE_PLUGIN;
-		$files = scandir(CMS_PAGE_PLUGIN);
+		//プラグインのページではすべてのプラグインのファイルを読み込む	!defined("_SITE_ROOT_")で管理画面側であることを調べている
+		$isAll = (!defined("_SITE_ROOT_") && is_numeric(strpos($_SERVER["REQUEST_URI"], "Plugin")));
 
+		$dir = CMS_PAGE_PLUGIN;
+		$files = scandir($dir);
+		
 		foreach($files as $file){
-			if($file[0] == ".")continue;
-			if(is_dir($dir . $file) && is_readable($dir . $file ."/".$file.".php")){
-				include_once($dir . $file ."/".$file.".php");
-			}
+			if(!$isAll && !self::activeCheck($file)) continue;	//プラグインのページ以外では有効でないプラグインは読み込まない
+			if($file[0] == "." || !is_dir($dir . $file) || !is_readable($dir . $file ."/".$file.".php")) continue;
+			include_once($dir . $file ."/".$file.".php");
 		}
 	}
 
@@ -168,24 +168,58 @@ class CMSPlugin {
 	/**
 	 * 有効になっているかチェック
 	 */
-	static function activeCheck($id){
-		if(file_exists(self::getSiteDirectory() .'/.plugin/'. $id .".active")){
-			return true;
-		}else{
-			return false;
+	static function activeCheck(string $pluginId){
+		static $l;
+		if(is_null($l)) $l = self::readActiveCheckCache(); // インストール状況のキャッシュを作成		
+		return (is_numeric(array_search($pluginId, $l)));
+	}
+
+	static function readActiveCheckCache(){
+		$path = self::activeCheckCacheFilePath();
+		if(!file_exists($path)) self::createActiveCheckCache();	//キャッシュファイルを生成する
+		return unserialize(file_get_contents($path));
+	}
+	/**
+	 * プラグインの有効状態のキャッシュを作成
+	 */
+	static function createActiveCheckCache(){
+		$installedList = array();
+
+		$dir = CMS_PAGE_PLUGIN;
+		$files = scandir($dir);
+		foreach($files as $pluginIdRaw){
+			if($pluginIdRaw[0] == "." || !is_dir($dir . $pluginIdRaw) || !is_readable($dir . $pluginIdRaw ."/".$pluginIdRaw.".php")) continue;
+			if(file_exists(self::getSiteDirectory() .'/.plugin/'. $pluginIdRaw .".active")){
+				$installedList[] = $pluginIdRaw;
+			}else{
+				$lines = explode("\n", file_get_contents($dir . $pluginIdRaw ."/".$pluginIdRaw.".php"));
+				$pluginId = null;
+				foreach($lines as $line){
+					preg_match('/PLUGIN_ID.*=.*\"(.*)\";/', $line, $tmp);
+					if(!isset($tmp[1])) continue;
+					$pluginId = $tmp[1];
+					break;
+				}
+				if(is_string($pluginId) && file_exists(self::getSiteDirectory() .'/.plugin/'. $pluginId .".active")){
+					$installedList[] = $pluginId;
+					if($pluginId != $pluginIdRaw) $installedList[] = $pluginIdRaw;	//プラグインのファイル名の方も記録しておく
+				}
+			}
 		}
+		file_put_contents(self::activeCheckCacheFilePath(), serialize($installedList));
+	}
+
+	static function activeCheckCacheFilePath(){
+		$dir = rtrim(self::getSiteDirectory(), "/") . "/.cache/plugin/";
+		if(!file_exists($dir)) mkdir($dir);
+		return $dir . "activelist.log";
 	}
 
 	/**
 	 * サイトのディレクトリを取得
 	 */
 	static function getSiteDirectory(){
-
-		if(defined("_SITE_ROOT_")){
-			return _SITE_ROOT_;
-		}
-
-		return UserInfoUtil::getSiteDirectory();
+		return (defined("_SITE_ROOT_")) ? _SITE_ROOT_ : UserInfoUtil::getSiteDirectory();
 	}
 
 
@@ -193,7 +227,7 @@ class CMSPlugin {
 	/**
 	 * プラグインの追加及び初期化関数の呼び出し
 	 */
-	static function addPlugin($id,$initFunc){
+	static function addPlugin($id, $initFunc){
 		$instance =& CMSPlugin::getInstance();
 
 		if(is_array($initFunc) && !method_exists($initFunc[0],$initFunc[1])){

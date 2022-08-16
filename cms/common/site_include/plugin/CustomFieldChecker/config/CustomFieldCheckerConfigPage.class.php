@@ -122,7 +122,7 @@ class CustomFieldCheckerConfigPage extends WebPage {
 	}
 
 	private function _checkActivedPlugin(string $pluginId){
-		return file_exists(UserInfoUtil::getSiteDirectory() . ".plugin/" . $pluginId . ".active");
+		return CMSPlugin::activeCheck($pluginId);
 	}
 
 	private function logic(){

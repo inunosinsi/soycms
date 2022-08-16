@@ -228,7 +228,7 @@ class OutputBlogEntriesJsonPlugin{
 		static $c;
 		if(is_null($c)){
 			$c = array();
-			if(file_exists(_SITE_ROOT_ . "/.plugin/CustomFieldAdvanced.active")) {
+			if(CMSPlugin::activeCheck("CustomFieldAdvanced")) {
 				SOY2::import("site_include.plugin.CustomFieldPluginAdvanced.CustomFieldPluginAdvanced", ".php");
 				$c = CMSPlugin::loadPluginConfig(CustomFieldPluginAdvanced::PLUGIN_ID)->customFields;
 			}

@@ -87,7 +87,7 @@ class OutputJsonConfigPage extends WebPage {
 	}
 
 	private function _getCustomdFieldConfig(){
-		if(!file_exists(UserInfoUtil::getSiteDirectory() . "/.plugin/CustomFieldAdvanced.active")) return array();
+		if(!CMSPlugin::activeCheck("CustomFieldAdvanced")) return array();
 
 		SOY2::import("site_include.plugin.CustomFieldPluginAdvanced.CustomFieldPluginAdvanced", ".php");
 		$customfields = CMSPlugin::loadPluginConfig(CustomFieldPluginAdvanced::PLUGIN_ID)->customFields;

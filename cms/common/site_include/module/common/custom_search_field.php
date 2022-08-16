@@ -6,7 +6,7 @@ function soycms_custom_search_field($html, $htmlObj){
     ));
 
 	//プラグインがアクティブかどうか？
-	if(file_exists(_SITE_ROOT_ . "/.plugin/CustomSearchField.active")){
+	if(CMSPlugin::activeCheck("CustomSearchField")){
 		SOY2::import("site_include.plugin.CustomSearchField.util.CustomSearchFieldUtil");
 
         //GETの値を変数に入れておく。そのうちページャ対応を行わなければならないため

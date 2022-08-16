@@ -65,13 +65,13 @@ class MigrateLogic extends SOY2LogicBase {
             }
 
 			//カスタムフィールド
-			if(file_exists(UserInfoUtil::getSiteDirectory() . "/.plugin/CustomField.active")){
+			if(CMSPlugin::activeCheck("CustomField")){
 				include_once(dirname(__FILE__) . "/table/CustomField.php");
 				registerCustomField();
 			}
 
 			//ブログ記事SEOプラグイン
-			if(file_exists(UserInfoUtil::getSiteDirectory() . "/.plugin/soycms_entry_info.active")){
+			if(CMSPlugin::activeCheck("soycms_entry_info")){
 				include_once(dirname(__FILE__) . "/table/EntryInfo.php");
 				registerEntryInfo();
 			}

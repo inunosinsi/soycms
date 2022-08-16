@@ -202,7 +202,7 @@ class CustomFieldListComponent extends HTMLList {
 			"options" => $entity->getLabels(),
 			"selected" => $entity->getFixedLabelId()
 		));
-		$isTmbPlg = file_exists(UserInfoUtil::getSiteDirectory() . ".plugin/soycms_thumbnail.active");
+		$isTmbPlg = CMSPlugin::activeCheck("soycms_thumbnail");
 		$this->addModel("is_entry_field_with_thumbnail_plugin", array(
 			"visible" => ($entity->getType() == "entry" && $isTmbPlg)
 		));

@@ -124,7 +124,7 @@ class ExImportLogic extends ExImportLogicBase{
 
 	function getCustomSearchFieldObject($id){
         $res = array();
-        if(file_exists(UserInfoUtil::getSiteDirectory() . ".plugin/CustomSearchField.active")){
+        if(CMSPlugin::activeCheck("CustomSearchField")){
             if(!$this->customSearchFieldDBLogic) $this->customSearchFieldDBLogic = SOY2Logic::createInstance("site_include.plugin.CustomSearchField.logic.DataBaseLogic");
             $res = $this->customSearchFieldDBLogic->getByEntryId($id);
         }

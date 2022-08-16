@@ -6,8 +6,7 @@ function soycms_user_register($html, $page){
 	));
 
 	//プラグインがアクティブかどうか？
-	if(file_exists(_SITE_ROOT_ . "/.plugin/AspPlugin.active")){
-
+	if(CMSPlugin::activeCheck("AspPlugin")){
 		$obj->addLabel("form", array(
 			"html" => SOY2Logic::createInstance("site_include.plugin.asp.logic.BuildAspFormLogic")->build(),
 			"soy2prefix" => "cms"
