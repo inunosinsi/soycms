@@ -2,14 +2,13 @@
 
 class TagCloudBlockEntryLogic extends SOY2LogicBase {
 
-    function __construct(){
-
-    }
+    function __construct(){}
 
     function search(int $labelId, int $wordId, int $count=0){
         static $entries;
         if(is_null($entries)){
             $entries = array();
+            $dao = soycms_get_hash_table_dao("entry");
 
 			$sql = "SELECT ent.* FROM Entry ent ".
 	            "JOIN EntryLabel lab ".
@@ -45,8 +44,7 @@ class TagCloudBlockEntryLogic extends SOY2LogicBase {
 				":now" => time()
 			);
 
-            $dao = SOY2DAOFactory::create("cms.EntryDAO");
-
+            
             try{
                 $results = $dao->executeQuery($sql, $binds);
             }catch(Exception $e){
