@@ -73,7 +73,7 @@ class GravatarLogic extends SOY2LogicBase{
 	}
 
 	function readCacheFile(string $fileName="profile"){
-		return soy2_unserialize(string file_get_contents(self::getCacheFilePath($fileName)));
+		return soy2_unserialize((string)file_get_contents(self::getCacheFilePath($fileName)));
 	}
 
 	function generateCacheFile($values, $fileName="profile"){

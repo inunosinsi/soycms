@@ -6,44 +6,45 @@
 }
 -->
 </style>
-<div class="section">
-	<table class="item">
-		<caption style="padding:5px 10px;font-size:1.2em;">商品紹介設定</caption>
-		<tr>
-			<td colspan="2">
-				商品コード:<input type="text" style="width:40%;margin:2px 7px;" name="item_code" value="<?php if(isset($item)){echo $item->getCode();}?>" />
-			</td>
-			<td>&nbsp;</td>
-		</tr>
-		<?php
-			if(!is_null($item->getCode()) && strlen($item->getCode())){
-				$html = array();
-				$html[] = "<tr>";
-				$html[] = "<td rowspan=\"5\">";
-				$html[] = "<img src=\"" . $item->getAttribute("image_small") . "\" width=\"150\" />";
-				$html[] = "</td>";
-				$html[] = "<td>商品ID:</td>";
-				$html[] = "<td>" . $item->getId() . "</td>";
-				$html[] = "</tr>";
-				$html[] = "<tr>";
-				$html[] = "<td>商品コード:</td>";
-				$html[] = "<td>".$item->getCode()."</td>";
-				$html[] = "</tr>";
-				$html[] = "<tr>";
-				$html[] = "<td>商品名:</td>";
-				$html[] = "<td>" . $item->getName() . "</td>";
-				$html[] = "</tr>";
-				$html[] = "<tr>";
-				$html[] = "<td>価格:</td>";
-				$html[] = "<td>" . soy2_number_format($item->getPrice()) . "</td>";
-				$html[] = "</tr>";
-				$html[] = "<tr>";
-				$html[] = "<td>セール価格:</td>";
-				$html[] = "<td>" . soy2_number_format($item->getSalePrice()) . "</td>";
-				$html[] = "</tr>";
+<div class="alert alert-success" style="margin-top:15px;">商品紹介設定</div>
 
-				echo implode("\n",$html);
-			}
-		?>
-	</table>
+<div class="form-group">
+	<div class="form-inline">
+		<label>商品コード:</label>
+		<input type="text" class="form-control" name="item_code" value="<?php if(isset($item)){echo $item->getCode();}?>" style="width:380px;">
+	</div>
 </div>
+
+<table class="table" style="width:500px;">
+	<?php
+		if(strlen((string)$item->getCode())){
+			$html = array();
+			$html[] = "<tr>";
+			$html[] = "<td rowspan=\"5\">";
+			$imageSmall = (string)$item->getAttribute("image_small");
+			if(strlen($imageSmall)) $html[] = "<img src=\"/" . UserInfoUtil::getSite()->getSiteId() . "/im.php?src=" . $imageSmall . "&width=150\">";
+			$html[] = "</td>";
+			$html[] = "<td>商品ID:</td>";
+			$html[] = "<td>" . $item->getId() . "</td>";
+			$html[] = "</tr>";
+			$html[] = "<tr>";
+			$html[] = "<td>商品コード:</td>";
+			$html[] = "<td>".$item->getCode()."</td>";
+			$html[] = "</tr>";
+			$html[] = "<tr>";
+			$html[] = "<td>商品名:</td>";
+			$html[] = "<td>" . $item->getName() . "</td>";
+			$html[] = "</tr>";
+			$html[] = "<tr>";
+			$html[] = "<td>価格:</td>";
+			$html[] = "<td>" . soy2_number_format($item->getPrice()) . "</td>";
+			$html[] = "</tr>";
+			$html[] = "<tr>";
+			$html[] = "<td>セール価格:</td>";
+			$html[] = "<td>" . soy2_number_format($item->getSalePrice()) . "</td>";
+			$html[] = "</tr>";
+
+			echo implode("\n",$html);
+		}
+	?>
+</table>

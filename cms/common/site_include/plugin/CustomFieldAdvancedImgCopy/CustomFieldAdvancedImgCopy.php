@@ -41,11 +41,11 @@ class CustomFieldPluginAdvancedImgCopy{
 	 * onEntryOutput
 	 */
 	function onEntryOutput($arg){
-		$entryId = $arg["entryId"];
+		$entryId = (int)$arg["entryId"];
 		$htmlObj = $arg["SOY2HTMLObject"];
 
 		//設定内容を調べる
-		$attrs = self::_getAttrs($entryId);
+		$attrs = ($entryId > 0) ? self::_getAttrs($entryId) : array();
 		if(count($attrs)){
 			foreach($attrs as $fieldId => $attr){
 				$props = $attr->getExtraValuesArray();
@@ -61,23 +61,26 @@ class CustomFieldPluginAdvancedImgCopy{
 		}
 	}
 
-	private function _getAttrs($entryId){
+	/**
+	 * @param int
+	 * @return array
+	 */
+	private function _getAttrs(int $entryId){
 		self::_setImgFieldIds();
 		if(!count($this->imgFieldIds)) return array();
 
-		$attrDao = self::_dao();
+		$attrDao = soycms_get_hash_table_dao("entry_attribute");
 
 		try{
 			$results = $attrDao->executeQuery("SELECT * FROM EntryAttribute WHERE entry_id = :entryId AND entry_field_id IN (\"" . implode("\",\"", $this->imgFieldIds) . "\")", array(":entryId" => $entryId));
 		}catch(Exception $e){
 			$results = array();
 		}
+		if(!count($results)) return array();
 
 		$attrs = array();
-		if(count($results)){
-			foreach($results as $res){
-				$attrs[$res["entry_field_id"]] = $attrDao->getObject($res);
-			}
+		foreach($results as $res){
+			$attrs[$res["entry_field_id"]] = $attrDao->getObject($res);
 		}
 
 		foreach($this->imgFieldIds as $fieldId){
@@ -93,7 +96,7 @@ class CustomFieldPluginAdvancedImgCopy{
 
 			if(!class_exists("CustomFieldAdvanced")) SOY2::import("site_include.plugin.CustomFieldAdvanced.CustomFieldAdvanced", "php");
 			$advObj = CMSPlugin::loadPluginConfig("CustomFieldAdvanced");
-			if(count($advObj->customFields)){
+			if($advObj instanceof CustomFieldPluginAdvanced && is_array($advObj->customFields) && count($advObj->customFields)){
 				foreach($advObj->customFields as $fieldId => $field){
 					if($field->getType() != "image") continue;	//取り急ぎHTMLImageのみ
 					if(!strlen((string)$field->getExtraOutputs())) continue;	//属性の設定をしていないものを除く
@@ -121,12 +124,6 @@ class CustomFieldPluginAdvancedImgCopy{
 		$form->setPluginObj($this);
 		$form->execute();
 		return $form->getObject();
-	}
-
-	private function _dao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("cms.EntryAttributeDAO");
-		return $dao;
 	}
 
 	function getPostfix(){

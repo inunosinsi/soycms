@@ -121,7 +121,8 @@ class RedirectLanguageSiteLogic extends SOY2LogicBase{
 		if((self::isMobile() || self::isSmartPhone()) && strlen(self::getCarrierPrefix())){
 			$path = str_replace("/" . SOYCMS_CARRIER_PREFIX, "", $path);
 		}
-		
+		if(!is_array($config) || !count($config)) return $path;
+
 		foreach($config as $conf){
 			if(!isset($conf["prefix"])) continue;
 			if(preg_match('/\/' . $conf["prefix"] . '\//', $path) || $path == "/" . $conf["prefix"]){

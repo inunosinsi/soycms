@@ -24,14 +24,14 @@ class GravatarAccount {
 	}
 
 	function getName(){
-		return $this->name;
+		return (is_string($this->name)) ? $this->name : "";
 	}
 	function setName($name){
 		$this->name = $name;
 	}
 
 	function getMailAddress(){
-		return $this->mailAddress;
+		return (is_string($this->mailAddress)) ? $this->mailAddress : "";
 	}
 	function setMailAddress($mailAddress){
 		$this->mailAddress = $mailAddress;

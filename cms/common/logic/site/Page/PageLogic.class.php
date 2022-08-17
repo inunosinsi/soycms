@@ -5,18 +5,17 @@ class PageLogic extends SOY2LogicBase{
 	/**
 	 * pageIdを親に持つ子をすべて返す
 	 */
-    function getChildIds($pageId){
-    	$dao = SOY2DAOFactory::create("cms.PageDAO");
-    	return $dao->getByParentPageId($pageId);
+    function getChildIds(int $pageId){
+    	return soycms_get_hash_table_dao("page")->getByParentPageId($pageId);
     }
 
     /**
      * pageIdを親に持つ子を再帰的にすべて取得します
      * @return array 子ページと自身のページのidの配列
      */
-    function getAllChildIds($pageId){
+    function getAllChildIds(int $pageId){
     	$ret_val = array();
-    	$this->_getAllChildIds($pageId,$ret_val);
+    	$this->_getAllChildIds($pageId, $ret_val);
     	return $ret_val;
     }
 
@@ -24,9 +23,8 @@ class PageLogic extends SOY2LogicBase{
      * getAllChildIdsの再帰呼び出し関数
      *
      */
-    private function _getAllChildIds($pageId,&$array){
-    	$dao = SOY2DAOFactory::create("cms.PageDAO");
-    	foreach($dao->getByParentPageId($pageId) as $page){
+    private function _getAllChildIds(int $pageId,&$array){
+    	foreach(soycms_get_hash_table_dao("page")->getByParentPageId($pageId) as $page){
     		$this->_getAllChildIds($page->getId(),$array);
     	}
     	return array_push($array,$pageId);
@@ -36,13 +34,13 @@ class PageLogic extends SOY2LogicBase{
      * pageId自身とその子ページすべてにtrashフラグをオンにする
      * 一つでも削除できないものがあるとロールバックされfalseが返る
      */
-    function putTrash($pageId){
+    function putTrash(int $pageId){
     	$ids = $this->getAllChildIds($pageId);
-    	$dao = SOY2DAOFactory::create("cms.PageDAO");
+    	$dao = soycms_get_hash_table_dao("page");
 
     	$dao->begin();
     	foreach($ids as $id){
-    		$page = $dao->getById($id);
+			$page = soycms_get_page_object($id);
     		if($page->isDeletable()){
     			$dao->updateTrash($id,1);
     		}else{
@@ -59,16 +57,16 @@ class PageLogic extends SOY2LogicBase{
      * pageId自身とその子ページすべてをDBから削除する
      * 一つでも削除できないものがあるとロールバックされfalseが返る
      */
-    function removePage($pageId){
+    function removePage(int $pageId){
     	//自身も含まれる
     	$ids = $this->getAllChildIds($pageId);
     	//外部キー制約を満たすためにarrayを逆順にする
     	array_reverse($ids);
-    	$dao = SOY2DAOFactory::create("cms.PageDAO");
-    	$blockDao = SOY2DAOFactory::create("cms.BlockDAO");
+    	$dao = soycms_get_hash_table_dao("page");
+    	$blockDao = soycms_get_hash_table_dao("block");
     	$dao->begin();
     	foreach($ids as $id){
-    		$page = $dao->getById($id);
+			$page = soycms_get_page_object($id);
     		if($page->isDeletable()){
     			//ページを削除
     			$dao->delete($id);
@@ -88,9 +86,9 @@ class PageLogic extends SOY2LogicBase{
      * -親ページがゴミ箱の中　→　ページルートに復元
      * -親ページが健在　　　　→　その親の元に復元
      */
-    function recoverPage($pageId){
-    	$dao = SOY2DAOFactory::create("cms.PageDAO");
-    	$page = $dao->getById($pageId);
+    function recoverPage(int $pageId){
+    	$dao = soycms_get_hash_table_dao("page");
+    	$page = soycms_get_page_object($pageId);
     	$dao->begin();
 
     	//戻す位置の決定
@@ -121,18 +119,15 @@ class PageLogic extends SOY2LogicBase{
     /**
      * IDからページ情報を取得する
      */
-    function getById($id){
-    	$dao = SOY2DAOFactory::create("cms.PageDAO");
-    	return $dao->getById($id);
-
+    function getById(int $id){
+		return soycms_get_page_object($id);
     }
 
     /**
      * URIからページ情報を取得する
      */
-    function getByUri($uri){
-    	$dao = SOY2DAOFactory::create("cms.PageDAO");
-    	return $dao->getByUri($uri);
+    function getByUri(string $uri){
+    	return soycms_get_hash_table_dao("page")->getByUri($uri);
 
     }
 
@@ -140,16 +135,14 @@ class PageLogic extends SOY2LogicBase{
      * すべてのページを取得する
      */
     function get(){
-    	$dao = SOY2DAOFactory::create("cms.PageDAO");
- 		return $dao->get();
+ 		return soycms_get_hash_table_dao("page")->get();
     }
 
     /**
      * ページの更新
      */
     function update($bean){
-    	$dao = SOY2DAOFactory::create("cms.PageDAO");
-    	return $dao->update($bean);
+    	return soycms_get_hash_table_dao("page")->update($bean);
     }
 
     /**
@@ -172,15 +165,14 @@ class PageLogic extends SOY2LogicBase{
      * ページのコンフィグオブジェクトを更新する
      */
     function updatePageConfig($bean){
-    	$dao = SOY2DAOFactory::create("cms.PageDAO");
-    	return $dao->updatePageConfig($bean);
+    	return soycms_get_hash_table_dao("page")->updatePageConfig($bean);
     }
 
     /**
      * トップページを取得する（Previewの初期画面）
      */
     function getDefaultPage(){
-    	$dao = SOY2DAOFactory::create("cms.PageDAO");
+    	$dao = soycms_get_hash_table_dao("page");
 
     	//トップページの候補
     	$defaultUris = array(
@@ -229,8 +221,7 @@ class PageLogic extends SOY2LogicBase{
 
     function hasMultipleErrorPage(){
     	try{
-    		$dao = SOY2DAOFactory::create("cms.PageDAO");
-    		$errorPageCount = $dao->countByPageType(Page::PAGE_TYPE_ERROR);
+    		$errorPageCount = soycms_get_hash_table_dao("page")->countByPageType(Page::PAGE_TYPE_ERROR);
     	}catch(Exception $e){
     		return false;
     	}

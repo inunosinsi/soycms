@@ -57,14 +57,14 @@ class AutoSaveEntryPlugin{
 
 		$html = array();
 
+		$html[] = "<div class=\"alert alert-success\">記事のバックアップ</div>";
 		$html[] = "<div class=\"section\">";
-		$html[] = "	<p class=\"sub\">記事のバックアップ</p>";
 		$html[] = "	<div id=\"labels\">";
 
 		$style = (AutoSaveEntryUtil::checkBackupFile($loginId)) ? "display:inline;" : "display:none;";
 
 		$html[] = "<span id=\"restoratoin_area\" style=\"" . $style . "\">";
-		$html[] = "記事を復元する:<input type=\"button\" id=\"restore_from_backup\" value=\"復元\">";
+		$html[] = "記事を復元する:<input type=\"button\" id=\"restore_from_backup\" class=\"btn btn-primary btn-sm\" value=\"復元\">";
 		$html[] = "</span>";
 
 		$html[] = "<span id=\"auto_save_entry_message\">記事のバックアップは実行されていません。</span>";

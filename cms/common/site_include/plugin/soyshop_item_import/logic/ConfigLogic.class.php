@@ -6,9 +6,9 @@ class ConfigLogic extends SOY2LogicBase{
 	
 	function getList(){
 		$shops = $this->getShopList();
+		if(!count($shops)) return array();
 		
 		$list = array();
-		
 		foreach($shops as $shop){
 			$list[] = $shop->getSiteId();
 		}

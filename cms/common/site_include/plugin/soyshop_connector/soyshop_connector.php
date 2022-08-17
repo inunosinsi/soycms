@@ -45,27 +45,29 @@ class SOYShopConnectorPlugin{
 	}
 
 	function onPageLoad($args){
-		$webPage = $args["webPage"];
-
 		if(!defined("SOYSHOP_WEBAPP")) define("SOYSHOP_WEBAPP", dirname(SOY2::RootDir()) . "/soyshop/webapp/");
-		if(!defined("SOY2_NOW")) define("SOY2_NOW", time());
 		
-		SOYCMS_SOYShopPageModulePlugin::configure(array(
-			"siteId" => $this->siteId,
-			"rootDir" => SOYSHOP_WEBAPP . "src/"
-		));
-		SOYCMS_SOYShopPageModulePlugin::prepare(true);
+		if(is_string($this->siteId) && file_exists(SOYSHOP_WEBAPP . "conf/shop/" . $this->siteId . ".conf.php")){
+			$webPage = $args["webPage"];
+			if(!defined("SOY2_NOW")) define("SOY2_NOW", time());
 
-		//定数の準備
-		if(!defined("SOYSHOP_SITE_DIRECTORY")) define("SOYSHOP_SITE_DIRECTORY", $_SERVER["DOCUMENT_ROOT"] . "/" . $this->siteId);
+			SOYCMS_SOYShopPageModulePlugin::configure(array(
+				"siteId" => $this->siteId,
+				"rootDir" => SOYSHOP_WEBAPP . "src/"
+			));
+			SOYCMS_SOYShopPageModulePlugin::prepare(true);
+
+			//定数の準備
+			if(!defined("SOYSHOP_SITE_DIRECTORY")) define("SOYSHOP_SITE_DIRECTORY", $_SERVER["DOCUMENT_ROOT"] . "/" . $this->siteId);
 
 
-		//プラグインの実行
-		$plugin = new SOYCMS_SOYShopPageModulePlugin();
-		$webPage->executePlugin("module","[a-zA-Z0-9\.\_]+",$plugin);
+			//プラグインの実行
+			$plugin = new SOYCMS_SOYShopPageModulePlugin();
+			$webPage->executePlugin("module","[a-zA-Z0-9\.\_]+",$plugin);
 
-		//戻す
-		SOYCMS_SOYShopPageModulePlugin::tearDown();
+			//戻す
+			SOYCMS_SOYShopPageModulePlugin::tearDown();
+		}
 	}
 
 	/**
@@ -100,12 +102,8 @@ class SOYShopConnectorPlugin{
 	}
 
 	public static function register(){
-
 		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
-		if(!$obj){
-			$obj = new SOYShopConnectorPlugin();
-		}
-
+		if(!$obj) $obj = new SOYShopConnectorPlugin();
 		CMSPlugin::addPlugin(self::PLUGIN_ID, array($obj, "init"));
 	}
 
@@ -125,14 +123,11 @@ class SOYCMS_SOYShopPageModulePlugin extends PluginBase{
 
 	public static function configure($array = null){
 		static $_config = array();
-		if($array){
-			$_config = $array;
-		}
-
+		if($array) $_config = $array;
 		return $_config;
 	}
 
-	public static function prepare($isFirst = false){
+	public static function prepare(bool $isFirst=false){
 
 		$old_dao_dir = SOY2DAOConfig::DaoDir();
 		$old_entity_dir = SOY2DAOConfig::EntityDir();
@@ -151,7 +146,6 @@ class SOYCMS_SOYShopPageModulePlugin extends PluginBase{
 		SOY2DAOConfig::EntityDir($config["rootDir"] . "domain/");
 
 		if(defined("SOYSHOP_SITE_DSN")){
-
 			SOY2DAOConfig::Dsn(SOYSHOP_SITE_DSN);
 			SOY2DAOConfig::user(SOYSHOP_SITE_USER);
 			SOY2DAOConfig::pass(SOYSHOP_SITE_PASS);

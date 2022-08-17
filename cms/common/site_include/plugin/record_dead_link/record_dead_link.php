@@ -71,7 +71,6 @@ class RecordDeadLinkPlugin{
 			try{
 				$dao->executeUpdateQuery($sql, array());
 			}catch(Exception $e){
-				var_dump($e);
 				//
 			}
 		}

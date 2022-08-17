@@ -7,11 +7,12 @@ class PluginDAO {
 
     function get(){
     	$pluginsArray = CMSPlugin::getPluginMenu();
-    	$plugins = array();
+		if(!count($pluginsArray)) return array();
+
+		$plugins = array();
     	foreach($pluginsArray as $key => $array){
     		$plugins[$key] = $this->getObject($key,$array);
     	}
-
     	return $plugins;
     }
 
@@ -166,14 +167,13 @@ class PluginDAO {
     }
 
     function getById($id){
-    	$pluginArray = CMSPlugin::getPluginMenu($id);
-
-    	if(!$pluginArray)return;
+		$pluginArray = CMSPlugin::getPluginMenu($id);
+    	if(!$pluginArray) return;
 
     	return $this->getObject($id,$pluginArray);
     }
 
-    function toggleActive($id){
+    function toggleActive(string $id){
     	$plugin = $this->getById($id);
 
     	if(!$plugin)return null;

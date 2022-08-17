@@ -11,7 +11,7 @@ function soycms_generate_hash_value(string $str, int $length=12){
 
 function soycms_get_hash_table_types(){
 	static $types;
-	if(is_null($types)) $types = array("entry", "entry_attribute", "entry_label", "label", "label_attribute", "page", "blog_page", "block");
+	if(is_null($types)) $types = array("entry", "entry_attribute", "entry_label", "label", "label_attribute", "page", "blog_page", "block", "plugin");
 	return $types;
 }
 
@@ -64,6 +64,9 @@ function soycms_get_hash_table_dao(string $fnName){
 			break;
 		case 7:
 			$path = "cms.BlockDAO";
+			break;
+		case 8:	//plugin
+			$path = "cms.PluginDAO";
 			break;
 	}
 	$daos[$idx] = SOY2DAOFactory::create($path);

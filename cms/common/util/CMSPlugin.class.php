@@ -185,25 +185,14 @@ class CMSPlugin {
 	static function createActiveCheckCache(){
 		$installedList = array();
 
-		$dir = CMS_PAGE_PLUGIN;
-		$files = scandir($dir);
-		foreach($files as $pluginIdRaw){
-			if($pluginIdRaw[0] == "." || !is_dir($dir . $pluginIdRaw) || !is_readable($dir . $pluginIdRaw ."/".$pluginIdRaw.".php")) continue;
-			if(file_exists(self::getSiteDirectory() .'/.plugin/'. $pluginIdRaw .".active")){
-				$installedList[] = $pluginIdRaw;
-			}else{
-				$lines = explode("\n", file_get_contents($dir . $pluginIdRaw ."/".$pluginIdRaw.".php"));
-				$pluginId = null;
-				foreach($lines as $line){
-					preg_match('/PLUGIN_ID.*=.*\"(.*)\";/', $line, $tmp);
-					if(!isset($tmp[1])) continue;
-					$pluginId = $tmp[1];
-					break;
-				}
-				if(is_string($pluginId) && file_exists(self::getSiteDirectory() .'/.plugin/'. $pluginId .".active")){
-					$installedList[] = $pluginId;
-					if($pluginId != $pluginIdRaw) $installedList[] = $pluginIdRaw;	//プラグインのファイル名の方も記録しておく
-				}
+		if(!function_exists("soycms_get_plugin_ids")) include_once(SOY2::RootDir() . "site_include/func/plugin.php");
+		foreach(soycms_get_plugin_ids(true) as $pluginFileName){
+			if(file_exists(self::getSiteDirectory() .'/.plugin/'. $pluginFileName .".active")){
+				$installedList[] = $pluginFileName;
+			}else{	//PLUGIN_IDとプラグインのファイル名が異なる場合対策 (例：SOYShopLoginCheckとsoyshop_login_check)
+				$pluginId = soycms_get_plugin_id_by_plugin_file_name($pluginFileName);
+				if(!strlen($pluginId) || !file_exists(self::getSiteDirectory() .'/.plugin/'. $pluginId .".active") || $pluginId == $pluginFileName || is_numeric(array_search($pluginFileName, $installedList))) continue;	
+				$installedList[] = $pluginFileName;
 			}
 		}
 		file_put_contents(self::activeCheckCacheFilePath(), serialize($installedList));
@@ -213,6 +202,11 @@ class CMSPlugin {
 		$dir = rtrim(self::getSiteDirectory(), "/") . "/.cache/plugin/";
 		if(!file_exists($dir)) mkdir($dir);
 		return $dir . "activelist.log";
+	}
+
+	static function getPluginIds(){
+		if(!function_exists("soycms_get_plugin_ids")) include_once(SOY2::RootDir() . "site_include/func/plugin.php");
+		return soycms_get_plugin_ids();
 	}
 
 	/**
@@ -227,16 +221,11 @@ class CMSPlugin {
 	/**
 	 * プラグインの追加及び初期化関数の呼び出し
 	 */
-	static function addPlugin($id, $initFunc){
+	static function addPlugin(string $id, array $initFunc){
 		$instance =& CMSPlugin::getInstance();
 
-		if(is_array($initFunc) && !method_exists($initFunc[0],$initFunc[1])){
-			return;
-		}
-
-		if(!is_array($initFunc) && !function_exists($initFunc)){
-			return;
-		}
+		if(is_array($initFunc) && !method_exists($initFunc[0],$initFunc[1])) return;
+		if(!is_array($initFunc) && !function_exists($initFunc)) return;
 
 		$instance->_plugins[$id] = array();
 		call_user_func($initFunc);
@@ -246,16 +235,11 @@ class CMSPlugin {
 	/**
 	 * プラグイン管理にメニューの追加
 	 */
-	static function addPluginMenu($id,$args){
-
-		if(!defined("CMS_PAGE_PLUGIN_ADMIN_MODE") || CMS_PAGE_PLUGIN_ADMIN_MODE !== true){
-			return;
-		}
+	static function addPluginMenu(string $id, array $args){
+		if(!defined("CMS_PAGE_PLUGIN_ADMIN_MODE") || !CMS_PAGE_PLUGIN_ADMIN_MODE) return;
+	
 		$instance =& CMSPlugin::getInstance();
-
-		if(!isset($instance->_plugins[$id])){
-			return;
-		}
+		if(!isset($instance->_plugins[$id])) return;
 
 		$instance->_plugins[$id] = $args;
 	}
@@ -263,19 +247,13 @@ class CMSPlugin {
 	/**
 	 * 設定メニューの追加
 	 */
-	static function addPluginConfigPage($id,$func){
-
-		if(!defined("CMS_PAGE_PLUGIN_ADMIN_MODE") || CMS_PAGE_PLUGIN_ADMIN_MODE !== true){
-			return;
-		}
-
-		if(!CMSPlugin::activeCheck($id))return;
+	static function addPluginConfigPage(string $id, array $func){
+		if(!defined("CMS_PAGE_PLUGIN_ADMIN_MODE") || !CMS_PAGE_PLUGIN_ADMIN_MODE) return;
+		if(!CMSPlugin::activeCheck($id)) return;
 
 		$instance =& CMSPlugin::getInstance();
+		if(!isset($instance->_plugins[$id])) return;
 
-		if(!isset($instance->_plugins[$id])){
-			return;
-		}
 		$instance->_plugins[$id]["config"] = $func;
 	}
 
@@ -284,25 +262,19 @@ class CMSPlugin {
 	 * @param html メニュー部分に表示するHTML
 	 * @param alt <a>のalt属性
 	 */
-	static function addWidget($id,$func,$html=null){
-
-
-		if(!defined("CMS_PAGE_PLUGIN_ADMIN_MODE") || CMS_PAGE_PLUGIN_ADMIN_MODE !== true){
-			return;
-		}
+	static function addWidget(string $id, array $func,string $html=""){
+		if(!defined("CMS_PAGE_PLUGIN_ADMIN_MODE") || !CMS_PAGE_PLUGIN_ADMIN_MODE) return;
+		
 		$instance =& CMSPlugin::getInstance();
+		if(!isset($instance->_plugins[$id])) return;
 
-		if(!isset($instance->_plugins[$id])){
-			return;
-		}
+		if(!CMSPlugin::activeCheck($id)) return;
 
-		if(!CMSPlugin::activeCheck($id))return;
-
-		if(!isset($instance->_plugins[$id]["custom"]))$instance->_plugins[$id]["custom"] = array();
+		if(!isset($instance->_plugins[$id]["custom"])) $instance->_plugins[$id]["custom"] = array();
 
 		$widget = array();
 		$widget["func"] = $func;
-		$widget["html"] = ($html) ? $html : $id;
+		$widget["html"] = (strlen($html)) ? $html : $id;
 
 		$instance->_plugins[$id]["custom"][] = $widget;
 	}
@@ -310,9 +282,8 @@ class CMSPlugin {
 	/**
 	 * カスタムフィールドの呼び出し(修正後)
 	 */
-	static function addCustomFieldFunction($id,$rule,$func,$flag = false){
-
-		if(!CMSPlugin::activeCheck($id))return;
+	static function addCustomFieldFunction(string $id, string $rule, array $func, bool $flag=false){
+		if(!CMSPlugin::activeCheck($id)) return;
 
 		$instance =& CMSPlugin::getInstance();
 		if(!isset($instance->_customFieldFunctions[$rule]))$instance->_customFieldFunctions[$rule] = array();
@@ -322,24 +293,19 @@ class CMSPlugin {
 		}else{
 			$instance->_customFieldFunctions[$rule][] = $func;
 		}
-
 	}
 
 	/**
 	 * カスタムフィールドの呼び出し(修正前)
 	 */
-	static function addCustomFiledFunction($id,$rule,$func,$flag = false){
+	static function addCustomFiledFunction(string $id, string $rule, array $func, bool $flag=false){
 		return self::addCustomFieldFunction($id,$rule,$func,$flag);
 	}
 
-
-
-	static function callCustomFieldFunctions($path){
+	static function callCustomFieldFunctions(string $path){
 		$instance =& CMSPlugin::getInstance();
 		$array = @$instance->_customFieldFunctions[$path];
-		if(!is_array($array)){
-			$array = array();
-		}
+		if(!is_array($array)) $array = array();
 
 		$html = "";
 
@@ -353,33 +319,28 @@ class CMSPlugin {
 	/**
 	 * callCustomFieldFunctionsのエイリアス
 	 */
-	static function callCustomFiledFunctions($path){
+	static function callCustomFiledFunctions(string $path){
 		return self::callCustomFieldFunctions($path);
 	}
 
 
-
-	static function getPluginMenu($id = null){
+	/**
+	 * @param string
+	 * @return array
+	 */
+	static function getPluginMenu(string $id=""){
 		$instance =& CMSPlugin::getInstance();
-
-		if($id && isset($instance->_plugins[$id])){
-			return $instance->_plugins[$id];
-		}
-
-		return $instance->_plugins;
+		return (strlen($id) && isset($instance->_plugins[$id])) ? $instance->_plugins[$id] : $instance->_plugins;
 	}
 
 	/**
 	 * 以下、テンプレートに書くことで動作するプラグイン
 	 */
-	static function addBlock($id,$type,$func){
-		if(!CMSPlugin::activeCheck($id))return;
+	static function addBlock(string $id, string $type, array $func){
+		if(!CMSPlugin::activeCheck($id)) return;
 
 		$instance =& CMSPlugin::getInstance();
-
-		if(!isset($instance->_blocks[$type])){
-			return;
-		}
+		if(!isset($instance->_blocks[$type])) return;
 
 		$instance->_blocks[$type][$id] = $func;
 	}
@@ -391,14 +352,11 @@ class CMSPlugin {
 	 * @param string $type
 	 * @param array $func
 	 */
-	static function addMultipleBlock($pluginId, $blockId, $type, $func){
-		if(!CMSPlugin::activeCheck($pluginId))return;
+	static function addMultipleBlock(string $pluginId, string $blockId, string $type, array $func){
+		if(!CMSPlugin::activeCheck($pluginId)) return;
 
 		$instance =& CMSPlugin::getInstance();
-
-		if(!isset($instance->_blocks[$type])){
-			return;
-		}
+		if(!isset($instance->_blocks[$type])) return;
 
 		$instance->_blocks[$type][$blockId] = $func;
 	}
@@ -416,16 +374,14 @@ class CMSPlugin {
 	 * @param args イベント引数
 	 * @param byForce 強制セット アクティブチェックを無視する
 	 */
-	static function setEvent($event,$id,$func,$args=array(),$byForce = false){
+	static function setEvent(string $event, string $id, array $func, array $args=array(), bool $byForce=false){
 		$instance =& CMSPlugin::getInstance();
 
 		//activeなプラグインだけ追加する
 		//onActiveだけ限定的に使用可能
-		if($event !== "onActive" && !CMSPlugin::activeCheck($id) && !$byForce)return;
+		if($event !== "onActive" && !CMSPlugin::activeCheck($id) && !$byForce) return;
+		if(!isset($instance->_event[$event])) return;
 
-		if(!isset($instance->_event[$event])){
-			return;
-		}
 		$old = null;
 
 		if(isset($instance->_event[$event][$id])){
@@ -443,9 +399,8 @@ class CMSPlugin {
 	/**
 	 * イベント関数の呼び出し
 	 * イベント引数で処理をしない場合これを呼び出せば早い
-	 *
 	 */
-	static function callEventFunc($event,$arg=array(),$overloadReturn = false){
+	static function callEventFunc(string $event, $arg=array(), bool $overloadReturn=false){
 		$instance =& CMSPlugin::getInstance();
 		if(!isset($instance->_event[$event])){
 			throw new Exception("対応していないイベント".$event."が呼び出されました");
@@ -455,7 +410,7 @@ class CMSPlugin {
 		foreach($events as $id => $e){
 			$return = call_user_func($e[0],$arg);
 			if($overloadReturn){
-				if(!is_null($return))$returns = $return;
+				if(!is_null($return)) $returns = $return;
 			}else{
 				$returns[$id] = $return;
 			}
@@ -467,25 +422,18 @@ class CMSPlugin {
 	/**
 	 * プラグインIDに限定してイベントを呼び出す
 	 */
-	static function callLocalPluginEventFunc($event,$pluginId,$arg=array()){
+	static function callLocalPluginEventFunc(string $event, string $pluginId, array $arg=array()){
 		$instance =& CMSPlugin::getInstance();
 
 		if(!isset($instance->_event[$event])){
 			throw new Exception("対応していないイベント".$event."が呼び出されました");
 		}
 		$events = $instance->_event[$event];
-
-		if(!isset($events[$pluginId])){
-			return array();
-		}
-
-		return array(
-			$pluginId => call_user_func($events[$pluginId][0],$arg)
-		);
+		return (isset($events[$pluginId])) ? array($pluginId => call_user_func($events[$pluginId][0],$arg)) : array();
 	}
 
 
-	static function getEvent($event){
+	static function getEvent(string $event){
 		$instance =& CMSPlugin::getInstance();
 		return $instance->_event[$event];
 	}
@@ -519,18 +467,15 @@ class CMSPlugin {
 	/**
 	 * プラグイン情報の保存
 	 */
-	static function savePluginConfig($id,$obj){
-		$fname = self::getSiteDirectory().'/.plugin/'.$id.'.config';
-
-		return file_put_contents($fname,serialize($obj));
-
+	static function savePluginConfig(string $id, $obj){
+		return file_put_contents(self::getSiteDirectory().'/.plugin/'.$id.'.config', serialize($obj));
 	}
 
 	/**
 	 * プラグイン情報の取得
 	 * @return object
 	 */
-	static function loadPluginConfig($id){
+	static function loadPluginConfig(string $id){
 		$fname = self::getSiteDirectory().'/.plugin/'.$id.'.config';
 		if(file_exists($fname)){
 			return unserialize(file_get_contents($fname));
@@ -543,7 +488,7 @@ class CMSPlugin {
 	/**
 	 * 自分自身にリダイレクト
 	 */
-	static function redirectConfigPage($array = array()){
+	static function redirectConfigPage(array $array=array()){
 		//ie対策
 		$flashSession = SOY2ActionSession::getFlashSession();
 		$flashSession->clearAttributes();

@@ -454,7 +454,7 @@ class CMSBlogPage extends CMSPage{
 		if(isset($this->month)) $params["month"] = $this->month;
 		if(isset($this->day)) $params["day"] = $this->day;
 
-		//カノニカルタグ用のURLの出力　ここで一度呼んでおく　CMSPage.class.phpの方でcms:idタグを出力
+		//カノニカルタグ用のURLの出力 ここで一度呼んでおく　CMSPage.class.phpの方でcms:idタグを出力
 		$pageLogic = SOY2Logic::createInstance("logic.site.Page.PageLogic", array("page" => $this->page, "siteUrl" => $this->siteConfig->getConfigValue("url"), "params" => $params));
 		$_dust = $pageLogic->buildCanonicalUrl();
 		$_dust = $pageLogic->buildShortLinkUrl();

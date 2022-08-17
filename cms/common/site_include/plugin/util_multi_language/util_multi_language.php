@@ -19,7 +19,7 @@ class UtilMultiLanguagePlugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"0.7"
+			"version"=>"0.8"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID, array(
 			$this,"config_page"

@@ -289,11 +289,11 @@ class SearchPage extends CMSWebPageBase{
 	}
 
 	private function _getCustomFieldItems(){
-		if(!file_exists(UserInfoUtil::getSiteDirectory() . ".plugin/CustomFieldAdvanced.active")) return array();
+		if(!CMSPlugin::activeCheck("CustomFieldAdvanced")) return array();
 		if(!class_exists("CustomFieldPluginAdvanced")) include(SOY2::rootDir() . "site_include/plugin/CustomFieldAdvanced/CustomFieldAdvanced.php");
 
 		$advObj = CMSPlugin::loadPluginConfig("CustomFieldAdvanced");
-		if(!count($advObj->customFields)) return array();
+		if(!$advObj instanceof CustomFieldPluginAdvanced || !property_exists($advObj, "customFields") || !is_array($advObj->customFields) || !count($advObj->customFields)) return array();
 				
 		$items = array();
 		foreach($advObj->customFields as $fieldId => $field){
@@ -305,7 +305,8 @@ class SearchPage extends CMSWebPageBase{
 	}
 
 	private function _getCustomSearchFieldItems(){
-		if(!file_exists(UserInfoUtil::getSiteDirectory() . ".plugin/CustomSearchField.active")) return array();
+		if(!CMSPlugin::activeCheck("CustomSearchField")) return array();
+
 		SOY2::import("site_include.plugin.CustomSearchField.util.CustomSearchFieldUtil");
 		$cnfs = CustomSearchFieldUtil::getConfig();
 		if(!count($cnfs)) return array();
@@ -324,7 +325,7 @@ class SearchPage extends CMSWebPageBase{
 	 * @return array
 	 */
 	private function _getTagCloudTags(){
-		if(!file_exists(UserInfoUtil::getSiteDirectory() . ".plugin/TagCloud.active")) return array();
+		if(!CMSPlugin::activeCheck("TagCloud")) return array();
 
 		SOY2::import("site_include.plugin.tag_cloud.util.TagCloudUtil");
 		$cnf = TagCloudUtil::getConfig();
