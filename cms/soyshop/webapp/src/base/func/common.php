@@ -7,9 +7,7 @@ function soyshop_get_page_url(string $uri, string $suffix=""){
 	SOY2::import("domain.site.SOYShop_Page");
 	if($uri == SOYShop_Page::URI_HOME) $uri = "";
 
-    if($suffix){
-        return soyshop_shape_page_url(soyshop_get_site_url(true) . $uri . "/" . $suffix);
-    }
+    if($suffix) return soyshop_shape_page_url(soyshop_get_site_url(true) . $uri . "/" . $suffix);
 
     return soyshop_shape_page_url(soyshop_get_site_url(true) . $uri);
 }
@@ -28,10 +26,9 @@ function soyshop_shape_page_url(string $url){
  * サイトのURLを取得する
  */
 function soyshop_get_site_url(bool $isAbsolute=false){
-	$url = SOYSHOP_SITE_URL;
+	$url = (defined("SOYSHOP_SITE_URL")) ? SOYSHOP_SITE_URL : "shop";
 
 	//portがある場合は$_SERVER["SERVER_PORT"]をチェック
-
 
     if(isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on" && strpos($url, "http:") >= 0) $url = str_replace("http:", "https:", $url);
 
@@ -192,9 +189,9 @@ function soyshop_get_page_list(){
 function soyshop_get_item_detail_link(SOYShop_Item $item){
     static $results, $urls;
     if(is_null($item->getAlias())) return null;
-
+	
     $url = (isset($results[$item->getDetailPageId()])) ? $results[$item->getDetailPageId()] : null;
-
+	
     if(is_null($url)){
         if(is_null($urls)) $urls = SOYShop_DataSets::get("site.url_mapping", array());
 
@@ -211,7 +208,7 @@ function soyshop_get_item_detail_link(SOYShop_Item $item){
             }
         }
     }
-
+	
     return (isset($url)) ? soyshop_get_page_url($url, $item->getAlias()) : "";
 }
 
@@ -612,13 +609,17 @@ function soyshop_add_get_value(string $url){
 function soyshop_convert_file_path(string $path, SOYShop_Item $item, bool $isAbsolute=false){
     static $isOwnDomain;
     if(is_null($isOwnDomain)){
-        $siteUrl = trim(SOYSHOP_SITE_URL, "/") . "/";
-        //siteUrl内に/siteId/がなければ独自URLとみなす(ルート設定していないことも調べておく)
-        $isOwnDomain = (!SOYSHOP_IS_ROOT && strpos($siteUrl, "/" . SOYSHOP_ID . "/") === false);
+		if(defined("SOYSHOP_SITE_URL")){
+			$siteUrl = trim(SOYSHOP_SITE_URL, "/") . "/";
+			//siteUrl内に/siteId/がなければ独自URLとみなす(ルート設定していないことも調べておく)
+			$isOwnDomain = (!SOYSHOP_IS_ROOT && is_bool(strpos($siteUrl, "/" . SOYSHOP_ID . "/")));
+		}else{
+			$isOwnDomain = false;
+		}
     }
 
     //値が無ければそのまま返す
-    if(is_null($path) || strlen($path) === 0) return $path;
+    if(strlen($path) === 0) return $path;
 
     //独自ドメイン + ルート設定してない場合は画像のURLをSITE_IDなしに変換する
     if($isOwnDomain && strpos($path, "/" . SOYSHOP_ID . "/") !== false) $path = str_replace("/" . SOYSHOP_ID, "", $path);

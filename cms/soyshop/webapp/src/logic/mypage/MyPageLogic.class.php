@@ -19,16 +19,21 @@ class MyPageLogic extends SOY2LogicBase{
 	 * @return MyPageLogic
 	 */
 	public static function getMyPage(string $myPageId=""){
-
 		if(!strlen($myPageId)) $myPageId = SOYSHOP_CURRENT_MYPAGE_ID;
-		$userSession = SOY2ActionSession::getUserSession();
-		$myPage = $userSession->getAttribute("soyshop_mypage_" . SOYSHOP_ID . $myPageId);
-		//セッションから直接オブジェクトの形で取得できた場合は、strlen($myPage)ではじくことができる
-		while(is_string($myPage) && strlen($myPage) > 0){//原因不明だが二重にserializeされていることがあるのでifではなくwhileにしておく
-			$myPage = soy2_unserialize($myPage);
-		}
 
+		$myPage = null;
+		if(defined("SOYSHOP_ID")){
+			$myPage = SOY2ActionSession::getUserSession()->getAttribute("soyshop_mypage_" . SOYSHOP_ID . $myPageId);
+			//セッションから直接オブジェクトの形で取得できた場合は、strlen($myPage)ではじくことができる
+			while(is_string($myPage) && strlen($myPage) > 0){//原因不明だが二重にserializeされていることがあるのでifではなくwhileにしておく
+				$myPage = soy2_unserialize($myPage);
+			}
+		}
+		
 		if(!$myPage instanceof MyPageLogic) $myPage = new MyPageLogic($myPageId);
+		
+		// SOYSHOP_IDが定義されていない場合はauto loginを調べない
+		if(!defined("SOYSHOP_ID")) return $myPage;
 
 		/* auto login */
 		if(!$myPage->getIsLoggedin() && isset($_COOKIE["soyshop_mypage_" . SOYSHOP_ID . $myPageId . "_auto_login"])){

@@ -156,7 +156,7 @@ class CommonMailbuilder extends SOYShopOrderMailBuilder{
 			$arr[$idx] = (isset($arr[$idx])) ? $arr[$idx] : "";
 		}
 		
-		$arr["area"] = (isset($arr["area"]) && is_numeric()) ? SOYShop_Area::getAreaText($arr["area"]) : "";
+		$arr["area"] = (isset($arr["area"]) && is_numeric($arr["area"])) ? SOYShop_Area::getAreaText($arr["area"]) : "";
 		for($i = 1; $i <= 4; $i++){
 			$arr["address" . $i] = (isset($arr["address" . $i])) ? $arr["address" . $i] : "";
 		}

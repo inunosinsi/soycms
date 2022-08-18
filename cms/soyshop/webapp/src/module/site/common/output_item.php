@@ -8,7 +8,7 @@ SOY2::import("domain.config.SOYShop_ShopConfig");
  */
 function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null, bool $isCallCustomfield=true){
 	$shopConfig = SOYShop_ShopConfig::load();
-
+	
 	//グループの場合の処理
 	$childItems = array();
 
@@ -201,7 +201,7 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null, bool $isCa
 		"link" => soyshop_get_item_list_link($item, $categoryObj),
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
-
+	
 	//cms:id="item_small_image"とcms:id="item_large_image"
 	foreach(array("small", "large") as $tp){
 		$v = $item->getAttribute("image_" . $tp);

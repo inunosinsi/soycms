@@ -685,6 +685,8 @@ function soyshop_get_plugin_object($pluginId){
 /** ダミーを取得する関数群 **/
 //ダミーの商品コードを取得する
 function soyshop_dummy_item_code(){
+	if(defined("_SITE_ROOT_") || defined("CMS_LABEL_ICON_DIRECTORY")) return "";	// SOY CMS側から呼び出した時はこの関数は使用しない
+	
 	SOY2::import("domain.config.SOYShop_ShopConfig");
 	$config = SOYShop_ShopConfig::load();
 	if((int)$config->getInsertDummyItemCode() !== 1) return "";
