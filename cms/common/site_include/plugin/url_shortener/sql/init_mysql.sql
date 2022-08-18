@@ -10,4 +10,4 @@ create table URLShortener(
 	cdate INTEGER,
 	udate INTEGER,
 	unique(target_type, target_id) 
-) type = InnoDB;
+) ENGINE=InnoDB;

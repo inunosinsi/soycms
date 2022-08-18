@@ -4,20 +4,18 @@ class URLShortenerPluginInitFormPage extends WebPage{
 	private $pluginObj;
 	private $version;
 	
-	function URLShortenerPluginInitFormPage(){}
+	function __construct(){}
 	
 	function doPost(){
     	if(soy2_check_token() && isset($_POST["init"])){
-			$this->initURLShortener();
+			self::_init();
     	}
     	CMSPlugin::redirectConfigPage();
 	}
 	
 	function execute(){
 		parent::__construct();
-
-		$this->addForm("url_shortener_form",array());
-
+		$this->addForm("url_shortener_form");
 	}
 
 	function setPluginObj($pluginObj) {
@@ -31,12 +29,11 @@ class URLShortenerPluginInitFormPage extends WebPage{
 	/**
 	 * 初期化処理
 	 */
-	function initURLShortener(){
+	function _init(){
 		//table
-		$sql = self::getSQL();
 		$dao = new SOY2DAO();
 		try{
-			$dao->executeQuery($sql);
+			$dao->executeQuery(self::_sql());
 		}catch(Exception $e){
 			return false;//失敗
 		}
@@ -45,18 +42,12 @@ class URLShortenerPluginInitFormPage extends WebPage{
 		CMSPlugin::savePluginConfig($this->pluginObj->getId(),$this->pluginObj);
 		
 		return true;
-		
-		
 	}
 	
 	/**
 	 * @return String sql for init
 	 */
-	static function getSQL(){
-		$sql = file_get_contents(dirname(dirname(dirname(__FILE__)))."/sql/init_".SOYCMS_DB_TYPE.".sql");
-		return $sql;
+	private function _sql(){
+		return file_get_contents(dirname(dirname(dirname(__FILE__)))."/sql/init_".SOYCMS_DB_TYPE.".sql");
 	}
-
 }
-
-?>

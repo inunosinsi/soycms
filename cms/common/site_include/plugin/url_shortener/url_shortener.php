@@ -16,7 +16,7 @@ class UrlShortenerPlugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"0.3"
+			"version"=>"0.5"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
@@ -25,32 +25,18 @@ class UrlShortenerPlugin{
 		//active or non active
 		//そもそもsetEventはonActive以外activeじゃないと無視されるのでactiveCheckは不要
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
+			SOY2::import("site_include.plugin.url_shortener.domain.URLShortenerDAO");
 
-			CMSPlugin::setEvent("onEntryCreate",$this->getId(),array($this,"onEntryUpdate"));
-			CMSPlugin::setEvent("onEntryUpdate",$this->getId(),array($this,"onEntryUpdate"));
-			CMSPlugin::setEvent("onPageUpdate",$this->getId(),array($this,"onPageUpdate"));
-
-			//@TODO 削除時
-			//@TODO コピー時
-			//CMSPlugin::setEvent("onEntryCopy",$this->getId(),array($this,"onEntryCopy"));
-			CMSPlugin::setEvent("onSiteAccess",$this->getId(),array($this,"onSiteAccess"));
-//			CMSPlugin::addCustomFieldFunction(self::PLUGIN_ID,"Entry.Detail",array($this,"onCallCustomField"));
-			CMSPlugin::addCustomFieldFunction(self::PLUGIN_ID,"Blog.Entry",array($this,"onCallCustomField_inBlog"));
+			if(defined("_SITE_ROOT_")){
+				CMSPlugin::setEvent("onSiteAccess",$this->getId(),array($this,"onSiteAccess"));
+			}else{
+				CMSPlugin::setEvent("onEntryCreate",$this->getId(),array($this,"onEntryUpdate"));
+				CMSPlugin::setEvent("onEntryUpdate",$this->getId(),array($this,"onEntryUpdate"));
+				CMSPlugin::setEvent("onPageUpdate",$this->getId(),array($this,"onPageUpdate"));
+				CMSPlugin::setEvent("onPageEdit",$this->getId(),array($this,"onPageEdit"), array(), true);
+				CMSPlugin::addCustomFieldFunction(self::PLUGIN_ID,"Blog.Entry",array($this,"onCallCustomField_inBlog"));
+			}
 		}
-
-		//常に実行
-		CMSPlugin::setEvent("onPageEdit",$this->getId(),array($this,"onPageEdit"),array(),true);
-
-	}
-
-	public static function register(){
-
-		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
-		if(is_null($obj)){
-			$obj = new URLShortenerPlugin();
-		}
-
-		CMSPlugin::addPlugin(self::PLUGIN_ID,array($obj,"init"));
 	}
 
 	/**
@@ -73,130 +59,65 @@ class UrlShortenerPlugin{
 		return $history[0];
 	}
 
-
-
 	function getId(){
 		return self::PLUGIN_ID;
 	}
-
-	function config_page($message){
-
-		$version = $this->getVersion();
-		if(is_null($version)){
-			//初期化
-			include_once(dirname(__FILE__)."/page/_init/config_form.php");
-			$form = SOY2HTMLFactory::createInstance("URLShortenerPluginInitFormPage");
-
-		}else if(!is_null($version) && $version != self::getLatestVersion()){
-			//アップデート @TODO 世代越えバージョンアップ
-			include_once(dirname(__FILE__)."/page/_update/config_form.php");
-			$form = SOY2HTMLFactory::createInstance("URLShortenerPluginFormPage");
-
-		}else{
-			//通常更新
-			include_once(dirname(__FILE__)."/page/config_form.php");
-			$form = SOY2HTMLFactory::createInstance("URLShortenerPluginFormPage");
-
-		}
-
-
-
-		$form->setPluginObj($this);
-		$form->execute();
-		return $form->getObject();
-	}
-
-/*
-	function onEntryCopy($ids){
-		$oldId = $ids[0];
-		$newId = $ids[1];
-
-		if($this->useId){
-			$entry = $this->getEntry($newId);
-			if($entry){
-				if($entry->isEmptyAlias() || $entry->getId() != $entry->getAlias()){
-					$entry->setAlias($entry->getId());
-					$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
-					$logic->update($entry);
-				}
-			}
-		}
-	}
-*/
 
 	/**
 	 * @TODO 記事画面からの削除
 	 */
 	function onEntryUpdate($arg){
 		$entry = $arg["entry"];
-		$shorten = @$_POST["urlShortener"];
+		$shorten = (isset($_POST["urlShortener"]) && is_string($_POST["urlShortener"])) ? trim($_POST["urlShortener"]) : "";
+
+		$dao = SOY2DAOFactory::create("URLShortenerDAO");
 
 		//空じゃなくて、半角英数字のみ
-		if(!empty($shorten) && preg_match('/^[a-zA-Z0-9]+$/',$shorten)){
-			$dao = SOY2DAOFactory::create("cms.URLShortenerDAO");
-
-			//ユニーク
+		if(strlen($shorten) && preg_match('/^[a-zA-Z0-9]+$/',$shorten)){
 			try{
-				$unique = $dao->getByFrom($shorten);
-				$uniqueId = $unique->getId();
+				$shortenObj = $dao->getByTargetTypeANDTargetId(URLShortener::TYPE_ENTRY, $entry->getId());
 			}catch(Exception $e){
-				$uniqueId = false;
+				$shortenObj = new URLShortener();
+				$shortenObj->setTargetType(URLShortener::TYPE_ENTRY);
+				$shortenObj->setTargetId($entry->getId());
 			}
 
-			try{
-
-				$obj = $dao->getByTargetTypeANDTargetId(URLShortener::TYPE_ENTRY, $entry->getId());
-				//変更なし
-				if($shorten == $obj->setFrom) return;
-
-				//ユニークチェック
-				if($obj->getId()  == $uniqueId){
-					$obj->setFrom($shorten);
-					$obj->save();
-				}
-
-			}catch(Exception $e){
-				if($uniqueId)return;//ユニーク
-
-				//新規
+			// 新規の場合にオブジェクトに入れる値がある
+			if(!is_numeric($shortenObj->getId())){
 				$arg = SOY2PageController::getArguments();
-				$pageId = (int)$arg[0];
-				$page = soycms_get_blog_page_object($pageId);
-				$entoryPageUri = $page->getEntryPageURL();
-
-				$obj = new URLShortener();
-				$obj->setFrom($shorten);
-				$obj->setTo($entoryPageUri.$entry->getAlias());
-				$obj->setTargetType(URLShortener::TYPE_ENTRY);
-				$obj->setTargetId($entry->getId());
-				try{
-					$obj->save();
-				}catch(Exception $e){
-
-				}
-
+				$shortenObj->setTo(soycms_get_blog_page_object((int)$arg[0])->getEntryPageURL().$entry->getAlias());
 			}
 
-		}
+			$shortenObj->setFrom($shorten);
 
+			try{
+				$dao->insert($shortenObj);
+			}catch(Exception $e){
+				try{
+					$dao->update($shortenObj);
+				}catch(Exception $e){
+					//
+				}
+			}
+		}else{
+			try{
+				$dao->deleteByTargetTypeANDTargetId(URLShortener::TYPE_ENTRY, $entry->getId());
+			}catch(Exception $e){
+				//
+			}
+		}
 	}
 
 	function onSiteAccess($args){
 		$contoller = $args["controller"];
-
 		$param = implode("/", $contoller->args);
-
-		SOY2::import("domain.cms.URLShortener");
-		$dao = SOY2DAOFactory::create("cms.URLShortenerDAO");
-
+		
 		try{
-			$from = $dao->getByFrom($param);
+			$uri = SOY2DAOFactory::create("URLShortenerDAO")->getByFrom($param)->getTo();
 		}catch(Exception $e){
-
 			return;// not matching
 		}
 
-		$uri = $from->getTo();
 		$siteConfig = $contoller->siteConfig;
 		header("HTTP/1.1 301 Moved Permanently");
 		header("Content-Type: text/html; charset=".$siteConfig->getCharsetText());
@@ -208,24 +129,6 @@ class UrlShortenerPlugin{
 
 		exit;
 	}
-
-/*
-	function onCallCustomField(){
-		if($this->useId){
-			$html = "";
-		}else{
-			$arg = SOY2PageController::getArguments();
-			$entryId = @$arg[0];
-			$alias = $this->getAlias($entryId);
-
-			$html = "<div class=\"section custom_alias\">";
-			$html .= "<p class=\"sub\"><label for=\"custom_alias_input\">カスタムエイリアス（ブログのエントリーページのURL）</label></p>";
-			$html .= "<input value=\"".htmlspecialchars($alias, ENT_QUOTES, "UTF-8")."\" id=\"custom_alias_input\" name=\"alias\" type=\"text\" style=\"width:400px\" />";
-			$html .= "</div>";
-		}
-		return $html;
-	}
-*/
 
 	function onCallCustomField_inBlog(){
 		if($this->useId){
@@ -253,19 +156,16 @@ class UrlShortenerPlugin{
 				$html[] = "<div class=\"form-inline\">";
 				$html[] = $siteUrl;
 				$html[] = "<input value=\"".htmlspecialchars($shorten, ENT_QUOTES, "UTF-8")."\" id=\"url_shortener_input\" name=\"urlShortener\" type=\"text\" class=\"form-control\" style=\"width:300px\" />";
-				if(strlen($shorten)) $html[] = "<a href=\"".htmlspecialchars($entryUri, ENT_QUOTES, "UTF-8")."\" target=\"_blank\">確認</a>";
-
-				if(strlen($shortenUrl)>0){
-					$html[] = "<p>";
-					$html[] = "コピーしてお使いください&nbsp;:&nbsp;<input type=\"\" value=\"".$shortenUrl."\" size=\"60\" onclick=\"this.select()\" readonly=\"readonly\" />";
-					$html[] = "</p>";
+				if(strlen($shorten)) {
+					$html[] = "<a href=\"".htmlspecialchars($entryUri, ENT_QUOTES, "UTF-8")."\" target=\"_blank\" class=\"btn btn-primary btn-sm\" rel=\"noopener\">確認</a>";
+					$html[] = "&nbsp;";
+					$html[] = "<a href=\"javascript:void(0);\" class=\"btn btn-warning btn-sm\" rel=\"noopener\" onclick=\"copyUrl('".$shortenUrl."')\">短縮URLのコピー</a>";
+					$html[] = "<script>" . file_get_contents(dirname(__FILE__) . "/js/copy.js") . "</script>";
 				}
-				$html[] = "</div>";
 
+				$html[] = "</div>";
 				$html[] = "</div>";
 			}
-
-
 		}
 		return implode("\n",$html);
 	}
@@ -331,21 +231,9 @@ class UrlShortenerPlugin{
 				}catch(Exception $e){
 
 				}
-
 			}
-
 		}
 	}
-
-	// function getEntry($entryId){
-	// 	try{
-	// 		$dao = SOY2DAOFactory::create("cms.EntryDAO");
-	// 		$entry = $dao->getById($entryId);
-	// 	}catch(Exception $e){
-	// 		return null;
-	// 	}
-	// 	return $entry;
-	// }
 
 	function getAlias(int $entryId){
 		$entry = soycm_get_entry_object($entryId);
@@ -355,10 +243,10 @@ class UrlShortenerPlugin{
 	function setUseId($useId){
 		$this->useId = $useId;
 	}
-	public function getVersion() {
+	function getVersion() {
 		return $this->version;
 	}
-	public function setVersion($version) {
+	function setVersion($version) {
 		$this->version = $version;
 	}
 
@@ -367,7 +255,7 @@ class UrlShortenerPlugin{
 	 */
 	function getEntryURLShortener($targetId){
 		try{
-			return SOY2DAOFactory::create("cms.URLShortenerDAO")->getByTargetTypeANDTargetId(URLShortener::TYPE_ENTRY, $targetId)->getFrom();
+			return SOY2DAOFactory::create("URLShortenerDAO")->getByTargetTypeANDTargetId(URLShortener::TYPE_ENTRY, $targetId)->getFrom();
 		}catch(Exception $e){
 			return "";
 		}
@@ -378,9 +266,39 @@ class UrlShortenerPlugin{
 	 */
 	function getPageURLShortener($targetId){
 		try{
-			return SOY2DAOFactory::create("cms.URLShortenerDAO")->getByTargetTypeANDTargetId(URLShortener::TYPE_PAGE, $targetId)->getFrom();
+			return SOY2DAOFactory::create("URLShortenerDAO")->getByTargetTypeANDTargetId(URLShortener::TYPE_PAGE, $targetId)->getFrom();
 		}catch(Exception $e){
 			return "";
 		}
+	}
+
+	function config_page($message){
+		$version = $this->getVersion();
+		if(is_null($version)){
+			//初期化
+			include_once(dirname(__FILE__)."/page/_init/config_form.php");
+			$form = SOY2HTMLFactory::createInstance("URLShortenerPluginInitFormPage");
+
+		}else if(!is_null($version) && $version != self::getLatestVersion()){
+			//アップデート @TODO 世代越えバージョンアップ
+			include_once(dirname(__FILE__)."/page/_update/config_form.php");
+			$form = SOY2HTMLFactory::createInstance("URLShortenerPluginFormPage");
+
+		}else{
+			//通常更新
+			include_once(dirname(__FILE__)."/page/config_form.php");
+			$form = SOY2HTMLFactory::createInstance("URLShortenerPluginFormPage");
+
+		}
+
+		$form->setPluginObj($this);
+		$form->execute();
+		return $form->getObject();
+	}
+
+	public static function register(){
+		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
+		if(is_null($obj)) $obj = new URLShortenerPlugin();
+		CMSPlugin::addPlugin(self::PLUGIN_ID,array($obj,"init"));
 	}
 }

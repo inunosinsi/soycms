@@ -16,14 +16,12 @@ class URLShortenerPluginFormPage extends WebPage{
 			}
 			CMSPlugin::redirectConfigPage();
 		}
-
 	}
 
 	function execute(){
 		parent::__construct();
 
-		$this->createAdd("url_shortener_form","HTMLForm",array(
-		));
+		$this->addForm("url_shortener_form");
 /*
 		$this->createAdd("custom_alias_prefix","HTMLInput",array(
 			"name" => "custom_alias_prefix",
