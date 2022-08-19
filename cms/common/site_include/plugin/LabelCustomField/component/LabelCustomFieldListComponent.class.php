@@ -163,8 +163,19 @@ class LabelCustomFieldListComponent extends HTMLList {
 			"options" => $entity->getLabels(),
 			"selected" => $entity->getFixedLabelId()
 		));
-
 		/** 記事フィールド用 **/
+
+		/** リストフィールド用 **/
+		$this->addModel("is_list_field", array(
+			"visible" => ($entity->getType() == "list")
+		));
+		/** リストフィールド用 **/
+
+		/** 定義型リストフィールド用 **/
+		$this->addModel("is_dllist_field", array(
+			"visible" => ($entity->getType() == "dllist")
+		));
+		/** 定義型リストフィールド用 **/
 
 		$this->addInput("update_advance", array(
 			"value"=>"設定保存",

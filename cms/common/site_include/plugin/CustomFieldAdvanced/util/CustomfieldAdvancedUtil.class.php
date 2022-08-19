@@ -57,6 +57,22 @@ class CustomfieldAdvancedUtil {
 		return $isList;
 	}
 
+	public static function checkIsDlListField(array $fields){
+		static $isList;
+		if(is_null($isList)){
+			$isList = false;
+			if(is_array($fields) && count($fields)){
+				foreach($fields as $field){
+					if($field->getType() == "dllist"){
+						$isList = true;
+						break;
+					}
+				}
+			}
+		}
+		return $isList;
+	}
+
 	/**
 	 * 指定の記事ID一覧分のカスタムフィールドの値を取得してグローバル変数に格納しておく
 	 * @param array entryIds, array fieldIds

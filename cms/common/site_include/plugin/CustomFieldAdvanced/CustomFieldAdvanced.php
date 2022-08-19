@@ -39,7 +39,7 @@ class CustomFieldPluginAdvanced{
 			"author" => "日本情報化農業研究所",
 			"url" => "http://www.n-i-agroinformatics.com/",
 			"mail" => "soycms@soycms.net",
-			"version"=>"1.16"
+			"version"=>"1.17"
 		));
 
 		//プラグイン アクティブ
@@ -107,7 +107,8 @@ class CustomFieldPluginAdvanced{
 			//設定内に記事フィールドはあるか？
 			$isEntryField = CustomfieldAdvancedUtil::checkIsEntryField($customFields);
 			$isLabelField = CustomfieldAdvancedUtil::checkIsLabelField($customFields);	// @ToDo メモリをたくさん食うからブログ一覧やラベルブロックでは禁止にしたい → 別のプラグインで対応
-			$isListField = CustomfieldAdvancedUtil::checkIsListField($customFields);;	//
+			$isListField = CustomfieldAdvancedUtil::checkIsListField($customFields);	//
+			$isDlListField = CustomfieldAdvancedUtil::checkIsDlListField($customFields);	//
 
 			foreach($fieldValues as $fieldId => $fieldValueArr){
 				//設定を取得
@@ -314,6 +315,15 @@ class CustomFieldPluginAdvanced{
 						));
 					}
 
+					//定義型リストフィールド
+					if($isDlListField){
+						if(!class_exists("DlListFieldListComponent")) SOY2::import("site_include.plugin.CustomFieldAdvanced.component.DlListFieldListComponent");
+						$htmlObj->createAdd($fieldId . "_list", "DlListFieldListComponent", array(
+							"soy2prefix" => "cms",
+							"list" => ($master->getType() == "dllist" && is_string($attr["html"])) ? soy2_unserialize($attr["html"]) : array()
+						));
+					}
+
 					//属性に出力
 					if(is_string($master->getOutput()) && strlen($master->getOutput()) > 0){
 
@@ -459,6 +469,7 @@ class CustomFieldPluginAdvanced{
 			$value = (isset($postFields[$key])) ? $postFields[$key] : null;
 			$extra = (isset($extraFields[$key])) ? soy2_serialize($extraFields[$key]) : null;
 			
+			//リストフィールド
 			if($field->getType() == "list" && is_array($value)){
 				//空の値を除く
 				$values = array();
@@ -467,6 +478,21 @@ class CustomFieldPluginAdvanced{
 						$v = trim($v);
 						if(!strlen($v)) continue;
 						$values[] = $v;
+					}
+				}
+				$value = (count($values)) ? soy2_serialize($values) : null;
+			}
+			//定義型リストフィールド
+			if($field->getType() == "dllist" && is_array($value)){
+				//空の値を除く
+				$values = array();
+				if(isset($value["label"]) && isset($value["value"])){	//array("label" => array(), "value" => array())の形の値がくる
+					foreach($value["label"] as $idx => $lab){
+						if(!isset($value["value"][$idx])) continue;
+						$lab = trim($lab);
+						$val = trim($value["value"][$idx]);
+						if(!strlen($lab) || !strlen($val)) continue;
+						$values[] = array("label" => $lab, "value" => $val);
 					}
 				}
 				$value = (count($values)) ? soy2_serialize($values) : null;
@@ -636,11 +662,13 @@ class CustomFieldPluginAdvanced{
 
 		$isEntryField = false;	//記事フィールドがあるか？
 		$isListField = false;	//リストフィールドがあるか？
+		$isDlListField = false;	//定義型リストフィールドがあるか？
 		
 		if(count($this->customFields)){
 			foreach($this->customFields as $fieldId => $fieldObj){
 				if(!$isEntryField && $fieldObj->getType() == "entry") $isEntryField = true;
 				if(!$isListField && $fieldObj->getType() == "list") $isListField = true;
+				if(!$isDlListField && $fieldObj->getType() == "dllist") $isDlListField = true;
 				$v = (isset($db_values[$fieldId])) ? $db_values[$fieldId] : null;
 				$extra = (isset($db_extra_values[$fieldId])) ? $db_extra_values[$fieldId] : null;
 				$html .= $fieldObj->getForm($this, $v, $extra);
@@ -650,6 +678,7 @@ class CustomFieldPluginAdvanced{
 		$html .= '</div>';
 		if($isEntryField) $html .= "<script>\n" . file_get_contents(SOY2::RootDir() . "site_include/plugin/CustomField/js/entry.js") . "\n</script>\n";
 		if($isListField) $html .= "<script>\n" . file_get_contents(SOY2::RootDir() . "site_include/plugin/CustomField/js/list.js") . "\n</script>\n";
+		if($isDlListField) $html .= "<script>\n" . file_get_contents(SOY2::RootDir() . "site_include/plugin/CustomField/js/dllist.js") . "\n</script>\n";
 
 		return $html;
 	}

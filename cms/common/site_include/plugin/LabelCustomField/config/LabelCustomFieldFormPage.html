@@ -118,6 +118,37 @@
 						</div>
 						<!-- /soy:id="is_entry_field" -->
 
+						<!-- soy:id="is_list_field" -->
+						<div class="section">
+							<h5>リストフィールドの記述例</h5>
+							<div class="body">
+								<pre style="max-width:560px;">&lt;!-- cms:id="<!-- soy:id="id*" /-->_visible" --&gt;
+&lt;ul&gt;
+	&lt;!-- cms:id="<!-- soy:id="id*" /-->_list" --&gt;
+	&lt;li&gt;&lt;!-- cms:id="value" --&gt;リンゴ&lt;!-- /cms:id="value" --&gt;&lt;/li&gt;
+	&lt;!-- /cms:id="<!-- soy:id="id*" /-->_list" --&gt;
+&lt;/ul&gt;
+&lt;!-- /cms:id="<!-- soy:id="id*" /-->_visible" --&gt;</pre>
+							</div>
+						</div>
+						<!-- /soy:id="is_list_field" -->
+
+						<!-- soy:id="is_dllist_field" -->
+						<div class="section">
+							<h5>定義型リストフィールドの記述例</h5>
+							<div class="body">
+								<pre style="max-width:560px;">&lt;!-- cms:id="<!-- soy:id="id*" /-->_visible" --&gt;
+&lt;dl&gt;
+	&lt;!-- cms:id="<!-- soy:id="id*" /-->_list" --&gt;
+	&lt;dt&gt;&lt;!-- cms:id="label" --&gt;リンゴ&lt;!-- /cms:id="label" --&gt;&lt;/dt&gt;
+	&lt;dd&gt;&lt;!-- cms:id="value" --&gt;赤&lt;!-- /cms:id="value" --&gt;&lt;/dd&gt;
+	&lt;!-- /cms:id="<!-- soy:id="id*" /-->_list" --&gt;
+&lt;/dl&gt;
+&lt;!-- /cms:id="<!-- soy:id="id*" /-->_visible" --&gt;</pre>
+							</div>
+						</div>
+						<!-- /soy:id="is_dllist_field" -->
+
 						<div class="text-right">
 							<input type="button" class="btn btn-primary" soy:id="update_advance" style="padding:10px 20px;" value="設定保存" />
 						</div>

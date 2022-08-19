@@ -219,6 +219,12 @@ class CustomFieldListComponent extends HTMLList {
 		));
 		/** リストフィールド用 **/
 
+		/** 定義型リストフィールド用 **/
+		$this->addModel("is_dllist_field", array(
+			"visible" => ($entity->getType() == "dllist")
+		));
+		/** 定義型リストフィールド用 **/
+
 		$this->addInput("update_advance", array(
 			"value"=>"設定保存",
 			"onclick"=>'$(\'#update_advance_submit_'.$entity->getId().'\').click();return false;',

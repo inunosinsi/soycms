@@ -15,7 +15,8 @@ class CustomField{
 		"entry" => "記事",
 		//"label" => "ラベル",
 		"pair" => "ペア",
-		"list" => "リスト"
+		"list" => "リスト",
+		"dllist" => "定義型リスト"
 	);
 
 	private $id;
@@ -400,6 +401,30 @@ class CustomField{
 				$html[] = "<div class=\"form-inline " . $h_formID . "\">";
 				$html[] = "	<input type=\"text\" name=\"" . $h_formName . "[]\" class=\"form-control\">";
 				$html[] = "	<a href=\"javascript:void(0);\" class=\"btn btn-info btn-sm\" onclick=\"CustomFieldListField.add('" . str_replace("custom_field_", "", $h_formID) . "')\">追加</a>";
+				$html[] = "</div>";
+				$body = implode("\n", $html);
+				break;
+			case "dllist":
+				$values = (is_string($fieldValue)) ? soy2_unserialize($fieldValue) : array();
+				
+				$html = array();
+				if(count($values)){
+					foreach($values as $idx => $arr){
+						$html[] = "<div class=\"form-inline\" id=\"form-control " . $h_formID . "\">";
+						foreach(array("label", "value") as $l){
+							$html[] = "	<input type=\"text\" name=\"" . $h_formName . "[" . $l . "][]\" class=\"form-control " . $h_formID . "_" . $idx . "_" . $l. "\" value=\"" . htmlspecialchars($arr[$l], ENT_QUOTES, "UTF-8") . "\">";
+						}						
+						if($idx > 0) $html[] = "	<a href=\"javascript:void(0);\" class=\"btn btn-default\" onclick=\"dllist_field_move_up('" . $h_formID . "', " . $idx . ");\">△</a>";
+						$html[] = "</div>";
+					}
+				}
+
+				$html[] = "<div class=\"form-inline " . $h_formID . "\">";
+				foreach(array("label", "value") as $l){
+					$html[] = "	<input type=\"text\" name=\"" . $h_formName . "[" . $l . "][]\" class=\"form-control\">";
+				}
+				
+				$html[] = "	<a href=\"javascript:void(0);\" class=\"btn btn-info btn-sm\" onclick=\"CustomFieldDlListField.add('" . str_replace("custom_field_", "", $h_formID) . "')\">追加</a>";
 				$html[] = "</div>";
 				$body = implode("\n", $html);
 				break;

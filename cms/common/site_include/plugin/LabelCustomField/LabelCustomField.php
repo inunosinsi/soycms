@@ -35,7 +35,7 @@ class LabelCustomFieldPlugin{
 		//プラグイン アクティブ
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
 			$this->dao = SOY2DAOFactory::create("cms.LabelAttributeDAO");
-			//SOY2::import("site_include.plugin.CustomFieldAdvanced.util.CustomfieldAdvancedUtil");
+			SOY2::import("site_include.plugin.LabelCustomField.util.LabelCustomfieldUtil");
 
 			//管理側
 			if(!defined("_SITE_ROOT_")){
@@ -72,7 +72,9 @@ class LabelCustomFieldPlugin{
 
 		if(count($fields)){
 			//設定内に記事フィールドはあるか？
-			//$isEntryField = CustomfieldAdvancedUtil::checkIsEntryField($customFields);
+			//$isEntryField = LabelCustomfieldUtil::checkIsEntryField($customFields);
+			$isListField = LabelCustomfieldUtil::checkIsListField($customFields);	//
+			$isDlListField = LabelCustomfieldUtil::checkIsDlListField($customFields);	//
 
 			foreach($fields as $field){
 
@@ -141,6 +143,24 @@ class LabelCustomFieldPlugin{
 						$attr["html"] = $fieldValue;
 					}
 
+					//リストフィールド listcomponentはCustomfieldAdvancedのファイルを流用
+					if($isListField){
+						if(!class_exists("ListFieldListComponent")) SOY2::import("site_include.plugin.CustomFieldAdvanced.component.ListFieldListComponent");
+						$htmlObj->createAdd($field->getId() . "_list", "ListFieldListComponent", array(
+							"soy2prefix" => "cms",
+							"list" => ($master->getType() == "list" && is_string($attr["html"])) ? soy2_unserialize($attr["html"]) : array()
+						));
+					}
+
+					//定義型リストフィールド listcomponentはCustomfieldAdvancedのファイルを流用
+					if($isDlListField){
+						if(!class_exists("DlListFieldListComponent")) SOY2::import("site_include.plugin.CustomFieldAdvanced.component.DlListFieldListComponent");
+						$htmlObj->createAdd($field->getId() . "_list", "DlListFieldListComponent", array(
+							"soy2prefix" => "cms",
+							"list" => ($master->getType() == "dllist" && is_string($attr["html"])) ? soy2_unserialize($attr["html"]) : array()
+						));
+					}
+
 					//属性に出力
 					if(is_string($master->getOutput()) && strlen($master->getOutput()) > 0){
 
@@ -179,6 +199,41 @@ class LabelCustomFieldPlugin{
 						}
 
 						unset($attr["html"]);//HTMLModelなのでunsetしなくても出力されないはず
+					}
+
+					//ペアフィールド
+					if($master->getType() == "pair" && is_string($master->getExtraValues())){
+						$extraValues = soy2_unserialize($master->getExtraValues());
+
+						//後方互換
+						if(isset($extraValues["pair"]) && is_array($extraValues["pair"])) $extraValues = $extraValues["pair"];
+
+						if(count($extraValues)){
+							foreach($extraValues as $idx => $pairValues){
+								$_hash = (is_string($fieldValue) && strlen($fieldValue)) ? CustomfieldAdvancedUtil::createHash($fieldValue) : null;
+								$pairValue = (isset($_hash) && isset($pairValues[$_hash])) ? $pairValues[$_hash] : "";
+
+								$htmlObj->addModel($field->getId() . "_pair_" . ($idx + 1) . "_visible", array(
+									"soy2prefix" => "cms",
+									"visible" => (strlen($pairValue) > 0)
+								));
+
+								$htmlObj->addModel($field->getId() . "_pair_" . ($idx + 1) . "_is_not_empty", array(
+									"soy2prefix" => "cms",
+									"visible" => (strlen($pairValue) > 0)
+								));
+
+								$htmlObj->addModel($field->getId() . "_pair_" . ($idx + 1) . "_is_empty", array(
+									"soy2prefix" => "cms",
+									"visible" => (strlen($pairValue) === 0)
+								));
+
+								$htmlObj->addLabel($field->getId() . "_pair_" . ($idx + 1), array(
+									"soy2prefix" => "cms",
+									"html" => $pairValue
+								));
+							}
+						}
 					}
 				}
 
@@ -233,6 +288,35 @@ class LabelCustomFieldPlugin{
 
 			$value = (isset($postFields[$key])) ? $postFields[$key] : "";
 			$extra = (isset($extraFields[$key]))? $extraFields[$key]: array();
+
+			//リストフィールド
+			if($field->getType() == "list" && is_array($value)){
+				//空の値を除く
+				$values = array();
+				if(count($value)){
+					foreach($value as $v){
+						$v = trim($v);
+						if(!strlen($v)) continue;
+						$values[] = $v;
+					}
+				}
+				$value = (count($values)) ? soy2_serialize($values) : null;
+			}
+			//定義型リストフィールド
+			if($field->getType() == "dllist" && is_array($value)){
+				//空の値を除く
+				$values = array();
+				if(isset($value["label"]) && isset($value["value"])){	//array("label" => array(), "value" => array())の形の値がくる
+					foreach($value["label"] as $idx => $lab){
+						if(!isset($value["value"][$idx])) continue;
+						$lab = trim($lab);
+						$val = trim($value["value"][$idx]);
+						if(!strlen($lab) || !strlen($val)) continue;
+						$values[] = array("label" => $lab, "value" => $val);
+					}
+				}
+				$value = (count($values)) ? soy2_serialize($values) : null;
+			}
 
 			//更新の場合
 			try{
@@ -368,36 +452,43 @@ class LabelCustomFieldPlugin{
 	 */
 	function onCallCustomField(){
 		$arg = SOY2PageController::getArguments();
-		$labelId = (isset($arg[0])) ? (int)$arg[0] : null;
+		$labelId = (isset($arg[0])) ? (int)$arg[0] : 0;
 		return self::buildFormOnLabelPage($labelId);
 	}
 
-	private function buildFormOnLabelPage($labelId){
+	private function buildFormOnLabelPage(int $labelId){
 		$html = self::_getScripts();
-		$db_arr = $this->getCustomFields($labelId);
+		$db_arr = ($labelId > 0) ? $this->getCustomFields($labelId) : array();
 
 		$db_values = array();
 		foreach($db_arr as $field){
 			$db_values[$field->getId()] = $field->getValue();
 		}
 
-		$isEntryField = false;	//記事フィールドがあるか？
+		//$isEntryField = false;	//記事フィールドがあるか？
+		$isListField = false;	//リストフィールドがあるか？
+		$isDlListField = false;	//定義型リストフィールドがあるか？
+
+
 		$db_extra_values = array();
 		foreach($db_arr as $field){
 			$db_extra_values[$field->getId()] = $field->getExtraValues();
 		}
 
-		foreach($this->customFields as $fieldId => $fieldObj){
-			//if($fieldObj->getType() == "entry") $isEntryField = true;
-			$v = (isset($db_values[$fieldId])) ? $db_values[$fieldId] : null;
-			$extra = (isset($db_extra_values[$fieldId])) ? $db_extra_values[$fieldId] : null;
-			$html .= $fieldObj->getForm($this, $v, $extra);
+		if(count($this->customFields)){
+			foreach($this->customFields as $fieldId => $fieldObj){
+				//if($fieldObj->getType() == "entry") $isEntryField = true;
+				if(!$isListField && $fieldObj->getType() == "list") $isListField = true;
+				if(!$isDlListField && $fieldObj->getType() == "dllist") $isDlListField = true;
+				$v = (isset($db_values[$fieldId])) ? $db_values[$fieldId] : null;
+				$extra = (isset($db_extra_values[$fieldId])) ? $db_extra_values[$fieldId] : null;
+				$html .= $fieldObj->getForm($this, $v, $extra);
+			}
 		}
-
-		//$html .= '</div>';
-		// if($isEntryField){
-		// 	$html .= "<script>\n" . file_get_contents(SOY2::RootDir() . "site_include/plugin/CustomField/js/entry.js") . "\n</script>\n";
-		// }
+		
+		// CustomFieldのjsファイルを流用
+		if($isListField) $html .= "<script>\n" . file_get_contents(SOY2::RootDir() . "site_include/plugin/CustomField/js/list.js") . "\n</script>\n";
+		if($isDlListField) $html .= "<script>\n" . file_get_contents(SOY2::RootDir() . "site_include/plugin/CustomField/js/dllist.js") . "\n</script>\n";
 
 		return $html;
 	}

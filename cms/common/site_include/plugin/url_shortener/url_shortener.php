@@ -195,42 +195,38 @@ class UrlShortenerPlugin{
 	 * @TODO ページ編集画面からの削除
 	 */
 	function onPageUpdate($arg){
-		if(isset($_POST["urlShortener"])){
-			$dao = SOY2DAOFactory::create("cms.URLShortenerDAO");
-			$page = $arg["new_page"];
-			$shorten = @$_POST["urlShortener"];
+		if(!isset($_POST["urlShortener"])) return;
+		$dao = SOY2DAOFactory::create("URLShortenerDAO");
+		$page = $arg["new_page"];
+		$shorten = trim($_POST["urlShortener"]);
 
+		//空じゃなくて、半角英数字のみ
+		if(strlen($shorten) && preg_match('/^[a-zA-Z0-9]+$/',$shorten)){
 			try{
-				$unique = $dao->getByFrom($shorten);
-				$uniqueId = $unique->getId();
+				$shortenObj = $dao->getByTargetTypeANDTargetId(URLShortener::TYPE_PAGE, $page->getId());
 			}catch(Exception $e){
-				$uniqueId = false;
+				$shortenObj = new URLShortener();
+				$shortenObj->setTargetType(URLShortener::TYPE_PAGE);
+				$shortenObj->setTargetId($page->getId());
+				$shortenObj->setTo($page->getUri());
 			}
 
+			$shortenObj->setFrom($shorten);
+
 			try{
-				$obj = $dao->getByTargetTypeANDTargetId(URLShortener::TYPE_ENTRY, $page->getId());
-				//変更なし
-				if($shorten == $obj->setFrom) return;
-
-				//ユニークチェック
-				if($obj->getId()  == $uniqueId){
-					$obj->setFrom($shorten);
-					$obj->save();
-				}
-
+				$dao->insert($shortenObj);
 			}catch(Exception $e){
-				if($uniqueId)return;//ユニーク
-
-				$obj = new URLShortener();
-				$obj->setFrom($shorten);
-				$obj->setTo($page->getUri());
-				$obj->setTargetType(URLShortener::TYPE_PAGE);
-				$obj->setTargetId($page->getId());
 				try{
-					$obj->save();
+					$dao->update($shortenObj);
 				}catch(Exception $e){
-
+					//
 				}
+			}
+		}else{
+			try{
+				$dao->deleteByTargetTypeANDTargetId(URLShortener::TYPE_PAGE, $page->getId());
+			}catch(Exception $e){
+				//
 			}
 		}
 	}
