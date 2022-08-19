@@ -31,19 +31,20 @@
 
 <h4>テンプレートへの記述</h4>
 
-<pre>
-&lt;!-- shop:module="common.auto_ranking" --&gt;
+<pre>&lt;!-- shop:module="common.auto_ranking" --&gt;
 &lt;section&gt;
 	&lt;h1&gt;ランキング&lt;/h1&gt;
 	&lt;ul&gt;
-		&lt;li block:id="ranking_item_list"&gt;
+		&lt;!-- block:id="ranking_item_list" cms:customfield="off" --&gt;
+		&lt;li&gt;
 			&lt;a cms:id="item_link"&gt;&lt;img cms:id="item_small_image"&gt;&lt;/a&gt;
 			&lt;p&gt;
 				&lt;a cms:id="item_link*"&gt;&lt;!-- cms:id="item_name" /--&gt;&lt;/a&gt;
 			&lt;/p&gt;
 		&lt;/li&gt;
+		&lt;!-- /block:id="ranking_item_list" --&gt;
 	&lt;/ul&gt;
 &lt;/section&gt;
-&lt;!-- /shop:module="common.auto_ranking" --&gt;
-</pre>
-<div class="alert alert-info">※block:id="ranking_item_list"内では、block:id="item"やblock:id="item_list"で使用できるcms:idを使用できます。</div>
+&lt;!-- /shop:module="common.auto_ranking" --&gt;</pre>
+<div class="alert alert-info">※block:id="ranking_item_list"内では、block:id="item"やblock:id="item_list"で使用できるcms:idを使用できます。<br>
+	※cms:customfield="off"にすることで、カスタムフィールドの拡張ポイントの実行をOFFにし、表示速度の高速化をはかります。</div>
