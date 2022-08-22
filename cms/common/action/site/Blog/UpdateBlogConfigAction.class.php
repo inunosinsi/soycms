@@ -23,9 +23,11 @@ class UpdateBlogConfigAction extends SOY2Action{
     		return SOY2Action::FAILED;
     	}
 
-    	$dao = SOY2DAOFactory::create("cms.BlogPageDAO");
+    	$dao = soycms_get_hash_table_dao("blog_page");
     	$page = $dao->getById($this->id);
-    	$page = SOY2::cast($page,$form);
+		$old = $page;
+    	
+		$page = SOY2::cast($page,$form);
 		
     	//カテゴリ未選択の場合は、pageオブジェクトも未選択にする
     	if(is_null($form->getCategoryLabelList())) $page->setCategoryLabelList(null);
@@ -37,6 +39,9 @@ class UpdateBlogConfigAction extends SOY2Action{
 		}catch(Exception $e){
 			return SOY2Action::FAILED;
 		}
+
+		//CMS:PLUGIN callEventFunction
+		CMSPlugin::callEventFunc('onBlogPageConfigUpdate',array("new_page" => $page, "old_page" => $old));
 
     	return SOY2Action::SUCCESS;
     }

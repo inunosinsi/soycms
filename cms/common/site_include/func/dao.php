@@ -11,7 +11,7 @@ function soycms_generate_hash_value(string $str, int $length=12){
 
 function soycms_get_hash_table_types(){
 	static $types;
-	if(is_null($types)) $types = array("entry", "entry_attribute", "entry_label", "label", "label_attribute", "page", "blog_page", "block", "plugin");
+	if(is_null($types)) $types = array("entry", "entry_attribute", "entry_label", "label", "label_attribute", "page", "page_attribute", "blog_page", "block", "plugin");
 	return $types;
 }
 
@@ -60,12 +60,15 @@ function soycms_get_hash_table_dao(string $fnName){
 			$path = "cms.PageDAO";
 			break;
 		case 6:
-			$path = "cms.BlogPageDAO";
+			$path = "cms.PageAttributeDAO";
 			break;
 		case 7:
+			$path = "cms.BlogPageDAO";
+			break;
+		case 8:
 			$path = "cms.BlockDAO";
 			break;
-		case 8:	//plugin
+		case 9:	//plugin
 			$path = "cms.PluginDAO";
 			break;
 	}
@@ -231,6 +234,50 @@ function soycms_get_label_object(int $labelId){
 	return $GLOBALS["soycms_label_hash_table"][$idx];
 }
 
+function soycms_get_label_attribute_object(int $labelId, string $fieldId){
+	$dao = soycms_get_hash_table_dao(__FUNCTION__);
+	if((int)$labelId <= 0 || !strlen($fieldId)) return new LabelAttribute();
+
+	$idx = soycms_get_hash_index(((string)$labelId . $fieldId), __FUNCTION__);
+	if(isset($GLOBALS["soycms_label_attribute_hash_table"][$idx])) return $GLOBALS["soycms_label_attribute_hash_table"][$idx];
+
+	try{
+		$GLOBALS["soycms_label_attribute_hash_table"][$idx] = $dao->get($labelId, $fieldId);
+	}catch(Exception $e){
+		$attr = new LabelAttribute();
+		$attr->setLabelId($labelId);
+		$attr->setFieldId($fieldId);
+		$GLOBALS["soycms_label_attribute_hash_table"][$idx] = $attr;
+	}
+
+	return $GLOBALS["soycms_label_attribute_hash_table"][$idx];
+}
+
+function soycms_save_label_attribute_object(LabelAttribute $attr){
+	$dao = soycms_get_hash_table_dao(__FUNCTION__);
+
+	if(is_string($attr->getValue())) $attr->setValue(trim($attr->getValue()));
+	if(is_string($attr->getValue()) && !strlen($attr->getValue())) $attr->setValue(null);
+
+	if(!is_null($attr->getValue()) || !is_null($attr->getExtraValues())){
+		try{
+			$dao->insert($attr);
+		}catch(Exception $e){
+			try{
+				$dao->update($attr);
+			}catch(Exception $e){
+				//
+			}
+		}
+	}else{
+		try{
+			$dao->delete($attr->getEntryId(), $attr->getFieldId());
+		}catch(Exception $e){
+			//
+		}
+	}
+}
+
 /** 
  * ページIDからページオブジェクト 
  * isPriorityBlogPageModeをtrueにすると、ブログページを優先的に検索する
@@ -268,4 +315,48 @@ function soycms_get_blog_page_object(int $pageId){
 	$page = soycms_get_page_object($pageId, true);
 	if(!class_exists("BlogPage")) SOY2::import("domain.cms.BlogPage");
 	return ($page instanceof BlogPage) ? $page : new BlogPage();
+}
+
+function soycms_get_page_attribute_object(int $pageId, string $fieldId){
+	$dao = soycms_get_hash_table_dao(__FUNCTION__);
+	if((int)$pageId <= 0 || !strlen($fieldId)) return new PageAttribute();
+
+	$idx = soycms_get_hash_index(((string)$pageId . $fieldId), __FUNCTION__);
+	if(isset($GLOBALS["soycms_page_attribute_hash_table"][$idx])) return $GLOBALS["soycms_page_attribute_hash_table"][$idx];
+
+	try{
+		$GLOBALS["soycms_page_attribute_hash_table"][$idx] = $dao->get($pageId, $fieldId);
+	}catch(Exception $e){
+		$attr = new PageAttribute();
+		$attr->setPageId($pageId);
+		$attr->setFieldId($fieldId);
+		$GLOBALS["soycms_page_attribute_hash_table"][$idx] = $attr;
+	}
+
+	return $GLOBALS["soycms_page_attribute_hash_table"][$idx];
+}
+
+function soycms_save_page_attribute_object(PageAttribute $attr){
+	$dao = soycms_get_hash_table_dao(__FUNCTION__);
+
+	if(is_string($attr->getValue())) $attr->setValue(trim($attr->getValue()));
+	if(is_string($attr->getValue()) && !strlen($attr->getValue())) $attr->setValue(null);
+
+	if(!is_null($attr->getValue()) || !is_null($attr->getExtraValues())){
+		try{
+			$dao->insert($attr);
+		}catch(Exception $e){
+			try{
+				$dao->update($attr);
+			}catch(Exception $e){
+				//
+			}
+		}
+	}else{
+		try{
+			$dao->delete($attr->getEntryId(), $attr->getFieldId());
+		}catch(Exception $e){
+			//
+		}
+	}
 }

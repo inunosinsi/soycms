@@ -16,7 +16,7 @@ class UpdateTemplateAction extends SOY2Action{
     function execute($request,$form,$response) {
     	$template = $form->template;
 
-		$dao = SOY2DAOFactory::create("cms.BlogPageDAO");
+		$dao = soycms_get_hash_table_dao("blog_page");
     	$page = $dao->getById($this->id);
 		$old = $page;
 
