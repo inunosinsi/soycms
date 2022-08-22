@@ -45,6 +45,7 @@ class CustomFieldPluginAdvanced{
 		//プラグイン アクティブ
 		if(CMSPlugin::activeCheck(CustomFieldPluginAdvanced::PLUGIN_ID)){
 			SOY2::import("site_include.plugin.CustomFieldAdvanced.util.CustomfieldAdvancedUtil");
+			include_once(SOY2::RootDir() . "site_include/plugin/CustomFieldAdvanced/func/func.php");	//便利な関数
 
 			//管理側
 			if(!defined("_SITE_ROOT_")){
@@ -123,7 +124,7 @@ class CustomFieldPluginAdvanced{
 				);
 
 				//カスタムフィールドの設定が取れるときの動作（たとえば同じサイト内の場合）
-				if($master){
+				if($master instanceof CustomField){
 
 					//$attr["html"]に改めて値を入れ直す時に使用するフラグ
 					$resetFlag = true;
@@ -173,10 +174,16 @@ class CustomFieldPluginAdvanced{
 
 					//複数行テキストの場合は\n\rを<br>に変換するタグを追加
 					if($master->getType() == "textarea"){
+						$htmlObj->addLabel($fieldId . "_raw", array(
+							"soy2prefix" => "cms",
+							"html" => $fieldValue
+						));
+						$attr["html"] = nl2br($fieldValue);
 						$htmlObj->addLabel($fieldId . "_br_mode", array(
 							"soy2prefix" => "cms",
-							"html" => (is_string($fieldValue)) ? nl2br($fieldValue) : ""
+							"html" => $attr["html"]
 						));
+						$resetFlag = false;
 					}
 
 					//上で空の時の値が入るかも知れず、下でunsetされる可能性があるのでここで設定し直す。
@@ -318,7 +325,7 @@ class CustomFieldPluginAdvanced{
 					//定義型リストフィールド
 					if($isDlListField){
 						if(!class_exists("DlListFieldListComponent")) SOY2::import("site_include.plugin.CustomFieldAdvanced.component.DlListFieldListComponent");
-						$htmlObj->createAdd($fieldId . "_list", "DlListFieldListComponent", array(
+						$htmlObj->createAdd($fieldId . "_dl_list", "DlListFieldListComponent", array(
 							"soy2prefix" => "cms",
 							"list" => ($master->getType() == "dllist" && is_string($attr["html"])) ? soy2_unserialize($attr["html"]) : array()
 						));

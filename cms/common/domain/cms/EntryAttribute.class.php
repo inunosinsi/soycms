@@ -78,11 +78,7 @@ class EntryAttribute {
 
 	public function getCustomFieldObjectArray() {
 		$res = soy2_unserialize((string)$this->customFieldObject);
-		if($res instanceof CustomField){
-			return $res;
-		}else{
-			return new CustomField();
-		}
+		return ($res instanceof CustomField) ? $res : new CustomField();
 	}
 	public function setCustomFieldObjectArray($customFieldObject) {
 		if($customFieldObject instanceof CustomField){

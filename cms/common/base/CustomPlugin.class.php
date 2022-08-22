@@ -8,4 +8,3 @@ class CustomPlugin extends PluginBase{
 		return;
 	}	
 }
-?>

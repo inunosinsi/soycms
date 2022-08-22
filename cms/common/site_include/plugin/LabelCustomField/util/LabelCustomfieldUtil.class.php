@@ -1,68 +1,21 @@
 <?php
+if(!function_exists("soycms_customfield_check_is_field")) include_once(SOY2::RootDir() . "site_include/plugin/CustomFieldAdvanced/func/func.php");
 
 class LabelCustomfieldUtil {
 
 	public static function checkIsEntryField(array $fields){
-		static $isEntry;
-		if(is_null($isEntry)){
-			$isEntry = false;
-			if(is_array($fields) && count($fields)){
-				foreach($fields as $field){
-					if($field->getType() == "entry"){
-						$isEntry = true;
-						break;
-					}
-				}
-			}
-		}
-		return $isEntry;
+		return soycms_customfield_check_is_field($fields, "entry", 1);
 	}
 
 	public static function checkIsLabelField(array $fields){
-		static $isLabel;
-		if(is_null($isLabel)){
-			$isLabel = false;
-			if(is_array($fields) && count($fields)){
-				foreach($fields as $field){
-					if($field->getType() == "label"){
-						$isLabel = true;
-						break;
-					}
-				}
-			}
-		}
-		return $isLabel;
+		return soycms_customfield_check_is_field($fields, "label", 1);
 	}
 
 	public static function checkIsListField(array $fields){
-		static $isList;
-		if(is_null($isList)){
-			$isList = false;
-			if(is_array($fields) && count($fields)){
-				foreach($fields as $field){
-					if($field->getType() == "list"){
-						$isList = true;
-						break;
-					}
-				}
-			}
-		}
-		return $isList;
+		return soycms_customfield_check_is_field($fields, "list", 1);
 	}
 
 	public static function checkIsDlListField(array $fields){
-		static $isList;
-		if(is_null($isList)){
-			$isList = false;
-			if(is_array($fields) && count($fields)){
-				foreach($fields as $field){
-					if($field->getType() == "dllist"){
-						$isList = true;
-						break;
-					}
-				}
-			}
-		}
-		return $isList;
+		return soycms_customfield_check_is_field($fields, "dllist", 1);
 	}
 }

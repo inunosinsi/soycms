@@ -41,9 +41,7 @@ abstract class LabelAttributeDAO extends SOY2DAO{
 	}
 
 
-    function getByLabelIdCustom($labelId, $fields){
-    	if(!is_numeric($labelId) || count($fields) === 0) return array();
-
+    function getByLabelIdCustom(int $labelId, array $fields){
     	$sql = "SELECT * FROM LabelAttribute ".
     			"WHERE label_id = :labelId ".
     			"AND label_field_id IN (\"" . implode("\",\"", $fields) . "\")";

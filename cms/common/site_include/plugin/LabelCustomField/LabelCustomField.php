@@ -17,8 +17,6 @@ class LabelCustomFieldPlugin{
 	private $prevLabelId;
 	private $prevFieldIds = array();
 
-	private $dao;
-
 	private $displayLogic;
 
 
@@ -34,8 +32,8 @@ class LabelCustomFieldPlugin{
 
 		//プラグイン アクティブ
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
-			$this->dao = SOY2DAOFactory::create("cms.LabelAttributeDAO");
 			SOY2::import("site_include.plugin.LabelCustomField.util.LabelCustomfieldUtil");
+			include_once(SOY2::RootDir() . "site_include/plugin/CustomFieldAdvanced/func/func.php");	//便利な関数
 
 			//管理側
 			if(!defined("_SITE_ROOT_")){
@@ -51,7 +49,7 @@ class LabelCustomFieldPlugin{
 
 			//公開側
 			}else{
-				CMSPlugin::setEvent('onLabelOutput', self::PLUGIN_ID, array($this, "display"));
+				CMSPlugin::setEvent('onLabelOutput', self::PLUGIN_ID, array($this, "onLabelOutput"));
 			}
 
 		}else{
@@ -60,17 +58,18 @@ class LabelCustomFieldPlugin{
 	}
 
 	/**
-	 * onEntryOutput
+	 * onLabelOutput
 	 */
-	function display($arg){
+	function onLabelOutput($arg){
 
 		$labelId = $arg["labelId"];
 		$htmlObj = $arg["SOY2HTMLObject"];
 
 		$fields = $this->getCustomFields($labelId);
-		$customFields = $this->customFields;
-
+	
 		if(count($fields)){
+			$customFields = $this->customFields;
+			
 			//設定内に記事フィールドはあるか？
 			//$isEntryField = LabelCustomfieldUtil::checkIsEntryField($customFields);
 			$isListField = LabelCustomfieldUtil::checkIsListField($customFields);	//
@@ -88,7 +87,7 @@ class LabelCustomFieldPlugin{
 				);
 
 				//カスタムフィールドの設定が取れるときの動作（たとえば同じサイト内の場合）
-				if($master){
+				if($master instanceof LabelCustomField){
 					//$attr["html"]に改めて値を入れ直す時に使用するフラグ
 					$resetFlag = true;
 
@@ -132,16 +131,20 @@ class LabelCustomFieldPlugin{
 
 					//複数行テキストの場合は\n\rを<br>に変換するタグを追加
 					if($master->getType() == "textarea"){
+						$htmlObj->addLabel($field->getId() . "_raw", array(
+							"soy2prefix" => "cms",
+							"html" => $fieldValue
+						));
+						$attr["html"] = nl2br($fieldValue);
 						$htmlObj->addLabel($field->getId() . "_br_mode", array(
 							"soy2prefix" => "cms",
-							"html" => nl2br($fieldValue)
+							"html" => $attr["html"]
 						));
+						$resetFlag = false;
 					}
 
 					//上で空の時の値が入るかも知れず、下でunsetされる可能性があるのでここで設定し直す。
-					if($resetFlag){
-						$attr["html"] = $fieldValue;
-					}
+					if($resetFlag) $attr["html"] = $fieldValue;
 
 					//リストフィールド listcomponentはCustomfieldAdvancedのファイルを流用
 					if($isListField){
@@ -155,7 +158,7 @@ class LabelCustomFieldPlugin{
 					//定義型リストフィールド listcomponentはCustomfieldAdvancedのファイルを流用
 					if($isDlListField){
 						if(!class_exists("DlListFieldListComponent")) SOY2::import("site_include.plugin.CustomFieldAdvanced.component.DlListFieldListComponent");
-						$htmlObj->createAdd($field->getId() . "_list", "DlListFieldListComponent", array(
+						$htmlObj->createAdd($field->getId() . "_dl_list", "DlListFieldListComponent", array(
 							"soy2prefix" => "cms",
 							"list" => ($master->getType() == "dllist" && is_string($attr["html"])) ? soy2_unserialize($attr["html"]) : array()
 						));
@@ -275,12 +278,12 @@ class LabelCustomFieldPlugin{
 	 */
 	function onLabelUpdate($arg){
 		if(!isset($arg["label"])) return;
-		$dao = $this->dao;
+		
+		$labelId = (int)$arg["label"]->getId();
+		if($labelId === 0) return 0;
 
-		$label = $arg["label"];
+		$dao = soycms_get_hash_table_dao("label_attribute");
 
-		$arg = SOY2PageController::getArguments();
-		$labelId = (isset($arg[0]) && is_numeric($arg[0])) ? (int)$arg[0] : null;
 		$postFields = (isset($_POST["custom_field"]) && is_array($_POST["custom_field"])) ? $_POST["custom_field"] : array();
 		$extraFields = (isset($_POST["custom_field_extra"]) && is_array($_POST["custom_field_extra"])) ? $_POST["custom_field_extra"] : array();
 
@@ -318,26 +321,10 @@ class LabelCustomFieldPlugin{
 				$value = (count($values)) ? soy2_serialize($values) : null;
 			}
 
-			//更新の場合
-			try{
-				$obj = $dao->get($label->getId(), $field->getId());
-				$obj->setValue($value);
-				$obj->setExtraValuesArray($extra);
-				$dao->update($obj);
-				continue;
-			}catch(Exception $e){
-				//新規作成の場合
-				try{
-					$obj = new LabelAttribute();
-					$obj->setLabelId($label->getId());
-					$obj->setFieldId($key);
-					$obj->setValue($value);
-					$obj->setExtraValuesArray($extra);
-					$dao->insert($obj);
-				}catch(Exception $e){
-					//
-				}
-			}
+			$attr = soycms_get_label_attribute_object($labelId, $field->getId());
+			$attr->setValue($value);
+			$attr->setExtraValuesArray($extra);
+			soycms_save_label_attribute_object($attr);
 		}
 
 		return true;
@@ -347,16 +334,14 @@ class LabelCustomFieldPlugin{
 	 * ラベル削除時
 	 * @param array $args ラベルID
 	 */
-	function onLabelRemove($args){
-		$dao = $this->dao;
+	function onLabelRemove(array $args){
 		foreach($args as $labelId){
 			try{
-				$dao->deleteByLabelId($labelId);
+				soycms_get_hash_table_dao("label_attribute")->deleteByLabelId($labelId);
 			}catch(Exception $e){
-
+				//
 			}
 		}
-
 		return true;
 	}
 
@@ -515,16 +500,11 @@ class LabelCustomFieldPlugin{
 	 * @param int labelId 記事のID
 	 * @return Array <LabelCustomField>
 	 */
-	function getCustomFields($labelId){
+	function getCustomFields(int $labelId){
+		$fieldIds = soycms_get_field_id_list($this->customFields);
+		if(!count($fieldIds)) return array();
 
-		$dao = $this->dao;
-
-		$customFields = $this->customFields;
-		if(!count($customFields)) return array();
-		$fieldIds = array();
-		foreach($customFields as $fieldId => $field){
-			$fieldIds[] = $fieldId;
-		}
+		$dao = soycms_get_hash_table_dao("label_attribute");
 
 		try{
 			$attrs = $dao->getByLabelIdCustom($labelId, $fieldIds);
@@ -535,7 +515,7 @@ class LabelCustomFieldPlugin{
 		//値がない場合は満たす
 		foreach($fieldIds as $fieldId){
 			if(!isset($attrs[$fieldId])) {
-				$attr = new LabelAttribute();
+				$attr = soycms_get_label_attribute_object(0, $fieldId);
 				$attr->setFieldId($fieldId);
 				$attrs[$fieldId] = $attr;
 			}
@@ -551,7 +531,7 @@ class LabelCustomFieldPlugin{
 		//ラベルにないカスタムフィールドの設定内容を入れておく
 		//（HTMLListやカスタムフィールドを追加したときの既存の記事のため）
 		$list = array();
-		foreach($customFields as $fieldId => $fieldValue){
+		foreach($this->customFields as $fieldId => $fieldObj){
 			$added = new LabelCustomField();
 			$added->setId($fieldId);
 
@@ -565,7 +545,7 @@ class LabelCustomFieldPlugin{
 
 			//データがない場合。初回など。
 			}else{
-				$added->setValue($fieldValue->getDefaultValue());
+				$added->setValue($fieldObj->getDefaultValue());
 				$list[] = $added;
 			}
 		}
