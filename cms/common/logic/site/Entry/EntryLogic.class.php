@@ -6,6 +6,7 @@ class EntryLogic extends SOY2LogicBase{
 	private $limit;
 	private $reverse = false;//逆順にする（DisplayOrder以外のcdate,idの部分のみ）
 	private $blockClass;	//ブロックのクラス
+	private $sort;	//0:cdate or 1:udate
 	private $totalCount;
 
 	function __construct(){
@@ -33,6 +34,9 @@ class EntryLogic extends SOY2LogicBase{
 
 	function setBlockClass($blockClass){
 		$this->blockClass = $blockClass;
+	}
+	function setSort($sort){
+		$this->sort = $sort;
 	}
 
 	 /**
@@ -345,6 +349,7 @@ class EntryLogic extends SOY2LogicBase{
 	function getOpenEntryByLabelIds(array $labelIds, bool $isAnd=true, int $start=Entry::PERIOD_START, int $end=Entry::PERIOD_END){
 		$dao = self::labeledEntryDao();
 		$dao->setBlockClass($this->blockClass);
+		$dao->setSort((int)$this->sort);
 
 		if($isAnd){
 			//$labelIdsのラベルがすべて設定されている記事のみ取得

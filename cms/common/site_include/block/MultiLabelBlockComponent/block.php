@@ -15,6 +15,7 @@ class MultiLabelBlockComponent implements BlockComponent{
 	private $displayCountFrom;
 	private $displayCountTo;
 	private $order = self::ORDER_DESC;//記事の並び順
+	private $sort = self::SORT_CDATE;	//記事の並び順
 	private $isCallEventFunc = self::ON;	//公開側でHTMLの表示の際にカスタムフィールドの拡張ポイントを読み込むか？
 
 	/**
@@ -102,6 +103,7 @@ class MultiLabelBlockComponent implements BlockComponent{
 
 			$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
 			$logic->setBlockClass(get_class($this));
+			$logic->setSort($this->sort);
 
 			$this->displayCountFrom = max($this->displayCountFrom, 1);//0件目は認めない→１件目に変更
 			if(!is_numeric($this->displayCountTo)) $this->displayCountTo = 10000;	//仮
@@ -239,6 +241,12 @@ class MultiLabelBlockComponent implements BlockComponent{
 	}
 	public function setOrder($order){
 		$this->order = $order;
+	}
+	public function getSort(){
+		return $this->sort;
+	}
+	public function setSort($sort){
+		$this->sort = $sort;
 	}
 
 	public function getIsCallEventFunc(){

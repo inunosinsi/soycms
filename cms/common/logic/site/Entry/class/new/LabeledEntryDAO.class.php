@@ -9,9 +9,13 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	const ORDER_DESC = 2;
 
 	private $blockClass;
+	private $sort;	//0:cdate or 1:udate
 
 	function setBlockClass($blockClass){
 		$this->blockClass =$blockClass;
+	}
+	function setSort($sort){
+		$this->sort = $sort;
 	}
 
 	/**
@@ -38,12 +42,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 		$sql = "SELECT entry.* FROM Entry entry ";
 		$sql .= "WHERE entry.id IN (SELECT entry_id FROM EntryLabel WHERE label_id IN (" .implode(",", $labelIds) . ") GROUP BY entry_id HAVING count(*) = " . count($labelIds) . ") ";
 
-		//Order
-		if($orderReverse){
-			$sql .= self::_addOrder("ASC", $labelIds);
-		}else{
-			$sql .= self::_addOrder("DESC", $labelIds);
-		}
+		$sql .= self::_addOrder($labelIds, $orderReverse);
 
 		if($limit >= 0) $sql .= " LIMIT " . $limit;
 		if($offset >= 0) $sql .= " OFFSET " . $offset;	/** @ToDo 作成日時順に並べて高速化 **/
@@ -152,13 +151,8 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 			$sql .= "WHERE " . implode(" AND ", $where);
 		}
 
-		//Order
-		if($orderReverse){
-			$sql .= self::_addOrder("ASC", $labelIds);
-		}else{
-			$sql .= self::_addOrder("DESC", $labelIds);
-		}
-
+		$sql .= self::_addOrder($labelIds, $orderReverse);
+		
 		if($limit > 0) {
 			$sql .= " LIMIT " . $limit;
 			if($offset > 0) {
@@ -250,15 +244,25 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	abstract function getOpenEntryCountByLabelIds($labelids,$now);
 
 	//ソート
-	private function _addOrder(string $sort="ASC", array $labelIds=array()){
-		if(!is_array($labelIds) || !count($labelIds)) return " Order By entry.cdate " . $sort . ", entry.id " . $sort;
+	private function _addOrder(array $labelIds=array(), bool $orderReverse){
+		/** @ToDo マジックナンバーは回避したい */
+		switch((int)$this->sort){
+			case 1:	//1:udate
+				$sort = "udate";
+				break;
+			default:	//0:cdate
+				$sort = "cdate";
+		}
+		$order = ($orderReverse) ? "ASC" : "DESC";
+		
+		if(!is_array($labelIds) || !count($labelIds)) return " Order By entry.".$sort." " . $order . ", entry.id " . $order;
 		$labelId = (int)$labelIds[count($labelIds) - 1];	//末尾のラベルID
-		if(count($labelIds) === 1 && $labelId === 0) return " Order By entry.cdate " . $sort . ", entry.id " . $sort;	//記事毎の表示順が使えるブロックはラベルブロックのみ
+		if(count($labelIds) === 1 && $labelId === 0) return " Order By entry.".$sort." " . $order . ", entry.id " . $order;	//記事毎の表示順が使えるブロックはラベルブロックのみ
 
 		//ブログリンクブロックの場合
-		if(isset($this->blockClass) && strpos($this->blockClass, "Multi") !== false) return " Order By entry.cdate " . $sort . ", entry.id " . $sort;
+		if(is_string($this->blockClass) && $this->blockClass === "MultiLabelBlockComponent") return " Order By entry.".$sort." " . $order . ", entry.id " . $order;
 
-		return " Order By (SELECT display_order FROM EntryLabel WHERE label_id = " . $labelId . " AND entry_id = entry.id), entry.cdate " . $sort . ", entry.id " . $sort;
+		return " Order By (SELECT display_order FROM EntryLabel WHERE label_id = " . $labelId . " AND entry_id = entry.id), entry.".$sort." " . $order . ", entry.id " . $order;
 	}
 
 	/**

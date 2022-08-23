@@ -137,6 +137,9 @@ class Block {
  */
 interface BlockComponent{
 
+	const SORT_CDATE = 0;	//作成日時
+	const SORT_UDATE = 1;	//更新日時
+
 	const ORDER_ASC = 1;//昇順
 	const ORDER_DESC = 2;//降順
 
