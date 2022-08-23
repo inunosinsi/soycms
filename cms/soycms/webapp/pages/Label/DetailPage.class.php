@@ -161,13 +161,9 @@ class DetailPage extends CMSWebPageBase{
 	 * @param labelId
 	 * @return array(pageId => array("soy" => soy:id, "type" => component)
 	 */
-	private function _getBlockComponentsByLabelId($labelId){
+	private function _getBlockComponentsByLabelId(int $labelId){
 		//一旦すべて取得する
-		try{
-			$blocks = SOY2DAOFactory::create("cms.BlockDAO")->get();
-		}catch(Exception $e){
-			$blocks = array();
-		}
+		$blocks = soycms_get_hash_table_dao("block")->get();
 		if(!count($blocks)) return array();
 
 		$list = array();
@@ -233,12 +229,8 @@ class DetailPage extends CMSWebPageBase{
 		if(is_null($blogs)){
 			//必要な情報だけ整理
 			$blogs = array();
-			try{
-				$blogPages = SOY2DAOFactory::create("cms.BlogPageDAO")->get();
-			}catch(Exception $e){
-				$blogPages = array();
-			}
-
+			$blogPages = soycms_get_hash_table_dao("blog_page")->get();
+			
 			if(count($blogPages)){
 				foreach($blogPages as $page){
 					$blogs[$page->getId()] = array("blogLabelId" => $page->getBlogLabelId(), "categoryLabelList" => $page->getCategoryLabelList());
