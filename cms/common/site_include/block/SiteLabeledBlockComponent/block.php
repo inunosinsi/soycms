@@ -82,28 +82,24 @@ class SiteLabeledBlockComponent implements BlockComponent{
 
 		$this->displayCountFrom = max($this->displayCountFrom,1);//0件目は認めない→１件目に変更
 
-		if(is_numeric($this->displayCountTo)){
-			$logic->setLimit($this->getDisplayCountTo() - (int)$this->getDisplayCountFrom() + 1);//n件目～m件目はm-n+1個のエントリ
-		}
-
-		if(is_numeric($this->displayCountFrom)){
-			$logic->setOffset($this->displayCountFrom - 1);//offsetは0スタートなので、n件目=offset:n-1
-		}
-
-		if($this->order == self::ORDER_ASC){
-			$logic->setReverse(true);
-		}
+		if(is_numeric($this->displayCountTo)) $logic->setLimit($this->getDisplayCountTo() - (int)$this->getDisplayCountFrom() + 1);//n件目～m件目はm-n+1個のエントリ
+		if(is_numeric($this->displayCountFrom)) $logic->setOffset($this->displayCountFrom - 1);//offsetは0スタートなので、n件目=offset:n-1
+		if($this->order == self::ORDER_ASC) $logic->setReverse(true);
 
 		if(defined("CMS_PREVIEW_ALL")){
 			$array = $logic->getByLabelId($this->labelId);
 		}else{
 			$array = $logic->getOpenEntryByLabelId($this->labelId);
 		}
-
+		
 		$articlePageUrl = "";
 		$categoryPageUrl = "";
 		if($this->isStickUrl){
-			$blogPage = soycms_get_blog_page_object($this->blogPageId);
+			try{
+				$blogPage = SOY2DAOFactory::create("cms.BlogPageDAO")->getById($this->blogPageId);
+			}catch(Exception $e){
+				$blogPage = new BlogPage();
+			}
 			if(is_numeric($blogPage->getId())){
 				$siteUrl = ($site->getIsDomainRoot()) ? "/" : $site->getUrl();
 
