@@ -52,6 +52,21 @@
 					<h4>高度な設定</h4>
 					<form method="post">
 						<div class="section">
+							<h5>ページとの関連付け
+								<a href="javascript:void(0);" title="ページ編集画面において特定のページが設定されている時のみ表示するようにできます。">
+									<i class="fa fa-question-circle"></i>
+								</a>
+							</h5>
+							<div class="body">
+								<input type="radio" soy:id="editer_show" />
+								<a href="javascript:void(0);" title="どのページでもカスタムフィールドの入力欄を表示します。"><i class="fa fa-question-circle"></i></a><br />
+								<input type="radio" soy:id="editer_page" /><a href="javascript:void(0);" title="特定のページが設定されている時のみカスタムフィールドの入力欄を表示します。"><i class="fa fa-question-circle"></i></a>
+								&nbsp;
+								<!-- soy:id="page_ids" -->ページ選択のセレクトボックスを出力<!-- /soy:id="page_ids" -->
+							</div>
+						</div>
+
+						<div class="section">
 							<h5>初期値<a href="javascript:void(0);" title="初期状態で入力される値です。ラジオボタンとセレクトボックスでは初期状態で選択される項目になります。"><i class="fa fa-question-circle"></i></a></h5>
 							<div class="body">
 								<input type="text" class="text" soy:id="default_value" />

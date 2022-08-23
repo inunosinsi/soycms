@@ -237,10 +237,10 @@ class PageCustomFieldPlugin{
 	function onCallCustomField(){
 		$arg = SOY2PageController::getArguments();
 		$pageId = (isset($arg[0])) ? (int)$arg[0] : 0;
-		return self::buildFormOnLabelPage($pageId);
+		return self::_buildFormOnPageEditPage($pageId);
 	}
 
-	private function buildFormOnLabelPage(int $pageId){
+	private function _buildFormOnPageEditPage(int $pageId){
 		$html = self::_getScripts();
 		SOY2::import("site_include.plugin.PageCustomField.util.PageCustomfieldUtil");
 		$db_arr = ($pageId > 0 && count($this->customFields)) ? PageCustomfieldUtil::getCustomFields($pageId, $this->customFields) : array();
@@ -262,7 +262,10 @@ class PageCustomFieldPlugin{
 
 		if(count($this->customFields)){
 			foreach($this->customFields as $fieldId => $fieldObj){
-				//if($fieldObj->getType() == "entry") $isEntryField = true;
+				//フォームを表示するか？
+				$selectedPageIds = $fieldObj->getPageIds();
+				if(count($selectedPageIds) && is_bool(array_search($pageId, $selectedPageIds))) continue;
+				
 				if(!$isListField && $fieldObj->getType() == "list") $isListField = true;
 				if(!$isDlListField && $fieldObj->getType() == "dllist") $isDlListField = true;
 				$v = (isset($db_values[$fieldId])) ? $db_values[$fieldId] : null;

@@ -6,7 +6,7 @@ class PageCustomFieldFormPage extends WebPage{
 
 	const SHOW_INPUT_YES   = 1;
 	const SHOW_INPUT_NO    = 0;
-	const SHOW_INPUT_LABEL = 2;
+	const SHOW_INPUT_PAGE = 2;
 
 
 	function __construct(){}
@@ -29,15 +29,18 @@ class PageCustomFieldFormPage extends WebPage{
 			if(isset($_POST["config"]["showInput"])){
 				if($_POST["config"]["showInput"] == self::SHOW_INPUT_YES){
 					$_POST["config"]["showInput"] = true;
-					//常に表示を選んだときはラベル設定をクリアする
-					$_POST["config"]["labelId"] = "";
-				}elseif($_POST["config"]["showInput"] == self::SHOW_INPUT_LABEL){
+					//常に表示を選んだときはページ設定をクリアする
+					$_POST["config"]["pageId"] = "";
+					$_POST["config"]["pageIds"] = array();
+				}elseif($_POST["config"]["showInput"] == self::SHOW_INPUT_PAGE){
 					$_POST["config"]["showInput"] = true;
 				}elseif($_POST["config"]["showInput"] == self::SHOW_INPUT_NO){
 					$_POST["config"]["showInput"] = false;
+					//常に表示を選んだときはページ設定をクリアする
+					$_POST["config"]["pageId"] = "";
+					$_POST["config"]["pageIds"] = array();
 				}
 			}
-
 			//pairの値は配列からシリアライズした文字列にしてExtraValuesに格納する
 			if(isset($_POST["pair"]) && is_array($_POST["pair"]) && count($_POST["pair"])){
 				$pairConf = array();
@@ -71,13 +74,11 @@ class PageCustomFieldFormPage extends WebPage{
 		DisplayPlugin::toggle("field_table", count($this->pluginObj->customFields));
 		DisplayPlugin::toggle("no_field", !count($this->pluginObj->customFields));
 		DisplayPlugin::toggle("add_field", (count($this->pluginObj->customFields) < 1));
-
-		//ラベルの取得
-		//$labels = SOY2DAOFactory::create("cms.LabelDAO")->get();
-
+		
 		SOY2::import("site_include.plugin.PageCustomField.component.PageCustomFieldListComponent");
 		$this->createAdd("field_list","PageCustomFieldListComponent",array(
 			"list"=>$this->pluginObj->customFields,
+			"pages" => soycms_get_hash_table_dao("page")->get()
 		));
 
 		//sample code

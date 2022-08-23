@@ -33,6 +33,7 @@ class PageCustomField{
 
 	//ラベルIDとの関連付け
 	private $pageId;
+	private $pageIds;
 
 	//どの属性値に出力するかの設定
 	private $output;
@@ -99,6 +100,36 @@ class PageCustomField{
 	function setPageId($pageId) {
 		$this->pageId = $pageId;
 	}
+	/** 関連するラベル複数 **/
+	function getPageIds(){
+		if(is_string($this->pageIds) && strlen($this->pageIds)){
+			return soy2_unserialize($this->pageIds);
+		}else{
+			$arr = array();
+			if(is_numeric($this->pageId)) $arr[] = $this->pageId;
+			return $arr;
+		}
+	}
+	function setPageIds($pageIds){
+		if(is_array($pageIds)) {
+			if(count($pageIds) > 1){
+				//重複した値を削除
+				$pageIds = array_unique($pageIds);
+				if(count($pageIds)){
+					//数字以外の値を削除
+					$tmps = array();
+					foreach($pageIds as $pageId){
+						if(!is_numeric($pageId)) continue;
+						$tmps[] = $pageId;
+					}
+					$pageIds = $tmps;
+				}
+			}
+			$pageIds = soy2_serialize($pageIds);
+		}
+		$this->pageIds = $pageIds;
+	}
+	/** /関連するラベル複数 **/
 	function getOutput() {
 		return $this->output;
 	}

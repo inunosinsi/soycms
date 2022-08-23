@@ -2,6 +2,8 @@
 
 class PageCustomFieldListComponent extends HTMLList {
 
+	private $pages = array();
+
 	function populateItem($entity, $i){
 		static $i = 0;
 		$i++;
@@ -88,11 +90,29 @@ class PageCustomFieldListComponent extends HTMLList {
 			"link" => "javascript:void(0)",
 			"text" => "高度な設定",
 			"onclick" => '$(\'#field_config_'.$i.'\').toggle();',
-			"class" => (!$entity->getShowInput() || $entity->getDefaultValue() || $entity->getEmptyValue() || $entity->getDescription() || $entity->getFixedLabelId() || strlen($entity->getOption())) ? "btn btn-warning" : "btn btn-info"
+			"class" => (!$entity->getShowInput() || count($entity->getPageIds()) || $entity->getDefaultValue() || $entity->getEmptyValue() || $entity->getDescription() || $entity->getFixedLabelId() || strlen($entity->getOption())) ? "btn btn-warning" : "btn btn-info"
 		));
 
 		$this->addModel("field_config", array(
 			"id" => "field_config_" . $i
+		));
+
+		$this->addCheckBox("editer_show", array(
+			"name" => "config[showInput]",
+			"value" => PageCustomFieldFormPage::SHOW_INPUT_YES,
+			"selected" => $entity->getShowInput() && (is_null($entity->getPageId()) || strlen($entity->getPageId())==0),
+			"label" => "常に表示",
+		));
+		$this->addCheckBox("editer_page", array(
+			"name" => "config[showInput]",
+			"value" => PageCustomFieldFormPage::SHOW_INPUT_PAGE,
+			"selected" => (is_string($entity->getPageId()) && strlen($entity->getPageId()) || count($entity->getPageIds())),
+			"label" => "ページと連動",
+		));
+
+		//複数ページの設定
+		$this->addLabel("page_ids", array(
+			"html" => (is_array($entity->getPageIds()) && count($this->pages)) ? self::_buildPageSelectBoxes($entity->getPageIds()) : "<select><option>----</option></select>"
 		));
 
 		$this->addInput("default_value", array(
@@ -187,5 +207,38 @@ class PageCustomFieldListComponent extends HTMLList {
 			"value" => $entity->getId(),
 			"id" => "update_advance_submit_".$i
 		));
+	}
+
+	private function _buildPageSelectBoxes(array $selectedPageIds){
+		$html = array();
+		if(count($selectedPageIds)){
+			foreach($selectedPageIds as $selectedPageId){
+				$html[] = self::_buildPageSelectBox((int)$selectedPageId);
+			}
+		}
+		$html[] = self::_buildPageSelectBox(0);
+
+		return implode("\n", $html);
+	}
+
+	private function _buildPageSelectBox(int $selectedPageId){
+		$html[] = "<select name=\"config[pageIds][]\">";
+		$html[] = "<option value=\"\">----</option>";
+		foreach($this->pages as $page){
+			if($selectedPageId > 0 && $page->getId() == $selectedPageId){
+				$html[] = "<option value=\"" . $page->getId() . "\" selected=\"selected\">" . $page->getTitle() . "</option>";
+			}else{
+				$html[] = "<option value=\"" . $page->getId() . "\">" . $page->getTitle() . "</option>";
+			}
+		}
+		$html[] = "</select>";
+		return implode("\n", $html);
+	}
+
+	function getPages() {
+		return $this->pages;
+	}
+	function setPages($pages) {
+		$this->pages = $pages;
 	}
 }
