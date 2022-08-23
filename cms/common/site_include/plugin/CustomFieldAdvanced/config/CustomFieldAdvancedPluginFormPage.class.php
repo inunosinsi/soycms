@@ -97,13 +97,10 @@ class CustomFieldAdvancedPluginFormPage extends WebPage{
 		//カスタムフィールドから設定をインポート
 		$this->addForm("import_form");
 
-		//ラベルの取得
-		$labels = SOY2DAOFactory::create("cms.LabelDAO")->get();
-
 		SOY2::import("site_include.plugin.CustomFieldAdvanced.component.CustomFieldListComponent");
 		$this->createAdd("field_list","CustomFieldListComponent",array(
 			"list"=>$this->pluginObj->customFields,
-			"labels" => $labels
+			"labels" => soycms_get_hash_table_dao("label")->get()
 		));
 
 		/* カスタムフィールド全体の設定変更用 */

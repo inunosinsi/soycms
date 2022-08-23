@@ -95,6 +95,13 @@ class CustomFieldListComponent extends HTMLList {
 		$this->addModel("field_config", array(
 			"id" => "field_config_" . $entity->getId()
 		));
+
+		$this->addCheckBox("is_search_item", array(
+			"name" => "config[isSearchItem]",
+			"value" => 1,
+			"selected" => ($entity->getIsSearchItem()),
+			"label" => "記事検索の項目にする"
+		));
 		
 		//表示の切り替え：表示/非表示/ラベルと連動
 		$this->addCheckBox("editer_show", array(
@@ -114,12 +121,6 @@ class CustomFieldListComponent extends HTMLList {
 			"value" => CustomFieldPluginFormPage::SHOW_INPUT_LABEL,
 			"selected" => (is_string($entity->getLabelId()) && strlen($entity->getLabelId()) || count($entity->getLabelIds())),
 			"label" => "ラベルと連動",
-		));
-		$this->addCheckBox("is_search_item", array(
-			"name" => "config[isSearchItem]",
-			"value" => 1,
-			"selected" => ($entity->getIsSearchItem()),
-			"label" => "記事検索の項目にする"
 		));
 		$this->addSelect("labels", array(
 			"options" => $this->labels,
