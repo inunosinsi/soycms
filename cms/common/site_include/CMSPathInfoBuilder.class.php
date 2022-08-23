@@ -7,7 +7,19 @@ class CMSPathInfoBuilder extends SOY2_PathInfoPathBuilder{
 
 	function __construct(){
 		$pathInfo = (isset($_SERVER['PATH_INFO'])) ? $_SERVER['PATH_INFO'] : "";
+		if(!strlen($pathInfo) && isset($_SERVER["REQUEST_URI"])) {	//PATH_INFOがない場合
+			$pathInfo = $_SERVER["REQUEST_URI"];
+			
+			//GETパラメータがあれば除く
+			$res = strpos($pathInfo, "?");
+			if(is_numeric($res)) $pathInfo = substr($pathInfo, 0, $res);
 
+			//サイトIDを除く
+			$siteId = trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/");
+			$res = strpos($pathInfo, "/".$siteId."/");
+			if(is_numeric($res) && $res === 0) $pathInfo = substr($pathInfo, strlen("/".$siteId."/"));
+		}
+		
 		//先頭の「/」と末尾の「/」は取り除く
 		$pathInfo = preg_replace('/^\/|\/$/', "", $pathInfo);
 
