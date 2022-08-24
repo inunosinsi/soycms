@@ -176,7 +176,7 @@ class MultiLabelBlockComponent implements BlockComponent{
 	public function getInfoPage(){
 		try{
 			$res = count($this->mapping) . CMSMessageManager::get("SOYCMS_NUMBER_OF_SET_LABELS");
-			$res .= (strlen($this->displayCountFrom) OR strlen($this->displayCountTo)) ? " ". $this->displayCountFrom."-".$this->displayCountTo : "" ;
+			$res .= (is_numeric($this->displayCountFrom) || (is_numeric($this->displayCountTo))) ? " ". $this->displayCountFrom."-".$this->displayCountTo : "" ;
 		}catch(Exception $e){
 			$res = CMSMessageManager::get("SOYCMS_NO_SETTING");
 		}
