@@ -13,7 +13,7 @@ class TableOfContentsPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.6"
+			"version"=>"0.7"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
@@ -35,50 +35,56 @@ class TableOfContentsPlugin{
 		$html = &$arg["html"];
 		if(!isset($_SERVER["SOYCMS_PAGE_ID"])) return $html;
 
+		$blog = soycms_get_blog_page_object($_SERVER["SOYCMS_PAGE_ID"]);
+		if(!is_numeric($blog->getId()) || is_bool(strpos($_SERVER["REQUEST_URI"], "/" . $blog->getEntryPageUri() . "/"))) return $html;
+
+		//ブログのエイリアスを取得
+		$alias = trim(substr($_SERVER["PATH_INFO"], strrpos($_SERVER["PATH_INFO"], "/")), "/");
+		$sql = "SELECT attr.entry_value FROM EntryAttribute attr ".
+				"INNER JOIN Entry ent ".
+				"ON attr.entry_id = ent.id ".
+				"WHERE ent.alias = :alias ".
+				"AND attr.entry_field_id = :fieldId";
+		$dao = new SOY2DAO();
 		try{
-			$blog = SOY2DAOFactory::create("cms.BlogPageDAO")->getById($_SERVER["SOYCMS_PAGE_ID"]);
+			$res = $dao->executeQuery($sql, array(":alias" => $alias, ":fieldId" => self::PLUGIN_ID));
 		}catch(Exception $e){
-			$blog = new BlogPage();
+			$res = array();
 		}
+		if(!count($res) || !isset($res[0]["entry_value"]) && !is_string($res[0]["entry_value"])) return $html;
+		
+		$arr = soy2_unserialize($res[0]["entry_value"]);
+		if(!is_array($arr) || !count($arr)) return $html;
+		
+		$logic = SOY2Logic::createInstance("site_include.plugin.table_of_contents.logic.CreateHeadingLogic");
+		$heading = $logic->createHeading($arr);
+		
+		$list = $logic->getHeadingList();
+		if(count($list)){
+			foreach($list as $anchor => $title){
+				$title = self::_addEscapeChar(htmlspecialchars(strip_tags($title), ENT_QUOTES, "UTF-8"));
+				preg_match('/<h[0-9].*?>.*' . $title . '.*<\/h[0-9]>/', $html, $tmp);
+				if(!isset($tmp[0]) || !strlen($tmp[0])) continue;
 
-		$heading = "";
-		if(!is_null($blog->getId()) && strpos($_SERVER["REQUEST_URI"], "/" . $blog->getEntryPageUri() . "/") !== false) {
-			//ブログのエイリアスを取得
-			$alias = trim(substr($_SERVER["PATH_INFO"], strrpos($_SERVER["PATH_INFO"], "/")), "/");
-			$sql = "SELECT attr.entry_value FROM EntryAttribute attr ".
-					"INNER JOIN Entry ent ".
-					"ON attr.entry_id = ent.id ".
-					"WHERE ent.alias = :alias ".
-					"AND attr.entry_field_id = :fieldId";
-			$dao = new SOY2DAO();
-			try{
-				$res = $dao->executeQuery($sql, array(":alias" => $alias, ":fieldId" => self::PLUGIN_ID));
-			}catch(Exception $e){
-				$res = array();
-			}
-
-			if(isset($res[0]["entry_value"]) && is_string($res[0]["entry_value"])) {
-				$array = soy2_unserialize($res[0]["entry_value"]);
-				$logic = SOY2Logic::createInstance("site_include.plugin.table_of_contents.logic.CreateHeadingLogic");
-				$heading = $logic->createHeading($array);
-
-				$list = $logic->getHeadingList();
-				if(count($list)){
-					foreach($list as $href => $title){
-						$title = self::addEscapeChar(htmlspecialchars($title, ENT_QUOTES, "UTF-8"));
-						preg_match('/<h[0-9].*?>' . $title . '<\/h[0-9]>/', $html, $tmp);
-						if(!isset($tmp[0]) || !strlen($tmp[0])) continue;
-						$hTag = str_replace(">" . $title, " id=\"" . $href . "\">" . $title, $tmp[0]);
-						$html = str_replace($tmp[0], $hTag, $html);
-					}
-				}
+				$tag = self::_convertHeadingTag($anchor, $tmp[0]);
+				$html = str_replace($tmp[0], $tag, $html);
 			}
 		}
-
+		
 		return str_replace("##HEADING##", $heading, $html);
 	}
 
-	private function addEscapeChar($str){
+	/**
+	 * @param string, string	0引数にはheading\d-\dの形式 1引数は<hn>テキスト</hn>の文字列
+	 * @return string
+	 */
+	private function _convertHeadingTag(string $anc, string $tag){
+		preg_match('/<h[0-9].*?>/', $tag, $tmp);
+		$res = str_replace(">", " id=\"" . $anc . "\">", $tmp[0]);
+		return str_replace($tmp[0], $res, $tag);
+	}
+
+	private function _addEscapeChar($str){
 		foreach(array("(", ")", "?", "/") as $c){
 			$str = str_replace($c, "\\" . $c, $str);
 		}
@@ -110,41 +116,15 @@ class TableOfContentsPlugin{
 		$content = $entry->getContent() . $entry->getMore();
 
 		//データの保存用
-		$array = array();
+		$arr = array();
 
 		preg_match('/<h([0-9]).*?>/', $content, $tmp);
-		if(isset($tmp[1]) && is_numeric($tmp[1])){
-			$array = self::createTitleTree($content, (int)$tmp[1]);
-		}
+		if(isset($tmp[1]) && is_numeric($tmp[1])) $arr = self::createTitleTree($content, (int)$tmp[1]);
 
-		$attrDao = SOY2DAOFactory::create("cms.EntryAttributeDAO");
-		if(count($array)){
-			try{
-				$attr = $attrDao->get($entry->getId(), self::PLUGIN_ID);
-			}catch(Exception $e){
-				$attr = new EntryAttribute();
-				$attr->setEntryId($entry->getId());
-				$attr->setFieldId(self::PLUGIN_ID);
-			}
-
-			$attr->setValue(soy2_serialize($array));
-
-			try{
-				$attrDao->insert($attr);
-			}catch(Exception $e){
-				try{
-					$attrDao->update($attr);
-				}catch(Exception $e){
-					//var_dump($e);
-				}
-			}
-		}else{
-			try{
-				$attrDao->delete($entry->getId(), self::PLUGIN_ID);
-			}catch(Exception $e){
-				//var_dump($e);
-			}
-		}
+		$v = (count($arr)) ? soy2_serialize($arr) : "";
+		$attr = soycms_get_entry_attribute_object($entry->getId(), self::PLUGIN_ID);
+		$attr->setValue($v);
+		soycms_save_entry_attribute_object($attr);
 	}
 
 	/**
@@ -152,7 +132,7 @@ class TableOfContentsPlugin{
 	 */
 	private function createTitleTree($content, $h = 1){
 		preg_match_all('/<h' . $h . '.*?>.*?<\/h' . $h . '.*?>/', $content, $res);
-		$array = array();
+		$arr = array();
 		if(isset($res[0]) && count($res[0])){
 			foreach($res[0] as $r){
 				$values = array();
@@ -188,12 +168,12 @@ class TableOfContentsPlugin{
 							$t = self::createTitleTree($cont, $h + 1);
 							if(isset($t) && is_array($t) && count($t)) $values["children"] = $t;
 						}
-						$array[] = $values;
+						$arr[] = $values;
 					}
 				}
 			}
 		}
-		return $array;
+		return $arr;
 	}
 
 	/**
@@ -227,10 +207,7 @@ class TableOfContentsPlugin{
 
 	public static function register(){
 		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
-		if(is_null($obj)){
-			$obj = new TableOfContentsPlugin();
-		}
-
+		if(is_null($obj)) $obj = new TableOfContentsPlugin();
 		CMSPlugin::addPlugin(self::PLUGIN_ID,array($obj,"init"));
 	}
 }
