@@ -246,10 +246,10 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	//ソート
 	private function _addOrder(array $labelIds=array(), bool $orderReverse){
 		switch((int)$this->sort){
-			case BlockComponent::SORT_UDATE:	//1:udate
+			case 1:	//1:udate
 				$sort = "udate";
 				break;
-			case BlockComponent::SORT_CDATE:	//0:cdate
+			case 0:	//0:cdate
 			default:	//0:cdate
 				$sort = "cdate";
 		}
