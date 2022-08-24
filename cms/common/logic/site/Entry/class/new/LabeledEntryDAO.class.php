@@ -43,7 +43,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 		$sql .= "WHERE entry.id IN (SELECT entry_id FROM EntryLabel WHERE label_id IN (" .implode(",", $labelIds) . ") GROUP BY entry_id HAVING count(*) = " . count($labelIds) . ") ";
 
 		$sql .= self::_addOrder($labelIds, $orderReverse);
-
+		
 		if($limit >= 0) $sql .= " LIMIT " . $limit;
 		if($offset >= 0) $sql .= " OFFSET " . $offset;	/** @ToDo 作成日時順に並べて高速化 **/
 		
@@ -245,11 +245,11 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 
 	//ソート
 	private function _addOrder(array $labelIds=array(), bool $orderReverse){
-		/** @ToDo マジックナンバーは回避したい */
 		switch((int)$this->sort){
-			case 1:	//1:udate
+			case BlockComponent::SORT_UDATE:	//1:udate
 				$sort = "udate";
 				break;
+			case BlockComponent::SORT_CDATE:	//0:cdate
 			default:	//0:cdate
 				$sort = "cdate";
 		}

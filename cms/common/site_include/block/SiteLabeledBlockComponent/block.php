@@ -14,6 +14,7 @@ class SiteLabeledBlockComponent implements BlockComponent{
 	private $isStickUrl = false;
 	private $blogPageId;
 	private $order = self::ORDER_DESC;//記事の並び順
+	private $sort = self::SORT_CDATE;
 	private $isCallEventFunc = self::ON;	//公開側でHTMLの表示の際にカスタムフィールドの拡張ポイントを読み込むか？
 
 	/**
@@ -84,6 +85,7 @@ class SiteLabeledBlockComponent implements BlockComponent{
 
 		if(is_numeric($this->displayCountTo)) $logic->setLimit($this->getDisplayCountTo() - (int)$this->getDisplayCountFrom() + 1);//n件目～m件目はm-n+1個のエントリ
 		if(is_numeric($this->displayCountFrom)) $logic->setOffset($this->displayCountFrom - 1);//offsetは0スタートなので、n件目=offset:n-1
+		$logic->setSort((int)$this->sort);
 		if($this->order == self::ORDER_ASC) $logic->setReverse(true);
 
 		if(defined("CMS_PREVIEW_ALL")){
@@ -95,6 +97,7 @@ class SiteLabeledBlockComponent implements BlockComponent{
 		$articlePageUrl = "";
 		$categoryPageUrl = "";
 		if($this->isStickUrl){
+			//ここで必ずSOY2DAOFactory::create("cms.BlogPageDAO")経由でBlogPageオブジェクトを取得する必要がある
 			try{
 				$blogPage = SOY2DAOFactory::create("cms.BlogPageDAO")->getById($this->blogPageId);
 			}catch(Exception $e){
@@ -221,6 +224,13 @@ class SiteLabeledBlockComponent implements BlockComponent{
 		$this->siteId = $siteId;
 	}
 
+	public function getSort(){
+		return $this->sort;
+	}
+	public function setSort($sort){
+		$this->sort = $sort;
+	}
+
 	public function getOrder(){
 		return $this->order;
 	}
@@ -266,6 +276,15 @@ class SiteLabeledBlockComponent_FormPage extends HTMLPage{
 			"name"=>"object[displayCountTo]"
 		));
 
+		$this->addSelect("display_sort", array(
+			"name"	  => "object[sort]",
+			"options"	 => array(
+				BlockComponent::SORT_CDATE => "作成日",
+				BlockComponent::SORT_UDATE => "更新日"
+			),
+			"selected"  => $this->entity->getSort(),
+			"indexOrder" => true
+		));
 		$this->addCheckBox("display_order_asc", array(
 			"type"	  => "radio",
 			"name"	  => "object[order]",

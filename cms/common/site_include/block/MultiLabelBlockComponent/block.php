@@ -14,8 +14,8 @@ class MultiLabelBlockComponent implements BlockComponent{
 
 	private $displayCountFrom;
 	private $displayCountTo;
-	private $order = self::ORDER_DESC;//記事の並び順
 	private $sort = self::SORT_CDATE;	//記事の並び順
+	private $order = self::ORDER_DESC;//記事の並び順
 	private $isCallEventFunc = self::ON;	//公開側でHTMLの表示の際にカスタムフィールドの拡張ポイントを読み込むか？
 
 	/**
@@ -103,7 +103,7 @@ class MultiLabelBlockComponent implements BlockComponent{
 
 			$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
 			$logic->setBlockClass(get_class($this));
-			$logic->setSort($this->sort);
+			$logic->setSort((int)$this->sort);
 
 			$this->displayCountFrom = max($this->displayCountFrom, 1);//0件目は認めない→１件目に変更
 			if(!is_numeric($this->displayCountTo)) $this->displayCountTo = 10000;	//仮
@@ -236,17 +236,18 @@ class MultiLabelBlockComponent implements BlockComponent{
 		$this->oldSiteId = $oldSiteId;
 	}
 
-	public function getOrder(){
-		return $this->order;
-	}
-	public function setOrder($order){
-		$this->order = $order;
-	}
 	public function getSort(){
 		return $this->sort;
 	}
 	public function setSort($sort){
 		$this->sort = $sort;
+	}
+
+	public function getOrder(){
+		return $this->order;
+	}
+	public function setOrder($order){
+		$this->order = $order;
 	}
 
 	public function getIsCallEventFunc(){
@@ -297,6 +298,15 @@ class MultiLabelBlockComponent_FormPage extends HTMLPage{
 			"name"=>"object[displayCountTo]"
 		));
 
+		$this->addSelect("display_sort", array(
+			"name"	  => "object[sort]",
+			"options"	 => array(
+				BlockComponent::SORT_CDATE => "作成日",
+				BlockComponent::SORT_UDATE => "更新日"
+			),
+			"selected"  => $this->entity->getSort(),
+			"indexOrder" => true
+		));
 		$this->addCheckBox("display_order_asc", array(
 			"type"	  => "radio",
 			"name"	  => "object[order]",

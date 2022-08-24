@@ -249,6 +249,7 @@ class EntryLogic extends SOY2LogicBase{
 	 */
 	function getByLabelIds(array $labelIds, bool $flag=true, int $start=Entry::PERIOD_START, int $end=Entry::PERIOD_END){
 		$dao = self::labeledEntryDao();
+		$dao->setSort((int)$this->sort);
 
 		$array = $dao->getByLabelIdsOnlyId($labelIds, $this->reverse, $this->getLimit(), $this->getOffset());
 		$this->totalCount = $dao->countByLabelIdsOnlyId($labelIds);
@@ -335,6 +336,7 @@ class EntryLogic extends SOY2LogicBase{
 	 */
 	function getOpenEntryByLabelId(int $labelId){
 		$dao = self::labeledEntryDao();
+		$dao->setSort((int)$this->sort);
 		$dao->setLimit($this->getLimit());
 		$dao->setOffset($this->getOffset());
 		//仕様変更により、記事取得関数実行時に念の為にlimitとoffsetを渡しておく
@@ -458,13 +460,10 @@ class EntryLogic extends SOY2LogicBase{
 		$dao->setLimit(1);
 
 		try{
-			$next = $dao->getNextOpenEntry($blogLabelId,$entry,SOYCMS_NOW);
-
+			return $dao->getNextOpenEntry($blogLabelId,$entry,SOYCMS_NOW);
 		}catch(Exception $e){
 			return new LabeledEntry();
 		}
-
-		return $next;
 	}
 
 	/**
@@ -475,12 +474,10 @@ class EntryLogic extends SOY2LogicBase{
 		$dao->setLimit(1);
 
 		try{
-			$prev = $dao->getPrevOpenEntry($blogLabelId,$entry,SOYCMS_NOW);
+			return $dao->getPrevOpenEntry($blogLabelId,$entry,SOYCMS_NOW);
 		}catch(Exception $e){
 			return new LabeledEntry();
 		}
-
-		return $prev;
 	}
 
 	/**

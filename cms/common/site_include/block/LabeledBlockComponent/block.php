@@ -14,6 +14,7 @@ class LabeledBlockComponent implements BlockComponent{
 	private $pagingParameter = "";
 	private $isStickUrl = false;
 	private $blogPageId;
+	private $sort = self::SORT_CDATE;	//記事の並び順
 	private $order = self::ORDER_DESC;//記事の並び順
 	private $isCallEventFunc = self::ON;	//公開側でHTMLの表示の際にカスタムフィールドの拡張ポイントを読み込むか？
 
@@ -38,13 +39,8 @@ class LabeledBlockComponent implements BlockComponent{
 
 		$this->displayCountFrom = max($this->displayCountFrom,1);//0件目は認めない→１件目に変更
 
-		if(is_numeric($this->displayCountTo)){
-			$limit = $this->getDisplayCountTo()- (int)$this->getDisplayCountFrom()+1;//n件目～m件目はm-n+1個のエントリ
-		}
-
-		if(is_numeric($this->displayCountFrom)){
-			$offset = $this->displayCountFrom-1;//offsetは0スタートなので、n件目=offset:n-1
-		}
+		if(is_numeric($this->displayCountTo)) $limit = $this->getDisplayCountTo()- (int)$this->getDisplayCountFrom()+1;//n件目～m件目はm-n+1個のエントリ
+		if(is_numeric($this->displayCountFrom)) $offset = $this->displayCountFrom-1;//offsetは0スタートなので、n件目=offset:n-1
 
 		$pageNumber = 1;
 		//2ページ目以降の場合
@@ -57,9 +53,8 @@ class LabeledBlockComponent implements BlockComponent{
 		}
 
 
-		if($this->order == self::ORDER_ASC){
-			$logic->setReverse(true);
-		}
+		$logic->setSort((int)$this->sort);
+		if($this->order == self::ORDER_ASC) $logic->setReverse(true);
 
 		//制限なしで数を数える：ページ分けする場合のみ必要
 		$total = 0;
@@ -220,6 +215,13 @@ class LabeledBlockComponent implements BlockComponent{
 		$this->isStickUrl = $isStickUrl;
 	}
 
+	public function getSort(){
+		return $this->sort;
+	}
+	public function setSort($sort){
+		$this->sort = $sort;
+	}
+
 	public function getOrder(){
 		return $this->order;
 	}
@@ -279,6 +281,15 @@ class LabeledBlockComponent_FormPage extends HTMLPage{
 			"value" => $this->entity->getPagingParameter(),
 		));
 
+		$this->addSelect("display_sort", array(
+			"name"	  => "object[sort]",
+			"options"	 => array(
+				BlockComponent::SORT_CDATE => "作成日",
+				BlockComponent::SORT_UDATE => "更新日"
+			),
+			"selected"  => $this->entity->getSort(),
+			"indexOrder" => true
+		));
 		$this->addCheckBox("display_order_asc", array(
 			"type"	  => "radio",
 			"name"	  => "object[order]",
