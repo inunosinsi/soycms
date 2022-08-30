@@ -431,7 +431,7 @@ class SOYShop_User {
 		$this->jobZipCode = $jobZipCode;
 	}
 	function getJobArea() {
-		return $this->jobArea;
+		return (is_numeric($this->jobArea)) ? (int)$this->jobArea : -1;
 	}
 	function setJobArea($jobArea) {
 		if(!is_numeric($jobArea))$jobArea = SOYShop_Area::getArea($jobArea);
