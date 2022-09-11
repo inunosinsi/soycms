@@ -168,9 +168,23 @@ class ExportPage extends WebPage{
 			//CSV(TSV)に変換
 			$lines = array();
 			foreach($shopUsers as $shopUser){
+				// 削除したユーザを除く
+				if(!isset($_POST["format"]["isDeleteUser"])){
+					if((int)$shopUser->getIsDisabled() === SOYShop_User::USER_IS_DISABLED) continue;
+
+					preg_match('/_delete_[\d]*?/', (string)$shopUser->getMailAddress(), $tmp);
+					if(isset($tmp[0])) continue;
+				}
+
+				// ダミーのメールアドレスの顧客を除く
+				if(!isset($_POST["format"]["isDummyUser"])){
+					preg_match('/@' . DUMMY_MAIL_ADDRESS_DOMAIN . '/', (string)$shopUser->getMailAddress(), $tmp);
+					if(isset($tmp[0])) continue;
+				}
+				
 				$lines[] = $logic->export($shopUser);
 			}
-
+			
 			//ファイル出力
 			$this->outputFile($lines, $charset, $displayLabel);
 

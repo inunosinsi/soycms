@@ -86,10 +86,11 @@ class ExImportLogicBase extends SOY2LogicBase{
      * @param boolean 見出し行かどうか
      * @return String
      */
-    function implodeToLine($array, $isHeader = false){
+    function implodeToLine(array $array, bool $isHeader=false){
         $quote = $this->getQuote();
         $separator = $this->getSeparator();
         foreach($array as $key => $value){
+            if(!is_string($value)) $value = "";
             if(
               $quote
               || ( strpos($value, "\"") !== false )

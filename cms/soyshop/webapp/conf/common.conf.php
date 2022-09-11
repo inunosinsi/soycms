@@ -11,7 +11,7 @@ if(file_exists(dirname(__FILE__) . "/session.conf.php")) include_once("session.c
 define("SOYSHOP_ROOT", str_replace("\\", "/", dirname(dirname(dirname(__FILE__)))) . "/");
 define("SOYSHOP_WEBAPP", SOYSHOP_ROOT . "webapp/");
 define("SOY2_NOW", time());	//現在時刻
-define("SOYSHOP_BUILD_TIME",1434600689);//ビルド日時：ビルド時に置換される
+define("SOYSHOP_BUILD_TIME",1662928745);//ビルド日時：ビルド時に置換される
 define("SOYSHOP_VERSION", trim(file_get_contents(SOYSHOP_ROOT . "VERSION")));
 if(preg_match('/^\d/', SOYSHOP_VERSION)){	//本番環境
 	define("DEBUG_MODE", false);
