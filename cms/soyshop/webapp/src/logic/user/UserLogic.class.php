@@ -22,9 +22,9 @@ class UserLogic extends SOY2LogicBase{
 				$i++;
 			}
 
-			$accountId = $user->getAccountId();
+			$accountId = (string)$user->getAccountId();
 			$deleteAccountId = null;
-			if(!is_null($accountId)){
+			if(strlen($accountId)){
 				$i = 0;
 				$res = false;
 				for(;;){
@@ -38,21 +38,35 @@ class UserLogic extends SOY2LogicBase{
 				};
 			}
 
+			$userCode = (string)$user->getUserCode();
+			$deleteUserCode = null;
+			if(strlen($userCode)){
+				$i = 0;
+				$res = false;
+				for(;;){
+					$deleteUserCode = $userCode . "_delete_" . $i;
+					try{
+						$userDao->getByUserCode($deleteUserCode);
+					}catch(Exception $e){
+						break;
+					}
+					$i++;
+				};
+			}
+
     		$user->setName("(削除)" . $user->getName());
     		$user->setMailAddress($deleteAddress);
-			$user->setUserCode(null);
+			$user->setUserCode($deleteUserCode);
     		$user->setAccountId($deleteAccountId);
     		$user->setIsDisabled(SOYShop_User::USER_IS_DISABLED);
 
     		try{
     			$userDao->update($user);
-    			$res = true;
+    			//$res = true;
     		}catch(Exception $e){
-				$res = false;
+				return false;
     		}
     	}
-
-		if(!$res) return false;
 
 		try{
 			SOY2DAOFactory::create("user.SOYShop_AutoLoginSessionDAO")->deleteByUserId($userId);

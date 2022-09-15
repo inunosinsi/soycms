@@ -130,6 +130,13 @@ class ImportPage extends WebPage{
 			}
 
     		$deleted = (isset($obj["id"]) && $obj["id"] == "delete");
+			if(!$deleted){
+				preg_match('/^([\d]*)_delete?/', (string)$obj["id"], $tmp);
+				if(isset($tmp[1]) && is_numeric($tmp[1])){	// 顧客IDで強制削除
+					self::_logic()->remove($tmp[1]);
+					continue;
+				}
+			}
 
 			//メールアドレスが無ければcontinue;
 			if(strlen($obj["mailAddress"]) === 0) continue;
@@ -191,7 +198,7 @@ class ImportPage extends WebPage{
 			$user = soyshop_get_user_object_by_mailaddress(trim($obj["mailAddress"]));
 			if((int)$user->getId() > 0) $obj["id"] = (int)$user->getId();
 		}catch(Exception $e){
-
+			//
 		}
 		return SOY2::cast("SOYShop_User", (object)$obj);
 	}
@@ -258,15 +265,25 @@ class ImportPage extends WebPage{
 	 * @param Array $attributes
 	 */
 	function delete(SOYShop_User $user, array $attributes=array()){
+		$user = soyshop_get_user_object_by_mailaddress($user->getMailAddress());
+		if(!is_numeric($user->getId())){
+			try{
+				$user = $this->dao->getByAccountId($user->getAccountId());
+			}catch(Exception $e){
+				try{
+					$user = $this->dao->getByUserCode($user->getUserCode());
+				}catch(Exception $e){
+					//
+				}
+			}
+		}
+		if(is_numeric($user->getId())) self::_logic()->remove($uesr->getId());
 
 		try{
-			$user = soyshop_get_user_object_by_mailaddress($user->getMailAddress());
-			$this->dao->delete($user);
-
 			//ユーザーカスタムフィールドも削除する
 			$this->attributeDAO->deleteByUserId($user->getId());
 		}catch(Exception $e){
-
+			//
 		}
 	}
 
@@ -292,5 +309,11 @@ class ImportPage extends WebPage{
 			//
 			return null;
 		}
+	}
+
+	private function _logic(){
+		static $l;
+		if(is_null($l)) $l = SOY2Logic::createInstance("logic.user.UserLogic");
+		return $l;
 	}
 }

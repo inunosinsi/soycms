@@ -11,7 +11,9 @@ if(file_exists(dirname(__FILE__) . "/session.conf.php")) include_once("session.c
 define("SOYSHOP_ROOT", str_replace("\\", "/", dirname(dirname(dirname(__FILE__)))) . "/");
 define("SOYSHOP_WEBAPP", SOYSHOP_ROOT . "webapp/");
 define("SOY2_NOW", time());	//現在時刻
-define("SOYSHOP_BUILD_TIME",1662928745);//ビルド日時：ビルド時に置換される
+define("SOYSHOP_RAW", 20220915110359);	//Apache Ant(JDK17)対策 ここでしか使わない定数
+//ビルド日時：ビルド時に置換される SOYSHOP_RAWからtimestampを組み立てる
+define("SOYSHOP_BUILD_TIME", mktime(substr(SOYSHOP_RAW, 8, 2), substr(SOYSHOP_RAW, 10, 2), substr(SOYSHOP_RAW, 12), substr(SOYSHOP_RAW, 4, 2), substr(SOYSHOP_RAW, 6, 2), substr(SOYSHOP_RAW, 0, 4)));
 define("SOYSHOP_VERSION", trim(file_get_contents(SOYSHOP_ROOT . "VERSION")));
 if(preg_match('/^\d/', SOYSHOP_VERSION)){	//本番環境
 	define("DEBUG_MODE", false);
@@ -42,6 +44,9 @@ include_once(SOYSHOP_WEBAPP . "lib/magic_quote_gpc.php");
 
 //configure SOY2
 SOY2::RootDir(SOYSHOP_WEBAPP . "src/");
+
+// build time関連の定数の設定
+SOY2::import("base.define", ".php");
 
 //SOY2PageController
 SOY2::import("base.SOYShopPageController");
@@ -91,7 +96,6 @@ define("SOYCMS_ADMIN_URL", SOY2PageController::createRelativeLink("../admin/"));
 if(!defined("SOYCMS_PHP_CGI_MODE")) define("SOYCMS_PHP_CGI_MODE", function_exists("php_sapi_name") && stripos(php_sapi_name(), "cgi") !== false );
 
 //include
-SOY2::import("base.define", ".php");
 SOY2::import("base.func.common", ".php");
 SOY2::import("base.func.dao", ".php");
 
