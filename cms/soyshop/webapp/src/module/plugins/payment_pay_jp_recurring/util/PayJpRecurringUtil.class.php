@@ -94,7 +94,7 @@ class PayJpRecurringUtil {
 		return self::_errorMessageList();
 	}
 
-	public static function getErrorText($code){
+	public static function getErrorText(string $code){
 		$errorCodes = self::_errorMessageList();
 
 		if(!isset($errorCodes[$code])) $code = "other";
@@ -119,22 +119,22 @@ class PayJpRecurringUtil {
 		));
 	}
 
-	public static function saveConfig($values){
+	public static function saveConfig(array $values){
 		foreach(array("sandbox") as $t){
 			$values[$t] = (isset($values[$t]) && $values[$t] == 1) ? 1 : 0;
 		}
 		SOYShop_DataSets::put("payment_pay_jp_recurring.config", $values);
 	}
 
-	public static function save($key, $value){
+	public static function save(string $key, string $value){
 		SOY2ActionSession::getUserSession()->setAttribute("payment_pay_jp_recurring." . $key, $value);
 	}
 
-	public static function get($key){
+	public static function get(string $key){
 		return SOY2ActionSession::getUserSession()->getAttribute("payment_pay_jp_recurring." . $key);
 	}
 
-	public static function clear($key){
+	public static function clear(string $key){
 		SOY2ActionSession::getUserSession()->setAttribute("payment_pay_jp_recurring." . $key, null);
 	}
 

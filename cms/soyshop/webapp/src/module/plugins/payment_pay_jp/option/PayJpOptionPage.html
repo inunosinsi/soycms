@@ -1,49 +1,72 @@
-<div class="error narrow" soy:display="error">失敗しました：
-	<!-- soy:id="error_message" /-->
+<style>
+	#number-form,
+	#expiry-form,
+	#cvc-form {
+		border:1px solid #454545;
+		padding:5px;
+		margin-bottom:5px;
+	}
+	#number-form {
+		width:200px;
+	}
+	#expiry-form {
+		width:80px;
+	}
+	#cvc-form{
+		width:80px;
+	}
+	.payjp-mt-10{
+		padding-top:10px;
+	}
+	#error{
+		padding:10px 0;
+		color:#FF0000;
+		font-weight:bold;
+	}
+</style>
+
+<div id="number-form" class="payjs-outer"><!-- ここにカード番号入力フォームが生成されます --></div>
+<div id="expiry-form" class="payjs-outer"><!-- ここに有効期限入力フォームが生成されます --></div>
+<div id="cvc-form" class="payjs-outer"><!-- ここにCVC入力フォームが生成されます --></div>
+<div><img soy:id="img" src="" /></div>
+<div>カード裏面の署名欄に記載された数字の末尾3桁のセキュリティコード(<strong>CVC</strong>)を入力してください。<br>
+(カードによっては、表面のクレジットカード番号右上または左上に4桁で記載されていることもあります。)<br>
+※クレジットカード会社によっては、セキュリティコードによる認証に対応していない場合があります。</div>
+
+<div class="payjp-mt-10">
+	<button onclick="onSubmit(event)">支払う</button>&nbsp;
+	<a soy:id="back_link">戻る</a>
 </div>
 
-<div class="error narrow" id="error_message_area" style="display:none;">失敗しました：</div>
+<input type="hidden" soy:id="key_hidden">
+<span id="error"></span>
 
-<form soy:id="form" id="charge_form" onsubmit="return operateBefore();">
-	<dl>
-		<dt>カード</dt>
-		<dd>
-			<input type="text" soy:id="card_1" pattern="\d{4}" size="4" placeholder="4桁">-
-			<input type="text" soy:id="card_2" pattern="\d{4}" size="4" placeholder="4桁">-
-			<input type="text" soy:id="card_3" pattern="\d{4}" size="4" placeholder="4桁">-
-			<input type="text" soy:id="card_4" pattern="\d{2,4}" size="4" placeholder="2桁以上">
-		</dd>
+<form soy:id="form" id="payjp_post_form"><input type="hidden" id="token" name="token" value=""></form>
 
-		<dt>有効期限</dt>
-		<dd>
-			<select soy:id="month" name=""></select> / 20
-			<select soy:id="year" name=""></select>(月 / 年)
-		</dd>
+<script src="https://js.pay.jp/v2/pay.js"></script>
+<script>
+// 公開鍵を登録し、起点となるオブジェクトを取得します
+var payjp = Payjp(document.getElementById("payjp_public_key").value);
+var elements = payjp.elements();
 
-		<dt>CVC番号</dt>
-		<dd>
-			<input type="text" soy:id="cvc" pattern="[0-9]*" size="4">
-		</dd>
+// 入力フォームを分解して管理・配置できます
+var numberElement = elements.create('cardNumber')
+var expiryElement = elements.create('cardExpiry')
+var cvcElement = elements.create('cardCvc')
+numberElement.mount('#number-form')
+expiryElement.mount('#expiry-form')
+cvcElement.mount('#cvc-form')
 
-		<dt>名前</dt>
-		<dd>
-			<input type="text" soy:id="name">
-		</dd>
-	</dl>
-
-	<p id="button_area">
-		<input type="hidden" id="card_token" name="token" value="">
-		<button id="credit_button">支払う</button>
-		<a soy:id="back_link">戻る</a>
-	</p>
-
-	<p id="loading_area" style="display:none;">
-		しばらくお待ちください。
-	</p>
-
-</form>
-
-<script type="text/javascript" src="https://js.pay.jp/"></script>
-<script type="text/javascript">Payjp.setPublicKey('<!-- soy:id="key" /-->');</script>
-<script soy:id="error_message_list_js"></script>
-<script soy:id="token_js"></script>
+function onSubmit(event) {
+	payjp.createToken(numberElement).then(function(r) {
+		if(r.error){
+			document.getElementById('error').innerText = r.error.message;
+		}else{
+			//r.id
+			// @ToDo r.idをpostする
+			document.getElementById('token').value = r.id;
+			document.getElementById("payjp_post_form").submit();
+		}
+	});
+}
+</script>

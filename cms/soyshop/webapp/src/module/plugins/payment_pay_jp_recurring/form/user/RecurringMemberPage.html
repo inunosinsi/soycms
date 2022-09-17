@@ -16,19 +16,27 @@
 			<tr>
 				<th>登録中の定期課金プラン</th>
 				<td>
-					<!-- soy:id="plan_name" /-->&nbsp;
-					<input type="submit" name="recurring_cancel" value="キャンセル" onclick="return confirm('定期課金をキャンセルしますか？');">
+					<!-- soy:id="plan_name" /-->
+					<!-- soy:display="cancel_button_anotation" -->
+					<div class="alert alert-warning">キャンセルはPAY.JPのコントロールパネルから行ってください</div>
+					<!-- /soy:display="cancel_button_anotation" -->
+
+					<!-- soy:display="cancel_button_hidden" -->
+					<input type="submit" name="recurring_cancel" class="btn btn-warning" value="キャンセル" onclick="return confirm('定期課金をキャンセルしますか？');">
 					<input type="hidden" soy:id="subscribe_token_hidden">
 					<input type="hidden" soy:id="order_id_hidden">
+					<!-- /soy:display="cancel_button_hidden" -->
 				</td>
 			</tr>
+			<!-- soy:display="plan_hidden" -->
 			<tr>
 				<th>プランの変更</th>
-				<td>
-					<select soy:id="plan"></select>&nbsp;
-					<input type="submit" name="recurring_change" value="変更する" onclick="return confirm('定期課金のプランを変更しますか？');">
+				<td class="form-inline">
+					<select soy:id="plan" class="form-control"></select>&nbsp;
+					<input type="submit" name="recurring_change" class="btn btn-primary" value="変更する" onclick="return confirm('定期課金のプランを変更しますか？');">
 				</td>
 			</tr>
+			<!-- /soy:display="plan_hidden" -->
 		</tbody>
 	</table>
 </form>

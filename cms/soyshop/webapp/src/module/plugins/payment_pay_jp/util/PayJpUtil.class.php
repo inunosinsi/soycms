@@ -96,7 +96,7 @@ class PayJpUtil {
 		return self::_errorMessageList();
 	}
 
-	public static function getErrorText($code){
+	public static function getErrorText(string $code){
 		$errorCodes = self::_errorMessageList();
 
 		if(!isset($errorCodes[$code])) $code = "other";

@@ -58,6 +58,18 @@ class PayJpConfigPage extends WebPage {
 			"selected" => (isset($config["select"]) && $config["select"] == 1),
 			"label" => "会員登録した顧客に対して、支払い方法選択時にカード情報の入力の省略のチェックボックスを出力する"
 		));
+
+		$this->addLabel("base_html_path", array(
+			"html" => dirname(dirname(__FILE__)) . "/option/<strong>PayJpOptionPage.html</strong>"
+		));
+
+		$this->addLabel("change_html_path", array(
+			"html" => dirname(dirname(__FILE__)) . "/option/<strong>_PayJpOptionPage.html</strong>"
+		));
+
+		$this->addLabel("Integrate_html_path", array(
+			"html" => dirname(dirname(__FILE__)) . "/option/v2/<strong>PayJpOptionPage.html</strong>"
+		));
 	}
 
 	function setConfigObj($configObj){

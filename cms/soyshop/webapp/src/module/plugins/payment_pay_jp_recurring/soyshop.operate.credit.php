@@ -15,14 +15,11 @@ class PayJpRecurringOperateCredit extends SOYShopOperateCreditBase{
 			list($res, $err) = $this->recurringLogic->cancel($_POST["Subscribe"]);
 			if(isset($res) && $res->canceled_at > 0){
 				//SOY Shopの方の注文もキャンセルにする
-				$orderDao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
-				try{
-					$order = $orderDao->getById($_POST["OrderId"]);
-				}catch(Exception $e){
-					return;
-				}
+				$order = soyshop_get_order_object((int)$_POST["OrderId"]);
+				if(!is_numeric($order->getId())) return;
+				
 				$order->setStatus(SOYShop_Order::ORDER_STATUS_CANCELED);
-				$orderDao->updateStatus($order);
+				SOY2DAOFactory::create("order.SOYShop_OrderDAO")->updateStatus($order);
 			}
 		}
 

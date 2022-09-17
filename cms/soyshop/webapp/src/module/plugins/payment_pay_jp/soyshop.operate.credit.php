@@ -65,10 +65,10 @@ class PayJpOperateCredit extends SOYShopOperateCreditBase{
 			//ここで支払状況を調べる
 			$attr = $order->getAttribute("payment_pay_jp.id");
 			$token = (isset($attr["value"])) ? $attr["value"] : null;
-
+			
 			if(isset($token)){
 				try{
-					$res = \Payjp\Charge::retrieve($token);
+					$res = @\Payjp\Charge::retrieve($token);	//PHP8.1で非推奨の機能を利用しているらしい
 					$params["capture"] = $res->captured;
 					$params["expired"] = $res->expired_at;
 					$params["captured_at"] = $res->captured_at;

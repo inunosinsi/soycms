@@ -37,6 +37,14 @@ class PayJpRecurringConfigPage extends WebPage {
 				));
 			}
 		}
+
+		$this->addLabel("base_html_path", array(
+			"html" => dirname(dirname(__FILE__)) . "/option/<strong>PayJpRecurringOptionPage.html</strong>"
+		));
+
+		$this->addLabel("change_html_path", array(
+			"html" => dirname(dirname(__FILE__)) . "/option/<strong>_PayJpRecurringOptionPage.html</strong>"
+		));
 	}
 
 	function setConfigObj($configObj){

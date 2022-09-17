@@ -84,14 +84,16 @@ class PayJpRecurringPayment extends SOYShopPayment{
 			throw new Exception("秘密鍵が設定されていません。");
 		}
 
+		//テストカードモード
+		if(!defined("SOYSHOP_CART_TEST_MODE")) define("SOYSHOP_CART_TEST_MODE", PayJpRecurringUtil::isTestMode());
+
 		// トークンを保持していれば、ここで注文を終わらせてしまう
 		$userId = (int)$cart->getCustomerInformation()->getId();
-		$token = ($userId > 0) ? $this->recurringLogic->getCustomerTokenByUserId($userId) : null;
-
-		if(isset($token)){
+		$token = ($userId > 0) ? $this->recurringLogic->getCustomerTokenByUserId($userId) : "";
+		
+		if(strlen($token)){
 			//二回目の購入のチェックがあるか？
-			$isRepeatCharge = $cart->getAttribute("payment_pay_jp_repeat_recurring");
-			if($isRepeatCharge){
+			if(strlen((string)$cart->getAttribute("payment_pay_jp_repeat_recurring"))){
 				$items = $cart->getItems();
 				$itemOrder = array_shift($items);
 

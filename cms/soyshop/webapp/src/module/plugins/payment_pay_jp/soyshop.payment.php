@@ -86,6 +86,9 @@ class PayJpPayment extends SOYShopPayment{
 			throw new Exception("秘密鍵が設定されていません。");
 		}
 
+		//テストカードモード
+		if(!defined("SOYSHOP_CART_TEST_MODE")) define("SOYSHOP_CART_TEST_MODE", PayJpUtil::isTestMode());
+
 		// トークンを保持していれば、ここで注文を終わらせてしまう
 		$userId = (int)$cart->getCustomerInformation()->getId();
 		$token = ($userId > 0) ? $this->payJpLogic->getCustomerTokenByUserId($userId) : null;

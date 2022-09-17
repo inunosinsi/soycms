@@ -10,6 +10,10 @@ class RecurringMemberPage extends WebPage{
 
 		parent::__construct();
 
+		DisplayPlugin::toggle("cancel_button_anotation", true);
+		DisplayPlugin::toggle("cancel_button_hidden", false);
+		DisplayPlugin::toggle("plan_hidden", false);
+
 		$error = PayJpRecurringUtil::get("change_plan_error");
 		DisplayPlugin::toggle("error", isset($error));
 		$this->addLabel("error_message", array(
@@ -21,24 +25,17 @@ class RecurringMemberPage extends WebPage{
 
 		//顧客IDから定期課金のIDを取得する
 		list($subscribeId, $orderId) = $logic->getSubscribeIdAndOrderIdByUserId($this->user->getId());
-
-		DisplayPlugin::toggle("subscribe", isset($subscribeId));
-		DisplayPlugin::toggle("no_subscribe", !isset($subscribeId));
+		
+		DisplayPlugin::toggle("subscribe", strlen($subscribeId));
+		DisplayPlugin::toggle("no_subscribe", !strlen($subscribeId));
 
 		//メールアドレスからカードの状態を取得する
-		$isActiveCard = (isset($subscribeId)) ? $logic->checkCardExpirationDateByUserId($this->user->getId()) : false;
+		$isActiveCard = (strlen($subscribeId)) ? $logic->checkCardExpirationDateByUserId($this->user->getId()) : false;
 		
-		$this->addForm("form");
-
-		$this->addLabel("subscribe_token", array(
-			"text" => $subscribeId
-		));
-
 		//PAY.JPの顧客IDを取得
 		$customerId = $logic->getCustomerTokenByUserId($this->user->getId());
-		$this->addLabel("customer_token", array(
-			"text" => $customerId
-		));
+
+		$this->addForm("form");
 
 		//プランの取得
 		$planId = null;
@@ -53,6 +50,20 @@ class RecurringMemberPage extends WebPage{
 			}
 		}
 
+		if(is_null($planName)){
+			$subscribeId = "削除済み";
+			$customerId = "削除済み";
+			$planName = "キャンセル済み";
+		}
+
+		$this->addLabel("subscribe_token", array(
+			"text" => $subscribeId
+		));
+
+		$this->addLabel("customer_token", array(
+			"text" => $customerId
+		));
+		
 		$this->addLabel("plan_name", array(
 			"text" => $planName
 		));

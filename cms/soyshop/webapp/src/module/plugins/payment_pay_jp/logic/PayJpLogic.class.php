@@ -13,22 +13,20 @@ class PayJpLogic extends SOY2LogicBase {
 
 		if(isset($config["secret_key"]) && strlen($config["secret_key"])){
 			//PAY.JPのlibを読み込む
-			require_once(SOYSHOP_WEBAPP . "src/module/plugins/payment_pay_jp/payjp/init.php");
+			//require_once(SOYSHOP_WEBAPP . "src/module/plugins/payment_pay_jp/payjp/v1/init.php");
+			// PAY.JP v2
+			require_once SOY2::RootDir() . "module/plugins/payment_pay_jp/payjp/v2/vendor/autoload.php";
 			\Payjp\Payjp::setApiKey($config["secret_key"]);
 		}
 	}
 
 	function getPayJpConfig(){
-		static $config;
-		if(is_null($config)){
-			$conf = PayJpUtil::getConfig();
-			if(isset($conf["sandbox"]) && $conf["sandbox"] == 1){
-				$config = $conf["test"];
-			}else{
-				$config = $conf["production"];
-			}
+		static $c;
+		if(is_null($c)){
+			$cnf = PayJpUtil::getConfig();
+			$c = (isset($cnf["sandbox"]) && $cnf["sandbox"] == 1) ? $cnf["test"] : $cnf["production"];
 		}
-		return $config;
+		return $c;
 	}
 
 	//カード番号のトークンを作成

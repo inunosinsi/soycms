@@ -57,6 +57,11 @@ class PayJpOptionPage extends WebPage {
 			"attr:id" => "cvc"
 		));
 
+		//サンプル画像
+		$this->addImage("img", array(
+			"src" => SOYSHOP_SITE_URL . "themes/common/images/cart/security_code.png"
+		));
+
 		$this->addInput("name", array(
 			"name" => "name",
 			"value" => PayJpUtil::get("name"),
@@ -85,6 +90,11 @@ class PayJpOptionPage extends WebPage {
 		$config = $logic->getPayJpConfig();
 		$this->addLabel("key", array(
 			"text" => (isset($config["public_key"])) ? trim($config["public_key"]) : ""
+		));
+
+		$this->addInput("key_hidden", array(
+			"value" => (isset($config["public_key"])) ? trim($config["public_key"]) : "",
+			"attr:id" => "payjp_public_key"
 		));
 
 		$this->addLabel("error_message_list_js", array(
