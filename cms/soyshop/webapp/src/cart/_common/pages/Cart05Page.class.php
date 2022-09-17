@@ -19,7 +19,7 @@ class Cart05Page extends MainCartPageBase{
 		// 	exit;
 		// }
 
-		$paymentModule = soyshop_get_plugin_object($cart->getAttribute("payment_module"));
+		$paymentModule = soyshop_get_plugin_object((string)$cart->getAttribute("payment_module"));
 		SOYShopPlugin::load("soyshop.payment", $paymentModule);
 		SOYShopPlugin::invoke("soyshop.payment.option", array(
 			"cart" => $cart,
@@ -47,13 +47,6 @@ class Cart05Page extends MainCartPageBase{
 
 		$paymentModule = $cart->getAttribute("payment_module");
 
-		//Cart05Pageを開いた回数を調べる。指定の回数以上表示したら閲覧を禁止する
-		if($cart->getPaymentOptionPageDisplayCount() >= SOYShop_ShopConfig::load()->getCartTryCountAndBanByIpAddress()){
-			$cart->banIPAddress($paymentModule);
-			soyshop_redirect_cart();
-			exit;
-		}
-
 		$paymentModule = soyshop_get_plugin_object($paymentModule);
 		SOYShopPlugin::load("soyshop.payment", $paymentModule);
 
@@ -63,6 +56,15 @@ class Cart05Page extends MainCartPageBase{
 				"moduleId" => $paymentModule->getPluginId()	//Cart05ページで指定していない支払い方法が出力されないように厳重に確認する
 			))
 		));
+
+		//Cart05Pageを開いた回数を調べる。指定の回数以上表示したら閲覧を禁止する
+		if(!defined("SOYSHOP_CART_TEST_MODE") || !SOYSHOP_CART_TEST_MODE){
+			if($cart->getPaymentOptionPageDisplayCount() >= SOYShop_ShopConfig::load()->getCartTryCountAndBanByIpAddress()){
+				$cart->banIPAddress($paymentModule);
+				soyshop_redirect_cart();
+				exit;
+			}
+		}
 
 		SOYShopPlugin::load("soyshop.cart");
 		$delegate = SOYShopPlugin::invoke("soyshop.cart", array(
