@@ -78,6 +78,8 @@ class CommonItemOptionCustomField extends SOYShopItemCustomFieldBase{
 	 * @param object htmlObj, object SOYShop_Item
 	 */
 	function onOutput($htmlObj, SOYShop_Item $item){
+		if(!defined("SOYSHOP_PAGE_ID") || soyshop_get_page_object(SOYSHOP_PAGE_ID)->getType() !== SOYShop_Page::TYPE_DETAIL) return "";
+
 		self::prepare();
 		$itemId = (is_numeric($item->getId())) ? (int)$item->getId() : 0;
 
