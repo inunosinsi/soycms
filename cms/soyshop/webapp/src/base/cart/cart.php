@@ -49,14 +49,13 @@ if(isset($_REQUEST["a"])) {
 				$count = max(-1, (int)$count);
 
 				$res = $cart->addItem($item, $count, $replaceIdx);
-				if($res){
-					SOYShopPlugin::invoke("soyshop.item.option", array(
-						"mode" => "post",
-						"index" => (is_numeric($replaceIdx) && $replaceIdx >= 0) ? $replaceIdx : max(array_keys($cart->getItems())),
-						"cart" => $cart
-					));
-				}
+				if(!$res) continue;
 
+				SOYShopPlugin::invoke("soyshop.item.option", array(
+					"mode" => "post",
+					"index" => (is_numeric($replaceIdx) && $replaceIdx >= 0) ? $replaceIdx : max(array_keys($cart->getItems())),
+					"cart" => $cart
+				));
 				$lastInsertedItemId = $item;
 			}
 
@@ -90,13 +89,13 @@ if(isset($_REQUEST["a"])) {
 			foreach($_item as $key => $item){
 				$count = 1;
 				$res = $cart->addItem($item, $count);
-				if($res){
-					SOYShopPlugin::invoke("soyshop.item.option", array(
-						"mode" => "post",
-						"index" => max(array_keys($cart->getItems())),
-						"cart" => $cart
-					));
-				}
+				if(!$res) continue;
+
+				SOYShopPlugin::invoke("soyshop.item.option", array(
+					"mode" => "post",
+					"index" => max(array_keys($cart->getItems())),
+					"cart" => $cart
+				));
 			}
 
 			//全て個数は1
