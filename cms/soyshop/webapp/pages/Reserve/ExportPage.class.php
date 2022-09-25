@@ -10,7 +10,7 @@ class ExportPage extends WebPage{
 			exit;
 		}
 
-		$plugin = (isset($_POST["plugin"])) ? $_POST["plugin"] : null;
+		$pluginId = (isset($_POST["plugin"])) ? $_POST["plugin"] : null;
 		if(is_null($plugin)){
 			echo "invalid plugin id";
 			exit;
@@ -19,7 +19,7 @@ class ExportPage extends WebPage{
 		// @ToDo 予約状況　検索の仕組みをこのファイルで持つか？
 		//$reserves = array();
 
-		$plugin = soyshop_get_plugin_object($plugin);
+		$plugin = soyshop_get_plugin_object($pluginId);
 		if(!is_null($plugin->getId())){
 			SOYShopPlugin::load("soyshop.calendar.export", $plugin);
 			SOYShopPlugin::invoke("soyshop.calendar.export", array(
