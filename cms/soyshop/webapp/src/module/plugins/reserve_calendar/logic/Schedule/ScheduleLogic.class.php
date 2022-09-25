@@ -6,6 +6,10 @@ class ScheduleLogic extends SOY2LogicBase{
         SOY2::imports("module.plugins.reserve_calendar.domain.*");
     }
 
+    /**
+     * @param int
+     * @return SOYShopReserveCalendar_Schedule
+     */
     function getScheduleById(int $scheduleId){
         try{
             return soyshop_get_hash_table_dao("schedule_calendar")->getById($scheduleId);
@@ -14,6 +18,10 @@ class ScheduleLogic extends SOY2LogicBase{
         }
     }
 
+    /**
+     * @param int, int, int
+     * @return array
+     */
     function getScheduleList(int $itemId, int $year, int $month){
         $list = soyshop_get_hash_table_dao("schedule_calendar")->getScheduleList($itemId, $year, $month);
 
@@ -33,6 +41,10 @@ class ScheduleLogic extends SOY2LogicBase{
         return $list;
 	}
 
+    /**
+     * @param int, int, int
+     * @return bool
+     */
     private function _autoInsert(int $itemId, int $year, int $month){
 		SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
 		$cnf = ReserveCalendarUtil::getAutoConfig($itemId);
