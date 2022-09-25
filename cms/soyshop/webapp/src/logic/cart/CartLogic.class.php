@@ -87,12 +87,13 @@ class CartLogic extends SOY2LogicBase{
 	/**
 	 * カートに商品を追加 replaceIdxに値がある場合は商品の差し替え
 	 */
-	function addItem(int $itemId, int $count = 1, int $replaceIdx=-1){
+	function addItem(int $itemId, int $count=1, int $replaceIdx=-1){
 		$item = soyshop_get_item_object($itemId);
 
 		//追加不可能
 		if(is_null($item->getId()) || false == $item->isOrderable()){
-			throw new Exception("Can not orderable");
+			//throw new Exception("Can not orderable");
+			return false;
 		}
 
 		//個数は-1以上の整数
@@ -676,9 +677,7 @@ class CartLogic extends SOY2LogicBase{
 
 		//配送ダミーか支払いダミーモジュールがインストールされている場合、ダミーモジュールでセットを試みる
 		//これで配送と支払いのどちらもダミーのサイトを構築することができる
-		if(!count($this->getModules())){
-			self::setDummyModule();
-		}
+		if(!count($this->getModules())) self::setDummyModule();
 
 		//念の為に登録したモジュールが消えてないか調べて、消えていればCart03に飛ばす
 		//有効な注文にはモジュールかOrderAttributeかどちらかが最低１つ必要
@@ -692,22 +691,16 @@ class CartLogic extends SOY2LogicBase{
 		}
 
 		//ユーザーエージェント
-		if(isset($_SERVER['HTTP_USER_AGENT'])){
-			$this->setOrderAttribute("order_check_carrier", "ユーザーエージェント", $_SERVER['HTTP_USER_AGENT'], true, true);
-		}
+		if(isset($_SERVER['HTTP_USER_AGENT'])) $this->setOrderAttribute("order_check_carrier", "ユーザーエージェント", $_SERVER['HTTP_USER_AGENT'], true, true);
 
 		//IPアドレス
-		if(isset($_SERVER['REMOTE_ADDR'])){
-			$this->setOrderAttribute("order_ip_address", "IPアドレス", $_SERVER['REMOTE_ADDR'], true, true);
-		}
+		if(isset($_SERVER['REMOTE_ADDR'])) $this->setOrderAttribute("order_ip_address", "IPアドレス", $_SERVER['REMOTE_ADDR'], true, true);
 
 		//$_SERVER
 		//$this->setOrderAttribute("order_server", "\$_SERVER", var_export($_SERVER,true), true, true);
 
 		//初回購入であるか調べる
-		if($this->checkFirstOrder()){
-			$this->setOrderAttribute("order_first_order", "初回購入", "初回購入", true, true);
-		}
+		if($this->checkFirstOrder()) $this->setOrderAttribute("order_first_order", "初回購入", "初回購入", true, true);
 
 		//setOrderAttributeに追加出来る拡張ポイント
 		SOYShopPlugin::load("soyshop.order.complete");
@@ -716,7 +709,7 @@ class CartLogic extends SOY2LogicBase{
 			"cart" => $this,
 		));
 
-		$orderDAO = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
+		$orderDAO = soyshop_get_hash_table_dao("order");
 
 		try{
 			//transaction start
@@ -832,16 +825,14 @@ class CartLogic extends SOY2LogicBase{
 		}
 
 		//既に完了していた場合はtrueを返す
-		if($order->getStatus() == SOYShop_Order::ORDER_STATUS_REGISTERED){
-			return true;
-		}else{
-			$order->setStatus(SOYShop_Order::ORDER_STATUS_REGISTERED);
-			try{
-				SOY2DAOFactory::create("order.SOYShop_OrderDAO")->updateStatus($order);
-			}catch(Exception $e){
-				$orderLogic->addHistory($this->getAttribute("order_id"), "注文を完了することができませんでした。メールは送信されません。");
-				return false;
-			}
+		if($order->getStatus() == SOYShop_Order::ORDER_STATUS_REGISTERED) return true;
+		
+		$order->setStatus(SOYShop_Order::ORDER_STATUS_REGISTERED);
+		try{
+			soyshop_get_hash_table_dao("order")->updateStatus($order);
+		}catch(Exception $e){
+			$orderLogic->addHistory($this->getAttribute("order_id"), "注文を完了することができませんでした。メールは送信されません。");
+			return false;
 		}
 
 		//注文確定時に関するプラグインを実行する
@@ -884,27 +875,23 @@ class CartLogic extends SOY2LogicBase{
 	 * @return boolean
 	 */
 	function orderPaymentConfirm(){
+		//既に完了していた場合はtrueを返す
+		$order = soyshop_get_order_object($this->getAttribute("order_id"));
+		if($order->getPaymentStatus() == SOYShop_Order::PAYMENT_STATUS_CONFIRMED) return true;
+		
+		$order->setPaymentStatus(SOYShop_Order::PAYMENT_STATUS_CONFIRMED);
 
 		$orderLogic = SOY2Logic::createInstance("logic.order.OrderLogic");
 
 		try{
-			$order = soyshop_get_order_object($this->getAttribute("order_id"));
-
-			//既に完了していた場合はtrueを返す
-			if($order->getPaymentStatus() == SOYShop_Order::PAYMENT_STATUS_CONFIRMED){
-				return true;
-			}else{
-				$order->setPaymentStatus(SOYShop_Order::PAYMENT_STATUS_CONFIRMED);
-
-				//仮登録時に支払確認状態になった場合、注文状態を新規受付に変更する
-				if($order->getStatus() == SOYShop_Order::ORDER_STATUS_INTERIM){
-					$order->setStatus(SOYShop_Order::ORDER_STATUS_REGISTERED);
-					$orderLogic->addHistory($this->getAttribute("order_id"), "支払を確認したので、注文状態を仮登録から新規受付に変更しました。");
-				}
-
-				SOY2DAOFactory::create("order.SOYShop_OrderDAO")->updateStatus($order);
-				$orderLogic->addHistory($this->getAttribute("order_id"), "支払いを確認しました。");
+			//仮登録時に支払確認状態になった場合、注文状態を新規受付に変更する
+			if($order->getStatus() == SOYShop_Order::ORDER_STATUS_INTERIM){
+				$order->setStatus(SOYShop_Order::ORDER_STATUS_REGISTERED);
+				$orderLogic->addHistory($this->getAttribute("order_id"), "支払を確認したので、注文状態を仮登録から新規受付に変更しました。");
 			}
+
+			soyshop_get_hash_table_dao("order")->updateStatus($order);
+			$orderLogic->addHistory($this->getAttribute("order_id"), "支払いを確認しました。");			
 		}catch(Exception $e){
 			$orderLogic->addHistory($this->getAttribute("order_id"), "支払いを確認できませんでした。メールは送信されません。");
 			return false;
@@ -938,7 +925,7 @@ class CartLogic extends SOY2LogicBase{
 	 * $allがfalseの場合(クレジットカード支払関係)は予約カレンダーの残席チェックは行わない
 	 */
 	function checkOrderable(bool $all=true){
-		$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+		$itemDAO = soyshop_get_hash_table_dao("item");
 		$config = SOYShop_ShopConfig::load();
 		$ignoreStock = $config->getIgnoreStock();
 
@@ -1075,7 +1062,7 @@ class CartLogic extends SOY2LogicBase{
 	 */
 	function registerCustomerInformation(){
 		$user = $this->getCustomerInformation();
-		$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
+		$userDAO = soyshop_get_hash_table_dao("user");
 
 		//登録済みユーザーかどうか
 		$tmpUser = soyshop_get_user_object_by_mailaddress((string)$user->getMailAddress());
@@ -1168,11 +1155,10 @@ class CartLogic extends SOY2LogicBase{
 		$userId = $this->getCustomerInformation()->getId();
 		if(!isset($userId)) return true;
 		try{
-			$orders = SOY2DAOFactory::create("order.SOYShop_OrderDAO")->getByUserId($userId);
+			$orders = soyshop_get_hash_table_dao("order")->getByUserId($userId);
 		}catch(Exception $e){
 			$orders = array();
 		}
-
 		return (!count($orders));
 	}
 
@@ -1180,8 +1166,8 @@ class CartLogic extends SOY2LogicBase{
 	 * 商品情報の登録
 	 */
 	function orderItems(){
-		$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-		$orderDAO = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
+		$itemDAO = soyshop_get_hash_table_dao("item");
+		$orderDAO = soyshop_get_hash_table_dao("order");
 
 		$order = new SOYShop_Order();
 		$order->setOrderDate(time());
@@ -1210,7 +1196,7 @@ class CartLogic extends SOY2LogicBase{
 		$order->setId($id);
 		$this->setAttribute("order_id", $id);
 
-		$itemOrderDAO = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
+		$itemOrderDAO = soyshop_get_hash_table_dao("item_orders");
 		$itemOrders = $this->getItems();
 
 		//foreach内で読み込む拡張ポイントはここでロードしておく
@@ -1243,18 +1229,20 @@ class CartLogic extends SOY2LogicBase{
 			$itemOrder->setOrderId($id);
 
 			//商品オプションがある場合は、attributeに値を挿入
-			$attrs = SOYShopPlugin::invoke("soyshop.item.option", array(
-				"mode" => "order",
-				"index" => $key
-			))->getAttributes();
-			$itemOrder->setAttributes($attrs);
+			$itemOrder->setAttributes(
+				SOYShopPlugin::invoke("soyshop.item.option", array(
+					"mode" => "order",
+					"index" => $key
+				))->getAttributes()
+			);
 
 			//加算オプションがある場合は、is_additionに値を挿入
-			$add = SOYShopPlugin::invoke("soyshop.item.option", array(
-				"mode" => "addition",
-				"index" => $key
-			))->getAddition();
-			$itemOrder->setIsAddition($add);
+			$itemOrder->setIsAddition(
+				SOYShopPlugin::invoke("soyshop.item.option", array(
+					"mode" => "addition",
+					"index" => $key
+				))->getAddition()
+			);
 
 			//どこかで商品名がnullになる場合があるのでその対処
 			if(is_null($itemOrder->getItemName())) $itemOrder->setItemName(soyshop_get_item_object($itemOrder->getItemId())->getName());

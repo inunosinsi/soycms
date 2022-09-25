@@ -4,6 +4,7 @@ class SOYShopCalendarExportBase implements SOY2PluginAction{
 
 	/**
 	 * 表示するメニューの表示文言
+	 * @return string
 	 */
 	function getMenuTitle(){
 		return "";
@@ -11,6 +12,7 @@ class SOYShopCalendarExportBase implements SOY2PluginAction{
 
 	/**
 	 * 表示するメニューの説明
+	 * @return string
 	 */
 	function getMenuDescription(){
 		return "";
@@ -18,11 +20,9 @@ class SOYShopCalendarExportBase implements SOY2PluginAction{
 
 	/**
 	 * export エクスポート実行
+	 * @param array
 	 */
-	function export($reserves){
-
-	}
-
+	function export(array $reserves){}
 }
 
 class CalendarExportDeletageAction implements SOY2PluginDelegateAction{
@@ -57,10 +57,8 @@ class CalendarExportDeletageAction implements SOY2PluginDelegateAction{
 	function setMode($mode) {
 		$this->mode = $mode;
 	}
-	function export($reserves){
-		if($this->action){
-			return $this->action->export($reserves);
-		}
+	function export(array $reserves){
+		if($this->action) return $this->action->export($reserves);
 	}
 }
 
