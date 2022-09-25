@@ -3,8 +3,6 @@
  */
 class ItemStandardField extends SOYShopItemCustomFieldBase{
 
-	const PLUGIN_ID = "item_standard_plugin";
-
 	function doPost(SOYShop_Item $item){
 		$itemDao = soyshop_get_hash_table_dao("item");
 
@@ -118,22 +116,26 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 	 * onOutput
 	 */
 	function onOutput($htmlObj, SOYShop_Item $item){
+		if(!defined("SOYSHOP_PAGE_ID") || soyshop_get_page_object(SOYSHOP_PAGE_ID)->getType() !== SOYShop_Page::TYPE_DETAIL) return "";
+
 		SOY2::import("module.plugins.item_standard.util.ItemStandardUtil");
-		
 		$itemId = (is_numeric($item->getId())) ? (int)$item->getId() : 0;
 
 		foreach(ItemStandardUtil::getConfig() as $values){
-			$v = soyshop_get_item_attribute_value($itemId, $values["id"], "string");
-
+			$v = ItemStandardUtil::getStandardValueByItemId($itemId, $values["id"]);
+			
 			$htmlObj->addModel("item_standard_" . $values["id"] . "_show", array(
 				"soy2prefix" => SOYSHOP_SITE_PREFIX,
 				"visible" => (strlen($v))
 			));
 
-			$opts = explode("\n", $v);
+			
 			$list = array();
-			foreach($opts as $opt){
-				$list[] = trim($opt);
+			if(strlen($v)){
+				$opts = explode("\n", $v);
+				foreach($opts as $opt){
+					$list[] = trim($opt);
+				}
 			}
 
 			$htmlObj->addSelect("item_standard_" . $values["id"], array(
@@ -145,13 +147,13 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 
 		}
 
-		//小商品に在庫切れのものがあるか？
+		//子商品に在庫切れのものがあるか？
 		$htmlObj->addModel("has_no_stock_child", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"visible" => (self::_checkIsChildItemStock($itemId, $item->getType()))
 		));
 
-		//小商品の価格の最小値
+		//子商品の価格の最小値
 		list($sellingMin, $normalMin, $saleMin) = self::_getItemStandardPrice($item, "min");
 		$htmlObj->addLabel("standard_price_min", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,

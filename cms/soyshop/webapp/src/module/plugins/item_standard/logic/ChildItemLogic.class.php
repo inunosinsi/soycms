@@ -2,11 +2,7 @@
 
 class ChildItemLogic extends SOY2LogicBase{
 
-	private $itemDao;
-
-	function __construct(){
-		$this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-	}
+	function __construct(){}
 
 	function getChildItem(int $parentId, array $keys){
 		$sql = "SELECT * FROM soyshop_item ".
@@ -33,18 +29,12 @@ class ChildItemLogic extends SOY2LogicBase{
 		$sql .= "LIMIT 1";
 
 		try{
-			$res = $this->itemDao->executeQuery($sql, $binds);
+			$res = soyshop_get_hash_table_dao("item")->executeQuery($sql, $binds);
 		}catch(Exception $e){
 			$res = array();
 		}
 
-		if(isset($res[0]) && isset($res[0]["id"])){
-			$child = $this->itemDao->getObject($res[0]);
-		}else{
-			$child = new SOYShop_Item();
-		}
-
-		return $child;
+		return (isset($res[0]) && isset($res[0]["id"])) ? soyshop_get_hash_table_dao("item")->getObject($res[0]) : new SOYShop_Item();
 	}
 
 	function setChildItemName(SOYShop_Item $child, SOYShop_Item $parent, array $keys){
@@ -68,7 +58,7 @@ class ChildItemLogic extends SOY2LogicBase{
 			if(!is_numeric($tmp->getId())){
 				//念の為にエイリアスがないことも確認
 				try{
-					$this->itemDao->getByAlias($pcode . "_" . $postfix . ".html");
+					soyshop_get_hash_table_dao("item")->getByAlias($pcode . "_" . $postfix . ".html");
 				}catch(Exception $e){
 					break;
 				}

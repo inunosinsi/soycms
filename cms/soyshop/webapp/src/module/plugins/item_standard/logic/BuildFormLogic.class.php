@@ -29,7 +29,7 @@ class BuildFormLogic extends SOY2LogicBase{
 		foreach($cnfs as $cnf){
 			$html[] = "<div class=\"form-group\">";
 			$html[] = "<label>" . $cnf["standard"] . "(" . $cnf["id"] . ")</label>";
-			$html[] = "<textarea name=\"Standard[" . $cnf["id"] . "]\" class=\"form-control\" style=\"height:100px;\">" . soyshop_get_item_attribute_value($this->parentId, $cnf["id"], "string") . "</textarea>";
+			$html[] = "<textarea name=\"Standard[" . self::_cnfId($cnf["id"]) . "]\" class=\"form-control\" style=\"height:100px;\">" . ItemStandardUtil::getStandardValueByItemId($this->parentId, $cnf["id"]) . "</textarea>";
 			$html[] = "</div>";
 		}
 		$html[] = "<div class=\"alert alert-info\">商品の規格設定ここまで</div>";
@@ -51,11 +51,22 @@ class BuildFormLogic extends SOY2LogicBase{
 		$html[] = "<dl>";
 		foreach($cnfs as $cnf){
 			$html[] = "<dt>" . $cnf["standard"] . "(" . $cnf["id"] . ")</dt>";
-			$html[] = "<dd><textarea name=\"Standard[" . $cnf["id"] . "]\" class=\"form-control\" style=\"height:200px;\"></textarea>";
+			$html[] = "<dd><textarea name=\"Standard[" . self::_cnfId($cnf["id"]) . "]\" class=\"form-control\" style=\"height:200px;\"></textarea>";
 		}
 		$html[] = "</dl>";
 
 		return implode("\n", $html);
+	}
+
+	/**
+	 * どこかのバージョンでFIELD_IDからitem_standard_plugin_を除いてしまったからその対策
+	 * @param string
+	 * @return string
+	 */
+	private function _cnfId(string $cnfId){
+		$res = strpos($cnfId, ItemStandardUtil::FIELD_ID_PREFIX);
+		if(!is_numeric($res) || $res > 0) $cnfId =  ItemStandardUtil::FIELD_ID_PREFIX . $cnfId;
+		return $cnfId;
 	}
 
 	function buildStandardListArea(){
