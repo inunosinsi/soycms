@@ -6,27 +6,19 @@ class DisplayCartLinkCart extends SOYShopCartBase{
 	function doOperation(){
 		
 		if(isset($_GET["item"]) && is_numeric($_GET["item"])){
-			$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-			try{
-				$obj = $dao->get($_GET["item"], self::PLUGIN_ID);
-			}catch(Exception $e){
-				return;
-			}
+			$attr = soyshop_get_item_attribute_object((int)$_GET["item"], self::PLUGIN_ID);
+			if(is_null($attr->getValue)) return;
 			
 			//カート制限をつける場合はtrue
-			$hasCart = ($obj->getValue() == 1);
-			
-			if($hasCart){
+			if((int)$attr->getValue() === 1){
 				SOY2::import("module.plugins.display_cart_link.util.DisplayCartLinkUtil");
-				$config = DisplayCartLinkUtil::getConfig();
-				if(isset($config["limitation"]) && $config["limitation"] == 1){
+				$cnf = DisplayCartLinkUtil::getConfig();
+				if(isset($cnf["limitation"]) && (int)$cnf["limitation"] === 1){
 					header("Location:" . $_SERVER["HTTP_REFERER"]);
 					exit;
 				}
 			}
 		}
-			
 	}
 }
 SOYShopPlugin::extension("soyshop.cart", "display_cart_link", "DisplayCartLinkCart");
-?>

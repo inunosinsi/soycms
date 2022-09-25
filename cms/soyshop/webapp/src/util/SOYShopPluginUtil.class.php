@@ -24,6 +24,8 @@ class SOYShopPluginUtil {
 			
 			// 公開側で関係ない(arrival_から始まるpluginId等)を省く
 			if(!defined("SOYSHOP_ADMIN_PAGE") || !SOYSHOP_ADMIN_PAGE) $sql .= " AND plugin_id NOT LIKE 'arrival_%'";
+
+			$sql .= " ORDER BY display_order ASC, id ASC";
 			
 			try{
 				$res = soyshop_get_hash_table_dao("plugin")->executeQuery($sql);

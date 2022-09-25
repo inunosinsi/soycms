@@ -136,8 +136,9 @@ class LoginPage extends MainMyPagePageBase{
 
 	/**
 	 * ログイン
+	 * @param string<mailaddress|loginId０−＾ｐ>, string
 	 */
-	private function _login($userId, $password){
+	private function _login(string $userId, string $password){
 		return $this->getMyPage()->login($userId, $password);
 	}
 
