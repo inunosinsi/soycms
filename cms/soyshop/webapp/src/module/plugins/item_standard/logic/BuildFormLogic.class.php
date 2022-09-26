@@ -99,10 +99,12 @@ class BuildFormLogic extends SOY2LogicBase{
 		$html[] = "	<tbody>";
 
 		//候補を作成する
-		if(count($list)) foreach(self::_getCandidate($list) as $key =>  $candidate){
-			$html[] = "		<tr>";
-			$html[] = self::buildTd($candidate, $key);
-			$html[] = "		</tr>";
+		if(count($list)) {
+			foreach(self::_getCandidate($list) as $key =>  $candidate){
+				$html[] = "		<tr>";
+				$html[] = self::buildTd($candidate, $key);
+				$html[] = "		</tr>";
+			}
 		}
 
 		$html[] = "	</tbody>";
@@ -139,7 +141,7 @@ class BuildFormLogic extends SOY2LogicBase{
 		$cnt = array();	//各々の要素数
 
 		foreach($list as $cnfId){
-			$attrValue = soyshop_get_item_attribute_value($this->parentId, $cnfId, "string");
+			$attrValue = ItemStandardUtil::getStandardValueByItemId($this->parentId, $cnfId);
 			if(!strlen($attrValue)) continue;
 
 			$values = explode("\n", $attrValue);
@@ -174,16 +176,16 @@ class BuildFormLogic extends SOY2LogicBase{
 		return $new;
 	}
 
-	private function buildTd($candidate, $key){
+	private function buildTd(string $candidate, int $key){
 		$values = explode(";", $candidate);
 		$child = $this->childLogic->getChildItem($this->parentId, $values);
 
 		$stock = (!is_null($child->getStock())) ? (int)$child->getStock() : 0;
 		$price = (!is_null($child->getPrice())) ? (int)$child->getPrice() : null;
 		$salePrice = (!is_null($child->getSalePrice())) ? (int)$child->getSalePrice() : null;
-
+		
 		//子商品の情報が無ければ親商品の情報を取得しておく
-		if(is_null($child->getId())){
+		if(!is_numeric($child->getId())){
 			$parent = self::getParentItem();
 			if(!$price) $price = (int)$parent->getPrice();
 			if(!$salePrice) $salePrice = (int)$parent->getSalePrice();
@@ -206,15 +208,15 @@ class BuildFormLogic extends SOY2LogicBase{
 		$html[] = "<td nowrap>";
 		$html[] = "<input type=\"submit\" class=\"btn btn-primary btn-sm\" value=\"更新\">";
 		//詳細ページへのリンク
-		if(!is_null($child->getId())){
+		if(is_numeric($child->getId())){
 			$html[] = "  <a href=\"" . SOY2PageController::createLink("Item.Detail.". $child->getId()) . "\" class=\"btn btn-info btn-sm\">詳細</a>";
 		}
 		$html[] = "</td>";
 		return implode("\n", $html);
 	}
 
-	private function checkFieldValue($cnfId){
-		return (strlen(soyshop_get_item_attribute_value($this->parentId, $cnfId, "string")));
+	private function checkFieldValue(string $cnfId){
+		return (strlen(ItemStandardUtil::getStandardValueByItemId($this->parentId, $cnfId)));
 	}
 
 	private function getParentItem(){
