@@ -7,7 +7,7 @@ function soyshop_relative_items($html, $htmlObj){
 	$items = array();
 	$isCallCustomfield = true;
 
-	if(SOYShopPluginUtil::checkIsActive("common_recommend_item")){
+	if(SOYShopPluginUtil::checkIsActive("common_relative_item")){
 		//標準の出力設定は10にしておく
 		$lim = 10;
 		if(preg_match('/cms:count=\"([\d]*)\"/', $html, $tmp)){
