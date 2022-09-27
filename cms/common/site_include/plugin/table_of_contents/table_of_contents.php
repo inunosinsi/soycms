@@ -13,7 +13,7 @@ class TableOfContentsPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.7"
+			"version"=>"0.8"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
@@ -33,10 +33,10 @@ class TableOfContentsPlugin{
 
 	function onOutput($arg){
 		$html = &$arg["html"];
-		if(!isset($_SERVER["SOYCMS_PAGE_ID"])) return $html;
+		if(!isset($_SERVER["SOYCMS_PAGE_ID"])) return str_replace("##HEADING##", "", $html);
 
 		$blog = soycms_get_blog_page_object($_SERVER["SOYCMS_PAGE_ID"]);
-		if(!is_numeric($blog->getId()) || is_bool(strpos($_SERVER["REQUEST_URI"], "/" . $blog->getEntryPageUri() . "/"))) return $html;
+		if(!is_numeric($blog->getId()) || is_bool(strpos($_SERVER["REQUEST_URI"], "/" . $blog->getEntryPageUri() . "/"))) return str_replace("##HEADING##", "", $html);
 
 		//ブログのエイリアスを取得
 		$alias = trim(substr($_SERVER["PATH_INFO"], strrpos($_SERVER["PATH_INFO"], "/")), "/");
@@ -51,10 +51,10 @@ class TableOfContentsPlugin{
 		}catch(Exception $e){
 			$res = array();
 		}
-		if(!count($res) || !isset($res[0]["entry_value"]) && !is_string($res[0]["entry_value"])) return $html;
+		if(!count($res) || !isset($res[0]["entry_value"]) && !is_string($res[0]["entry_value"])) return str_replace("##HEADING##", "", $html);
 		
 		$arr = soy2_unserialize($res[0]["entry_value"]);
-		if(!is_array($arr) || !count($arr)) return $html;
+		if(!is_array($arr) || !count($arr)) return str_replace("##HEADING##", "", $html);
 		
 		$logic = SOY2Logic::createInstance("site_include.plugin.table_of_contents.logic.CreateHeadingLogic");
 		$heading = $logic->createHeading($arr);
