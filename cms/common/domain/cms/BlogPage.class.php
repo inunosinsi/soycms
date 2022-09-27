@@ -108,7 +108,9 @@ class BlogPage extends Page{
 	* @param startWithSlash /で始まるかどうか
 	*/
 	function getEntryPageUri(bool $startWithSlash=false) {
-		if($startWithSlash && strlen((string)$this->entryPageUri)>0){
+		if(!is_string($this->entryPageUri)) $this->entryPageUri = "";
+		$this->entryPageUri = trim($this->entryPageUri);
+		if($startWithSlash && strlen($this->entryPageUri)>0){
 			return "/" . $this->entryPageUri;
 		}else{
 			return $this->entryPageUri;

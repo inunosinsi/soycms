@@ -12,9 +12,9 @@ class PluginBlockUtil {
 		if(isset($templates[$pageId])) return $templates[$pageId];
 
 		$blog = soycms_get_blog_page_object($pageId);
-
+		
 		//ブログページを取得できた場合
-		if(!is_null($blog) && !is_null($blog->getId())){
+		if($blog instanceof BlogPage && is_numeric($blog->getId()) && $blog->getId() == $pageId){
 			$pathInfo = (isset($_SERVER["PATH_INFO"])) ? $_SERVER["PATH_INFO"] : null;
 			if(is_null($pathInfo)) $pathInfo = (isset($_SERVER["REQUEST_URI"])) ? $_SERVER["REQUEST_URI"] : null;
 			//$pathInfo = (isset($_SERVER["PATH_INFO"])) ? $_SERVER["PATH_INFO"] : (isset($_SERVER["REQUEST_URI"])) ? $_SERVER["REQUEST_URI"] : null;
@@ -39,7 +39,7 @@ class PluginBlockUtil {
 				}
 				//記事ごとページ
 			}else if(strlen($blog->getEntryPageUri()) && strpos($uri, $blog->getEntryPageUri()) === 0){
-				if(strlen(trim($blog->getEntryTemplate()) > 0)){
+				if(strlen(trim($blog->getEntryTemplate())) > 0){
 					$templates[$pageId] = $blog->getEntryTemplate();
 				}
 			}

@@ -43,6 +43,8 @@ class MailLogic extends SOY2LogicBase{
 
 		//SOY2Mail
 		$this->send = $serverConfig->buildSendMail();
+
+		if(!defined("SOYCMS_CMS_NAME")) define("SOYCMS_CMS_NAME", "SOY CMS");
 	}
 
 	/**
@@ -50,9 +52,7 @@ class MailLogic extends SOY2LogicBase{
 	 */
 	public function sendMail($sendTo, $title, $body, $sendToName = ""){
 
-		if(is_null($this->send)){
-			$this->prepareSend();
-		}
+		if(is_null($this->send)) $this->prepareSend();
 		
 		//リセット
 		$this->reset();
@@ -84,12 +84,10 @@ class MailLogic extends SOY2LogicBase{
 	 */
 	public function sendTestMail($sendTo) {
 
-		if(is_null($this->send)){
-			$this->prepareSend();
-		}
+		if(is_null($this->send)) $this->prepareSend();
 
-		$title = "SOY CMS テストメール ".date("Y-m-d H:i:s");
-		$content = "これはSOY CMSから送信したテストメールです。";
+		$title = SOYCMS_CMS_NAME . " テストメール ".date("Y-m-d H:i:s");
+		$content = "これは" . SOYCMS_CMS_NAME . "から送信したテストメールです。";
 		$sendToName = "テストメール送信先";
 
 		$this->sendMail($sendTo, $title, $content, $sendToName);
@@ -100,11 +98,9 @@ class MailLogic extends SOY2LogicBase{
 	 */
 	public function sendPasswordRemindMail($sendTo, $sendToName, $token){
 
-		if(is_null($this->send)){
-			$this->prepareSend();
-		}
+		if(is_null($this->send)) $this->prepareSend();
 
-		$title = "SOYCMS パスワードの再設定";
+		$title = SOYCMS_CMS_NAME . " パスワードの再設定";
 		$body = file_get_contents(dirname(__FILE__) . "/mail_password_remind.txt");
 		$body = str_replace("#NAME#", $sendToName, $body);
 		$body = str_replace("#URL#", SOY2PageController::createRelativeLink("index.php/ResetPassword?t=" . $token, true), $body);
