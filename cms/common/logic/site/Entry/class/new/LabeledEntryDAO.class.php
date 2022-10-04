@@ -244,7 +244,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	abstract function getOpenEntryCountByLabelIds($labelids,$now);
 
 	//ソート
-	private function _addOrder(array $labelIds=array(), bool $orderReverse){
+	private function _addOrder(array $labelIds=array(), bool $orderReverse=false){
 		switch((int)$this->sort){
 			case 1:	//1:udate
 				$sort = "udate";

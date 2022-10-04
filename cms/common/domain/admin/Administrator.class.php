@@ -71,7 +71,7 @@ class Administrator {
 	}
 
 	function getEmail() {
-		return $this->email;
+		return (is_string($this->email)) ? $this->email : "";
 	}
 	function setEmail($email) {
 		$this->email = $email;

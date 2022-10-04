@@ -47,7 +47,7 @@ class Entry {
    		$this->id = $id;
    	}
    	function getTitle() {
-   		return $this->title;
+   		return (string)$this->title;	//数字があるかもしれないのでstring型でキャスト
    	}
    	function setTitle($title) {
    		$this->title = $title;
