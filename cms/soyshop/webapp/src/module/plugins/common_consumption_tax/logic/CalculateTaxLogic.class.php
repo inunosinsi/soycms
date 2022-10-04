@@ -36,9 +36,13 @@ class CalculateTaxLogic extends SOY2LogicBase {
 		return array($total, $reducedRateTotal);
 	}
 
+	/**
+	 * @param int, int
+	 * @return int
+	 */
 	function calculateTaxTotal(int $total, int $reducedRateTotal=0){
 		$taxRate = self::_getTaxRate();
-		if($taxRate === 0) return null;
+		if($taxRate === 0) return 0;
 
 		//軽減税率
 		$reducedTaxRate = ($reducedRateTotal > 0) ? self::_getReducedTaxRate() : 0;

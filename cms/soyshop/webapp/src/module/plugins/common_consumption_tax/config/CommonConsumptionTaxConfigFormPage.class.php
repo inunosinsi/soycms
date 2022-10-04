@@ -170,7 +170,7 @@ class CommonConsumptionTaxConfigFormPage extends WebPage{
 		}
 	}
 
-	private function _convertDate($date){
+	private function _convertDate(string $date){
 		$array = explode("-", $date);
 		return mktime(0, 0, 0, $array[1], $array[2], $array[0]);
 	}
