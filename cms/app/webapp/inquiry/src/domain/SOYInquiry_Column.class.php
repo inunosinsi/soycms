@@ -280,6 +280,8 @@ interface ISOYInquiry_Column{
 
 class SOYInquiry_ColumnBase implements ISOYInquiry_Column{
 
+	const THUMBNAIL_WIDTH = 80;
+
 	protected $id;
 	protected $formId;
 	protected $columnId;
@@ -570,7 +572,7 @@ class SOYInquiry_ColumnBase implements ISOYInquiry_Column{
 	}
 
 	function getTrProperty(){
-		return $this->trProperty;
+		return (is_string($this->trProperty)) ? $this->trProperty : "";
 	}
 	function setTrProperty($trProperty){
 		$this->trProperty = $trProperty;
