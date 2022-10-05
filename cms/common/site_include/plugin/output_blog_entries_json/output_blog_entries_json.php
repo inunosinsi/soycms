@@ -16,7 +16,7 @@ class OutputBlogEntriesJsonPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/4505",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.6.1"
+			"version"=>"0.7"
 		));
 		
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -38,6 +38,9 @@ class OutputBlogEntriesJsonPlugin{
 		$offset = (isset($_GET["offset"]) && is_numeric($_GET["offset"])) ? (int)$_GET["offset"] : 0;
 		$blogPage = soycms_get_page_object((int)$tmp[1]);
 		if(!$blogPage instanceof BlogPage) self::_output();
+
+		// 以後の各メソットでEntryクラスを利用する
+		if(!class_exists("Entry")) SOY2::import("domain.cms.Entry");
 
 		$labelId = $blogPage->getBlogLabelId();
 		
@@ -116,7 +119,7 @@ class OutputBlogEntriesJsonPlugin{
 	}
 
 	/**
-	 * 合計金額を求める
+	 * 合計を求める
 	 * @param int
 	 * @return int
 	 */
@@ -130,7 +133,7 @@ class OutputBlogEntriesJsonPlugin{
 	}
 
 	/**
-	 * 合計金額を求めるためのSQLを発行する
+	 * 合計を求めるためのSQLを発行する
 	 * @param  int
 	 * @return string
 	 */
