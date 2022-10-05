@@ -77,6 +77,8 @@ class ThumbnailLogic extends SOY2LogicBase {
 	 * @return string
 	 */
     private function _createHash(int $idx, string $item){
+		$res = strpos($item, "*");
+		if(is_numeric($res) && $res === 0) $item = substr($item, 1);
 		return md5((string)$idx . $item);
     }
 }

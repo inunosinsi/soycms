@@ -17,6 +17,10 @@ class RadioColumn extends SOYInquiry_ColumnBase{
 	//公開側で各項目毎に改行の<br>を加えるか？
 	private $isBr = false;
 
+	//各項目にサムネイルを設定する
+	private $isThumbnail = false;
+	private $thumbWidth = SOYInquiry_ColumnBase::THUMBNAIL_WIDTH;
+
 	/**
 	 * ユーザに表示するようのフォーム
 	 * @param array
@@ -53,8 +57,18 @@ class RadioColumn extends SOYInquiry_ColumnBase{
 
 			$radioReq = ($key == 0) ? $required : "";
 			if(strlen($radioReq) && SOYInquiryUtil::checkIsParsley()) $radioReq .= " data-parsley-errors-container=\"#parsley-error-" . $this->getColumnId() . "\" ";
+
+			$html[] = "<label>";
+
+			//サムネイル @ToDo 表示方法は要検討
+			if($this->isThumbnail){
+				$path = SOYInquiryUtil::getThumbnailFilePath($this->getFormId(), $this->getColumnId(), $key, $item);
+				if(file_exists($path)) $html[] = "<img src=\"" . SOYInquiryUtil::getThumbnailSrc($path, $this->thumbWidth) . "\">";
+			}
+
 			$html[] = "<input type=\"radio\" id=\"data_".$this->getColumnId() . "_" . $key. "\" name=\"data[".$this->getColumnId()."]\" value=\"".$item."\" " . implode(" ",$attributes). " ". $checked . " " . $radioReq . ">";
-			$html[] = "<label for=\"data_".$this->getColumnId() . "_" . $key. "\">".$item."</label>";
+			$html[] = $item;
+			$html[] = "</label>";
 
 			if($this->isBr) $html[] = "<br>";
 		}
@@ -93,7 +107,21 @@ class RadioColumn extends SOYInquiry_ColumnBase{
 		$html.= '<p>初期値として選択される項目がある場合、項目の前に[*]を入力して下さい。</p>';
 
 		$checked = ($this->isBr) ? " checked=\"checked\"" : "";
-		$html .= "<label><input type=\"checkbox\" name=\"Column[config][isBr]\" value=\"1\"" . $checked. "> 各項目毎に改行コード&lt;br&gt;を追加する。</label>";
+		$html .= "<label><input type=\"checkbox\" name=\"Column[config][isBr]\" value=\"1\"" . $checked. "> 各項目毎に改行コード&lt;br&gt;を追加する。</label><br>";
+
+		$checked = ($this->isThumbnail) ? " checked=\"checked\"" : "";
+		$html .= "<label><input type=\"checkbox\" name=\"Column[config][isThumbnail]\" value=\"1\"" . $checked. "> 各項目毎にサムネイルを設定する</label>";
+		if($this->isThumbnail){	//サムネイルに関する説明文
+			$html .= "<br>";
+			$html .= "サムネイルのサイズ(width):<input type=\"number\" name=\"Column[config][thumbWidth]\" value=\"" . (int)$this->thumbWidth . "\" style=\"width:60px;\">&nbsp;px<br>";
+			$items = explode("\n", trim((string)$this->items));
+			if(count($items)){
+				$html .= "下記のように画像ファイルを配置します。<br>";
+				$html .= SOYInquiryUtil::buildThumbnailPathListTable($items, $this->getFormId(), $this->getColumnId());
+			}else{
+				$html .= "<strong style=\"color:red;\">先に項目の設定を行ってください。</strong>";
+			}	
+		}
 
 		$html .= "<br><br>";
 
@@ -126,6 +154,8 @@ class RadioColumn extends SOYInquiry_ColumnBase{
 		$this->attribute = (isset($config["attribute"])) ? str_replace("\"","&quot;",$config["attribute"]) : null;
 		$this->requiredProp = (isset($config["requiredProp"])) ? $config["requiredProp"] : null;
 		$this->isBr = (isset($config["isBr"]) && $config["isBr"] == 1);
+		$this->isThumbnail = (isset($config["isThumbnail"]) && $config["isThumbnail"] == 1);
+		$this->thumbWidth = (isset($config["thumbWidth"]) && is_numeric($config["thumbWidth"])) ? (int)$config["thumbWidth"] : SOYInquiry_ColumnBase::THUMBNAIL_WIDTH;
 	}
 	function getConfigure(){
 		$config = parent::getConfigure();
@@ -134,6 +164,8 @@ class RadioColumn extends SOYInquiry_ColumnBase{
 		$config["attribute"] = $this->attribute;
 		$config["requiredProp"] = $this->requiredProp;
 		$config["isBr"] = $this->isBr;
+		$config["isThumbnail"] = $this->isThumbnail;
+		$config["thumbWidth"] = $this->thumbWidth;
 		return $config;
 	}
 

@@ -333,6 +333,21 @@ class SOYInquiryUtil{
 		return SOY2Logic::createInstance("logic.ThumbnailLogic")->getThumbnailFilePath($formId, $columnId, $idx, $itemname);
 	}
 
+	/**
+	 * @param string, int
+	 * @return string
+	 */
+	public static function getThumbnailSrc(string $path, int $resizeW){
+		$src = "/" . ltrim(str_replace($_SERVER["DOCUMENT_ROOT"], "", $path), "/");
+		if(defined("_SITE_ROOT_")){			// case soycms
+			return "/" . trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/") . "/im.php?src=" . $src . "&width=" . $resizeW;
+		}else if(defined("SOYSHOP_ID")){	//case soyshop
+			return "/" . SOYSHOP_ID . "/im.php?src=" . $src . "&width=" . $resizeW;
+		}else{
+			return $src;
+		}
+	}
+
 	/** Parsley.js連携 **/
 	public static function checkIsParsley(){
 		static $isParsley;
