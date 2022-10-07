@@ -1,0 +1,94 @@
+<form soy:id="form">
+	<div class="form-group">
+		<label>バージョン</label>
+		<input type="text" soy:id="ver" class="form-control" style="width:120px;">
+	</div>
+	<div class="form-group">
+		<label>インスタアカウントID</label>
+		<input type="text" soy:id="bizId" class="form-control" style="width:180px;">
+	</div>
+	<div class="form-group">
+		<label>アクセストークン</label>
+		<input type="text" soy:id="token" class="form-control">
+	</div>
+	<div class="form-group">
+		<label>表示件数</label>
+		<input type="number" soy:id="limit" class="form-control" style="width:100px;">
+	</div>
+
+	<div>
+		<input type="submit" name="update" class="btn btn-primary" value="更新">
+	</div>
+</form>
+
+<br>
+
+<pre>&lt;!-- cms&colon;module="instagram.graph" --&gt;
+&lt;!-- p_block&colon;id="data_list" --&gt;
+&lt;div cms&colon;id="caption"&gt;&lt;/div&gt;
+&lt;a cms&colon;id=“permalink”&gt;
+	&lt;!-- cms&colon;id="media_type_image" --&gt;&lt;img cms&colon;id="media_url_image"&gt;&lt;!-- /cms&colon;id="media_type_image" --&gt;
+	&lt;!-- cms&colon;id="media_type_carousel_album" --&gt;&lt;img cms&colon;id="media_url_carousel_album"&gt;&lt;!-- /cms&colon;id="media_type_carousel_album" --&gt;
+	&lt;!-- cms&colon;id="media_type_video" --&gt;&lt;video cms&colon;id="media_url_video"&gt;&lt;/video&gt;&lt;!-- /cms&colon;id="media_type_video" --&gt;
+&lt;/a&gt;
+&lt;!-- /p_block&colon;id="data_list" --&gt;
+&lt;!-- /cms&colon;module="instagram.graph" --&gt;</pre>
+
+<div class="table-responsive">
+	<table class="table table-striped" style="width:600px;">
+		<thead>
+			<tr>
+				<th>cms&colon;id</th>
+				<th>タグ</th>
+				<th>説明</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>caption</td>
+				<td>すべて</td>
+				<td>投稿内容</td>
+			</tr>
+			<tr>
+				<td>media_url_text</td>
+				<td>すべて</td>
+				<td>メディアのURLを文字列として出力する</td>
+			</tr>
+			<tr>
+				<td>media_type_image</td>
+				<td>すべて</td>
+				<td>media_typeがIMAGEの時に囲った箇所を表示する</td>
+			</tr>
+			<tr>
+				<td>media_url_image</td>
+				<td>img</td>
+				<td>メディア(IMAGE)を表示する</td>
+			</tr>
+			<tr>
+				<td>media_type_carousel_album</td>
+				<td>すべて</td>
+				<td>media_typeがCAROUSEL_ALBUMの時に囲った箇所を表示する</td>
+			</tr>
+			<tr>
+				<td>media_url_carousel_album</td>
+				<td>img</td>
+				<td>メディア(CAROUSEL_ALBUM)を表示する</td>
+			</tr>
+			<tr>
+				<td>media_type_video</td>
+				<td>すべて</td>
+				<td>media_typeがVIDEOの時に囲った箇所を表示する</td>
+			</tr>
+			<tr>
+				<td>media_url_video</td>
+				<td>img</td>
+				<td>メディア(VIDEO)を表示する</td>
+			</tr>
+			<tr>
+				<td>permalink</td>
+				<td>a</td>
+				<td>パーマリンク</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
