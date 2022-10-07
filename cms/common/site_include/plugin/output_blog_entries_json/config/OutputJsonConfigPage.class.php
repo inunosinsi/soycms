@@ -11,7 +11,7 @@ class OutputJsonConfigPage extends WebPage {
 
 		//一番若いブログページのIDを取得する
 		$oldestPageId = self::_getOldestBlogPageId();
-		$url = UserInfoUtil::getSitePublishURL();
+		$url = UserInfoUtil::getSiteURL();
 		
 		$this->addLabel("url", array(
 			"text" => $url

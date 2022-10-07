@@ -4,6 +4,7 @@ OutputBlogEntriesJsonPlugin::register();
 class OutputBlogEntriesJsonPlugin{
 
 	const PLUGIN_ID = "output_blog_entries_json";
+	const DEBUG = 0;	//1を指定すると配列で出力する
 
 	function getId(){
 		return self::PLUGIN_ID;
@@ -16,7 +17,7 @@ class OutputBlogEntriesJsonPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/4505",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.7"
+			"version"=>"0.9"
 		));
 		
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -38,7 +39,7 @@ class OutputBlogEntriesJsonPlugin{
 		$offset = (isset($_GET["offset"]) && is_numeric($_GET["offset"])) ? (int)$_GET["offset"] : 0;
 		$blogPage = soycms_get_page_object((int)$tmp[1]);
 		if(!$blogPage instanceof BlogPage) self::_output();
-
+		
 		// 以後の各メソットでEntryクラスを利用する
 		if(!class_exists("Entry")) SOY2::import("domain.cms.Entry");
 
@@ -89,6 +90,35 @@ class OutputBlogEntriesJsonPlugin{
 				}
 			}
 		}
+
+		//サムネイル
+		$thumList = array();
+		if(isset($_GET["thumbnail"])){
+			$sql = "SELECT entry_id, entry_field_id, entry_value FROM EntryAttribute ".
+					"WHERE entry_id IN (" . implode(",", $entryIds) . ") ".
+					"AND entry_field_id LIKE 'soycms_thumbnail_plugin_%'";
+			try{
+				$r = self::_dao()->executeQuery($sql);
+			}catch(Exception $e){
+				$r = array();
+			}
+			
+			$arr = array();
+			if(count($r)){
+				foreach($r as $v){
+					if($v["entry_field_id"] == "soycms_thumbnail_plugin_config") continue;
+					$entryId = (int)$v["entry_id"];
+					if(!isset($arr[$entryId])) $arr[$entryId] = array();
+					$fId = str_replace("soycms_thumbnail_plugin_", "", $v["entry_field_id"]);
+					$ffId = ($fId == "resize") ? "thumbnail" : $fId;
+					$arr[$entryId][$ffId] = (strlen($v["entry_value"])) ? str_replace("/".self::_getSiteId()."/", "", self::_buildSiteUrl()) . $v["entry_value"] : "";
+				}
+			}
+			
+			foreach($entryIds as $entryId){
+				$thumList[$entryId] = (isset($arr[$entryId])) ? $arr[$entryId] : array("resize" => "", "trimming" => "", "upload" => "");
+			}
+		}
 		
 		$arr = array();
 		$arr["total"] = $cnt;
@@ -96,6 +126,20 @@ class OutputBlogEntriesJsonPlugin{
 		$arr["entries"] = array();
 		foreach($res as $v){
 			$values = $v;
+
+			//記事のURL
+			if(isset($_GET["is_url"]) && (int)$_GET["is_url"] === 1){
+				$values["url"] = self::_buildBlogPageEntryUri($blogPage) . rawurlencode($values["alias"]);
+			}
+
+			//本文と追記の文字数を決める
+			foreach(array("content", "more") as $col){
+				if(!isset($_GET[$col]) || !isset($values[$col]) || !is_numeric($_GET[$col])) continue;
+				$values[$col] = trim(strip_tags($values[$col]));
+				if(mb_strlen($values[$col]) <= $_GET[$col]) continue;
+				$values[$col] = mb_substr($values[$col], 0, $_GET[$col]);
+			}
+			
 
 			//カスタムフィールドの値があるか？
 			if(count($customList) && isset($customList[(int)$v["id"]]) && count($customList[(int)$v["id"]])){
@@ -111,6 +155,11 @@ class OutputBlogEntriesJsonPlugin{
 				}
 			}
 
+			// サムネイルプラグイン
+			if(count($thumList)){
+				$values["thumnail"] = $thumList[$values["id"]];
+			}
+			
 			$arr["entries"][] = $values;
 		}
 
@@ -162,8 +211,12 @@ class OutputBlogEntriesJsonPlugin{
 	 * @return string
 	 */
 	private function _buildSql(int $lim, int $offset){
+		$cols = "e.id, e.title, e.alias, e.cdate";
+		if(isset($_GET["content"])) $cols .= ",e.content";
+		if(isset($_GET["more"])) $cols .= ",e.more";
+		
 		$now = time();
-		$sql = "SELECT e.id, e.title, e.alias, e.cdate FROM Entry e ".
+		$sql = "SELECT " . $cols . " FROM Entry e ".
 				"INNER JOIN EntryLabel l ".
 				"ON e.id = l.entry_id ".
 				"WHERE l.label_id = :labelId ".
@@ -250,10 +303,76 @@ class OutputBlogEntriesJsonPlugin{
 		if(!isset($arr["total"])) $arr["total"] = 0;
 		if(!isset($arr["is_next"])) $arr["is_next"] = 0;
 		if(!isset($arr["entries"])) $arr["entries"] = array();
-		//var_dump($arr);
-		header("Content-Type: application/json; charset=utf-8");
-		echo json_encode($arr);
+		if(self::DEBUG){
+			var_dump($arr);
+		}else{
+			header("Content-Type: application/json; charset=utf-8");
+			echo json_encode($arr);
+		}
 		exit;
+	}
+
+	/**
+	 * @param bool
+	 * @return string
+	 */
+	private function _buildSiteUrl(){
+		static $u;
+		if(is_string($u)) return $u;
+			
+		$u = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") ? "https" : "http";
+		$u .= "://" . $_SERVER["HTTP_HOST"] . "/";
+	
+		// サイトID 下記の正規表現でスラッシュ付きのサイトIDに対応
+		$u .= self::_getSiteId() . "/";
+		return $u;
+	}
+
+	/**
+	 * @return string
+	 */
+	private function _getSiteId(){
+		static $siteId;
+		if(is_string($siteId)) return $siteId;
+
+		preg_match('/\/(.*?)\/[\d]\.json/', $_SERVER["REQUEST_URI"], $tmp);
+		$siteId = (isset($tmp[1])) ? $tmp[1] : trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/");
+		return $siteId;
+	}
+
+	private function _checkIsRoot(){
+		if(!file_exists($_SERVER["DOCUMENT_ROOT"] . "/index.php")) return false;
+		$lines = explode("\n", file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/index.php"));
+		if(!count($lines)) return false;
+		
+		foreach($lines as $l){
+			if(is_bool(strpos($l, "include_once("))) continue;
+			preg_match('/include_once\(\"(.*?)\/index.php\"\)/', $l, $tmp);
+			if($tmp[1] == self::_getSiteId()) return true;
+		}
+		return false;
+	}
+
+	/**
+	 * @param BlogPage
+	 * @return string
+	 */
+	private function _buildBlogPageEntryUri(BlogPage $blogPage){
+		static $u;
+		if(is_string($u)) return $u;
+
+		$u = self::_buildSiteUrl();
+		
+		// ルート設定の場合はURLの末尾のサイトIDを除く
+		if(self::_checkIsRoot()) $u = str_replace("/" . self::_getSiteId() . "/", "/", $u);
+		
+		$uri = $blogPage->getUri();
+		if(is_string($uri) && strlen($uri)) $u .= $uri . "/";
+
+		$uri = $blogPage->getEntryPageUri();
+		if(is_string($uri) && strlen($uri)) $u .= $uri . "/";
+
+		return $u;
 	}
 
 	private function _dao(){
