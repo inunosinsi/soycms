@@ -48,7 +48,7 @@ class CMSPageController extends SOY2PageController{
 		}catch(Exception $e){
 			$this->onNotFound();
 		}
-
+		
 		//404ページでも下記の値を使用する
 		$_SERVER["SOYCMS_PAGE_URI"] = $page->getUri();
 		$_SERVER["SOYCMS_PAGE_ID"] = $page->getId();
@@ -56,7 +56,7 @@ class CMSPageController extends SOY2PageController{
 		if($page->isActive() < 0){
 			$this->onNotFound();
 		}
-
+		
 		//閲覧制限チェック
 		if($this->siteConfig && $this->siteConfig->isShowOnlyAdministrator()){
 			//セッションからログインしているかどうか取得
@@ -90,7 +90,14 @@ class CMSPageController extends SOY2PageController{
 				 * URIが空のページに対して、/index.html以外（hoge.htmlなど）でアクセスした場合
 				 */
 				if(empty($uri) && count($args) > 0 && is_bool(strstr($args[0], "index.htm"))){
-					$this->onNotFound();
+					//ページャの場合は404NotFoundにしない
+					if(!isset($args[0])){
+						$this->onNotFound();
+					}else{
+						preg_match('/^page-\d+/', $args[0], $tmp);
+						if(!isset($tmp[0])) $this->onNotFound();												
+					}
+					
 					//throw new Exception("存在しないページ");
 				}
 				$pageClass = "CMSPage";
@@ -99,10 +106,8 @@ class CMSPageController extends SOY2PageController{
 
 		// ブログページ以外ではargsにページャに関するもの以外がないことを確認
 		if($pageClass != "CMSBlogPage" && count($args) && strlen($args[0])){
-			preg_match('/^page-\d*/', $args[0], $tmp);
-			if(!isset($tmp[0])){
-				$this->onNotFound();
-			}
+			preg_match('/^page-\d+/', $args[0], $tmp);
+			if(!isset($tmp[0])) $this->onNotFound();
 		}
 
 		SOY2::import("site_include." . $pageClass);

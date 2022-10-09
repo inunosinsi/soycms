@@ -157,7 +157,7 @@ class OutputBlogEntriesJsonPlugin{
 
 			// サムネイルプラグイン
 			if(count($thumList)){
-				$values["thumnail"] = $thumList[$values["id"]];
+				$values["thumbnail"] = $thumList[$values["id"]];
 			}
 			
 			$arr["entries"][] = $values;
@@ -211,7 +211,7 @@ class OutputBlogEntriesJsonPlugin{
 	 * @return string
 	 */
 	private function _buildSql(int $lim, int $offset){
-		$cols = "e.id, e.title, e.alias, e.cdate";
+		$cols = "e.id, e.title, e.alias, e.cdate, e.udate";
 		if(isset($_GET["content"])) $cols .= ",e.content";
 		if(isset($_GET["more"])) $cols .= ",e.more";
 		
