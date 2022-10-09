@@ -423,7 +423,10 @@ class LabeledBlock_LabelList extends HTMLList{
 
 class LabeledBlockPagerComponent{
 
-	static public function buildPager($appComponent, $pageUrl, $count, $total, $offset, $page, $limit, $pagerParamKey){
+	/**
+	 * @param CMSPage etc, string, int, int, int, int, int, string
+	 */
+	static public function buildPager($appComponent, string $pageUrl, int $count, int $total, int $offset, int $page, int $limit, string $pagerParamKey){
 		$start = $offset;
 		$end = $start + $count;
 		if($end > 0 && $start == 0) $start = 1;
