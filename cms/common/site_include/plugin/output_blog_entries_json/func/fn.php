@@ -44,9 +44,9 @@ function soycms_module_func_get_get_parameters(string $endpoint){
 	$reqUri = $_SERVER["REQUEST_URI"];
 	if(is_numeric(strpos($reqUri, "?"))) $reqUri = substr($reqUri, 0, strpos($reqUri, "?"));
 	preg_match('/page-(\d+?)/', $reqUri, $tmp);
-	$page = 1;
+	$page = 0;
 	if(isset($tmp[1]) && (int)$tmp[1] > 0) $page = (int)$tmp[1];
-	$params["offset"] = $page-1;
+	$params["offset"] = $page;
 	
 	return $params;
 }

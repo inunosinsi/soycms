@@ -17,7 +17,7 @@ class OutputBlogEntriesJsonPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/4505",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.9"
+			"version"=>"0.10"
 		));
 		
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -111,7 +111,7 @@ class OutputBlogEntriesJsonPlugin{
 					if(!isset($arr[$entryId])) $arr[$entryId] = array();
 					$fId = str_replace("soycms_thumbnail_plugin_", "", $v["entry_field_id"]);
 					$ffId = ($fId == "resize") ? "thumbnail" : $fId;
-					$arr[$entryId][$ffId] = (strlen($v["entry_value"])) ? str_replace("/".self::_getSiteId()."/", "", self::_buildSiteUrl()) . $v["entry_value"] : "";
+					$arr[$entryId][$ffId] = (strlen($v["entry_value"])) ? str_replace("/".soycms_get_site_id_by_frontcontroller()."/", "", soycms_get_site_url_by_frontcontroller(true)) . $v["entry_value"] : "";
 				}
 			}
 			
@@ -313,47 +313,6 @@ class OutputBlogEntriesJsonPlugin{
 	}
 
 	/**
-	 * @param bool
-	 * @return string
-	 */
-	private function _buildSiteUrl(){
-		static $u;
-		if(is_string($u)) return $u;
-			
-		$u = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") ? "https" : "http";
-		$u .= "://" . $_SERVER["HTTP_HOST"] . "/";
-	
-		// サイトID 下記の正規表現でスラッシュ付きのサイトIDに対応
-		$u .= self::_getSiteId() . "/";
-		return $u;
-	}
-
-	/**
-	 * @return string
-	 */
-	private function _getSiteId(){
-		static $siteId;
-		if(is_string($siteId)) return $siteId;
-
-		preg_match('/\/(.*?)\/[\d]\.json/', $_SERVER["REQUEST_URI"], $tmp);
-		$siteId = (isset($tmp[1])) ? $tmp[1] : trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/");
-		return $siteId;
-	}
-
-	private function _checkIsRoot(){
-		if(!file_exists($_SERVER["DOCUMENT_ROOT"] . "/index.php")) return false;
-		$lines = explode("\n", file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/index.php"));
-		if(!count($lines)) return false;
-		
-		foreach($lines as $l){
-			if(is_bool(strpos($l, "include_once("))) continue;
-			preg_match('/include_once\(\"(.*?)\/index.php\"\)/', $l, $tmp);
-			if($tmp[1] == self::_getSiteId()) return true;
-		}
-		return false;
-	}
-
-	/**
 	 * @param BlogPage
 	 * @return string
 	 */
@@ -361,10 +320,7 @@ class OutputBlogEntriesJsonPlugin{
 		static $u;
 		if(is_string($u)) return $u;
 
-		$u = self::_buildSiteUrl();
-		
-		// ルート設定の場合はURLの末尾のサイトIDを除く
-		if(self::_checkIsRoot()) $u = str_replace("/" . self::_getSiteId() . "/", "/", $u);
+		$u = soycms_get_site_publish_url_by_frontcontroller(true);
 		
 		$uri = $blogPage->getUri();
 		if(is_string($uri) && strlen($uri)) $u .= $uri . "/";

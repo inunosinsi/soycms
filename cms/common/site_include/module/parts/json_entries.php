@@ -52,58 +52,51 @@ function soycms_json_entries($html, $htmlObj){
 		"keys" => $keys
 	));
 
-	/** ページャに関するcms:id */
-	/**
-	if(!class_exists("JsonEntriesModulePagerLogic")) SOY2::import("site_include.plugin.output_blog_entries_json.func.pager", ".php");
-	$start = $getParams["offset"];
-	$end = $start + $getParams["limit"];
-	if($end > 0 && $start == 0) $start = 1;
-
-	$pager = new JsonEntriesModulePagerLogic();
-	$pager->setPageUrl("http://localhost:8080/site2/");
-	$pager->setPage($getParams["offset"]+1);
-	$pager->setStart($start);
-	$pager->setEnd($end);
-	$pager->setLimit($getParams["limit"]);
-	$pager->setTotal($total);
 	
-	//件数情報表示
-	$obj->addLabel("count_start", array(
-		"soy2prefix" => "cms",
-		"text" => $pager->getStart()
-	));
-	$obj->addLabel("count_end", array(
-		"soy2prefix" => "cms",
-		"text" => $pager->getEnd()
-	));
-	$obj->addLabel("count_max", array(
-		"soy2prefix" => "cms",
-		"text" => $pager->getTotal()
+	/** ページャに関するcms:id */
+	$url = soycms_get_page_url_by_frontcontroller(true);
+	preg_match('/page-\d+/', $_SERVER["REQUEST_URI"], $args);
+	$current = (isset($args[0]) && strpos($args[0], "page-") === 0) ? (int)str_replace("page-", "", $args[0]) : 0;
+	$last_page_number = (int)ceil($total / $getParams["limit"]);
+
+	SOY2::import("site_include.plugin.soycms_search_block.component.BlockPluginPagerComponent");
+	$obj->createAdd("pager", "BlockPluginPagerComponent", array(
+		"list" => array(),
+		"current" => $current,
+		"last"	 => $last_page_number,
+		"url"		=> $url,
+		"soy2prefix" => "p_block",
 	));
 
-	//ページへのリンク
-	$obj->addModel("has_next_prev_pager", $pager->getHasNextOrPrevParam());
-	$obj->addModel("has_next_pager", $pager->getHasNextParam());
-	$obj->addModel("has_prev_pager", $pager->getHasPrevParam());
-	$obj->addLink("next_pager", $pager->getNextParam());
-	$obj->addLink("prev_pager", $pager->getPrevParam());
-	$obj->createAdd("pager_list", "JsonEntriesModuleSimplePager", $pager->getPagerParam());
-
-	//ページへジャンプ
-	$obj->addForm("pager_jump", array(
-		"soy2prefix" => "cms",
-		"method" => "get",
-		"action" => $pager->getPageURL()."/"
+	$obj->addModel("has_pager", array(
+		"soy2prefix" => "p_block",
+		"visible" => ($last_page_number >1)
 	));
-	$obj->addSelect("pager_select", array(
-		"soy2prefix" => "cms",
-		"name" => "page",
-		"options" => $pager->getSelectArray(),
-		"selected" => $pager->getPage(),
-		"onchange" => "location.href=this.parentNode.action+this.options[this.selectedIndex].value"
+	$obj->addModel("no_pager", array(
+		"soy2prefix" => "p_block",
+		"visible" => ($last_page_number <2)
 	));
-	**/
 
+	$obj->addLink("first_page", array(
+		"soy2prefix" => "p_block",
+		"link" => $url,
+	));
+
+	$obj->addLink("last_page", array(
+		"soy2prefix" => "p_block",
+		"link" => ($last_page_number > 0) ? $url . "page-" . ($last_page_number - 1) : null,
+	));
+
+	$obj->addLabel("current_page", array(
+		"soy2prefix" => "p_block",
+		"text" => max(1, $current + 1),
+	));
+
+	$obj->addLabel("pages", array(
+		"soy2prefix" => "p_block",
+		"text" => $last_page_number,
+	));
+	
 	$obj->display();
 }
 

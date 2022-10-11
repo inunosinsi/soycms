@@ -108,6 +108,9 @@ class CMSPageController extends SOY2PageController{
 		if($pageClass != "CMSBlogPage" && count($args) && strlen($args[0])){
 			preg_match('/^page-\d+/', $args[0], $tmp);
 			if(!isset($tmp[0])) $this->onNotFound();
+
+			//page-\d/文字列形式のargsであった場合
+			if(isset($tmp[0]) && count($args) > 1) $this->onNotFound();
 		}
 
 		SOY2::import("site_include." . $pageClass);

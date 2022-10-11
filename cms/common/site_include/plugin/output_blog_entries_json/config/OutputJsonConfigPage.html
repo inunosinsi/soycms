@@ -138,3 +138,24 @@
 		</tr>
 	</tbody>
 </table>
+
+<br><br>
+<div class="alert alert-info">出力したJSONからPHPモジュールで記事一覧を出力する</div>
+<div class="alert alert-warning">※JSONのURLを指定する際、GETパラメータからoffsetの値は外す。</div>
+<pre>&lt;!-- cms:module="parts.json_entries" --&gt;
+&lt;input type="hidden" <strong>id="output_blog_entries_json_connector"</strong> value="<strong>当プラグインで生成するJSONのURL</strong>"&gt;
+
+&lt;!-- p_block:id="entry_list" --&gt;
+<strong>{block:idで使用できるcms:idとほぼ同じ}</strong>
+&lt;!-- /p_block:id="entry_list" --&gt;
+
+&lt;a p_block:id="first_page"&gt;最初のページへ&lt;/a&gt;
+
+&lt;!-- p_block:id="pager" cms:pager_num="10" --&gt;
+&lt;span class="pager_item" cms:id="pager_item"&gt;&lt;a href="#"&gt;1&lt;/a&gt;&lt;/span&gt;
+&lt;!-- /p_block:id="pager" --&gt;
+
+&lt;a p_block:id="last_page"&gt;最後のページへ&lt;/a&gt;
+
+&lt;!-- p_block:id="pages" /--&gt;ページ中&lt;!-- p_block:id="current_page" /--&gt;ページ目
+&lt;!-- /cms:module="parts.json_entries" --&gt;</pre>
