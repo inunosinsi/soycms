@@ -12,7 +12,7 @@ class BlogEntrySerialNumberPlugin {
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co/article/3170",
 			"mail" => "tsuyoshi@saitodev.co",
-			"version" => "0.1"
+			"version" => "0.5"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -43,14 +43,14 @@ class BlogEntrySerialNumberPlugin {
 		));
 	}
 
-	private function _counter($className){
+	private function _counter(string $className){
 		static $n;
 		if(is_null($n)) $n = array();
 		if(!isset($n[$className])) $n[$className] = 0;
 		return $n[$className]++;
 	}
 
-	private function _offset($className){
+	private function _offset(string $className){
 		static $o;
 		if(is_null($o)) $o = array();
 		if(!isset($o[$className])){
@@ -66,7 +66,7 @@ class BlogEntrySerialNumberPlugin {
 		$thisUri = $blogPage->getUri();
 		if(strlen($thisUri)) $thisUri .= "/";
 
-		$pathInfo = $_SERVER["PATH_INFO"];
+		$pathInfo = (isset($_SERVER["PATH_INFO"]) && is_string($_SERVER["PATH_INFO"])) ? $_SERVER["PATH_INFO"] : "";
 
 		//開いているページがカテゴリページか調べる
 		if(strpos($pathInfo, $thisUri . $blogPage->getCategoryPageUri())){
@@ -83,7 +83,10 @@ class BlogEntrySerialNumberPlugin {
 
 	//ページ番号を取得
 	private function _getPageNumber(){
-		preg_match('/page-(\d*)/', $_SERVER["PATH_INFO"], $tmp);
+		$pathInfo = (isset($_SERVER["PATH_INFO"]) && is_string($_SERVER["PATH_INFO"])) ? $_SERVER["PATH_INFO"] : "";
+		if(!strlen($pathInfo)) return 0;
+	
+		preg_match('/page-(\d*)/', $pathInfo, $tmp);
 		return (isset($tmp[1]) && is_numeric($tmp[1])) ? (int)$tmp[1] : 0;
 	}
 
@@ -91,20 +94,8 @@ class BlogEntrySerialNumberPlugin {
 		static $pages;
 		if(is_null($pages)) $pages = array();
 		$pageId = (int)$_SERVER["SOYCMS_PAGE_ID"];
-		if(!isset($pages[$pageId])){
-			try{
-				$pages[$pageId] = self::_dao()->getById($pageId);
-			}catch(Exception $e){
-				$pages[$pageId] = new BlogPage();
-			}
-		}
+		if(!isset($pages[$pageId])) $pages[$pageId] = soycms_get_blog_page_object($pageId);
 		return $pages[$pageId];
-	}
-
-	private function _dao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("cms.BlogPageDAO");
-		return $dao;
 	}
 
 	function config_page($message){
