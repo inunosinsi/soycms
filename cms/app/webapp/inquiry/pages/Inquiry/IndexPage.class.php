@@ -52,14 +52,14 @@ class IndexPage extends WebPage{
 
     	/* 検索 */
 		$this->formId = (isset($_GET["formId"]) && strlen($_GET["formId"])>0) ? $_GET["formId"] : null;
-		$start = (isset($_GET["start"]) && strlen($_GET["start"]) && $_GET["start"] != "投稿日時（始）") ? $_GET["start"] : null;
-		$end = (isset($_GET["end"]) && strlen($_GET["end"]) && $_GET["end"] != "投稿日時（終）") ? $_GET["end"] : null;
+		$start = (isset($_GET["start"]) && strlen($_GET["start"]) && $_GET["start"] != "投稿日時（始）") ? $_GET["start"] : "";
+		$end = (isset($_GET["end"]) && strlen($_GET["end"]) && $_GET["end"] != "投稿日時（終）") ? $_GET["end"] : "";
 		if(strlen($end) && strtotime($end) === strtotime(date("Y-m-d", strtotime($end)))){
 			$end = date("Y-m-d", strtotime($end));
 		}
 
-		$trackId = (isset($_GET["trackId"]) && strlen($_GET["trackId"]) && $_GET["trackId"] != "受付番号") ? $_GET["trackId"] : null;
-		$flag = (isset($_GET["flag"]) && strlen($_GET["flag"])) ? $_GET["flag"] : null;
+		$trackId = (isset($_GET["trackId"]) && strlen($_GET["trackId"]) && $_GET["trackId"] != "受付番号") ? $_GET["trackId"] : "";
+		$flag = (isset($_GET["flag"]) && strlen($_GET["flag"])) ? (int)$_GET["flag"] : -1;
 		$commentFlag = (isset($_GET["comment_flag"]) && strlen($_GET["comment_flag"])) ? (int)$_GET["comment_flag"] : null;
 
 		//ページャー
@@ -106,7 +106,7 @@ class IndexPage extends WebPage{
 		$this->buildPager($pager);
     }
 
-    function buildList($inquiries){
+    function buildList(array $inquiries){
     	/* 問い合わせ */
     	$this->createAdd("inquiry_list","InquiryList",array(
     		"forms" => $this->forms,
@@ -132,7 +132,7 @@ class IndexPage extends WebPage{
 		));
     }
 
-    function buildForm($start, $end, $trackId, $flag, $commentFlag = null){
+    function buildForm(string $start, string $end, string $trackId, int $flag, $commentFlag = null){
     	/* 絞り込むフォームの作成 */
     	$this->createAdd("search_form", "HTMLModel", array(
     		"method" => "GET",
@@ -220,7 +220,7 @@ class IndexPage extends WebPage{
     		"value" => "既読にする"
     	));
     	$this->createAdd("bulk_new", "HTMLInput",array(
-    		"visible" => strlen($flag) == 0 OR $flag != SOYInquiry_Inquiry::FLAG_NEW,
+    		"visible" => $flag != SOYInquiry_Inquiry::FLAG_NEW,
     		"name"  => "bulk_modify[flag][new]",
     		"value" => "未読にする"
     	));
