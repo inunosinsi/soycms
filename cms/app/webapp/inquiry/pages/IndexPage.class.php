@@ -53,7 +53,7 @@ class IndexPage extends WebPage{
     private function buildInquiryList(){
     	$dao = SOY2DAOFactory::create("SOYInquiry_InquiryDAO");
     	$dao->setLimit(30);
-    	$inquiries = $dao->search(null, null, null,null, 0);	//未読のみ
+    	$inquiries = $dao->search("", 0, 0, "", 0);	//未読のみ
 
     	$this->createAdd("form_name_th","HTMLModel",array(
     		"visible" => count($this->forms) >= 2,

@@ -3,6 +3,9 @@ SOY2::import("logic.PagerLogic");
 
 class IndexPage extends WebPage{
 
+	const SEARCH_CONDITION_STAET = 0;
+	const SEARCH_CONDITION_END = 1;
+
 	private $formId;
 	private $forms;
 
@@ -54,10 +57,8 @@ class IndexPage extends WebPage{
 		$this->formId = (isset($_GET["formId"]) && strlen($_GET["formId"])>0) ? $_GET["formId"] : null;
 		$start = (isset($_GET["start"]) && strlen($_GET["start"]) && $_GET["start"] != "投稿日時（始）") ? $_GET["start"] : "";
 		$end = (isset($_GET["end"]) && strlen($_GET["end"]) && $_GET["end"] != "投稿日時（終）") ? $_GET["end"] : "";
-		if(strlen($end) && strtotime($end) === strtotime(date("Y-m-d", strtotime($end)))){
-			$end = date("Y-m-d", strtotime($end));
-		}
-
+		if(strlen($end) && strtotime($end) === strtotime(date("Y-m-d", strtotime($end)))) $end = date("Y-m-d", strtotime($end));
+		
 		$trackId = (isset($_GET["trackId"]) && strlen($_GET["trackId"]) && $_GET["trackId"] != "受付番号") ? $_GET["trackId"] : "";
 		$flag = (isset($_GET["flag"]) && strlen($_GET["flag"])) ? (int)$_GET["flag"] : -1;
 		$commentFlag = (isset($_GET["comment_flag"]) && strlen($_GET["comment_flag"])) ? (int)$_GET["comment_flag"] : null;
@@ -72,7 +73,7 @@ class IndexPage extends WebPage{
     	$dao->setLimit($limit);
     	$dao->setOffset($offset);
 
-    	$inquiries = $dao->search($this->formId, strtotime($start), strtotime($end), $trackId, $flag, $commentFlag);
+    	$inquiries = $dao->search((string)$this->formId, strtotime(self::_getSearchConditionStrtotime($start)), strtotime(self::_getSearchConditionStrtotime($end, self::SEARCH_CONDITION_END)), $trackId, $flag, $commentFlag);
 
 		$this->forms = SOY2DAOFactory::create("SOYInquiry_FormDAO")->get();
 
@@ -105,6 +106,28 @@ class IndexPage extends WebPage{
 
 		$this->buildPager($pager);
     }
+
+	/**
+	 * 投稿日時が空の場合は初めてのお問い合わせの日時
+	 * @param string, int
+	 * @return string
+	 */
+	private function _getSearchConditionStrtotime(string $str, int $mode=self::SEARCH_CONDITION_STAET){
+		if(strlen($str)) return $str;
+
+		switch($mode){
+			case self::SEARCH_CONDITION_STAET:
+				$dao = new SOY2DAO();
+				try{
+					$res = $dao->executeQuery("SELECT create_date FROM soyinquiry_inquiry ORDER BY create_date ASC LIMIT 1;");
+				}catch(Exception $e){
+					$res = array();
+				}
+				return (isset($res[0]["create_date"])) ? date("Y-m-d", $res[0]["create_date"]) : date("Y-m-d");
+			case self::SEARCH_CONDITION_END:
+				return date("Y-m-d", strtotime("+1day"));
+		}
+	}
 
     function buildList(array $inquiries){
     	/* 問い合わせ */

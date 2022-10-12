@@ -40,31 +40,32 @@ abstract class SOYInquiry_InquiryDAO extends SOY2DAO{
      *
      * @order create_date desc
      */
-    function search($formId, $start, $end,$trackId, $flag, $commentFlag = null){
-    	$query = $this->getQuery();
+    function search(string $formId, int $start, int $end, string $trackId, int $flag, $commentFlag = null){
+		$query = $this->getQuery();
     	$binds = $this->getBinds();
 
     	$where = array();
 
-    	if($formId){
+    	if(strlen($formId)){
     		$where[] = "form_id = :formId";
     		$binds[":formId"] = $formId;
-    	}
-
-    	if($start){
-    		$where[] = "create_date >= :start";
-    		$binds[":start"] = $start;
-    	}
-
-    	if($end){
-    		$where[] = "create_date <= :end";
-    		$binds[":end"] = $end + 24 * 60 * 60;
-    	}
-    	if($trackId){
+		}
+    	
+		if($start > 0){
+			$where[] = "create_date >= :start";
+	    	$binds[":start"] = $start;
+		}
+	
+		if($end > 0) {
+			$where[] = "create_date <= :end";
+	    	$binds[":end"] = $end + 24 * 60 * 60;
+		}	
+    	
+		if(strlen($trackId)){
     		$where[] = "tracking_number = :trackId";
     		$binds[":trackId"] = $trackId;
     	}
-    	if(strlen($flag)>0){
+    	if($flag >= 0){
     		$where[] = "flag = :flag";
     		$binds[":flag"] = $flag;
     	}else{
