@@ -9,7 +9,7 @@ class ExportPage extends WebPage{
 			$formId = (isset($_POST["formId"])) ? $_POST["formId"] : null;
 			$start = (isset($_POST["start"]) && $_POST["start"] != "投稿日時（始）") ? $_POST["start"] : null;
 			$end = (isset($_POST["end"]) && $_POST["end"] != "投稿日時（終）") ? $_POST["end"] : null;
-			$flag = (isset($_POST["flag"])) ? $_POST["flag"] : null;
+			$flag = (isset($_POST["flag"])) ? (int)$_POST["flag"] : -1;
 			$charset = (isset($_POST["charset"])) ? $_POST["charset"] : "UTF-8";
 			$this->setCharset($charset);
 
@@ -43,7 +43,7 @@ class ExportPage extends WebPage{
 			$function = function($array) use ($func) { return eval($func); };
 
 			$dao = SOY2DAOFactory::create("SOYInquiry_InquiryDAO");
-    		$inquiries = $dao->search($formId, strtotime($start), strtotime($end), null, $flag);
+    		$inquiries = $dao->search($formId, strtotime($start), strtotime($end), "", $flag);
 
     		header("Cache-Control: public");
 			header("Pragma: public");
