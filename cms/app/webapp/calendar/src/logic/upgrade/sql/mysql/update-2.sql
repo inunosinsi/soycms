@@ -1,0 +1,1 @@
+ALTER TABLE soycalendar_title ADD COLUMN attribute VARCHAR(255) AFTER title;

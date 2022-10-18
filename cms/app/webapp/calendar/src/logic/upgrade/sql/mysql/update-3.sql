@@ -1,0 +1,1 @@
+ALTER TABLE soycalendar_item RENAME COLUMN title TO title_id;

@@ -1,0 +1,1 @@
+ALTER TABLE soycalendar_item ADD COLUMN title_id INTEGER;
