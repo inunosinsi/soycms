@@ -90,7 +90,11 @@ class CMSUtil {
 		define("SOYCMS_IS_DOCUMENT_ROOT", $isDocumentRoot);
 	}
 
-	public static function getEntryHiddenInputHTML(int $entryId, string $title){
+	/**
+	 * @param int|string, string
+	 * @return string
+	 */
+	public static function getEntryHiddenInputHTML($entryId, string $title){
 		$str = CMSMessageManager::get("SOYCMS_PREVIEW_EDIT_BUTTON");
 		$str = str_replace("%TITLE%", "[".$title."]", $str);
 		return "<button type=\"button\" class=\"cms_hidden_entry_id\" entryid=\"$entryId\" style=\"display:none;\">".$str."</button>";
