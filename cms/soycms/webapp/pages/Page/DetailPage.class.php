@@ -232,9 +232,12 @@ class DetailPage extends CMSWebPageBase{
 		}
 		CMSToolBox::addPageJumpBox();
 
-
 		//短縮URLのフィールドの呼び出し
 		//url_shortener_display, url_shortener_input
+		//短縮URLの表示
+		$this->addModel("url_shortener_display", array(
+			"visible" => CMSPlugin::activeCheck("UrlShortener"),
+		));
 		CMSPlugin::callLocalPluginEventFunc("onPageEdit","UrlShortener",array("page" => $this));
 
 	}
