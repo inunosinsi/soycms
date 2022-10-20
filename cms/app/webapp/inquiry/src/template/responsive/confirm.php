@@ -22,10 +22,12 @@ foreach($columns as $column){
 	//個人情報保護方針は表示しない
 	if(get_class($obj) == "PrivacyPolicyColumn" && (int)$view === 1) continue;
 
-	if(strlen($label) > 0 && strlen($view) > 0){
-		echo "<dt>";
-		echo $label;
-		echo "</dt>";
+	if(strlen($view) > 0){
+		if(strlen($label)){
+			echo "<dt>";
+			echo $label;
+			echo "</dt>";
+		}
 		echo "<dd>";
 	    echo $view;
 	    echo "</dd>";

@@ -28,7 +28,6 @@ foreach($columns as $column){
 	$class = array();
 	if($column->getType() == "PlainText") $class[] = "title";
 
-	$tr_prop = (string)$obj->getTrProperty();
 	if(count($class)){
 		if(strlen($tr_prop)){
 			if(is_numeric(strpos($tr_prop, "class="))){

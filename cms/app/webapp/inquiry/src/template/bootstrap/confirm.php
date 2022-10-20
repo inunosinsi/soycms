@@ -20,12 +20,12 @@ foreach($columns as $column){
 	//個人情報保護方針は表示しない
 	if(get_class($obj) == "PrivacyPolicyColumn" && (int)$view === 1) continue;
 
-	if(strlen($label) > 0 && strlen($view) > 0){
+	if(strlen($view) > 0){
 		echo "<div class=\"form-group\">";
-		echo "<label>" . $label . "</label><br>";
+		if(strlen($label)) echo "<label>" . $label . "</label><br>";
 		echo $view;
 		echo "</div>";
-	}
+	}	
 }
 ?>
 
