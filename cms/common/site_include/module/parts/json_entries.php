@@ -57,7 +57,9 @@ function soycms_json_entries($html, $htmlObj){
 	$url = soycms_get_page_url_by_frontcontroller(true);
 	preg_match('/page-\d+/', $_SERVER["REQUEST_URI"], $args);
 	$current = (isset($args[0]) && strpos($args[0], "page-") === 0) ? (int)str_replace("page-", "", $args[0]) : 0;
-	$last_page_number = (int)ceil($total / $getParams["limit"]);
+
+	$getParamLim = (isset($getParams["limit"]) && is_numeric($getParams["limit"]) && $getParams["limit"] > 0) ? (int)$getParams["limit"] : 15;	// 15の理由は特に決めていない
+	$last_page_number = (int)ceil($total / $getParamLim);
 
 	SOY2::import("site_include.plugin.soycms_search_block.component.BlockPluginPagerComponent");
 	$obj->createAdd("pager", "BlockPluginPagerComponent", array(
