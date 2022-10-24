@@ -124,7 +124,7 @@ class EditPage extends WebPage{
 									"mode" => "edit",
 									"key" => $index
 								));
-								if($attribute != $orderAttributes[$index]) $itemChange[] = self::getHistoryText($itemOrder->getItemName() . "の『" . $delegate->getLabel() . "』", $orderAttributes[$index] , $attribute);
+								if($attribute != $orderAttributes[$index]) $itemChange[] = self::getHistoryText($itemOrder->getItemName() . "の『" . $delegate->getLabel() . "』", (string)$orderAttributes[$index] , $attribute);
 							}
 						}
 
