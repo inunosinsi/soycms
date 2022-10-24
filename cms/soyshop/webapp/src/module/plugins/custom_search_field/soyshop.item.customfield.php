@@ -92,7 +92,7 @@ class CustomSearchField extends SOYShopItemCustomFieldBase{
      */
     function onOutput($htmlObj, SOYShop_Item $item){
         self::prepare();
-        $values = $this->dbLogic->getByItemId($item->getId());
+        $values = (is_numeric($item->getId())) ? $this->dbLogic->getByItemId($item->getId()) : array();
 
         foreach(CustomSearchFieldUtil::getConfig() as $key => $field){
 
