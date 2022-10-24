@@ -256,10 +256,13 @@ class DataBaseLogic extends SOY2LogicBase{
         return true;
     }
 
-    function getByItemId($itemId, $lang=null){
+    function getByItemId(int $itemId, $lang=null){
         $dao = new SOY2DAO();
 
-        if(is_null($lang)) $lang = SOYSHOP_PUBLISH_LANGUAGE;
+        if(is_null($lang)) {
+			if(!defined("SOYSHOP_PUBLISH_LANGUAGE")) define("SOYSHOP_PUBLISH_LANGUAGE", "jp");
+			$lang = SOYSHOP_PUBLISH_LANGUAGE;
+        }
 
         try{
             $res = $dao->executeQuery("SELECT * FROM " . $this->getTableName() . " WHERE item_id = :item_id AND lang = :lang LIMIT 1", array(":item_id" => $itemId, ":lang" => UtilMultiLanguageUtil::getLanguageId($lang)));
@@ -273,7 +276,10 @@ class DataBaseLogic extends SOY2LogicBase{
     function getByCategoryId($categoryId, $lang=null){
         $dao = new SOY2DAO();
 
-        if(is_null($lang)) $lang = SOYSHOP_PUBLISH_LANGUAGE;
+        if(is_null($lang)) {
+			if(!defined("SOYSHOP_PUBLISH_LANGUAGE")) define("SOYSHOP_PUBLISH_LANGUAGE", "jp");
+			$lang = SOYSHOP_PUBLISH_LANGUAGE;
+        }
 
         try{
             $res = $dao->executeQuery("SELECT * FROM " . $this->getTableName() . " WHERE category_id = :category_id AND lang = :lang LIMIT 1", array(":category_id" => $categoryId, ":lang" => UtilMultiLanguageUtil::getLanguageId($lang)));
