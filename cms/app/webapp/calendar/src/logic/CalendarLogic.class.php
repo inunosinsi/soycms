@@ -22,6 +22,12 @@ class CalendarLogic extends SOY2LogicBase{
 
 	//一括ですべてのタイトルを取得しておく	array(titleId => array(SOYCalendar_Title...)...)
 	private $titles;
+
+	//一括ですべてのカスタム項目を取得しておく
+	private $customItemCheckedList;
+
+	//一括ですべてのカスタム項目のクラスを取得しておく
+	private $customItemClasses;
 	
 
 	/** ここからPCモード **/
@@ -104,6 +110,10 @@ class CalendarLogic extends SOY2LogicBase{
 	private function _getCalendarCommon(int $timestamp=0){
 		if($timestamp === 0) $timestamp = time();
 		self::_setSchedulesAndTitlesBulkAcquisition($timestamp);
+		if(!$this->isManagerMode){	//公開側の時のみ実行
+			self::_setCustomItemCheckedListBulkAcquisition();
+			self::_setCustomItemClassListBulkAcquisition();
+		}
 		$this->holiday = self::_exeGoogleCalendarDataAPI($timestamp);
 		return self::_createCalendar($timestamp);
 	}
@@ -143,6 +153,62 @@ class CalendarLogic extends SOY2LogicBase{
 					}
 				}
 			}
+		}
+	}
+
+	/**
+	 * 任意の年月でカスタム項目を一括で取得しておく
+	 * @return void
+	 */
+	private function _setCustomItemCheckedListBulkAcquisition(){
+		if(!is_array($this->schedules) || !count($this->schedules)) return;
+		
+		$itemIds = array();
+		foreach($this->schedules as $schs){
+			if(!count($schs)) continue;
+			foreach($schs as $itemId => $_sch){
+				$itemIds[] = $itemId;
+			}
+		}
+
+		if(!count($itemIds)) return;
+		
+		$results = self::_chkDao()->getCheckedListByItemIds($itemIds);
+		if(!count($results)) return;
+		
+		foreach($results as $itemId => $res){
+			if(!count($res) || isset($this->customItemCheckedList[$itemId])) continue;
+			$this->customItemCheckedList[$itemId] = $res;
+		}
+	}
+
+	/**
+	 * 任意の年月でカスタム項目のクラスを一括で取得しておく
+	 * @return void
+	 */
+	private function _setCustomItemClassListBulkAcquisition(){
+		if(!is_array($this->customItemCheckedList) || !count($this->customItemCheckedList)) return;
+
+		$customIds = array();
+		foreach($this->customItemCheckedList as $arr){
+			if(!count($arr)) continue;
+			foreach($arr as $customId){
+				if(count($customIds) && is_numeric(array_search($customId, $customIds))) continue;
+				$customIds[] = $customId;
+			}
+		}
+		if(!count($customIds)) return;
+
+		$results = self::_cusDao()->getClassListByIds($customIds);
+		if(!count($results)) return;
+
+		foreach($results as $customId => $alias){
+			if(isset($this->customItemClasses[$customId])) continue;
+
+			$alias = trim($alias);
+			if(!strlen($alias)) continue;
+
+			$this->customItemClasses[$customId] = $alias;
 		}
 	}
 
@@ -229,7 +295,7 @@ class CalendarLogic extends SOY2LogicBase{
 				for($j = 1; $j <= $w; $j++){
 					if($this->isNextMonthDate){
 						$lastDate = date("j",soycalendar_get_last_date_timestamp($year,$month-1));	//先月の最終日を取得
-						$int = $lastDate-$w+$j;
+						$int = $lastDate - $w + $j;
 						$html[] = self::_createDayColumn($int,0,0,0,true,$timestamp);
 					}else{
 						$html[] = "<td>&nbsp;</td>";
@@ -400,23 +466,27 @@ class CalendarLogic extends SOY2LogicBase{
 
 			foreach($schedules as $key => $schedule){
 				if(!is_numeric($schedule->getTitleId())) continue;
-
+				
 				//まずはタイトルを取得
 				if($key > 0) $html[] = "<br />";
 
 				$titles = CalendarAppUtil::getTitleList();
 				
 				if($this->isManagerMode) $html[] = "<a href=\"".$_SERVER["SCRIPT_NAME"]."/calendar/Schedule/Detail/".$schedule->getId()."\">";
-				$html[] = "<span class=\"title\">";
+
+				$html[] = "<span class=\"" . implode(" ", self::_getScheduleClassList($schedule->getId(), "title")) . "\">";
 				$html[] = $titles[$schedule->getTitleId()];
 				$html[] = "</span>\n";
 				if($isMobile) $html[] = "&nbsp;";
-				$html[] = "<span class=\"content\">";
-				$html[] = htmlspecialchars($schedule->getStart(),ENT_QUOTES,"UTF-8");
-				if(strlen($schedule->getEnd())>0){
-					$html[] = "～".htmlspecialchars($schedule->getEnd(),ENT_QUOTES,"UTF-8");
+				if(strlen($schedule->getStart()) > 0){
+					$html[] = "<span class=\"" . implode(" ", self::_getScheduleClassList($schedule->getId(), "content")) . "\">";
+					$html[] = htmlspecialchars($schedule->getStart(), ENT_QUOTES,"UTF-8");
+					if(strlen($schedule->getEnd() ) >0){
+						$html[] = "～".htmlspecialchars($schedule->getEnd(),ENT_QUOTES,"UTF-8");
+					}
+					$html[] = "</span>\n";
 				}
-				$html[] = "</span>\n";
+				
 				if($this->isManagerMode)$html[] = "</a>";
 			}
 
@@ -427,6 +497,22 @@ class CalendarLogic extends SOY2LogicBase{
 
 
 		return implode("",$html);
+	}
+
+	/**
+	 * @param int, string
+	 * @return array
+	 */
+	private function _getScheduleClassList(int $itemId, string $col="title"){
+		$list = array($col);
+		if(!isset($this->customItemCheckedList[$itemId]) || !is_array($this->customItemCheckedList[$itemId]) || !count($this->customItemCheckedList[$itemId])) return $list;
+
+		foreach($this->customItemCheckedList[$itemId] as $customId){
+			if(!isset($this->customItemClasses[$customId])) continue;
+			$list[] = $this->customItemClasses[$customId];
+		}
+
+		return $list;
 	}
 
 	private $weekText = array(
@@ -545,6 +631,18 @@ class CalendarLogic extends SOY2LogicBase{
 	private function _titleDao(){
 		static $d;
 		if(is_null($d)) $d = SOY2DAOFactory::create("SOYCalendar_TitleDAO");
+		return $d;
+	}
+
+	private function _cusDao(){
+		static $d;
+		if(is_null($d)) $d = SOY2DAOFactory::create("SOYCalendar_CustomItemDAO");
+		return $d;
+	}
+
+	private function _chkDao(){
+		static $d;
+		if(is_null($d)) $d = SOY2DAOFactory::create("SOYCalendar_CustomItem_CheckedDAO");
 		return $d;
 	}
 }

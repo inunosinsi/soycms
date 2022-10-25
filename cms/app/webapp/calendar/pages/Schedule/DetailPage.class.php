@@ -38,31 +38,27 @@ class DetailPage extends WebPage{
 				}
 
 				/** 繰り返し登録を利用しない **/
+				
 				//当日のデータのみインサート
 				if($this->id === 0){	 // 新規登録
 					if($startDate <= soycalendar_get_last_date_timestamp($item["year"],$item["month"])){	// この行でありえない日付(2/31等)を除く
-						$logic->insertComplete($item, $startDate);
-						CMSApplication::jump();
+						$item["scheduleDate"] = $startDate;
+						if($logic->save($item, $this->id)){
+							CMSApplication::jump();
+						}
+						
 					}
 				}else{	//更新
-					$new = SOY2::cast(self::_getItemObject($this->id), $item);
-					try{
-						self::_dao()->update($new);
+					if($logic->save($item, $this->id)){
 						CMSApplication::jump("Schedule.Detail." . $this->id);
-					}catch(Exception $e){
-						//
 					}
-				}
-				
+				}				
 			}
 			
 			//予定の削除
 			if(isset($_POST["delete"])){
-				try{
-					self::_dao()->deleteById($this->id);
+				if(SOY2Logic::createInstance("logic.RemoveLogic")->remove($this->id)){
 					CMSApplication::jump();
-				}catch(Exception $e){
-					var_dump($e);
 				}
 			}
 		}
@@ -122,6 +118,15 @@ class DetailPage extends WebPage{
     		"style" => "width:15%;"
     	));
 
+		/** カスタム項目 */
+		$customs = CalendarAppUtil::getCustoms();
+		DisplayPlugin::toggle("custom_items", count($customs));
+
+		$this->createAdd("custom_item_checkbox_list", "_common.CustomItemCheckBoxListComponent", array(
+			"list" => $customs,
+			"checkedList" => ($this->id > 0) ? self::_getCustomItemCheckedList($this->id) : array()
+		));
+
     	$this->addCheckBox("confirm", array(
     		"name" => "repeat[confirm]",
     		"value" => 1,
@@ -168,6 +173,26 @@ class DetailPage extends WebPage{
 			$obj->setScheduleDate(soycalendar_get_schedule_by_array(self::_getYnjArray()));
 			return $obj;
 		}
+	}
+
+	/**
+	 * @param int
+	 * @return array
+	 */
+	private function _getCustomItemCheckedList(int $itemId){
+		try{
+			$arr = SOY2DAOFactory::create("SOYCalendar_CustomItem_CheckedDAO")->getByItemId($itemId);
+		}catch(Exception $e){
+			$arr = array();
+		}
+		if(!count($arr)) return array();
+
+		$checkedList = array();
+		foreach($arr as $obj){
+			$checkedList[] = $obj->getCustomId();
+		}
+		
+		return $checkedList;
 	}
 
 	/**

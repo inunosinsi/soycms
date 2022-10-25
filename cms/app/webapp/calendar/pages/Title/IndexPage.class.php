@@ -6,11 +6,11 @@ class IndexPage extends WebPage{
     	parent::__construct();
 
     	$this->createAdd("title_list","_common.TitleListComponent",array(
-    		"list" => self::getTitles()
+    		"list" => self::_getTitles()
     	));
     }
 
-	private function getTitles(){
+	private function _getTitles(){
 		try{
     		return SOY2DAOFactory::create("SOYCalendar_TitleDAO")->get();
     	}catch(Exception $e){

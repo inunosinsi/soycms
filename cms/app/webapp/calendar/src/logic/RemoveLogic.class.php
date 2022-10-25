@@ -33,7 +33,24 @@ class RemoveLogic extends SOY2LogicBase{
     }
 
 	/**
-	 * @param
+	 * @param int
+	 * @return bool
+	 */
+	function remove(int $id){
+		try{
+			self::_dao()->deleteById($id);
+		}catch(Exception $e){
+			return false;
+		}
+
+		//カスタム項目の削除
+		self::_removeCustomItemChecks($id);
+
+		return true;
+	}
+
+	/**
+	 * @param int<timestamp>, int
 	 */
     private function _removeComplete(int $schedule, int $titleId=0){
 		
@@ -61,14 +78,34 @@ class RemoveLogic extends SOY2LogicBase{
 					}catch(Exception $e){
 						//
 					}
-				}	
+				}
+
+				// カスタム項目の削除
+				self::_removeCustomItemChecks($id);
 			}	
+		}
+	}
+
+	/**
+	 * @param int
+	 */
+	private function _removeCustomItemChecks(int $itemId){
+		try{
+			self::_customDao()->deleteByItemId($itemId);
+		}catch(Exception $e){
+			//
 		}
 	}
 
 	private function _dao(){
 		static $d;
 		if(is_null($d)) $d = SOY2DAOFactory::create("SOYCalendar_ItemDAO");
+		return $d;
+	}
+
+	private function _customDao(){
+		static $d;
+		if(is_null($d)) $d = SOY2DAOFactory::create("SOYCalendar_CustomItem_CheckedDAO");
 		return $d;
 	}
 }

@@ -1,0 +1,7 @@
+CREATE TABLE soycalendar_custom_item (
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	label VARCHAR NOT NULL,
+	alias VARCHAR NOT NULL,
+	create_date INTEGER NOT NULL,
+	update_date INTEGER NOT NULL
+);

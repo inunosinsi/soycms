@@ -45,22 +45,85 @@ class InsertLogic extends SOY2LogicBase{
 	/**
 	 * @param array, int<timestamp>
 	 */
-	private function _insertComplete(array $item, int $schedule){
+	private function _insertComplete(array $posts, int $schedule){
+		$posts["scheduleDate"] = $schedule;
+		self::save($posts);
+	}
+
+	/**
+	 * insertとupdateを統合する
+	 * @param array, id
+	 * @return bool
+	 */
+	function save(array $posts, int $id=0){
 		$dao = self::_dao();
-		
-		$item = SOY2::cast("SOYCalendar_Item",$item);
-		$item->setScheduleDate($schedule);
-		
-		try{
-			$dao->insert($item);
-		}catch(Exception $e){
-			//var_dump($e);
+		$item = new SOYCalendar_Item();
+		if($id > 0){
+			try{
+				$item = self::_dao()->getById($id);
+			}catch(Exception $e){
+				//
+			}
 		}
+
+		$item = SOY2::cast($item, $posts);
+		$itemId = $item->getId();
+
+		$dao->begin();
+		if(is_numeric($item->getId()) && $item->getId() > 0){	//更新
+			try{
+				self::_dao()->update($item);
+				$itemId = $item->getId();
+			}catch(Exception $e){
+				//
+			}
+		}else{
+			try{
+				$itemId = self::_dao()->insert($item);
+				$item->setId($itemId);
+			}catch(Exception $e){
+				
+			}
+		}
+
+		if(!is_numeric($itemId)){
+			$dao->commit();
+			return false;
+		}
+
+		/** カスタム項目 */
+		try{
+			self::_customDao()->deleteByItemId($itemId);
+		}catch(Exception $e){
+			//
+		}
+
+		if(isset($_POST["Custom"]) && is_array($_POST["Custom"]) && count($_POST["Custom"])){
+			foreach($_POST["Custom"] as $cusId){
+				$obj = new SOYCalendar_CustomItem_Checked();
+				$obj->setItemId($itemId);
+				$obj->setCustomId($cusId);
+				try{
+					self::_customDao()->insert($obj);
+				}catch(Exception $e){
+					//
+				}
+			}
+		}
+
+		$dao->commit();
+		return true;
 	}
 
 	private function _dao(){
 		static $d;
 		if(is_null($d)) $d = SOY2DAOFactory::create("SOYCalendar_ItemDAO");
+		return $d;
+	}
+
+	private function _customDao(){
+		static $d;
+		if(is_null($d)) $d = SOY2DAOFactory::create("SOYCalendar_CustomItem_CheckedDAO");
 		return $d;
 	}
 }

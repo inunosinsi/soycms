@@ -1,0 +1,56 @@
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header">カスタム項目一覧</h1>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<a class="btn btn-default" soy:link="calendar">一覧</a>
+				<a class="btn btn-default" soy:link="calendar.Schedule.Detail">予定の追加</a>
+				<a class="btn btn-default active" soy:link="calendar.Schedule.Custom">カスタム項目の追加</a>
+				<a class="btn btn-default" soy:link="calendar.Schedule.Remove">予定の一括削除</a>
+			</div>
+		</div>
+	</div>
+</div><!-- .row -->
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<div>
+					<a class="btn btn-primary" soy:link="calendar.Schedule.Custom.Detail">カスタム項目の追加</a>
+				</div>
+
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>ラベル</th>
+								<th>クラス</th>
+								<th class="short">&nbsp;</th>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- soy:id="custom_list" -->
+							<tr>
+								<td soy:id="id">1</td>
+								<td soy:id="label">午前</td>
+								<td soy:id="alias">closed</td>
+								<td style="text-align:center;">
+									<a class="btn btn-primary" soy:id="edit_link">編集</a>&nbsp;
+									<a class="btn btn-danger" soy:id="remove_link">削除</a>
+								</td>
+							</tr>
+							<!-- /soy:id="custom_list" -->
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

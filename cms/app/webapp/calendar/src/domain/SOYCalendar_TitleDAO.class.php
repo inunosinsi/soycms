@@ -54,7 +54,6 @@ abstract class SOYCalendar_TitleDAO extends SOY2DAO{
 	function onInsert($query, $binds){
 		$binds[":createDate"] = time();
 		$binds[":updateDate"] = time();
-		
 		return array($query, $binds);
 	}
 	
@@ -63,7 +62,6 @@ abstract class SOYCalendar_TitleDAO extends SOY2DAO{
 	 */
 	function onUpdate($query, $binds){
 		$binds[":updateDate"] = time();
-		
 		return array($query, $binds);
 	}
 }

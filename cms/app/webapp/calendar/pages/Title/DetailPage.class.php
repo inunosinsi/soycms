@@ -21,13 +21,13 @@ class DetailPage extends WebPage{
 					try{
 						$this->dao->update($title);
 					}catch(Exception $e){
-						var_dump($e);
+						//var_dump($e);
 					}
 				} else {	//新規
 					try{
 						$this->dao->insert($title);
 					}catch(Exception $e){
-						var_dump($e);
+						//var_dump($e);
 					}
 				}
 				
@@ -55,6 +55,11 @@ class DetailPage extends WebPage{
     	}catch(Exception $e){
     		$title = new SOYCalendar_Title();
     	}
+
+		if(isset($_POST["title"])){
+			$title->setTitle($_POST["title"]["title"]);
+			$title->setAttribute($_POST["title"]["attribute"])
+		}
 
     	parent::__construct();
 
