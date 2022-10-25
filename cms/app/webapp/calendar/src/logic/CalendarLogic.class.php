@@ -383,7 +383,11 @@ class CalendarLogic extends SOY2LogicBase{
 
 		$html = array();
 		$html[] = (count($classes)) ? "<td class=\"" . implode(" ", $classes) . "\">" : "<td>";
-		$html[] = self::_displaySchedule($i, $todayTime, $isNextMonth);
+		if(!$this->isManagerMode && function_exists("soycalendar_generate_day_column")){	//隠しモード
+			$html[] = soycalendar_generate_day_column($todayTime, $this->schedules);
+		}else{
+			$html[] = self::_displaySchedule($todayTime);
+		}		
 		$html[] = "</td>";
 		return implode("",$html);
 	}
@@ -411,7 +415,7 @@ class CalendarLogic extends SOY2LogicBase{
 
 		for($i = 0; $i < $count; $i++){
 			$date = strtotime("+".$i."day", $today);
-			$arr[] = array("content" => self::displaySchedule(date("d",$today),$date,false,true));
+			$arr[] = array("content" => self::displaySchedule($date, true));
 		}
 
 		return $arr;
@@ -422,11 +426,12 @@ class CalendarLogic extends SOY2LogicBase{
 	 * @param int, int<timestamp>, bool, bool
 	 * @return string
 	 */
-	private function _displaySchedule(int $int, int $timestamp, bool $monthFlag=false, bool $isMobile=false){
+	private function _displaySchedule(int $timestamp, bool $isMobile=false){
 		$schedules = (isset($this->schedules[$timestamp])) ? $this->schedules[$timestamp] : array();
 		$ynjw = soycalendar_get_Ynjw($timestamp);
 
 		$html = array();
+		
 
 		// 日付数字に<span class='num'>を追加
 		$html[] = "<span class=\"num\">";
@@ -451,7 +456,7 @@ class CalendarLogic extends SOY2LogicBase{
 			$html[] = "<span class=\"".$class."\">".$ynjw["year"]."/".$ynjw["month"]."/".$ynjw["day"]."(".$this->weekText[$ynjw["week"]].")</span>\n";
 		//PCモードの表示
 		}else{
-			$html[] = $int;
+			$html[] = date("j", $timestamp);
 		}
 
 		if($this->isManagerMode) $html[] = "</a>\n";
