@@ -1,6 +1,8 @@
 <?php
 class SOYShopPayment implements SOY2PluginAction{
 
+	private $cart;
+
 	/**
 	 * Cartで支払い方法選択後にCartLogicに支払い方法を登録する等の処理を行う
 	 */

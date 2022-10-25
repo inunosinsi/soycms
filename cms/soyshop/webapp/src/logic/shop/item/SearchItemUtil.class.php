@@ -424,17 +424,17 @@ class SearchItemUtil extends SOY2LogicBase{
     		if(!in_array($operation, array("=", "<>", "LIKE", "NOT LIKE"))) $operation = "=";
 
 			if($isParent){
-				$customWhere = "(item_field_id = :field_id${counter} and item_value ${operation} :field_value${counter})";
+				$customWhere = "(item_field_id = :field_id" . $counter ." and item_value " . $operation . " :field_value" . $counter . ")";
 				$parentwhere[] = $customWhere;
-				$parentbinds[":field_id${counter}"] = (isset($array["fieldId"])) ? $array["fieldId"] : $key;
-	    		$parentbinds[":field_value${counter}"] = $array["value"];
+				$parentbinds[":field_id" . $counter] = (isset($array["fieldId"])) ? $array["fieldId"] : $key;
+	    		$parentbinds[":field_value" . $counter] = $array["value"];
 			}
 
 			if($isChild){
-				$customWhere = "(item_field_id = :field_id${counter}_child and item_value ${operation} :field_value${counter}_child)";
+				$customWhere = "(item_field_id = :field_id" . $counter . "_child and item_value " . $operation  . " :field_value" . $counter . "_child)";
 				$childwhere[] = $customWhere;
-				$childbinds[":field_id${counter}_child"] = (isset($array["fieldId"])) ? $array["fieldId"] : $key;
-	    		$childbinds[":field_value${counter}_child"] = $array["value"];
+				$childbinds[":field_id" . $counter . "_child"] = (isset($array["fieldId"])) ? $array["fieldId"] : $key;
+	    		$childbinds[":field_value" . $counter . "_child"] = $array["value"];
 			}
 
     		$counter++;

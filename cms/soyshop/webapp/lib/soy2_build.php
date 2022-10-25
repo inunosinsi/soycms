@@ -8689,6 +8689,7 @@ class SOY2Plugin{
 	private $delegates = array();
 	private $extensions = array();
 	private $objects = array();
+	private $classes=array();
 	function setDelegate($point, $delegate){
 		$this->delegates[$point] = $delegate;
 	}
@@ -8711,6 +8712,7 @@ class SOY2Plugin{
 		if(!isset($this->extensions[$extension][$moduleId]))$this->extensions[$extension][$moduleId] = array();
 		 $this->extensions[$extension][$moduleId][] = $extensionClass;
 	}
+
 	/**
 	 *
 	 */

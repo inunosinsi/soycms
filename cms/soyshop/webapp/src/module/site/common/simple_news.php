@@ -16,7 +16,7 @@ function soyshop_simple_news($html, $htmlObj){
 				'$url = (isset($array["url"]) && is_string($array["url"])) ? $array["url"] : "";' .
 				'$createDate = (isset($array["create_date"]) && is_numeric($array["create_date"])) ? (int)$array["create_date"] : 0;'.
 				'$this->createAdd("create_date","HTMLLabel", array("soy2prefix" => SOYSHOP_SITE_PREFIX, "text" => $createDate));' .
-				'$this->createAdd("title","HTMLLabel", array("soy2prefix" => SOYSHOP_SITE_PREFIX, "html" => (strlen($url) > 0) ? "<a href=\"${url}\">" . $array["text"] . "</a>" : @$array["text"]));'
+				'$this->createAdd("title","HTMLLabel", array("soy2prefix" => SOYSHOP_SITE_PREFIX, "html" => (strlen($url) > 0) ? "<a href=\"".$url."\">" . $array["text"] . "</a>" : @$array["text"]));'
 	));
 
 	$obj->createAdd("news_list", "HTMLList", array(
@@ -26,7 +26,7 @@ function soyshop_simple_news($html, $htmlObj){
 				'$url = (isset($array["url"]) && is_string($array["url"])) ? $array["url"] : "";' .
 				'$createDate = (isset($array["create_date"]) && is_numeric($array["create_date"])) ? (int)$array["create_date"] : 0;'.
 				'$this->createAdd("create_date","HTMLLabel", array("soy2prefix" => SOYSHOP_SITE_PREFIX, "text" => $createDate));' .
-				'$this->createAdd("title","HTMLLabel", array("soy2prefix" => SOYSHOP_SITE_PREFIX, "html" => (strlen($url) > 0) ? "<a href=\"${url}\">" . $array["text"] . "</a>" : @$array["text"]));'
+				'$this->createAdd("title","HTMLLabel", array("soy2prefix" => SOYSHOP_SITE_PREFIX, "html" => (strlen($url) > 0) ? "<a href=\"".$url."\">" . $array["text"] . "</a>" : @$array["text"]));'
 	));
 
 

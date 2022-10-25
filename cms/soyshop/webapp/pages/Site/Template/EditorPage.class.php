@@ -7,7 +7,7 @@
 class EditorPage extends WebPage{
 
 	private $filepath;
-	private $iniFilePath;
+	private $iniFilepath;
 	private $value;
 	private $cmsJsDirPath;
 
