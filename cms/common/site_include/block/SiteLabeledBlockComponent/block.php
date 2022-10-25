@@ -89,9 +89,9 @@ class SiteLabeledBlockComponent implements BlockComponent{
 		if($this->order == self::ORDER_ASC) $logic->setReverse(true);
 
 		if(defined("CMS_PREVIEW_ALL")){
-			$array = $logic->getByLabelId($this->labelId);
+			$array = (!is_null($this->labelId)) ? $logic->getByLabelId($this->labelId) : array();
 		}else{
-			$array = $logic->getOpenEntryByLabelId($this->labelId);
+			$array = (!is_null($this->labelId)) ? $logic->getOpenEntryByLabelId($this->labelId) : array();
 		}
 		
 		$articlePageUrl = "";

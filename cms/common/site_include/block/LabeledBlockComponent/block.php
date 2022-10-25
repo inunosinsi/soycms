@@ -146,7 +146,7 @@ class LabeledBlockComponent implements BlockComponent{
 	 */
 	public function getInfoPage(){
 		try{
-			return soycms_get_label_object((int)$this->labelId)->getCaption() ." ".( (strlen($this->displayCountFrom) OR strlen($this->displayCountTo)) ? $this->displayCountFrom."-".$this->displayCountTo : "" );
+			return soycms_get_label_object((int)$this->labelId)->getCaption() ." ".( (strlen((string)$this->displayCountFrom) OR strlen((string)$this->displayCountTo)) ? $this->displayCountFrom."-".$this->displayCountTo : "" );
 		}catch(Exception $e){
 			return CMSMessageManager::get("SOYCMS_NO_SETTING");
 		}
