@@ -2,6 +2,8 @@
 
 class RegisterPage extends WebPage{
 
+	private $backward;
+	private $component;
 	private $errorType;
 	private $user;
 

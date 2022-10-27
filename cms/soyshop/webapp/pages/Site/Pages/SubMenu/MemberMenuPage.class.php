@@ -13,4 +13,3 @@ class MemberMenuPage extends HTMLPage{
 		parent::__construct();
 	}
 }
-?>

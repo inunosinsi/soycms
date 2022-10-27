@@ -2,8 +2,8 @@
 
 class SubMenuPage extends WebPage{
 
-	var $id;
-	var $page;
+	private $id;
+	private $page;
 
     function __construct($args) {
 		$this->id = $args[0];

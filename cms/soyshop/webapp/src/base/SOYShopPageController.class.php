@@ -126,6 +126,8 @@ class SOYShopPageController extends SOY2PageController{
 		define("SOYAPP_LINK", SOYAppUtil::createAppLink());
 
 		$title = (method_exists($webPage,"getTitle")) ? $webPage->getTitle() . " | " . $appName : $appName . " | ".$shopName;
+		if(!is_string($title)) $title = "";
+		
 		$css= (method_exists($webPage,"getCSS")) ? $webPage->getCSS() : array();
 		$scripts= (method_exists($webPage,"getScripts")) ? $webPage->getScripts() : array();
 

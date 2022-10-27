@@ -6,13 +6,13 @@
  */
 class DetailMenuPage extends HTMLPage{
 
-	var $id;
+	private $id;
 
 	function __construct($arg = array()){
 		$this->id = $arg[0];
 		parent::__construct();
 
-		$this->createAdd("detail_page_detail_link","HTMLLink", array(
+		$this->addLink("detail_page_detail_link", array(
 			"link" => SOY2PageController::createLink("Site.Pages.Extra.Detail." . $this->id)
 		));
 
@@ -36,7 +36,7 @@ class DetailMenuPage_ItemList extends HTMLList{
 
 	protected function populateItem($entity,$key){
 
-		$this->createAdd("item_detail_link","HTMLLink", array(
+		$this->addLink("item_detail_link", array(
 			"link" => $this->detailLink . $entity->getId(),
 			"text" => $entity->getName()
 		));

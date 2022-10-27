@@ -1,6 +1,8 @@
 <?php
 class CommonItemOptionConfigFormPage extends WebPage{
 
+	private $configObj;
+
     function __construct() {
     	SOY2DAOFactory::importEntity("SOYShop_DataSets");
 		SOY2::import("module.plugins.common_item_option.util.ItemOptionUtil");
@@ -116,7 +118,7 @@ class CommonItemOptionConfigFormPage extends WebPage{
 		}
 	}
 
-    function setConfigObj($obj) {
-		$this->config = $obj;
+    function setConfigObj($configObj) {
+		$this->configObj = $configObj;
 	}
 }

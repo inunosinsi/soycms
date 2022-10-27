@@ -232,4 +232,3 @@ class DiscountBulkBuyingConfigFormPage extends WebPage{
 		$this->config = $config;
 	}
 }
-?>

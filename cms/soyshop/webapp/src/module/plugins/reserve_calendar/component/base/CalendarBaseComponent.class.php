@@ -20,7 +20,7 @@ class CalendarBaseComponent extends SOY2LogicBase{
 	private $dspOtherMonthDate;
 
 	//captionを表示するか(年月)
-	private $dspCation;
+	private $dspCaption;
 
 	//captionの両端に前の月等のリンクを出力
 	private $dspMonthLink;

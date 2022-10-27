@@ -6,6 +6,9 @@
  */
 class ListPage extends WebPage{
 
+	private $id;
+	private $page;
+
 	function doPost(){
 		if(soy2_check_token()){
 
@@ -210,7 +213,7 @@ class ListPage extends WebPage{
 				"udate" => "更新日"
 			),
 			'populateItem:function($entity,$key)' =>
-					'$this->createAdd("sort_input","HTMLCheckbox", array(' .
+					'$this->addCheckBox("sort_input", array(' .
 						'"name" => "Page[defaultSort]",' .
 						'"value" => $key,' .
 						'"label" => $entity,' .

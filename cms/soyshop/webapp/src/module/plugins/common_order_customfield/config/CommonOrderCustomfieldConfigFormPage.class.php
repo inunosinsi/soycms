@@ -2,6 +2,8 @@
 
 class CommonOrderCustomfieldConfigFormPage extends WebPage{
 
+	private $configObj;
+
     function __construct() {
     	SOY2DAOFactory::importEntity("SOYShop_DataSets");
     }
@@ -117,7 +119,7 @@ class CommonOrderCustomfieldConfigFormPage extends WebPage{
 		));
     }
 
-    function setConfigObj($obj) {
-		$this->config = $obj;
+    function setConfigObj($configObj) {
+		$this->configObj = $configObj;
 	}
 }

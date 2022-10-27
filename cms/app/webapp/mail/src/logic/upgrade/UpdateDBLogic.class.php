@@ -2,6 +2,7 @@
 SOY2::import("domain.SOYMail_DataSets");
 class UpdateDBLogic extends SOY2LogicBase{
 
+	private $db;
 	private $directory;
 	private $extendDirectory;	//データベースの実行以外の更新
 	private $checkVersionLogic;

@@ -4,6 +4,7 @@ class UpdateDBLogic extends SOY2LogicBase{
 
 	private $directory;
 	private $extendDirectory;	//データベースの実行以外の更新
+	private $db;
 	private $checkVersionLogic;
 
 	//DataSets (soycms_admin_data_sets)でのclass名

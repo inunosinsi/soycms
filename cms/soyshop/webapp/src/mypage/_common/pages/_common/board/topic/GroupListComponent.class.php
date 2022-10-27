@@ -2,6 +2,8 @@
 
 class GroupListComponent extends HTMLList {
 
+	private $abstracts;
+
 	protected function populateItem($entity, $key){
 		$id = (is_numeric($entity->getId())) ? (int)$entity->getId() : 0;
 

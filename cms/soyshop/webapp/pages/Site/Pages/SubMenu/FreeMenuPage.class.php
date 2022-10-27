@@ -6,7 +6,7 @@
  */
 class FreeMenuPage extends HTMLPage{
 
-	var $id;
+	private $id;
 
 	function __construct($arg = array()){
 		$this->id = $arg[0];
@@ -34,6 +34,3 @@ class FreeMenuPage extends HTMLPage{
 		));
 	}
 }
-
-
-?>

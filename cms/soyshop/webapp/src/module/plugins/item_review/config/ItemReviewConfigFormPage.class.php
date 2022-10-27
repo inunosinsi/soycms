@@ -2,6 +2,8 @@
 
 class ItemReviewConfigFormPage extends WebPage{
 
+	private $configObj;
+
     function __construct() {
     	SOY2DAOFactory::importEntity("SOYShop_DataSets");
     	SOY2::import("module.plugins.item_review.util.ItemReviewUtil");
@@ -11,9 +13,9 @@ class ItemReviewConfigFormPage extends WebPage{
 
     	if(soy2_check_token() && isset($_POST["Config"])){
 			ItemReviewUtil::saveConfig($_POST["Config"]);
-    		$this->config->redirect("updated");
+    		$this->configObj->redirect("updated");
     	}
-		$this->config->redirect("failed");
+		$this->configObj->redirect("failed");
     }
 
     function execute(){
@@ -118,7 +120,7 @@ class ItemReviewConfigFormPage extends WebPage{
 		}
 	}
 
-    function setConfigObj($obj) {
-		$this->config = $obj;
+    function setConfigObj($configObj) {
+		$this->configObj = $configObj;
 	}
 }

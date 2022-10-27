@@ -63,7 +63,7 @@ class DiscountBulkBuyingConfigPage extends WebPage{
 			$cnd = (isset($_POST["CategoryCombination"])) ? (int)$_POST["CategoryCombination"] : DiscountBulkBuyingUtil::COMBINATION_ALL;
 			DiscountBulkBuyingUtil::saveCategoryCombinationCondition($cnd);
 
-			$this->config->redirect("updated");
+			$this->configObj->redirect("updated");
 		}
 	}
 
@@ -179,7 +179,7 @@ class DiscountBulkBuyingConfigPage extends WebPage{
 
 	}
 
-	function setConfigObj($config){
-		$this->config = $config;
+	function setConfigObj($configObj){
+		$this->configObj = $configObj;
 	}
 }

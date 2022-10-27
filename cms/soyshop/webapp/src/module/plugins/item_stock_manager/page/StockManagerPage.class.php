@@ -271,7 +271,7 @@ class StockManagerPage extends WebPage{
 			$text = (!strpos($key,"_desc")) ? "▲" : "▼";
 			$title = (!strpos($key,"_desc")) ? "昇順" : "降順";
 
-			$this->addLink("sort_${key}", array(
+			$this->addLink("sort_".$key, array(
 				"text" => $text,
 				"link" => $link . "?sort=" . $key,
 				"title" => $title,

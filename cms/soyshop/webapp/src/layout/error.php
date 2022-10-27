@@ -5,7 +5,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="robots" content="noindex">
 	<base href="<?php echo SOYSHOP_BASE_URL; ?>">
-	<title><?php echo htmlspecialchars($title,ENT_QUOTES,"UTF-8"); ?></title>
+	<title><?php echo htmlspecialchars((string)$title,ENT_QUOTES,"UTF-8"); ?></title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->

@@ -3,6 +3,8 @@
 class ReserveCalendarListPage extends WebPage{
 
 	private $configObj;
+	private $y;
+	private $m;
 	private $itemId;
 
 	function __construct(){

@@ -54,7 +54,7 @@ if(!$shopId || !$session->getAuthenticated() || !soyshop_admin_login()){
 }
 
 //Load the database setting
-define("SOYSHOP_SITE_CONFIG_FILE",str_replace("\\", "/", dirname(__FILE__) . "/shop/${shopId}.conf.php"));
+define("SOYSHOP_SITE_CONFIG_FILE",str_replace("\\", "/", dirname(__FILE__) . "/shop/" . $shopId . ".conf.php"));
 require(SOYSHOP_SITE_CONFIG_FILE);
 soyshop_load_db_config();
 

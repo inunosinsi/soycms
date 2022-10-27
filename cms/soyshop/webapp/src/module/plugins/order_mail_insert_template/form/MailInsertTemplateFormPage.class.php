@@ -2,7 +2,6 @@
 
 class MailInsertTemplateFormPage extends WebPage {
 
-	private $config;
 	private $itemId;
 
 	function __construct(){
@@ -12,19 +11,15 @@ class MailInsertTemplateFormPage extends WebPage {
 	function execute(){
 		parent::__construct();
 
-		$config = InsertStringTemplateUtil::getConfig();
+		$cnf = InsertStringTemplateUtil::getConfig();
 
-		DisplayPlugin::toggle("mail_template", count($config));
+		DisplayPlugin::toggle("mail_template", count($cnf));
 
 		$this->addSelect("templates", array(
 			"name" => "MailTemplate",
-			"options" => $config,
+			"options" => $cnf,
 			"selected" => InsertStringTemplateUtil::getMailFieldIdByItemId($this->itemId)
 		));
-	}
-
-	function setConfigObj($configObj){
-		$this->configObj = $configObj;
 	}
 
 	function setItemId($itemId){

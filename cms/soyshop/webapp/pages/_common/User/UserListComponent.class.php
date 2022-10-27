@@ -1,5 +1,5 @@
 <?php
-
+if(!class_exists("SOYShop_User")) SOY2::import("domain.user.SOYShop_User");
 class UserListComponent extends HTMLList{
 
 	protected function populateItem($bean){

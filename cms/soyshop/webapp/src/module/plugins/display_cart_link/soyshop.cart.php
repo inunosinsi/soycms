@@ -7,7 +7,7 @@ class DisplayCartLinkCart extends SOYShopCartBase{
 		
 		if(isset($_GET["item"]) && is_numeric($_GET["item"])){
 			$attr = soyshop_get_item_attribute_object((int)$_GET["item"], self::PLUGIN_ID);
-			if(is_null($attr->getValue)) return;
+			if(is_null($attr->getValue())) return;
 			
 			//カート制限をつける場合はtrue
 			if((int)$attr->getValue() === 1){

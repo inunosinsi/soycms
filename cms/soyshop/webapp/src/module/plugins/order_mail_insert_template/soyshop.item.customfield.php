@@ -43,7 +43,6 @@ class OrderMailInsertTemplateItemCustomField extends SOYShopItemCustomFieldBase{
     function getForm(SOYShop_Item $item){
         SOY2::import("module.plugins.order_mail_insert_template.form.MailInsertTemplateFormPage");
         $form = SOY2HTMLFactory::createInstance("MailInsertTemplateFormPage");
-        $form->setConfigObj($this);
         $form->setItemId($item->getId());
         $form->execute();
         return $form->getObject();

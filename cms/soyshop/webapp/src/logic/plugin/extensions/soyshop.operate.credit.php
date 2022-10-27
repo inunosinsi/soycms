@@ -47,8 +47,8 @@ class SOYShopOperateCreditBase implements SOY2PluginAction{
 
 class SOYShopOperateCreditDeletageAction implements SOY2PluginDelegateAction{
 	private $mode = "order_detail";
-	private $orderId;
-	private $userId;
+	private $order;
+	private $user;
 
 	private $_list;
 
@@ -105,5 +105,3 @@ class SOYShopOperateCreditDeletageAction implements SOY2PluginDelegateAction{
 }
 
 SOYShopPlugin::registerExtension("soyshop.operate.credit","SOYShopOperateCreditDeletageAction");
-
-?>
