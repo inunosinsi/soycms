@@ -60,19 +60,19 @@ class ApplyTemplatePage extends CMSWebPageBase{
 		$html = array();
 		$html[] = '<option value="">'.CMSMessageManager::get("SOYCMS_ASK_TO_CHOOSE_PAGE_TEMPLATE_PACK").'</option>';
 		foreach($templates as $template){
-			if(!$template->isActive())continue;
+			if(!$template->isActive()) continue;
+			$html[] = '<option value="'.$template->getId() .'">' . $template->getName() . '</option>';
 
-			$html[] = '<optgroup label="'.$template->getName().'">';
+			// $html[] = '<optgroup label="'.$template->getName().'">';
 
-			$temps = $template->getTemplate();
-			if(count($temps)){
-				foreach($temps as $id => $array){
-					$html[] = '<option value="'.$template->getId()."/". $id .'">' . $array["name"] . '</option>';
-				}
-			}
+			// $temps = $template->getTemplate();
+			// if(is_array($temps) && count($temps)){
+			// 	foreach($temps as $id => $array){
+			// 		$html[] = '<option value="'.$template->getId()."/". $id .'">' . $array["name"] . '</option>';
+			// 	}
+			// }
 
-
-			$html[] = "</optgroup>";
+			//$html[] = "</optgroup>";
 		}
 
 		return implode("\n",$html);

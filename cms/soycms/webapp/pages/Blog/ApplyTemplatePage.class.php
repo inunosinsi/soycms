@@ -72,10 +72,13 @@ class ApplyTemplatePage extends CMSWebPageBase{
 
 			$html[] = '<optgroup label="'.$template->getName().'">';
 
-			foreach($template->getTemplate() as $id => $array){
-				$html[] = '<option value="'.$template->getId()."/". $id .'">' . $array["name"] . '</option>';
+			$tmps = $template->getTemplate();
+			if(is_array($tmps) && count($tmps)){
+				foreach($tmps as $id => $array){
+					$html[] = '<option value="'.$template->getId()."/". $id .'">' . $array["name"] . '</option>';
+				}
 			}
-
+			
 			$html[] = "</optgroup>";
 		}
 

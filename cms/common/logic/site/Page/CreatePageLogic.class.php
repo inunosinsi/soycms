@@ -99,14 +99,15 @@ class CreatePageLogic extends SOY2LogicBase{
      * @param String id/name 
      */
     function getTemplateContents($tempname){
-    	list($id,$name) = explode("/",$tempname);
-    				    			    	
+		//list($id,$name) = explode("/",$tempname);
+		$id = $tempname;
+					    			    	
     	$dao = SOY2DAOFactory::create("cms.TemplateDAO");
     	$template = $dao->getById($id);
+    	$tmps = $template->getTemplate();
+		$keys = array_keys($tmps);
     	
-    	$contents = $template->getTemplateContent($name);
-    	
-    	return $contents;
+		return $template->getTemplateContent($keys[0]);    	
     }
     
     /**

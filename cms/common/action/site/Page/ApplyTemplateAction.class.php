@@ -41,12 +41,15 @@ class ApplyTemplateAction extends SOY2Action{
 	    		default:
 	    			$tmplogic = SOY2Logic::createInstance("logic.site.Template.TemplateLogic");
 					$template = $form->template;
-
-					list($id,$name)= explode("/",$template);
+					
+					//list($id,$name)= explode("/",$template);
+					$id = $template;	// id/nameの形式を廃止
 					$dao = SOY2DAOFactory::create("cms.TemplateDAO");
 			    	$template = $dao->getById($id);
-
-			    	$contents = $template->getTemplateContent($name);
+					$tmps = $template->getTemplate();
+					$keys = array_keys($tmps);
+					
+			    	$contents = $template->getTemplateContent($keys[0]);
 
 					//@@TITLE@@, @@ENCODING@@を置換
 					$contents = $createlogic->replaceTitle($contents, $pageObj->getTitle());
