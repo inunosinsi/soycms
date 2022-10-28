@@ -18,7 +18,7 @@ class MultiUploaderPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/3150",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.6"
+			"version"=>"0.7"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
@@ -44,9 +44,16 @@ class MultiUploaderPlugin{
 		$entryId = (isset($arg["entryId"]) && is_numeric($arg["entryId"])) ? (int)$arg["entryId"] : 0;
 
 		$images = ($entryId > 0) ? MultiUploaderUtil::getImagePathes($entryId) : array();
+		$isImages = (count($images));
+
+		$htmlObj->addModel("is_multi_uploader_image", array(
+			"soy2prefix" => "cms",
+			"visible" => $isImages
+		));
+
 		$htmlObj->createAdd("multi_uploader_image_list", "MultiUploaderImageListComponent", array(
 			"soy2prefix" => "p_block",
-			"list" => (count($images)) ? $images : array(),
+			"list" => ($isImages) ? $images : array(),
 			"alts" => ($entryId > 0) ? MultiUploaderUtil::getAltList($entryId) : array()
 		));
 	}
