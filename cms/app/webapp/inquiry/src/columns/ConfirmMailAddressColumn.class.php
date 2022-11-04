@@ -254,6 +254,7 @@ class ConfirmMailAddressColumn extends SOYInquiry_ColumnBase{
 	}
 
 	function getReplacement() {
+		if(!is_string($this->replacement)) $this->replacement = "";
 		return (strlen($this->replacement) == 0) ? "#EMAIL#" : $this->replacement;
 	}
 }

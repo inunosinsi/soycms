@@ -33,7 +33,7 @@ class DetailPage extends WebPage{
 				$subject = trim($_POST["Reply"]["subject"]);
 				$from = trim($_POST["Reply"]["from"]);
 				$content = htmlspecialchars($_POST["Reply"]["content"], ENT_QUOTES, "UTF-8");
-				$cc = (isset($_POST["Reply"]["cc"]) && strlen($_POST["Reply"]["cc"])) ? trim($_POST["Reply"]["cc"]) : null;
+				$cc = (isset($_POST["Reply"]["cc"]) && strlen($_POST["Reply"]["cc"])) ? trim($_POST["Reply"]["cc"]) : "";
 
 				//メールを送信
 				$mailLogic = SOY2Logic::createInstance("logic.MailLogic", array(
@@ -43,19 +43,17 @@ class DetailPage extends WebPage{
 				if(isset($cc)) $mailLogic->getSend()->addRecipient($cc);
 				$mailLogic->getSend()->setFrom($from, null);	//fromの入れ替え
 
-				$mailLogic->sendMail($to, $subject, $content, null);
+				$mailLogic->sendMail($to, $subject, $content);
 
                 //CCがある場合はcc宛にもメールする
-                if(isset($cc) && strlen($cc)){
-                    $mailLogic->sendMail($cc, $subject, $content, null);
-                }
+                if(isset($cc) && strlen($cc)) $mailLogic->sendMail($cc, $subject, $content);
 
                 //管理者に確認メールを送信する
                 if($this->form->getConfigObject()->getIsSendNotifyMail()) {
                     $serverConfig = SOY2DAOFactory::create("SOYInquiry_ServerConfigDAO")->get();
                     $adminFrom = $serverConfig->getAdministratorMailAddress();
                     if($adminFrom != $cc){
-                        $mailLogic->sendMail($adminFrom, $subject, $content, null);
+                        $mailLogic->sendMail($adminFrom, $subject, $content);
                     }
                 }
 

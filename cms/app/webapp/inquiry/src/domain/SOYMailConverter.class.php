@@ -30,8 +30,7 @@ class SOYMailConverter {
      * @return array( "SOYMailの連携先カラム名" => value)
      */
     function convert($value, $linkto=SOYMailConverter::SOYMAIL_NONE) {
-
-    	if(!strlen($linkto) || $linkto == SOYMailConverter::SOYMAIL_NONE){
+		if(!is_string($linkto) || !strlen($linkto) || $linkto == SOYMailConverter::SOYMAIL_NONE){
     		return null;
     	}
 

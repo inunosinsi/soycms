@@ -81,7 +81,7 @@ class MailLogic extends SOY2LogicBase{
 	 * @param <String> replyTo
 	 * @param Boolean replyToOnly 返信先をユーザのメールアドレスのみにする
 	 */
-	function sendMail(string $sendTo, string $title, string $body, string $sendToName, array $replyTo=array(), bool $replyToOnly=false){
+	function sendMail(string $sendTo, string $title, string $body, string $sendToName="", array $replyTo=array(), bool $replyToOnly=false){
 
 		//リセット
 		$this->reset();
@@ -297,8 +297,8 @@ class MailLogic extends SOY2LogicBase{
 		$dummyFormObject = new SOYInquiry_Form();
 		foreach($columns as $column){
 			$obj = $column->getColumn($dummyFormObject);
-			$replace = $obj->getReplacement();
-			if(strlen($replace)>0 && strpos($text, $replace) !== false) $text = str_replace($replace,htmlspecialchars_decode($obj->getMailText(), ENT_QUOTES),$text);
+			$replace = (string)$obj->getReplacement();
+			if(strlen($replace) > 0 && is_numeric(strpos($text, $replace))) $text = str_replace($replace,htmlspecialchars_decode($obj->getMailText(), ENT_QUOTES),$text);
 		}
 		return $text;
 	}
