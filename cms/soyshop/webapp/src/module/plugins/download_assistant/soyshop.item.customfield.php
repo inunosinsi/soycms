@@ -173,7 +173,7 @@ class DownloadAssistantCustomField extends SOYShopItemCustomFieldBase{
 	function onOutput($htmlObj, SOYShop_Item $item){}
 
 	function onDelete(int $itemId){
-		SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO")->deleteByItemId($id);
+		SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO")->deleteByItemId($itemId);
 	}
 }
 

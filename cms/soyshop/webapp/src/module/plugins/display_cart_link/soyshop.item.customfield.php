@@ -84,10 +84,8 @@ class DisplayCartLink extends SOYShopItemCustomFieldBase{
 	}
 
 	function onDelete(int $itemId){
-		$attributeDAO = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		$attributeDAO->deleteByItemId($id);
+		SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO")->deleteByItemId($itemId);
 	}
 }
 
 SOYShopPlugin::extension("soyshop.item.customfield", "display_cart_link", "DisplayCartLink");
-?>

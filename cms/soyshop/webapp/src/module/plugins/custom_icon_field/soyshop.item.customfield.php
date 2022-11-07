@@ -152,7 +152,7 @@ class CustomIconField extends SOYShopItemCustomFieldBase{
 	}
 
 	function onDelete(int $itemId){
-		SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO")->deleteByItemId($id);
+		SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO")->deleteByItemId($itemId);
 	}
 }
 

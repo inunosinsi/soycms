@@ -28,7 +28,7 @@ class CommonRelativeItemField extends SOYShopItemCustomFieldBase{
 
 	function onDelete(int $itemId){
 		try{
-			SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO")->deleteByItemId($id);
+			SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO")->deleteByItemId($itemId);
 		}catch(Exception $e){
 			//
 		}
