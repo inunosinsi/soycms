@@ -32,7 +32,7 @@ class SearchAction extends SOY2Action{
 		$this->setAttribute("form",$form);
     }
 
-    private function searchEntries(string $freewordText, array $label, array $cdate, array $udate, array $sort, array $customfields=array(), array $searchfields=array(), array $tagCloudTags, $others = null){
+    private function searchEntries(string $freewordText, array $label, array $cdate, array $udate, array $sort, array $customfields=array(), array $searchfields=array(), array $tagCloudTags=array(), $others = null){
     	$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
     	$dao = SOY2DAOFactory::create("LabeledEntryDAO");
     	$dao->setLimit($this->limit);

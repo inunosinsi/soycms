@@ -274,6 +274,7 @@ class CustomField{
  				break;
  			case "image":
  			case "file":
+				if(is_null($fieldValue)) $fieldValue = $this->getDefaultValue();
  				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
  				$body = '<input type="text" class="custom_field_input" style="width:50%"'
  				       .' id="'.$h_formID.'"'
@@ -493,7 +494,7 @@ class CustomField{
 	}
 
 	function getExtraOutputs() {
-		return $this->extraOutputs;
+		return (is_string($this->extraOutputs)) ? $this->extraOutputs : "";
 	}
 	function setExtraOutputs($extraOutputs) {
 		$this->extraOutputs = $extraOutputs;
