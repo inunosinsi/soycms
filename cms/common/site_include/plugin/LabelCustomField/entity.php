@@ -232,6 +232,7 @@ class LabelCustomField{
  				break;
  			case "image":
  			case "file":
+				if(!is_string($fieldValue)) $fieldValue = "";
  				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
  				$body = '<input type="text" class="custom_field_input" style="width:50%"'
  				       .' id="'.$h_formID.'"'
@@ -373,6 +374,7 @@ class LabelCustomField{
 				break;
 				case "input":
  			default:
+				if(!is_string($fieldValue)) $fieldValue = "";
  				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
  				$body = '<input type="text" class="custom_field_input form-control" style="width:100%"'
  				       .' id="'.$h_formID.'"'
