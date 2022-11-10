@@ -39,7 +39,7 @@ class CustomFieldPluginAdvanced{
 			"author" => "日本情報化農業研究所",
 			"url" => "http://www.n-i-agroinformatics.com/",
 			"mail" => "soycms@soycms.net",
-			"version"=>"1.17"
+			"version"=>"1.18"
 		));
 
 		//プラグイン アクティブ
@@ -524,7 +524,11 @@ class CustomFieldPluginAdvanced{
 		foreach($arr as $fieldId => $v){
 			$attr = soycms_get_entry_attribute_object($new, $fieldId);
 			$attr->setValue($v["value"]);
-			$attr->setExtraValues($v["extraValues"]);
+			if(is_array($v["extraValues"])){
+				$attr->setExtraValuesArray($v["extraValues"]);
+			}else{
+				$attr->setExtraValues($v["extraValues"]);
+			}
 			soycms_save_entry_attribute_object($attr);
 		}
 
