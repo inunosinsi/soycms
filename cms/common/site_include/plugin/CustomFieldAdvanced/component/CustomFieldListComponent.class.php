@@ -88,7 +88,7 @@ class CustomFieldListComponent extends HTMLList {
 			"link" => "javascript:void(0)",
 			"text" => "高度な設定",
 			"onclick" => '$(\'#field_config_'.$entity->getId().'\').toggle();',
-			"class" => (!$entity->getShowInput() || is_numeric($entity->getLabelId()) || count($entity->getLabelIds())|| $entity->getDefaultValue() || $entity->getEmptyValue() || $entity->getDescription() || $entity->getFixedLabelId() || strlen($entity->getOption())) ? "btn btn-warning" : "btn btn-info",
+			"class" => (!$entity->getShowInput() || is_numeric($entity->getLabelId()) || count($entity->getLabelIds())|| $entity->getDefaultValue() || $entity->getEmptyValue() || $entity->getDescription() || $entity->getFixedLabelId() || strlen($entity->getOption()) || $entity->getAddTagOutsideBlock()) ? "btn btn-warning" : "btn btn-info",
 			"attr:id" => "toggle_config_" . $entity->getId()
 		));
 
@@ -159,6 +159,22 @@ class CustomFieldListComponent extends HTMLList {
 		$this->addInput("output", array(
 			"name" => "config[output]",
 			"value" => $entity->getOutput()
+		));
+
+		// ブロックの外で使用するp_blockの設定(チェックボックスのみ)
+		$this->addModel("is_checkbox", array(
+			"visible" => ($entity->getType() == "checkbox")
+		));
+
+		$this->addCheckBox("add_tag_outside_block", array(
+			"name" => "config[addTagOutsideBlock]",
+			"value" => 1,
+			"selected" => $entity->getAddTagOutsideBlock(),
+			"label" => "b_block:id=\"is_" . $entity->getId() . "\"とb_block:id=\"no_" . $entity->getId() . "\"を追加する"
+		));
+
+		$this->addLabel("label_name", array(
+			"text" => $entity->getLabel()
 		));
 
 		$this->addModel("use_extra", array(

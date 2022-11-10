@@ -39,7 +39,7 @@ class CustomFieldPluginAdvanced{
 			"author" => "日本情報化農業研究所",
 			"url" => "http://www.n-i-agroinformatics.com/",
 			"mail" => "soycms@soycms.net",
-			"version"=>"1.18"
+			"version"=>"1.19"
 		));
 
 		//プラグイン アクティブ
@@ -66,6 +66,7 @@ class CustomFieldPluginAdvanced{
 			}else{
 				CMSPlugin::setEvent('onEntryListBeforeOutput', CustomFieldPluginAdvanced::PLUGIN_ID, array($this, "onEntryListBeforeOutput"));
 				CMSPlugin::setEvent('onEntryOutput', CustomFieldPluginAdvanced::PLUGIN_ID, array($this, "onEntryOutput"));
+				CMSPlugin::setEvent('onPageOutput',CustomFieldPluginAdvanced::PLUGIN_ID,array($this,"onPageOutput"));
 			}
 
 		}else{
@@ -446,6 +447,36 @@ class CustomFieldPluginAdvanced{
 			}
 		}
 		return $this->properties[$type];
+	}
+
+	function onPageOutput($obj){
+		$entryId = (get_class($obj) == "CMSBlogPage" && isset($obj->entry)) ? $obj->entry->getId() : 0;
+
+		// b_blockタグ設定しているフィールドのみを取得
+		$fieldIds = array();
+		if($entryId > 0 && is_array($this->customFields) && count($this->customFields)){
+			foreach($this->customFields as $fieldId => $field){
+				if($field->getType() != "checkbox" || !$field->getAddTagOutsideBlock()) continue;
+				$fieldIds[] = $fieldId;
+			}
+		}
+
+		if(count($fieldIds)){
+			foreach($fieldIds as $fieldId){
+				$v = soycms_get_entry_attribute_value($entryId, $fieldId);
+				$checked = (is_string($v) && strlen(trim($v)));
+				
+				$obj->addModel("is_". $fieldId, array(
+					"soy2prefix" => "b_block",
+					"visible" => $checked
+				));
+
+				$obj->addModel("no_". $fieldId, array(
+					"soy2prefix" => "b_block",
+					"visible" => !$checked
+				));
+			}
+		}
 	}
 
 	/**

@@ -60,6 +60,9 @@ class CustomFieldAdvancedPluginFormPage extends WebPage{
 			//記事検索の項目設定
 			$_POST["config"]["isSearchItem"] = (isset($_POST["config"]["isSearchItem"]) && $_POST["config"]["isSearchItem"] == 1);
 
+			//ブロックの外で使用できるタグを追加
+			$_POST["config"]["addTagOutsideBlock"] = (isset($_POST["config"]["addTagOutsideBlock"]) && $_POST["config"]["addTagOutsideBlock"] == 1);
+
 			//pairの値は配列からシリアライズした文字列にしてExtraValuesに格納する
 			if(isset($_POST["pair"]) && is_array($_POST["pair"]) && count($_POST["pair"])){
 				$pairConf = array();

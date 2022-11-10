@@ -63,6 +63,9 @@ class CustomField{
 	//記事フィールドでラベルの固定
 	private $fixedLabelId;
 
+	//ブロックの外側で使用できるタグを追加
+	private $addTagOutsideBlock = 0;
+
 	function __construct($array = array()){
 		$obj = (object)$array;
 		SOY2::cast($this,$obj);
@@ -164,7 +167,13 @@ class CustomField{
 	function getExtraFormId($extraOutput) {
 		return "custom_field_" .$this->getId() . "_extra_" . $extraOutput;
 	}
-
+	function getAddTagOutsideBlock(){
+		return $this->addTagOutsideBlock;
+	}
+	function setAddTagOutsideBlock($addTagOutsideBlock){
+		$this->addTagOutsideBlock = $addTagOutsideBlock;
+	}
+	
 	function hasOption(){
 		return (boolean)($this->getType() == "radio" || $this->getType() == "select" || $this->getType() == "pair");
 	}
