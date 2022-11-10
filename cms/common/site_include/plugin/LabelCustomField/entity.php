@@ -106,7 +106,7 @@ class LabelCustomField{
 		$this->output = $output;
 	}
 	function getDescription(){
-		return $this->description;
+		return (is_string($this->description)) ? $this->description : "";
 	}
 	function setDescription($description){
 		$this->description = $description;
@@ -249,7 +249,7 @@ class LabelCustomField{
  					}
  				}
 
- 				$extraOutputs = explode("\n", str_replace(array("\r\n", "\r"), "\n", $this->extraOutputs));
+ 				$extraOutputs = explode("\n", str_replace(array("\r\n", "\r"), "\n", $this->getExtraOutputs()));
 
  				foreach($extraOutputs as $key => $extraOutput){
  					$extraOutput = trim($extraOutput);
@@ -404,13 +404,13 @@ class LabelCustomField{
  	}
 
 	function getDefaultValue() {
-		return $this->defaultValue;
+		return (is_string($this->defaultValue)) ? $this->defaultValue : "";
 	}
 	function setDefaultValue($defaultValue) {
 		$this->defaultValue = $defaultValue;
 	}
 	function getEmptyValue() {
-		return $this->emptyValue;
+		return (is_string($this->emptyValue)) ? $this->emptyValue : "";
 	}
 	function setEmptyValue($emptyValue) {
 		$this->emptyValue = $emptyValue;
@@ -429,7 +429,7 @@ class LabelCustomField{
 	}
 
 	function getExtraOutputs() {
-		return $this->extraOutputs;
+		return (is_string($this->extraOutputs)) ? $this->extraOutputs : "";
 	}
 	function setExtraOutputs($extraOutputs) {
 		$this->extraOutputs = $extraOutputs;
