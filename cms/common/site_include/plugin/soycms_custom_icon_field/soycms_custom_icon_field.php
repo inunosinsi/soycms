@@ -3,12 +3,14 @@ CustomIconFieldPlugin::registerPlugin();
 
 class CustomIconFieldPlugin{
 
+	const PLUGIN_ID = "SOYCMS_CUSTOM_ICON_FIELD_PLUGIN";
+
 	private $label = "アイコンフィールド";
  	private $iconDirectory = "icons";
 	private $labels = array();	//記事投稿画面でのフォームの表示の有無用
 
 	function getId(){
-		return SOYCMS_CUSTOM_ICON_FIELD_PLUGIN;
+		return self::PLUGIN_ID;
 	}
 
 	function init(){
@@ -18,12 +20,12 @@ class CustomIconFieldPlugin{
 			"author" => "株式会社Brassica",
 			"url" => "https://brassica.jp/",
 			"mail" => "soycms@soycms.net",
-			"version" => "1.4"
+			"version" => "1.5"
 		));
 		CMSPlugin::addPluginConfigPage($this->getId(), array(
 			$this, "config_page"
 		));
-
+		
 		if(CMSPlugin::activeCheck($this->getId())){
 
 			CMSPlugin::setEvent('onEntryUpdate', $this->getId(), array($this, "onEntryUpdate"));
@@ -154,10 +156,8 @@ class CustomIconFieldPlugin{
 	}
 
 	public static function registerPlugin(){
-		define('SOYCMS_CUSTOM_ICON_FIELD_PLUGIN', "SOYCMS_CUSTOM_ICON_FIELD_PLUGIN");
-
-		$obj = CMSPlugin::loadPluginConfig(SOYCMS_CUSTOM_ICON_FIELD_PLUGIN);
+		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
 		if(is_null($obj)) $obj = new CustomIconFieldPlugin();
-		CMSPlugin::addPlugin(SOYCMS_CUSTOM_ICON_FIELD_PLUGIN, array($obj, "init"));
+		CMSPlugin::addPlugin(self::PLUGIN_ID, array($obj, "init"));
 	}
 }

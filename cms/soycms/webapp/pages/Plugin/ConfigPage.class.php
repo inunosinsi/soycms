@@ -63,16 +63,14 @@ class ConfigPage extends CMSWebPageBase{
 			"name"=>"category"
 		));
 
-
 		if($plugin->isActive()){
 			DisplayPlugin::hide("only_nonactive");
 		}else{
 			DisplayPlugin::hide("only_active");
 		}
 
-		$configArray = $this->getFlashSession()->getAttribute("config_redirect");
-
 		if($plugin->getConfig() && $plugin->isActive()){
+			$configArray = $this->getFlashSession()->getAttribute("config_redirect");
 			$html = call_user_func($plugin->getConfig(),$configArray);
 		}else{
 			$html = "";

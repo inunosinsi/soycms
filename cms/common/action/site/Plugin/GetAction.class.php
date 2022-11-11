@@ -15,7 +15,7 @@ class GetAction extends SOY2Action{
 
     	$dao = SOY2DAOFactory::create("cms.PluginDAO");
     	$plugin = $dao->getById($this->pluginId);
-    	$this->setAttribute("plugin",$plugin);
+		$this->setAttribute("plugin",$plugin);
 
     	return SOY2Action::SUCCESS;
     }

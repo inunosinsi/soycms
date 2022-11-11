@@ -64,7 +64,7 @@ class CustomIconFieldConfigPage extends WebPage {
 
 	function execute(){
 		parent::__construct();
-
+		
 		DisplayPlugin::toggle("error", (is_string($this->message) && strlen($this->message)));
 		$this->addLabel("error_message", array(
 			"text" => (is_string($this->message)) ? $this->message : ""
