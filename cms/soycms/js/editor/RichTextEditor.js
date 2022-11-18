@@ -1,4 +1,3 @@
-alert("hoge");
 //tinymce4
 tinymce.init({
 	mode : "specific_textareas",
