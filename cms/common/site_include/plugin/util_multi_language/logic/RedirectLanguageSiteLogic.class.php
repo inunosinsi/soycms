@@ -95,7 +95,6 @@ class RedirectLanguageSiteLogic extends SOY2LogicBase{
 	
 	//他の言語域のプレフィックスがPathに入っていないか？
 	private function checkPathInfo($pathInfo, $config){
-		var_dump($config);
 //		if(isset($config["check_browser_language_config"])) unset($config["check_browser_language_config"]);
 //		if(isset($config[SOYSHOP_PUBLISH_LANGUAGE])) unset($config[SOYSHOP_PUBLISH_LANGUAGE]);
 		
