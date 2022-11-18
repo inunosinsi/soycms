@@ -17,7 +17,7 @@ class OutputBlogEntriesJsonPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/4505",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.10"
+			"version"=>"1.0"
 		));
 		
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -25,7 +25,16 @@ class OutputBlogEntriesJsonPlugin{
 				$this, "config_page"
 			));
 
-			CMSPlugin::setEvent('onSiteAccess', self::PLUGIN_ID, array($this, "onSiteAccess"));
+			if(defined("_SITE_ROOT_")){	//公開側
+				//JSONの出力
+				CMSPlugin::setEvent('onSiteAccess', self::PLUGIN_ID, array($this, "onSiteAccess"));
+			}else{	//管理画面側
+				//記事更新時にページャ用のデータベース oje.dbの削除 cms:module="parts.json_entries_multi_sites"で使用するデータベース
+				CMSPlugin::setEvent('onEntryUpdate', self::PLUGIN_ID, array($this, "onEntryUpdate"));
+				CMSPlugin::setEvent('onEntryCreate', self::PLUGIN_ID, array($this, "onEntryUpdate"));
+				CMSPlugin::setEvent('onEntryCopy', self::PLUGIN_ID, array($this, "onEntryUpdate"));
+				CMSPlugin::setEvent('onEntryRemove', self::PLUGIN_ID, array($this, "onEntryUpdate"));
+			}
 		}
 	}
 
@@ -37,6 +46,7 @@ class OutputBlogEntriesJsonPlugin{
 
 		$lim = (isset($_GET["limit"]) && is_numeric($_GET["limit"])) ? (int)$_GET["limit"] : -1;
 		$offset = (isset($_GET["offset"]) && is_numeric($_GET["offset"])) ? (int)$_GET["offset"] : 0;
+		$isRemoveLimit = (isset($_GET["remove_limit"]) && (int)$_GET["remove_limit"] === 1);
 		$blogPage = soycms_get_page_object((int)$tmp[1]);
 		if(!$blogPage instanceof BlogPage) self::_output();
 		
@@ -54,7 +64,7 @@ class OutputBlogEntriesJsonPlugin{
 		$isNext = ($lim >= 0 && $lim * ($offset + 1) < $cnt);
 
 		// 安全装置
-		if($lim < 0) $lim = 100;
+		if(!$isRemoveLimit && $lim < 0) $lim = 100;
 		
 		try{
 			$res = self::_dao()->executeQuery(self::_buildSql($lim, $offset), array(":labelId" => $labelId));
@@ -285,8 +295,8 @@ class OutputBlogEntriesJsonPlugin{
 		if(is_null($c)){
 			$c = array();
 			if(CMSPlugin::activeCheck("CustomFieldAdvanced")) {
-				SOY2::import("site_include.plugin.CustomFieldPluginAdvanced.CustomFieldPluginAdvanced", ".php");
-				$c = CMSPlugin::loadPluginConfig(CustomFieldPluginAdvanced::PLUGIN_ID)->customFields;
+				SOY2::import("site_include.plugin.self.self", ".php");
+				$c = CMSPlugin::loadPluginConfig(self::PLUGIN_ID)->customFields;
 			}
 		}
 
@@ -329,6 +339,20 @@ class OutputBlogEntriesJsonPlugin{
 		if(is_string($uri) && strlen($uri)) $u .= $uri . "/";
 
 		return $u;
+	}
+
+	function onEntryUpdate($args){
+		//すべてのサイトディレクトリを調べる
+		$old = CMSUtil::switchDsn();
+
+		$sites = SOY2DAOFactory::create("admin.SiteDAO")->get();
+		foreach($sites as $site){
+			$dbPath = $site->getPath() . ".cache/oje.db";
+			if(!file_exists($dbPath)) continue;
+			unlink($dbPath);
+		}
+		
+		CMSUtil::resetDsn($old);
 	}
 
 	private function _dao(){

@@ -90,7 +90,10 @@ class OutputJsonConfigPage extends WebPage {
 		if(!CMSPlugin::activeCheck("CustomFieldAdvanced")) return array();
 
 		SOY2::import("site_include.plugin.CustomFieldPluginAdvanced.CustomFieldPluginAdvanced", ".php");
-		$customfields = CMSPlugin::loadPluginConfig(CustomFieldPluginAdvanced::PLUGIN_ID)->customFields;
+		$cfaObj = CMSPlugin::loadPluginConfig(CustomFieldPluginAdvanced::PLUGIN_ID);
+		if(!property_exists($cfaObj, "customFields")) return array();
+		
+		$customfields = $cfaObj->customFields;
 		if(!is_array($customfields) || !count($customfields)) return array();
 
 		$fieldIds = array();
