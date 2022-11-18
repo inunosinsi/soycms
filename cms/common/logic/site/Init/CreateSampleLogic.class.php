@@ -135,7 +135,7 @@ class CreateSampleLogic extends SOY2LogicBase {
 		$entryid = $entrylogic->create($entry);
 
 		// Label sample entry
-		$entrylogic->setEntryLabel($entryid,$labelid);
+		$entrylogic->setEntryLabel((int)$entryid, (int)$labelid);
 
 
 		return true;

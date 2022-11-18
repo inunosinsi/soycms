@@ -47,7 +47,9 @@ abstract class EntryLabelDAO extends SOY2DAO{
 	/**
 	 * @final
 	 */
-	function setByParams($entryId,$labelId,$displayOrder = null){
+	function setByParams(int $entryId, int $labelId, int $displayOrder=-1){
+		if($labelId <= 0) return;	// labelIdが0以下の場合は何もしない
+
 		$obj = new EntryLabel();
 
 		$obj->setEntryId($entryId);
@@ -55,15 +57,13 @@ abstract class EntryLabelDAO extends SOY2DAO{
 		$obj->setMaxDisplayOrder();
 
 		try{
-			$currentObj = $this->getByParam($labelId,$entryId);
+			$currentObj = $this->getByParam($labelId, $entryId);
 			//do noting
 		}catch(Exception $e){
 			$this->insert($obj);
 		}
 
-		if($displayOrder){
-			$this->updateDisplayOrder($entryId,$labelId,$displayOrder);
-		}
+		if($displayOrder >= 0) $this->updateDisplayOrder($entryId, $labelId, $displayOrder);
 	}
 
 	/**
