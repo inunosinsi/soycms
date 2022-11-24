@@ -56,13 +56,12 @@ class CLSPlugin{
 
 		switch($page->getPageType()){
 			case Page::PAGE_TYPE_BLOG:
-				$webPage = &$arg["webPage"];
-				switch($webPage->mode){
+				switch(SOYCMS_BLOG_PAGE_MODE){
 					case CMSBlogPage::MODE_TOP:
 					case CMSBlogPage::MODE_ENTRY:
 					case CMSBlogPage::MODE_MONTH_ARCHIVE:
 					case CMSBlogPage::MODE_CATEGORY_ARCHIVE:
-						if(!isset($this->config_per_blog[$page->getId()][$webPage->mode]) || $this->config_per_blog[$page->getId()][$webPage->mode] != 1) return $html;
+						if(!isset($this->config_per_blog[$page->getId()][SOYCMS_BLOG_PAGE_MODE]) || $this->config_per_blog[$page->getId()][SOYCMS_BLOG_PAGE_MODE] != 1) return $html;
 						break;
 					case CMSBlogPage::MODE_RSS:
 					case CMSBlogPage::MODE_POPUP:
@@ -116,7 +115,11 @@ class CLSPlugin{
 		return implode("\n", $htmls);
 	}
 
-	private function _getProps($imgTag){
+	/**
+	 * @param string
+	 * @return array
+	 */
+	private function _getProps(string $imgTag){
 		$list = array();
 
 		// prop="***"の方を調べる
@@ -148,7 +151,11 @@ class CLSPlugin{
 		return $list;
 	}
 
-	private function _getImageInfo($path){
+	/**
+	 * @param string
+	 * @return array
+	 */
+	private function _getImageInfo(string $path){
 		if(strpos($path, "/") !== 0){
 			// @ToDo スラッシュから始まらない場合はドメインを削除
 		}
@@ -167,7 +174,11 @@ class CLSPlugin{
 		return $props;
 	}
 
-	private function _rebuildImgTag($oldTag, $props){
+	/**
+	 * @param string, array
+	 * @return string
+	 */
+	private function _rebuildImgTag(string $oldTag, $props){
 		if(!is_array($props) || !count($props)) return $oldTag;
 		$newTag = "<img";
 		foreach($props as $idx => $v){
@@ -177,7 +188,11 @@ class CLSPlugin{
 		return $newTag;
 	}
 
-	private function _setPictureElement($newTag, $info, $props){
+	/**
+	 * @param string, array, array
+	 * @return string
+	 */
+	private function _setPictureElement(string $newTag, array $info, array $props){
 		//小さい画像はMODE_PROPERTY対応
 		if(!isset($info["width"]) || $info["width"] < $this->resizeWidth)  return self::_rebuildImgTag($newTag, self::_mergeProps($info, $props));
 
@@ -200,7 +215,11 @@ class CLSPlugin{
 		return str_replace($tmp[0], $tag . $tmp[0] . "</picture>", $newTag);
 	}
 
-	private function _getSrc($line){
+	/**
+	 * @param string
+	 * @return array nullable
+	 */
+	private function _getSrc(string $line){
 		preg_match('/<img(.*?)>/i', $line, $tmp);
 		if(!isset($tmp[1])) return null;
 		$p = trim(trim($tmp[1], "/"));
@@ -222,7 +241,11 @@ class CLSPlugin{
 		return null;
 	}
 
-	private function _autoGenerateMiniImageFile($path){
+	/**
+	 * @param string
+	 * @return string
+	 */
+	private function _autoGenerateMiniImageFile(string $path){
 		//スラッシュから始まらない場合は何もしない
 		if(strpos($path, "/") !== 0) return null;
 

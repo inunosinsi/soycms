@@ -70,8 +70,7 @@ class XPublisherPlugin{
 
 		switch($page->getPageType()){
 			case Page::PAGE_TYPE_BLOG:
-				$webPage = &$arg["webPage"];
-				switch($webPage->mode){
+				switch(SOYCMS_BLOG_PAGE_MODE){
 					case CMSBlogPage::MODE_TOP:
 						self::_generateStaticHTMLFile($html);
 						break;
@@ -89,7 +88,10 @@ class XPublisherPlugin{
 		return $html;
 	}
 
-	private function _generateStaticHTMLFile($html){
+	/**
+	 * @param string
+	 */
+	private function _generateStaticHTMLFile(string $html){
 
 		//末尾が指定の拡張子の場合は以後の処理を実行しない
 		$reqUri = $_SERVER["REQUEST_URI"];
@@ -141,7 +143,11 @@ class XPublisherPlugin{
 		self::_removeStaticHTMLFile();
 	}
 
-	private function _checkUri($req){
+	/**
+	 * @param string
+	 * @return bool
+	 */
+	private function _checkUri(string $req){
 		if(!is_array($this->config_per_page) || !count($this->config_per_page)) return false;
 		$siteId = trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/");
 		if(strpos($req, "/" . $siteId . "/") === 0) $req = str_replace("/" . $siteId. "/", "", $req);
@@ -164,7 +170,11 @@ class XPublisherPlugin{
 		return false;
 	}
 
-	private function _getUriList($pageIds){
+	/**
+	 * @param array
+	 * @return array
+	 */
+	private function _getUriList(array $pageIds){
 		$dao = new SOY2DAO();
 		try{
 			$res = $dao->executeQuery("SELECT id, uri FROM Page WHERE id IN (" .implode(",", $pageIds) . ")");
@@ -192,13 +202,10 @@ class XPublisherPlugin{
 			$siteDir = substr($siteDir, 0, strrpos($siteDir, "/")) . "/";
 		}
 
-		$pageDao = SOY2DAOFactory::create("cms.PageDAO");
 		foreach($this->config_per_page as $pageId => $on){
-			try{
-				$page = $pageDao->getById($pageId);
-			}catch(Exception $e){
-				continue;
-			}
+			$page = soycms_get_page_object($pageId);
+			if(!is_numeric($page->getId())) continue;
+			
 			$dir = $siteDir . $page->getUri();
 			if(strpos($dir, ".html")){
 				if(file_exists($dir)){
@@ -216,7 +223,7 @@ class XPublisherPlugin{
 		}
 	}
 
-	private function _removeStaticHTMLBlogPagerFile($targetDir){
+	private function _removeStaticHTMLBlogPagerFile(string $targetDir){
 		$targetDir = rtrim($targetDir, "/") . "/";
 		if(file_exists($targetDir) && is_dir($targetDir)){
 			$dirs = scandir($targetDir);

@@ -73,13 +73,12 @@ class HTMLCachePlugin{
 				self::_generateStaticHTMLCacheFile($html);
 				break;
 			case Page::PAGE_TYPE_BLOG:
-				$webPage = &$arg["webPage"];
-				switch($webPage->mode){
+				switch(SOYCMS_BLOG_PAGE_MODE){
 					case CMSBlogPage::MODE_TOP:
 					case CMSBlogPage::MODE_ENTRY:
 					case CMSBlogPage::MODE_MONTH_ARCHIVE:
 					case CMSBlogPage::MODE_CATEGORY_ARCHIVE:
-						if(isset($this->config_per_blog[$page->getId()][$webPage->mode]) && $this->config_per_blog[$page->getId()][$webPage->mode] == 1){
+						if(isset($this->config_per_blog[$page->getId()][SOYCMS_BLOG_PAGE_MODE]) && $this->config_per_blog[$page->getId()][SOYCMS_BLOG_PAGE_MODE] == 1){
 							self::_generateStaticHTMLCacheFile($html);
 							break;
 						}
@@ -97,7 +96,7 @@ class HTMLCachePlugin{
 	}
 
 	//HTMLCache
-	private function _generateStaticHTMLCacheFile($html){
+	private function _generateStaticHTMLCacheFile(string $html){
 		//トレイリングスラッシュ対策で末尾のスラッシュを抜いておく
 		$pathInfo = (isset($_SERVER["PATH_INFO"])) ? rtrim($_SERVER["PATH_INFO"], "/") : "_top";
 		$alias = trim(substr($pathInfo, strrpos($pathInfo, "/")), "/");
@@ -138,7 +137,7 @@ class HTMLCachePlugin{
 		if(file_exists($staticCacheDir)) self::_deleteDir($staticCacheDir);
 	}
 
-	private function _deleteDir($path){
+	private function _deleteDir(string $path){
 		//ディレクトリ指定でスラッシュがあれば除去
 		$path = rtrim($path, "/");
 		//指定されたディレクトリの中身一覧取得

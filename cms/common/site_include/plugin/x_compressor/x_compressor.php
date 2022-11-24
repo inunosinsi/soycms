@@ -49,13 +49,12 @@ class CompressorPlugin{
 
 		switch($page->getPageType()){
 			case Page::PAGE_TYPE_BLOG:
-				$webPage = &$arg["webPage"];
-				switch($webPage->mode){
+				switch(SOYCMS_BLOG_PAGE_MODE){
 					case CMSBlogPage::MODE_TOP:
 					case CMSBlogPage::MODE_ENTRY:
 					case CMSBlogPage::MODE_MONTH_ARCHIVE:
 					case CMSBlogPage::MODE_CATEGORY_ARCHIVE:
-						if(!isset($this->config_per_blog[$page->getId()][$webPage->mode]) || $this->config_per_blog[$page->getId()][$webPage->mode] != 1) return $html;
+						if(!isset($this->config_per_blog[$page->getId()][SOYCMS_BLOG_PAGE_MODE]) || $this->config_per_blog[$page->getId()][SOYCMS_BLOG_PAGE_MODE] != 1) return $html;
 						break;
 					case CMSBlogPage::MODE_RSS:
 					case CMSBlogPage::MODE_POPUP:
@@ -155,7 +154,7 @@ class CompressorPlugin{
 	}
 
 	//半角スペースが２つ続いている場合は１つのする
-	private function _deleteSpace($line){
+	private function _deleteSpace(string $line){
 		for(;;){
 			if(strpos($line, "  ") === false) break;
 			$line = str_replace("  ", " ", $line);
@@ -163,7 +162,7 @@ class CompressorPlugin{
 		return $line;
 	}
 
-	private function _xhtml2html5($line){
+	private function _xhtml2html5(string $line){
 		for(;;){
 			if(strpos($line, " />") === false) break;
 			$line = str_replace(" />", ">", $line);
