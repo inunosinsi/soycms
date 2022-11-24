@@ -10,7 +10,6 @@ class CMSBlogPage extends CMSPage{
 	const MODE_POPUP = "_popup_";
 
 	var $pageUrl;
-	public $mode;
 	var $year;
 	var $month;
 	var $day;
@@ -21,6 +20,7 @@ class CMSBlogPage extends CMSPage{
 	var $entries = array();
 	var $label;
 	public $total;
+	public $mode;	// SOYCMS_BLOG_PAGE_MODEと同じ意味
 	var $offset = 0;
 	var $limit;
 	var $entryComment;
@@ -147,6 +147,10 @@ class CMSBlogPage extends CMSPage{
 			$arguments = str_replace($tmp[1],"",$arguments);
 		}
 
+		//モード別
+		if(!defined("SOYCMS_BLOG_PAGE_MODE")) define("SOYCMS_BLOG_PAGE_MODE", $this->getMode($arguments));
+		$this->mode = SOYCMS_BLOG_PAGE_MODE;
+
 		//タイトルフォーマットの取得
 		$pageFormat = $this->getTitleFormat();
 
@@ -154,17 +158,13 @@ class CMSBlogPage extends CMSPage{
 			//空っぽだったらデフォルト追加
 			$pageFormat = '%BLOG%';
 		}
-
-		//モード別
-		$this->mode = $this->getMode($arguments);
-
-		switch($this->mode){
+		
+		switch(SOYCMS_BLOG_PAGE_MODE){
 			case CMSBlogPage::MODE_ENTRY:
 				if(!$this->page->getGenerateEntryFlag()){
 					$tihs->error = new Exception("EntryPageは表示できません");
 					return;
 				}
-				$this->mode = CMSBlogPage::MODE_ENTRY;
 				
 				// mixed int|string
 				$alias = mb_convert_encoding(
@@ -210,7 +210,6 @@ class CMSBlogPage extends CMSPage{
 					$this->error = new Exception("CategoryPageは表示できません");
 					return;
 				}
-				$this->mode = CMSBlogPage::MODE_CATEGORY_ARCHIVE;
 				$this->limit = $this->page->getCategoryDisplayCount();
 
 				$alias = mb_convert_encoding(
@@ -248,7 +247,6 @@ class CMSBlogPage extends CMSPage{
 					$this->error = new Exception("MonthPageは表示できません");
 					return;
 				}
-				$this->mode = CMSBlogPage::MODE_MONTH_ARCHIVE;
 				$this->limit = $this->page->getMonthDisplayCount();
 				if(!is_numeric($this->limit)) $this->limit = 0;
 
@@ -289,8 +287,6 @@ class CMSBlogPage extends CMSPage{
 					return;
 				}
 
-				$this->mode = CMSBlogPage::MODE_RSS;
-
 				$pageFormat = $this->page->getFeedTitleFormat();
 				$pageFormat = preg_replace('/%SITE%/',$this->siteConfig->getName(),$pageFormat);
 				$pageFormat = preg_replace('/%BLOG%/',$this->page->getTitle(),$pageFormat);
@@ -330,7 +326,6 @@ class CMSBlogPage extends CMSPage{
 				break;
 
 			case CMSBlogPage::MODE_POPUP:
-				$this->mode = CMSBlogPage::MODE_POPUP;
 				exit;
 				break;
 
@@ -375,7 +370,6 @@ class CMSBlogPage extends CMSPage{
 					return;
 				}
 
-				$this->mode = CMSBlogPage::MODE_TOP;
 				$this->limit = $this->page->getTopDisplayCount();
 				if(!is_numeric($this->limit)) $this->limit = 0;
 
@@ -407,7 +401,7 @@ class CMSBlogPage extends CMSPage{
 
 		//記事がなかったら404
 		if($this->total > 0 && (!is_array($this->entries) || !count($this->entries))){
-			switch($this->mode){
+			switch(SOYCMS_BLOG_PAGE_MODE){
 				case CMSBlogPage::MODE_TOP:
 					// countが0件の場合は特殊な設定をしている場合がある
 					if($this->page->getTopDisplayCount() > 0){
@@ -441,7 +435,7 @@ class CMSBlogPage extends CMSPage{
 	private function _executeCanonicalUrlCreate(){
 		// カノニカルを組み立てる上で必要な値
 		$params = array();
-		if(isset($this->mode)) $params["mode"] = $this->mode;
+		if(defined("SOYCMS_BLOG_PAGE_MODE")) $params["mode"] = SOYCMS_BLOG_PAGE_MODE;
 		if(isset($this->entry)) {
 			$params["entry"] = $this->entry->getAlias();
 			$params["id"] = $this->entry->getId();
@@ -469,7 +463,7 @@ class CMSBlogPage extends CMSPage{
 		}else{
 			 $pageUri = $this->page->getUri();
 		}
-		$cacheFileName = "cache_" . str_replace("/",".",$pageUri) . $this->mode . $extension;
+		$cacheFileName = "cache_" . str_replace("/",".",$pageUri) . SOYCMS_BLOG_PAGE_MODE . $extension;
 		return SOY2HTMLConfig::CacheDir().$cacheFileName;
 	}
 
@@ -553,14 +547,14 @@ class CMSBlogPage extends CMSPage{
 
 	function main(){
 
-		if($this->mode == CMSBlogPage::MODE_RSS){
+		if(SOYCMS_BLOG_PAGE_MODE == CMSBlogPage::MODE_RSS){
 			return parent::main();
 		}
 
 		//ライブラリの読み込み 最適化の為に分割して必要な分だけ読み込む
 		//SOY2::imports("site_include.blog.*");
 
-		if($this->mode == CMSBlogPage::MODE_ENTRY){
+		if(SOYCMS_BLOG_PAGE_MODE == CMSBlogPage::MODE_ENTRY){
 			SOY2::import("site_include.blog.entry", ".php");
 
 			//entry
@@ -609,7 +603,7 @@ class CMSBlogPage extends CMSPage{
 			if($this->limit > 0) soy_cms_blog_output_current_page($this,$this->offset);
 
 			//カテゴリページ or アーカイブページ
-			if($this->mode == CMSBlogPage::MODE_CATEGORY_ARCHIVE || $this->mode == CMSBlogPage::MODE_MONTH_ARCHIVE){
+			if(SOYCMS_BLOG_PAGE_MODE == CMSBlogPage::MODE_CATEGORY_ARCHIVE || SOYCMS_BLOG_PAGE_MODE == CMSBlogPage::MODE_MONTH_ARCHIVE){
 				SOY2::import("site_include.blog.archive", ".php");
 
 				//現在選択されているカテゴリーを出力
@@ -835,7 +829,7 @@ class CMSBlogPage extends CMSPage{
 	}
 
 	function getTemplate(){
-		switch($this->mode){
+		switch(SOYCMS_BLOG_PAGE_MODE){
     		case CMSBlogPage::MODE_ENTRY:
     			$template = $this->page->getEntryTemplate();
     			break;
@@ -860,7 +854,7 @@ class CMSBlogPage extends CMSPage{
 	}
 
 	function getTitleFormat(){
-		switch($this->mode){
+		switch(SOYCMS_BLOG_PAGE_MODE){
 			case CMSBlogPage::MODE_ENTRY:
     			return $this->page->getEntryTitleFormat();
     			break;

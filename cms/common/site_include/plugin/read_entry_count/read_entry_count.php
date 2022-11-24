@@ -57,7 +57,7 @@ class ReadEntryCountPlugin{
 
 		//ブログの記事ページを開いた時のみ集計
 		SOY2::import('site_include.CMSBlogPage');
-		if(($obj instanceof CMSBlogPage) && $obj->mode == CMSBlogPage::MODE_ENTRY && !is_null($obj->entry->getId())){
+		if(($obj instanceof CMSBlogPage) && SOYCMS_BLOG_PAGE_MODE == CMSBlogPage::MODE_ENTRY && !is_null($obj->entry->getId())){
 			ReadEntryCountUtil::aggregate($obj->entry->getId());
 		}
 
@@ -69,10 +69,10 @@ class ReadEntryCountPlugin{
 			"blogs" => $blogPageList
 		));
 
-		if(($obj instanceof CMSBlogPage) && ($obj->mode == CMSBlogPage::MODE_ENTRY || $obj->mode == CMSBlogPage::MODE_CATEGORY_ARCHIVE || $obj->mode == CMSBlogPage::MODE_MONTH_ARCHIVE)){
+		if(($obj instanceof CMSBlogPage) && (SOYCMS_BLOG_PAGE_MODE == CMSBlogPage::MODE_ENTRY || SOYCMS_BLOG_PAGE_MODE == CMSBlogPage::MODE_CATEGORY_ARCHIVE || SOYCMS_BLOG_PAGE_MODE == CMSBlogPage::MODE_MONTH_ARCHIVE)){
 			$labelIds = array();
 			$blogPageId = 0;
-			switch($obj->mode){
+			switch(SOYCMS_BLOG_PAGE_MODE){
 				case CMSBlogPage::MODE_ENTRY:
 					$labels = $obj->entry->getLabels();
 					if(count($labels)){

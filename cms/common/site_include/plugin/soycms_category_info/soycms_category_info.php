@@ -64,7 +64,7 @@ class CategoryInfoPlugin{
         if(!$obj instanceof CMSBlogPage) return;
 
         //カテゴリーアーカイブページでしか動作しません カテゴリページ以外では空にしておく
-        $labelDsp = ($obj->mode == CMSBlogPage::MODE_CATEGORY_ARCHIVE) ? $this->getCategoryDescription($obj) : "";
+        $labelDsp = (SOYCMS_BLOG_PAGE_MODE == CMSBlogPage::MODE_CATEGORY_ARCHIVE) ? $this->getCategoryDescription($obj) : "";
         
         $obj->addModel("is_description", array(
             "soy2prefix" => "b_block",

@@ -41,7 +41,7 @@ class SOYCMS_Search_Block_Plugin{
 
 	function onPageOutput($obj){
 		//ブログページでトップページ以外では以下のコードを読み込まない
-		if(get_class($obj) == "CMSBlogPage" && ($obj->mode == "_entry_" || $obj->mode == "_month_" || $obj->mode == "_category_")) return;
+		if($obj instanceof CMSBlogPage && (SOYCMS_BLOG_PAGE_MODE == "_entry_" || SOYCMS_BLOG_PAGE_MODE == "_month_" || SOYCMS_BLOG_PAGE_MODE == "_category_")) return;
 		
 		SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
 

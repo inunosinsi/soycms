@@ -53,12 +53,12 @@ function soy_cms_blog_output_current_category($page){
         "soy2prefix"=>"b_block",
         "list" => (!is_null($page->label) && $page->label instanceof Label) ? array($page->label) : array(),
 		"categoryUrl" => $page->getCategoryPageURL(true),
-        "visible" => ($page->mode==CMSBlogPage::MODE_CATEGORY_ARCHIVE)
+        "visible" => (SOYCMS_BLOG_PAGE_MODE==CMSBlogPage::MODE_CATEGORY_ARCHIVE)
     ));
 
     $page->addModel("is_category_page", array(
         "soy2prefix"=>"b_block",
-        "visible"=>($page->mode==CMSBlogPage::MODE_CATEGORY_ARCHIVE)
+        "visible"=>(SOYCMS_BLOG_PAGE_MODE==CMSBlogPage::MODE_CATEGORY_ARCHIVE)
     ));
 }
 
@@ -99,7 +99,7 @@ function soy_cms_blog_output_current_archive($page){
     if(!class_exists("CategoryListComponent")) SOY2::import("site_include.blog.component.CategoryListComponent");
 
 	$label = (!is_null($page->label) && $page->label instanceof Label) ? $page->label : new Label();
-	$isArchive = ($page->mode==CMSBlogPage::MODE_MONTH_ARCHIVE);
+	$isArchive = (SOYCMS_BLOG_PAGE_MODE==CMSBlogPage::MODE_MONTH_ARCHIVE);
     $page->createAdd("current_archive","CategoryListComponent",array(
         "soy2prefix"=>"b_block",
         "list"=> array($label),
@@ -150,7 +150,7 @@ function soy_cms_blog_output_prev_next_month($page){
     $nextMonthDate = $prevMonthDate = "";
 
     //アーカイブページ(年月日)ではない
-    if($page->mode != CMSBlogPage::MODE_MONTH_ARCHIVE){
+    if(SOYCMS_BLOG_PAGE_MODE != CMSBlogPage::MODE_MONTH_ARCHIVE){
         $isMonthArchive = false;
     }
 

@@ -97,12 +97,12 @@ class GoogleAnalytics{
 			//表示しない設定なら挿入しない
 			if(@$this->config_per_page[$page->getId()]){
 				return null;
-			}elseif($page->getPageType() == Page::PAGE_TYPE_BLOG && @$this->config_per_blog[$page->getId()][$webPage->mode]){
+			}elseif($page->getPageType() == Page::PAGE_TYPE_BLOG && @$this->config_per_blog[$page->getId()][SOYCMS_BLOG_PAGE_MODE]){
 				return null;
 			}
 
 			//RSSでは挿入しない
-			if($page->getPageType() == Page::PAGE_TYPE_BLOG && $webPage->mode == CMSBlogPage::MODE_RSS){
+			if($page->getPageType() == Page::PAGE_TYPE_BLOG && SOYCMS_BLOG_PAGE_MODE == CMSBlogPage::MODE_RSS){
 				return null;
 			}
 		}else{

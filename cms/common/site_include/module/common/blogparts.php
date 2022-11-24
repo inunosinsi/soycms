@@ -8,7 +8,7 @@ function soycms_blogparts($html, $page){
 	if(property_exists($page, "page")){
 		switch($page->page->getPageType()){
 		case Page::PAGE_TYPE_BLOG:
-			switch($page->mode){
+			switch(SOYCMS_BLOG_PAGE_MODE){
 			case "_top_":
 				$template = $page->page->getTopTemplate();
 				break;

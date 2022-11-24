@@ -33,6 +33,8 @@ class CMSPage extends WebPage{
 		//application用に追加
 		$this->pageUrl = SOY2PageController::createLink("") . $this->page->getUri();
 
+		if(!defined("SOYCMS_BLOG_PAGE_MODE")) define("SOYCMS_BLOG_PAGE_MODE", "_none_");
+
 		parent::__construct();
 	}
 

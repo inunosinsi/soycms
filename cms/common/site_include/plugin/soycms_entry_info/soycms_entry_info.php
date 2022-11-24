@@ -112,7 +112,7 @@ class EntryInfoPlugin{
 	function onPageOutput($obj){
 
 		//ブログではない時 or エントリー表示画面以外では動作しません
-		if(!$obj instanceof CMSBlogPage || $obj->mode != CMSBlogPage::MODE_ENTRY) return;
+		if(!$obj instanceof CMSBlogPage || SOYCMS_BLOG_PAGE_MODE != CMSBlogPage::MODE_ENTRY) return;
 
 		$entry = $obj->entry;
 		if(is_null($entry)) $entry = new Entry();

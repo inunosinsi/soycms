@@ -7,7 +7,7 @@ function soy_cms_blog_get_current_url($page, $offset = 0){
 
         $page_param = ( $offset > 0 ) ? "page-" . $offset : "" ;
 
-        switch($page->mode){
+        switch(SOYCMS_BLOG_PAGE_MODE){
             case CMSBlogPage::MODE_MONTH_ARCHIVE:
                 $url = $page->getMonthPageURL(true);
                 if(strlen($page->year)){

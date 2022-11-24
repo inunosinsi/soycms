@@ -2,9 +2,7 @@
 
 class SearchBlockEntryLogic extends SOY2LogicBase {
 
-    function __construct(){
-
-    }
+    function __construct(){}
 
     function search($labelId, $query, $count = null){
         static $entries;
@@ -38,7 +36,7 @@ class SearchBlockEntryLogic extends SOY2LogicBase {
                 ":now" => time()
             );
 
-            $dao = SOY2DAOFactory::create("cms.EntryDAO");
+            $dao = soycms_get_hash_table_dao("entry");
 
             try{
                 $results = $dao->executeQuery($sql, $binds);
@@ -50,7 +48,7 @@ class SearchBlockEntryLogic extends SOY2LogicBase {
 
             foreach($results as $key => $row){
                 if(isset($row["id"]) && (int)$row["id"]){
-                    $entries[$row["id"]] = $dao->getObject($row);
+                    $entries[$row["id"]] = soycms_set_entry_object($dao->getObject($row));
                 }
             }
         }

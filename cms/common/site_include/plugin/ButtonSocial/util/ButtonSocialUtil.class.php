@@ -53,9 +53,9 @@ class ButtonSocialUtil{
 		$format = str_replace("%SITE%", $obj->siteConfig->getName(), $format);
 
 		//ブログページのタイトルフォーマットの置換処理
-		if(get_class($obj) == "CMSBlogPage"){
+		if($obj instanceof CMSBlogPage){
 			SOY2::import('site_include.CMSBlogPage');
-			switch($obj->mode){
+			switch(SOYCMS_BLOG_PAGE_MODE){
 				case CMSBlogPage::MODE_ENTRY:
 					//エントリ名を取得
 					return str_replace("%ENTRY%", $obj->entry->getTitle(), $format);
@@ -79,7 +79,7 @@ class ButtonSocialUtil{
 			case "CMSApplicationPage":
 				return $obj->page->getPageTitleFormat();
 			case "CMSBlogPage":
-				switch($obj->mode){
+				switch(SOYCMS_BLOG_PAGE_MODE){
 					case CMSBlogPage::MODE_TOP:
 						return $obj->page->getTopTitleFormat();
 					case CMSBlogPage::MODE_ENTRY:

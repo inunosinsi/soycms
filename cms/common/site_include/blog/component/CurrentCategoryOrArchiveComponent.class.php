@@ -6,7 +6,7 @@ class CurrentCategoryOrArchiveComponent extends SOYBodyComponentBase{
 		$link = null;
 		$description = null;
 
-		switch($page->mode){
+		switch(SOYCMS_BLOG_PAGE_MODE){
 			case CMSBlogPage::MODE_CATEGORY_ARCHIVE :
 				$this->createAdd("archive_name","CMSLabel",array(
 					"text"=> ( ($page->label) ? $page->label->getBranchName() : "" ),

@@ -19,45 +19,36 @@ class PluginBlockUtil {
 			if(is_null($pathInfo)) $pathInfo = (isset($_SERVER["REQUEST_URI"])) ? $_SERVER["REQUEST_URI"] : null;
 			//$pathInfo = (isset($_SERVER["PATH_INFO"])) ? $_SERVER["PATH_INFO"] : (isset($_SERVER["REQUEST_URI"])) ? $_SERVER["REQUEST_URI"] : null;
 			//サイトIDを除く
-			$siteId = trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/");
+			$siteId = soycms_get_site_id_by_frontcontroller();
 			$uri = str_replace("/" . $siteId . "/", "/", $pathInfo);
 			$uri = str_replace("/" . $_SERVER["SOYCMS_PAGE_URI"] . "/", "", $uri);
 
-			//トップページ
-			if(strlen((string)$blog->getTopPageUri()) && $uri === (string)$blog->getTopPageUri()){
-				if(strlen(trim($blog->getTopTemplate())) > 0){
+			// テンプレートを取得
+			switch(SOYCMS_BLOG_PAGE_MODE){
+				case CMSBlogPage::MODE_TOP:
 					$templates[$pageId] = $blog->getTopTemplate();
-				}
-
-				//アーカイブページ
-			}else if(
-				(strlen($blog->getCategoryPageUri()) && strpos($uri, $blog->getCategoryPageUri()) === 0) ||
-				(strlen($blog->getMonthPageUri()) && strpos($uri, $blog->getMonthPageUri()) === 0)
-			){
-				if(strlen(trim($blog->getArchiveTemplate())) > 0){
+					break;
+				case CMSBlogPage::MODE_MONTH_ARCHIVE:
+				case CMSBlogPage::MODE_CATEGORY_ARCHIVE:
 					$templates[$pageId] = $blog->getArchiveTemplate();
-				}
-				//記事ごとページ
-			}else if(strlen($blog->getEntryPageUri()) && strpos($uri, $blog->getEntryPageUri()) === 0){
-				if(strlen(trim($blog->getEntryTemplate())) > 0){
+					break;
+				case CMSBlogPage::MODE_ENTRY:
 					$templates[$pageId] = $blog->getEntryTemplate();
-				}
-			}
-
-			//すべての条件を満たさなかった時は何らかのテンプレートを入れておく
-			if(!isset($templates[$pageId])){
-				if(strlen(trim($blog->getTopTemplate())) > 0){
-					$templates[$pageId] = $blog->getTopTemplate();
-				}else{
-					if(strlen(trim($blog->getArchiveTemplate()))){
-						$templates[$pageId] = $blog->getArchiveTemplate();
+					break;
+				default:	//すべての条件を満たさなかった時は何らかのテンプレートを入れておく
+					if(strlen(trim($blog->getTopTemplate())) > 0){
+						$templates[$pageId] = $blog->getTopTemplate();
 					}else{
-						$templates[$pageId] = $blog->getEntryTemplate();
+						if(strlen(trim($blog->getArchiveTemplate()))){
+							$templates[$pageId] = $blog->getArchiveTemplate();
+						}else{
+							$templates[$pageId] = $blog->getEntryTemplate();
+						}
 					}
-				}
 
-				//上記の対応でもまだ取得出来なかった場合は空文字を入れておく
-				if(!isset($templates[$pageId])) $templates[$pageId] = "";
+					//上記の対応でもまだ取得出来なかった場合は空文字を入れておく
+					if(!isset($templates[$pageId])) $templates[$pageId] = "";
+					break;
 			}
 
 		//ブログページ以外

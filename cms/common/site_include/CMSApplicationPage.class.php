@@ -33,6 +33,7 @@ class CMSApplicationPage extends CMSPage{
 		//定数の作成
 		define("CMS_APPLICATION_ROOT_DIR", dirname(SOY2::RootDir()) . "/app/");
 		define("CMS_COMMON", SOY2::RootDir());
+		if(!defined("SOYCMS_BLOG_PAGE_MODE")) define("SOYCMS_BLOG_PAGE_MODE", "_none_");
 
 		include_once(CMS_APPLICATION_ROOT_DIR . "base/CMSApplication.class.php");
 

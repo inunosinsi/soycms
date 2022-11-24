@@ -73,7 +73,7 @@ class BuildMetaLogic extends SOY2LogicBase {
 		SOY2::import('site_include.CMSBlogPage');
 		switch(get_class($obj)){
 			case "CMSBlogPage":
-				switch($obj->mode){
+				switch(SOYCMS_BLOG_PAGE_MODE){
 					case CMSBlogPage::MODE_ENTRY:
 						return "article";
 					default:

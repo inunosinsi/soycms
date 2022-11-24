@@ -55,7 +55,7 @@ class TagCloudBlockEntryLogic extends SOY2LogicBase {
 
             foreach($results as $row){
                 if(isset($row["id"]) && (int)$row["id"]){
-                    $entries[$row["id"]] = $dao->getObject($row);
+                    $entries[$row["id"]] = soycms_set_entry_object($dao->getObject($row));
                 }
             }
         }

@@ -265,7 +265,7 @@ class SOYCMSThumbnailPlugin{
 		$html[] = "</th>";
 		$html[] = "<td><input type=\"text\" class=\"jcrop_field_input form-control\" style=\"width:70%\" id=\"jcrop_upload_field\" name=\"jcrop_upload_field\" value=\"" . $uploadImagePath . "\" />";
 		$html[] = "<input type=\"button\" onclick=\"open_jcrop_filemanager($('#jcrop_upload_field'));\" class=\"btn\" value=\"ファイルを指定する\">";
-		if(strlen($uploadImagePath) > 0){
+		if(strlen($uploadImagePath) > 0 && soycms_check_is_image_path($uploadImagePath)){
 			$html[] = "<a href=\"#\" onclick=\"return preview_thumbnail_plugin(\$('#jcrop_upload_field'));\" class=\"btn btn-info\">Preview</a>";
 		}
 		$html[] = "</td>";
@@ -281,7 +281,9 @@ class SOYCMSThumbnailPlugin{
 		}
 		if(strlen($trimmingImagePath) > 0){
 			$html[] = "<input type=\"button\" class=\"btn btn-warning\" onclick=\"clearTrimmingForm();\" value=\"クリア\">";
-			$html[] = "<a href=\"#\" onclick=\"return preview_thumbnail_plugin(\$('#jcrop_trimming_field'));\" class=\"btn btn-info\">Preview</a>";
+			if(soycms_check_is_image_path($trimmingImagePath)){
+				$html[] = "<a href=\"#\" onclick=\"return preview_thumbnail_plugin(\$('#jcrop_trimming_field'));\" class=\"btn btn-info\">Preview</a>";
+			}
 		}
 		$html[] = "<br><span style=\"display:block;margin-top:10px;\">アスペクト比:width:<input type=\"number\" id=\"ratio_w\" class=\"form-control\" name=\"jcrop_ratio_w\" value=\"". (int)$cnf["ratio_w"] . "\" style=\"width:80px;\">&nbsp;";
 		$html[] = "height:<input type=\"number\" id=\"ratio_h\" class=\"form-control\" name=\"jcrop_ratio_h\" value=\"" . (int)$cnf["ratio_h"] . "\" style=\"width:80px;\"></span>";
@@ -299,9 +301,9 @@ class SOYCMSThumbnailPlugin{
 		$html[] = "<input type=\"text\" style=\"width:70%;\" id=\"jcrop_resize_field\" class=\"form-control\" name=\"jcrop_resize_field\" value=\"" . $resizeImagePath . "\" readonly=\"readonly\">";
 		if(strlen($resizeImagePath) > 0){
 			$html[] = "<input type=\"button\" class=\"btn btn-warning\" onclick=\"clearResizeForm();\" value=\"クリア\">";
-		}
-		if(strlen($resizeImagePath) > 0){
-			$html[] = "<a href=\"#\" onclick=\"return preview_thumbnail_plugin(\$('#jcrop_resize_field'));\" class=\"btn btn-info\">Preview</a>";
+			if(soycms_check_is_image_path($resizeImagePath)){
+				$html[] = "<a href=\"#\" onclick=\"return preview_thumbnail_plugin(\$('#jcrop_resize_field'));\" class=\"btn btn-info\">Preview</a>";
+			}
 		}
 
 		$html[] = "<br /><span style=\"display:block;margin-top:10px;\">リサイズ:width:<input type=\"number\" class=\"form-control\" name=\"jcrop_resize_w\" value=\"" . (int)$cnf["resize_w"] . "\" style=\"width:100px;\">&nbsp;";
