@@ -13,7 +13,7 @@ tinymce.init({
 
 	menubar : false,
 	toolbar1 : "save | cut copy paste pastetext | searchreplace | bold italic underline strikethrough | subscript superscript | forecolor backcolor | alignleft aligncenter alignright | formatselect fontselect fontsizeselect",
-	toolbar2 : "bullist numlist | outdent indent blockquote | undo redo | cleanup removeformat code styleprops attribs | preview | insertdate inserttime | innerlink insertimage media insertwidget | emoticons numlist bullist charmap | table",
+	toolbar2 : "bullist numlist | outdent indent blockquote | undo redo | cleanup removeformat code styleprops attribs | preview | insertdate inserttime | innerlink insertimage media insertwidget | emoticons charmap | table",
 
 	init_instance_callback : function(editor) {
 		onInitTinymceEditor(editor.id);
