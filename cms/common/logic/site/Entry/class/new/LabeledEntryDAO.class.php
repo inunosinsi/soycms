@@ -57,7 +57,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 
 		$list = array();
 		foreach($results as $row){
-			$list[$row["id"]] = $this->getObject($row);
+			$list[$row["id"]] = soycms_set_entry_object($this->getObject($row));
 		}
 
 		return $list;
@@ -175,7 +175,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 		$cnt = 0;
 		foreach($results as $row){
 			if(!isset($row["id"]) || !is_numeric($row["id"])) continue;
-			$list[$row["id"]] = $this->getObject($row);
+			$list[$row["id"]] = soycms_set_entry_object($this->getObject($row));
 		}
 
 		return $list;

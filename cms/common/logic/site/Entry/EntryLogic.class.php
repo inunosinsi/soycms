@@ -144,8 +144,7 @@ class EntryLogic extends SOY2LogicBase{
 	 * 2008-10-29 内部使用のため、無限遠時刻の変換処理の追加
 	 */
 	function getById($id, bool $flag=true) {
-		$dao = self::entryDao();
-		$entry = $dao->getById($id);
+		$entry = soycms_get_entry_object($id);
 
 		//無限遠時刻をnullになおす
 		if($flag){
@@ -417,7 +416,7 @@ class EntryLogic extends SOY2LogicBase{
 			}
 		}
 
-		$entry = SOY2::cast("LabeledEntry", $entry);
+		$entry = SOY2::cast("LabeledEntry", soycms_set_entry_object($entry, (int)$entryId));
 		if(!is_numeric($entry->getId())) return $entry;
 		
 		//ブログに所属しているエントリーかどうかチェックする
