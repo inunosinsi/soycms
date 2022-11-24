@@ -66,6 +66,9 @@ class CustomField{
 	//ブロックの外側で使用できるタグを追加
 	private $addTagOutsideBlock = 0;
 
+	// リスト、dlリストで画像のアップロードを許可するか？
+	private $isImageUploadForm = 0;
+
 	function __construct($array = array()){
 		$obj = (object)$array;
 		SOY2::cast($this,$obj);
@@ -172,6 +175,13 @@ class CustomField{
 	}
 	function setAddTagOutsideBlock($addTagOutsideBlock){
 		$this->addTagOutsideBlock = $addTagOutsideBlock;
+	}
+
+	function getIsImageUploadForm(){
+		return $this->isImageUploadForm;
+	}
+	function setIsImageUploadForm($isImageUploadForm){
+		$this->isImageUploadForm = $isImageUploadForm;
 	}
 	
 	function hasOption(){
@@ -397,33 +407,52 @@ class CustomField{
 				break;
 			case "list":
 				$values = (is_string($fieldValue)) ? soy2_unserialize($fieldValue) : array();
+				$isUploadMode = (int)$this->getIsImageUploadForm();
+				$placeholderProp = ($isUploadMode) ? " placeholder=\"直接入力可\"" : "";
+
+				$cnt = 0;	//フォームの出力個数をカウントする
+				$idProp = "customfield_" . $h_formID . "_listfield_";
 
 				$html = array();
 				if(count($values)){
 					foreach($values as $idx => $v){
 						$html[] = "<div class=\"form-inline\">";
-						$html[] = "	<input type=\"text\" name=\"" . $h_formName . "[]\" class=\"form-control " . $h_formID . "_" . $idx . "\" value=\"" . htmlspecialchars($v, ENT_QUOTES, "UTF-8") . "\">";
+						$html[] = "	<input type=\"text\" name=\"" . $h_formName . "[]\" class=\"form-control " . $h_formID . "_" . $idx . "\" value=\"" . htmlspecialchars($v, ENT_QUOTES, "UTF-8") . "\" id=\"" . $idProp . $cnt++ . "\"".$placeholderProp.">";
+						if($isUploadMode) $html[] = "	<input type=\"button\" onclick=\"open_listfield_filemanager('".$idProp . ($cnt-1)."');\" class=\"btn\" value=\"ファイルを指定する\">";
+						if(strlen($v) && soycms_check_is_image_path($v)){
+							$html[] = "<a href=\"#\" class=\"btn btn-warning btn-sm\" onclick=\"return preview_customfield($('#".$idProp . ($cnt-1)."'));\">Preview</a>";
+						}
 						if($idx > 0) $html[] = "	<a href=\"javascript:void(0);\" class=\"btn btn-default\" onclick=\"list_field_move_up('" . $h_formID . "', " . $idx . ");\">△</a>";
 						$html[] = "</div>";
 					}
 				}
 
 				$html[] = "<div class=\"form-inline " . $h_formID . "\">";
-				$html[] = "	<input type=\"text\" name=\"" . $h_formName . "[]\" class=\"form-control\">";
-				$html[] = "	<a href=\"javascript:void(0);\" class=\"btn btn-info btn-sm\" onclick=\"CustomFieldListField.add('" . str_replace("custom_field_", "", $h_formID) . "')\">追加</a>";
+				$html[] = "	<input type=\"text\" name=\"" . $h_formName . "[]\" class=\"form-control\" id=\"" . $idProp . $cnt++ . "\"".$placeholderProp.">";
+				if($isUploadMode) $html[] = "	<input type=\"button\" onclick=\"open_listfield_filemanager('".$idProp . ($cnt-1)."');\" class=\"btn\" value=\"ファイルを指定する\">";
+				$html[] = "	<a href=\"javascript:void(0);\" class=\"btn btn-info btn-sm\" onclick=\"CustomFieldListField.add('" . str_replace("custom_field_", "", $h_formID) . "',".$isUploadMode.")\">追加</a>";
 				$html[] = "</div>";
 				$body = implode("\n", $html);
 				break;
 			case "dllist":
 				$values = (is_string($fieldValue)) ? soy2_unserialize($fieldValue) : array();
+				$isUploadMode = (int)$this->getIsImageUploadForm();
+				$placeholderProp = ($isUploadMode) ? " placeholder=\"直接入力可\"" : "";
+
+				$cnt = 0;	//フォームの出力個数をカウントする
+				$idProp = "customfield_" . $h_formID . "_dllistfield_";
 				
 				$html = array();
 				if(count($values)){
 					foreach($values as $idx => $arr){
 						$html[] = "<div class=\"form-inline\" id=\"form-control " . $h_formID . "\">";
 						foreach(array("label", "value") as $l){
-							$html[] = "	<input type=\"text\" name=\"" . $h_formName . "[" . $l . "][]\" class=\"form-control " . $h_formID . "_" . $idx . "_" . $l. "\" value=\"" . htmlspecialchars($arr[$l], ENT_QUOTES, "UTF-8") . "\">";
-						}						
+							$html[] = "	<input type=\"text\" name=\"" . $h_formName . "[" . $l . "][]\" class=\"form-control " . $h_formID . "_" . $idx . "_" . $l. "\" value=\"" . htmlspecialchars($arr[$l], ENT_QUOTES, "UTF-8") . "\" id=\"" . $idProp . $cnt++ . "\"".$placeholderProp.">";
+						}
+						if($isUploadMode) $html[] = "	<input type=\"button\" onclick=\"open_dllistfield_filemanager('".$idProp . ($cnt-1)."');\" class=\"btn\" value=\"ファイルを指定する\">";
+						if(strlen($arr["value"]) && soycms_check_is_image_path($arr["value"])){
+							$html[] = "<a href=\"#\" class=\"btn btn-warning btn-sm\" onclick=\"return preview_customfield($('#".$idProp . ($cnt-1)."'));\">Preview</a>";
+						}
 						if($idx > 0) $html[] = "	<a href=\"javascript:void(0);\" class=\"btn btn-default\" onclick=\"dllist_field_move_up('" . $h_formID . "', " . $idx . ");\">△</a>";
 						$html[] = "</div>";
 					}
@@ -431,10 +460,10 @@ class CustomField{
 
 				$html[] = "<div class=\"form-inline " . $h_formID . "\">";
 				foreach(array("label", "value") as $l){
-					$html[] = "	<input type=\"text\" name=\"" . $h_formName . "[" . $l . "][]\" class=\"form-control\">";
+					$html[] = "	<input type=\"text\" name=\"" . $h_formName . "[" . $l . "][]\" class=\"form-control\" id=\"" . $idProp . $cnt++ . "\"".$placeholderProp.">";
 				}
-				
-				$html[] = "	<a href=\"javascript:void(0);\" class=\"btn btn-info btn-sm\" onclick=\"CustomFieldDlListField.add('" . str_replace("custom_field_", "", $h_formID) . "')\">追加</a>";
+				if($isUploadMode) $html[] = "	<input type=\"button\" onclick=\"open_dllistfield_filemanager('".$idProp . ($cnt-1)."');\" class=\"btn\" value=\"ファイルを指定する\">";
+				$html[] = "	<a href=\"javascript:void(0);\" class=\"btn btn-info btn-sm\" onclick=\"CustomFieldDlListField.add('" . str_replace("custom_field_", "", $h_formID) . "',".$isUploadMode.")\">追加</a>";
 				$html[] = "</div>";
 				$body = implode("\n", $html);
 				break;

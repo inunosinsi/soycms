@@ -1,11 +1,9 @@
 <?php
 
-use function Complex\ln;
-
 /** 共通且つ効率化する関数群 **/
 //ハッシュテーブル用のハッシュ値を作成する
 function soycms_generate_hash_value(string $str, int $length=12){
-	$hash = md5($str);
+	$hash = md5($str . (string)SOY2DAOConfig::Dsn());	//dnsは他サイトブロックを使用した時の対策
 	return substr($hash, 0, $length);
 }
 
@@ -112,6 +110,27 @@ function soycms_get_attribute_value($v=null, $dataType=""){
 }
 
 /** 記事IDから記事オブジェクト **/
+/**
+ * @param Entry, int
+ * @return Entry
+ */
+function soycms_set_entry_object(Entry $entry, int $entryId=0){
+	$entryId = (is_numeric($entry->getId())) ? (int)$entry->getId() : $entryId;
+	if($entryId <= 0) return $entry;
+	$GLOBALS["soycms_entry_hash_table"][soycms_get_hash_index((string)$entryId, __FUNCTION__)] = $entry;
+	return $entry;
+}
+
+/**
+ * @param LabeledEntry
+ * @return LabeledEntry
+ */
+function soycms_set_labeled_entry_object(LabeledEntry $entry){
+	if((int)$entry->getId() <= 0) return $entry;
+	$GLOBALS["soycms_entry_hash_table"][soycms_get_hash_index((string)$entry->getId(), __FUNCTION__)] = $entry;
+	return $entry;
+}
+
 function soycms_get_entry_object(int $entryId){
 	$dao = soycms_get_hash_table_dao(__FUNCTION__);
 	if((int)$entryId <= 0) return new Entry();
@@ -120,11 +139,10 @@ function soycms_get_entry_object(int $entryId){
 	if(isset($GLOBALS["soycms_entry_hash_table"][$idx])) return $GLOBALS["soycms_entry_hash_table"][$idx];
 
 	try{
-        $GLOBALS["soycms_entry_hash_table"][$idx] = $dao->getById($entryId);
+		return soycms_set_entry_object($dao->getById($entryId));
     }catch(Exception $e){
-        $GLOBALS["soycms_entry_hash_table"][$idx] = new Entry();
+		return soycms_set_entry_object(new Entry(), $entryId);
     }
-	return $GLOBALS["soycms_entry_hash_table"][$idx];
 }
 
 function soycms_get_entry_object_by_alias(string $alias){

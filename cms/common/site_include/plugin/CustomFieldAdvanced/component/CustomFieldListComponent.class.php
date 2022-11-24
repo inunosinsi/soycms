@@ -88,7 +88,7 @@ class CustomFieldListComponent extends HTMLList {
 			"link" => "javascript:void(0)",
 			"text" => "高度な設定",
 			"onclick" => '$(\'#field_config_'.$entity->getId().'\').toggle();',
-			"class" => (!$entity->getShowInput() || is_numeric($entity->getLabelId()) || count($entity->getLabelIds())|| $entity->getDefaultValue() || $entity->getEmptyValue() || $entity->getDescription() || $entity->getFixedLabelId() || strlen($entity->getOption()) || $entity->getAddTagOutsideBlock()) ? "btn btn-warning" : "btn btn-info",
+			"class" => (!$entity->getShowInput() || is_numeric($entity->getLabelId()) || count($entity->getLabelIds())|| $entity->getDefaultValue() || $entity->getEmptyValue() || $entity->getDescription() || $entity->getFixedLabelId() || strlen($entity->getOption()) || $entity->getAddTagOutsideBlock() || $entity->getIsImageUploadForm()) ? "btn btn-warning" : "btn btn-info",
 			"attr:id" => "toggle_config_" . $entity->getId()
 		));
 
@@ -234,13 +234,34 @@ class CustomFieldListComponent extends HTMLList {
 		$this->addModel("is_list_field", array(
 			"visible" => ($entity->getType() == "list")
 		));
+
+		if(!class_exists("ListFieldSampleCodeComponent")) SOY2::import("site_include.plugin.CustomFieldAdvanced.component.ListFieldSampleCodeComponent");
+		$this->addLabel("list_field_sample_code", array(
+			"text" => ($entity->getType() == "list") ? ListFieldSampleCodeComponent::build($entity->getId(), (int)$entity->getIsImageUploadForm() === 1) : ""
+		));
+		
 		/** リストフィールド用 **/
 
 		/** 定義型リストフィールド用 **/
 		$this->addModel("is_dllist_field", array(
 			"visible" => ($entity->getType() == "dllist")
 		));
+		if(!class_exists("DlListFieldSampleCodeComponent")) SOY2::import("site_include.plugin.CustomFieldAdvanced.component.DlListFieldSampleCodeComponent");
+		$this->addLabel("dllist_field_sample_code", array(
+			"text" => ($entity->getType() == "dllist") ? DlListFieldSampleCodeComponent::build($entity->getId(), (int)$entity->getIsImageUploadForm() === 1) : ""
+		));
 		/** 定義型リストフィールド用 **/
+
+		$this->addModel("is_list_or_dllist_field", array(
+			"visible" => ($entity->getType() == "list" || $entity->getType() == "dllist")
+		));
+
+		$this->addCheckBox("allow_image_upload_form", array(
+			"name" => "config[isImageUploadForm]",
+			"value" => 1,
+			"selected" => ((int)$entity->getIsImageUploadForm() === 1),
+			"label" => "画像のアップロードフォームを追加する"
+		));
 
 		$this->addInput("update_advance", array(
 			"value"=>"設定保存",

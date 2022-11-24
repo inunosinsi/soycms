@@ -63,6 +63,9 @@ class CustomFieldAdvancedPluginFormPage extends WebPage{
 			//ブロックの外で使用できるタグを追加
 			$_POST["config"]["addTagOutsideBlock"] = (isset($_POST["config"]["addTagOutsideBlock"]) && $_POST["config"]["addTagOutsideBlock"] == 1);
 
+			//リスト、dlリストで画像のアップロードフォームを表示するか？
+			$_POST["config"]["isImageUploadForm"] = (isset($_POST["config"]["isImageUploadForm"])) ? (int)$_POST["config"]["isImageUploadForm"] : 0;
+
 			//pairの値は配列からシリアライズした文字列にしてExtraValuesに格納する
 			if(isset($_POST["pair"]) && is_array($_POST["pair"]) && count($_POST["pair"])){
 				$pairConf = array();

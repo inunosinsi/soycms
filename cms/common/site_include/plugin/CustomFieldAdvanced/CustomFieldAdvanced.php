@@ -719,8 +719,20 @@ class CustomFieldPluginAdvanced{
 
 		$html .= '</div>';
 		if($isEntryField) $html .= "<script>\n" . file_get_contents(SOY2::RootDir() . "site_include/plugin/CustomField/js/entry.js") . "\n</script>\n";
-		if($isListField) $html .= "<script>\n" . file_get_contents(SOY2::RootDir() . "site_include/plugin/CustomField/js/list.js") . "\n</script>\n";
-		if($isDlListField) $html .= "<script>\n" . file_get_contents(SOY2::RootDir() . "site_include/plugin/CustomField/js/dllist.js") . "\n</script>\n";
+		if($isListField) {
+			$html .= "<script>\n" . file_get_contents(SOY2::RootDir() . "site_include/plugin/CustomField/js/list.js");
+			$html .= "\nfunction open_listfield_filemanager(id){\n";
+			$html .= "	common_to_layer(\"" . SOY2PageController::createLink("Page.Editor.FileUpload") . "?\"+id);\n";
+			$html .= "}\n";
+			$html .= "\n</script>\n";
+		}
+		if($isDlListField) {
+			$html .= "<script>\n" . file_get_contents(SOY2::RootDir() . "site_include/plugin/CustomField/js/dllist.js");
+			$html .= "\nfunction open_dllistfield_filemanager(id){\n";
+			$html .= "	common_to_layer(\"" . SOY2PageController::createLink("Page.Editor.FileUpload") . "?\"+id);\n";
+			$html .= "}\n";
+			$html .= "\n</script>\n";
+		}
 
 		return $html;
 	}
