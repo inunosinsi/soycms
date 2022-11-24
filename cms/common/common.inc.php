@@ -93,6 +93,7 @@ if(defined("SOYCMS_ASP_MODE")){
 
 //func
 include_once(SOY2::RootDir() . "site_include/func/dao.php");
+include_once(SOY2::RootDir() . "site_include/func/common.php");
 
 //言語設定：ディフォルトは日本語
 if(!defined("SOYCMS_LANGUAGE")) define("SOYCMS_LANGUAGE","ja");
