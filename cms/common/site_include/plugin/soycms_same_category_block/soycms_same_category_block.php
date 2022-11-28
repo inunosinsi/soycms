@@ -20,7 +20,7 @@ class SOYCMSSameCategoryBlockPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.11"
+			"version"=>"0.12"
 		));
 
 	    if(CMSPlugin::activeCheck($this->getId())){
@@ -55,7 +55,7 @@ class SOYCMSSameCategoryBlockPlugin{
 		//並び順の指定
 		$randomMode = PluginBlockUtil::getSortRandomMode($pageId);
 
-    	$sql = "SELECT ent.* FROM Entry ent ".
+    	$sql = "SELECT DISTINCT ent.id, ent.* FROM Entry ent ".
         	"INNER JOIN EntryLabel lab ".
         	"ON ent.id = lab.entry_id ".
         	"WHERE lab.label_id IN (" . implode(",", $labelIds) . ") ".
@@ -78,7 +78,7 @@ class SOYCMSSameCategoryBlockPlugin{
 			 $sql .= "LIMIT " . $count;
 		}
 
-		$dao = SOY2DAOFactory::create("cms.EntryDAO");
+		$dao = soycms_get_hash_table_dao("entry");
 
 	    try{
 	        $results = $dao->executeQuery($sql, array(":now" => time()));
@@ -90,7 +90,7 @@ class SOYCMSSameCategoryBlockPlugin{
 		$soycms_search_result = array();
 		foreach($results as $key => $row){
 			if(isset($row["id"]) && (int)$row["id"]){
-				$soycms_search_result[$row["id"]] = $dao->getObject($row);
+				$soycms_search_result[$row["id"]] = soycms_set_entry_object($dao->getObject($row));
 			}
     	}
 		return $soycms_search_result;

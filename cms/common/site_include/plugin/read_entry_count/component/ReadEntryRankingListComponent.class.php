@@ -24,7 +24,7 @@ class ReadEntryRankingListComponent extends HTMLList {
 		));
 
 		if(isset($entity["id"]) && is_numeric($entity["id"])){
-			$entry = self::_dao()->getObject($entity);
+			$entry = soycms_get_hash_table_dao("entry")->getObject($entity);
 		}else{
 			$entry = new Entry();
 		}
@@ -35,18 +35,12 @@ class ReadEntryRankingListComponent extends HTMLList {
 		if(!isset($entity["labels"]) || !count($entity["labels"]) || !strlen($url)) return false;
 	}
 
-	private function _getBlogPageUrl($labelIds){
+	private function _getBlogPageUrl(array $labelIds){
 		if(!count($this->blogs) || !is_array($labelIds) || !count($labelIds)) return "";
 		foreach($this->blogs as $labelId => $url){
 			if(is_numeric(array_search($labelId, $labelIds))) return $url;
 		}
 		return "";
-	}
-
-	private function _dao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("cms.EntryDAO");
-		return $dao;
 	}
 
 	function setBlogs($blogs){

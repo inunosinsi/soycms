@@ -19,7 +19,7 @@ class FirstAndLastEntryLinkPlugin {
 			"author"=> "齋藤毅",
 			"url"=> "https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.5"
+			"version"=>"1.0"
 		));
 
 		CMSPlugin::addPluginConfigPage($this->getId(),array(
@@ -40,11 +40,11 @@ class FirstAndLastEntryLinkPlugin {
 
 	function onPageOutput($obj){
 		//ブログページの時のみ動作します
-		if(get_class($obj) != "CMSBlogPage") return;
+		if(!$obj instanceof CMSBlogPage) return;
 
 		//現在開いているページに紐付いているラベルID
-		$blogLabelId = self::_getBlogLabelId();
-		if(is_null($blogLabelId)) return;
+		$blogLabelId = (int)soycms_get_blog_page_object($_SERVER["SOYCMS_PAGE_ID"])->getBlogLabelId();
+		if($blogLabelId <= 0) return;
 
 		$entryPageUri = "";
 
@@ -56,14 +56,6 @@ class FirstAndLastEntryLinkPlugin {
 				"soy2prefix" => "b_block",
 				"link" => $obj->getEntryPageURL(true) . rawurlencode($values["alias"])
 			));
-		}
-	}
-
-	private function _getBlogLabelId(){
-		try{
-			return (int)SOY2DAOFactory::create("cms.BlogPageDAO")->getById($_SERVER["SOYCMS_PAGE_ID"])->getBlogLabelId();
-		}catch(Exception $e){
-			return null;
 		}
 	}
 

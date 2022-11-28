@@ -10,8 +10,7 @@ class EntryLogic extends SOY2LogicBase{
 	private $totalCount;
 
 	function __construct(){
-		/** @ToDo LabeledEntryで最新版のSQLiteに対応したい **/
-		SOY2::import("logic.site.Entry.class.new.LabeledEntryDAO");
+		if(!class_exists("LabeledEntry")) SOY2::import("logic.site.Entry.class.new.LabeledEntryDAO");
 	}
 
 	function getLimit(){
@@ -44,7 +43,7 @@ class EntryLogic extends SOY2LogicBase{
  	 */
  	function create(Entry $bean){
 
- 		$dao = self::entryDao();
+ 		$dao = soycms_get_hash_table_dao("entry");
 
  		if(is_string($bean->getContent())) $bean->setContent(self::_cleanupMCETags($bean->getContent()));
  		if(is_string($bean->getMore())) $bean->setMore(self::_cleanupMCETags($bean->getMore()));
@@ -81,7 +80,7 @@ class EntryLogic extends SOY2LogicBase{
 	 */
 	function update(Entry $bean){
 
-		$dao = self::entryDao();
+		$dao = soycms_get_hash_table_dao("entry");
 
 		//数値以外（空文字列を含む）がcdateに入っていれば現在時刻を作成日時にする
 		if(!is_numeric($bean->getCdate())) $bean->setCdate(SOYCMS_NOW);
@@ -113,8 +112,8 @@ class EntryLogic extends SOY2LogicBase{
 	}
 
 	function deleteByIds(array $ids){
-		$dao = self::entryDao();
-		$entryLabelDao = self::entryLabelDao();
+		$dao = soycms_get_hash_table_dao("entry");
+		$entryLabelDao = soycms_get_hash_table_dao("entry_label");
 		$entryTrackbackDAO = SOY2DAOFactory::create("cms.EntryTrackbackDAO");
 		$entryCommentDAO = SOY2DAOFactory::create("cms.EntryCommentDAO");
 		$entryHistoryLogic = SOY2LogicContainer::get("logic.site.Entry.EntryHistoryLogic");
@@ -161,7 +160,7 @@ class EntryLogic extends SOY2LogicBase{
 	 * 全て返す
 	 */
 	function get(){
-		$dao = self::entryDao();
+		$dao = soycms_get_hash_table_dao("entry");
 
 		$dao->setLimit($this->getLimit());
 		$dao->setOffset($this->getOffset());
@@ -170,7 +169,7 @@ class EntryLogic extends SOY2LogicBase{
 
 		//ラベルを取得
 		foreach($array as $key => $entry){
-			$array[$key]->setLabels($this->getLabelIdsByEntryId($entry->getId()));
+			$array[$key]->setLabels($this->getLabelIdsByEntryId(soycms_set_entry_object($entry)->getId()));
 		}
 
 		return $array;
@@ -189,7 +188,7 @@ class EntryLogic extends SOY2LogicBase{
 	 * 非公開のエントリーを取得
 	 */
 	function getClosedEntryList(){
-		$dao = self::labeledEntryDao();
+		$dao = soycms_get_hash_table_dao("labeled_entry");
 		$dao->setLimit($this->getLimit());
 		$dao->setOffset($this->getOffset());
 
@@ -208,7 +207,7 @@ class EntryLogic extends SOY2LogicBase{
 	 * 公開期間外のエントリー一覧を取得
 	 */
 	function getOutOfDateEntryList(){
-		$dao = self::labeledEntryDao();
+		$dao = soycms_get_hash_table_dao("labeled_entry");
 		$dao->setLimit($this->getLimit());
 		$dao->setOffset($this->getOffset());
 
@@ -227,7 +226,7 @@ class EntryLogic extends SOY2LogicBase{
 	 * ラベルのついていないエントリー一覧を取得
 	 */
 	function getNoLabelEntryList(){
-		$dao = self::labeledEntryDao();
+		$dao = soycms_get_hash_table_dao("labeled_entry");
 		$dao->setLimit($this->getLimit());
 		$dao->setOffset($this->getOffset());
 
@@ -247,7 +246,7 @@ class EntryLogic extends SOY2LogicBase{
 	 * ラベルを複数指定してエントリーをすべて取得
 	 */
 	function getByLabelIds(array $labelIds, bool $flag=true, int $start=Entry::PERIOD_START, int $end=Entry::PERIOD_END){
-		$dao = self::labeledEntryDao();
+		$dao = soycms_get_hash_table_dao("labeled_entry");
 		$dao->setSort((int)$this->sort);
 
 		$array = $dao->getByLabelIdsOnlyId($labelIds, $this->reverse, $this->getLimit(), $this->getOffset());
@@ -266,7 +265,7 @@ class EntryLogic extends SOY2LogicBase{
 	 * エントリーに割り当てているラベルIDを全て取得
 	 */
 	function getLabelIdsByEntryId(int $entryId){
-		$dao = self::entryLabelDao();
+		$dao = soycms_get_hash_table_dao("entry_label");
 
 		$entryLabels = $dao->getByEntryId($entryId);
 		$result = array();
@@ -278,7 +277,7 @@ class EntryLogic extends SOY2LogicBase{
 	}
 
 	function getLabeledEntryByEntryId(int $entryId){
-		return self::entryLabelDao()->getByEntryId($entryId);
+		return soycms_get_hash_table_dao("entry_label")->getByEntryId($entryId);
 	}
 
 	/**
@@ -292,21 +291,21 @@ class EntryLogic extends SOY2LogicBase{
 	 * エントリーにラベルを割り当てる
 	 */
 	function setEntryLabel(int $entryId, int $labelId){
-		self::entryLabelDao()->setByParams($entryId,$labelId);
+		soycms_get_hash_table_dao("entry_label")->setByParams($entryId,$labelId);
 	}
 
 	/**
 	 * エントリーについているラベルを全て削除
 	 */
 	function clearEntryLabel(int $entryId){
-		self::entryLabelDao()->deleteByEntryId($entryId);
+		soycms_get_hash_table_dao("entry_label")->deleteByEntryId($entryId);
 	}
 
 	/**
 	 * エントリーからラベルを削除
 	 */
 	function unsetEntryLabel(int $entryId, int $labelId){
-		self::entryLabelDao()->deleteByParams($entryId,$labelId);
+		soycms_get_hash_table_dao("entry_label")->deleteByParams($entryId,$labelId);
 	}
 
 
@@ -314,7 +313,7 @@ class EntryLogic extends SOY2LogicBase{
 	 * 表示順の更新
 	 */
 	function updateDisplayOrder(int $entryId, int $labelId, int $displayOrder){
-		$dao = self::entryLabelDao();
+		$dao = soycms_get_hash_table_dao("entry_label");
 		$dao->deleteByParams($entryId,$labelId);
 		$dao->setByParams($entryId,$labelId,$displayOrder);
 	}
@@ -324,7 +323,7 @@ class EntryLogic extends SOY2LogicBase{
 	 */
 	function getDisplayOrder(int $entryId, int $labelId){
 		try{
-			return self::entryLabelDao()->getByEntryIdLabelId($entryId,$labelId)->getDisplayOrder();
+			return soycms_get_hash_table_dao("entry_label")->getByEntryIdLabelId($entryId,$labelId)->getDisplayOrder();
 		}catch(Exception $e){
 			return null;
 		}
@@ -334,7 +333,7 @@ class EntryLogic extends SOY2LogicBase{
 	 * 表示期間を含めたラベル付けされたエントリーを取得
 	 */
 	function getOpenEntryByLabelId(int $labelId){
-		$dao = self::labeledEntryDao();
+		$dao = soycms_get_hash_table_dao("labeled_entry");
 		$dao->setSort((int)$this->sort);
 		$dao->setLimit($this->getLimit());
 		$dao->setOffset($this->getOffset());
@@ -348,7 +347,7 @@ class EntryLogic extends SOY2LogicBase{
 	 * 表示期間を含めてラベル付けされたエントリーを取得（ラベルIDを複数指定）
 	 */
 	function getOpenEntryByLabelIds(array $labelIds, bool $isAnd=true, int $start=Entry::PERIOD_START, int $end=Entry::PERIOD_END){
-		$dao = self::labeledEntryDao();
+		$dao = soycms_get_hash_table_dao("labeled_entry");
 		$dao->setBlockClass($this->blockClass);
 		$dao->setSort((int)$this->sort);
 
@@ -375,7 +374,7 @@ class EntryLogic extends SOY2LogicBase{
 	 * @return LabeledEntry
 	 */
 	function getBlogEntry(int $blogLabelId, $entryId){
-		$dao = self::entryDao();
+		$dao = soycms_get_hash_table_dao("entry");
 
 		if(defined("CMS_PREVIEW_ALL")){
 			if(is_numeric($entryId)){
@@ -429,7 +428,7 @@ class EntryLogic extends SOY2LogicBase{
 	 * @return Entry
 	 */
 	function getBlogEntryWithoutExecption(int $blogLabelId, $entryId){
-		$dao = self::entryDao();
+		$dao = soycms_get_hash_table_dao("entry");
 		if(is_numeric($entryId)){
 			try{
 				return $dao->getOpenEntryById($entryId,SOYCMS_NOW);
@@ -455,7 +454,7 @@ class EntryLogic extends SOY2LogicBase{
 	 * 次のエントリーを取得
 	 */
 	function getNextOpenEntry(int $blogLabelId, LabeledEntry $entry){
-		$dao = self::labeledEntryDao();
+		$dao = soycms_get_hash_table_dao("labeled_entry");
 		$dao->setLimit(1);
 
 		try{
@@ -469,7 +468,7 @@ class EntryLogic extends SOY2LogicBase{
 	 * 前のエントリーを取得
 	 */
 	function getPrevOpenEntry(int $blogLabelId, LabeledEntry $entry){
-		$dao = self::labeledEntryDao();
+		$dao = soycms_get_hash_table_dao("labeled_entry");
 		$dao->setLimit(1);
 
 		try{
@@ -485,7 +484,7 @@ class EntryLogic extends SOY2LogicBase{
 	 * @return bool
 	 */
 	function setPublish($id, int $publish){
-		$dao = self::entryDao();
+		$dao = soycms_get_hash_table_dao("entry");
 		if(is_array($id)){
 			//配列だったらそれぞれを設定
 			try{
@@ -514,25 +513,25 @@ class EntryLogic extends SOY2LogicBase{
 	 * 月別アーカイブを数える
 	 */
 	function getCountMonth(array $labelIds){
-		return self::labeledEntryDao()->getCountMonth($labelIds);
+		return soycms_get_hash_table_dao("labeled_entry")->getCountMonth($labelIds);
 	}
 
 	function getMonth(array $labelIds){
-		return self::labeledEntryDao()->getMonth($labelIds);
+		return soycms_get_hash_table_dao("labeled_entry")->getMonth($labelIds);
 	}
 
 	/**
 	 * 年別アーカイブを数える
 	 */
 	function getCountYear(array $labelIds){
-		return self::labeledEntryDao()->getCountYear($labelIds);
+		return soycms_get_hash_table_dao("labeled_entry")->getCountYear($labelIds);
 	}
 
 	/**
 	 * ラベルIDを複数指定し、公開しているエントリー数を数え上げる
 	 */
 	function getOpenEntryCountByLabelIds(array $labelIds){
-		$dao = self::labeledEntryDao();
+		$dao = soycms_get_hash_table_dao("labeled_entry");
 		try{
 			$dao->getOpenEntryCountByLabelIds($labelIds, SOYCMS_NOW);
 			return $dao->getRowCount();
@@ -545,7 +544,7 @@ class EntryLogic extends SOY2LogicBase{
 	 * ラベルID（複数）からエントリーを取得
 	 */
 	function getEntryByLabelIds(array $labelIds){
-		$dao = self::entryDao();
+		$dao = soycms_get_hash_table_dao("entry");
 
 		$dao->setLimit($this->getLimit());
 		$dao->setOffset($this->getOffset());
@@ -570,7 +569,7 @@ class EntryLogic extends SOY2LogicBase{
 	 * 最近使用されたラベルを取得（管理側で使用）
 	 */
 	function getRecentLabelIds(){
-		$dao = self::labeledEntryDao();
+		$dao = soycms_get_hash_table_dao("labeled_entry");
 		$dao->setLimit($this->getLimit());
 		try{
 			$array = $dao->getRecentLabelIds();
@@ -590,7 +589,7 @@ class EntryLogic extends SOY2LogicBase{
 	 * 最近使用されたエントリーを取得（管理側で使用）
 	 */
 	function getRecentEntriesByLabelId(int $labelId){
-		$dao = self::labeledEntryDao();
+		$dao = soycms_get_hash_table_dao("labeled_entry");
 		$dao->setLimit($this->getLimit());
 		return $dao->getRecentEntriesByLabelId($labelId);
 	}
@@ -599,7 +598,7 @@ class EntryLogic extends SOY2LogicBase{
 	 * 最近使用されたエントリーを取得（管理側で使用）
 	 */
 	function getRecentEntries(){
-		$dao = self::entryDao();
+		$dao = soycms_get_hash_table_dao("entry");
 		$dao->setLimit($this->getLimit());
 		$dao->setOffset($this->getOffset());
 		$array = $dao->getRecentEntries();
@@ -648,7 +647,7 @@ class EntryLogic extends SOY2LogicBase{
 	 * ユニークなエイリアスを取得
 	 */
 	function getUniqueAlias(int $id, string $title){
-		$dao = self::entryDao();
+		$dao = soycms_get_hash_table_dao("entry");
 
 		//[?#\/%\&]は取り除く
 		//2009-02-17 CGIモードで不具合が出るので & も削除
@@ -668,21 +667,5 @@ class EntryLogic extends SOY2LogicBase{
 		}
 
 		return $title."_".$id;
-	}
-
-	private function entryDao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("cms.EntryDAO");
-		return $dao;
-	}
-	private function entryLabelDao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("cms.EntryLabelDAO");
-		return $dao;
-	}
-	private function labeledEntryDao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("LabeledEntryDAO");
-		return $dao;
 	}
 }

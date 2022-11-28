@@ -20,7 +20,7 @@ class SOYCMS_Search_Block_Plugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.5"
+			"version"=>"1.6"
 		));
 
 		if(CMSPlugin::activeCheck($this->getId())){
@@ -58,7 +58,7 @@ class SOYCMS_Search_Block_Plugin{
 		$limit = PluginBlockUtil::getLimitByPageId($pageId, $soyId);
 		if(!is_numeric($limit) || $limit === 0) $limit = 1000;	//安全装置
 
-		$query = (isset($_GET["q"]) && strlen(trim($_GET["q"]))) ? htmlspecialchars(trim($_GET["q"]), ENT_QUOTES, "UTF-8") : null;
+		$query = (isset($_GET["q"]) && strlen(trim($_GET["q"]))) ? htmlspecialchars(trim($_GET["q"]), ENT_QUOTES, "UTF-8") : "";
 
 		$obj->addLabel("search_keyword", array(
 			"soy2prefix" => "cms",
@@ -128,7 +128,7 @@ class SOYCMS_Search_Block_Plugin{
 
 		$count = PluginBlockUtil::getLimitByPageId($pageId, $soyId);
 
-		return SOY2Logic::createInstance("site_include.plugin.soycms_search_block.logic.SearchBlockEntryLogic")->search($labelId, $query, $count);
+		return SOY2Logic::createInstance("site_include.plugin.soycms_search_block.logic.SearchBlockEntryLogic")->search($labelId, $query, (int)$count);
 	}
 
 	function returnPluginId(){

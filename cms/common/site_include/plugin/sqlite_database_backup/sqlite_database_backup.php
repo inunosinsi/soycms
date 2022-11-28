@@ -2,7 +2,7 @@
 
 class SqliteDatabaseBackupPlugin{
 
-	const PLUGIN_ID = "sqlite_databae_backup";
+	const PLUGIN_ID = "sqlite_database_backup";
 
 	//バックアップディレクトリ
 	//.db以下に置かないと外部からダウンロードできるようになってよくない
@@ -26,20 +26,16 @@ class SqliteDatabaseBackupPlugin{
 	 * 設定画面の表示
 	 */
 	function config_page(){
-		include(dirname(__FILE__)."/config.php");
-		$form = SOY2HTMLFactory::createInstance("SqliteDatabaseBackupConfigPage");
+		SOY2::import("site_include.plugin.sqlite_database_backup.config.SDBConfigPage");
+		$form = SOY2HTMLFactory::createInstance("SDBConfigPage");
 		$form->setPluginObj($this);
 		$form->execute();
 		return $form->getObject();
 	}
 
 	public static function register(){
-
 		$obj = CMSPlugin::loadPluginConfig(SqliteDatabaseBackupPlugin::PLUGIN_ID);
-		if(is_null($obj)){
-			$obj = new SqliteDatabaseBackupPlugin();
-		}
-
+		if(is_null($obj)) $obj = new SqliteDatabaseBackupPlugin();
 		CMSPlugin::addPlugin(SqliteDatabaseBackupPlugin::PLUGIN_ID,array($obj,"init"));
 	}
 }

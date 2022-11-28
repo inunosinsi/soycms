@@ -1,0 +1,65 @@
+<!-- soy:display="sqlite" -->
+<div>
+	<div class="alert alert-info">データベースのバックアップ</div>
+	<form soy:id="release_form">
+		<input type="submit" class="btn btn-primary" name="release" value="バックアップ" /><br />
+		<div class="alert alert-warning mt-3">データベースファイルのバックアップ時にデータベースロックの解除も行います。</div>
+	</form>
+
+	<br>
+
+	<div class="alert alert-info">バックアップ</div>
+	<table class="list_table">
+		<tr>
+			<th>バックアップディレクトリ：</th>
+			<td><pre soy:id="backup_dir"></pre></td>
+		</tr>
+	</table>
+
+	<br>
+
+	<div class="alert alert-info">バックアップファイル</div>
+	<div class="table-responsive">
+	<table class="table table-striped">
+		<tr>
+			<th>バックアップファイル</th>
+			<th>作成日時</th>
+			<th>サイズ</th>
+			<th>ダウンロード</th>
+			<th>削除</th>
+		</tr>
+		<!-- soy:id="backup_file_list" -->
+		<tr>
+			<td soy:id="file">バックアップファイル</td>
+			<td soy:id="datetime">作成日時</td>
+			<td soy:id="size">サイズ</td>
+			<td><form soy:id="download_form" target="download_frame"><input type="submit" name="download" value="ダウンロード"><input type="hidden" soy:id="target"></form></td>
+			<td><form soy:id="delete_form" method="get"><input type="submit" name="delete" value="削除"><input type="hidden" soy:id="target"></form></td>
+		</tr>
+		<!-- /soy:id="backup_file_list" -->
+	</table>
+	</div>
+</div>
+	
+	
+<div id="test"></div>
+<script>
+	window.onload = function(){
+		$("#download_frame").load(function(e){
+			//location.reload();
+		});
+
+		var hoge = function (){
+			if($.cookie("downloaded") == "yes"){
+				location.reload();
+			}
+			setTimeout(hoge, 1500);
+		};
+		hoge();
+	};
+
+
+</script>
+<iframe name="download_frame" id="download_frame" style="width:0;height:0;bottom:-100;left:-100;"></iframe>
+<!-- /soy:display="sqlite" -->
+	

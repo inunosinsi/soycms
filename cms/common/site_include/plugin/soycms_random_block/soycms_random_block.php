@@ -21,7 +21,7 @@ class SOYCMS_Random_Block_Plugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.8"
+			"version"=>"0.9"
 		));
 
         if(CMSPlugin::activeCheck($this->getId())){
@@ -83,7 +83,7 @@ class SOYCMS_Random_Block_Plugin{
 
         $entries = array();
         foreach($res as $v){
-            $entries[] = $entryDao->getObject($v);
+            $entries[] = soycms_set_entry_object($entryDao->getObject($v));
         }
 
         return $entries;

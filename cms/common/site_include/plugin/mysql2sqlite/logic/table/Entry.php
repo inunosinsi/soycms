@@ -1,7 +1,7 @@
 <?php
 
 function registerEntry($stmt){
-	$dao = SOY2DAOFactory::create("cms.EntryDAO");
+	$dao = soycms_get_hash_table_dao("entry");
 
 	$i = 0;
 	for(;;){

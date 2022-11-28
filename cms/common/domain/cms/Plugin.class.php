@@ -103,7 +103,7 @@ class Plugin{
 	function getIcon(){
 		//アイコン設定
 		$prefix =  SOY2PageController::createRelativeLink("../common/site_include/plugin/".$this->getId()."/icon");
-
+		
 		$dir = SOY2::RootDir()."site_include/plugin/".$this->getId()."/icon";
 
 		if(file_exists($dir.".jpg")){
@@ -112,6 +112,11 @@ class Plugin{
 			return $prefix.".png";
 		}else if(file_exists($dir.".gif")){
 			return $prefix.".gif";
+		}
+
+		// 念の為
+		if(file_exists(SOY2PageController::createRelativeLink("../common/site_include/plugin/".$this->getId()."/icon.gif"))){
+			return SOY2PageController::createRelativeLink("../common/site_include/plugin/".$this->getId()."/icon.gif");
 		}
 
 		return SOY2PageController::createRelativeLink("../soycms/image/icon/default_plugin_icon.png");

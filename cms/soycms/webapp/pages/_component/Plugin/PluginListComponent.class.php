@@ -3,7 +3,7 @@
 class PluginListComponent extends HTMLList{
 
 	public function populateItem($plugin,$key,$counter){
-
+		
 		$this->addLabel("plugin_name", array(
 			"text" => $plugin->getName(),
 		));

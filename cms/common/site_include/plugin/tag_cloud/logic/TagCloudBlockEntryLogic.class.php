@@ -10,7 +10,7 @@ class TagCloudBlockEntryLogic extends SOY2LogicBase {
             $entries = array();
             $dao = soycms_get_hash_table_dao("entry");
 
-			$sql = "SELECT ent.* FROM Entry ent ".
+			$sql = "SELECT DISTINCT ent.id, ent.* FROM Entry ent ".
 	            "JOIN EntryLabel lab ".
 	            "ON ent.id = lab.entry_id ".
 				"JOIN TagCloudLinking lnk ".

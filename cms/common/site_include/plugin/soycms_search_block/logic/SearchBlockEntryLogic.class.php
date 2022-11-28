@@ -4,12 +4,16 @@ class SearchBlockEntryLogic extends SOY2LogicBase {
 
     function __construct(){}
 
-    function search($labelId, $query, $count = null){
+    /**
+     * @param int, string, int
+     * @return array
+     */
+    function search(int $labelId, string $query, int $count=0){
         static $entries;
         if(is_null($entries)){
             $entries = array();
 
-            $sql = "SELECT * FROM Entry entry ".
+            $sql = "SELECT DISTINCT entry.id, entry.* FROM Entry entry ".
                  "INNER JOIN EntryLabel label ".
                  "ON entry.id = label.entry_id ".
                  "WHERE label.label_id = :label_id ".
@@ -19,7 +23,7 @@ class SearchBlockEntryLogic extends SOY2LogicBase {
                  "AND entry.openPeriodStart < :now ".
                  "ORDER BY entry.cdate desc ";
 
-            if(isset($count) && $count > 0){
+            if($count > 0){
                 $sql .= "LIMIT " . $count;
 
                 //ページャ
@@ -56,10 +60,13 @@ class SearchBlockEntryLogic extends SOY2LogicBase {
         return $entries;
     }
 
-    function getTotal($labelId, $query){
-        if(is_null($query) || !strlen($query)) return 0;
-        if(is_null($labelId)) return 0;
-
+    /**
+     * @param int, string
+     * @return int
+     */
+    function getTotal(int $labelId, string $query=""){
+        if($labelId <= 0 || !strlen($query)) return 0;
+        
         $sql = "SELECT COUNT(*) AS TOTAL FROM Entry entry ".
              "INNER JOIN EntryLabel label ".
              "ON entry.id = label.entry_id ".
@@ -75,9 +82,8 @@ class SearchBlockEntryLogic extends SOY2LogicBase {
             ":now" => time()
         );
 
-        $dao = new SOY2DAO();
         try{
-            $res = $dao->executeQuery($sql, $binds);
+            $res = soycms_get_hash_table_dao("entry")->executeQuery($sql, $binds);
         }catch(Exception $e){
             return 0;
         }
@@ -89,6 +95,9 @@ class SearchBlockEntryLogic extends SOY2LogicBase {
         return self::__getArgs();
     }
 
+    /**
+     * @return array
+     */
     private function __getArgs(){
         if(!isset($_SERVER["PATH_INFO"])) return array();
         //末尾にスラッシュがない場合はスラッシュを付ける

@@ -13,7 +13,7 @@ class TagCloudPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.9"
+			"version"=>"1.10"
 		));
 
 		//active or non active

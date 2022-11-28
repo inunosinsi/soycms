@@ -9,7 +9,7 @@ function soycms_generate_hash_value(string $str, int $length=12){
 
 function soycms_get_hash_table_types(){
 	static $types;
-	if(is_null($types)) $types = array("entry", "entry_attribute", "entry_label", "label", "label_attribute", "page", "page_attribute", "blog_page", "block", "plugin");
+	if(is_null($types)) $types = array("entry", "entry_attribute", "entry_label", "label", "label_attribute", "page", "page_attribute", "blog_page", "block", "plugin", "labeled_entry");
 	return $types;
 }
 
@@ -68,6 +68,10 @@ function soycms_get_hash_table_dao(string $fnName){
 			break;
 		case 9:	//plugin
 			$path = "cms.PluginDAO";
+			break;
+		case 10:	// labeled_entry
+			if(!class_exists("LabeledEntry")) SOY2::import("logic.site.Entry.class.new.LabeledEntryDAO");
+			$path = "LabeledEntryDAO";
 			break;
 	}
 	$daos[$idx] = SOY2DAOFactory::create($path);

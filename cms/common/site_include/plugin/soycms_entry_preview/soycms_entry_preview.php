@@ -19,7 +19,7 @@ class EntryPreviewPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/4610",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.5"
+			"version"=>"0.6"
 		));
 
 		CMSPlugin::addPluginConfigPage($this->getId(),array(
@@ -56,7 +56,7 @@ class EntryPreviewPlugin{
 
 		/** 取得した記事がblogLabelIdと一致しているか？を調べる */
 		try{
-			$res = SOY2DAOFactory::create("cms.EntryLabelDAO")->getByEntryIdLabelId($entryId, $blogLabelId);
+			$res = soycms_get_hash_table_dao("entry_label")->getByEntryIdLabelId($entryId, $blogLabelId);
 		}catch(Exception $e){
 			return null;
 		}

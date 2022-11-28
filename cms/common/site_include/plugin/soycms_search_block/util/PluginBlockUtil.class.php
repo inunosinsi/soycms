@@ -15,14 +15,7 @@ class PluginBlockUtil {
 		
 		//ブログページを取得できた場合
 		if($blog instanceof BlogPage && is_numeric($blog->getId()) && $blog->getId() == $pageId){
-			$pathInfo = (isset($_SERVER["PATH_INFO"])) ? $_SERVER["PATH_INFO"] : null;
-			if(is_null($pathInfo)) $pathInfo = (isset($_SERVER["REQUEST_URI"])) ? $_SERVER["REQUEST_URI"] : null;
-			//$pathInfo = (isset($_SERVER["PATH_INFO"])) ? $_SERVER["PATH_INFO"] : (isset($_SERVER["REQUEST_URI"])) ? $_SERVER["REQUEST_URI"] : null;
-			//サイトIDを除く
-			$siteId = soycms_get_site_id_by_frontcontroller();
-			$uri = str_replace("/" . $siteId . "/", "/", $pathInfo);
-			$uri = str_replace("/" . $_SERVER["SOYCMS_PAGE_URI"] . "/", "", $uri);
-
+			
 			// テンプレートを取得
 			switch(SOYCMS_BLOG_PAGE_MODE){
 				case CMSBlogPage::MODE_TOP:

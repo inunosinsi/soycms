@@ -76,7 +76,7 @@ class SelectedEntriesBlockPlugin{
 
 		$count = PluginBlockUtil::getLimitByPageId($pageId, $soyId);
 
-		$entryDao = SOY2DAOFactory::create("cms.EntryDAO");
+		$dao = soycms_get_hash_table_dao("entry");
         $sql = "SELECT ent.* FROM Entry ent ".
              "INNER JOIN EntryAttribute attr ".
              "ON ent.id = attr.entry_id ".
@@ -100,7 +100,7 @@ class SelectedEntriesBlockPlugin{
 
 		$entries = array();
 		foreach($res as $v){
-			$entries[$v["id"]] = $entryDao->getObject($v);
+			$entries[$v["id"]] = soycms_set_entry_object($entryDao->getObject($v));
 		}
 
         return $entries;

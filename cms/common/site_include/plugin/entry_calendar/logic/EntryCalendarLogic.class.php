@@ -2,12 +2,9 @@
 
 class EntryCalendarLogic extends SOY2LogicBase {
 
-	private $entryDao;
 	private $blogId;
 
-	function __construct(){
-		$this->entryDao = SOY2DAOFactory::create("cms.EntryDAO");
-	}
+	function __construct(){}
 
 	function getEntryList($year, $month){
 		$start = mktime(0, 0, 0, $month, 1, $year);
@@ -18,6 +15,7 @@ class EntryCalendarLogic extends SOY2LogicBase {
 
 		$now = time();
 
+		$dao = soycms_get_hash_table_dao("entry");
 		$sql = "SELECT ent.* FROM Entry ent ".
 				"INNER JOIN EntryLabel lab ".
 				"ON ent.id = lab.entry_id ".
@@ -29,7 +27,7 @@ class EntryCalendarLogic extends SOY2LogicBase {
 				"AND lab.label_id = :labelId";
 
 		try{
-			$res = $this->entryDao->executeQuery($sql, array(":labelId" => $labelId));
+			$res = $dao->executeQuery($sql, array(":labelId" => $labelId));
 		}catch(Exception $e){
 			return array();
 		}
@@ -40,7 +38,7 @@ class EntryCalendarLogic extends SOY2LogicBase {
 		foreach($res as $v){
 			if(!isset($v["id"]) || !isset($v["cdate"])) continue;
 			$d = (int)date("j", $v["cdate"]);
-			$list[$d][] = $this->entryDao->getObject($v);
+			$list[$d][] = soycms_set_entry_object($dao->getObject($v));
 		}
 
 		return $list;
@@ -73,7 +71,7 @@ class EntryCalendarLogic extends SOY2LogicBase {
 		if(is_null($pageConfig)){
 			$sql = "SELECT uri, page_config FROM Page WHERE id = :id AND page_type = 200 AND isPublished = 1 AND openPeriodStart <= " . time() . " AND openPeriodEnd >= " . time() . " LIMIT 1";
 			try{
-				$res = $this->entryDao->executeQuery($sql, array(":id" => $this->blogId));
+				$res = soycms_get_hash_table_dao("entry")->executeQuery($sql, array(":id" => $this->blogId));
 			}catch(Exception $e){
 				$res = array();
 			}
