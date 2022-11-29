@@ -1,0 +1,112 @@
+<form soy:id="form">
+	<div class="form-group">
+		<div class="form-inline">
+			<label>検索する文字列</label>
+			<input type="text" class="form-control" soy:id="q" id="q">
+			<input type="submit" class="btn" name="search" value="検索">&nbsp;
+			<a soy:id="reset_link" class="btn btn-warning">リセット</a>
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="form-inline">
+			<label>置換後の文字列</label>
+			<input type="text" class="form-control" soy:id="r">
+			<input type="submit" class="btn" name="replace" value="置換">
+		</div>
+	</div>
+
+	<!-- soy:display="result" -->
+	<div class="table-responsive">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th class="col-chk text-center"><input type="checkbox" id="check_all"></th>
+					<th class="col-title">記事タイトル</th>
+					<th class="col-content">本文</th>
+					<th class="col-detail">&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- soy:id="result_list" -->
+				<tr>
+					<td class="text-center"><input type="checkbox" soy:id="check" class="check"></td>
+					<td><!-- soy:id="title" /--></td>
+					<td><!-- soy:id="content" /--></td>
+					<td>
+						<a href="javascript:void(0);" class="btn btn-primary" soy:id="content_confirm_link">本文を見る</a>&nbsp;
+						<a href="javascript:void(0);" class="btn btn-info" soy:id="more_confirm_link">追記を見る</a>&nbsp;
+						<a soy:id="detail_link" class="btn btn-warning">詳細</a>
+					</td>
+				</tr>
+				<!-- /soy:id="result_list" -->
+			</tbody>
+		</table>
+	</div>
+	<!-- /soy:display="result" -->
+</form>
+
+<div class="modal" tabindex="-1" role="dialog" id="confirm_dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="confirm_title"></h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body" id="confirm_content"></div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+	</div>
+
+<style>
+	.col-chk {
+		width:30px;
+	}
+	.col-title {
+		width: 25%;
+	}
+	.col-content {
+		width: 50%;
+	}
+	.col-detail {
+		width:300px;
+	}
+</style>
+
+<script>
+$("#check_all").on("click", function(){
+	var chk = $(this).prop("checked");
+	$(".check").each(function(ele){
+		if($(this).prop("checked") && !chk){
+			$(this).prop("checked", false);
+		}else if(!$(this).prop("checked") && chk){
+			$(this).prop("checked", true);
+		}
+	});
+});
+function open_confirm_modal(endpoint){
+	$.ajax(endpoint,
+		{
+			type: "get",
+			method: "json"
+		}
+	).done(function(data) {
+		var res = JSON.parse(JSON.stringify(data));
+		var h = res.content;
+		h = h.replaceAll("<", "&lt;");
+		h = h.replaceAll(">", "&gt;");
+		h = h.replaceAll("\n", "<br>");
+		var q = $("#q").val();
+		h = h.replaceAll(q, "<span style=\"background-color:yellow;\">"+q+"</span>");
+		$("#confirm_title").text(res.title+"の確認");
+		$("#confirm_content").html(h);
+		$("#confirm_dialog").modal();
+	}).fail(function() {
+		alert("失敗しました");
+	});
+}
+</script>
