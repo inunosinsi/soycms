@@ -17,7 +17,7 @@ class OutputBlogEntriesJsonPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/4505",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.0"
+			"version"=>"1.1"
 		));
 		
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -42,7 +42,7 @@ class OutputBlogEntriesJsonPlugin{
 		if(!isset($_SERVER["PATH_INFO"]) || is_bool(strpos($_SERVER["PATH_INFO"], ".json"))) return;
 
 		preg_match('/\/(.*?)\.json/', $_SERVER["PATH_INFO"], $tmp);
-		if(!isset($tmp[1]) || !is_numeric($tmp[1])) self::_output();
+		if(!isset($tmp[1]) || !is_numeric($tmp[1])) return;
 
 		$lim = (isset($_GET["limit"]) && is_numeric($_GET["limit"])) ? (int)$_GET["limit"] : -1;
 		$offset = (isset($_GET["offset"]) && is_numeric($_GET["offset"])) ? (int)$_GET["offset"] : 0;
