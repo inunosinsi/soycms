@@ -114,11 +114,12 @@ class Plugin{
 			return $prefix.".gif";
 		}
 
-		// 念の為
-		if(file_exists(SOY2PageController::createRelativeLink("../common/site_include/plugin/".$this->getId()."/icon.gif"))){
-			return SOY2PageController::createRelativeLink("../common/site_include/plugin/".$this->getId()."/icon.gif");
+		//プラグインのディレクトリ名とPLUGIN_IDが異なる場合
+		$pluginDirName = CMSPlugin::getPluginDirectoryNameByPluginId($this->getId());
+		if(file_exists(SOY2::RootDir()."site_include/plugin/".$pluginDirName."/icon.gif")){
+			return SOY2PageController::createRelativeLink("../common/site_include/plugin/".$pluginDirName."/icon.gif");
 		}
-
+		
 		return SOY2PageController::createRelativeLink("../soycms/image/icon/default_plugin_icon.png");
 	}
 }

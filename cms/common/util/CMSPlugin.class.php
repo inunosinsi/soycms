@@ -211,6 +211,24 @@ class CMSPlugin {
 	}
 
 	/**
+	 * プラグインのディレクトリ名とプラグインのファイルに記載されているPLUGIN_IDが異なる場合は調べる
+	 * @param string
+	 * @return string
+	 */
+	static function getPluginDirectoryNameByPluginId(string $pluginId){
+		//ディレクトリが既にあれば調べない
+		if(file_exists(SOY2::RootDir()."site_include/plugin/".$pluginId."/")) return $pluginId;
+		
+		if(!function_exists("soycms_get_plugin_ids")) include_once(SOY2::RootDir() . "site_include/func/plugin.php");
+		$pluginIds = soycms_get_plugin_ids(true);
+		$idx = array_search($pluginId, $pluginIds);
+		if(!is_numeric($idx)) return $pluginId;
+
+		// 得られたidx + 1がPLUGIN_IDになる
+		return (isset($pluginIds[$idx+1])) ? $pluginIds[$idx+1] : $pluginId;
+	}
+
+	/**
 	 * サイトのディレクトリを取得
 	 */
 	static function getSiteDirectory(){
