@@ -16,7 +16,7 @@ class IndexPage extends CMSWebPageBase{
 			}
 
 			$plugins = $result->getAttribute("plugins");
-
+			
 
 			$this->createAdd("plguin_category_list","_component.Plugin.CategoryListComponent",array(
 				"list"=>array($this->getMessage("SOYCMS_INACTIVE_PLUGINS")=>$plugins)
@@ -48,7 +48,6 @@ class IndexPage extends CMSWebPageBase{
 
 
 		}else{
-
 			$result = $this->run("Plugin.PluginListAction",array(
 			));
 			if(!$result->success()){
@@ -69,14 +68,17 @@ class IndexPage extends CMSWebPageBase{
 					$non_active[] = $plugin;
 				}
 			}
-
+			
+			// カテゴリ分けを加味
 			$this->createAdd("plguin_category_list","_component.Plugin.CategoryListComponent",array(
-				"list"=>array($this->getMessage("SOYCMS_ACTIVE_PLUGINS")=>$active,$this->getMessage("SOYCMS_NOT_ACTIVE_PLUGINS")=>$non_active)
+				"list" => array(
+					$this->getMessage("SOYCMS_ACTIVE_PLUGINS") => $active,
+					$this->getMessage("SOYCMS_NOT_ACTIVE_PLUGINS") => $non_active
+				)
 			));
 			$this->addLink("plugin_category_delete_link", array(
 				"visible" => false
 			));
-
 		}
 
 		$this->addForm("hidden_form", array(
