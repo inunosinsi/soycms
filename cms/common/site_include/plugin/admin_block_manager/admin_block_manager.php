@@ -18,6 +18,7 @@ class AdminBlockManagerPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"ブロック一括管理プラグイン",
+			"type" => Plugin::TYPE_BLOCK,
 			"description"=>"複数ページに対して、ブロックの追加や変更が出来ます。",
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",

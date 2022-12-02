@@ -28,6 +28,7 @@ class SyncEntryPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"記事同期プラグイン",
+			"type" => Plugin::TYPE_ENTRY,
 			"description"=>'記事を実ファイルと同期させます。<br />SOY CMSに格納されている記事をファイルに書き出したり、<br />書き出したファイルをSOY CMSに格納したりすることが可能です。',
 			"author"=>"株式会社株式会社Brassica",
 			"url"=>"https://brassica.jp/",

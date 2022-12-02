@@ -16,6 +16,7 @@ class LabelFieldPlugin {
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID, array(
 			"name" => "ラベルフィールド",
+			"type" => Plugin::TYPE_LABEL,
 			"description" => "カスタムフィールドアドバンスドで実現できなかったラベルフィールドをこのプラグインで実装した",
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co/article/3886",

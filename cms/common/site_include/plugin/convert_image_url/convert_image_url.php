@@ -12,6 +12,7 @@ class ConvertImageUrlPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=> "画像URL変換プラグイン",
+			"type" => Plugin::TYPE_IMAGE,
 			"description"=> "SSL対応時にブログで投稿した画像のパスがhttpが始まるため、/からはじまる絶対パスに変換する",
 			"author"=> "齋藤毅",
 			"url"=> "https://saitodev.co",

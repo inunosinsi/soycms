@@ -14,6 +14,7 @@ class MergeSitemapPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"サイトマップ結合プラグイン",
+			"type" => Plugin::TYPE_SITE,
 			"description"=>"複数のサイトマップxmlを統合して、一枚の静的なXMLファイルを生成します。定期的に新しいXMLが生成されて上書きします。",
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",

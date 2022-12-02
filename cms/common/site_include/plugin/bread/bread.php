@@ -29,6 +29,7 @@ class BreadPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name" => "パン屑リスト出力プラグイン",
+			"type" => Plugin::TYPE_PAGE,
 			"description" => "パン屑リストを出力することが出来ます。",
 			"author" => "株式会社Brassica",
 			"url" => "https://brassica.jp/",

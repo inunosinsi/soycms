@@ -13,6 +13,7 @@ class CustomSearchFieldEntryListBlockPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(CustomSearchFieldEntryListBlockPlugin::PLUGIN_ID,array(
 			"name" => "カスタムサーチフィールド記事一覧ブロックプラグイン",
+			"type" => Plugin::TYPE_BLOCK,
 			"description" => "",
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co",

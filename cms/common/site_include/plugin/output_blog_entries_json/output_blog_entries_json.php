@@ -13,6 +13,7 @@ class OutputBlogEntriesJsonPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID, array(
 			"name"=>"ブログ記事JSON出力プラグイン",
+			"type" => Plugin::TYPE_PAGE,
 			"description"=>"ブログページのIDを指定するとJSON形式で記事一覧を出力する",
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/4505",

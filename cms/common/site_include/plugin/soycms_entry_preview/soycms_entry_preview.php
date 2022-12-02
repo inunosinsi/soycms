@@ -15,6 +15,7 @@ class EntryPreviewPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"ブログ記事プレビュープラグイン",
+			"type" => Plugin::TYPE_ENTRY,
 			"description"=>"",
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/4610",

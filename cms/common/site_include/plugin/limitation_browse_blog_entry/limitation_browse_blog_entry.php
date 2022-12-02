@@ -11,6 +11,7 @@ class LimitationBrowseBlogEntryPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"ブログ記事閲覧制限プラグイン",
+			"type" => Plugin::TYPE_ENTRY,
 			"description"=>"ブログ記事を表示する際にパスワードの入力を要求する",
 			"author"=>"日本情報化農業研究所",
 			"url"=>"http://www.n-i-agroinformatics.com",

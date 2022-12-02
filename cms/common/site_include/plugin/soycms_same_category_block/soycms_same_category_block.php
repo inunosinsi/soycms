@@ -16,6 +16,7 @@ class SOYCMSSameCategoryBlockPlugin{
 
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"SOY CMS同一カテゴリーの記事一覧ブロックプラグイン",
+			"type" => Plugin::TYPE_BLOCK,
 			"description"=>"プラグインブロックで同一カテゴリの記事一覧を表示します。記事詳細ページでのみ動作します。",
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",

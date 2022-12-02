@@ -8,6 +8,7 @@ class BlogEntrySerialNumberPlugin {
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID, array(
 			"name" => "ブログ記事連番プラグイン",
+			"type" => Plugin::TYPE_PAGE,
 			"description" => "ブログの記事に連番を付けます",
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co/article/3170",

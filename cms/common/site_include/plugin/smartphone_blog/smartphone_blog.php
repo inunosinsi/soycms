@@ -24,6 +24,7 @@ class SmartphoneBlogPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID, array(
 			"name" => "スマホでブログ投稿プラグイン",
+			"type" => Plugin::TYPE_PAGE,
 			"description" => "スマホからブログを投稿できるようにする",
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co/article/3472",

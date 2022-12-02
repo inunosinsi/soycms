@@ -16,6 +16,7 @@ class GravatarPlugin {
 	function init(){
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=> "Gravatar連携プラグイン",
+			"type" => Plugin::TYPE_EXTERNAL,
 			"description"=> "アバター管理のWebサービスGravatarと連携するプラグインです",
 			"author"=> "齋藤毅",
 			"url"=> "https://saitodev.co",

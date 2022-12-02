@@ -19,6 +19,7 @@ class RecordDeadLinkPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"リンク切れページURL記録プラグイン",
+			"type" => Plugin::TYPE_PAGE,
 			"description"=>"リンク切れページを開いた時の参照元を記録するプラグイン",
 			"author"=>"株式会社Brassica",
 			"url"=>"http://brassica.jp/",
@@ -37,7 +38,7 @@ class RecordDeadLinkPlugin{
 	}
 	
 	function execute(){
-		if(isset($_SERVER["HTTP_REFERER"]) && strpos($_SERVER["HTTP_REFERER"], $_SERVER["HTTP_HOST"]) == false){
+		if(isset($_SERVER["HTTP_REFERER"]) && is_bool(strpos($_SERVER["HTTP_REFERER"], $_SERVER["HTTP_HOST"]))){
 			SOY2::imports("site_include.plugin.". self::PLUGIN_ID . ".domain.*");
 			$dao = SOY2DAOFactory::create("RecordDeadLinkDAO");
 			
@@ -79,7 +80,6 @@ class RecordDeadLinkPlugin{
 	}
 
 	function config_page(){
-
 		include_once(dirname(__FILE__) . "/config/RecordDeadLinkConfigFormPage.class.php");
 		$form = SOY2HTMLFactory::createInstance("RecordDeadLinkConfigFormPage");
 		$form->setPluginObj($this);
@@ -88,13 +88,8 @@ class RecordDeadLinkPlugin{
 	}
 	
 	public static function register(){
-		
 		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
-		if(!$obj){
-			$obj = new RecordDeadLinkPlugin();
-		}
-			
+		if(!$obj) $obj = new RecordDeadLinkPlugin();
 		CMSPlugin::addPlugin(self::PLUGIN_ID, array($obj, "init"));
 	}
 }
-?>

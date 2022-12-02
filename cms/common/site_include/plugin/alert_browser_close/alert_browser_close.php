@@ -12,6 +12,7 @@ class AlertBrowserClosePlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"ブラウザを閉じる前にアラートプラグイン",
+			"type" => Plugin::TYPE_ENTRY,
 			"description"=>"記事編集中にブラウザを閉じようとした時、アラートを出す",
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/",

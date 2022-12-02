@@ -27,6 +27,7 @@ class ButtonSocialPlugin{
 
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"ソーシャルボタン設置プラグイン",
+			"type" => Plugin::TYPE_ENTRY,
 			"description"=>"ページにソーシャルボタンを設置します。",
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/soycms/",

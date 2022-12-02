@@ -11,6 +11,7 @@ class SqliteDatabaseBackupPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(SqliteDatabaseBackupPlugin::PLUGIN_ID,array(
 			"name"=>"SQLiteデータベースバックアッププラグイン",
+			"type" => Plugin::TYPE_DB,
 			"description"=>"SQLiteのデータベースファイルのバックアップ用のプラグインです。データベースロックの解除にも対応しています。",
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",

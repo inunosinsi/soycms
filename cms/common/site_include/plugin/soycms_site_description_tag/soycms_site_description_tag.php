@@ -16,6 +16,7 @@ class SiteDescriptionTagPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu($this->getId(), array(
 			"name" => "サイトの説明表示プラグイン",
+			"type" => Plugin::TYPE_PAGE,
 			"description" => "",
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co",

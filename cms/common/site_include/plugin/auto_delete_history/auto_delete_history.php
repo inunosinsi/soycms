@@ -19,6 +19,7 @@ class AutoDeleteHistoryPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name" => "履歴自動削除プラグイン",
+			"type" => Plugin::TYPE_OPTIMIZE,
 			"description" => "記事とテンプレートの変更履歴を自動で削除する",
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co/",

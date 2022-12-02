@@ -15,6 +15,7 @@ class UtilMultiLanguagePlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"多言語サイトプラグイン",
+			"type" => Plugin::TYPE_SITE,
 			"description"=>"サイトの言語設定を確認し、指定したURLへリダイレクトします。",
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",

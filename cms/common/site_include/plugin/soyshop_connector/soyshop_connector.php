@@ -14,6 +14,7 @@ class SOYShopConnectorPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"SOY Shop連携プラグイン",
+			"type" => Plugin::TYPE_SOYAPP,
 			"description"=>"SOY Shopと連携するために使用します。<br />SOY Shopのパーツモジュールを呼び出せます。",
 			"author"=>"日本情報化農業研究所",
 			"url"=>"http://www.n-i-agroinformatics.com/",

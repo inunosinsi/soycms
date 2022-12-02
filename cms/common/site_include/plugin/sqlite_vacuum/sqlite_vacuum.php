@@ -7,6 +7,7 @@ class SqliteVacuumPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"SQLite VACUUM",
+			"type" => Plugin::TYPE_DB,
 			"description"=>"記事作成時にSQLite VACUUMを実行する",
 			"author"=>"saitodev.co",
 			"url"=>"https://saitodev.co/",

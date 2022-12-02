@@ -12,6 +12,7 @@ class FacebookGraphAPIPlugin {
 	function init(){
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=> "FacebookグラフAPIプラグイン",
+			"type" => Plugin::TYPE_EXTERNAL,
 			"description"=> "",
 			"author"=> "齋藤毅",
 			"url"=> "https://saitodev.co",

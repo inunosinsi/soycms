@@ -13,6 +13,7 @@ class WordPressImportEntryPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name" => "WordPress記事インポートプラグイン",
+			"type" => Plugin::TYPE_DB,
 			"description" => "",
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co",

@@ -14,6 +14,7 @@ class ReplacementStringPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"置換文字列生成プラグイン",
+			"type" => Plugin::TYPE_PAGE,
 			"description"=>"各ページで使用できる置換文字列を追加します",
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",

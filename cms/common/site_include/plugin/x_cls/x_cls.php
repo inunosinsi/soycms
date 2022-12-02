@@ -24,6 +24,7 @@ class CLSPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"Cumulative Layout Shiftプラグイン",
+			"type" => Plugin::TYPE_OPTIMIZE,
 			"description"=>"Cumulative Layout Shift対策で画像のサイズを取得してHTMLタグを生成しなおす。",
 			"author"=>"齋藤毅",
 			"url"=>"",

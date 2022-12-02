@@ -16,6 +16,7 @@ class CompressorPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"HTML圧縮プラグイン",
+			"type" => Plugin::TYPE_OPTIMIZE,
 			"description"=>"HTMLを圧縮して、サーバ間のデータ転送を高速化する",
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/3193",

@@ -27,6 +27,7 @@ class SOYCMS_SpamBlockerPlugin{
 
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"コメントスパム対策プラグイン",
+			"type" => Plugin::TYPE_SITE,
 			"description"=>"ブログのコメントのスパムを対策します",
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",

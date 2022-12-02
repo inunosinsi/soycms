@@ -12,6 +12,7 @@ class DropboxBackupPlugin{
 
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"Dropboxバックアッププラグイン",
+			"type" => Plugin::TYPE_EXTERNAL,
 			"description"=>"Dropboxを利用してサイトのバックアップを行います",
 			"author"=>"齋藤毅",
 			"modifier"=>"Tsuyoshi Saito",

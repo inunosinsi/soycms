@@ -15,6 +15,7 @@ class FirstAndLastEntryLinkPlugin {
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=> "最初と最後の記事リンク出力プラグイン",
+			"type" => Plugin::TYPE_PAGE,
 			"description"=> "ブログページで最初と最後の記事のリンクを出力します",
 			"author"=> "齋藤毅",
 			"url"=> "https://saitodev.co",

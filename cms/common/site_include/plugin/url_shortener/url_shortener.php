@@ -12,6 +12,7 @@ class UrlShortenerPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"短縮URLプラグイン",
+			"type" => Plugin::TYPE_SITE,
 			"description"=>"ページやブログの記事ページの短縮URLを設定することが出来ます。<br>SOY CMS 1.3.1以上で動作します。",
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",

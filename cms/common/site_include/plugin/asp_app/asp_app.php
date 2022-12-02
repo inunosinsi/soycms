@@ -12,6 +12,7 @@ class AspAppPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID, array(
 			"name" => "SOY App ASP版運営プラグイン",
+			"type" => Plugin::TYPE_SOYCMS,
 			"description" => "任意のSOY AppをASPモードにする",
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co/",

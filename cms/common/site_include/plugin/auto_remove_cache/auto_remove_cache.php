@@ -7,6 +7,7 @@ class AutoRemoveCachePlugin {
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID, array(
 			"name" => "キャッシュ自動削除プラグイン",
+			"type" => Plugin::TYPE_OPTIMIZE,
 			"description" => "キャッシュの削除のjobをcronに登録することで定期的にキャッシュを自動削除します",
 			"author" => "齋藤毅",
 			"url" => "http://saitodev.co/",

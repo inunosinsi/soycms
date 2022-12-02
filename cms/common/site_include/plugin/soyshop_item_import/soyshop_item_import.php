@@ -21,6 +21,7 @@ class SOYShopItemImportPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"SOYShop商品紹介プラグイン",
+			"type" => Plugin::TYPE_SOYAPP,
 			"description"=>"SOY Shopで登録した商品をSOY CMSのブログで紹介する",
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",

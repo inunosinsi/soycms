@@ -18,6 +18,7 @@ class HTMLCachePlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"HTMLキャッシュプラグイン",
+			"type" => Plugin::TYPE_OPTIMIZE,
 			"description"=>"サーバでページを組み立てブラウザにレスポンスを返す直前の状態をキャッシュ化してページの表示速度の高速化を図る",
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/3096",

@@ -38,6 +38,7 @@ class PingSendPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"更新Ping送信プラグイン",
+			"type" => Plugin::TYPE_ENTRY,
 			"description"=>"更新Pingを送信することが出来ます。",
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",

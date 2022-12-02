@@ -25,6 +25,7 @@ function soycms_get_plugin_ids(bool $isReserve=false){
  */
 function soycms_get_plugin_id_by_plugin_file_name(string $pluginFileName){
     if($pluginFileName[0] == "." || !is_dir(CMS_PAGE_PLUGIN . $pluginFileName) || !is_readable(CMS_PAGE_PLUGIN . $pluginFileName ."/".$pluginFileName.".php")) return "";
+
     $lines = explode("\n", file_get_contents(CMS_PAGE_PLUGIN . $pluginFileName ."/".$pluginFileName.".php"));
     $pluginId = "";
 

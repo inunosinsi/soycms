@@ -13,6 +13,7 @@ class AccelerationEntryPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"記事詳細高速表示プラグイン",
+			"type" => Plugin::TYPE_DB,
 			"description"=>"記事の作成日をUNIQUEな値にして、表示速度を高速化する",
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co/",

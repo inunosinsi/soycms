@@ -37,6 +37,7 @@ class GoogleAnalytics{
 
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"Google Analytics導入プラグイン",
+			"type" => Plugin::TYPE_EXTERNAL,
 			"description"=>"Google Analyticsを簡単に導入できます。<br>このプラグインを有効にすると全ページもしくは指定したページの指定した箇所にGoogle Analyticsトラックコードを埋め込むことができます。",
 			"author"=>"株式会社Brassica",
 			"modifier"=>"Jun Okada",

@@ -14,6 +14,7 @@ class CustomSearchFieldPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name" => "カスタムサーチフィールド",
+			"type" => Plugin::TYPE_ENTRY,
 			"description" => "",
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co",

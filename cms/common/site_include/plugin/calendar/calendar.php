@@ -23,6 +23,7 @@ class CalendarPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"カレンダープラグイン",
+			"type" => Plugin::TYPE_PAGE,
 			"description"=>"ブログページ内部でカレンダーを出力することが出来ます。",
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",

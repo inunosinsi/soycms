@@ -3,6 +3,7 @@ class Plugin{
 
 	private $id;
 	private $name;
+	private $type;	//categoryの代わり
 	private $description;
 	private $isActive;
 	private $config;
@@ -12,6 +13,36 @@ class Plugin{
 	private $version;
 	private $url;
 	private $mail;
+
+	// プラグインのtype
+	const TYPE_ACTIVE = 	0;
+	const TYPE_SOYCMS = 	1;
+	const TYPE_ENTRY = 		2;
+	const TYPE_LABEL = 		3;
+	const TYPE_PAGE = 		4;
+	const TYPE_BLOCK = 		5;
+	const TYPE_IMAGE = 		6;
+	const TYPE_SITE = 		7;
+	const TYPE_EXTERNAL =	8;
+	const TYPE_SOYAPP = 	9;
+	const TYPE_DB = 		10;
+	const TYPE_OPTIMIZE = 	11;
+
+	public static function getPluginTypeList(){
+		return array(
+			self::TYPE_SOYCMS => "SOY CMS",
+			self::TYPE_ENTRY => "記事",
+			self::TYPE_LABEL => "ラベル",
+			self::TYPE_PAGE => "ページ",
+			self::TYPE_BLOCK => "ブロック",
+			self::TYPE_IMAGE => "画像",
+			self::TYPE_SITE => "サイト",
+			self::TYPE_EXTERNAL => "外部サービス",
+			self::TYPE_SOYAPP => "SOY App連携",
+			self::TYPE_DB => "データベース",
+			self::TYPE_OPTIMIZE => "最適化"
+		);
+	}
 
 	function getId() {
 		return $this->id;
@@ -57,7 +88,6 @@ class Plugin{
 	}
 
 	function setCategory($category){
-
 		$this->category = $category;
 	}
 	function getCategory(){
@@ -73,6 +103,14 @@ class Plugin{
 		}else{
 		}
 		return $this->category;
+	}
+
+	/** categoryを廃止してSOY Shopと合わせてtypeにする */
+	function getType(){
+		return $this->type;
+	}
+	function setType($type){
+		$this->type = $type;
 	}
 
 	function getAuthor() {

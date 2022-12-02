@@ -43,6 +43,7 @@ class UtilMobileCheckPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"携帯自動振り分けプラグイン",
+			"type" => Plugin::TYPE_SITE,
 			"description"=>"携帯電話やスマートフォンでのアクセス時に対応したページに転送します。",
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",

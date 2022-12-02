@@ -14,6 +14,7 @@ class EntryInfoPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"ブログ記事SEOプラグイン",
+			"type" => Plugin::TYPE_ENTRY,
 			"description"=>"ブログページの記事毎ページにkeywordとdescriptionを記事投稿時に追加する",
 			"author"=>"株式会社Brassica",
 			"url"=>"http://brassica.jp/",

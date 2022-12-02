@@ -14,6 +14,7 @@ class ReadEntryCountPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"よく読まれている記事プラグイン",
+			"type" => Plugin::TYPE_PAGE,
 			"description"=>"記事のPVをSOY CMS側で記録して、公開ページでよく読まれている記事一覧を出力します。",
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",

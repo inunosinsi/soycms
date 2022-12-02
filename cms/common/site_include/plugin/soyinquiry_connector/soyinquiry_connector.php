@@ -15,6 +15,7 @@ class SOYInquiryConnectorPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID, array(
 			"name" => "SOY Inquiry連携プラグイン",
+			"type" => Plugin::TYPE_SOYAPP,
 			"description" => "SOY Inquiryと連携します",
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co",

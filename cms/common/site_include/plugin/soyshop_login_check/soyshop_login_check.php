@@ -48,6 +48,7 @@ class SOYShopLoginCheckPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"SOYShopログインチェックプラグイン",
+			"type" => Plugin::TYPE_SOYAPP,
 			"description"=>"SOY Shopサイトでのログインの有無をチェックする<br />このプラグインを使用する時はSOY Shop1.15.0以降のバージョンをご利用ください。",
 			"author"=>"日本情報化農業研究所",
 			"url"=>"http://www.n-i-agroinformatics.com",

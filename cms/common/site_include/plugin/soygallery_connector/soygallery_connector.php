@@ -18,6 +18,7 @@ class SOYGalleryConnectorPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"SOY Gallery連携プラグイン",
+			"type" => Plugin::TYPE_SOYAPP,
 			"description"=>"SOY Galleryと連携するために使用します。<br /><br />どのページでもギャラリーを呼び出せるようになります",
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",

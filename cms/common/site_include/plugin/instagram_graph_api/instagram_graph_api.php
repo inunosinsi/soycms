@@ -12,6 +12,7 @@ class InstagramGraphAPIPlugin {
 	function init(){
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=> "InstagramグラフAPIプラグイン",
+			"type" => Plugin::TYPE_EXTERNAL,
 			"description"=> "",
 			"author"=> "齋藤毅",
 			"url"=> "https://saitodev.co",

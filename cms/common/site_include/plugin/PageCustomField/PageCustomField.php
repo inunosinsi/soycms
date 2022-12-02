@@ -24,6 +24,7 @@ class PageCustomFieldPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID, array(
 			"name" => "ページカスタムフィールド",
+			"type" => Plugin::TYPE_PAGE,
 			"description" => "",
 			"author" => "齋藤毅",
 			"url" => "",

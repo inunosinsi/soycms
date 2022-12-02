@@ -21,6 +21,7 @@ class CustomAliasPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID, array(
 			"name"=>"カスタムエイリアス",
+			"type" => Plugin::TYPE_ENTRY,
 			"description"=>"ブログの記事ページのURLの記事毎に変わる部分（エイリアス）を指定できるようにします。<br>SOY CMS 1.2.4以上で動作します。",
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",

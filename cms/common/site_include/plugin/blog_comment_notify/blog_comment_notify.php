@@ -28,6 +28,7 @@ class SOYCMS_BlogCommnetNotifyPlugin{
 	
 	function init(){
 		CMSPlugin::addPluginMenu($this->getId(),array(
+			"type" => Plugin::TYPE_SITE,
 			"name"=>"ブログコメント メール通知プラグイン",
 			"description"=>"ブログのコメント投稿時にメール送信",
 			"author"=>"株式会社Brassica",

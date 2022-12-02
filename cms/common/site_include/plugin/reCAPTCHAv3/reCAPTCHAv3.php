@@ -16,6 +16,7 @@ class reCAPTCHAv3Plugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"Google reCAPTCHA v3",
+			"type" => Plugin::TYPE_EXTERNAL,
 			"description"=>"GoogleのreCAPTCHA v3を使用する",
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",

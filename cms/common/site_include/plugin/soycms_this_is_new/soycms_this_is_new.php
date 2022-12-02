@@ -13,6 +13,7 @@ class SOYCMS_ThisIsNew_Plugin{
 	public function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID, array(
 			"name"=>"新着マーク表示プラグイン",
+			"type" => Plugin::TYPE_ENTRY,
 			"description"=>"記事を表示するときに作成日時から一定期間の間だけ表示される部分を指定することができるようになります。新着画像の表示などに便利です。",
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",

@@ -16,6 +16,7 @@ class CanonicalUrlPlugin{
 
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"カノニカルURL挿入プラグイン",
+			"type" => Plugin::TYPE_PAGE,
 			"description"=>"テンプレートに&lt;/head&gt;タグがある場合はカノニカルURLタグを自動で挿入します。",
 			"author"=>"齋藤 毅",
 			"url"=>"https://saitodev.co/",

@@ -14,6 +14,7 @@ class MySQL2SQLitePlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"MySQL→SQLite移行プラグイン",
+			"type" => Plugin::TYPE_DB,
 			"description"=>"サイトのデータベースをMySQLからSQLiteへ移行します",
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/2038",

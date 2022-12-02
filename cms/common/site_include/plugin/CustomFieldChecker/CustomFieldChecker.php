@@ -10,6 +10,7 @@ class CustomFieldCheckerPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID, array(
 			"name"=>"カスタムフィールドチェッカー",
+			"type" => Plugin::TYPE_DB,
 			"description"=>"カスタムフィールドの使用状況を調べます",
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/",

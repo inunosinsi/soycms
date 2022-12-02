@@ -9,6 +9,7 @@ class TableOfContentsPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"見出し自動生成プラグイン",
+			"type" => Plugin::TYPE_ENTRY,
 			"description"=>"投稿されたテキストから見出しを作成する",
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",

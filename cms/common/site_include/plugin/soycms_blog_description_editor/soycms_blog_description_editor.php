@@ -15,6 +15,7 @@ class BlogDescriptionEditorPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"ブログ説明WYSIWIGプラグイン",
+			"type" => Plugin::TYPE_PAGE,
 			"description"=>"ブログの設定にある説明でWYSIWIGエディタを使用できるようにする",
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",

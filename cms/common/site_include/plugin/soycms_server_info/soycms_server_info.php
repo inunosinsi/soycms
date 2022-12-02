@@ -19,6 +19,7 @@ class SOYCMS_Server_Info_Plugin{
 	function init(){
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"サーバー情報表示プラグイン",
+			"type" => Plugin::TYPE_SOYCMS,
 			"description"=>"SOY CMSのインストールされているサーバーの情報を表示します。",
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",

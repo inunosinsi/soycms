@@ -9,6 +9,7 @@ class TagCloudPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"タグクラウドプラグイン",
+			"type" => Plugin::TYPE_ENTRY,
 			"description"=>"タグクラウド",
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",

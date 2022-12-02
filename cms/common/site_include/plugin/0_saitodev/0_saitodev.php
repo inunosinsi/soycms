@@ -7,6 +7,7 @@ class ZeroSaitodevPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID, array(
 			"name" => "SOY CMS新機能紹介プラグイン",
+			"type" => Plugin::TYPE_SOYCMS,
 			"description" => "https://saitodev.coで投稿されたSOY CMS全般の新着記事を取得する。PHPでXMLが使用できない環境では当プラグインは使用できません。",
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co/",

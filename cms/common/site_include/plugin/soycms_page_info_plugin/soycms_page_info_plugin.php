@@ -17,6 +17,7 @@ class SOYCMS_PageInfoEditPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"ページ情報編集プラグイン",
+			"type" => Plugin::TYPE_PAGE,
 			"description"=>"一括でページ情報を編集します。KeywordとDescriptionの設定もできます。",
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",

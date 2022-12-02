@@ -247,6 +247,8 @@ class CMSPlugin {
 		if(!is_array($initFunc) && !function_exists($initFunc)) return;
 
 		$instance->_plugins[$id] = array();
+
+		if(!class_exists("Plugin")) SOY2::import("domain.cms.Plugin");
 		call_user_func($initFunc);
 	}
 
@@ -519,5 +521,46 @@ class CMSPlugin {
 		$url = SOY2PageController::createRelativeLink($_SERVER['REQUEST_URI'], true);
 		header("Location: {$url}#config");
 		exit;
+	}
+
+	/**
+	 * プラグイン管理のページでプラグインを種別による分類を行う
+	 * @param array
+	 * @return array
+	 */
+	static function classifyPluginsByType(array $plugins){
+		$list = array(
+			Plugin::TYPE_ACTIVE => array()
+		);
+
+		foreach(Plugin::getPluginTypeList() as $typ => $lab){
+			$list[$typ] = array();
+		}
+
+
+		//未分類のインデックス
+		$idx = count($list);
+		$list[$idx] = array();
+
+		foreach($plugins as $key => $plugin){
+			if($plugin->isActive()){
+				$list[Plugin::TYPE_ACTIVE][] = $plugin;
+			}else{
+				if(!is_null($plugin->getType()) && isset($list[$plugin->getType()])){
+					$list[$plugin->getType()][] = $plugin;
+				}else{
+					$list[$idx][] = $plugin;
+				}
+			}
+		}
+
+		$arr = array();
+		$arr[] = $list[Plugin::TYPE_ACTIVE];
+		foreach(Plugin::getPluginTypeList() as $typ => $lab){
+			if(!count($list[$typ])) continue;
+			$arr[] = $list[$typ];
+		}
+		$arr[] = $list[$idx];
+		return $arr;
 	}
 }

@@ -37,6 +37,7 @@ class SOYCMS_Info_Plugin{
 
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"SOY CMS更新情報プラグイン",
+			"type" => Plugin::TYPE_SOYCMS,
 			"description"=>"SOY CMSの更新情報を表示します",
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/",

@@ -8,6 +8,7 @@ class StringBatchReplacePlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"記事の文字列一括置換プラグイン",
+			"type" => Plugin::TYPE_ENTRY,
 			"description"=>"記事中の文字列を一括で置換します。<br>記事数が多くなったブログで表記の誤りを発見して記事の内容を変更する必要が生じた時にご利用ください。<br>当プラグインを利用する前にデータベースのバックアップを行ってください。",
 			"author"=>"saitodev.co",
 			"url"=>"https://saitodev.co/",

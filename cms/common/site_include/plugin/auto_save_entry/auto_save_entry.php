@@ -13,6 +13,7 @@ class AutoSaveEntryPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"記事自動バックアッププラグイン",
+			"type" => Plugin::TYPE_ENTRY,
 			"description"=>"記事の簡易的なバックアップを定期的に行う",
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co/",

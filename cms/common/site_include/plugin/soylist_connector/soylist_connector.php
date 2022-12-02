@@ -20,6 +20,7 @@ class SOYListConnectorPlugin{
 
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"SOY List連携プラグイン",
+			"type" => Plugin::TYPE_SOYAPP,
 			"description"=>"SOY Listでカテゴリ分け表示を行えるようにする",
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",

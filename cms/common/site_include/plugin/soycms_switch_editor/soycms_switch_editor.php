@@ -11,6 +11,7 @@ class SOYCMS_SwitchEditor{
 	function init(){
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"エディタ切り替えプラグイン",
+			"type" => Plugin::TYPE_ENTRY,
 			"description"=>"ラベル毎にWYSIWYGエディタを使用するかどうか切り替えます。<br />選択できるWYSIWYGエディタは<ul>" .
 					"<li>tinyMCE</li>" .
 					"</ul>",

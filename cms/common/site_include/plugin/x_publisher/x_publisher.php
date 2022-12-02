@@ -20,6 +20,7 @@ class XPublisherPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"静的化プラグイン",
+			"type" => Plugin::TYPE_OPTIMIZE,
 			"description"=>"主に標準ページで静的化します",
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/3096",

@@ -16,6 +16,7 @@ class SelectedEntriesBlockPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name" => "記事一覧選択表示ブロックプラグイン",
+			"type" => Plugin::TYPE_BLOCK,
 			"description" => "",
 			"author" => "齋藤毅",
 			"url" => "http://saitodev.co",

@@ -31,6 +31,7 @@ class SitemapPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"サイトマッププラグイン",
+			"type" => Plugin::TYPE_SITE,
 			"description"=>"",
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",

@@ -16,6 +16,7 @@ class CustomIconFieldPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name" => "アイコンフィールド追加プラグイン",
+			"type" => Plugin::TYPE_ENTRY,
 			"description" => "記事編集画面にアイコン編集フィールドを追加します。",
 			"author" => "株式会社Brassica",
 			"url" => "https://brassica.jp/",

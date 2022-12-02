@@ -14,6 +14,7 @@ class MultiUploaderPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name" => "記事毎画像アップロードプラグイン",
+			"type" => Plugin::TYPE_ENTRY,
 			"description" => "記事毎に複数画像ファイルをアップロードできるプラグイン",
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/3150",

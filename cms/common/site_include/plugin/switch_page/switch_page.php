@@ -11,6 +11,7 @@ class SwitchPagePlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"ページ切り替えプラグイン",
+			"type" => Plugin::TYPE_PAGE,
 			"description"=>"任意のページで期間設定により、URIそのままで他のページの読み込みを切り替える",
 			"author"=>"saitodev.co",
 			"url"=>"https://saitodev.co/article/3622",

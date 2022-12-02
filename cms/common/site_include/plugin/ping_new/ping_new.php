@@ -15,6 +15,7 @@ class PingNewPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID, array(
 			"name"=>"更新Ping送信プラグイン２",
+			"type" => Plugin::TYPE_ENTRY,
 			"description"=>"更新Pingを送信することが出来ます。",
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/",

@@ -14,6 +14,7 @@ class CategoryInfoPlugin{
     function init(){
         CMSPlugin::addPluginMenu($this->getId(),array(
             "name"=>"カテゴリー詳細表示プラグイン",
+            "type" => Plugin::TYPE_LABEL,
             "description"=>"ブログページのカテゴリーページにカテゴリーの説明を表示する",
             "author"=>"日本情報化農業研究所",
             "url"=>"http://www.n-i-agroinformatics.com",

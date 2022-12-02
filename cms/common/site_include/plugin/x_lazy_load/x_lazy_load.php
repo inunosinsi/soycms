@@ -13,6 +13,7 @@ class XLazyLoadPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"LazyLoadプラグイン",
+			"type" => Plugin::TYPE_OPTIMIZE,
 			"description"=>"記事中の画像タグでloading属性を追加する",
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/3278",

@@ -23,6 +23,7 @@ class LabelCustomFieldPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID, array(
 			"name" => "ラベルカスタムフィールド",
+			"type" => Plugin::TYPE_LABEL,
 			"description" => "",
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co/article/3532",

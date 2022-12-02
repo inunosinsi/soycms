@@ -13,6 +13,7 @@ class DisplayRestrictionsPlugin{
 
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"ページ毎表示制限プラグイン",
+			"type" => Plugin::TYPE_PAGE,
 			"description"=>"ページ毎に表示の制限を行うことが出来ます。",
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/3046",

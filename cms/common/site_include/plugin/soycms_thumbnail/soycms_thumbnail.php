@@ -22,6 +22,7 @@ class SOYCMSThumbnailPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"サムネイルプラグイン",
+			"type" => Plugin::TYPE_ENTRY,
 			"description"=>"サムネイル画像を生成します",
 			"author"=>"日本情報化農業研究所",
 			"url"=>"http://www.n-i-agroinformatics.com/",

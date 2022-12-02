@@ -11,6 +11,7 @@ class MultiplePageFormPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name" => "複数ページフォームプラグイン",
+			"type" => Plugin::TYPE_PAGE,
 			"description" => "複数ページにまたがるフォームページを設置します",
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/3302",

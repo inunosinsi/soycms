@@ -16,6 +16,7 @@ class SOYCMS_Search_Block_Plugin{
 
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"SOY CMS検索結果ブロックプラグイン",
+			"type" => Plugin::TYPE_BLOCK,
 			"description"=>"プラグインブロックでブログ記事の検索結果を表示します",
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",

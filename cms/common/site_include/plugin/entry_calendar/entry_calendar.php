@@ -14,6 +14,7 @@ class EntryCalendarPlugin{
 
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"記事一覧カレンダー",
+			"type" => Plugin::TYPE_PAGE,
 			"description"=>"カレンダー形式で記事一覧を表示する。<a href=\"https://saitodev.co/calendar\", target=\"_blank\">出力例</a>",
 			"author"=>"齋藤毅",
 			"modifier"=>"Tsuyoshi Saito",

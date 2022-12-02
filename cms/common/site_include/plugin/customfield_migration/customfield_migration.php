@@ -12,6 +12,7 @@ class CustomfieldMigrationPlugin {
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID, array(
 			"name" => "カスタムフィールドデータ移行プラグイン",
+			"type" => Plugin::TYPE_DB,
 			"description" => "カスタムフィールドからカスタムサーチフィールドにデータを移行する",
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co",
