@@ -34,12 +34,12 @@ class ListFieldListComponent extends HTMLList {
 		));
 
 		$this->addLink("image_link", array(
-			"soy2preifx" => "cms",
+			"soy2prefix" => "cms",
 			"link" => ($isImageFile) ? $v : ""
 		));
 
 		$this->addLabel("image_text", array(
-			"soy2preifx" => "cms",
+			"soy2prefix" => "cms",
 			"text" => ($isImageFile) ? $v : ""
 		));
 	}
