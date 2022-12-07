@@ -13,7 +13,7 @@ class ListFieldSampleCodeComponent {
 		$html[] = "	<!-- cms:id=\"" . $tag . "_list\" -->";
 		if($isImageUploadForm){
 			$html[] = "	<!-- cms:id=\"is_image\" -->";
-			$html[] = "	<li><img cms:id=\"image\"></li>";
+			$html[] = "	<li><a cms:id=\"image_link\"><img cms:id=\"image\"></a></li>";
 			$html[] = "	<!-- /cms:id=\"is_image\" -->";
 			$html[] = "";
 			$html[] = "	<!-- cms:id=\"no_image\" -->";
