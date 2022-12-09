@@ -138,7 +138,8 @@ class SOYShop_GalleryComponent extends HTMLList{
 		));
 
 		//サイズを調べて、縦横どちらが長いかを調べる。正方形の場合はwidth
-		$imageInfo = getimagesize($imageDir . $entity->getFilename());
+		$imageFilePath = $_SERVER["DOCUMENT_ROOT"].$imageDir . $entity->getFilename();
+		$imageInfo = (file_exists($imageFilePath)) ? getimagesize($imageFilePath) : array(0, 0);
 		$imageType = ($imageInfo[1] > $imageInfo[0]) ? "height" : "width";
 
 		$this->addLabel("image_type",array(
@@ -163,7 +164,7 @@ class SOYShop_GalleryComponent extends HTMLList{
 
 		$this->addLabel("memo", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"html" => nl2br($entity->getMemo())
+			"html" => nl2br((string)$entity->getMemo())
 		));
 
 		$this->addLabel("sort", array(
