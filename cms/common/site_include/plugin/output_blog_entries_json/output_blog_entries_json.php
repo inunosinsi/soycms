@@ -294,11 +294,11 @@ class OutputBlogEntriesJsonPlugin{
 	private function _filterIsCustomfieldId(array $fieldIds){
 		static $c;
 		if(is_null($c)){
-			$c = array();
 			if(CMSPlugin::activeCheck("CustomFieldAdvanced")) {
 				SOY2::import("site_include.plugin.self.self", ".php");
-				$c = CMSPlugin::loadPluginConfig(self::PLUGIN_ID)->customFields;
+				$c = CMSPlugin::loadPluginConfig("CustomFieldAdvanced")->customFields;
 			}
+			if(is_null($c)) $c = array();
 		}
 
 		$keys = array_keys($c);
