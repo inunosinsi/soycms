@@ -3,7 +3,7 @@
 /** 共通且つ効率化する関数群 **/
 //ハッシュテーブル用のハッシュ値を作成する
 function soyshop_generate_hash_value(string $str, int $length=12){
-	$hash = md5($str);
+	$hash = md5($str . (string)SOY2DAOConfig::Dsn());	//dnsは他サイトブロックを使用した時の対策
 	return substr($hash, 0, $length);
 }
 
