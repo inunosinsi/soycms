@@ -9,10 +9,9 @@ class ApplicationPage extends Page{
      * 保存用のstdObjectを返します
      */
     function getConfigObj(){
-    	$obj = parent::getPageConfigObject();
-		
+		$obj = parent::getPageConfigObject();
 		$obj->applicationId = $this->getApplicationId();
-		return $obj;
+    	return $obj;
     }
 
     function getApplicationId() {
@@ -22,4 +21,3 @@ class ApplicationPage extends Page{
     	$this->applicationId = (string)$applicationId;
     }
 }
-?>

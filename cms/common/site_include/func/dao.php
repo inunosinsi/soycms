@@ -9,7 +9,7 @@ function soycms_generate_hash_value(string $str, int $length=12){
 
 function soycms_get_hash_table_types(){
 	static $types;
-	if(is_null($types)) $types = array("entry", "entry_attribute", "entry_label", "label", "label_attribute", "page", "page_attribute", "blog_page", "block", "plugin", "labeled_entry");
+	if(is_null($types)) $types = array("entry", "entry_attribute", "entry_label", "label", "label_attribute", "page", "page_attribute", "blog_page", "application_page", "block", "plugin", "labeled_entry");
 	return $types;
 }
 
@@ -64,12 +64,15 @@ function soycms_get_hash_table_dao(string $fnName){
 			$path = "cms.BlogPageDAO";
 			break;
 		case 8:
+			$path = "cms.ApplicationPageDAO";
+			break;
+		case 9:
 			$path = "cms.BlockDAO";
 			break;
-		case 9:	//plugin
+		case 10:	//plugin
 			$path = "cms.PluginDAO";
 			break;
-		case 10:	// labeled_entry
+		case 11:	// labeled_entry
 			if(!class_exists("LabeledEntry")) SOY2::import("logic.site.Entry.class.new.LabeledEntryDAO");
 			$path = "LabeledEntryDAO";
 			break;
@@ -303,10 +306,10 @@ function soycms_save_label_attribute_object(LabelAttribute $attr){
 /** 
  * ページIDからページオブジェクト 
  * isPriorityBlogPageModeをtrueにすると、ブログページを優先的に検索する
- * @param int pageId, bool isPriorityBlogPageMode
- * @return Page()|BlogPage()
+ * @param int pageId, bool isPriorityBlogPageMode, bool isPriorityApplicationPageMode
+ * @return Page|BlogPage|ApplicationPage
  **/
-function soycms_get_page_object(int $pageId, bool $isPriorityBlogPageMode=true){
+function soycms_get_page_object(int $pageId, bool $isPriorityBlogPageMode=true, bool $isPriorityApplicationPageMode=false){
 	$dao = soycms_get_hash_table_dao(__FUNCTION__);
 	if((int)$pageId <= 0) return new Page();
 
@@ -318,6 +321,14 @@ function soycms_get_page_object(int $pageId, bool $isPriorityBlogPageMode=true){
 		try{
 			$blogPage = soycms_get_hash_table_dao("blog_page")->getById($pageId);
 			if(is_numeric($blogPage->getId())) $GLOBALS["soycms_page_hash_table"][$idx] = $blogPage;
+		}catch(Exception $e){
+			//
+		}
+		if(isset($GLOBALS["soycms_page_hash_table"][$idx])) return $GLOBALS["soycms_page_hash_table"][$idx];
+	}else if($isPriorityApplicationPageMode){
+		try{
+			$applicationPage = soycms_get_hash_table_dao("application_page")->getById($pageId);
+			if(is_numeric($applicationPage->getId())) $GLOBALS["soycms_page_hash_table"][$idx] = $applicationPage;
 		}catch(Exception $e){
 			//
 		}
@@ -337,6 +348,12 @@ function soycms_get_blog_page_object(int $pageId){
 	$page = soycms_get_page_object($pageId, true);
 	if(!class_exists("BlogPage")) SOY2::import("domain.cms.BlogPage");
 	return ($page instanceof BlogPage) ? $page : new BlogPage();
+}
+
+function soycms_get_application_page_object(int $pageId){
+	$page = soycms_get_page_object($pageId, false, true);
+	if(!class_exists("ApplicationPage")) SOY2::import("domain.cms.ApplicationPage");
+	return ($page instanceof ApplicationPage) ? $page : new ApplicationPage();
 }
 
 function soycms_get_page_attribute_object(int $pageId, string $fieldId){

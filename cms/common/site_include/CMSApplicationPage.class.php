@@ -10,7 +10,7 @@ class CMSApplicationPage extends CMSPage{
 		$this->arguments = $args[1];
 		$this->siteConfig = $args[2];
 
-		$this->page = SOY2DAOFactory::create("cms.ApplicationPageDAO")->getById($id);
+		$this->page = soycms_get_application_page_object($id);
 		$this->id = $id;
 
 		$this->pageUrl = SOY2PageController::createLink("") . $this->page->getUri();

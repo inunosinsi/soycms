@@ -72,3 +72,8 @@ function soycms_get_page_url_by_frontcontroller(bool $isAbsolute=false){
 	if(isset($_SERVER["SOYCMS_PAGE_URI"]) && strlen($_SERVER["SOYCMS_PAGE_URI"])) $u .= $_SERVER["SOYCMS_PAGE_URI"] . "/";
 	return $u;
 }
+
+function soycms_jump_notfound_page(){
+	header("Location:".soycms_get_site_publish_url_by_frontcontroller()."_notfound");
+	exit;
+}

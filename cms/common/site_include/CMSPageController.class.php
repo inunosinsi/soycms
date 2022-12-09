@@ -103,9 +103,21 @@ class CMSPageController extends SOY2PageController{
 				$pageClass = "CMSPage";
 				break;
 		}
+		
+		// Argsの値を調べる必要があるか？
+		$isCheckArgs = ($pageClass != "CMSBlogPage");
+		if($isCheckArgs && $pageClass == "CMSApplicationPage"){
+			switch(soycms_get_application_page_object($_SERVER["SOYCMS_PAGE_ID"])->getApplicationId()){
+				case "gallery":	//SOY Galleryの場合はページャがあるのでArgsの中身は調べない
+					$isCheckArgs = false;
+					break;
+				default:
+					//
+			}
+		}
 
 		// ブログページ以外ではargsにページャに関するもの以外がないことを確認
-		if($pageClass != "CMSBlogPage" && count($args) && strlen($args[0])){
+		if($isCheckArgs && count($args) && strlen($args[0])){
 			preg_match('/^page-\d+/', $args[0], $tmp);
 			if(!isset($tmp[0])) $this->onNotFound();
 
