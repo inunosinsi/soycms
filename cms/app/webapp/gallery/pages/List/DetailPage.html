@@ -1,0 +1,93 @@
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header">画像詳細</h1>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<a class="btn btn-default" soy:id="return_link">一覧</a>
+			</div>
+		</div>
+	</div>
+	<!-- /.col-lg-12 -->
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">ギャラリ：<!-- soy:id="gallery_name*" /--></div>
+			<div class="panel-body">	
+				<div class="alert alert-success" soy:display="updated">更新しました</div>
+				<div class="alert alert-danger" soy:display="error">更新を失敗しました</div>
+				<div class="alert alert-success" soy:display="upload">画像を登録しました</div>
+				
+				<div class="table-responsive">
+					<form soy:id="form">
+						<table class="form_table list">
+							<col width="150px">
+							<tr>
+								<th>ID</th>
+								<td soy:id="id"></td>
+							</tr>
+							<tr>
+								<th>画像</th>
+								<td><a soy:id="image_link" target="_blank"><img soy:id="image" border="0" /></a></td>
+							</tr>
+							<tr>
+								<th>ギャラリ</th>
+								<td><a soy:id="gallery_link">hogehoge</a></td>
+							</tr>
+							<tr>
+								<th>alt属性</th>
+								<td>
+									<input type="text" class="form-control" soy:id="alt">
+									<div class="alert alert-warning">※画像が表示されなかった場合に表示される文字列の設定</div>
+								</td>
+							</tr>
+							<tr>
+								<th>URL</th>
+								<td><input type="text" class="form-control" soy:id="url"></td>
+							</tr>
+							<tr>
+								<th>画像サイズ</th>
+								<td soy:id="image_size"></td>
+							</tr>
+							<tr>
+								<th>サムネイルサイズ</th>
+								<td soy:id="thumbnail_size"></td>
+							</tr>
+							<tr>
+								<th>メモ<br />(HTML可)</th>
+								<td>
+									<textarea width="95%" soy:id="memo" class="form-control"></textarea>
+								</td>
+							</tr>
+							<tr>
+								<th>登録日</th>
+								<td soy:id="create_date"></td>
+							</tr>
+							<tr>
+								<th>更新日</th>
+								<td soy:id="update_date"></td>
+							</tr>
+							<tr>
+								<th>公開状況</th>
+								<td>
+									<input type="radio" soy:id="is_public" />
+									<input type="radio" soy:id="no_public" />
+								</td>
+							</tr>
+						</table>
+						
+						<div class="text-center">
+							<input type="submit" class="btn btn-primary btn-lg" name="confirm" value="更新">
+						</div>
+					</form>
+				</div>		
+			</div>
+		</div>
+	</div>
+</div>

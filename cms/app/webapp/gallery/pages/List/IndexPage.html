@@ -1,0 +1,72 @@
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header">ギャラリ：<!-- soy:id="gallery_name" /--></h1>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<a class="btn btn-default" soy:link="gallery.Gallery.Create">ギャラリの追加</a>
+				<a class="btn btn-default" soy:link="gallery.Gallery">ギャラリ一覧</a>
+				<a class="btn btn-default" soy:id="edit_link">編集用一覧</a>
+			</div>
+		</div>
+	</div>
+	<!-- /.col-lg-12 -->
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">ギャラリ：<!-- soy:id="gallery_name*" /--></div>
+			<div class="panel-body">
+				<div class="notice" soy:display="size_error">画像サイズが大きいため、アップロードに失敗しました。php.iniで設定されているサイズを確認しましょう。</div>
+				<div class="notice" soy:display="updated">画像を登録しました</div>
+		
+				<form soy:id="upload_form">
+					<div id="upload_area">
+						<input type="file" id="file" name="files[]" multiple="multiple" accept="image/*">
+						<span><input type="submit" style="display:none;"></span>
+					</div>
+				</form>
+				
+				<form soy:id="form">
+					<!-- soy:id="image_list" -->
+					<div class="column"><img soy:id="image"></div>
+					<!-- /soy:id="image_list" -->
+					<div class="last_column"></div>
+					
+					<div id="dustbox_area">
+						<div id="dustbox">
+							画像を非公開にする
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+</div>
+<!-- soy:id="script" /-->
+
+<style type="text/css">
+#upload_area{
+	width:40%;
+	border:1px solid #000000;
+	margin:0 auto;
+	margin-bottom:20px;
+	padding:20px 100px;
+}
+
+#dustbox{
+	width:100px;
+	border:1px solid #000000;
+	text-align:center;
+	padding:5px;
+	margin: 0 0 10px 0;
+	float:right;
+}
+</style>

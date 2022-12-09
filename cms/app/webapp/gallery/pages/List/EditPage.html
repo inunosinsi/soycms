@@ -1,0 +1,126 @@
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header">ギャラリ：<!-- soy:id="gallery_name" /--></h1>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<a class="btn btn-default" soy:link="gallery.Gallery.Create">ギャラリの追加</a>
+				<a class="btn btn-default" soy:link="gallery.Gallery">ギャラリ一覧</a>
+				<a class="btn btn-default" soy:id="return_link">一覧</a>
+			</div>
+		</div>
+	</div>
+	<!-- /.col-lg-12 -->
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">ギャラリ：<!-- soy:id="gallery_name*" /--></div>
+			<div class="panel-body">
+				<div class="alert alert-danger" soy:display="error">画像のアップロードに失敗しました</div>
+				<div class="alert alert-danger" soy:display="size_error">画像サイズが大きいため、アップロードに失敗しました。php.iniで設定されているサイズを確認しましょう。</div>
+				<div class="alert alert-success" soy:display="updated">画像を登録しました</div>
+				<div class="alert alert-success" soy:display="deleted">画像を削除しました</div>
+				<div class="alert alert-danger" soy:display="deleted_error">画像の削除中にエラーが発生しました</div>
+				<div class="alert alert-success" soy:display="success">更新しました</div>
+				<div class="alert alert-danger" soy:display="failed">更新中にエラーがありました</div>
+	
+				<div class="table-responsive">
+					<form soy:id="upload_form">
+						<table class="form_table list">
+							<tr>
+								<th width="30%">画像のアップロード</th>
+								<td class="form-inline">
+									<input type="file" name="files[]" multiple="multiple" accept="image/*" class="btn form-control" />
+									<input type="submit" class="btn btn-primary" value="アップロード" />
+									&nbsp;&nbsp;&nbsp;
+									<a soy:id="config_link" class="btn btn-default">ギャラリの設定</a>
+								</td>
+							</tr>
+						</table>
+					</form>
+					
+					<form soy:id="config_form">
+						
+						<div style="float:left;">
+							<input type="submit" class="btn btn-primary" name="public" value="公開" />
+							<input type="submit" class="btn btn-warning" name="no_public" value="非公開" />
+						</div>
+						<div style="float:right;">
+							<input type="submit" class="btn btn-primary" name="update" value="表示順の変更" />
+						</div>
+						<br style="clear:both;" />
+						
+						<table class="list">
+							<thead>
+								<tr>
+									<th style="width:3%;">
+										<input type="checkbox" id="toggle_checkbox_header" onclick="toggle_all_image_check(this);show_bulk_modify_panel();" />
+									</th>
+									<th style="width:15%;">画像</th>
+									<th style="width:40%;">メモ</th>
+									<th style="width:8%;">公開状況</th>
+									<th style="width:15%;">更新日</th>
+									<th style="width:8%;">表示順</th>
+									<th style="width:10%;">操作</th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<td colspan="7">
+										<div style="float:left;">
+											<input type="submit" class="btn btn-primary" name="public" value="公開" />
+											<input type="submit" class="btn btn-warning" name="no_public" value="非公開" />
+										</div>
+										<div style="float:right;">
+											<input type="submit" class="btn btn-primary" name="update" value="表示順の変更" />
+										</div>
+										<br style="clear:both;" />
+									</td>
+								</tr>
+							</tfoot>
+							<tbody>
+								<!-- soy:id="image_list" -->
+								<tr>
+									<td class="center">
+										<input type="checkbox" class="image_check" soy:id="public_check" value="" />
+									</td>
+									<td class="center"><a soy:id="detail_link"><img soy:id="image" width="75px" border="0" /></a></td>
+									<td soy:id="memo"></td>
+									<td soy:id="is_public" class="center"></td>
+									<td soy:id="update_date" class="center"></td>
+									<td class="center"><input type="number" class="form-control" soy:id="sort"></td>
+									<td class="operation">
+										<a soy:id="detail_link*" class="btn btn-primary">編集</a>
+										<a soy:id="remove_link" class="btn btn-danger">削除</a>
+									</td>
+								</tr>
+								<!-- /soy:id="image_list" -->
+							</tbody>
+						</table>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	function toggle_all_image_check(checkbox){
+		$(".image_check").each(function(){
+			$(this).prop("checked", !$(this).prop("checked"));
+		});
+		if($(checkbox).attr("id") != "toggle_checkbox_header") $("#toggle_checkbox_header").prop("checked",$(checkbox).prop("checked"));
+	}
+	function show_bulk_modify_panel(){
+		/**
+		 * @ToDo そのうちディスプレイの動作を作る 
+		 */
+//		$(".bulk_modify_panel").show();											
+	}
+</script>

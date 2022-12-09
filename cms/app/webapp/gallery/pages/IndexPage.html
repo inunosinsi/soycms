@@ -1,0 +1,97 @@
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header">ギャラリ</h1>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<a class="btn btn-default" soy:link="gallery.Gallery.Create">ギャラリの追加</a>
+				<a class="btn btn-default" soy:link="gallery.Gallery">ギャラリ一覧</a>
+			</div>
+		</div>
+	</div>
+	<!-- /.col-lg-12 -->
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">ギャラリ</div>
+			<div class="panel-body">
+				<!-- soy:display="no_gallery" -->
+				<div class="alert alert-warning">作成されたギャラリはありません</div>
+				<!-- /soy:display="no_gallery" -->
+				
+				<!-- soy:display="is_gallery" -->
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th class="short">ギャラリ名</th>
+								<th class="short">ギャラリID</th>
+								<th class="middle">説明</th>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- soy:id="gallery_list" -->
+							<tr>
+								<td><a soy:id="list_link"><!-- soy:id="name_plain" /--></a></td>
+								<td soy:id="gallery_id"">gallery</td>
+								<td soy:id="memo">hogehoge</td>
+							</tr>
+							<!-- /soy:id="gallery_list" -->
+						</tbody>
+					</table>
+				</div>
+				<!-- /soy:display="is_gallery" -->
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">最新の投稿画像</div>
+			<div class="panel-body">
+				<!-- soy:display="no_image" -->
+				<div class="alert alert-warning">投稿された画像はありません</div>
+				<!-- /soy:display="no_image" -->
+				
+				<!-- soy:display="is_image" -->
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th style="width:15%;">画像</th>
+								<th style="width:40%;">メモ</th>
+								<th style="width:15%;">ギャラリ</th>
+								<th style="width:8%;">公開状況</th>
+								<th style="width:17%;">投稿日</th>
+								<th style="width:5%;">操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- soy:id="image_list" -->
+							<tr>
+								<td class="center"><a soy:id="detail_link"><img soy:id="image" width="75px" border="0" /></a></td>
+								<td soy:id="memo"></td>
+								<td><a soy:id="name"></a></td>
+								<td soy:id="is_public" class="center"></td>
+								<td soy:id="create_date" class="center"></td>
+								<td class="operation">
+									<a soy:id="detail_link*" class="btn btn-primary">編集</a>
+								</td>
+							</tr>
+							<!-- /soy:id="image_list" -->
+						</tbody>
+					</table>
+				</div>
+				<!-- /soy:display="is_image" -->
+			</div>
+		</div>
+	</div>
+</div>
