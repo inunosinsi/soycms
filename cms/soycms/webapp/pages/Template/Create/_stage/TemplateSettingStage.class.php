@@ -30,7 +30,7 @@ class TemplateSettingStage extends StageBase{
 	public function execute(){
 
 		//追加リンク
-		$this->createAdd("add_link","HTMLLink",array(
+		$this->addLink("add_link", array(
 			"link" => SOY2PageController::createLink("Template.Create") . "?add",
 			"visible" => ($this->wizardObj->template->getPageType() != Page::PAGE_TYPE_BLOG)
 		));
@@ -96,10 +96,10 @@ class TemplateList extends HTMLList{
 
 
 		$html = array();
-		$html[] = '<a class="btn btn-default btn-sm" href="'.htmlspecialchars(SOY2PageController::createLink("Template.Create").'?edit&id='.$key, ENT_QUOTES, "UTF-8").'">'.htmlspecialchars(CMSMessageManager::get("SOYCMS_EDIT"), ENT_QUOTES, "UTF-8").'</a>';
+		$html[] = '<a class="btn btn-info btn-sm" href="'.htmlspecialchars(SOY2PageController::createLink("Template.Create").'?edit&id='.$key, ENT_QUOTES, "UTF-8").'">'.htmlspecialchars(CMSMessageManager::get("SOYCMS_EDIT"), ENT_QUOTES, "UTF-8").'</a>';
 
 		if($this->template->getPageType() != Page::PAGE_TYPE_BLOG){
-			$html[] = '<a class="btn btn-default btn-sm" href="'.htmlspecialchars(SOY2PageController::createLink("Template.Create").'?delete&id='.$key, ENT_QUOTES, "UTF-8").'">'.htmlspecialchars(CMSMessageManager::get("SOYCMS_DELETE"), ENT_QUOTES, "UTF-8").'</a>';
+			$html[] = '<a class="btn btn-danger btn-sm" href="'.htmlspecialchars(SOY2PageController::createLink("Template.Create").'?delete&id='.$key, ENT_QUOTES, "UTF-8").'">'.htmlspecialchars(CMSMessageManager::get("SOYCMS_DELETE"), ENT_QUOTES, "UTF-8").'</a>';
 		}
 
 		$this->createAdd("operation","HTMLLabel",array(

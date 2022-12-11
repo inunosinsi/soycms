@@ -11,7 +11,7 @@ class IndexPage extends CMSWebPageBase{
 	function doPost(){
 
 		if(soy2_check_token()){
-			$contentPage = $this->getContentPage();
+			$contentPage = self::_getContentPage();
 
 			if(isset($_GET["next"])){
 				if($contentPage->checkNext()){
@@ -38,7 +38,7 @@ class IndexPage extends CMSWebPageBase{
 			}
 
 			//データを保存
-			$this->saveWizardObject($contentPage->getWizardObj());
+			self::_saveWizardObject($contentPage->getWizardObj());
 		}
 
 		$this->jump("Template.Create");
@@ -49,23 +49,23 @@ class IndexPage extends CMSWebPageBase{
 
 		parent::__construct();
 
-		$contentPage = $this->getContentPage();
+		$contentPage = self::_getContentPage();
 
-		$this->createAdd("next_link", "HTMLLink", array(
+		$this->addLink("next_link", array(
 			"link" => "javascript:void(0);",
 			"onclick" => "$('#main_form').attr('action', '" . SOY2PageController::createLink("Template.Create") . "?next'); $('#main_form_submit_button').click();",
 			"text" => $contentPage->getNextString(),
 			"visible" => strlen($contentPage->getNextString()),
 		));
 
-		$this->createAdd("prev_link", "HTMLLink", array(
+		$this->addLink("prev_link", array(
 			"link" => "javascript:void(0);",
 			"onclick" => "$('#main_form').attr('action', '" . SOY2PageController::createLink("Template.Create") . "?back'); $('#main_form_submit_button').click();",
 			"text" => $contentPage->getBackString(),
 			"visible" => strlen($contentPage->getBackString()),
 		));
 
-		$this->createAdd("end_link", "HTMLLink", array(
+		$this->addLink("end_link", array(
 			"link" => "javascript:void(0);",
 			"onclick" => "if(confirm('" . CMSMessageManager::get("SOYCMS_TEMPLATE_CONFIRM_EXIT_CREATION") . "')){\$('#main_form').attr('action', '" . SOY2PageController::createLink("Template.Create") . "?end'); $('#main_form_submit_button').click();}",
 			"text" => CMSMessageManager::get("SOYCMS_TEMPLATE_CANCEL"),
@@ -78,19 +78,19 @@ class IndexPage extends CMSWebPageBase{
 
 		$this->add("content",$contentPage);
 
-		$this->createAdd("main_form","HTMLForm");
+		$this->addForm("main_form");
 
 		$this->addLabel("stage_title", array(
 				"text" => $contentPage->getStageTitle(),
 		));
 
-		$this->addEditorJS();
-		$this->addFileManagerJS();
+		self::_addEditorJS();
+		self::_addFileManagerJS();
 	}
 
-	private function addEditorJS(){
+	private function _addEditorJS(){
 
-		$currentStage = $this->detectStages();
+		$currentStage = self::_detectStages();
 
 		$this->addModel("PanelManager.js",array(
 				"src" => SOY2PageController::createRelativeLink("./js/cms/PanelManager.js"),
@@ -119,8 +119,8 @@ class IndexPage extends CMSWebPageBase{
 		));
 	}
 
-	private function addFileManagerJS(){
-		$currentStage = $this->detectStages();
+	private function _addFileManagerJS(){
+		$currentStage = self::_detectStages();
 
 		$this->createAdd("add_file_list_url","HTMLScript",array(
 				"type" => "text/JavaScript",
@@ -134,12 +134,12 @@ class IndexPage extends CMSWebPageBase{
 
 	}
 
-	private function getContentPage(){
+	private function _getContentPage(){
 
-		$wizObj = $this->getWizardObject();
-
+		$wizObj = self::_getWizardObject();
+		
 		if(!empty($wizObj) && @!is_null($wizObj->template)){
-			$currentStage = $this->detectStages();
+			$currentStage = self::_detectStages();
 		}else{
 			$currentStage = "StartStage";
 		}
@@ -154,35 +154,25 @@ class IndexPage extends CMSWebPageBase{
 		}catch(Exception $e){
 			$page = $this->create("content","Template.Create._stage.EndStage");
 		}
-
+		
 		$page->setWizardObj($wizObj);
 
 		return $page;
 	}
 
-	private function detectStages(){
+	private function _detectStages(){
 		$sessionStage = SOY2ActionSession::getUserSession()->getAttribute("Template.Create.WizardCurrentStage");
-
-		if(is_null($sessionStage)){
-			return "StartStage";
-		}else{
-			return $sessionStage;
-		}
+		return (is_string($sessionStage)) ? $sessionStage : "StartStage";
 	}
 
-	private function getWizardObject(){
+	private function _getWizardObject(){
 		$wizObj = SOY2ActionSession::getUserSession()->getAttribute("Template.Create.WizardObject");
-
-		if(is_null($wizObj)){
-			$wizObj = new StdClass();
-		}else{
-			$wizObj = unserialize($wizObj);
-		}
-
+		$wizObj = (isset($wizObj)) ? @unserialize($wizObj) : new StdClass();
+		if(is_null($wizObj)) $wizObj = new StdClass();
 		return $wizObj;
 	}
 
-	private function saveWizardObject($wizObj){
+	private function _saveWizardObject($wizObj){
 		SOY2ActionSession::getUserSession()->setAttribute("Template.Create.WizardObject",serialize($wizObj));
 	}
 }
