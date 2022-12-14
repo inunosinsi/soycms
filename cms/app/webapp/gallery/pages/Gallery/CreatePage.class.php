@@ -8,7 +8,7 @@ class CreatePage extends WebPage{
 			$dao = SOY2DAOFactory::create("SOYGallery_GalleryDAO");
 			$gallery = SOY2::cast("SOYGallery_Gallery", $_POST["Gallery"]);
 
-			$gallery = soygallery_set_gallery_config($gallery);
+			soygallery_set_gallery_config($gallery);
 			try{
 				$id = $dao->insert($gallery);
 			}catch(Exception $e){
