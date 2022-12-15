@@ -3,16 +3,26 @@
  * ブログ記事JSON出力プラグイン(output_blog_entries_json)連携用
  */
 function soycms_json_entries($html, $htmlObj){
+	if(!file_exists("soycms_module_func_get_endpoint")) SOY2::import("site_include.plugin.output_blog_entries_json.func.fn", ".php");
+	$endpoints = soycms_module_func_get_endpoints_by_comment($html, 1); //コメント形式 oje:endpoint
+
+	// HTMLから<!-- oje:endpoint="***" -->を消しておく
+	if(count($endpoints)){
+		preg_match_all('/<!--.*oje:endpoint=".*?".*?-->/', $html, $tmps);
+		if(isset($tmps[0]) && count($tmps[0])){
+			foreach($tmps[0] as $endpointComment){
+				$html = str_replace($endpointComment, "", $html);
+			}
+		}
+	}
+
 	$obj = $htmlObj->create("soycms_json_entries", "HTMLTemplatePage", array(
 		"arguments" => array("soycms_json_entries", $html)
 	));
 
-	if(!file_exists("soycms_module_func_get_endpoint")) SOY2::import("site_include.plugin.output_blog_entries_json.func.fn", ".php");
-
 	$entries = array();
 	$total = 0;
-
-	$endpoints = soycms_module_func_get_endpoints_by_comment($html, 1); //コメント形式 oje:endpoint
+	
 	$endpoint = (count($endpoints) > 0) ? $endpoints[0] : soycms_module_func_get_endpoint($html); // hidden形式(古い仕様)
 	unset($endpoints);
 	if(strlen($endpoint)){
