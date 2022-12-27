@@ -15,11 +15,11 @@ class AccessibilityPlugin{
 
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
-			"name"=>"ユーザ補助プラグイン",
+			"name"=>"ユーザー補助プラグイン",
 			"type" => Plugin::TYPE_OPTIMIZE,
 			"description"=>"ユーザ補助プラグイン対策でimgタグに自動でaltを挿入する",
 			"author"=>"齋藤毅",
-			"url"=>"",
+			"url"=>"https://saitodev.co/article/4907",
 			"mail"=>"tsuyoshi@saitodev.co",
 			"version"=>"0.1"
 		));
