@@ -7311,7 +7311,7 @@ class HTMLTemplatePage extends HTMLPage{
 	function getPageParam(){
 		return $this->_id;
 	}
-	function getCacheFilePath($extension = ".html.php"){
+	function getCacheFilePath(string $extension = ".html.php"){
 		return SOY2HTMLConfig::CacheDir()
 			.SOY2HTMLConfig::getOption("cache_prefix") .
 			"cache_" . 'template' .'_'. $this->getId() .'_'. $this->getParentPageParam()
