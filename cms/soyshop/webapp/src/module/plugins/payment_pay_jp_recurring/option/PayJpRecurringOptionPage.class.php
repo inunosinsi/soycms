@@ -8,7 +8,7 @@ class PayJpRecurringOptionPage extends WebPage {
 	function __construct(){
 		SOY2::import("module.plugins.payment_pay_jp_recurring.util.PayJpRecurringUtil");
 		if(isset($_GET["error"])){
-			$errorCode = PayJpRecurringUtil::get("errorCode");
+			$errorCode = (string)PayJpRecurringUtil::get("errorCode");
 			$this->errorMessage = PayJpRecurringUtil::getErrorText($errorCode);
 			PayJpRecurringUtil::clear("errorCode");
 		}

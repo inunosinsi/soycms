@@ -8,7 +8,7 @@ class PayJpOptionPage extends WebPage {
 	function __construct(){
 		SOY2::import("module.plugins.payment_pay_jp.util.PayJpUtil");
 		if(isset($_GET["error"])){
-			$errorCode = PayJpUtil::get("errorCode");
+			$errorCode = (string)PayJpUtil::get("errorCode");
 			$this->errorMessage = PayJpUtil::getErrorText($errorCode);
 			PayJpUtil::clear("errorCode");
 		}
