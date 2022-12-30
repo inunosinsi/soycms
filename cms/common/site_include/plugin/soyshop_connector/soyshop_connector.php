@@ -174,6 +174,7 @@ class SOYCMS_SOYShopPageModulePlugin extends PluginBase{
 			SOY2::import("logic.plugin.SOYShopPlugin");
 			SOY2::import("logic.cart.CartLogic");
 			SOY2::import("logic.mypage.MyPageLogic");
+			SOY2::import("util.SOYShopPluginUtil");
 			SOY2::imports("base.*");
 			SOY2::imports("base.func.*");
 			SOY2::imports("domain.user.*");
