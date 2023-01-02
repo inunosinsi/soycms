@@ -82,6 +82,11 @@ class IndexPage extends CMSWebPageBase{
 			"visible" => UserInfoUtil::isDefaultUser(),
 		));
 
+		$this->addLink("ipconfig", array(
+			"link" => SOY2PageController::createLink("Administrator.Ip"),
+			"visible" => UserInfoUtil::isDefaultUser(),
+		));
+
 		//ページャ
 		//ページャーの作成
 		$start = $offset + 1;

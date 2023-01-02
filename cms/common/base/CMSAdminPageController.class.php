@@ -1,6 +1,18 @@
 <?php
 
 class CMSAdminPageController extends SOY2PageController{
+
+	/**
+	 * IPアドレスによるアクセス制限の時の404 NotFound
+	 * @return string
+	 */
+	static function outputOnNotFound(){
+		header("HTTP/1.1 404 Not Found");
+		header("Content-Type: text/html; charset=utf-8");
+		echo "404 Not Found.\n";
+		exit;
+	}
+
 	function onNotFound(string $path="", array $args=array(), string $classPath=""){
 		/**
 		 * ページがなかったらr=[REQUEST_URI]としてルートに転送

@@ -241,14 +241,9 @@
 					<table class="table table-striped">
 						<tr class="no_example">
 							<th>テストメールの送信先</th>
-							<td>
-								<input type="text" value="" id="test_mail_address" soy:id="test_mail_address" size="80" />
-							</td>
-						</tr>
-						<tr>
-							<td>&nbsp;</td>
-							<td class="button">
-								<input id="send_button" name="test" type="submit" value="テスト送信" onclick="return confirm_test_send();" />
+							<td class="form-inline">
+								<input type="text" class="form-control" id="test_mail_address" soy:id="test_mail_address" size="80" />
+								<input id="send_button" class="btn btn-primary" name="test" type="submit" value="テスト送信" onclick="return confirm_test_send();" />
 							</td>
 						</tr>
 					</table>
