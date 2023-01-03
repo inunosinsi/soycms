@@ -3,6 +3,8 @@ if(!defined("ACCESS_RESTRICTIONS_CONFIG_DIR")) define("ACCESS_RESTRICTIONS_CONFI
 
 class CMSAccessRestrictionsUtil {
 
+	const UNLOCK_KEY = "unlock";
+
 	const MODE_PERMANENT = 0;	//永続化設定
 	const MODE_TEMPORARY = 1;	//一時設定
 	const LABEL_PERMANENT = "permanent";

@@ -11,7 +11,7 @@ if(!CMSAccessRestrictionsUtil::checkAllowIpAddress()){
 	if(!defined("SOYCMS_CMS_NAME")) define("SOYCMS_CMS_NAME", "SOY CMS");
 
 	// IPアドレスの一時設定
-	if(isset($_GET["unlock"])) CMSAccessRestrictionsUtil::sendMailWithToken($_GET["unlock"]);
+	if(isset($_GET[CMSAccessRestrictionsUtil::UNLOCK_KEY])) CMSAccessRestrictionsUtil::sendMailWithToken($_GET[CMSAccessRestrictionsUtil::UNLOCK_KEY]);
 
 	// トークンからIPアドレスの一時設定を行う
 	if(isset($_GET) && count($_GET) && CMSAccessRestrictionsUtil::checkIsToken($_GET)){

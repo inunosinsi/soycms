@@ -44,6 +44,10 @@
 						<div class="panel-heading">IPアドレスの設定</div>
 						<div class="panel-body">
 							<div class="alert alert-danger"  soy:display="no_valid">パスワードリマインダーを有効にしてください。</div>
+							<div class="alert alert-danger" role="alert" soy:display="no_auth">
+								IPアドレス設定のディレクトリの書き込み権限がありません。<br>
+								<!-- soy:id="run_user" /--> が <!-- soy:id="soycms_ip_config_dir" /--> に書き込めるようにしてください。
+							</div>
 							<div class="alert alert-info">
 								管理画面のアクセスを許可するIPアドレスの設定を行います。<br>
 								IPアドレスの設定を行う前に<a href="https://saitodev.co/soycms/soycms/tutorial/142" target="_blank" rel="noopener" style="text-decoration:underline;font-weight:bold;">IPアドレスによる管理画面のアクセス制限の設定 - SOY CMSを使ってみよう</a>をご確認ください。

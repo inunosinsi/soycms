@@ -32,10 +32,23 @@ class IpPage extends WebPage{
 		DisplayPlugin::toggle("valid", $isValid);
 		DisplayPlugin::toggle("no_valid", !$isValid);
 
+		self::_buildNotice();
 		self::_buildForm();
 
 		$this->addLabel("remote_addr", array(
 			"text" => $_SERVER["REMOTE_ADDR"]
+		));
+	}
+
+	private function _buildNotice(){
+		$dir = SOY2::RootDir() . "config/ip/";
+		DisplayPlugin::toggle("no_auth", !is_writable($dir));
+
+		$this->addLabel("soycms_ip_config_dir", array(
+			"text" => $dir
+		));
+		$this->addLabel("run_user", array(
+			"text" => defined("SOYCMS_PHP_CGI_MODE") && SOYCMS_PHP_CGI_MODE ? fileowner($_SERVER["SCRIPT_FILENAME"]) : "Apacheの実行ユーザー"
 		));
 	}
 
