@@ -33,6 +33,8 @@ function x_get_properties_by_img_tag(string $imgTag){
 		}
 	}
 
+	// @ToDo javascript用の属性を見かけたら対応
+
 	return $list;
 }
 
@@ -71,8 +73,43 @@ function x_rebuild_image_tag(string $oldTag, array $props){
 	if(!is_array($props) || !count($props)) return $oldTag;
 	$newTag = "<img";
 	foreach($props as $idx => $v){
-		$newTag .= " " . $idx . "=\"" . $v . "\"";
+		if(strlen($v)){
+			$newTag .= " " . $idx . "=\"" . $v . "\"";
+		}else{
+			$newTag .= " " . $idx;
+		}	
 	}
 	$newTag .= ">";
 	return $newTag;
+}
+
+/**
+ * ファイルパスから拡張子を取得
+ * @param string
+ * @return string
+ */
+function x_get_extension_by_filepath(string $src){
+	if(is_bool(strpos($src, "."))) return "";
+	$ext = mb_strtolower(substr($src, strrpos($src, ".") + 1));
+	switch($ext){
+		case "jpg":
+		case "jpeg":
+			return "jpg";
+		case "png":
+			return "png";
+		case "gif":
+			return "gif";
+		case "webp":
+			return "webp";
+		default:
+			return "";
+	}
+}
+
+/**
+ * @param string, string, string
+ * @return string
+ */
+function x_convert_file_extension(string $src, string $new="webp"){
+	return substr($src, 0, strrpos($src, ".")).".".$new;
 }
