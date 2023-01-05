@@ -80,7 +80,7 @@ class BuildMetaLogic extends SOY2LogicBase {
 						return "blog";
 				}
 			default:
-				$uri = $obj->page->getUri();
+				$uri = (string)$obj->page->getUri();
 				if(!strlen($uri) || strpos($uri, "index") === 0){
 					return "website";
 				}else{
@@ -89,10 +89,14 @@ class BuildMetaLogic extends SOY2LogicBase {
 		}
 	}
 
+	/**
+	 * @param int
+	 * @return string
+	 */
 	public static function _getImagePathByEntryId(int $entryId=0){
 		if($entryId === 0) return "";
 		$attr = ButtonSocialUtil::getAttr($entryId);
-		if(strlen($attr->getValue())){
+		if(strlen((string)$attr->getValue())){
 			$http = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") ? "https" : "http";
 			return $http . "://" . str_replace("//", "/", $_SERVER["HTTP_HOST"]. "/" . $attr->getValue());
 		}

@@ -32,7 +32,7 @@ class ButtonSocialPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/soycms/",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.5.1"
+			"version"=>"1.5.2"
 		));
 
 		CMSPlugin::addPluginConfigPage($this->getId(),array(
