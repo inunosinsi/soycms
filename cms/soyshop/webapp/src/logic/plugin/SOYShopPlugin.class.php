@@ -22,7 +22,7 @@ class SOYShopPlugin extends SOY2Plugin{
 
         if(!$module){
             $modulelist = self::getActiveModules();
-
+            
             foreach($modulelist as $module){
                 if($module->getIsActive()){
                     $module->load($extensionId);
@@ -34,7 +34,7 @@ class SOYShopPlugin extends SOY2Plugin{
         }
     }
 
-    public static function active($id){
+    public static function active(string $id){
         SOYShopPlugin::$active[] = $id;
     }
 
@@ -54,7 +54,7 @@ class SOYShopPlugin extends SOY2Plugin{
         $dir = dirname(__FILE__) . "/extensions/";
         $scandir = scandir($dir);
         foreach($scandir as $name){
-            if($name[0] == ".")continue;
+            if($name[0] == ".") continue;
 
             //末尾の.phpを削る
             $id = substr($name,0,strlen($name)-4);

@@ -10,7 +10,8 @@ class HTMLCacheConfigPage extends WebPage{
 
 	function doPost(){
 		if(soy2_check_token()){
-			HTMLCacheUtil::savePageDisplayConfig($_POST["display_config"]);
+			$cnfs = (isset($_POST["display_config"]) && is_array($_POST["display_config"])) ? $_POST["display_config"] : array();
+			HTMLCacheUtil::savePageDisplayConfig($cnfs);
 			$this->configObj->redirect("updated");
 		}
 	}
