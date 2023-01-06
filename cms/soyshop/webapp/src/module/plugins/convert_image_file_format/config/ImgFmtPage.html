@@ -1,0 +1,35 @@
+<div class="alert alert-success" soy:display="updated">変更しました</div>
+
+<!-- soy:display="unusable" -->
+<div class="alert alert-danger">現在利用中のPHPのバージョンでは当プラグインは対応していません。</div>
+<!-- /soy:display="unusable" -->
+
+<!-- soy:display="usable" -->
+<form soy:id="form">
+	<div class="form-group">
+		<label>画像フォーマットの設定</label>
+		<div class="form-inline">
+			<ul>
+				<!-- soy:display="webp" --><input type="radio" soy:id="webp"><!-- /soy:display="webp" -->
+				<!-- soy:display="avif" --><input type="radio" soy:id="avif"><!-- /soy:display="avif" -->
+			</ul>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label>ページ別設定</label>
+		<div class="alert alert-info">画像フォーマットを変換するページを設定します。</div>
+		<ul>
+			<!-- soy:id="page_list" -->
+			<li><input type="checkbox" soy:id="page"></li>
+			<!-- /soy:id="page_list" -->
+			<li><input type="checkbox" soy:id="cart_page"></li>
+			<li><input type="checkbox" soy:id="mypage_page"></li>
+		</ul>
+	</div>
+
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="変更">
+	</div>
+</form>
+<!-- /soy:display="usable" -->
