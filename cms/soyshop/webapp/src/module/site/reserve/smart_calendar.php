@@ -99,7 +99,7 @@ function soyshop_smart_calendar($html, $page){
 	if($itemId > 0){
 		$itemIdList = array($itemId);
 
-		$obj->add("item_name", array(
+		$obj->addLabel("item_name", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"text" => soyshop_get_item_object($itemId)->getOpenItemName()
 		));
