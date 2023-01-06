@@ -112,7 +112,7 @@ class ConvertImageAvifPlugin {
 								}
 
 								if(!$img instanceof GdImage) continue;
-								imagewebp($img, $new);
+								imageavif($img, $new);
 							}
 
 							// webpファイルの生成に失敗した場合は処理を飛ばす
