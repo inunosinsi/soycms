@@ -37,7 +37,7 @@ class ConvertImageFileFormatOnOutput extends SOYShopSiteOnOutputAction{
 						$props = z_get_properties_by_img_tag($imgTag);
 						if(count($props) && isset($props["src"])){
 							//ファイルが存在しているか？
-							$filepath = $_SERVER["DOCUMENT_ROOT"].$props["src"];
+							$filepath = z_build_filepath($props["src"]);
 							if(!file_exists($filepath)) continue;
 
 							// WebPに変換する

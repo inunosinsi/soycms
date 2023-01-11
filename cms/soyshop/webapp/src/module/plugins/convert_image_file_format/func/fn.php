@@ -40,14 +40,56 @@ function z_get_properties_by_img_tag(string $imgTag){
 
 /**
  * @param string
+ * @return string
+ */
+function z_build_filepath(string $src){
+	// httpから始まる絶対パスの場合 → スラッシュから始まる絶対パスに変換
+	$res = strpos($src, "http");
+	if(is_numeric($res) && $res === 0){
+		$src = substr($src, strpos($src, "://")+3);
+		$src = substr($src, strpos($src, "/"));
+	}
+
+	// 相対パスで最初が..の場合 → スラッシュから始まる絶対パスに変換
+	$res = strpos($src, "..");
+	if(is_numeric($res) && $res === 0){
+		$dirs = explode("/", trim($_SERVER["REQUEST_URI"], "/"));
+		$dirCnt = count($dirs);
+		
+		$i = 1;
+		for(;;){
+			$res = strpos($src, "../");
+			if(is_bool($res)) break;
+
+			//１つ上の階層
+			$i++;
+			if(!isset($dirs[$dirCnt-$i])) break;
+
+			$srcDirs = explode("/", $src);
+			for($j = count($srcDirs)-1; $j >=0; $j--){
+				if($srcDirs[$j] == ".."){
+					$srcDirs[$j] = $dirs[$dirCnt-$i];
+				}
+			}
+			$src = implode("/", $srcDirs);
+		}
+		$src = "/".$src;
+	}
+	
+	// スラッシュから始まる絶対パスの場合
+	$res = strpos($src, "/");
+	if(is_numeric($res) && $res === 0) return $_SERVER["DOCUMENT_ROOT"] . $src;
+
+	$src = soy2_realpath($src);
+	return (is_string($src)) ? $src : "";
+}
+
+/**
+ * @param string
  * @return array
  */
 function z_get_image_info_by_filepath(string $path){
-	if(strpos($path, "/") !== 0){
-		// @ToDo スラッシュから始まらない場合はドメインを削除
-	}
-
-	$path = $_SERVER["DOCUMENT_ROOT"] . $path;
+	$path = z_build_filepath($path);
 	if(!file_exists($path)) return array();
 
 	$info = getimagesize($path);
