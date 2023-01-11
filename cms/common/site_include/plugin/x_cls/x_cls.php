@@ -29,7 +29,7 @@ class CLSPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.6"
+			"version"=>"0.7"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -92,7 +92,7 @@ class CLSPlugin{
 						if(count($props) && isset($props["src"])){
 							//画像のサイズを取得
 							$info = x_get_image_info_by_filepath($props["src"]);
-
+							
 							$newTag = "";
 
 							// pictureモード

@@ -21,7 +21,7 @@ class ConvertImageWebpPlugin {
 			"author"=> "齋藤毅",
 			"url"=> "https://saitodev.co/article/4918",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.0"
+			"version"=>"1.1"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -84,7 +84,7 @@ class ConvertImageWebpPlugin {
 						$props = x_get_properties_by_img_tag($imgTag);
 						if(count($props) && isset($props["src"])){
 							//ファイルが存在しているか？
-							$filepath = $_SERVER["DOCUMENT_ROOT"].$props["src"];
+							$filepath = x_build_filepath($props["src"]);
 							if(!file_exists($filepath)) continue;
 
 							// WebPに変換する
