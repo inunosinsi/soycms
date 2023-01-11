@@ -18,7 +18,7 @@ class CustomSearchFieldChildListSearch extends SOYShopSearchModule{
 	/**
 	 * @return array<soyshop_item>
 	 */
-	function getItems($current, $limit){ 
+	function getItems(int $current, int $limit){ 
 		self::prepare();
 		return $this->searchLogic->search($this->getPage(), $current, (int)$limit);
 	}

@@ -69,7 +69,7 @@ function soyshop_recommend_items($html, $htmlObj){
 			if(count($res)){
 				foreach($res as $map){
 					if(!isset($map["id"])) continue;
-					$items[$map["id"]] = $dao->getObject($map);
+					$items[$map["id"]] = soyshop_set_item_object($dao->getObject($map));
 				}
 			}
 		}

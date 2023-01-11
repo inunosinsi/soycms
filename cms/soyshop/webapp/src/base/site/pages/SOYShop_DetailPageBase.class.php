@@ -17,10 +17,8 @@ class SOYShop_DetailPageBase extends SOYShopPageBase{
 
 		$alias = implode("/", $args);
 
-		$itemDAO = soyshop_get_hash_table_dao("item");
-		try{
-			$item = $itemDAO->getByAlias($alias);
-		}catch(Exception $e){
+		$item = soyshop_get_item_object_by_alias($alias);
+		if(!is_numeric($item->getId()) || (int)$item->getId() === 0){
 			$this->error =  new Exception("The specified product cannot be found.");
 			return;
 		}

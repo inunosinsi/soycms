@@ -47,6 +47,10 @@ class SOYShop_ListPageBase extends SOYShopPageBase{
 
 		$this->setTotal($total);
 
+		foreach($items as $item){
+			soyshop_set_item_object($item);
+		}
+
 		if(!defined("SOYSHOP_PAGE_TYPE")) define("SOYSHOP_PAGE_TYPE", get_class($obj));
 
 		SOYShopPlugin::load("soyshop.item.customfield");

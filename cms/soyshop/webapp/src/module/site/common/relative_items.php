@@ -25,11 +25,7 @@ function soyshop_relative_items($html, $htmlObj){
 			//商品詳細表示プラグインでも関連商品を取得できるようにした
 		}else{
 			$alias = substr($_SERVER["REDIRECT_URL"], strrpos($_SERVER["REDIRECT_URL"], "/") + 1);
-			try{
-				$item = soyshop_get_hash_table_dao("item")->getByAlias($alias);
-			}catch(Exception $e){
-				$item = new SOYShop_Item();
-			}
+			$item = soyshop_get_item_object_by_alias($alias);
 		}
 
 		SOY2::import("module.plugins.common_relative_item.util.RelativeItemUtil");
@@ -83,8 +79,10 @@ function soyshop_relative_items($html, $htmlObj){
 					$res = array();
 				}
 
-				if(count($res)) foreach($res as $v){
-					$items[] = $dao->getObject($v);
+				if(count($res)) {
+					foreach($res as $v){
+						$items[] = soyshop_set_item_object($dao->getObject($v));
+					}
 				}
 
 				// 管理画面で追加した順

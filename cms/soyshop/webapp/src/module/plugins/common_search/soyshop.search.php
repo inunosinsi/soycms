@@ -23,7 +23,7 @@ class SOYShopCommonSearchModule extends SOYShopSearchModule{
 	/**
 	 * @return array<soyshop_item>
 	 */
-	function getItems($current,$limit){
+	function getItems(int $current, int $limit){
 
 		$query = (isset($_REQUEST["q"])) ? $_REQUEST["q"] : "";
 		$query = mb_convert_encoding($query, "UTF-8", "auto");
@@ -56,8 +56,8 @@ class SOYShopCommonSearchModule extends SOYShopSearchModule{
 	 * @return int totalPageCount
 	 * @param string nameQuery
 	 */
-	function totalCountByName($name){
-		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+	function totalCountByName(string $name){
+		$dao = soyshop_get_hash_table_dao("item");
 		$sql = new SOY2DAO_Query();
 		$binds = array();
 
@@ -87,9 +87,9 @@ class SOYShopCommonSearchModule extends SOYShopSearchModule{
 	 * @param string nameQuery
 	 * 商品名の検索
 	 */
-	function searchByName($current, $limit, $name){
+	function searchByName(int $current, int $limit, string $name){
 
-		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+		$dao = soyshop_get_hash_table_dao("item");
 		$sql = new SOY2DAO_Query();
 		$binds = array();
 		$sql->prefix = "select";
@@ -118,17 +118,22 @@ class SOYShopCommonSearchModule extends SOYShopSearchModule{
 			return array();
 		}
 
-		$items = array();
+		$itemIds = array();
+		foreach($result as $itemArr){
+			if(!isset($itemArr["id"]) || !is_numeric($itemArr["id"])) continue;
+			$itemIds[] = (int)$itemArr["id"];
+		}
+		unset($result);
 
 		try{
-			$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-
-			foreach($result as $key => $item){
-				$id = $item["id"];
-				$items[] = $itemDAO->getById($id);
-			}
+			$res = $dao->executeQuery("SELECT * FROM soyshop_item WHERE id IN (".implode(",", $itemIds) . ")");
 		}catch(Exception $e){
-			//
+			$res = array();
+		}
+
+		$items = array();
+		foreach($res as $v){
+			$items[] = soyshop_set_item_object($dao->getObject($v));
 		}
 		return $items;
 	}

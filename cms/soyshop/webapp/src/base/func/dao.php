@@ -167,6 +167,12 @@ function soyshop_get_attribute_value($v=null, $dataType=""){
 }
 
 /** 商品IDから商品オブジェクト **/
+function soyshop_set_item_object(SOYShop_Item $item, int $itemId=0){
+	$itemId = (is_numeric($item->getId())) ? (int)$item->getId() : $itemId;
+	if($itemId <= 0) return $item;
+	$GLOBALS["soyshop_item_hash_table"][soyshop_get_hash_index((string)$itemId, __FUNCTION__)] = $item;
+	return $item;
+}
 function soyshop_get_item_object(int $itemId){
 	$dao = soyshop_get_hash_table_dao(__FUNCTION__);
 	if((int)$itemId <= 0) return new SOYShop_Item();
@@ -186,15 +192,25 @@ function soyshop_get_item_object_by_code(string $code){
 	$dao = soyshop_get_hash_table_dao(__FUNCTION__);
 	if(!strlen($code)) return new SOYShop_Item();
 
+	$idx = soyshop_get_hash_index("item".(string)$code, __FUNCTION__);
 	try{
-		$item = $dao->getByCode($code);
+		$res = $dao->executeQuery("SELECT id FROM soyshop_item WHERE item_code = :code LIMIT 1;", array(":code" => $code));
 	}catch(Exception $e){
-		return new SOYShop_Item();
+		$res = array();
 	}
+	return (isset($res[0]["id"]) && is_numeric($res[0]["id"])) ? soyshop_get_item_object((int)$res[0]["id"]) : new SOYShop_Item();
+}
 
-	$idx = soyshop_get_hash_index((string)$item->getId(), __FUNCTION__);
-	if(!isset($GLOBALS["soyshop_item_hash_table"][$idx])) $GLOBALS["soyshop_item_hash_table"][$idx] = $item;
-	return $item;
+function soyshop_get_item_object_by_alias(string $alias){
+	$dao = soyshop_get_hash_table_dao(__FUNCTION__);
+	if(!strlen($alias)) return new SOYShop_Item();
+
+	try{
+		$res = $dao->executeQuery("SELECT id FROM soyshop_item WHERE item_alias = :alias LIMIT 1;", array(":alias" => $alias));
+	}catch(Exception $e){
+		$res = array();
+	}
+	return (isset($res[0]["id"]) && is_numeric($res[0]["id"])) ? soyshop_get_item_object((int)$res[0]["id"]) : new SOYShop_Item();
 }
 
 /** 商品IDとカスタムフィールドのIDから商品属性のオブジェクトを取得する **/

@@ -16,7 +16,7 @@ class SOYShopSearchModule implements SOY2PluginAction{
 	/**
 	 * @return array<SOYShop_Item>
 	 */
-	function getItems($current, $limit){ return array(); }
+	function getItems(int $current, int $limit){ return array(); }
 
 	/**
 	 * @return number
@@ -40,9 +40,8 @@ class SOYShopSearchModuleDelegateAction implements SOY2PluginDelegateAction{
 	private $_action = null;
 
 	function run($extentionId, $moduleId, SOY2PluginAction $action){
-
-		if(!$action instanceof SOYShopSearchModule)return;
-		if(is_null($this->page))throw new Exception("SOYShop_SearchPage is null");
+		if(!$action instanceof SOYShopSearchModule) return;
+		if(is_null($this->page)) throw new Exception("SOYShop_SearchPage is null");
 
 		$action->setPage($this->page);
 
@@ -89,8 +88,8 @@ class SOYShopSearchModuleDelegateAction implements SOY2PluginDelegateAction{
 	/**
 	 * @return array<SOYShop_Item?
 	 */
-	function getItems($current,$limit){
-		return ($this->_action) ? $this->_action->getItems($current,$limit) : array();
+	function getItems(int $current, int $limit){
+		return ($this->_action) ? $this->_action->getItems($current, $limit) : array();
 	}
 
 	/**

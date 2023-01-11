@@ -105,7 +105,7 @@ function soyshop_new_items($html, $htmlObj){
 
 			if(count($res)) {
 				foreach($res as $v){
-					$items[] = $itemDao->getObject($v);
+					$items[] = soyshop_set_item_object($itemDao->getObject($v));
 				}
 			}
 		}

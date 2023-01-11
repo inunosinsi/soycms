@@ -43,7 +43,7 @@ class TagCloudBlockItemLogic extends SOY2LogicBase {
 				":wordId" => $wordId
 			);
 
-            $dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+            $dao = soyshop_get_hash_table_dao("item");
 
             try{
                 $results = $dao->executeQuery($sql, $binds);
@@ -55,7 +55,7 @@ class TagCloudBlockItemLogic extends SOY2LogicBase {
 
             foreach($results as $key => $row){
                 if(isset($row["id"]) && (int)$row["id"]){
-                    $items[$row["id"]] = $dao->getObject($row);
+                    $items[$row["id"]] = soyshop_set_item_object($dao->getObject($row));
                 }
             }
         }

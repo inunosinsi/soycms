@@ -25,7 +25,7 @@ class BuildCustomSearchModule extends SOYShopSearchModule{
 	/**
 	 * @return array<soyshop_item>
 	 */
-	function getItems($current, $limit){
+	function getItems(int $current, int $limit){
 		if(!$this->config){
 			$this->config = CustomSearchCommon::getConfig();
 		}
@@ -222,7 +222,7 @@ class BuildCustomSearchModule extends SOYShopSearchModule{
 
 	private function getMapping(){
 		static $mapping;
-		if(is_null($mapping)) $mapping = = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->getMapping();
+		if(is_null($mapping)) $mapping= SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->getMapping();
 		return $mapping;
 	}
 

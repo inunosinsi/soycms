@@ -25,29 +25,21 @@ class DisplayRankingLogic extends SOY2LogicBase{
 	
 	function getItems(){
 		$ranking = $this->getRanking();
-		
 		if(!count($ranking)) return array();
-		
-		$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		
 		//順位を壊さないように丁寧に一つずつ取得
 		$items = array();
 		foreach($ranking as $itemId){
-			try{
-				$items[] = $itemDao->getById($itemId);
-			}catch(Exception $e){
-				continue;
-			}
+			$item = soyshop_get_item_object($itemId);
+			if(!is_numeric($item->getId()) || (int)$item->getId() === 0) continue;
+			$items[] = $item;
 		}
 		
 		return $items;
 	}
 	
 	function getRanking(){
-		if(!$this->ranking){
-			$this->ranking = $this->rankingDao->getRankingList();
-		}
+		if(!$this->ranking) $this->ranking = $this->rankingDao->getRankingList();
 		return $this->ranking;
 	}
 }
-?>

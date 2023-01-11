@@ -8,7 +8,6 @@ class SearchLogic extends SOY2LogicBase{
 
     function __construct(){
         SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
-        $this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
         SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
     }
 
@@ -34,8 +33,9 @@ class SearchLogic extends SOY2LogicBase{
         $offset = $limit * ($current - 1);
         if($offset > 0) $sql .= " OFFSET " . $offset;
 
+        $dao = soyshop_get_hash_table_dao("item");
         try{
-            $res = $this->itemDao->executeQuery($sql, $this->binds);
+            $res = $dao->executeQuery($sql, $this->binds);
         }catch(Exception $e){
 			return array();
         }
@@ -44,7 +44,7 @@ class SearchLogic extends SOY2LogicBase{
 
         $items = array();
         foreach($res as $v){
-            $items[] = $this->itemDao->getObject($v);
+            $items[] = soyshop_set_item_object($dao->getObject($v));
         }
 
         return $items;
@@ -60,7 +60,7 @@ class SearchLogic extends SOY2LogicBase{
         $sql .= self::buildWhere();    //カウントの時と共通の処理は切り分ける
 
         try{
-            $res = $this->itemDao->executeQuery($sql, $this->binds);
+            $res = soyshop_get_hash_table_dao("item")->executeQuery($sql, $this->binds);
         }catch(Exception $e){
             return 0;
         }
@@ -144,7 +144,7 @@ class SearchLogic extends SOY2LogicBase{
             //カテゴリー
             if(isset($params["item_category"]) && is_numeric($params["item_category"])){
 				//小カテゴリの商品も引っ張ってこれる様にする
-                $maps = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->getMapping();
+                $maps = soyshop_get_hash_table_dao("category")->getMapping();
                 $catId = (int)trim($params["item_category"]);
                 if(isset($maps[$catId])){
                     $this->where["item_category"] = " i.item_category IN (" . implode(",", $maps[$catId]) . ")";
@@ -154,7 +154,7 @@ class SearchLogic extends SOY2LogicBase{
 			//親と子のカテゴリを加味
 			if(isset($params["parent_and_child_category"]) && is_numeric($params["parent_and_child_category"])){
 				//小カテゴリの商品も引っ張ってこれる様にする
-                $maps = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->getMapping();
+                $maps = soyshop_get_hash_table_dao("category")->getMapping();
                 $catId = (int)trim($params["parent_and_child_category"]);
                 if(isset($maps[$catId])){
                     $this->where["parent_and_child_category"] = " (i.item_category IN (" . implode(",", $maps[$catId]) . ") OR i.id IN (SELECT item_type FROM soyshop_item WHERE item_category IN (" . implode(",", $maps[$catId]) . ")))";
@@ -451,8 +451,9 @@ class SearchLogic extends SOY2LogicBase{
         $offset = $limit * ($current - 1);
         if($offset > 0) $sql .= " OFFSET " . $offset;
 
+		$dao = soyshop_get_hash_table_dao("item");
         try{
-            $res = $this->itemDao->executeQuery($sql, $binds);
+            $res = $dao->executeQuery($sql, $binds);
         }catch(Exception $e){
             return array();
         }
@@ -462,7 +463,7 @@ class SearchLogic extends SOY2LogicBase{
         $items = array();
         foreach($res as $obj){
             if(!isset($obj["id"])) continue;
-            $items[] = $this->itemDao->getObject($obj);
+            $items[] = soyshop_set_item_object($dao->getObject($obj));
         }
 
         return $items;
@@ -490,7 +491,7 @@ class SearchLogic extends SOY2LogicBase{
         }
 
         try{
-            $res = $this->itemDao->executeQuery($sql, $binds);
+            $res = soyshop_get_hash_table_dao("item")->executeQuery($sql, $binds);
         }catch(Exception $e){
             return 0;
         }
@@ -524,13 +525,15 @@ class SearchLogic extends SOY2LogicBase{
         $sql .= " ORDER BY i.update_date ";
         $sql .= "LIMIT 1" ;
 
+		$dao = soyshop_get_hash_table_dao("item");
+
         try{
-            $res = $this->itemDao->executeQuery($sql, $binds);
+            $res = $dao->executeQuery($sql, $binds);
         }catch(Exception $e){
 			$res = array();
         }
 
-        return (isset($res[0])) ? $this->itemDao->getObject($res[0]) : new SOYShop_Item();
+        return (isset($res[0])) ? soyshop_set_item_object($dao->getObject($res[0])) : new SOYShop_Item();
     }
 
     private function buildOrderBySQLOnSearchPage(SOYShop_SearchPage $obj){
