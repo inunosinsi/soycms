@@ -1,0 +1,5 @@
+{
+    "require": {
+        "scssphp/scssphp": "^1.3"
+    }
+}

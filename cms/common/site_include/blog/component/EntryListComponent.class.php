@@ -38,9 +38,15 @@ class EntryListComponent extends HTMLList{
 		));
 
 		$link = $this->entryPageUrl . rawurlencode($entry->getAlias()) ;
+		$shortLink = $this->entryPageUrl . $entry->getId();
 
 		$this->createAdd("title","CMSLabel",array(
-			"html"=> "<a href=\"$link\">".htmlspecialchars($entry->getTitle(), ENT_QUOTES, "UTF-8")."</a>",
+			"html"=> "<a href=\"".$link."\">".htmlspecialchars($entry->getTitle(), ENT_QUOTES, "UTF-8")."</a>",
+			"soy2prefix"=>"cms"
+		));
+
+		$this->createAdd("title_with_short_link","CMSLabel",array(
+			"html"=> "<a href=\"".$shortLink."\">".htmlspecialchars($entry->getTitle(), ENT_QUOTES, "UTF-8")."</a>",
 			"soy2prefix"=>"cms"
 		));
 
@@ -104,9 +110,20 @@ class EntryListComponent extends HTMLList{
 			"link" => $link
 		));
 
+		$this->addLink("entry_short_link", array(
+			"soy2prefix" => "cms",
+			"link" => $shortLink
+		));
+
 		$this->addLink("more_link", array(
 			"soy2prefix"=>"cms",
 			"link" => $link ."#more",
+			"visible"=>($moreLen > 0)
+		));
+
+		$this->addLink("more_short_link", array(
+			"soy2prefix"=>"cms",
+			"link" => $shortLink ."#more",
 			"visible"=>($moreLen > 0)
 		));
 

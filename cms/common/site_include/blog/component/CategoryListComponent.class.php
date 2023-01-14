@@ -17,6 +17,11 @@ class CategoryListComponent extends HTMLList{
 			"soy2prefix"=>"cms"
 		));
 
+		$this->addLink("category_short_link", array(
+			"link"=>$this->categoryUrl . $id,
+			"soy2prefix"=>"cms"
+		));
+
 		$this->createAdd("category_name","CMSLabel",array(
 			"text"=>$entry->getBranchName(),
 			"soy2prefix"=>"cms"
