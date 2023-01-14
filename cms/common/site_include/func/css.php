@@ -4,7 +4,7 @@ require 'vendor/autoload.php';
 /**
  * @param string, string
  */
-function soycms_execute_scss_compiler(string $in, string $out){
+function soycms_compile_scss(string $in, string $out){
 	exec(dirname(__FILE__)."/vendor/scssphp/scssphp/bin/pscss < ".$in." > ".$out);
 }
 
