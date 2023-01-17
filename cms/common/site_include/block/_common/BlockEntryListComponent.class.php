@@ -85,6 +85,7 @@ class BlockEntryListComponent extends HTMLList{
 
 		$hTitle = htmlspecialchars($entity->getTitle(), ENT_QUOTES, "UTF-8");
 		$entryUrl = ($entity instanceof Entry) ? self::_getArticleUrl($entity) : "";
+		$entryShortUrl = ($entity instanceof Entry) ? self::_getArticleUrl($entity, true) : "";
 
 		if($this->isStickUrl){
 			$hTitle = "<a href=\"".htmlspecialchars($entryUrl, ENT_QUOTES, "UTF-8")."\">".$hTitle."</a>";
@@ -143,6 +144,11 @@ class BlockEntryListComponent extends HTMLList{
 			"soy2prefix"=>"cms"
 		));
 
+		$this->addLink("entry_short_link", array(
+			"link" => $entryShortUrl,
+			"soy2prefix"=>"cms"
+		));
+
 		//リンクの付かないタイトル 1.2.6～
 		$this->createAdd("title_plain","CMSLabel",array(
 			"text"=> $entity->getTitle(),
@@ -156,9 +162,21 @@ class BlockEntryListComponent extends HTMLList{
 			"visible"=>($moreLen != 0)
 		));
 
+		$this->addLink("more_short_link", array(
+			"soy2prefix"=>"cms",
+			"link" => $entryShortUrl ."#more",
+			"visible"=>($moreLen != 0)
+		));
+
 		$this->addLink("more_link_no_anchor", array(
 			"soy2prefix"=>"cms",
 			"link" => $entryUrl,
+			"visible"=>($moreLen != 0)
+		));
+
+		$this->addLink("more_short_link_no_anchor", array(
+			"soy2prefix"=>"cms",
+			"link" => $entryShortUrl,
 			"visible"=>($moreLen != 0)
 		));
 
@@ -198,7 +216,11 @@ class BlockEntryListComponent extends HTMLList{
 	}
 
 
-	private function _getArticleUrl(Entry $entry){
+	/**
+	 * @param Entry, bool
+	 * @return string
+	 */
+	private function _getArticleUrl(Entry $entry, bool $isShort=false){
 		//プラグインブロックから記事詳細ページのURLを制御する
 		if(isset($GLOBALS["plugin_block_correspondence_table"]) && is_array($GLOBALS["plugin_block_correspondence_table"]) && isset($GLOBALS["plugin_block_correspondence_table"][$entry->getId()])){
 			$blogPageId = $GLOBALS["plugin_block_correspondence_table"][$entry->getId()];
@@ -207,7 +229,11 @@ class BlockEntryListComponent extends HTMLList{
 		}else{
 			$articlePageUrl = $this->articlePageUrl;
 		}
-		return rtrim($articlePageUrl, "/"). "/" . rawurlencode($entry->getAlias());
+		if($isShort){
+			return rtrim($articlePageUrl, "/"). "/" . $entry->getId();
+		}else{
+			return rtrim($articlePageUrl, "/"). "/" . rawurlencode($entry->getAlias());
+		}
 	}
 
 	private function _labelLogic(){

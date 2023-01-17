@@ -51,6 +51,7 @@ class SiteLabeledEntryListComponent extends HTMLList{
 
 		$hTitle = htmlspecialchars($entity->getTitle(), ENT_QUOTES, "UTF-8");
 		$entryUrl = rtrim($this->articlePageUrl, "/") . "/" . rawurlencode($entity->getAlias());
+		$entryShortUrl = rtrim($this->articlePageUrl, "/") . "/" . $entity->getId();
 
 		if($this->isStickUrl){
 			$hTitle = "<a href=\"".htmlspecialchars($entryUrl, ENT_QUOTES, "UTF-8")."\">".$hTitle."</a>";
@@ -108,6 +109,11 @@ class SiteLabeledEntryListComponent extends HTMLList{
 			"soy2prefix"=>"cms"
 		));
 
+		$this->addLink("entry_short_link", array(
+			"link" => $entryShortUrl,
+			"soy2prefix"=>"cms"
+		));
+
 		//リンクの付かないタイトル 1.2.6～
 		$this->createAdd("title_plain","CMSLabel",array(
 			"text"=> $entity->getTitle(),
@@ -121,9 +127,21 @@ class SiteLabeledEntryListComponent extends HTMLList{
 			"visible"=>(strlen($entity->getMore()) != 0)
 		));
 
+		$this->addLink("more_short_link", array(
+			"soy2prefix"=>"cms",
+			"link" => $entryShortUrl ."#more",
+			"visible"=>(strlen($entity->getMore()) != 0)
+		));
+
 		$this->addLink("more_link_no_anchor", array(
 			"soy2prefix"=>"cms",
 			"link" => $entryUrl,
+			"visible"=>(strlen($entity->getMore()) != 0)
+		));
+
+		$this->addLink("more_short_link_no_anchor", array(
+			"soy2prefix"=>"cms",
+			"link" => $entryShortUrl,
 			"visible"=>(strlen($entity->getMore()) != 0)
 		));
 

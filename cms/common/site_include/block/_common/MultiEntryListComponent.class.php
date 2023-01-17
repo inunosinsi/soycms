@@ -58,6 +58,7 @@ class MultiEntryListComponent extends HTMLList{
 
 		$hTitle = htmlspecialchars($entity->getTitle(), ENT_QUOTES, "UTF-8");
 		$entryUrl = ( strlen($url) > 0 ) ? rtrim($url , "/") . "/" . rawurlencode($entity->getAlias()) : "" ;
+		$entryShortUrl = ( strlen($url) > 0 ) ? rtrim($url , "/") . "/" . $entity->getId() : "" ;
 
 		if(strlen($entryUrl) > 0){
 			$hTitle = "<a href=\"".htmlspecialchars($entryUrl, ENT_QUOTES, "UTF-8")."\">".$hTitle."</a>";
@@ -126,6 +127,11 @@ class MultiEntryListComponent extends HTMLList{
 			"soy2prefix" => "cms"
 		));
 
+		$this->addLink("entry_short_link", array(
+			"link" => $entryShortUrl,
+			"soy2prefix" => "cms"
+		));
+
 		//リンクの付かないタイトル 1.2.6～
 		$this->createAdd("title_plain","CMSLabel",array(
 			"text" =>  $entity->getTitle(),
@@ -140,9 +146,21 @@ class MultiEntryListComponent extends HTMLList{
 			"visible"=>(strlen($more) != 0)
 		));
 
+		$this->addLink("more_short_link", array(
+			"soy2prefix" => "cms",
+			"link" => $entryShortUrl ."#more",
+			"visible"=>(strlen($more) != 0)
+		));
+
 		$this->addLink("more_link_no_anchor", array(
 			"soy2prefix" => "cms",
 			"link" => $entryUrl,
+			"visible"=>(strlen($more) != 0)
+		));
+
+		$this->addLink("more_short_link_no_anchor", array(
+			"soy2prefix" => "cms",
+			"link" => $entryShortUrl,
 			"visible"=>(strlen($more) != 0)
 		));
 
