@@ -1,8 +1,8 @@
 <?php
 define("SOYCMS_DB_TYPE","mysql");
-define("SOYCMS_VERSION","3.10.0");
-define("SOYCMS_BUILD","2023-01-15T06:56:28+09:00");
-define("SOYCMS_RAW",20230115065628);	//Apache Ant(JDK17)対策 ここでしか使わない定数
+define("SOYCMS_VERSION","3.10.2");
+define("SOYCMS_BUILD","2023-01-17T14:17:23+09:00");
+define("SOYCMS_RAW",20230117141723);	//Apache Ant(JDK17)対策 ここでしか使わない定数
 define("SOYCMS_BUILD_TIME", mktime(substr(SOYCMS_RAW, 8, 2), substr(SOYCMS_RAW, 10, 2), substr(SOYCMS_RAW, 12), substr(SOYCMS_RAW, 4, 2), substr(SOYCMS_RAW, 6, 2), substr(SOYCMS_RAW, 0, 4)));
 define("SOYCMS_REVISION","45154");
 define("SOYCMS_AUTOLOGIN_EXPIRE", 30);
