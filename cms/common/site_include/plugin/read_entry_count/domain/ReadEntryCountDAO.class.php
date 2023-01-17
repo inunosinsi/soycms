@@ -21,7 +21,12 @@ abstract class ReadEntryCountDAO extends SOY2DAO {
 	 */
 	abstract function get();
 
-	function getRanking($limit = 5){
+	/**
+	 * @final
+	 * @param int
+	 * @return array
+	 */
+	function getRanking(int $limit=5){
 		SOY2::import("domain.cms.Entry");
 		$now = time();
 		
@@ -59,7 +64,11 @@ abstract class ReadEntryCountDAO extends SOY2DAO {
 		return $results;
 	}
 
-	function getRankingByLabelIds(array $labelIds, int $blogPageId, $limit = 5){
+	/**
+	 * @param array, int, int
+	 * @return array
+	 */
+	function getRankingByLabelIds(array $labelIds, int $blogPageId=0, int $limit=5){
 		$sql = "SELECT ent.*, cnt.count FROM ReadEntryCount cnt ".
 						"INNER JOIN Entry ent ".
 						"ON cnt.entry_id = ent.id ".
@@ -73,6 +82,7 @@ abstract class ReadEntryCountDAO extends SOY2DAO {
 		}catch(Exception $e){
 			return array();
 		}
+		if(!count($results)) return array();
 
 		foreach($results as $key => $result){
 			if($blogPageId > 0) $labelIds[] = $blogPageId;
@@ -83,9 +93,61 @@ abstract class ReadEntryCountDAO extends SOY2DAO {
 	}
 
 	/**
+	 * @param int, int
+	 * @return array
+	 */
+	function getRankingByBlogPageId(int $labelId=0, int $limit=5){
+		$sql = "SELECT ent.*, cnt.count FROM ReadEntryCount cnt ".
+						"INNER JOIN Entry ent ".
+						"ON cnt.entry_id = ent.id ".
+						"INNER JOIN EntryLabel lab ".
+						"ON ent.id = lab.entry_id ".
+						"WHERE lab.label_id = :labelId ".
+						"ORDER BY cnt.count DESC ".
+						"LIMIT " . $limit;
+		try{
+			$results = $this->executeQuery($sql, array(":labelId" => $labelId));
+		}catch(Exception $e){
+			return array();
+		}
+		if(!count($results)) return array();
+
+		foreach($results as $key => $result){
+			$results[$key]["labels"][] = $labelId;
+		}
+
+		return $results;
+	}
+
+	/**
 	 * @return object
 	 */
 	abstract function getByEntryId($entryId);
+
+	/**
+	 * @final
+	 * @param array
+	 * @return array
+	 */
+	function getCountListByEntryIds(array $entryIds){
+		if(!count($entryIds)) return array();
+
+		try{
+			$results = $this->executeQuery(
+				"SELECT entry_id, count FROM ReadEntryCount ".
+				"WHERE entry_id IN (" . implode(",", $entryIds) . ")"
+			);
+		}catch(Exception $e){
+			return array();
+		}
+
+		$list = array();
+		foreach($results as $res){
+			$list[(int)$res["entry_id"]] = (int)$res["count"];
+		}
+
+		return $list;;
+	}
 
 	/**
 	 * @final

@@ -7,10 +7,10 @@ class ReadEntryRankingListComponent extends HTMLList {
 
 	protected function populateItem($entity){
 		$url = (isset($entity["labels"]) && is_array($entity["labels"]) && count($entity["labels"])) ? self::_getBlogPageUrl($entity["labels"]) : "";
-
+		
 		$this->addLink("entry_link", array(
 			"soy2prefix" => $this->prefix,
-			"link" => (isset($entity["alias"])) ? $url . $entity["alias"] : null
+			"link" => (isset($entity["alias"])) ? $url . rawurlencode((string)$entity["alias"]) : null
 		));
 
 		$this->addLabel("title", array(
@@ -23,11 +23,7 @@ class ReadEntryRankingListComponent extends HTMLList {
 			"text" => (isset($entity["count"])) ? (int)$entity["count"] : 0
 		));
 
-		if(isset($entity["id"]) && is_numeric($entity["id"])){
-			$entry = soycms_get_hash_table_dao("entry")->getObject($entity);
-		}else{
-			$entry = new Entry();
-		}
+		$entry = (isset($entity["id"]) && is_numeric($entity["id"])) ? soycms_get_hash_table_dao("entry")->getObject($entity) : new Entry();
 
 		//カスタムフィールドを使用できるように
 		CMSPlugin::callEventFunc('onEntryOutput',array("entryId"=>$entry->getId(),"SOY2HTMLObject"=>$this,"entry"=>$entry));

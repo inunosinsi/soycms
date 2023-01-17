@@ -2,6 +2,11 @@
 
 class ReadEntryCountUtil {
 
+	const GLOBAL_INDEX = "read_entry_count_acceleration_key";
+
+	/**
+	 * @param int
+	 */
 	public static function aggregate(int $entryId){
 		$obj = self::_getReadEntryCountObject($entryId);
 		$cnt = (int)$obj->getCount();
@@ -19,10 +24,30 @@ class ReadEntryCountUtil {
 		}
 	}
 
-	public static function getReadEntryCountByEntryId(int $entryId){
-		return (int)self::_getReadEntryCountObject($entryId)->getCount();
+	/**
+	 * @param array
+	 */
+	public static function setReadEntryCountByEntryIds(array $entryIds){
+		$list = (count($entryIds)) ? self::_dao()->getCountListByEntryIds($entryIds) : array();
+		if(count($list)){
+			foreach($list as $entryId => $cnt){
+				$GLOBALS[self::GLOBAL_INDEX][$entryId] = $cnt;
+			}
+		}
 	}
 
+	/**
+	 * @param int
+	 * @return int
+	 */
+	public static function getReadEntryCountByEntryId(int $entryId){
+		return (isset($GLOBALS[self::GLOBAL_INDEX][$entryId])) ? (int)$GLOBALS[self::GLOBAL_INDEX][$entryId] : (int)self::_getReadEntryCountObject($entryId)->getCount();
+	}
+
+	/**
+	 * @param int
+	 * @return ReadEntryCount
+	 */
 	private static function _getReadEntryCountObject(int $entryId){
 		try{
 			return self::_dao()->getByEntryId($entryId);
@@ -33,26 +58,24 @@ class ReadEntryCountUtil {
 		}
 	}
 
+	/**
+	 * @return array
+	 */
 	public static function getBlogPageList(){
+		static $list;
+		if(is_array($list)) return $list;
+
+		$list = array();
 		try{
-			$pages = SOY2DAOFactory::create("cms.BlogPageDAO")->get();
+			$pages = soycms_get_hash_table_dao("blog_page")->get();
 		}catch(Exception $e){
 			return array();
 		}
 		if(!count($pages)) return array();
 
-		$siteId = trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/");
-		$old = CMSUtil::switchDsn();
-		try{
-			$site = SOY2DAOFactory::create("admin.SiteDAO")->getBySiteId($siteId);
-		}catch(Exception $e){
-			$site = new Site();
-		}
-		CMSUtil::resetDsn($old);
 		$url = "/";
-		if(!$site->getIsDomainRoot()) $url .= $site->getSiteId() . "/";
+		if(!soycms_check_is_root_site_by_frontcontroller()) $url .= soycms_get_site_id_by_frontcontroller() . "/";
 
-		$list = array();
 		foreach($pages as $pageId => $page){
 			if(strlen($page->getUri())){
 				$list[$page->getBlogLabelId()] = $url . $page->getUri() . "/" . $page->getEntryPageUri() . "/";

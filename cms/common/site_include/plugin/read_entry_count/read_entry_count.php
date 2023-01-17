@@ -6,6 +6,7 @@ class ReadEntryCountPlugin{
 
 	const PLUGIN_ID = "ReadEntryCount";
 	private $limit = 5;
+	private $moduleOnlyMode = 0;
 
 	function getId(){
 		return self::PLUGIN_ID;
@@ -19,7 +20,7 @@ class ReadEntryCountPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.10"
+			"version"=>"1.0.0"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
@@ -32,14 +33,26 @@ class ReadEntryCountPlugin{
 			//公開側
 			if(defined("_SITE_ROOT_")){
 				SOY2::import("site_include.plugin.read_entry_count.util.ReadEntryCountUtil");
+
+				CMSPlugin::setEvent('onEntryListBeforeOutput', self::PLUGIN_ID, array($this, "onEntryListBeforeOutput"));
 				CMSPlugin::setEvent('onEntryOutput', self::PLUGIN_ID, array($this, "display"));
-				//公開側のページを表示させたときに、メタデータを表示する
 				CMSPlugin::setEvent('onPageOutput', self::PLUGIN_ID, array($this,"onPageOutput"));
 			}
 
 		}else{
 			CMSPlugin::setEvent('onActive', self::PLUGIN_ID, array($this, "createTable"));
 		}
+	}
+
+	/**
+	 * onEntryListBeforeOutput
+	 */
+	function onEntryListBeforeOutput($arg){
+		$entries = &$arg["entries"];
+		$entryIds = soycms_get_entry_id_by_entries($entries);
+		
+		// view_count用の値を一気に取得
+		ReadEntryCountUtil::setReadEntryCountByEntryIds($entryIds);
 	}
 
 	function display($arg){
@@ -62,42 +75,48 @@ class ReadEntryCountPlugin{
 			ReadEntryCountUtil::aggregate($obj->entry->getId());
 		}
 
-		$blogPageList = ReadEntryCountUtil::getBlogPageList();
-		SOY2::imports("site_include.plugin.read_entry_count.component.*");
-		$obj->createAdd("read_entry_ranking_list", "ReadEntryRankingListComponent", array(
-			"soy2prefix" => "p_block",
-			"list" => self::_get(),
-			"blogs" => $blogPageList
-		));
-
-		if(($obj instanceof CMSBlogPage) && (SOYCMS_BLOG_PAGE_MODE == CMSBlogPage::MODE_ENTRY || SOYCMS_BLOG_PAGE_MODE == CMSBlogPage::MODE_CATEGORY_ARCHIVE || SOYCMS_BLOG_PAGE_MODE == CMSBlogPage::MODE_MONTH_ARCHIVE)){
-			$labelIds = array();
-			$blogPageId = 0;
-			switch(SOYCMS_BLOG_PAGE_MODE){
-				case CMSBlogPage::MODE_ENTRY:
-					$labels = $obj->entry->getLabels();
-					if(count($labels)){
-						foreach($labels as $label){
-								$labelIds[] = $label->getId();
-						}
-						$blogPageId = $obj->page->getBlogLabelId();
-					}
-					break;
-				case CMSBlogPage::MODE_CATEGORY_ARCHIVE:
-					$labelIds = $obj->page->getCategoryLabelList();
-					$blogPageId = $obj->page->getBlogLabelId();
-					break;
-				default:
-			}
-
-			$obj->createAdd("read_entry_ranking_list_same_category", "ReadEntryRankingListComponent", array(
+		//モジュール版以外
+		if((int)$this->moduleOnlyMode !== 1){
+			$blogPageList = ReadEntryCountUtil::getBlogPageList();
+			SOY2::imports("site_include.plugin.read_entry_count.component.*");
+			$obj->createAdd("read_entry_ranking_list", "ReadEntryRankingListComponent", array(
 				"soy2prefix" => "p_block",
-				"list" => self::_getByLabelIds($labelIds, $blogPageId),
+				"list" => self::_get(),
 				"blogs" => $blogPageList
 			));
+
+			if(($obj instanceof CMSBlogPage) && (SOYCMS_BLOG_PAGE_MODE == CMSBlogPage::MODE_ENTRY || SOYCMS_BLOG_PAGE_MODE == CMSBlogPage::MODE_CATEGORY_ARCHIVE || SOYCMS_BLOG_PAGE_MODE == CMSBlogPage::MODE_MONTH_ARCHIVE)){
+				$labelIds = array();
+				$blogPageId = 0;
+				switch(SOYCMS_BLOG_PAGE_MODE){
+					case CMSBlogPage::MODE_ENTRY:
+						$labels = $obj->entry->getLabels();
+						if(count($labels)){
+							foreach($labels as $label){
+									$labelIds[] = $label->getId();
+							}
+							$blogPageId = $obj->page->getBlogLabelId();
+						}
+						break;
+					case CMSBlogPage::MODE_CATEGORY_ARCHIVE:
+						$labelIds = $obj->page->getCategoryLabelList();
+						$blogPageId = $obj->page->getBlogLabelId();
+						break;
+					default:
+				}
+
+				$obj->createAdd("read_entry_ranking_list_same_category", "ReadEntryRankingListComponent", array(
+					"soy2prefix" => "p_block",
+					"list" => self::_getByLabelIds($labelIds, $blogPageId),
+					"blogs" => $blogPageList
+				));
+			}
 		}
 	}
 
+	/**
+	 * @return array
+	 */
 	private function _get(){
 		//無駄な処理になるけれども、直前で再度DAOクラスを読み込むことにした
 		SOY2::imports("site_include.plugin.read_entry_count.domain.*");
@@ -108,6 +127,10 @@ class ReadEntryCountPlugin{
 		}
 	}
 
+	/**
+	 * @param array, int
+	 * @return array
+	 */
 	private function _getByLabelIds(array $labelIds, int $blogPageId){
 		if(!count($labelIds)) return self::_get();
 		try{
@@ -153,6 +176,13 @@ class ReadEntryCountPlugin{
 	}
 	function setLimit($limit){
 		$this->limit = $limit;
+	}
+
+	function getModuleOnlyMode(){
+		return $this->moduleOnlyMode;
+	}
+	function setModuleOnlyMode($moduleOnlyMode){
+		$this->moduleOnlyMode = $moduleOnlyMode;
 	}
 
 	public static function register(){
