@@ -4,11 +4,11 @@
  * @param string
  * @return array
  */
-function x_get_properties_by_img_tag(string $imgTag){
+function x_get_properties_by_tag(string $t){
 	$list = array();
 
 	// prop="***"の方を調べる
-	preg_match_all('/[a-zA-Z_0-9\-]*?=\".*?\"/', $imgTag, $tmp);
+	preg_match_all('/[a-zA-Z_0-9\-]*?=\".*?\"/', $t, $tmp);
 	if(isset($tmp[0]) && is_array($tmp[0]) && count($tmp[0])){
 		foreach($tmp[0] as $p){
 			$prop = explode("=", $p);
@@ -21,7 +21,7 @@ function x_get_properties_by_img_tag(string $imgTag){
 	}
 
 	// prop='***'の方を調べる
-	preg_match_all("/[a-zA-Z_0-9\-]*?='.*?'/", $imgTag, $tmp);
+	preg_match_all("/[a-zA-Z_0-9\-]*?='.*?'/", $t, $tmp);
 	if(isset($tmp[0]) && is_array($tmp[0]) && count($tmp[0])){
 		foreach($tmp[0] as $p){
 			$prop = explode("=", $p);
@@ -36,6 +36,16 @@ function x_get_properties_by_img_tag(string $imgTag){
 	// @ToDo javascript用の属性を見かけたら対応
 
 	return $list;
+}
+
+/**
+ * x_get_properties_by_tagのwrapper
+ * @param string
+ * @return array
+ */
+
+function x_get_properties_by_img_tag(string $imgTag){
+	return x_get_properties_by_tag($imgTag);
 }
 
 /**
@@ -108,12 +118,12 @@ function x_merge_properties(array $props, array $info){
 }
 
 /**
- * @param string, array
+ * @param string, string, array
  * @return string
  */
-function x_rebuild_image_tag(string $oldTag, array $props){
+function x_rebuild_tag(string $tagType="img", string $oldTag, array $props){
 	if(!is_array($props) || !count($props)) return $oldTag;
-	$newTag = "<img";
+	$newTag = "<".$tagType;
 	foreach($props as $idx => $v){
 		if(strlen($v)){
 			$newTag .= " " . $idx . "=\"" . $v . "\"";
@@ -123,6 +133,15 @@ function x_rebuild_image_tag(string $oldTag, array $props){
 	}
 	$newTag .= ">";
 	return $newTag;
+}
+
+/**
+ * x_rebuild_tagのwrapper
+ * @param string, array
+ * @return string
+ */
+function x_rebuild_image_tag(string $oldTag, array $props){
+	return x_rebuild_tag("img", $oldTag, $props);
 }
 
 /**

@@ -93,6 +93,20 @@ class AccessibilityPlugin{
 						}
 					}
 				}
+			//HTMLタグに言語の属性がない場合
+			}else if(is_numeric(strpos($line, "<html"))){
+				preg_match_all('/<html.*?>/', $line, $tmp);
+				if(isset($tmp[0]) && is_array($tmp[0]) && count($tmp[0])){
+					foreach($tmp[0] as $tag){
+						$props = x_get_properties_by_tag($tag);
+						if(!isset($props["lang"])) $props["lang"] = "ja";
+						$newTag = x_rebuild_tag("html", $tag, $props);
+						
+						if(strlen($newTag) && $tag != $newTag){
+							$line = str_replace($tag, $newTag, $line);
+						}
+					}
+				}
 			}
 
 			$htmls[] = $line;
