@@ -9,7 +9,7 @@ class DlListFieldSampleCodeComponent {
 	public static function build(string $tag, bool $isImageUploadForm){
 		$html = array();
 		$html[] = "<!-- cms:id=\"" . $tag . "_visible\" -->";
-		$html[] = "<ul>";
+		$html[] = "<dl>";
 		$html[] = "	<!-- cms:id=\"" . $tag . "_dl_list\" -->";
 		$html[] = "	<dt><!-- cms:id=\"dt\" -->リンゴ<!-- /cms:id=\"dt\" --></dt>";
 		if($isImageUploadForm){
@@ -25,7 +25,7 @@ class DlListFieldSampleCodeComponent {
 			$html[] = "	<dd><!-- cms:id=\"dd\" -->赤<!-- /cms:id=\"dd\" --></dd>";
 		}
 		$html[] = "	<!-- /cms:id=\"" . $tag . "_dl_list\" -->";
-		$html[] = "</ul>";
+		$html[] = "</dl>";
 		$html[] = "<!-- /cms:id=\"" . $tag . "_visible\" -->";
 		return implode("\n", $html);
 	}
