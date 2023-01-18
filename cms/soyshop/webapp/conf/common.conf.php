@@ -11,7 +11,7 @@ if(file_exists(dirname(__FILE__) . "/session.conf.php")) include_once("session.c
 define("SOYSHOP_ROOT", str_replace("\\", "/", dirname(dirname(dirname(__FILE__)))) . "/");
 define("SOYSHOP_WEBAPP", SOYSHOP_ROOT . "webapp/");
 define("SOY2_NOW", time());	//現在時刻
-define("SOYSHOP_RAW", 20230111114528);	//Apache Ant(JDK17)対策 ここでしか使わない定数
+define("SOYSHOP_RAW", 20230119051556);	//Apache Ant(JDK17)対策 ここでしか使わない定数
 //ビルド日時：ビルド時に置換される SOYSHOP_RAWからtimestampを組み立てる
 define("SOYSHOP_BUILD_TIME", mktime(substr(SOYSHOP_RAW, 8, 2), substr(SOYSHOP_RAW, 10, 2), substr(SOYSHOP_RAW, 12), substr(SOYSHOP_RAW, 4, 2), substr(SOYSHOP_RAW, 6, 2), substr(SOYSHOP_RAW, 0, 4)));
 define("SOYSHOP_VERSION", trim(file_get_contents(SOYSHOP_ROOT . "VERSION")));
