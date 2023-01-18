@@ -83,7 +83,7 @@ class DeliveryNormalModule extends SOYShopDelivery{
 
 		$free = DeliveryNormalUtil::getFreePrice();
 
-		if(isset($free["free"]) && $cart->getItemPrice() >= $free["free"]){
+		if(isset($free["free"]) && is_numeric($free["free"]) && $cart->getItemPrice() >= $free["free"]){
 			$price = 0;
 		}else{
 			$customer = $cart->getCustomerInformation();

@@ -111,10 +111,13 @@ class DeliveryNormalConfigFormPage extends WebPage{
 	private function _buildPriceForm(){
 		$free = DeliveryNormalUtil::getFreePrice();
 
+		$isFreeConfig = (isset($free["free"]) && is_numeric($free["free"]));
 		$this->addInput("price_free", array(
 			"name" => "config[free]",
-			"value" => (isset($free["free"])) ? $free["free"] : ""
+			"value" => ($isFreeConfig) ? $free["free"] : ""
 		));
+
+		DisplayPlugin::toggle("price_free_annotation", $isFreeConfig);
 
 		$this->createAdd("prices", "DeliveryPriceListComponent", array(
 			"list"   => SOYShop_Area::getAreas(),

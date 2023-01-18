@@ -32,8 +32,11 @@
 				<th style="width:20%;">購入金額</th>
 				<td>
 					<div class="form-inline">
-						<input type="text" class="form-control" soy:id="price_free" style="text-align:right;ime-mode:inactive;width:30%;"/>
+						<input type="number" class="form-control" soy:id="price_free" style="text-align:right;width:30%;"/>
 						&nbsp;円以上お買い上げの方は配送料無料
+						<!-- soy:display="price_free_annotation" -->
+						<div class="alert alert-warning">配送料無料設定を解除する場合は登録した数字を削除してください。</div>
+						<!-- /soy:display="price_free_annotation" -->
 					</div>
 				</td>
 			</tr>
