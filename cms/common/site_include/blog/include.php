@@ -22,25 +22,25 @@ function soy_cms_blog_output_category_link($page){
 	if(!class_exists("CategoryListComponent")) SOY2::import("site_include.blog.component.CategoryListComponent");
 
 	//ラベル一覧を取得：ラベルの表示順を反映する
-	$labels = SOY2DAOFactory::create("cms.LabelDAO")->get();//表示順に並んでいる
-	$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
-
-	$blogLabelId = $page->page->getBlogLabelId();
-
+	$labels = soycms_get_hash_table_dao("label")->get();//表示順に並んでいる
+	
 	//カテゴリリンク
 	$categories = $page->page->getCategoryLabelList();
 	$categoryLabel = array();
-	$entryCount = array();
-	foreach($labels as $labelId => $label){
-		if(in_array($labelId, $categories)){
-			$categoryLabel[] =  $label;
-			$entryCount[$labelId] = $logic->getOpenEntryCountByLabelIds(array_unique(array($blogLabelId,$labelId)));	//記事の数を数える。
+	$labelIds = array();
+	if(count($labels)){
+		foreach($labels as $labelId => $label){
+			if(in_array($labelId, $categories)){
+				$categoryLabel[] =  $label;
+				$labelIds[] = $labelId;
+			}
 		}
 	}
-
+	
+	$labelIds[] = $page->page->getBlogLabelId(); // ←必要あるのか？	残しておく
 	$page->createAdd("category","CategoryListComponent",array(
 		"list" => $categoryLabel,
-		"entryCount" => $entryCount,
+		"entryCount" => (count($labelIds)) ? SOY2Logic::createInstance("logic.site.Entry.EntryLogic")->getOpenEntryCountListByLabelIds(array_unique($labelIds)) : array(),	//記事数をまとめて数え上げる
 		"categoryUrl" => $page->getCategoryPageURL(true),
 		"soy2prefix" => "b_block"
 	));

@@ -1,6 +1,9 @@
 <?php
 
 class CurrentCategoryOrArchiveComponent extends SOYBodyComponentBase{
+
+	var $entryCount = array();
+
 	function setPage($page){
 		$alias = null;
 		$link = null;
@@ -62,6 +65,11 @@ class CurrentCategoryOrArchiveComponent extends SOYBodyComponentBase{
 			"soy2prefix" => "cms"
 		));
 
+		$this->addLabel("entry_count", array(
+			"text" => (is_array($this->entryCount) && property_exists($page, "label") && isset($this->entryCount[$page->label->getId()]) && is_numeric($this->entryCount[$page->label->getId()])) ? $this->entryCount[$page->label->getId()] : 0,
+			"soy2prefix" => "cms"
+		));
+
 		// ラベルカスタムフィールドの拡張ポイントはカテゴリーアーカイブの時のみ
 		switch(SOYCMS_BLOG_PAGE_MODE){
 			case CMSBlogPage::MODE_CATEGORY_ARCHIVE :
@@ -72,5 +80,9 @@ class CurrentCategoryOrArchiveComponent extends SOYBodyComponentBase{
 			default:
 				//
 		}
+	}
+
+	function setEntryCount($entryCount) {
+		$this->entryCount = $entryCount;
 	}
 }

@@ -243,6 +243,16 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	 */
 	abstract function getOpenEntryCountByLabelIds($labelids,$now);
 
+	/**
+	 * ブログページ用。
+	 * 公開しているエントリーをラベルでフィルタリングして数え上げる
+	 *
+	 * @columns Entry.id, EntryLabel.label_id
+	 * @query EntryLabel.label_id in (<?php implode(',',:labelids) ?>) AND Entry.isPublished = 1 AND (Entry.openPeriodEnd > :now AND Entry.openPeriodStart <= :now)
+	 * @return array
+	 */
+	abstract function getOpenEntryCountListByLabelIds($labelids,$now);
+
 	//ソート
 	private function _addOrder(array $labelIds=array(), bool $orderReverse=false){
 		switch((int)$this->sort){

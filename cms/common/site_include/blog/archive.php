@@ -21,10 +21,10 @@ cms:format="%Y:Y年%%M:n月%%D:j日%" とすると、URLに応じて2010年、20
 
  */
 function soy_cms_blog_output_current_category_or_archive($page){
-
     if(!class_exists("CurrentCategoryOrArchiveComponent")) SOY2::import("site_include.blog.component.CurrentCategoryOrArchiveComponent");
     $page->createAdd("current_category_or_archive","CurrentCategoryOrArchiveComponent",array(
         "soy2prefix"=>"b_block",
+        "entryCount" => (property_exists($page, "label") && $page->label instanceof Label) ? SOY2Logic::createInstance("logic.site.Entry.EntryLogic")->getOpenEntryCountListByLabelIds(array($page->label->getId())) : array(),	//記事数をまとめて数え上げる
         "page"=>$page,
     ));
 }
@@ -49,9 +49,11 @@ function soy_cms_blog_output_current_category($page){
 
     if(!class_exists("CategoryListComponent")) SOY2::import("site_include.blog.component.CategoryListComponent");
 
+    $isLabelObject = (property_exists($page, "label") && $page->label instanceof Label);
     $page->createAdd("current_category","CategoryListComponent",array(
         "soy2prefix"=>"b_block",
-        "list" => (!is_null($page->label) && $page->label instanceof Label) ? array($page->label) : array(),
+        "list" => ($isLabelObject) ? array($page->label) : array(),
+        "entryCount" => ($isLabelObject) ? SOY2Logic::createInstance("logic.site.Entry.EntryLogic")->getOpenEntryCountListByLabelIds(array($page->label->getId())) : array(),	//記事数をまとめて数え上げる
 		"categoryUrl" => $page->getCategoryPageURL(true),
         "visible" => (SOYCMS_BLOG_PAGE_MODE==CMSBlogPage::MODE_CATEGORY_ARCHIVE)
     ));

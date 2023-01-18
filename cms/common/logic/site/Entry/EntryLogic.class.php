@@ -541,6 +541,28 @@ class EntryLogic extends SOY2LogicBase{
 	}
 
 	/**
+	 * ラベルIDを複数指定し、公開しているエントリー数を数え上げる
+	 */
+	function getOpenEntryCountListByLabelIds(array $labelIds){
+		$dao = soycms_get_hash_table_dao("labeled_entry");
+		try{
+			$res = $dao->getOpenEntryCountListByLabelIds($labelIds, SOYCMS_NOW);
+		}catch(Exception $e){
+			$res = array();
+		}
+		if(!count($res)) return array();
+
+		$entryCount = array();
+		foreach($res as $v){
+			$labelId = (int)$v["label_id"];
+			if($labelId <= 0) continue;
+			if(!isset($entryCount[$labelId])) $entryCount[$labelId] = 0;
+			$entryCount[$labelId]++;
+		}
+		return $entryCount;
+	}
+
+	/**
 	 * ラベルID（複数）からエントリーを取得
 	 */
 	function getEntryByLabelIds(array $labelIds){
