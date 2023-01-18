@@ -203,6 +203,7 @@ class BlockEntryListComponent extends HTMLList{
 		unset($labels);
 
 		//カテゴリ
+		if(!class_exists("CategoryListComponent")) SOY2::import("site_include.blog.component.CategoryListComponent");
 		$this->createAdd("category_list","CategoryListComponent",array(
 			"list" => $entity->getLabels(),
 			"categoryUrl" => $this->categoryPageUrl,
