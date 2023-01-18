@@ -18,6 +18,11 @@ class ReadEntryRankingListComponent extends HTMLList {
 			"text" => (isset($entity["title"])) ? $entity["title"] : null
 		));
 
+		$this->addLabel("title_plain", array(
+			"soy2prefix" => $this->prefix,
+			"text" => (isset($entity["title"])) ? $entity["title"] : null
+		));
+
 		$this->addLabel("count", array(
 			"soy2prefix" => $this->prefix,
 			"text" => (isset($entity["count"])) ? (int)$entity["count"] : 0
