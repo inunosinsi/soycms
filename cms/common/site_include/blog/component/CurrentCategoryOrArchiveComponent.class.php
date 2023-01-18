@@ -9,10 +9,10 @@ class CurrentCategoryOrArchiveComponent extends SOYBodyComponentBase{
 		switch(SOYCMS_BLOG_PAGE_MODE){
 			case CMSBlogPage::MODE_CATEGORY_ARCHIVE :
 				$this->createAdd("archive_name","CMSLabel",array(
-					"text"=> ( ($page->label) ? $page->label->getBranchName() : "" ),
+					"text"=> ( (property_exists($page, "label")) ? $page->label->getBranchName() : "" ),
 					"soy2prefix"=>"cms"
 				));
-				if($page->label){
+				if(property_exists($page, "label")){
 					$link = $page->getCategoryPageURL(true) . rawurlencode($page->label->getAlias());
 					$alias = $page->label->getAlias();
 					$description = $page->label->getDescription();
@@ -61,5 +61,16 @@ class CurrentCategoryOrArchiveComponent extends SOYBodyComponentBase{
 			"html" => $description,
 			"soy2prefix" => "cms"
 		));
+
+		// ラベルカスタムフィールドの拡張ポイントはカテゴリーアーカイブの時のみ
+		switch(SOYCMS_BLOG_PAGE_MODE){
+			case CMSBlogPage::MODE_CATEGORY_ARCHIVE :
+				if(property_exists($page, "label") && $page->label instanceof Label){
+					CMSPlugin::callEventFunc('onLabelOutput',array("labelId"=>$page->label->getId(),"SOY2HTMLObject"=>$this,"label"=>$page->label));
+				}
+				break;
+			default:
+				//
+		}
 	}
 }
