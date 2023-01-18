@@ -23,11 +23,11 @@ function soycms_read_entry_count_by_blog_page_id($html, $page){
 			$pObj = CMSPlugin::loadPluginConfig("ReadEntryCount");
 			if(!$pObj) $pObj = new ReadEntryCountPlugin();
 		
-			$lim = $pObj->getLimit();	
+			$lim = $pObj->getLimit();
 			if(!is_numeric($lim)) $lim = 15;
 			
 			SOY2::imports("site_include.plugin.read_entry_count.domain.*");
-			$arr = SOY2DAOFactory::create("ReadEntryCountDAO")->getRankingByBlogPageId((int)soycms_get_blog_page_object($blogPageId)->getBlogLabelId(), $lim);
+			$arr = SOY2DAOFactory::create("ReadEntryCountDAO")->getRankingByBlogPageId($blogPageId, $lim);
 		}
 	}
 

@@ -28,6 +28,7 @@ class ReadEntryRankingListComponent extends HTMLList {
 			"text" => (isset($entity["count"])) ? (int)$entity["count"] : 0
 		));
 
+		if(!class_exists("Entry")) SOY2::import("domain.cms.Entry");
 		$entry = (isset($entity["id"]) && is_numeric($entity["id"])) ? soycms_get_hash_table_dao("entry")->getObject($entity) : new Entry();
 
 		//カスタムフィールドを使用できるように

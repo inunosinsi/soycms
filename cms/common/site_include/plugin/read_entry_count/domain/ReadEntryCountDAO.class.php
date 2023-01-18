@@ -85,7 +85,7 @@ abstract class ReadEntryCountDAO extends SOY2DAO {
 		if(!count($results)) return array();
 
 		foreach($results as $key => $result){
-			if($blogPageId > 0) $labelIds[] = $blogPageId;
+			if($blogPageId > 0) $labelIds[] = (int)soycms_get_blog_page_object($blogPageId)->getBlogLabelId();
 			$results[$key]["labels"] = $labelIds;
 		}
 
@@ -96,7 +96,10 @@ abstract class ReadEntryCountDAO extends SOY2DAO {
 	 * @param int, int
 	 * @return array
 	 */
-	function getRankingByBlogPageId(int $labelId=0, int $limit=5){
+	function getRankingByBlogPageId(int $blogPageId=0, int $limit=5){
+		$labelId = (int)soycms_get_blog_page_object($blogPageId)->getBlogLabelId();
+		if($labelId === 0) return array();
+
 		$sql = "SELECT ent.*, cnt.count FROM ReadEntryCount cnt ".
 						"INNER JOIN Entry ent ".
 						"ON cnt.entry_id = ent.id ".

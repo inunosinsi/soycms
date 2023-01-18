@@ -1,6 +1,6 @@
 <?php
 function soycms_read_entry_count($html, $page){
-
+	
 	$obj = $page->create("read_entry_count", "HTMLTemplatePage", array(
 		"arguments" => array("read_entry_count", $html)
 	));
