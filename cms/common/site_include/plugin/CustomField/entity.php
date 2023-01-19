@@ -59,6 +59,9 @@ class CustomField{
 	//追加属性値の値
 	private $extraValues;
 
+	//記事フィールドでセレクトボックスの記事の選択項目数
+	private $entryFieldSelectboxCount = 20;
+
 	//記事フィールドでラベルの固定
 	private $fixedLabelId;
 
@@ -345,6 +348,10 @@ class CustomField{
 				break;
 			case "entry":	//出力する記事を指定 カスタムフィールドアドバンスドのみ使用可
 				if(!class_exists("EntryFieldUtil")) SOY2::import("site_include.plugin.CustomFieldAdvanced.util.EntryFieldUtil");
+
+				$entryCount = (int)$this->getEntryFieldSelectboxCount();
+				if($entryCount === 0) $entryCount = 20;
+
 				list($selectedSiteId, $selectedLabelId, $selectedEntryId) = EntryFieldUtil::divideIds((string)$fieldValue);
 
 				//ラベルの固定設定
@@ -369,7 +376,7 @@ class CustomField{
 				$labels = self::_getLabels();
 				if(count($labels)){
 					$html[] = "<span id=\"" . $this->getFormId() . "_label\">";
-					$html[] = "\t<select id=\"" . $this->getFormId() . "_select\" onchange='CustomFieldEntryField.change(this, " . $selectedSiteId . ", \"" . $this->getFormId() . "\", \"" . $h_formName . "\", 0);'>";
+					$html[] = "\t<select id=\"" . $this->getFormId() . "_select\" onchange='CustomFieldEntryField.change(this, " . $selectedSiteId . ", \"" . $this->getFormId() . "\", \"" . $h_formName . "\", 0, ".$entryCount.");'>";
 					$html[] = "\t\t<option></option>";
 					foreach($labels as $labelId => $caption){
 						if($selectedLabelId == $labelId){
@@ -383,7 +390,7 @@ class CustomField{
 					$html[] = "<input type=\"hidden\" name=\"" . $h_formName . "\" value=\"\">";
 					$html[] = "<span id=\"" . $this->getFormId() . "\">";
 					if(isset($selectedLabelId) || $selectedEntryId > 0){
-						$entries = SOY2Logic::createInstance("site_include.plugin.CustomField.logic.EntryFieldLogic")->getEntriesByLabelId($selectedLabelId);
+						$entries = SOY2Logic::createInstance("site_include.plugin.CustomField.logic.EntryFieldLogic")->getEntriesByLabelId($selectedLabelId, $entryCount);
 						if(count($entries)){
 							$html[] = "<select name=\"" . $h_formName . "\">";
 							$html[] = "<option></option>";
@@ -563,6 +570,13 @@ class CustomField{
 		$this->extraValues = $extraValues;
 	}
 
+	function getEntryFieldSelectboxCount(){
+		return $this->entryFieldSelectboxCount;
+	}
+	function setEntryFieldSelectboxCount($entryFieldSelectboxCount){
+		$this->entryFieldSelectboxCount = $entryFieldSelectboxCount;
+	}
+
 	function getFixedLabelId(){
 		return $this->fixedLabelId;
 	}
@@ -583,16 +597,11 @@ class CustomField{
 		if(is_null($list)) $list = array();
 		if(!isset($list[$selectedSiteId])) $list[$selectedSiteId] = array();
 
-		try{
-			$labels = SOY2DAOFactory::create("cms.LabelDAO")->get();
-		}catch(Exception $e){
-			$labels = array();
-		}
-
-		if(count($labels)){
-			foreach($labels as $label){
-				$list[$selectedSiteId][$label->getId()] = $label->getCaption();
-			}
+		$labels = soycms_get_hash_table_dao("label")->get();
+		if(!count($labels)) return $list;
+		
+		foreach($labels as $label){
+			$list[$selectedSiteId][$label->getId()] = $label->getCaption();
 		}
 		return $list[$selectedSiteId];
 	}

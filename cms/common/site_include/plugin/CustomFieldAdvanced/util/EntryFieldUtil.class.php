@@ -21,7 +21,7 @@ class EntryFieldUtil {
 	public static function getEntryObjectById(int $entryId){
 		SOY2::import("domain.cms.Entry");
 		if($entryId === 0) return new Entry();
-		$entry = SOY2Logic::createInstance("site_include.plugin.CustomField.logic.EntryFieldLogic")->getTitleAndContentByEntryId($entryId);
+		$entry = SOY2Logic::createInstance("site_include.plugin.CustomField.logic.EntryFieldLogic")->getEntryObjectOnlyTitleAndContentByEntryId($entryId);
 		return $entry;
 	}
 

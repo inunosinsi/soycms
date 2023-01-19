@@ -30,15 +30,15 @@ var CustomFieldEntryField = {
 			}
 		});
 	},
-	change : function(ele, siteId, formId, name, selectedEntryId){
+	change : function(ele, siteId, formId, name, selectedEntryId, entryFieldCount){
 		var labelId = $(ele).val();
-
+		
 		if(labelId.length){
 			//ラベルに格納されたデータを取得する
 			$.ajax({
 				type: "POST",
 				url: CustomFieldEntryField.getEndpointPath(),
-				data: "soy2_token=" + $("input[name=soy2_token]").val() + "&mode=label&site_id=" + siteId + "&label_id=" + labelId,
+				data: "soy2_token=" + $("input[name=soy2_token]").val() + "&mode=label&site_id=" + siteId + "&label_id=" + labelId + "&entry_field_count=" + entryFieldCount,
 				dataType: 'text',
 				success: function(data){
 					var res = eval("array="+data);

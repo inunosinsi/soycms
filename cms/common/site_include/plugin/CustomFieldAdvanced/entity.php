@@ -60,6 +60,9 @@ class CustomField{
 	//追加属性値の値
 	private $extraValues;
 
+	//記事フィールドでセレクトボックスの記事の選択項目数
+	private $entryFieldSelectboxCount = 20;
+
 	//記事フィールドでラベルの固定
 	private $fixedLabelId;
 
@@ -544,6 +547,13 @@ class CustomField{
 		$this->extraValues = $extraValues;
 	}
 
+	function getEntryFieldSelectboxCount(){
+		return $this->entryFieldSelectboxCount;
+	}
+	function setEntryFieldSelectboxCount($entryFieldSelectboxCount){
+		$this->entryFieldSelectboxCount = $entryFieldSelectboxCount;
+	}
+
 	function getFixedLabelId(){
 		return $this->fixedLabelId;
 	}
@@ -560,16 +570,11 @@ class CustomField{
 		static $list;
 		if(is_null($list)) {
 			$list = array();
-			try{
-				$labels = SOY2DAOFactory::create("cms.LabelDAO")->get();
-			}catch(Exception $e){
-				$labels = array();
-			}
+			$labels = soycms_get_hash_table_dao("label")->get();
+			if(!count($labels)) return $list;
 
-			if(count($labels)){
-				foreach($labels as $label){
-					$list[$label->getId()] = $label->getCaption();
-				}
+			foreach($labels as $label){
+				$list[$label->getId()] = $label->getCaption();
 			}
 		}
 		return $list;

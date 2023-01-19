@@ -214,6 +214,10 @@ class CustomFieldListComponent extends HTMLList {
 		$this->addModel("is_entry_field", array(
 			"visible" => ($entity->getType() == "entry")
 		));
+		$this->addInput("entry_field_selectbox_count", array(
+			"name" => "config[entryFieldSelectboxCount]",
+			"value" => $entity->getEntryFieldSelectboxCount()
+		));
 		$this->addSelect("fixed_label_id", array(
 			"name" => "config[fixedLabelId]",
 			"options" => $entity->getLabels(),
@@ -285,7 +289,7 @@ class CustomFieldListComponent extends HTMLList {
 		$html = array();
 		$html[] = "<h5>記事フィールドで追加されるタグ</h5>";
 		$html[] = "<ul>";
-		foreach(array("id", "title", "content", "more", "create_date", "label_caption", "label_alias", "blog_title", "blog_uri") as $typ){
+		foreach(array("id", "alias", "title", "content", "more", "create_date", "label_caption", "label_alias", "blog_title", "blog_uri") as $typ){
 			$html[] = "<li>cms:id=\"" . $fieldId . "_" . $typ . "\"</li>";
 		}
 

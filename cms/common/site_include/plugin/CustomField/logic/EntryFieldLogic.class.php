@@ -2,8 +2,12 @@
 
 class EntryFieldLogic extends SOY2LogicBase {
 
-	function getEntriesByLabelId($labelId, $limit=20){
-		$entryDao = SOY2DAOFactory::create("cms.EntryDAO");
+	/**
+	 * @param int
+	 * @return array
+	 */
+	function getEntriesByLabelId(int $labelId, int $lim=50){
+		$entryDao = soycms_get_hash_table_dao("entry");
 		$now = time();
 		$sql = "SELECT ent.id, ent.title FROM Entry ent ".
 				"INNER JOIN EntryLabel lab ".
@@ -12,7 +16,7 @@ class EntryFieldLogic extends SOY2LogicBase {
 				"AND ent.isPublished = " . Entry::ENTRY_ACTIVE . " ".
 				"AND ent.openPeriodStart < " . $now . " ".
 				"AND ent.openPeriodEnd > " . $now . " ".
-				"LIMIT " . $limit;
+				"LIMIT " . $lim;
 
 		try{
 			return $entryDao->executeQuery($sql);
@@ -21,10 +25,14 @@ class EntryFieldLogic extends SOY2LogicBase {
 		}
 	}
 
-	function getTitleAndContentByEntryId($entryId){
+	/**
+	 * @param int
+	 * @return Entry
+	 */
+	function getEntryObjectOnlyTitleAndContentByEntryId(int $entryId){
 		static $values, $dao;
 		if(isset($values[$entryId])) return $values[$entryId];
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("cms.EntryDAO");
+		if(is_null($dao)) $dao = soycms_get_hash_table_dao("entry");
 		$now = time();
 		$sql = "SELECT id, title, more, content, cdate FROM Entry ".
 				"WHERE id = :id ".
