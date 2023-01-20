@@ -247,11 +247,42 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	 * ブログページ用。
 	 * 公開しているエントリーをラベルでフィルタリングして数え上げる
 	 *
-	 * @columns Entry.id, EntryLabel.label_id
+	 * @columns EntryLabel.label_id, COUNT(*)
 	 * @query EntryLabel.label_id in (<?php implode(',',:labelids) ?>) AND Entry.isPublished = 1 AND (Entry.openPeriodEnd > :now AND Entry.openPeriodStart <= :now)
+	 * @group EntryLabel.label_id
 	 * @return array
 	 */
-	abstract function getOpenEntryCountListByLabelIds($labelids,$now);
+	// abstract function getOpenEntryCountListByLabelIds($labelids,$now);
+
+	/**
+	 * @final
+	 */
+	function getOpenEntryCountListByLabelIds(array $labelIds, int $now){
+		if(!count($labelIds)) return array();
+		
+		try{
+			$res = $this->executeQuery(
+				"SELECT label.label_id, COUNT(*) AS COUNT FROM EntryLabel label ".
+				"INNER JOIN Entry entry ".
+				"ON label.entry_id = entry.id ".
+				"WHERE label.label_id IN (".implode(",", $labelIds).") ".
+				"AND entry.isPublished = 1 ".
+				"AND (entry.openPeriodEnd > :now AND entry.openPeriodStart <= :now) ".
+				"GROUP BY label.label_id"
+			, array(":now" => $now));
+		}catch(Exception $e){
+			$res = array();
+		}
+		
+		if(!count($res)) return array();
+
+		$list = array();
+		foreach($res as $v){
+			$list[(int)$v["label_id"]] = (int)$v["COUNT"];
+		}
+		
+		return $list;
+	}
 
 	//ソート
 	private function _addOrder(array $labelIds=array(), bool $orderReverse=false){
