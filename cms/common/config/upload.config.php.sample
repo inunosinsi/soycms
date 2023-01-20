@@ -6,6 +6,8 @@
  *
  * 定数 ELFINDER_MODE によって設定を分けられる (SOY CMS 3.2.1以降)
  * 詳細：https://saitodev.co/article/4315
+ *
+ * https://www.php.net/manual/ja/function.mime-content-type.php
  **/
 $mimetypes = array(
 	'image/x-ms-bmp',
@@ -13,6 +15,7 @@ $mimetypes = array(
 	'image/jpeg',
 	'image/png',
 	'image/webp',
+	'image/avif', 
 	'image/x-icon',
 	'text/plain',
 	"text/css",
