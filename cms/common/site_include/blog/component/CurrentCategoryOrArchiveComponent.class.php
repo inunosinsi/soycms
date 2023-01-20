@@ -11,11 +11,12 @@ class CurrentCategoryOrArchiveComponent extends SOYBodyComponentBase{
 
 		switch(SOYCMS_BLOG_PAGE_MODE){
 			case CMSBlogPage::MODE_CATEGORY_ARCHIVE :
+				$isLabelObj = (property_exists($page, "label") && $page->label instanceof Label);
 				$this->createAdd("archive_name","CMSLabel",array(
-					"text"=> ( (property_exists($page, "label")) ? $page->label->getBranchName() : "" ),
+					"text"=> ($isLabelObj) ? $page->label->getBranchName() : "",
 					"soy2prefix"=>"cms"
 				));
-				if(property_exists($page, "label")){
+				if($isLabelObj){
 					$link = $page->getCategoryPageURL(true) . rawurlencode($page->label->getAlias());
 					$alias = $page->label->getAlias();
 					$description = $page->label->getDescription();
@@ -65,8 +66,9 @@ class CurrentCategoryOrArchiveComponent extends SOYBodyComponentBase{
 			"soy2prefix" => "cms"
 		));
 
+		$label = (property_exists($page, "label") && $page->label instanceof Label) ? $page->label : new Label();
 		$this->addLabel("entry_count", array(
-			"text" => (is_array($this->entryCount) && property_exists($page, "label") && isset($this->entryCount[$page->label->getId()]) && is_numeric($this->entryCount[$page->label->getId()])) ? $this->entryCount[$page->label->getId()] : 0,
+			"text" => (is_array($this->entryCount) && property_exists($page, "label") && ($page->label instanceof Label) && isset($this->entryCount[$page->label->getId()]) && is_numeric($this->entryCount[$page->label->getId()])) ? $this->entryCount[$page->label->getId()] : 0,
 			"soy2prefix" => "cms"
 		));
 
