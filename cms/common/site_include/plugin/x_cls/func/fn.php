@@ -151,20 +151,21 @@ function x_rebuild_image_tag(string $oldTag, array $props){
  */
 function x_get_extension_by_filepath(string $src){
 	if(is_bool(strpos($src, "."))) return "";
-	$ext = mb_strtolower(substr($src, strrpos($src, ".") + 1));
+	$path = $_SERVER["DOCUMENT_ROOT"] . $src;
+	if(!file_exists($path)) return "";
+
+	$ext = mime_content_type($path);
+	if(!preg_match('/^image/', $ext)) return "";	
+	
+	$ext = str_replace("image/", "", $ext);
 	switch($ext){
-		case "jpg":
 		case "jpeg":
 			return "jpg";
-		case "png":
-			return "png";
-		case "gif":
-			return "gif";
-		case "webp":
-			return "webp";
 		default:
-			return "";
+			return $ext;
 	}
+
+	return "";
 }
 
 /**
