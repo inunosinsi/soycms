@@ -5,11 +5,21 @@ class CMSFileManager{
 	public static function getAllowedMimeTypes(){
 		$mimetypes = null;
 		if(!defined("ELFINDER_MODE")) define("ELFINDER_MODE", false);
-		if(file_exists(SOY2::RootDir() . "/config/upload.config.php")){
-			include_once(SOY2::RootDir() . "/config/upload.config.php");
-		}
+		if(file_exists(SOY2::RootDir() . "/config/upload.config.php")) include_once(SOY2::RootDir() . "/config/upload.config.php");
 		if(is_array($mimetypes)) return $mimetypes;		
-		return array('image/x-ms-bmp', 'image/gif', 'image/jpeg', 'image/png', 'image/webp', 'image/x-icon', 'text/plain', "text/css", "application/pdf");
+		return array(
+			'image/x-ms-bmp', 
+			'image/gif', 
+			'image/jpeg', 
+			'image/png', 
+			'image/webp', 
+			'image/avif', 
+			'image/x-icon', 
+			'image/svg+xml',
+			'text/plain', 
+			"text/css", 
+			"application/pdf"
+		);
 	}
 
 	private function __construct(){}

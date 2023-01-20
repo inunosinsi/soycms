@@ -50,17 +50,54 @@ class FileUploadPage extends CMSWebPageBase {
 			"script" => 'var remotoURI = "'.self::getSiteUrl().ltrim(substr(self::getDefaultUpload(),1), "/").'";'
 		));
 
+		$this->addLabel("mimetype", array(
+			"html" => self::_buildExtensionRegularExpressions()
+		));
+
 		$this->addModel("file_manager_iframe", array(
 			"target_src"=>SOY2PageController::createLink("FileManager.File")
 		));
 	}
 
+	private function _buildExtensionRegularExpressions(){
+		SOY2::import("util.CMSFileManager");
+		$mimetypes = CMSFileManager::getAllowedMimeTypes();
+
+		// sample
+		// /\.(jpe?g|gif|png|webp|avif|bmp|ico)(\?.*)?(#.*)?$/i
+		$code = "";
+		if(count($mimetypes)){
+			$p = array();
+			foreach($mimetypes as $mimetype){
+				if(!preg_match('/^image/', $mimetype)) continue;
+				$ext = str_replace("image/", "", $mimetype);
+				switch($ext){
+					case "jpeg":
+						$p[] = "jpe?g";
+						break;
+					case "x-ms-bmp":
+						$p[] = "bmp";
+						break;
+					case "x-ico":
+						$p[] = "ico";
+						break;
+					case "svg+xml":
+						$p[] = "svg";
+						break;
+					default:
+						$p[] = $ext;
+				}				
+			}
+			if(count($p)) $code .= "/\.(".implode("|",$p).")(\?.*)?(#.*)?$/i";
+		}
+		if(!strlen($code)) $code = "//";
+		return "var img_reg_exp = ".$code.";";
+	}
+
 	private function getSiteUrl(){
 		$siteUrl = UserInfoUtil::getSiteURL();
 		$siteId = UserInfoUtil::getSite()->getSiteId();
-		if(strpos($siteUrl, "/" . $siteId . "/") === false){
-			$siteUrl = rtrim($siteUrl, "/") . "/" . $siteId . "/";
-		}
+		if(is_bool(strpos($siteUrl, "/" . $siteId . "/"))) $siteUrl = rtrim($siteUrl, "/") . "/" . $siteId . "/";
 		return $siteUrl;
 	}
 
