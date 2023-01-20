@@ -187,7 +187,8 @@ if(file_exists(SOY2::RootDir() . "/config/upload.config.php")){
 	include_once(SOY2::RootDir() . "/config/upload.config.php");
 }
 if(!isset($mimetypes) || !is_array($mimetypes)){
-	$mimetypes = array('image/x-ms-bmp', 'image/gif', 'image/jpeg', 'image/png', 'image/webp', 'image/x-icon', 'text/plain', "text/css", "application/pdf");
+	SOY2::import("util.CMSFileManager");
+	$mimetypes = CMSFileManager::getAllowedMimeTypes();
 }
 
 // Documentation for connector options:

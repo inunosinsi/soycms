@@ -281,6 +281,7 @@ abstract class elFinderVolumeDriver
             'php5:*' => 'text/x-php',
             'php7:*' => 'text/x-php',
             'phtml:*' => 'text/x-php',
+            'phar:*' => 'text/x-php',
             'cgi:*' => 'text/x-httpd-cgi',
             'pl:*' => 'text/x-perl',
             'asp:*' => 'text/x-asap',
@@ -400,6 +401,8 @@ abstract class elFinderVolumeDriver
         'uploadOrder' => array('deny', 'allow'),
         // maximum upload file size. NOTE - this is size for every uploaded files
         'uploadMaxSize' => 0,
+        // Maximum number of folders that can be created at one time. (0: unlimited)
+        'uploadMaxMkdirs' => 0,
         // maximum number of chunked upload connection. `-1` to disable chunked upload
         'uploadMaxConn' => 3,
         // maximum get file size. NOTE - Maximum value is 50% of PHP memory_limit
@@ -1276,36 +1279,44 @@ abstract class elFinderVolumeDriver
         $this->mimeDetect = $this->options['mimeDetect'];
 
         // find available mimetype detect method
-        $type = strtolower($this->options['mimeDetect']);
-        $type = preg_match('/^(finfo|mime_content_type|internal|auto)$/i', $type) ? $type : 'auto';
         $regexp = '/text\/x\-(php|c\+\+)/';
+        $auto_types = array();
 
-        if (($type == 'finfo' || $type == 'auto')
-            && class_exists('finfo', false)) {
+        if (class_exists('finfo', false)) {
             $tmpFileInfo = explode(';', finfo_file(finfo_open(FILEINFO_MIME), __FILE__));
-        } else {
-            $tmpFileInfo = false;
-        }
-
-        $type = 'internal';
-        if ($tmpFileInfo && preg_match($regexp, array_shift($tmpFileInfo))) {
-            $type = 'finfo';
-            $this->finfo = finfo_open(FILEINFO_MIME);
-        } elseif (($type == 'mime_content_type' || $type == 'auto') && function_exists('mime_content_type')) {
-            $_mimetypes = explode(';', mime_content_type(__FILE__));
-            if (preg_match($regexp, array_shift($_mimetypes))) {
-                $type = 'mime_content_type';
+             if ($tmpFileInfo && preg_match($regexp, array_shift($tmpFileInfo))) {
+                $auto_types[] = 'finfo';
             }
         }
-        $this->mimeDetect = $type;
+        
+        if (function_exists('mime_content_type')) {
+            $_mimetypes = explode(';', mime_content_type(__FILE__));
+            if (preg_match($regexp, array_shift($_mimetypes))) {
+                $auto_types[] = 'mime_content_type';
+            }
+        }
+            
+        $auto_types[] = 'internal';
 
-        // load mimes from external file for mimeDetect == 'internal'
-        // based on Alexey Sukhotin idea and patch: http://elrte.org/redmine/issues/163
-        // file must be in file directory or in parent one
-        if ($this->mimeDetect === 'internal' && !elFinderVolumeDriver::$mimetypesLoaded) {
-            elFinderVolumeDriver::loadMimeTypes(!empty($this->options['mimefile']) ? $this->options['mimefile'] : '');
+        $type = strtolower($this->options['mimeDetect']);
+        if (!in_array($type, $auto_types)) {
+            $type = 'auto';
         }
 
+        if ($type == 'auto') {
+            $type = array_shift($auto_types);
+        }
+
+        $this->mimeDetect = $type;
+
+        if ($this->mimeDetect == 'finfo') {
+            $this->finfo = finfo_open(FILEINFO_MIME);
+        } else if ($this->mimeDetect == 'internal' && !elFinderVolumeDriver::$mimetypesLoaded) {
+            // load mimes from external file for mimeDetect == 'internal'
+            // based on Alexey Sukhotin idea and patch: http://elrte.org/redmine/issues/163
+            // file must be in file directory or in parent one
+            elFinderVolumeDriver::loadMimeTypes(!empty($this->options['mimefile']) ? $this->options['mimefile'] : '');
+        }
         $this->rootName = empty($this->options['alias']) ? $this->basenameCE($this->root) : $this->options['alias'];
 
         // This get's triggered if $this->root == '/' and alias is empty.
@@ -1506,6 +1517,9 @@ abstract class elFinderVolumeDriver
         }
 
         // to update options cache
+        if (isset($this->sessionCache['rootstat'])) {
+            unset($this->sessionCache['rootstat'][$this->getRootstatCachekey()]);
+        }
         $this->updateCache($this->root, $root);
 
         return $this->mounted = true;
@@ -5437,7 +5451,7 @@ abstract class elFinderVolumeDriver
         $stat = $this->stat($path);
 
         if (empty($stat)) {
-            return $this->setError(elFinder::ERROR_RM, $path, elFinder::ERROR_FILE_NOT_FOUND);
+            return $this->setError(elFinder::ERROR_RM, $this->relpathCE($path), elFinder::ERROR_FILE_NOT_FOUND);
         }
 
         $stat['realpath'] = $path;
@@ -6353,7 +6367,7 @@ abstract class elFinderVolumeDriver
      * @throws elFinderAbortException
      * @author Alexey Sukhotin
      */
-    protected function procExec($command, &$output = '', &$return_var = -1, &$error_output = '')
+    protected function procExec($command, &$output = '', &$return_var = -1, &$error_output = '', $cwd = null)
     {
         return elFinder::procExec($command, $output, $return_var, $error_output);
     }
@@ -6713,7 +6727,7 @@ abstract class elFinderVolumeDriver
             unset($o);
             $this->procExec(ELFINDER_RAR_PATH, $o, $c);
             if ($c == 0 || $c == 7) {
-                $arcs['create']['application/x-rar'] = array('cmd' => ELFINDER_RAR_PATH, 'argc' => 'a -inul' . (defined('ELFINDER_RAR_MA4') && ELFINDER_RAR_MA4? ' -ma4' : ''), 'ext' => 'rar');
+                $arcs['create']['application/x-rar'] = array('cmd' => ELFINDER_RAR_PATH, 'argc' => 'a -inul' . (defined('ELFINDER_RAR_MA4') && ELFINDER_RAR_MA4? ' -ma4' : '') . ' --', 'ext' => 'rar');
             }
             unset($o);
             $this->procExec(ELFINDER_UNRAR_PATH, $o, $c);
@@ -6723,17 +6737,17 @@ abstract class elFinderVolumeDriver
             unset($o);
             $this->procExec(ELFINDER_7Z_PATH, $o, $c);
             if ($c == 0) {
-                $arcs['create']['application/x-7z-compressed'] = array('cmd' => ELFINDER_7Z_PATH, 'argc' => 'a', 'ext' => '7z');
+                $arcs['create']['application/x-7z-compressed'] = array('cmd' => ELFINDER_7Z_PATH, 'argc' => 'a --', 'ext' => '7z');
                 $arcs['extract']['application/x-7z-compressed'] = array('cmd' => ELFINDER_7Z_PATH, 'argc' => 'x -y', 'ext' => '7z', 'toSpec' => '-o', 'getsize' => array('argc' => 'l', 'regex' => '/^.+(?:\r\n|\n|\r)[^\r\n0-9]+([0-9]+)[^\r\n]+$/s', 'replace' => '$1'));
 
                 if (empty($arcs['create']['application/zip'])) {
-                    $arcs['create']['application/zip'] = array('cmd' => ELFINDER_7Z_PATH, 'argc' => 'a -tzip', 'ext' => 'zip');
+                    $arcs['create']['application/zip'] = array('cmd' => ELFINDER_7Z_PATH, 'argc' => 'a -tzip --', 'ext' => 'zip');
                 }
                 if (empty($arcs['extract']['application/zip'])) {
                     $arcs['extract']['application/zip'] = array('cmd' => ELFINDER_7Z_PATH, 'argc' => 'x -tzip -y', 'ext' => 'zip', 'toSpec' => '-o', 'getsize' => array('argc' => 'l', 'regex' => '/^.+(?:\r\n|\n|\r)[^\r\n0-9]+([0-9]+)[^\r\n]+$/s', 'replace' => '$1'));
                 }
                 if (empty($arcs['create']['application/x-tar'])) {
-                    $arcs['create']['application/x-tar'] = array('cmd' => ELFINDER_7Z_PATH, 'argc' => 'a -ttar', 'ext' => 'tar');
+                    $arcs['create']['application/x-tar'] = array('cmd' => ELFINDER_7Z_PATH, 'argc' => 'a -ttar --', 'ext' => 'tar');
                 }
                 if (empty($arcs['extract']['application/x-tar'])) {
                     $arcs['extract']['application/x-tar'] = array('cmd' => ELFINDER_7Z_PATH, 'argc' => 'x -ttar -y', 'ext' => 'tar', 'toSpec' => '-o', 'getsize' => array('argc' => 'l', 'regex' => '/^.+(?:\r\n|\n|\r)[^\r\n0-9]+([0-9]+)[^\r\n]+$/s', 'replace' => '$1'));
@@ -6780,14 +6794,22 @@ abstract class elFinderVolumeDriver
             $base = rtrim($base, $separator);
         }
 
-        // 'Here'
-        if ($path === '' || $path === '.' . $separator) return $base;
-
         $sepquoted = preg_quote($separator, '#');
 
+        // normalize `//` to `/`
+        $path = preg_replace('#' . $sepquoted . '+#', $separator, $path); // '#/+#'
+
+        // remove `./`
+        $path = preg_replace('#(?<=^|' . $sepquoted . ')\.' . $sepquoted . '#', '', $path); // '#(?<=^|/)\./#'
+
+        // 'Here'
+        if ($path === '') return $base;
+
+        // join $base to $path if $path start `../`
         if (substr($path, 0, 3) === '..' . $separator) {
             $path = $base . $separator . $path;
         }
+
         // normalize `/../`
         $normreg = '#(' . $sepquoted . ')[^' . $sepquoted . ']+' . $sepquoted . '\.\.' . $sepquoted . '#'; // '#(/)[^\/]+/\.\./#'
         while (preg_match($normreg, $path)) {
@@ -6796,6 +6818,9 @@ abstract class elFinderVolumeDriver
         if ($path !== $systemroot) {
             $path = rtrim($path, $separator);
         }
+
+        // discard the surplus `../`
+        $path = str_replace('..' . $separator, '', $path);
 
         // Absolute path
         if ($path[0] === $separator || strpos($path, $systemroot) === 0) {
@@ -6858,9 +6883,16 @@ abstract class elFinderVolumeDriver
                     $files[$i] = '.' . DIRECTORY_SEPARATOR . basename($file);
                 }
                 $files = array_map('escapeshellarg', $files);
-
-                $cmd = $arc['cmd'] . ' ' . $arc['argc'] . ' ' . escapeshellarg($name) . ' ' . implode(' ', $files);
-                $this->procExec($cmd, $o, $c);
+                $prefix = $switch = '';
+                // The zip command accepts the "-" at the beginning of the file name as a command switch,
+                // and can't use '--' before archive name, so add "./" to name for security reasons.
+                if ($arc['ext'] === 'zip' && strpos($arc['argc'], '-tzip') === false) {
+                    $prefix = './';
+                    $switch = '-- ';
+                }
+                $cmd = $arc['cmd'] . ' ' . $arc['argc'] . ' ' . $prefix . escapeshellarg($name) . ' ' . $switch . implode(' ', $files);
+                $err_out = '';
+                $this->procExec($cmd, $o, $c, $err_out, $dir);
                 chdir($cwd);
             } else {
                 return false;
