@@ -16,7 +16,7 @@ class SqliteDatabaseBackupPlugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.1"
+			"version"=>"1.2"
 		));
 		CMSPlugin::addPluginConfigPage(SqliteDatabaseBackupPlugin::PLUGIN_ID,array(
 			$this,"config_page"

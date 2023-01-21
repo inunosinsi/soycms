@@ -41,7 +41,7 @@ class SDBConfigPage extends WebPage{
 				$files = scandir($this->backupDir);
 				foreach($files as $file){
 					if(strpos($file,".") === 0) continue;
-					if(hash(SqliteDatabaseBackupConfigPage::HASH_ALGO, SqliteDatabaseBackupConfigPage::HASH_SALT.$file) == $hash){
+					if(hash(self::HASH_ALGO, self::HASH_SALT.$file) == $hash){
 						unlink($this->backupDir.$file);
 						break;
 					}
@@ -56,7 +56,7 @@ class SDBConfigPage extends WebPage{
 			$files = scandir($this->backupDir);
 			foreach($files as $file){
 				if(strpos($file,".") === 0) continue;
-				if(hash(SqliteDatabaseBackupConfigPage::HASH_ALGO, SqliteDatabaseBackupConfigPage::HASH_SALT.$file) == $hash){
+				if(hash(self::HASH_ALGO, self::HASH_SALT.$file) == $hash){
 					error_reporting(0);
 					soy2_setcookie("downloaded", "yes", array("expires" => time() + 2));
 					header("Cache-Control: no-cache");
