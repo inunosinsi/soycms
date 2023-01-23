@@ -1,7 +1,7 @@
 CREATE TABLE soycalendar_item (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
-	schedule INTEGER,
-	title INTEGER,
+	schedule_date INTEGER,
+	title_id INTEGER,
 	start VARCHAR,
 	end VARCHAR,
 	create_date INTEGER NOT NULL,

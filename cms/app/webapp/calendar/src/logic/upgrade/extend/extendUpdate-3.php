@@ -1,7 +1,11 @@
 <?php
 if(SOYCMS_DB_TYPE == "sqlite"){	//sqliteの時のみ実行
 	$dao = SOY2DAOFactory::create("SOYCalendar_ItemDAO");
-	$res = $dao->executeQuery("SELECT id, title FROM soycalendar_item WHERE title_id IS NULL");
+	try{
+		$res = $dao->executeQuery("SELECT id, title FROM soycalendar_item WHERE title_id IS NULL");
+	}catch(Exception $e){
+		$res = array();
+	}
 	if(count($res)){
 		$same = array();	//array(title => array(id...))にしておく
 		foreach($res as $v){

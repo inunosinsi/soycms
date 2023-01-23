@@ -1,3 +1,7 @@
+2.2.1 2023-01-23
+	- SQLite版のsoycalendar_itemのスキーマの誤りを修正(title → title_id)
+2.2.0 2022-11-29
+	- PHP8.2対応
 2.1.0 2022-10-25
 	- カスタム項目
 	- カレンダーのカラムのカスタマイズ用のsoycalendar_generate_day_column関数の仕組みを追加
