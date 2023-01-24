@@ -259,6 +259,21 @@ function soycms_get_label_object(int $labelId){
 	return $GLOBALS["soycms_label_hash_table"][$idx];
 }
 
+function soycms_get_label_object_by_alias(string $alias){
+	$dao = soycms_get_hash_table_dao(__FUNCTION__);
+	if(!strlen($alias)) return new Label();
+
+	try{
+		$label = $dao->getByAlias($alias);
+	}catch(Exception $e){
+		return new Label();
+	}
+
+	$idx = soycms_get_hash_index((string)$label->getId(), __FUNCTION__);
+	if(!isset($GLOBALS["soycms_label_hash_table"][$idx])) $GLOBALS["soycms_label_hash_table"][$idx] = $label;
+	return $label;
+}
+
 function soycms_get_label_attribute_object(int $labelId, string $fieldId){
 	$dao = soycms_get_hash_table_dao(__FUNCTION__);
 	if((int)$labelId <= 0 || !strlen($fieldId)) return new LabelAttribute();
