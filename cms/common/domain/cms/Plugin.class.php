@@ -15,6 +15,7 @@ class Plugin{
 	private $mail;
 
 	// プラグインのtype
+	const TYPE_NONE = 		-1;	//未分類に指定されます
 	const TYPE_ACTIVE = 	0;
 	const TYPE_SOYCMS = 	1;
 	const TYPE_ENTRY = 		2;
