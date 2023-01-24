@@ -903,7 +903,7 @@ class CMSBlogPage extends CMSPage{
 		
 		//表示順の投入
 		try{
-			$entryLabel = SOY2DAOFactory::create("cms.EntryLabelDAO")->getByParam($blogLabelId,$entry->getId());
+			$entryLabel = soycms_get_hash_table_dao("entry_label")->getByParam($blogLabelId,$entry->getId());
 		}catch(Exception $e){
 			$entryLabel = new EntryLabel();
 		}
@@ -932,11 +932,7 @@ class CMSBlogPage extends CMSPage{
 		if($alias[0] != "0" && is_numeric($alias)){
 			return soycms_get_label_object($alias);
 		}else{
-			try{
-				return soycms_get_hash_table_dao("label")->getByAlias($alias);
-			}catch(Exception $e){
-				return new Label();
-			}
+			return soycms_get_label_object_by_alias($alias);
 		}
 	}
 
