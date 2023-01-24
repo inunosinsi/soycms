@@ -10,6 +10,11 @@ class ListFieldListComponent extends HTMLList {
 			"text" => $v
 		));
 
+		$this->addLabel("li_raw", array(
+			"soy2prefix" => "cms",
+			"html" => $v
+		));
+
 		$this->addLabel("value", array(
 			"soy2prefix" => "cms",
 			"text" => $v
