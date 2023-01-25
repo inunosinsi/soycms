@@ -213,6 +213,7 @@ class LabelCustomFieldPlugin{
 						if(isset($extraValues["pair"]) && is_array($extraValues["pair"])) $extraValues = $extraValues["pair"];
 
 						if(count($extraValues)){
+							if(!class_exists("CustomfieldAdvancedUtil")) SOY2::import("site_include.plugin.CustomFieldAdvanced.util.CustomfieldAdvancedUtil");
 							foreach($extraValues as $idx => $pairValues){
 								$_hash = (is_string($fieldValue) && strlen($fieldValue)) ? CustomfieldAdvancedUtil::createHash($fieldValue) : null;
 								$pairValue = (isset($_hash) && isset($pairValues[$_hash])) ? $pairValues[$_hash] : "";

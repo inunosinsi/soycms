@@ -295,7 +295,7 @@ class OutputBlogEntriesJsonPlugin{
 		static $c;
 		if(is_null($c)){
 			if(CMSPlugin::activeCheck("CustomFieldAdvanced")) {
-				SOY2::import("site_include.plugin.self.self", ".php");
+				SOY2::import("site_include.plugin.CustomFieldAdvanced.CustomFieldAdvanced", ".php");
 				$c = CMSPlugin::loadPluginConfig("CustomFieldAdvanced")->customFields;
 			}
 			if(is_null($c)) $c = array();

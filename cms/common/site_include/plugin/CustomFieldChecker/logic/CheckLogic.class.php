@@ -26,6 +26,7 @@ class CheckLogic extends SOY2LogicBase {
 	}
 
 	private function _customfield(string $fieldId, string $q=""){
+		SOY2::import("site_include.plugin.CustomField.CustomField", ".php");
 		$obj = CMSPlugin::loadPluginConfig("CustomField");
 		$haves = array();	//値がある
 		$nones = array(); 	//値がない
@@ -73,6 +74,7 @@ class CheckLogic extends SOY2LogicBase {
 	}
 
 	private function _customfieldAdvanced(string $fieldId, string $q=""){
+		SOY2::import("site_include.plugin.CustomFieldAdvanced.CustomFieldAdvanced", ".php");
 		$obj = CMSPlugin::loadPluginConfig("CustomFieldAdvanced");
 		unset($obj);
 
