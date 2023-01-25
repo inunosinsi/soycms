@@ -34,7 +34,7 @@ class EntryFieldLogic extends SOY2LogicBase {
 		if(isset($values[$entryId])) return $values[$entryId];
 		if(is_null($dao)) $dao = soycms_get_hash_table_dao("entry");
 		$now = time();
-		$sql = "SELECT id, title, more, content, cdate FROM Entry ".
+		$sql = "SELECT id, alias, title, more, content, cdate FROM Entry ".
 				"WHERE id = :id ".
 				"AND isPublished = " . Entry::ENTRY_ACTIVE . " ".
 				"AND openPeriodStart < " . $now . " ".
