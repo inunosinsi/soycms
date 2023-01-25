@@ -10,14 +10,14 @@
  * https://www.php.net/manual/ja/function.mime-content-type.php
  **/
 $mimetypes = array(
-	'image/x-ms-bmp',
-	'image/gif',
-	'image/jpeg',
-	'image/png',
-	'image/webp',
-	'image/avif', 
-	'image/x-icon',
-	'text/plain',
+	"image/x-ms-bmp",
+	"image/gif",
+	"image/jpeg",
+	"image/png",
+	"image/webp",
+	"image/avif", 
+	"image/x-icon",
+	"text/plain",
 	"text/css",
 	"text/javascript",
 	"application/x-javascript",
