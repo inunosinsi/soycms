@@ -194,6 +194,8 @@ class CustomFieldPluginAdvanced{
 					//記事フィールド
 					if($isEntryField){
 
+						$entry = new Entry();
+						$labelId = 0;
 						if($master->getType() == "entry"){
 							if(!class_exists("EntryFieldUtil")) SOY2::import("site_include.plugin.CustomFieldAdvanced.util.EntryFieldUtil");
 							list($selectedSiteId, $labelId, $entryId) = EntryFieldUtil::divideIds((string)$fieldValue);
@@ -204,14 +206,7 @@ class CustomFieldPluginAdvanced{
 							$entry = EntryFieldUtil::getEntryObjectById($entryId);
 							$attr["html"] = $entry->getContent();
 
-							$labelArr = ($labelId > 0) ? EntryFieldUtil::getLabelCaptionAndAliasById($labelId) : array("caption" => "", "alias" => "");
-							$blogArr = ($labelId > 0) ? EntryFieldUtil::getBlogTitleAndUri($labelId, (string)$labelArr["caption"]) : array("title" => "", "uri" => "");
-
 							if(count($old)) CMSUtil::resetOtherSite($old);
-						}else{
-							$entry = new Entry();
-							$labelArr = array("caption" => "", "alias" => "");
-							$blogArr = array("title" => "", "uri" => "");
 						}
 
 						/**
@@ -219,86 +214,14 @@ class CustomFieldPluginAdvanced{
 						 * cms:id="***_title"で記事名を出力
 						 * cms:id="***_create_date"で記事の作成時刻を出力
 						 **/
-						$htmlObj->addLabel($fieldId . "_id", array(
-	 						"text" => $entry->getId(),
-	 						"soy2prefix"=>"cms"
-	 					));
-						$htmlObj->addLabel($fieldId . "_alias", array(
-							"text" => $entry->getAlias(),
-							"soy2prefix"=>"cms"
-						));
-	 					$htmlObj->addLabel($fieldId . "_title", array(
-	 						"text" => $entry->getTitle(),
-	 						"soy2prefix"=>"cms"
-	 					));
-	 					$htmlObj->createAdd($fieldId . "_content", "CMSLabel", array(
-	 						"html" => $entry->getContent(),
-	 						"soy2prefix"=>"cms"
-	 					));
-	 					$htmlObj->createAdd($fieldId . "_more", "CMSLabel", array(
-	 						"html" => $entry->getMore(),
-	 						"soy2prefix"=>"cms"
-	 					));
-	 					$htmlObj->createAdd($fieldId . "_create_date", "DateLabel", array(
-	 						"text" => $entry->getCdate(),
-	 						"soy2prefix"=>"cms"
-	 					));
-
-						$htmlObj->createAdd($fieldId . "_label_caption", "CMSLabel", array(
-							"text" => (isset($labelArr["caption"])) ? $labelArr["caption"] : "",
-	 						"soy2prefix"=>"cms"
-						));
-
-						$htmlObj->createAdd($fieldId . "_label_alias", "CMSLabel", array(
-							"text" => (isset($labelArr["alias"])) ? $labelArr["alias"] : "",
-	 						"soy2prefix"=>"cms"
-						));
-
-						$htmlObj->createAdd($fieldId . "_blog_title", "CMSLabel", array(
-							"text" => (isset($blogArr["title"])) ? $blogArr["title"] : "",
-							"soy2prefix" => "cms"
-						));
-
-						$htmlObj->createAdd($fieldId . "_blog_uri", "CMSLabel", array(
-							"text" => (isset($blogArr["uri"])) ? $blogArr["uri"] : "",
-							"soy2prefix" => "cms"
-						));
+						SOY2::import("site_include.plugin.CustomFieldAdvanced.component.EntryFieldComponent");
+						EntryFieldComponent::addTags($htmlObj, $entry, $fieldId);
+						EntryFieldComponent::addOrderPartsTags($htmlObj, $labelId, $fieldId);
 
 						//サムネイルプラグイン
 						if(CMSPlugin::activeCheck("soycms_thumbnail")){
-							SOY2::import("site_include.plugin.soycms_thumbnail.util.ThumbnailPluginUtil");
-							$tmbImagePathes = ThumbnailPluginUtil::getThumbnailPathesByEntryId((int)$entry->getId());
-
-							foreach(array("upload", "trimming", "resize") as $label){
-								$imagePath = (isset($tmbImagePathes[ThumbnailPluginUtil::PREFIX_IMAGE . $label])) ? $tmbImagePathes[ThumbnailPluginUtil::PREFIX_IMAGE . $label] : "";
-								if($label == "resize") $label = "thumbnail";
-
-								$htmlObj->addModel($fieldId . "_is_" . $label, array(
-									"soy2prefix" => "cms",
-									"visible" => (strlen($imagePath) > 0)
-								));
-
-								$htmlObj->addModel($fieldId . "_no_" . $label, array(
-									"soy2prefix" => "cms",
-									"visible" => (strlen($imagePath) === 0)
-								));
-
-								$htmlObj->addImage($fieldId . "_" . $label, array(
-									"soy2prefix" => "cms",
-									"src" => $imagePath,
-									"alt" => $tmbImagePathes[ThumbnailPluginUtil::THUMBNAIL_ALT]
-								));
-
-								$htmlObj->addLabel($fieldId . "_" . $label . "_text", array(
-									"soy2prefix" => "cms",
-									"text" => $imagePath
-								));
-
-								$htmlObj->addLabel($fieldId . "_" . $label . "_path_text", array(
-									"soy2prefix" => "cms",
-									"text" => $imagePath
-								));
-							}
+							SOY2::import("site_include.plugin.CustomFieldAdvanced.component.ThumbnailPluginComponent");
+							ThumbnailPluginComponent::addTags($htmlObj, (int)$entry->getId(), $fieldId);
 						}
 						/** 記事フィールドの隠しモードここまで **/
 					}
