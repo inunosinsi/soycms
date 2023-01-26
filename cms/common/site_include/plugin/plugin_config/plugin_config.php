@@ -44,9 +44,9 @@ class PluginConfigPlugin{
 
 	public static function register(){
 		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
-		if(!$obj) $obj = new PluginBasePlugin();
+		if(!$obj) $obj = new PluginConfigPlugin();
 		CMSPlugin::addPlugin(self::PLUGIN_ID, array($obj, "init"));
 	}
 }
 
-PluginBasePlugin::register();
+PluginConfigPlugin::register();
