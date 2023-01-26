@@ -426,7 +426,7 @@ class SOYInquiry_ColumnBase implements ISOYInquiry_Column{
 	 * 値が正常かどうかチェック
 	 */
 	function validate(){
-		if($this->getIsRequire() && strlen($this->getValue()) < 1){
+		if($this->getIsRequire() && strlen((string)$this->getValue()) < 1){
 			$this->setErrorMessage($this->getLabel() . "を入力してください。");
 			return false;
 		}
