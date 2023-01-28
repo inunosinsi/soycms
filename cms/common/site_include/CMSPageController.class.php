@@ -25,7 +25,7 @@ class CMSPageController extends SOY2PageController{
 		$uri  = $pathBuilder->getPath();
 		$args = $pathBuilder->getArguments();
 		unset($pathBuilder);
-
+		
 		//保存
 		$this->args = $args;
 		$this->siteConfig = $siteConfig;
@@ -181,7 +181,7 @@ class CMSPageController extends SOY2PageController{
 	/**
 	 * 出力内容を取得
 	 */
-	function getOutput($page){
+	function getOutput(Page $page){
 		ob_start();
 		CMSPlugin::callEventFunc("beforeOutput");
 		$this->webPage->display();
@@ -195,11 +195,29 @@ class CMSPageController extends SOY2PageController{
 	/**
 	 * onOutputのプラグインを呼び出す。
 	 */
-	function onOutput(string $html, $page){
+	function onOutput(string $html, Page $page){
 		$onLoads = CMSPlugin::getEvent('onOutput');
 		if(!is_array($onLoads) || !count($onLoads)) return $html;
 		foreach($onLoads as $plugin){
 			$func = $plugin[0];
+			$filter = (isset($plugin[1]["filter"])) ? $plugin[1]["filter"] : "all";
+			$exeFunc = false;
+
+			switch($filter){
+				case "blog":
+					if($this->webPage instanceof CMSBlogPage) $exeFunc = true;
+					break;
+				case "page":
+					if(!$this->webPage instanceof CMSBlogPage) $exeFunc = true;
+					break;
+				case "all":
+				default:
+					$exeFunc = true;
+					break;
+			}
+			
+			if(!$exeFunc) continue;
+
 			$res = call_user_func($func, array('html' => $html, 'page' => &$page, 'webPage' => &$this->webPage));
 			if(!is_null($res) && is_string($res)) $html = $res;
 		}
