@@ -219,6 +219,11 @@ class EntryPage extends CMSEntryEditorPageBase{
 			"class"=>self::getEditorClass()
 		));
 
+		//CustomPlugin(soy:custom="Blog.Entry")を廃止 SOY2HTML(soy:id="customfield")で出力
+		$this->addLabel("customfield", array(
+			"html" => CMSPlugin::callCustomFieldFunctions("Blog.Entry")
+		));
+
 		$this->createAdd("state_draft","HTMLCheckBox",array(
 			"selected"=>!$entry->getIsPublished(),
 			"name"=>"isPublished",

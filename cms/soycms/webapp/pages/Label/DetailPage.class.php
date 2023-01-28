@@ -96,6 +96,11 @@ class DetailPage extends CMSWebPageBase{
 			"name" => "backgroundColor"
 		));
 
+		// CustomPlugin(soy:custom="Label.Detail")を廃止 SOY2HTML(soy:id="customfield")で出力
+		$this->addLabel("customfield", array(
+			"html" => CMSPlugin::callCustomFieldFunctions("Label.Detail")
+		));
+
 		$this->addLabel("preview", array(
 			"text"=> $entity->getCaption(),
 			"style"=> "color:#" . sprintf("%06X",$entity->getColor()).";background-color:#" . sprintf("%06X",$entity->getBackgroundColor()) . ";padding:5px;line-height:1.7;"

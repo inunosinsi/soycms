@@ -263,6 +263,11 @@ class DetailPage extends CMSEntryEditorPageBase{
 			"name"=>"style",
 		));
 
+		// CustomPlugin(soy:custom="Entry.Detail")を廃止 SOY2HTML(soy:id="customfield")で出力
+		$this->addLabel("customfield", array(
+			"html" => CMSPlugin::callCustomFieldFunctions("Entry.Detail")
+		));
+
 		$this->addCheckBox("state_draft", array(
 			"name" =>"isPublished",
 			"value" => "0",
