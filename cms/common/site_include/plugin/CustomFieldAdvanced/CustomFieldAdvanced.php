@@ -198,12 +198,12 @@ class CustomFieldPluginAdvanced{
 						$labelId = 0;
 						if($master->getType() == "entry"){
 							if(!class_exists("EntryFieldUtil")) SOY2::import("site_include.plugin.CustomFieldAdvanced.util.EntryFieldUtil");
-							list($selectedSiteId, $labelId, $entryId) = EntryFieldUtil::divideIds((string)$fieldValue);
+							list($selectedSiteId, $labelId, $entryEntryId) = EntryFieldUtil::divideIds((string)$fieldValue);
 
 							//$selectedSiteIdとcurrentSiteIdが異なる場合はDSNの切り替え
 							$old = ($selectedSiteId > 0 && $selectedSiteId !== CMSUtil::getCurrentSiteId()) ? CMSUtil::switchOtherSite($selectedSiteId) : array();
 
-							$entry = EntryFieldUtil::getEntryObjectById($entryId);
+							$entry = EntryFieldUtil::getEntryObjectById($entryEntryId);
 							$attr["html"] = $entry->getContent();
 
 							if(count($old)) CMSUtil::resetOtherSite($old);

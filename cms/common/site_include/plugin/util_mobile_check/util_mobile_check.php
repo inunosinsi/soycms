@@ -48,7 +48,7 @@ class UtilMobileCheckPlugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"0.9.2"
+			"version"=>"0.10"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID, array(
 			$this, "config_page"
@@ -88,15 +88,16 @@ class UtilMobileCheckPlugin{
 	/**
 	 * サイトアクセス時の動作
 	 */
-	function onSiteAccess($obj){
-		$this->redirect($obj);
-		self::addSessionVar();
+	function onSiteAccess($args){
+		$controller = &$args["controller"];
+		self::_redirect($controller);
+		self::_addSessionVar();
 	}
 
 	/**
 	 * 公開側の出力
 	 */
-	function redirect(){
+	private function _redirect(CMSPageController $controller){
 		$config = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
 		$this->config = $config;
 
@@ -199,7 +200,7 @@ class UtilMobileCheckPlugin{
 	/**
 	 * output_add_rewrite_varを使ってリンクのURLにセッションIDを付ける
 	 */
-	private function addSessionVar(){
+	private function _addSessionVar(){
 		if(
 			self::isMobile() && SOYCMS_MOBILE_CARRIER == "DoCoMo"
 			&&

@@ -23,9 +23,10 @@ class PluginBasePlugin{
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
 			if(defined("_SITE_ROOT_")){
 				// 公開側ページの方で動作する拡張ポイントで使用したいものを追加する
-			
+
 			}else{
 				// 管理画面側の方で動作する拡張ポイントで使用したいものを追加する
+				
 			}
 		}
 	}

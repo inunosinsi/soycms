@@ -20,7 +20,7 @@ class UtilMultiLanguagePlugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"0.8"
+			"version"=>"0.9"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID, array(
 			$this,"config_page"
@@ -57,14 +57,15 @@ class UtilMultiLanguagePlugin{
 	/**
 	 * サイトアクセス時の動作
 	 */
-	function onSiteAccess($obj){
-		$this->redirect($obj);
+	function onSiteAccess($args){
+		$controller = &$args["controller"];
+		self::_redirect($args["controller"]);
 	}
 
 	/**
 	 * 公開側の出力
 	 */
-	function redirect(){
+	private function _redirect(CMSPageController $controller){
 
 		//既に設定している場合は処理を止める
 		if(defined("SOYCMS_PUBLISH_LANGUAGE")) return;
@@ -149,10 +150,7 @@ class UtilMultiLanguagePlugin{
 
 	public static function register(){
 		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
-		if(is_null($obj)){
-			$obj = new UtilMultiLanguagePlugin();
-		}
-
+		if(is_null($obj)) $obj = new UtilMultiLanguagePlugin();
 		CMSPlugin::addPlugin(self::PLUGIN_ID, array($obj, "init"));
 	}
 }

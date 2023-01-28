@@ -11,7 +11,7 @@ class LanguageListComponent extends HTMLList{
 			"text" => $entity
 		));
 
-		$prefix = self::getPrefixString($lang);
+		$prefix = (is_string($lang)) ? self::_getPrefixString($lang) : "";
 		$this->addInput("prefix_input", array(
 			"name" => "Config[" . $lang . "][prefix]",
 			"value" => $prefix
@@ -29,7 +29,7 @@ class LanguageListComponent extends HTMLList{
 		$this->addCheckBox("is_use_checkbox", array(
 			"name" => "Config[" . $lang . "][is_use]",
 			"value" => SOYCMSUtilMultiLanguageUtil::IS_USE,
-			"selected" => ($this->checkIsUse($lang)),
+			"selected" => (is_string($lang) && self::_checkIsUse($lang)),
 			"label" => " " . $entity . "サイトを表示する"
 		));
 
@@ -46,7 +46,11 @@ class LanguageListComponent extends HTMLList{
 		));
 	}
 
-	private function getPrefixString($lang){
+	/**
+	 * @param string
+	 * @return string
+	 */
+	private function _getPrefixString(string $lang){
 		if($lang !== "jp"){
 			$text = (isset($this->config[$lang]["prefix"])) ? $this->config[$lang]["prefix"] : $lang;
 		}else{
@@ -55,7 +59,11 @@ class LanguageListComponent extends HTMLList{
 		return $text;
 	}
 
-	function checkIsUse($lang){
+	/**
+	 * @param string
+	 * @return string
+	 */
+	private function _checkIsUse(string $lang){
 		if($lang == SOYCMSUtilMultiLanguageUtil::LANGUAGE_JP) return true;
 
 		return (isset($this->config[$lang]["is_use"]) && $this->config[$lang]["is_use"] == SOYCMSUtilMultiLanguageUtil::IS_USE);
@@ -69,4 +77,3 @@ class LanguageListComponent extends HTMLList{
 		$this->smartPrefix = $smartPrefix;
 	}
 }
-?>
