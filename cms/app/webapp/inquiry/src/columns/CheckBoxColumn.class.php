@@ -159,13 +159,24 @@ class CheckBoxColumn extends SOYInquiry_ColumnBase{
 	}
 
 	function validate(){
-		$value = $this->getValue();
-		if(is_array($value))$value = implode(",",$value);
+		if(!$this->getIsRequire()) return true;
 
-		if($this->getIsRequire() && strlen($value)<1){
-			$this->setErrorMessage($this->getLabel()."から1つ以上選んでください。");
+		$value = $this->getValue();
+		if(is_array($value)) $value = implode(",",$value);
+
+		if(strlen($value)<1){
+			switch(SOYCMS_PUBLISH_LANGUAGE){
+				case "en":
+					$msg = "Please choose one from the ".$this->getLabel().".";
+					break;
+				default:
+					$msg = $this->getLabel()."から1つ選んでください。";
+			}
+			$this->setErrorMessage($msg);
 			return false;
 		}
+
+		return true;
 	}
 
 

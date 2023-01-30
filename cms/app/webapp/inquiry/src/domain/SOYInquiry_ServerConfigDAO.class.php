@@ -18,6 +18,4 @@ class SOYInquiry_ServerConfigDAO{
 		$dao->executeUpdateQuery($sql1,array());
 		$dao->executeUpdateQuery($sql2,array(":config" => serialize($bean)));
 	}
-    
 }
-?>

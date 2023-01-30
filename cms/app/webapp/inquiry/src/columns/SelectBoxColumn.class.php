@@ -163,11 +163,21 @@ class SelectBoxColumn extends SOYInquiry_ColumnBase{
 	}
 
 	function validate(){
-		$values =  $this->getValue();
-		if($this->getIsRequire() && (isset($values[0]) && strlen($values[0]) == 0)){
-			$this->setErrorMessage($this->getLabel()."から1つ選んでください。");
+		if(!$this->getIsRequire()) return true;
+
+		$values = $this->getValue();
+		if((is_array($values) && isset($values[0]) && strlen($values[0]) == 0)){
+			switch(SOYCMS_PUBLISH_LANGUAGE){
+				case "en":
+					$msg = "Please choose one from the ".$this->getLabel().".";
+					break;
+				default:
+					$msg = $this->getLabel()."から1つ選んでください。";
+			}
+			$this->setErrorMessage($msg);
 			return false;
 		}
+		return true;
 	}
 
 	function getLinkagesSOYMailTo() {

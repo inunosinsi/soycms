@@ -112,3 +112,6 @@ if(defined("_SITE_ROOT_") && $doc_root == _SITE_ROOT_){	//公開側
 }
 define("SOY_INQUIRY_UPLOAD_ROOT_DIR", $doc_root);
 SOY2::import("util.SOYInquiryUtil");
+
+// validateの多言語化
+if(!defined("SOYCMS_PUBLISH_LANGUAGE")) define("SOYCMS_PUBLISH_LANGUAGE", "jp");

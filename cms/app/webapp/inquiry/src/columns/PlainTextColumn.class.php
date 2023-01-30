@@ -53,6 +53,10 @@ class PlainTextColumn extends SOYInquiry_ColumnBase{
 		return $config;
 	}
 
+	function validate(){
+		return true;
+	}
+
 	/**
 	 * データ投入用
 	 */

@@ -163,37 +163,57 @@ class ConfirmMailAddressColumn extends SOYInquiry_ColumnBase{
 
 	function validate(){
 		$values = $this->getValue();
-		if(!is_array($values)){
-			$values = array("", "");
+		if(!is_array($values)) $values = array("", "");
+
+		$msg = "";
+		if(trim($values[0]) !== trim($values[1])){
+			switch(SOYCMS_PUBLISH_LANGUAGE){
+				case "en":
+					$msg = "Confirmation mail address is incorrect.";
+					break;
+				default:
+					$msg = "確認用のメールアドレスが正しくありません。";
+			}
+		}else{
+			foreach($values as $email){
+				$email = trim($email);
+				if($this->getIsRequire()){
+					if(strlen($email)<1){
+						switch(SOYCMS_PUBLISH_LANGUAGE){
+							case "en":
+								$msg = "Please enter the ".$this->getLabel().".";
+								break;
+							default:
+								$msg = $this->getLabel() . "を入力してください。";
+						}
+					}
+				}else{
+					$ascii  = '[a-zA-Z0-9!#$%&\'*+\-\/=?^_`{|}~.]';//'[\x01-\x7F]';
+					$domain = '(?:[-a-z0-9]+\.)+[a-z]{2,10}';//'([-a-z0-9]+\.)*[a-z]+';
+					$d3     = '\d{1,3}';
+					$ip     = $d3.'\.'.$d3.'\.'.$d3.'\.'.$d3;
+					$validEmail = "^$ascii+\@(?:$domain|\\[$ip\\])$";
+		
+					if(! preg_match('/'.$validEmail.'/i', $email) ) {
+						switch(SOYCMS_PUBLISH_LANGUAGE){
+							case "en":
+								$msg = $this->getLabel() . " format is incorrect.";
+								break;
+							default:
+								$msg = $this->getLabel() . "の書式が正しくありません。";
+						}
+					}
+				}
+				if(strlen($msg)) break;
+			}
 		}
 
-		if(trim($values[0])!==trim($values[1])){
-			$this->setErrorMessage("確認用のメールアドレスが正しくありません。");
+		if(strlen($msg)){
+			$this->setErrorMessage($msg);
 			return false;
 		}
 
-		foreach($values as $email){
-			$email = trim($email);
-			if($this->getIsRequire() && strlen($email)<1){
-				$this->setErrorMessage($this->getLabel()."を入力してください。");
-				return false;
-			}
-
-			if(strlen($email)<1){
-				return;
-			}
-
-	    	$ascii  = '[a-zA-Z0-9!#$%&\'*+\-\/=?^_`{|}~.]';//'[\x01-\x7F]';
-	    	$domain = '(?:[-a-z0-9]+\.)+[a-z]{2,10}';//'([-a-z0-9]+\.)*[a-z]+';
-			$d3     = '\d{1,3}';
-			$ip     = $d3.'\.'.$d3.'\.'.$d3.'\.'.$d3;
-	    	$validEmail = "^$ascii+\@(?:$domain|\\[$ip\\])$";
-
-	    	if(! preg_match('/'.$validEmail.'/i', $email) ) {
-				$this->setErrorMessage("メールアドレスの書式が正しくありません。");
-				return false;
-	    	}
-		}
+		return true;
     }
 
 	function getAttributeForInputMode(){

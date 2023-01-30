@@ -190,58 +190,81 @@ class SingleTextColumn extends SOYInquiry_ColumnBase{
 		$value = $this->getValue();
 		$value = trim($value);
 
-		if($this->getIsRequire() && strlen($value)<1){
-			$this->setErrorMessage($this->getLabel()."を入力してください。");
+		$msg = "";
+
+		//var_dump(SOYCMS_PUBLISH_LANGUAGE);exit;
+
+		switch($this->type){
+			case 1: //英数字とハイフンとスペース
+				if(!preg_match('/^[a-zA-Z0-9\\- ]*$/',$value)){
+					switch(SOYCMS_PUBLISH_LANGUAGE){
+						case "en":
+							$msg = "Please enter the ".$this->getLabel()." in half-width alphanumeric characters.";
+							break;
+						default:
+							$msg = $this->getLabel() . "は半角英数字で入力してください。";
+					}
+				}
+				break;
+			case 2: //メールアドレスのマッチ、MailAddressColumnからコピー
+				$ascii  = '[a-zA-Z0-9!#$%&\'*+\\-\\/=?^_`{|}~.]';//'[\x01-\x7F]';
+				$domain = '(?:[-a-z0-9]+\\.)+[a-z]{2,10}';//'([-a-z0-9]+\.)*[a-z]+';
+				$d3     = '\d{1,3}';
+				$ip     = $d3.'\\.'.$d3.'\\.'.$d3.'\\.'.$d3;
+				$validEmail = "^$ascii+@(?:$domain|\\[$ip\\])$";
+
+				if(!preg_match('/'.$validEmail.'/i', $value)){
+					switch(SOYCMS_PUBLISH_LANGUAGE){
+						case "en":
+							$msg = $this->getLabel() . " format is incorrect.";
+							break;
+						default:
+							$msg = $this->getLabel() . "の書式が正しくありません。";
+					}
+				}
+				break;
+			case 3:	//数字とハイフン
+				if(!preg_match('/^[0-9\-]*$/',$value)){
+					switch(SOYCMS_PUBLISH_LANGUAGE){
+						case "en":
+							$msg = "Please enter the ".$this->getLabel()." in single-byte numbers. [".$value."]";
+							break;
+						default:
+							$msg = $this->getLabel() . "は半角数字で入力してください。[".$value."]";
+						}
+				}
+				break;
+			case 4:	//全角かなのみ、英数字とハイフンとスペースも許可、漢字と半角カナと記号が不可
+				if(!preg_match('/^[ぁ-ヴーa-zA-Z0-9\\- 　]*$/',$value)){
+					switch(SOYCMS_PUBLISH_LANGUAGE){
+						case "en":
+							$msg = "Please enter the ".$this->getLabel()." in full-width kana.";
+							break;
+						default:
+							$msg = $this->getLabel() . "は全角かなで入力してください。";
+					}
+				}
+				break;
+			case 5:	//「//ｦ ｡-ﾟ a-zA-Z0-9\\-」半角カナのみ、英数字とハイフンとスペースも許可、漢字と全角かなと記号が不可
+				if(!preg_match('/^[-ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦﾝﾞﾟｧｨｩｪｫｬｭｮa-zA-Z0-9 ]*$/',$value)){
+					switch(SOYCMS_PUBLISH_LANGUAGE){
+						case "en":
+							$msg = "Please enter the ".$this->getLabel()." in half-width kana.";
+							break;
+						default:
+							$msg = $this->getLabel() . "は半角カナで入力してください。";
+					}
+				}
+				break;
+		}
+
+		if(strlen($msg)){
+			$this->setErrorMessage($msg);
 			return false;
 		}
 
-		//全角かなのみ、英数字とハイフンとスペースも許可、漢字と半角カナと記号が不可
-		if($this->type == 4 && strlen($value)>0){
-			if(!preg_match('/^[ぁ-ヴーa-zA-Z0-9\\- 　]*$/',$value)){
-				$this->setErrorMessage($this->getLabel() . "は全角かなで入力してください。");
-				return false;
-			}
-		}
-		/**
-		 * //ｦ ｡-ﾟ a-zA-Z0-9\\-
-		 */
-		//半角カナのみ、英数字とハイフンとスペースも許可、漢字と全角かなと記号が不可
-		if($this->type == 5 && strlen($value)>0){
-			if(!preg_match('/^[-ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦﾝﾞﾟｧｨｩｪｫｬｭｮa-zA-Z0-9 ]*$/',$value)){
-				$this->setErrorMessage($this->getLabel() . "は半角カナで入力してください。");
-				return false;
-			}
-		}
-
-		//英数字とハイフンとスペース
-		if($this->type == 1 && strlen($value)>0){
-			if(!preg_match('/^[a-zA-Z0-9\\- ]*$/',$value)){
-				$this->setErrorMessage($this->getLabel() . "は半角英数字で入力してください。");
-				return false;
-			}
-		}
-
-		//数字とハイフン
-		if($this->type == 3 && strlen($value)>0){
-			if(!preg_match('/^[0-9\-]*$/',$value)){
-				$this->setErrorMessage($this->getLabel() . "は半角数字で入力してください。[{$value}]");
-				return false;
-			}
-		}
-
-		//メールアドレスのマッチ、MailAddressColumnからコピー
-		if($this->type == 2 && strlen($value)>0){
-			$ascii  = '[a-zA-Z0-9!#$%&\'*+\\-\\/=?^_`{|}~.]';//'[\x01-\x7F]';
-	    	$domain = '(?:[-a-z0-9]+\\.)+[a-z]{2,10}';//'([-a-z0-9]+\.)*[a-z]+';
-			$d3     = '\d{1,3}';
-			$ip     = $d3.'\\.'.$d3.'\\.'.$d3.'\\.'.$d3;
-	    	$validEmail = "^$ascii+@(?:$domain|\\[$ip\\])$";
-
-	    	if(! preg_match('/'.$validEmail.'/i', $value) ) {
-				$this->setErrorMessage($this->getLabel() . "の書式が正しくありません。");
-				return false;
-	    	}
-		}
+		// 未入力の場合のvalidate
+		return parent::validate();
 	}
 
 	/**
@@ -320,10 +343,11 @@ class SingleTextColumn extends SOYInquiry_ColumnBase{
 				$attributes["docomo_xhtml"] = "style=\"-wap-input-format:&quot;*&lt;ja:n&gt;&quot;;-wap-input-format:{$wap_length}N;\"";
 				break;
 			case 4 ://全角かな
+				$wap_length = "";	// @ToDo 何の値を入れて良いかわからない
 				$attributes["docomo"] = "istyle=\"1\"";
 				$attributes["softbank"] = "mode=\"hiragana\"";
-				$attributes["au"] = "format=\"format=\"{$wap_length}M\"";
-				$attributes["docomo_xhtml"] = "style=\"-wap-input-format:&quot;*&lt;ja:h&gt;&quot;;-wap-input-format:{$wap_length}M;\"";
+				$attributes["au"] = "format=\"format=\"".$wap_length."M\"";
+				$attributes["docomo_xhtml"] = "style=\"-wap-input-format:&quot;*&lt;ja:h&gt;&quot;;-wap-input-format:".$wap_length."M;\"";
 				break;
 			case 5 ://半角カナ
 				$attributes["docomo"] = "istyle=\"2\"";

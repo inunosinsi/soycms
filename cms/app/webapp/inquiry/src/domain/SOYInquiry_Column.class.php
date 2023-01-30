@@ -424,13 +424,23 @@ class SOYInquiry_ColumnBase implements ISOYInquiry_Column{
 
 	/**
 	 * 値が正常かどうかチェック
+	 * @return bool
 	 */
 	function validate(){
-		if($this->getIsRequire() && strlen((string)$this->getValue()) < 1){
-			$this->setErrorMessage($this->getLabel() . "を入力してください。");
-			return false;
+		if(!$this->getIsRequire()) return true;
+		$value = (is_string($this->getValue())) ? trim($this->getValue()) : "";
+		if(strlen($value)) return true;
+
+		switch(SOYCMS_PUBLISH_LANGUAGE){
+			case "en":
+				$msg = "Please enter the ".$this->getLabel().".";
+				break;
+			default:
+				$msg = $this->getLabel() . "を入力してください。";
 		}
-		return true;
+
+		$this->setErrorMessage($msg);
+		return false;
 	}
 
 	/**

@@ -50,5 +50,7 @@ class SOYShopColumn extends SOYInquiry_ColumnBase{
 		return parent::getConfigure();
 	}
 
-	function validate(){}
+	function validate(){
+		return true;
+	}
 }

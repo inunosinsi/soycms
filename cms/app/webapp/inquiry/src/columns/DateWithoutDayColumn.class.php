@@ -172,17 +172,25 @@ class DateWithoutDayColumn extends SOYInquiry_ColumnBase{
 	}
 
 	function validate(){
+		if(!$this->getIsRequire()) return true;
+
 		$values = $this->getValue();
 
-		if($this->getIsRequire()){
-			if(
-				empty($values)
-				|| !strlen(@$values["year"])
-				|| !strlen(@$values["month"])
-			){
-				$this->setErrorMessage($this->getLabel()."を入力してください。");
-				return false;
+		if(
+			empty($values)
+			|| !strlen(@$values["year"])
+			|| !strlen(@$values["month"])
+		){
+			switch(SOYCMS_PUBLISH_LANGUAGE){
+				case "en":
+					$msg = "Please enter the ".$this->getLabel().".";
+					break;
+				default:
+					$msg = $this->getLabel() . "を入力してください。";
 			}
+			
+			$this->setErrorMessage($msg);
+			return false;
 		}
 
 		return true;

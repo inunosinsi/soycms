@@ -116,10 +116,21 @@ class EnqueteColumn extends SOYInquiry_ColumnBase{
 	}
 
 	function validate(){
-		if($this->getIsRequire() && strlen($this->getValue())<1){
-			$this->setErrorMessage($this->getLabel()."から1つ選んでください。");
+		if(!$this->getIsRequire()) return true;
+
+		if(strlen($this->getValue())<1){
+			switch(SOYCMS_PUBLISH_LANGUAGE){
+				case "en":
+					$msg = "Please choose one from the ".$this->getLabel().".";
+					break;
+				default:
+					$msg = $this->getLabel()."から1つ選んでください。";
+			}
+			$this->setErrorMessage($msg);
 			return false;
 		}
+
+		return true;
 	}
 
 	function getLinkagesSOYMailTo() {

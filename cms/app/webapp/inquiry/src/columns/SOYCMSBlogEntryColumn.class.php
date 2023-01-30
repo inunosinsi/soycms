@@ -158,8 +158,10 @@ class SOYCMSBlogEntryColumn extends SOYInquiry_ColumnBase{
 		return $config;
 	}
 
-	function validate(){}
-
+	function validate(){
+		return true;
+	}
+	
 	function getView(){
 		return htmlspecialchars((string)$this->getValue(), ENT_QUOTES, "UTF-8");
 	}

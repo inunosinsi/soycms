@@ -134,6 +134,8 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 	}
 
 	function validate(){
+		if(!$this->getIsRequire()) return true;
+
 		$values = $this->getValue();
 
 		if(isset($values["zip"])){
@@ -142,17 +144,36 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 			$zip = trim($values["zip1"] . $values["zip2"]);
 		}
 
+		if(
+				empty($values)
+			|| $zip == ""
+			|| @$values["prefecture"] == ""
+		){
+			switch(SOYCMS_PUBLISH_LANGUAGE){
+				case "en":
+					$msg = "Please enter the address.";
+					break;
+				default:
+					$msg = "住所を入力してください。";
+			}
+			$this->setErrorMessage($msg);
+			return false;
+		}
 
-		if(!isset($_POST["test"]) && $this->getIsRequire()){
-			if(
-				   empty($values)
-				|| $zip == ""
-				|| @$values["prefecture"] == ""
-				|| @$values["address1"] == ""
-				|| @$values["address2"] == ""
-			){
-				$this->errorMessage = "住所を入力してください。";
-				return false;
+		$items = self::_getItemsConfig();
+		for($i = 1; $i <= 2; $i++){
+			if(isset($items["address".$i]) && $items["address".$i]){
+				if(!strlen(trim($values["address".$i]))){
+					switch(SOYCMS_PUBLISH_LANGUAGE){
+						case "en":
+							$msg = "Please enter the address.";
+							break;
+						default:
+							$msg = "住所を入力してください。";
+					}
+					$this->setErrorMessage($msg);
+					return false;
+				}
 			}
 		}
 
@@ -167,27 +188,21 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 		}
 
 		if(!empty($zip)){
-			list($zip1, $zip2) = self::divideZipCode($zip);
+			list($zip1, $zip2) = self::_divideZipCode($zip);
 			if(!is_numeric($zip1.$zip2)){
-				$this->errorMessage = "郵便番号の書式が不正です。";
+				switch(SOYCMS_PUBLISH_LANGUAGE){
+					case "en":
+						$msg = "Invalid zip code format.";
+						break;
+					default:
+						$msg = "郵便番号の書式が不正です。";
+				}
+				$this->setErrorMessage($msg);
 				return false;
 			}
 		}
 
-		if(isset($_POST["test"])){
-			if(!$this->zipDivide){
-				list($zip1, $zip2) = self::divideZipCode($values["zip"]);
-				$values["zip1"] = $zip1;
-				$values["zip2"] = $zip2;
-			}
-			$res = SOY2Logic::createInstance("logic.AddressSearchLogic")->search($values["zip1"],$values["zip2"]);
-
-			$values["prefecture"] = $res["prefecture"];
-			$values["address1"] = $res["address1"];
-			$values["address2"] = $res["address2"];
-
-			$this->setValue($values);
-		}
+		return true;
 	}
 
 	function getErrorMessage(){

@@ -69,19 +69,23 @@ class QuestionColumn extends SOYInquiry_ColumnBase{
 	}
 
 	function validate(){
-		$value = $this->getValue();
-
-		if($this->getIsRequire() && strlen($value)<1){
-			$this->setErrorMessage($this->getLabel()."を入力してください。");
-			return false;
-		}
+		$value = (is_string($this->getValue())) ? trim($this->getValue()) : "";
+		if(!strlen($value)) return parent::validate();
 
 		$answer = $this->answer;
 
 		if($value !== $this->answer){
-			$this->setErrorMessage($this->getLabel()."への回答が間違っています。");
+			switch(SOYCMS_PUBLISH_LANGUAGE){
+				case "en":
+					$msg = "Wrong answer to ".$this->getLabel().".";
+					break;
+				default:
+				$msg = $this->getLabel()."への回答が間違っています。";
+			}
+			$this->setErrorMessage($res);
 			return false;
 		}
+		
 		return true;
 	}
 

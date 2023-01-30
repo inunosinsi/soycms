@@ -129,11 +129,14 @@ class PrivacyPolicyColumn extends SOYInquiry_ColumnBase{
 	}
 
 	function validate(){
+		if(!$this->getIsRequire()) return true;
 
-		if($this->getIsRequire() && $this->getValue() != 1){
+		if($this->getValue() != 1){
 			$this->setErrorMessage($this->noCheckMessage);
 			return false;
 		}
+
+		return true;
     }
 
     /**

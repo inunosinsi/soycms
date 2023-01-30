@@ -119,19 +119,33 @@ class TelephoneColumn extends SOYInquiry_ColumnBase{
 			$this->setValue(array("", "", ""));
 
 			if($this->getIsRequire()){
-				$this->setErrorMessage($this->getLabel()."を入力してください。");
+				switch(SOYCMS_PUBLISH_LANGUAGE){
+					case "en":
+						$msg = "Please enter the ".$this->getLabel().".";
+						break;
+					default:
+						$msg = $this->getLabel() . "を入力してください。";
+				}
+				$this->setErrorMessage($msg);
 				return false;
 			}
-
-			return true;
 		}
 
 		if( (strlen($values[0]) + strlen($values[1]) + strlen($values[2]) > 0)
 		 && (strlen($values[0]) * strlen($values[1]) * strlen($values[2]) == 0)
 		){
-			$this->errorMessage = "電話番号の書式が不正です。";
+			switch(SOYCMS_PUBLISH_LANGUAGE){
+				case "en":
+					$msg = "Invalid telephone number format.";
+					break;
+				default:
+					$msg = "電話番号の書式が不正です。";
+			}
+			$this->setErrorMessage($msg);
 			return false;
 		}
+
+		return true;
 	}
 
 	function getErrorMessage(){

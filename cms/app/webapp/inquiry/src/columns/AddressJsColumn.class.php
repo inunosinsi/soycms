@@ -162,6 +162,8 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 	}
 
 	function validate(){
+		if(!$this->getIsRequire()) return true;
+
 		$values = $this->getValue();
 
 		if(isset($values["zip"])){
@@ -170,26 +172,37 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 			$zip = trim($values["zip1"] . $values["zip2"]);
 		}
 
-		if($this->getIsRequire()){
-			if(
-				   empty($values)
-				|| $zip == ""
-				|| @$values["prefecture"] == ""
-			){
-				$this->errorMessage = "住所を入力してください。";
-				return false;
+		if(
+				empty($values)
+			|| $zip == ""
+			|| @$values["prefecture"] == ""
+		){
+			switch(SOYCMS_PUBLISH_LANGUAGE){
+				case "en":
+					$msg = "Please enter the address.";
+					break;
+				default:
+					$msg = "住所を入力してください。";
 			}
+			$this->setErrorMessage($msg);
+			return false;
+		}
 
-			$items = self::_getItemsConfig();
-			for($i = 1; $i <= 2; $i++){
-				if(isset($items["address".$i]) && $items["address".$i]){
-					if(!strlen(trim($values["address".$i]))){
-						$this->errorMessage = "住所を入力してください。";
-						return false;
+		$items = self::_getItemsConfig();
+		for($i = 1; $i <= 2; $i++){
+			if(isset($items["address".$i]) && $items["address".$i]){
+				if(!strlen(trim($values["address".$i]))){
+					switch(SOYCMS_PUBLISH_LANGUAGE){
+						case "en":
+							$msg = "Please enter the address.";
+							break;
+						default:
+							$msg = "住所を入力してください。";
 					}
+					$this->setErrorMessage($msg);
+					return false;
 				}
 			}
-			
 		}
 
 		if(empty($values)){
@@ -205,7 +218,14 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 		if(!empty($zip)){
 			list($zip1, $zip2) = self::_divideZipCode($zip);
 			if(!is_numeric($zip1.$zip2)){
-				$this->errorMessage = "郵便番号の書式が不正です。";
+				switch(SOYCMS_PUBLISH_LANGUAGE){
+					case "en":
+						$msg = "Invalid zip code format.";
+						break;
+					default:
+						$msg = "郵便番号の書式が不正です。";
+				}
+				$this->setErrorMessage($msg);
 				return false;
 			}
 		}

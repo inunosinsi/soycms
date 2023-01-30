@@ -128,8 +128,17 @@ class PrefectureColumn extends SOYInquiry_ColumnBase{
 	}
 
 	function validate(){
-		if($this->getIsRequire() && !strlen($this->getValue())){
-			$this->setErrorMessage($this->getLabel()."を選んでください。");
+		if(!$this->getIsRequire()) return true;
+
+		if(!strlen($this->getValue())){
+			switch(SOYCMS_PUBLISH_LANGUAGE){
+				case "en":
+					$msg = "Please select the ".$this->getLabel().".";
+					break;
+				default:
+					$msg = $this->getLabel() . "を選んでください。";
+			}
+			$this->setErrorMessage($msg);
 			return false;
 		}
 		return true;

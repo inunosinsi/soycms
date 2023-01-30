@@ -59,6 +59,10 @@ class SerialNumberColumn extends SOYInquiry_ColumnBase{
 		return $config;
 	}
 
+	function validate(){
+		return true;
+	}
+
 	/**
 	 * 確認画面で呼び出す
 	 */

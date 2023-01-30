@@ -194,12 +194,23 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 
 		//必須チェック
 		if($this->getIsRequire() && !count($values)){
-			$this->setErrorMessage($this->getLabel()."を入力してください。");
+			switch(SOYCMS_PUBLISH_LANGUAGE){
+				case "en":
+					$msg = "Please enter the ".$this->getLabel().".";
+					break;
+				default:
+					$msg = $this->getLabel() . "を入力してください。";
+			}
+			
+	
+			$this->setErrorMessage($msg);
 			return false;
 		}
 
 		$this->setValue($values);
 		$_POST["data"][$this->getColumnId()] = base64_encode(serialize($this->getValue()));
+
+		return true;
 	}
 
 	/**

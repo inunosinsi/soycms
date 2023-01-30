@@ -187,7 +187,15 @@ class FileColumn extends SOYInquiry_ColumnBase{
 
 		//必須チェック
 		if($this->getIsRequire() && strlen($name)<1){
-			$this->setErrorMessage($this->getLabel()."を入力してください。");
+			switch(SOYCMS_PUBLISH_LANGUAGE){
+				case "en":
+					$msg = "Please enter the ".$this->getLabel().".";
+					break;
+				default:
+					$msg = $this->getLabel() . "を入力してください。";
+			}
+			
+			$this->setErrorMessage($msg);
 			return false;
 		}
 
@@ -204,7 +212,15 @@ class FileColumn extends SOYInquiry_ColumnBase{
 			}
 
 			if(!$res) {
-				$this->setErrorMessage($this->getLabel()."の形式が不正です。");
+				switch(SOYCMS_PUBLISH_LANGUAGE){
+					case "en":
+						$msg = "Invalid ".$this->getLabel()." format.";
+						break;
+					default:
+						$msg = $this->getLabel()."の形式が不正です。";
+				}
+				
+				$this->setErrorMessage($msg);
 				return false;
 			}
 		}
@@ -212,7 +228,15 @@ class FileColumn extends SOYInquiry_ColumnBase{
 
 		//ファイルサイズチェック
 		if(($this->uploadsize * self::KB_SIZE)< $size){
-			$this->setErrorMessage($this->getLabel()."が大きすぎます。");
+			switch(SOYCMS_PUBLISH_LANGUAGE){
+				case "en":
+					$msg = $this->getLabel()." is too large.";
+					break;
+				default:
+					$msg = $this->getLabel()."が大きすぎます。";
+			}
+			
+			$this->setErrorMessage($msg);
 			return false;
 		}
 
@@ -229,7 +253,15 @@ class FileColumn extends SOYInquiry_ColumnBase{
 
 		//一時アップロードに失敗した場合
 		if(!$result){
-			$this->setErrorMessage("アップロードに失敗しました。");
+			switch(SOYCMS_PUBLISH_LANGUAGE){
+				case "en":
+					$msg = "Upload failed.";
+					break;
+				default:
+					$msg = "アップロードに失敗しました";
+			}
+			
+			$this->setErrorMessage($msg);
 			return false;
 		}
 
@@ -261,6 +293,8 @@ class FileColumn extends SOYInquiry_ColumnBase{
 
 		$new_value = base64_encode(serialize($this->getValue()));
 		$_POST["data"][$this->getColumnId()] = $new_value;
+
+		return true;
 	}
 
 	private function _shapeExtensions(){

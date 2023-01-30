@@ -149,15 +149,6 @@ class MailAddressColumn extends SOYInquiry_ColumnBase{
 	function validate(){
 		$email = $this->getValue();
 
-		if($this->getIsRequire() && strlen($email)<1){
-			$this->setErrorMessage($this->getLabel()."を入力してください。");
-			return false;
-		}
-
-		if(strlen($email)<1){
-			return;
-		}
-
     	$ascii  = '[a-zA-Z0-9!#$%&\'*+\-\/=?^_`{|}~.]';//'[\x01-\x7F]';
     	$domain = '(?:[-a-z0-9]+\.)+[a-z]{2,10}';//'([-a-z0-9]+\.)*[a-z]+';
 		$d3     = '\d{1,3}';
@@ -165,9 +156,19 @@ class MailAddressColumn extends SOYInquiry_ColumnBase{
     	$validEmail = "^$ascii+\@(?:$domain|\\[$ip\\])$";
 
     	if(! preg_match('/'.$validEmail.'/i', $email) ) {
-			$this->setErrorMessage("メールアドレスの書式が正しくありません。");
+			switch(SOYCMS_PUBLISH_LANGUAGE){
+				case "en":
+					$msg = $this->getLabel() . " format is incorrect.";
+					break;
+				default:
+					$msg = $this->getLabel() . "の書式が正しくありません。";
+			}
+			$this->setErrorMessage($msg);
 			return false;
     	}
+
+		// 未入力の場合のvalidate
+		return parent::validate();
     }
 
 	function getAttributeForInputMode(){

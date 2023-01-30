@@ -137,6 +137,10 @@ class MultiTextColumn extends SOYInquiry_ColumnBase{
 		return $config;
 	}
 
+	function validate(){
+		return parent::validate();
+	}
+
 	function getLinkagesSOYMailTo() {
 		return array(
 			SOYMailConverter::SOYMAIL_NONE  => "連携しない",

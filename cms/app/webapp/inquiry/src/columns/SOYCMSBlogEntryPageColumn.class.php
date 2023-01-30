@@ -61,6 +61,10 @@ class SOYCMSBlogEntryPageColumn extends SOYInquiry_ColumnBase{
 		return $config;
 	}
 
+	function validate(){
+		return true;
+	}
+
 	function getLinkagesSOYMailTo() {
 		return array(
 			SOYMailConverter::SOYMAIL_NONE  	=> "連携しない",
