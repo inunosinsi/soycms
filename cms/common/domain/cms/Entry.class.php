@@ -65,14 +65,10 @@ class Entry {
    		$this->more = $more;
    	}
    	function getCdate() {
-
-   		if(is_null($this->cdate)){
-   			return time();
-   		}
-
-   		if(is_numeric($this->cdate)){
-   			return $this->cdate;
-   		}
+   		if(is_null($this->cdate)) return time();
+  
+		// ２つ目の条件はY-m-d H:i:sの形式の場合はそのまま出力 CSVエクスポート対策
+		if(is_numeric($this->cdate) || preg_match('/^[\d]{4}-[\d]{2}-[\d]{2} [\d]{2}:[\d]{2}:[\d]{2}$/', $this->cdate)) return $this->cdate;
 
    		return null;
    	}

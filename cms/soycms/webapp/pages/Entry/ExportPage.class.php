@@ -153,7 +153,7 @@ class ExportPage extends CMSWebPageBase {
         exit;
 	}
 
-	private function refineByEntryLabels($entries){
+	private function refineByEntryLabels(array $entries){
 		static $dao, $labelCount;
 		if(is_null($dao)) $dao = SOY2DAOFactory::create("cms.EntryLabelDAO");
 		if(is_null($labelCount)) $labelCount = count($_POST["Label"]);
@@ -190,6 +190,8 @@ class ExportPage extends CMSWebPageBase {
         $lines = array();
         foreach($entries as $entry){
 			/** 作成日等の表示の変更をここで行う **/
+			$timestamp = $entry->getCdate();
+			if(is_numeric($timestamp)) $entry->setCdate(date("Y-m-d H:i:s", $timestamp));
 
             //CSVに変換
             $lines[] = $this->logic->export($entry);

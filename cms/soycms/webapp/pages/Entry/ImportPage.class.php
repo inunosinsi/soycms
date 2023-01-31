@@ -96,7 +96,11 @@ class ImportPage extends CMSWebPageBase {
 
             $entry = self::import($obj);
 
-            if(strlen($entry->getAlias()) > 0){
+			// Y-m-d H:i:s形式からタイムスタンプに変換して保存
+            if(preg_match('/^[\d]{4}-[\d]{2}-[\d]{2} [\d]{2}:[\d]{2}:[\d]{2}$/', (string)$entry->getCdate())) $entry->setCdate(strtotime($entry->getCdate()));
+			if(!is_numeric($entry->getCdate())) $entry->setCdate(null);
+			
+            if(strlen((string)$entry->getAlias()) > 0){
 
                 if($deleted){
                     self::deleteItem($entry);
