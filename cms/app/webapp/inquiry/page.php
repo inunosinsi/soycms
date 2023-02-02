@@ -153,36 +153,37 @@ class SOYInquiry_PageApplication{
 			}
 	    	exit;
 
-	    //送信完了画面表示
+		//送信完了画面表示
 	    }else if(isset($_GET["complete"])){
-	    	$inquiry = null;
-	    	if(empty($errors)){
-	    		$inqdao = SOY2DAOFactory::create("SOYInquiry_InquiryDAO");
-	    		try{
-	    			$inquiry = $inqdao->getByTrackingNumber($_GET["trackid"]);
-	    			//とりあえずタイムアウトを30分にする！
-	    			if(time() - $inquiry->getCreateDate() > 30 * 60){
-	    				throw new Exception();
-	    			}
-	    		}catch(Exception $e){
-	    			//tracking number が不正または一定時間が経過した
-			    	SOY2PageController::redirect($this->pageUrl);
-	    		}
+			$inquiry = null;
+			if(empty($errors)){
+				$inqdao = SOY2DAOFactory::create("SOYInquiry_InquiryDAO");
+				try{
+					$inquiry = $inqdao->getByTrackingNumber($_GET["trackid"]);
+					//とりあえずタイムアウトを30分にする！
+					if(time() - $inquiry->getCreateDate() > 30 * 60){
+						throw new Exception();
+					}
+				}catch(Exception $e){
+					//tracking number が不正または一定時間が経過した
+					SOY2PageController::redirect($this->pageUrl);
+				}
 
 				//IPアドレスによる使用制限
 
 
-	    		ob_start();
+				ob_start();
 				$this->outputCSS();
 				include_once($templateDir . "complete.php");
-		    	$html = ob_get_contents();
-		    	ob_end_clean();
+				$html = ob_get_contents();
+				ob_end_clean();
 
-		    	return $html;
-	    	}
-
-	    //確定：値の保存、メール送信
-	    }else if(isset($_POST["send"]) || isset($_POST["send_x"])){
+				return $html;
+			}
+		}
+		
+		//確定：値の保存、メール送信
+		if(isset($_POST["send"]) || isset($_POST["send_x"])){
 			$this->checkBanMailAddress($_POST["data"], $columns);
 
 			//Google reCAPTCHA v3を利用している場合はここで調べる
@@ -220,43 +221,45 @@ class SOYInquiry_PageApplication{
 				}
 			}
 
-	    	$captcha_filename = str_replace(array(".", "/", "\\"), "", $_POST["data"]["hash"]);
-	    	$captcha_value = (isset($_POST["captcha_value"])) ? md5($_POST["captcha_value"]) : "";
-	    	$captcha = (isset($_POST["data"]["captcha"])) ? str_replace(array(".", "/", "\\"), "", $_POST["data"]["captcha"]) : "";
+			$captcha_filename = str_replace(array(".", "/", "\\"), "", $_POST["data"]["hash"]);
+			$captcha_value = (isset($_POST["captcha_value"])) ? md5($_POST["captcha_value"]) : "";
+			$captcha = (isset($_POST["data"]["captcha"])) ? str_replace(array(".", "/", "\\"), "", $_POST["data"]["captcha"]) : "";
 
-	    	if(!$config->getIsUseCaptcha() || ($captcha !== "" && $captcha == $captcha_value)){
+			if(!$config->getIsUseCaptcha() || ($captcha !== "" && $captcha == $captcha_value)){
+				if(soy2_check_token()){	// soy2_check_tokenで誤動作防止
+					$errors = $this->checkPostData($_POST["data"], $columns);
 
-		    	$errors = $this->checkPostData($_POST["data"], $columns);
+					//問い合わせを追加＆メール送信
+					$inquiry = $this->addInquiry($form->getId(), $columns, $_POST["data"], $this->pageUrl);
 
-		    	//問い合わせを追加＆メール送信
-				$inquiry = $this->addInquiry($form->getId(), $columns, $_POST["data"], $this->pageUrl);
+					@include_once($templateDir . "send.php");
 
-		    	@include_once($templateDir . "send.php");
-
-		    	//リダイレクト
-		    	SOY2PageController::redirect($this->pageUrl . "?complete&trackid=" . $inquiry->getTrackingNumber());
-		    	exit;
-	    	}else{
-	    		//確認画面を表示させる
-	    		$_POST["confirm"] = 1;
-	    	}
-
-	    //フォームに戻る
-	    }else if(isset($_POST["form"]) || isset($_POST["form_x"])){
-	    	$errors = $this->checkPostData($_POST["data"], $columns);
-
-	    //テスト：郵便番号検索を含む
-	    }else if(isset($_POST["test"]) || isset($_POST["test_x"])){
-	    	$errors = $this->checkPostData($_POST["data"], $columns);
-	    	$errors = array();	//エラーデータは空にする
-	    }
+					//リダイレクト
+					SOY2PageController::redirect($this->pageUrl . "?complete&trackid=" . $inquiry->getTrackingNumber());
+					exit;
+				}
+			}else{
+				//確認画面を表示させる
+				$_POST["confirm"] = 1;
+			}
+		}
+		
+		//フォームに戻る
+		if(isset($_POST["form"]) || isset($_POST["form_x"])){
+			$errors = $this->checkPostData($_POST["data"], $columns);
+		}
+		
+		//テスト：郵便番号検索を含む
+		if(isset($_POST["test"]) || isset($_POST["test_x"])){
+			$errors = $this->checkPostData($_POST["data"], $columns);
+			$errors = array();	//エラーデータは空にする
+		}
 
 		SOY2::import("domain.SOYInquiry_Form");	//form.phpやconfirm.php内で利用する
 
-	    //確認画面表示（Captcha判定に失敗したときのためにこのIF文は分離しておく必要がある）
+		//確認画面表示（Captcha判定に失敗したときのためにこのIF文は分離しておく必要がある）
 		if(isset($_POST["confirm"]) || isset($_POST["confirm_x"])){
 			$errors = self::checkPostData($_POST["data"], $columns);
-
 			if(empty($errors)){
 
 				//CAPTCHAを使用する場合
@@ -285,18 +288,18 @@ class SOYInquiry_PageApplication{
 
 				ob_start();
 				$this->outputCSS();
-		    	include_once($templateDir . "confirm.php");
-		    	$html = ob_get_contents();
-		    	ob_end_clean();
+				include_once($templateDir . "confirm.php");
+				$html = ob_get_contents();
+				ob_end_clean();
 
-		    	//pop before smtp
-		    	$mailLogic = SOY2Logic::createInstance("logic.MailLogic", array(
+				//pop before smtp
+				$mailLogic = SOY2Logic::createInstance("logic.MailLogic", array(
 					"serverConfig" => $this->serverConfig,
 					"formConfig" => $this->form->getConfigObject()
 				));
-		    	$mailLogic->prepare();
+				$mailLogic->prepare();
 
-		    	return $html;
+				return SOYInquiryUtil::insertSoy2CheckToken($html);
 			}
 		}
 
@@ -309,9 +312,9 @@ class SOYInquiry_PageApplication{
 		$this->outputCSS();
     	include_once($templateDir . "form.php");
     	$html = ob_get_contents();
-    	ob_end_clean();
+		ob_end_clean();
 
-		return $html;
+		return SOYInquiryUtil::insertSoy2CheckToken($html);
 	}
 
 	/**

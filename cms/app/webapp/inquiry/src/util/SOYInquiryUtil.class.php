@@ -156,6 +156,35 @@ class SOYInquiryUtil{
 		return SOY2::RootDir() . "template/default/";
 	}
 
+	/**
+	 * フォームタグの末尾にsoy2_check_tokenを挿入
+	 * @param string
+	 * @return string
+	 */
+	public static function insertSoy2CheckToken(string $html){
+		$lines = explode("\n", $html);
+		$n = count($lines);	//行数
+		for($i = 0; $i < $n; $i++){
+			if(!strlen(trim($lines[$i]))) continue;
+			if(is_bool(stripos($lines[$i], "form"))) continue;
+			
+			preg_match('/<form.*?>/', $lines[$i], $tmp);
+			if(count($tmp)) {
+				$lines[$i] .= "<input type=\"hidden\" name=\"soy2_token\" value=\"".soy2_get_token()."\">";
+				break;
+			}
+
+			//念の為に</form>の閉じタグも探しておく
+			preg_match('/<\/form.*?>/', $lines[$i], $tmp);
+			if(count($tmp)) {
+				$lines[$i] = "<input type=\"hidden\" name=\"soy2_token\" value=\"".soy2_get_token()."\">\n".$lines[$i];
+				break;
+			}
+		}
+
+		return implode("\n", $lines);
+	}
+
 	/** 管理画面確認用の便利な関数 **/
 	const INQUIRY_LABEL_LENGTH = 20;
 
