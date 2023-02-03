@@ -98,6 +98,9 @@ class SOYInquiry_FormConfig{
 
 	private $administratorMailAddress = "";
 	private $notifyMailSubject = "[SOYInquiry]問い合わせがあります";
+	
+	//管理者宛の通知メールに任意の文字列を挿入
+	private $notifyMailIncludeHeadline;
 	private $notifyMailIncludeRemarks;
 
 	private $fromAddress = "";
@@ -207,6 +210,13 @@ class SOYInquiry_FormConfig{
 	}
 	function setNotifyMailSubject($notifyMailSubject) {
 		$this->notifyMailSubject = $notifyMailSubject;
+	}
+
+	function getNotifyMailIncludeHeadline(){
+		return $this->notifyMailIncludeHeadline;
+	}
+	function setNotifyMailIncludeHeadline($notifyMailIncludeHeadline){
+		$this->notifyMailIncludeHeadline = $notifyMailIncludeHeadline;
 	}
 
 	function getNotifyMailIncludeRemarks(){

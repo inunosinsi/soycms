@@ -241,6 +241,11 @@ class ConfigPage extends FormPageBase{
 			"value" => $config->getNotifyMailSubject()
     	));
 
+		$this->addInput("config_notifyMailIncludeHeadline", array(
+			"name" => "Mail[notifyMailIncludeHeadline]",
+			"value" => $config->getNotifyMailIncludeHeadline()
+		));
+
 		$this->addInput("config_notifyMailIncludeRemarks", array(
 			"name" => "Mail[notifyMailIncludeRemarks]",
 			"value" => $config->getNotifyMailIncludeRemarks()

@@ -435,8 +435,12 @@ class SOYInquiry_PageApplication{
 			$mailBody[0] = $inquiryMailBody;
 
 			// 文字列の挿入
-			if(is_string($this->form->getConfigObject()->getNotifyMailIncludeRemarks()) && strlen(trim($this->form->getConfigObject()->getNotifyMailIncludeRemarks()))){
-				$mailBody[0] .= "\r\n\r\r".$this->form->getConfigObject()->getNotifyMailIncludeRemarks();
+			if(strlen(trim((string)$this->form->getConfigObject()->getNotifyMailIncludeHeadline()))){
+				$mailBody[0] = $this->form->getConfigObject()->getNotifyMailIncludeHeadline()."\r\n\r\n".$mailBody[0];
+			}
+
+			if(strlen(trim((string)$this->form->getConfigObject()->getNotifyMailIncludeRemarks()))){
+				$mailBody[0] .= "\r\n\r\n".$this->form->getConfigObject()->getNotifyMailIncludeRemarks();
 			}
 
 			if($this->form->getConfigObject()->getIsIncludeAdminURL()){

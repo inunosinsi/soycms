@@ -116,10 +116,15 @@
 							</tr>
 							<tr>
 								<th>
-									管理宛メールの備考設定
+									管理宛メールの文字列の挿入
 								</th>
 								<td>
-									<input type="text" class="form-control" soy:id="config_notifyMailIncludeRemarks">
+									<dl>
+										<dt>見出し</dt>
+										<dd><input type="text" class="form-control" soy:id="config_notifyMailIncludeHeadline"></dd>
+										<dt>備考</dt>
+										<dd><input type="text" class="form-control" soy:id="config_notifyMailIncludeRemarks"></dd>
+									</dl>
 								</td>
 							</tr>
 							<tr>
