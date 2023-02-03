@@ -190,14 +190,14 @@ class SOYInquiryUtil{
 			if(!strlen(trim($lines[$i]))) continue;
 			if(is_bool(stripos($lines[$i], "form"))) continue;
 			
-			preg_match('/<form.*?>/', $lines[$i], $tmp);
+			preg_match('/<form.*?>/i', $lines[$i], $tmp);
 			if(count($tmp)) {
 				$lines[$i] .= "<input type=\"hidden\" name=\"soy2_token\" value=\"".soy2_get_token()."\">";
 				break;
 			}
 
 			//念の為に</form>の閉じタグも探しておく
-			preg_match('/<\/form.*?>/', $lines[$i], $tmp);
+			preg_match('/<\/form.*?>/i', $lines[$i], $tmp);
 			if(count($tmp)) {
 				$lines[$i] = "<input type=\"hidden\" name=\"soy2_token\" value=\"".soy2_get_token()."\">\n".$lines[$i];
 				break;
