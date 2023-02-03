@@ -29,14 +29,12 @@ class SOYCMS_Search_Block_Plugin{
 				$this,"config_page"
 			));
 
-			//管理画面側
-			if(!defined("_SITE_ROOT_")){
-				//
-			}else{
+			if(defined("_SITE_ROOT_")){	//公開画面側
+				CMSPlugin::setEvent('onPluginBlockLoad',self::PLUGIN_ID, array($this, "onLoad"));
 				CMSPlugin::setEvent('onPageOutput', self::PLUGIN_ID, array($this, "onPageOutput"));
+			}else{						//管理画面側
+				CMSPlugin::setEvent('onPluginBlockAdminReturnPluginId',self::PLUGIN_ID, array($this, "returnPluginId"));
 			}
-			CMSPlugin::setEvent('onPluginBlockLoad',self::PLUGIN_ID, array($this, "onLoad"));
-			CMSPlugin::setEvent('onPluginBlockAdminReturnPluginId',self::PLUGIN_ID, array($this, "returnPluginId"));
 		}
 	}
 
