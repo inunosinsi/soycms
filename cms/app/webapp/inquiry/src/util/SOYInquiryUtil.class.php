@@ -3,6 +3,7 @@
 class SOYInquiryUtil{
 
 	const SOYINQUIRY_SESSION_ID = "soyinquiry_";
+	const SOYINQUIRY_REPLACEMENT_KEY_PREFIX = "replace_";
 
 	public static function switchConfig(){
 
@@ -92,6 +93,27 @@ class SOYInquiryUtil{
 		SOY2DAOConfig::Dsn($old["dsn"]);
 		SOY2DAOConfig::user($old["user"]);
 		SOY2DAOConfig::pass($old["pass"]);
+	}
+
+	/**
+	 * @param int, array
+	 */
+	public static function saveReplacementStringsConfig(int $formId, array $cnfs){
+		SOY2::import("domain.SOYInquiry_DataSets");
+		if(count($cnfs)){
+			SOYInquiry_DataSets::put(self::SOYINQUIRY_REPLACEMENT_KEY_PREFIX.$formId, $cnfs);
+		}else{
+			SOYInquiry_DataSets::delete(self::SOYINQUIRY_REPLACEMENT_KEY_PREFIX.$formId);
+		}
+	}
+
+	/**
+	 * @param int
+	 * @return array
+	 */
+	public static function getReplacementStringsConfig(int $formId){
+		SOY2::import("domain.SOYInquiry_DataSets");
+		return SOYInquiry_DataSets::get(self::SOYINQUIRY_REPLACEMENT_KEY_PREFIX.$formId, array());
 	}
 
 	/**

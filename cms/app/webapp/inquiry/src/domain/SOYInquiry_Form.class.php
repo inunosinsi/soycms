@@ -98,6 +98,7 @@ class SOYInquiry_FormConfig{
 
 	private $administratorMailAddress = "";
 	private $notifyMailSubject = "[SOYInquiry]問い合わせがあります";
+	private $notifyMailIncludeRemarks;
 
 	private $fromAddress = "";
 	private $returnAddress = "";
@@ -206,6 +207,13 @@ class SOYInquiry_FormConfig{
 	}
 	function setNotifyMailSubject($notifyMailSubject) {
 		$this->notifyMailSubject = $notifyMailSubject;
+	}
+
+	function getNotifyMailIncludeRemarks(){
+		return $this->notifyMailIncludeRemarks;
+	}
+	function setNotifyMailIncludeRemarks($notifyMailIncludeRemarks){
+		$this->notifyMailIncludeRemarks = $notifyMailIncludeRemarks;
 	}
 
 	/**

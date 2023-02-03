@@ -241,6 +241,11 @@ class ConfigPage extends FormPageBase{
 			"value" => $config->getNotifyMailSubject()
     	));
 
+		$this->addInput("config_notifyMailIncludeRemarks", array(
+			"name" => "Mail[notifyMailIncludeRemarks]",
+			"value" => $config->getNotifyMailIncludeRemarks()
+		));
+
     	$this->addCheckBox("config_notIncludeAdminURL", array(
     		"name" => "Mail[isIncludeAdminURL]",
 			"value" => "0"
@@ -308,6 +313,22 @@ class ConfigPage extends FormPageBase{
     		"selected" => $config->getIsCcOnReplyForm(),
     		"label" => "CCに管理者のメールアドレスを追加する"
     	));
+
+		/** 置換文字列 使わなくなった **/
+		DisplayPlugin::toggle("replacement", false);
+
+		$this->addInput("new_replace_key", array(
+			"name" => "Replace[key][]",
+			"attr:placeholder" => "例：##REPLACE##"
+		));
+
+		$this->addInput("new_replace_text", array(
+			"name" => "Replace[text][]"
+		));
+
+		$this->createAdd("replace_list", "_common.ReplaceStringListComponent", array(
+			"list" => SOYInquiryUtil::getReplacementStringsConfig((int)$this->form->getId())
+		));
     }
 
     /**
@@ -322,6 +343,22 @@ class ConfigPage extends FormPageBase{
     	$this->form->setConfigObject($configObj);
 
     	$this->dao->update($this->form);
+
+		/** 置換文字列の設定はSOYInquiry_DataSetsに格納する **/
+		$repCnfs = array();
+		if(isset($_POST["Replace"]) && isset($_POST["Replace"]["key"]) && is_array($_POST["Replace"]["key"]) && count($_POST["Replace"]["key"])){
+			$cnt = count($_POST["Replace"]["key"]);
+			for($i = 0; $i < $cnt; $i++){
+				if(!isset($_POST["Replace"]["key"][$i])) continue;
+				$key = trim($_POST["Replace"]["key"][$i]);
+				if(!strlen($key)) continue;
+
+				$text = (isset($_POST["Replace"]["text"][$i])) ? trim($_POST["Replace"]["text"][$i]) : "";
+				$repCnfs[] = array("key" => $key, "text" => $text);
+			}
+		}
+
+		SOYInquiryUtil::saveReplacementStringsConfig((int)$this->form->getId(), $repCnfs);
 
     	CMSApplication::jump("Form.Config." . $this->id . "#mail_form");
 

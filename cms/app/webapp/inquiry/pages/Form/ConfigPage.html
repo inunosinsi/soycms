@@ -98,8 +98,8 @@
 									追加の送信先
 								</th>
 								<td>
-									<input class="form-control" soy:id="config_administratorMailAddress" /><br />
-									<span class="small_message">「,」区切りで複数個入力できます。</span>
+									<input class="form-control" soy:id="config_administratorMailAddress" />
+									<div class="alert alert-warning">「,」区切りで複数個入力できます。</div>
 								</td>
 							</tr>
 							<tr>
@@ -107,10 +107,19 @@
 									件名
 								</th>
 								<td>
-									<input class="form-control" soy:id="config_notifyMailSubject" /><br />
-									<span class="small_message">
+									<input class="form-control" soy:id="config_notifyMailSubject" />
+									<div class="alert alert-warning">
 										<!-- soy:id="replace_trackingnumber_text" -->#TRACKNUM#
-										<!-- /soy:id="replace_trackingnumber_text" -->などが使えます。</span>
+										<!-- /soy:id="replace_trackingnumber_text" -->などが使えます。
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th>
+									管理宛メールの備考設定
+								</th>
+								<td>
+									<input type="text" class="form-control" soy:id="config_notifyMailIncludeRemarks">
 								</td>
 							</tr>
 							<tr>
@@ -189,6 +198,30 @@
 								</td>
 							</tr>
 						</table>
+						<!-- soy:display="replacement" -->
+						<table class="table">
+							<tr>
+								<td colspan="2">置換文字列の設定</td>
+							</tr>
+							<tr>
+								<th>置換文字列の登録</th>
+								<td class="form-inline">
+									<!-- soy:id="replace_list" -->
+									<div>
+										<input type="text" class="form-control" soy:id="replace_key">：
+										<input type="text" class="form-control" soy:id="replace_text">
+									</div>
+									<!-- /soy:id="replace_list" -->
+									
+									<div>
+										<input type="text" class="form-control" soy:id="new_replace_key">：
+										<input type="text" class="form-control" soy:id="new_replace_text">&nbsp;
+										<a href="javascript:void(0);" class="btn btn-primary btn-sm">追加</a>
+									</div>
+								</td>
+							</tr>
+						</table>
+						<!-- /soy:display="replacement" -->
 					</div>
 
 					<div class="text-center">

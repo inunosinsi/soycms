@@ -22,9 +22,9 @@ class SOYInquiry_PageApplication{
 		$this->page = $page;
 		$questionMarkPosition = strpos($_SERVER["REQUEST_URI"], "?");
 		$this->pageUrl = $questionMarkPosition !== false && $questionMarkPosition > 0
-		               ? substr($_SERVER["REQUEST_URI"], 0, $questionMarkPosition)
-		               : $_SERVER["REQUEST_URI"]
-		               ;
+					   ? substr($_SERVER["REQUEST_URI"], 0, $questionMarkPosition)
+					   : $_SERVER["REQUEST_URI"]
+					   ;
 
 		//SOY2::RootDir()の書き換え
 		$oldRooDir = SOY2::RootDir();
@@ -79,10 +79,10 @@ class SOYInquiry_PageApplication{
 		}
 
 		try{
-    		$dao = SOY2DAOFactory::create("SOYInquiry_FormDAO");
-    		$form = $dao->getByFormId($formId);
-    		$this->form = $form;
-	    }catch(Exception $e){
+			$dao = SOY2DAOFactory::create("SOYInquiry_FormDAO");
+			$form = $dao->getByFormId($formId);
+			$this->form = $form;
+		}catch(Exception $e){
 			return "";
 		}
 
@@ -119,42 +119,42 @@ class SOYInquiry_PageApplication{
 			return $html;
 		}
 
-	    $columnDAO = SOY2DAOFactory::create("SOYInquiry_ColumnDAO");
-	    $columns = $columnDAO->getOrderedColumnsByFormId($form->getId());
+		$columnDAO = SOY2DAOFactory::create("SOYInquiry_ColumnDAO");
+		$columns = $columnDAO->getOrderedColumnsByFormId($form->getId());
 
-	    //隠しvalueから入力値を復元する
-	    if(isset($_POST["form_value"]) && isset($_POST["form_hash"])){
-	    	$value = base64_decode($_POST["form_value"]);
+		//隠しvalueから入力値を復元する
+		if(isset($_POST["form_value"]) && isset($_POST["form_hash"])){
+			$value = base64_decode($_POST["form_value"]);
 
-	    	//不正な書き換えでない場合のみ
-	    	if(md5($value) == $_POST["form_hash"]){
-	    		$_POST["data"] = json_decode($value, true);
-	    	}
-	    }
+			//不正な書き換えでない場合のみ
+			if(md5($value) == $_POST["form_hash"]){
+				$_POST["data"] = json_decode($value, true);
+			}
+		}
 
-	    //CAPTCHA画像出力
-	    if(isset($_GET["captcha"])){
+		//CAPTCHA画像出力
+		if(isset($_GET["captcha"])){
 
-	    	header("Content-Type: image/jpeg");
+			header("Content-Type: image/jpeg");
 			$captcha = str_replace(array(".", "/", "\\"), "", $_GET["captcha"]);
 			echo file_get_contents(SOY2HTMLConfig::CacheDir() . $captcha . ".jpg");
 			//CAPTCHA画像の削除
-	    	@unlink(SOY2HTMLConfig::CacheDir() . $captcha . ".jpg");
-	    	exit;
+			@unlink(SOY2HTMLConfig::CacheDir() . $captcha . ".jpg");
+			exit;
 
-	    //CSS出力
-	    }else if(isset($_GET["stylesheet"])){
+		//CSS出力
+		}else if(isset($_GET["stylesheet"])){
 
 			if(file_exists($templateDir . "style.php")){
-		    	header("Content-Type: text/css; charset: UTF-8");
-		    	include_once($templateDir . "style.php");
+				header("Content-Type: text/css; charset: UTF-8");
+				include_once($templateDir . "style.php");
 			}else{
 				header("HTTP/1.1 404 Not Found");
 			}
-	    	exit;
+			exit;
 
 		//送信完了画面表示
-	    }else if(isset($_GET["complete"])){
+		}else if(isset($_GET["complete"])){
 			$inquiry = null;
 			if(empty($errors)){
 				$inqdao = SOY2DAOFactory::create("SOYInquiry_InquiryDAO");
@@ -310,8 +310,8 @@ class SOYInquiry_PageApplication{
 
 		ob_start();
 		$this->outputCSS();
-    	include_once($templateDir . "form.php");
-    	$html = ob_get_contents();
+		include_once($templateDir . "form.php");
+		$html = ob_get_contents();
 		ob_end_clean();
 
 		return SOYInquiryUtil::insertSoy2CheckToken($html);
@@ -369,7 +369,7 @@ class SOYInquiry_PageApplication{
 				//メールアドレスカラムがあって、メールアドレスが空の場合は強制的にお問い合わせを止める
 				if(strlen($mailAddress) === 0){
 					SOY2PageController::redirect($this->pageUrl . "?block");
-			    	exit;
+					exit;
 				}
 
 				//禁止したドメインによる制御
@@ -382,7 +382,7 @@ class SOYInquiry_PageApplication{
 							//該当するメールアドレスの場合、IPアドレスもBANする
 							SOY2Logic::createInstance("logic.InquiryLogic", array("form" => $this->form))->banIPAddress($_SERVER["REMOTE_ADDR"]);
 							SOY2PageController::redirect($this->pageUrl . "?block");
-					    	exit;
+							exit;
 						}
 					}
 				}
@@ -433,9 +433,15 @@ class SOYInquiry_PageApplication{
 
 			//管理者用メールボディ
 			$mailBody[0] = $inquiryMailBody;
+
+			// 文字列の挿入
+			if(is_string($this->form->getConfigObject()->getNotifyMailIncludeRemarks()) && strlen(trim($this->form->getConfigObject()->getNotifyMailIncludeRemarks()))){
+				$mailBody[0] .= "\r\n\r\r".$this->form->getConfigObject()->getNotifyMailIncludeRemarks();
+			}
+
 			if($this->form->getConfigObject()->getIsIncludeAdminURL()){
 				$mailBody[0] .= "\r\n\r\n-- \r\n問い合わせへのリンク:\r\n" . $this->getInquiryLink($inquiry, $this->serverConfig) . "\r\n";
-    		}
+			}
 
 			//拡張 - 管理側のメール
 			if(is_readable($this->templateDir . "mail.admin.php")){
@@ -457,7 +463,7 @@ class SOYInquiry_PageApplication{
 			}
 
 			//メールを送る
-		    $this->sendEmail($inquiry, $columns, $mailBody);
+			$this->sendEmail($inquiry, $columns, $mailBody);
 
 			//IPアドレス毎に禁止するべきか調べた上で禁止する
 			$ipAddress = $_SERVER["REMOTE_ADDR"];
