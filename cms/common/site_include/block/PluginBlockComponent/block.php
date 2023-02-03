@@ -40,17 +40,35 @@ class PluginBlockComponent implements BlockComponent{
 	 * 表示用コンポーネント
 	 */
 	function getViewPage($page){
-        $array = array();
+        $arr = array();
         $articlePageUrl = "";
 
         $onLoad = CMSPlugin::getEvent('onPluginBlockLoad');
 		foreach($onLoad as $pluginId => $plugin){
-            if($this->getPluginId() !== $pluginId) continue;
+			if($this->getPluginId() !== $pluginId) continue;
 			$func = $plugin[0];
-            $array = call_user_func($func, array());
+			$arr = call_user_func($func, array());
 		}
 
-        $articlePageUrl = "";
+		if(count($arr)){	// 配列の整形
+			$_arr = array();
+			$entryDao = soycms_get_hash_table_dao("entry");
+
+			foreach($arr as $idx => $obj){
+				if($obj instanceof Entry){
+					$_arr[$idx] = $obj;
+				}else if(is_array($obj) && array_key_exists("id", $obj) && array_key_exists("title", $obj) && array_key_exists("alias", $obj) && is_numeric($obj["id"])){
+					$_arr[$idx] = $entryDao->getObject($obj);
+				}else{
+					// 何もしない
+				}
+			}
+
+			$arr = $_arr;
+			unset($_arr);
+		}
+
+		$articlePageUrl = "";
 		$categoryPageUrl = "";
 		if($this->isStickUrl){
 			$blogPage = soycms_get_blog_page_object((int)$this->blogPageId);
@@ -66,12 +84,12 @@ class PluginBlockComponent implements BlockComponent{
 			}
 		}
 
-		if($this->isCallEventFunc == self::ON) CMSPlugin::callEventFunc('onEntryListBeforeOutput', array("entries" => &$array));
+		if($this->isCallEventFunc == self::ON) CMSPlugin::callEventFunc('onEntryListBeforeOutput', array("entries" => &$arr));
 
 		SOY2::import("site_include.block._common.BlockEntryListComponent");
 		SOY2::import("site_include.blog.component.CategoryListComponent");
 		return SOY2HTMLFactory::createInstance("BlockEntryListComponent",array(
-			"list" => $array,
+			"list" => $arr,
 			"isStickUrl" => $this->isStickUrl,
 			"articlePageUrl" => $articlePageUrl,
 			"categoryPageUrl" => $categoryPageUrl,
