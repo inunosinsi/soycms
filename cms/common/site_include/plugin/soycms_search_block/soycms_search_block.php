@@ -35,6 +35,7 @@ class SOYCMS_Search_Block_Plugin{
 			}else{						//管理画面側
 				CMSPlugin::setEvent('onPluginBlockAdminReturnPluginId',self::PLUGIN_ID, array($this, "returnPluginId"));
 			}
+			
 		}
 	}
 
