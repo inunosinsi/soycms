@@ -1,16 +1,16 @@
 <?php
 
-class PluginChangeFilepathPlugin{
+class PluginConvertFilepathPlugin{
 
-	const PLUGIN_ID = "plugin_change_filepath";
+	const PLUGIN_ID = "plugin_convert_filepath";
 
 	function getId(){
 		return self::PLUGIN_ID;
 	}
 
 	function init(){
-		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
-			"name" => "プラグインのファイルパスの変更",
+		CMSPlugin::addPluginMenu(self::PLUGIN_ID, array(
+			"name" => "プラグインのファイルパスの変換",
 			"type" => Plugin::TYPE_NONE,
 			"description" => "",
 			"author" => "",
@@ -37,16 +37,18 @@ class PluginChangeFilepathPlugin{
 		$html = &$args["html"];
 
 		$lines = explode("\n", $html);
-		if(!count($lines)) return $html;
+		$n = count($lines);
+		if($n === 0) return $html;
 
-		$htmls = array();
-		foreach($lines as $line){
+		for($i = 0; $i < $n; $i++){
+			$line = $lines[$i];
 			// 画像ファイルがない行は飛ばす
 			if(is_bool(stripos($line, "<img"))) continue;
 			
 			// 一行に複数のimgタグ対応 一行に<img>タグが複数行あるかもしれないので、preg_match_allを利用する
 			preg_match_all('/<img.*?>/', $line, $tmps);
 			if(!isset($tmps[0]) || !is_array($tmps[0]) || !count($tmps[0])) continue;
+
 			foreach($tmps[0] as $tag){
 				// src属性値がなければ飛ばす
 				if(is_bool(stripos($tag, "src"))) continue;
@@ -66,17 +68,19 @@ class PluginChangeFilepathPlugin{
 				$line = str_replace($tmp[1], $src, $line);
 			}
 
-			$htmls[] = $line;
+			// 行の上書き
+			$lines[$i] = $line;
 		}
 
-		return implode("\n", $htmls);
+		return implode("\n", $lines);
 	}
 
 	public static function register(){
 		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
-		if(!$obj) $obj = new PluginChangeFilepathPlugin();
+		if(!$obj) $obj = new PluginConvertFilepathPlugin();
 		CMSPlugin::addPlugin(self::PLUGIN_ID, array($obj, "init"));
 	}
 }
 
-PluginChangeFilepathPlugin::register();
+PluginConvertFilepathPlugin::register();
+
