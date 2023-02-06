@@ -241,14 +241,16 @@ class ConfigPage extends FormPageBase{
 			"value" => $config->getNotifyMailSubject()
     	));
 
-		$this->addInput("config_notifyMailIncludeHeadline", array(
+		$this->addTextArea("config_notifyMailIncludeHeadline", array(
 			"name" => "Mail[notifyMailIncludeHeadline]",
-			"value" => $config->getNotifyMailIncludeHeadline()
+			"value" => $config->getNotifyMailIncludeHeadline(),
+			"style" => "height:80px !important;"
 		));
 
-		$this->addInput("config_notifyMailIncludeRemarks", array(
+		$this->addTextArea("config_notifyMailIncludeRemarks", array(
 			"name" => "Mail[notifyMailIncludeRemarks]",
-			"value" => $config->getNotifyMailIncludeRemarks()
+			"value" => $config->getNotifyMailIncludeRemarks(),
+			"style" => "height:80px !important;"
 		));
 
     	$this->addCheckBox("config_notIncludeAdminURL", array(
