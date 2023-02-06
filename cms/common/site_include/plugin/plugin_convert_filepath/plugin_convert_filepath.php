@@ -32,13 +32,14 @@ class PluginConvertFilepathPlugin{
 	}
 
 	function onOutput($args){
-		if(!function_exists("imagewebp")) return $html;
-
 		$html = &$args["html"];
 
 		$lines = explode("\n", $html);
 		$n = count($lines);
 		if($n === 0) return $html;
+		
+		// 多言語プラグインで定義している定数がなかった場合はこの場で定義しておく。
+		if(!defined("SOYCMS_PUBLISH_LANGUAGE")) define("SOYCMS_PUBLISH_LANGUAGE", "en");
 
 		for($i = 0; $i < $n; $i++){
 			$line = $lines[$i];
