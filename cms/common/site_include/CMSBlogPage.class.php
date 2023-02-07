@@ -159,6 +159,14 @@ class CMSBlogPage extends CMSPage{
 			$pageFormat = '%BLOG%';
 		}
 		
+		$onLoads = CMSPlugin::getEvent('onBlogPageLoad');
+		if(is_array($onLoads) && count($onLoads)){
+			foreach($onLoads as $plugin){
+				$func = $plugin[0];
+				call_user_func($func, array('page' => &$this->page, 'webPage' => &$this));
+			}
+		}
+		
 		switch(SOYCMS_BLOG_PAGE_MODE){
 			case CMSBlogPage::MODE_ENTRY:
 				if(!$this->page->getGenerateEntryFlag()){
