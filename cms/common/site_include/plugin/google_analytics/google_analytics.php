@@ -43,7 +43,7 @@ class GoogleAnalytics{
 			"modifier"=>"Jun Okada",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.11"
+			"version"=>"1.12"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -130,7 +130,7 @@ class GoogleAnalytics{
 		}
 
 		//グローバルサイトタグ(gtag.js)の設置
-		if(strlen($this->google_analytics_global_site_tag) && is_numeric(stripos($html, "</head>"))){
+		if(is_string($this->google_analytics_global_site_tag) && strlen($this->google_analytics_global_site_tag) && is_numeric(stripos($html, "</head>"))){
 			$html = str_ireplace("</head>", $this->google_analytics_global_site_tag . "\n</head>", $html);
 		}
 
@@ -138,7 +138,7 @@ class GoogleAnalytics{
 		if(isset($_GET["complete"]) && isset($_GET["trackid"])){
 			preg_match('/\d*-\d*-\d*/', $_GET["trackid"], $tmp);
 			if(isset($tmp[0])){
-				if(strlen($this->google_analytics_global_site_tag_conversion_tag) && is_numeric(stripos($html, "</head>"))){
+				if(is_string($this->google_analytics_global_site_tag_conversion_tag) && strlen($this->google_analytics_global_site_tag_conversion_tag) && is_numeric(stripos($html, "</head>"))){
 					$html = str_ireplace("</head>", $this->google_analytics_global_site_tag_conversion_tag . "\n</head>", $html);
 				}
 			}
