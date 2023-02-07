@@ -311,11 +311,15 @@ function soycms_save_label_attribute_object(LabelAttribute $attr){
 		}
 	}else{
 		try{
-			$dao->delete($attr->getEntryId(), $attr->getFieldId());
+			$dao->delete($attr->getLabelId(), $attr->getFieldId());
 		}catch(Exception $e){
 			//
 		}
 	}
+}
+
+function soycms_get_label_attribute_value(int $labelId, string $fieldId, string $dataType=""){
+	return soycms_get_attribute_value(soycms_get_label_attribute_object($labelId, $fieldId)->getValue(), $dataType);
 }
 
 /** 

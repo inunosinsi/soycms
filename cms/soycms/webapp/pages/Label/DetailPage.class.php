@@ -66,6 +66,11 @@ class DetailPage extends CMSWebPageBase{
 			"name" => "caption"
 		));
 
+		// CustomPlugin(soy:custom="Label.Detail")を廃止 SOY2HTML(soy:id="customfield")で出力
+		$this->addLabel("multi_language", array(
+			"html" => CMSPlugin::callCustomFieldFunctions("Label.Caption")
+		));
+
 		$this->addInput("alias", array(
 	    		"value" => $entity->getAlias(),
 	    		"name" => "alias"

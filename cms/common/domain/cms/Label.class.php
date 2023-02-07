@@ -46,9 +46,6 @@ class Label {
 	function getCaption() {
 		return (is_string($this->caption)) ? $this->caption : "";
 	}
-	function getDisplayCaption() {
-		return htmlspecialchars($this->getCaption(), ENT_QUOTES, "UTF-8");
-	}
 	function setCaption($caption) {
 		$this->caption = $caption;
 	}
@@ -164,5 +161,20 @@ class Label {
 		}else{
 			return $this->caption;
 		}
+	}
+
+	function getDisplayCaption() {
+		return htmlspecialchars($this->getCaption(), ENT_QUOTES, "UTF-8");
+	}
+
+	function getOpenLabelCaption() {
+		if(!defined("SOYCMS_PUBLISH_LANGUAGE")) define("SOYCMS_PUBLISH_LANGUAGE", "jp");
+
+		if(SOYCMS_PUBLISH_LANGUAGE != "jp"){
+			SOY2::import("site_include.plugin.util_multi_language.util.SOYCMSUtilMultiLanguageUtil");
+			$caption = soycms_get_label_attribute_value($this->id, SOYCMSUtilMultiLanguageUtil::LANGUAGE_FIELD_KEY.SOYCMS_PUBLISH_LANGUAGE, "string");
+			if(strlen($caption)) return $caption;
+		}
+		return $this->getCaption();
 	}
 }

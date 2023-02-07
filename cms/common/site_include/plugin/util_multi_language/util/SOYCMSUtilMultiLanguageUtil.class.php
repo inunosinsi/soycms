@@ -2,6 +2,8 @@
 
 class SOYCMSUtilMultiLanguageUtil{
 	
+	const LANGUAGE_FIELD_KEY = "multi_language_";	// ラベル名の多言語化等で使用
+
 	const LANGUAGE_JP = "jp";
 	const LANGUAGE_EN = "en";
 	const LANGUAGE_ZH = "zh";
