@@ -385,6 +385,10 @@ class CMSBlogPage extends CMSPage{
 				$this->entries = ($this->limit > 0) ? self::getEntries() : array();
 
 				//記事がなければ404
+				if(!count($this->entries)){
+					$this->error = new Exception("記事がありません");
+					return;
+				}
 
 
 				$pageFormat = $this->page->getTopTitleFormat();

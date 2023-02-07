@@ -26,6 +26,9 @@ class CMSPlugin {
 		"onPageEdit" => array(),		//ページの編集画面が呼び出される直前	array(page)
 		"onPageTitleFormat" => array(),	//タイトルフォーマットの変換 	array(format) @return string
 
+		//ブログページ関連
+		"onBlogPageLoad"=>array(),		//ブログページが読み込まれる直前	array(page, webPage)
+
 		//管理画面の拡張
 		"onAdminTop" => array(),		//管理画面トップページの拡張	@params array()、@return array("title" => "", "content" => "")
 
