@@ -91,6 +91,8 @@ class CustomSearchFieldConfigPage extends WebPage {
 	function execute(){
 		parent::__construct();
 
+		DisplayPlugin::toggle("installed_customfield_advanced", CMSPlugin::activeCheck("CustomFieldAdvanced"));
+
 		$this->createAdd("field_list", "CustomSearchFieldListComponent", array(
 			"list" => CustomSearchFieldUtil::getConfig(),
 		));
