@@ -228,7 +228,7 @@ class BlockEntryListComponent extends HTMLList{
 			//ページのURLを取得
 			$articlePageUrl = "";
 		}else{
-			$articlePageUrl = $this->articlePageUrl;
+			$articlePageUrl = (string)$this->articlePageUrl;
 		}
 		if($isShort){
 			return rtrim($articlePageUrl, "/"). "/" . $entry->getId();

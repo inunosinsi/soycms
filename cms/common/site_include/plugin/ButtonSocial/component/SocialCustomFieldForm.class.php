@@ -4,7 +4,7 @@ class SocialCustomFieldForm {
 
 	public static function buildForm(int $entryId){
 		SOY2::import("site_include.plugin.ButtonSocial.util.ButtonSocialUtil");
-		$imgPath = ButtonSocialUtil::getAttr($entryId)->getValue();
+		$imgPath = (string)ButtonSocialUtil::getAttr($entryId)->getValue();
 
 		try{
 			$siteConfig = SOY2DAOFactory::create("cms.SiteConfigDAO")->get();
