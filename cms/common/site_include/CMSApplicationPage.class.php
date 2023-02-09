@@ -15,12 +15,18 @@ class CMSApplicationPage extends CMSPage{
 
 		$this->pageUrl = SOY2PageController::createLink("") . $this->page->getUri();
 
-  		WebPage::__construct($args);
+		$onLoads = CMSPlugin::getEvent('onApplicationPageLoad');
+		if(is_array($onLoads) && count($onLoads)){
+			foreach($onLoads as $plugin){
+				$func = $plugin[0];
+				call_user_func($func, array('page' => &$this->page, 'webPage' => &$this));
+			}
+		}
 
+  		WebPage::__construct($args);
     }
 
     function main(){
-
     	$oldRooDir = SOY2::RootDir();
 		$oldPagDir = SOY2HTMLConfig::PageDir();
 		$oldCacheDir = SOY2HTMLConfig::CacheDir();
