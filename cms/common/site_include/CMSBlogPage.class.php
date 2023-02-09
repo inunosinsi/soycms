@@ -151,20 +151,20 @@ class CMSBlogPage extends CMSPage{
 		if(!defined("SOYCMS_BLOG_PAGE_MODE")) define("SOYCMS_BLOG_PAGE_MODE", $this->getMode($arguments));
 		$this->mode = SOYCMS_BLOG_PAGE_MODE;
 
-		//タイトルフォーマットの取得
-		$pageFormat = $this->getTitleFormat();
-
-		if(strlen($pageFormat) == 0){
-			//空っぽだったらデフォルト追加
-			$pageFormat = '%BLOG%';
-		}
-		
 		$onLoads = CMSPlugin::getEvent('onBlogPageLoad');
 		if(is_array($onLoads) && count($onLoads)){
 			foreach($onLoads as $plugin){
 				$func = $plugin[0];
 				call_user_func($func, array('page' => &$this->page, 'webPage' => &$this));
 			}
+		}
+
+		//タイトルフォーマットの取得
+		$pageFormat = $this->getTitleFormat();
+
+		if(strlen($pageFormat) == 0){
+			//空っぽだったらデフォルト追加
+			$pageFormat = '%BLOG%';
 		}
 		
 		switch(SOYCMS_BLOG_PAGE_MODE){
