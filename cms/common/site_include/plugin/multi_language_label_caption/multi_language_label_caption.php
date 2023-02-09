@@ -14,7 +14,7 @@ class MultiLanguageLabelCaptionPlugin{
 			"type" => Plugin::TYPE_LABEL,
 			"description"=>"ラベル名の多言語化",
 			"author"=>"齋藤毅",
-			"url"=>"https://saitodev.co/",
+			"url"=>"https://saitodev.co/article/4972",
 			"mail"=>"info@saitodev.co",
 			"version"=>"0.1"
 		));
