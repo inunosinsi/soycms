@@ -206,7 +206,7 @@ csf:id="<strong>フィールドID_is_empty</strong>"で囲った箇所は、csf:
 
 
 <div class="modal" tabindex="-1" role="dialog" id="customfieldModal">
-	<div class="modal-dialog modal-sm" role="document">
+	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title">項目の追加</h5>
@@ -217,14 +217,15 @@ csf:id="<strong>フィールドID_is_empty</strong>"で囲った箇所は、csf:
 			        <div>
 			            ID
 			            <div class="alL">
-			            <input id="custom_key" name="custom_key" type="text" class="text validate">
+			            <input id="custom_key" name="custom_key" type="text" class="form-control validate">
+						<div class="alert alert-warning" soy:display="installed_customfield">カスタムフィールドで追加したIDは使用しないでください。</div>
 			            <p class="alert alert-danger" id="custom_key_error" style="display:none;">必須項目を入力してください</p>
 			            </div>
 
 			            ラベル
 
 			            <div class="alL">
-			            <input id="custom_label" name="custom_label" type="text" class="text validate">
+			            <input id="custom_label" name="custom_label" type="text" class="form-control validate">
 			            <p class="alert alert-danger" id="custom_label_error" style="display:none;">必須項目を入力してください</p>
 			            </div>
 

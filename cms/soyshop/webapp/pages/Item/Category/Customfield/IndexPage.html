@@ -136,7 +136,7 @@
 		</div>
 
 		<div class="modal" tabindex="-1" role="dialog" id="customfieldModal">
-			<div class="modal-dialog modal-sm" role="document">
+			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title">項目の追加</h5>
@@ -145,13 +145,14 @@
 						<form soy:id="create_form" id="create_form">
 							<input type="hidden" name="create" value="create" /> 項目名
 							<div class="alL">
-								<input id="custom_new_name" name="custom_new_name" type="text" class="text validate">
+								<input id="custom_new_name" name="custom_new_name" type="text" class="form-control validate">
 								<p class="require" id="custom_new_name_error" style="display:none;">必須項目を入力してください</p>
 							</div>
 
 							項目ID
 							<div class="alL">
-								<input id="custom_id" name="custom_id" type="text" class="text validate">
+								<input id="custom_id" name="custom_id" type="text" class="form-control validate">
+								<div class="alert alert-warning" soy:display="installed_custom_search_field">カスタムサーチフィールドで追加したIDは使用しないでください。</div>
 								<p class="require" id="custom_id_error" style="display:none;">必須項目を入力してください</p>
 							</div>
 

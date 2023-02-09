@@ -100,6 +100,7 @@ class CustomSearchFieldConfigFormPage extends WebPage{
 			"html" => LinkNaviAreaComponent::build()
 		));
 
+        DisplayPlugin::toggle("installed_category_customfield", SOYShopPluginUtil::checkIsActive("common_category_customfield"));
         foreach(array("error", "deleted") as $t){
             DisplayPlugin::toggle($t, isset($_GET[$t]));
         }

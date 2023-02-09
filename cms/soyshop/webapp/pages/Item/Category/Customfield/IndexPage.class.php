@@ -94,6 +94,7 @@ class IndexPage extends WebPage{
     function __construct() {
         parent::__construct();
 
+        DisplayPlugin::toggle("installed_custom_search_field", SOYShopPluginUtil::checkIsActive("custom_search_field"));
         DisplayPlugin::toggle("error", isset($_GET["error"]));
 
         $this->addForm("create_form");

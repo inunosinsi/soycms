@@ -100,6 +100,8 @@ class CustomFieldAdvancedPluginFormPage extends WebPage{
 		DisplayPlugin::toggle("no_field", !count($this->pluginObj->customFields));
 		DisplayPlugin::toggle("add_field", (count($this->pluginObj->customFields) < 1));
 
+		DisplayPlugin::toggle("installed_custom_search_field", CMSPlugin::activeCheck("CustomSearchField"));
+
 		//カスタムフィールドから設定をインポート
 		$this->addForm("import_form");
 
