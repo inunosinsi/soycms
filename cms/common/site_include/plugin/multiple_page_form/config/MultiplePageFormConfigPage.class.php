@@ -58,13 +58,13 @@ class MultiplePageFormConfigPage extends WebPage {
 		$this->addInput("page_name", array(
 			"name" => "Add[name]",
 			"value" => "",
-			"attr:required" => "required"
+			"required" => "required"
 		));
 
 		$this->addSelect("page_type", array(
 			"name" => "Add[type]",
 			"options" => MultiplePageFormUtil::getTypeList(),
-			"attr:required" => "required"
+			"required" => "required"
 		));
 	}
 

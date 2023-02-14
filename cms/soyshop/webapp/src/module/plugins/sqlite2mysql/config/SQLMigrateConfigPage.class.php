@@ -103,25 +103,25 @@ class SQLMigrateConfigPage extends WebPage {
 		$this->addInput("host", array(
 			"name" => "Config[host]",
 			"value" => $this->config["host"],
-			"attr:placeholder" => "localhost"
+			"placeholder" => "localhost"
 		));
 
 		$this->addInput("port", array(
 			"name" => "Config[port]",
 			"value" => $this->config["port"],
-			"attr:placeholder" => "3306"
+			"placeholder" => "3306"
 		));
 
 		$this->addInput("dbname", array(
 			"name" => "Config[dbname]",
 			"value" => $this->config["dbname"],
-			"attr:placeholder" => "soyshop_" . SOYSHOP_ID
+			"placeholder" => "soyshop_" . SOYSHOP_ID
 		));
 
 		$this->addInput("user", array(
 			"name" => "Config[user]",
 			"value" => $this->config["user"],
-			"attr:placeholder" => "root"
+			"placeholder" => "root"
 		));
 
 		$this->addInput("pass", array(

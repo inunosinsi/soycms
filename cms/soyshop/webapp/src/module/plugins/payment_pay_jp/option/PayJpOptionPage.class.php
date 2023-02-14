@@ -33,7 +33,7 @@ class PayJpOptionPage extends WebPage {
 				"value" => (isset($values["number"])) ? substr($values["number"], (4*$i), 4) : "",
 				"style" => "ime-mode:inactive;",
 				"attr:id" => "card_" . $i,
-				"attr:required" => true,
+				"required" => true,
 			));
 		}
 
@@ -53,7 +53,7 @@ class PayJpOptionPage extends WebPage {
 		$this->addInput("cvc", array(
 			"name" => "cvc",
 			"value" => (isset($values["cvc"])) ? $values["cvc"] : "",
-			"attr:required" => true,
+			"required" => true,
 			"attr:id" => "cvc"
 		));
 
@@ -65,7 +65,7 @@ class PayJpOptionPage extends WebPage {
 		$this->addInput("name", array(
 			"name" => "name",
 			"value" => PayJpUtil::get("name"),
-			"attr:required" => true,
+			"required" => true,
 			"attr:id" => "name"
 		));
 

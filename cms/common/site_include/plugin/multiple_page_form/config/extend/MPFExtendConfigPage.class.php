@@ -44,7 +44,7 @@ class MPFExtendConfigPage extends WebPage {
 		$this->addInput("page_name", array(
 			"name" => "Config[name]",
 			"value" => MultiplePageFormUtil::getPageName($this->hash),
-			"attr:required" => "required"
+			"required" => "required"
 		));
 
 		$this->addLabel("page_type", array(

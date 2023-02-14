@@ -354,10 +354,13 @@ class CMSBlogPage extends CMSPage{
 				}
 
 				//ブログトップページでargsが1つ以上あるのはおかしい。
+				$pageNum = 0;	// 実際のページに-1している
 				if(count($this->arguments) >= 1){
 					//ただし、ページャの場合は除く
 					preg_match('/page-[\d]+?$/', $this->arguments[0], $tmp);
-					if(!isset($tmp[0])){
+					if(isset($tmp[0])){	
+						$pageNum = (int)str_replace("page-", "", $tmp[0]);	// ページャの場合はページ番号を取得しておく
+					}else{
 						//トップページのURLチェックを行う 下記の式はトップページURLが空で無い時のチェック
 						$argsError = true;
 						if(count($this->arguments) === 1 && $this->page->getTopPageUri() == $this->arguments[0]) $argsError = false;
@@ -384,8 +387,8 @@ class CMSBlogPage extends CMSPage{
 				//最新エントリーを取得
 				$this->entries = ($this->limit > 0) ? self::getEntries() : array();
 
-				//記事がなければ404
-				if(!count($this->entries)){
+				// 2ページ目以降で記事がなければ404
+				if($pageNum > 0 && !count($this->entries)){
 					$this->error = new Exception("記事がありません");
 					return;
 				}

@@ -14,13 +14,13 @@ class TransferInfoBankFormPage extends WebPage {
 		$this->addInput("bank_name", array(
 			"name" => self::_nameprop(TransferInfoUtil::PROP_BANK),
 			"value" => self::_value(TransferInfoUtil::PROP_BANK),
-			"attr:placeholder" => "○○銀行"
+			"placeholder" => "○○銀行"
 		));
 
 		$this->addInput("branch_name", array(
 			"name" => self::_nameprop(TransferInfoUtil::PROP_BRANCH),
 			"value" => self::_value(TransferInfoUtil::PROP_BRANCH),
-			"attr:placeholder" => "△△支店"
+			"placeholder" => "△△支店"
 		));
 
 		$this->addSelect("deposit_type", array(
@@ -32,7 +32,7 @@ class TransferInfoBankFormPage extends WebPage {
 		$this->addInput("account_number", array(
 			"name" => self::_nameprop(TransferInfoUtil::PROP_NUMBER),
 			"value" => self::_value(TransferInfoUtil::PROP_NUMBER),
-			"attr:pattern" => "^[0-9]+$"
+			"pattern" => "^[0-9]+$"
 		));
 
 		$this->addInput("account_holder", array(

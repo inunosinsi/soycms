@@ -7,7 +7,7 @@ class ScheduleLabelListComponent extends HTMLList{
 		$this->addInput("label", array(
 			"name" => "Label[label][" . $entity->getId() . "]",
 			"value" => $entity->getLabel(),
-			"attr:required" => "required"
+			"required" => "required"
 		));
 
 		$this->addInput("display_order", array(

@@ -527,8 +527,8 @@ class ShopConfigPage extends WebPage{
 		$this->addInput("autoOperateAuthorId", array(
 			"name" => "Config[autoOperateAuthorId]",
 			"value" => $config->getAutoOperateAuthorId(),
-			"attr:placeholder" => "soyshop",
-			"attr:required" => "required"
+			"placeholder" => "soyshop",
+			"required" => "required"
 		));
 
 		SOY2::import("domain.config.SOYShop_Area");
@@ -562,7 +562,7 @@ class ShopConfigPage extends WebPage{
 		$this->addInput("dummyItemCodeRule", array(
 			"name" => "Config[dummyItemCodeRule]",
 			"value" => $config->getDummyItemCodeRule(),
-			"attr:placeholder" => "空欄でランダム"
+			"placeholder" => "空欄でランダム"
 		));
 
 		$this->addCheckBox("displayItemKeywords", array(

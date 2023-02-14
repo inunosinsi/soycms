@@ -343,7 +343,7 @@ class ReserveCalendarDetailPage extends WebPage{
 			"value" => 1,
 			"attr:min" => 1,
 			"attr:max" => $unsoldSeat,
-			"attr:required" => "required"
+			"required" => "required"
 		));
 
 		$this->addTextArea("memo", array(

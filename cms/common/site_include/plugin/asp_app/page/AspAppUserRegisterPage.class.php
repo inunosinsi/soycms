@@ -35,14 +35,14 @@ class AspAppUserRegisterPage extends WebPage {
 		$this->addInput("user_name", array(
 			"name" => "User[name]",
 			"value" => $admin->getName(),
-			"attr:required" => "required"
+			"required" => "required"
 		));
 
 		$this->addInput("user_id", array(
 			"name" => "User[userId]",
 			"value" => $admin->getUserId(),
-			"attr:required" => "required",
-			"attr:pattern" => "^[a-zA-Z0-9]+$"
+			"required" => "required",
+			"pattern" => "^[a-zA-Z0-9]+$"
 		));
 
 		//モードに文字列がある場合はメールアドレスを必須にしない
@@ -53,19 +53,19 @@ class AspAppUserRegisterPage extends WebPage {
 		$this->addInput("mail_address", array(
 			"name" => "User[email]",
 			"value" => $admin->getEmail(),
-			"attr:required" => ($isRequiredMailAddress) ? "required" : ""
+			"required" => ($isRequiredMailAddress) ? "required" : ""
 		));
 
 		$this->addInput("mail_address_confirm", array(
 			"name" => "confirm",
 			"value" => (!isset($this->errors["mail_address_confirm_error"])) ? $admin->getEmail() : "",
-			"attr:required" => ($isRequiredMailAddress) ? "required" : ""
+			"required" => ($isRequiredMailAddress) ? "required" : ""
 		));
 
 		$this->addInput("password", array(
 			"name" => "User[userPassword]",
 			"value" => $admin->getUserPassword(),
-			"attr:required" => "required"
+			"required" => "required"
 		));
 
 		//エラー

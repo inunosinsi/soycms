@@ -104,7 +104,7 @@ class PayJpPage extends MainMyPagePageBase{
 			$this->addInput("card_" . ($i + 1), array(
 				"name" => "card[$i]",
 				"value" => (isset($values["number"])) ? substr($values["number"], (4*$i), 4) : "",
-				"attr:required" => true
+				"required" => true
 			));
 		}
 
@@ -122,13 +122,13 @@ class PayJpPage extends MainMyPagePageBase{
 		$this->addInput("cvc", array(
 			"name" => "cvc",
 			"value" => (isset($values["cvc"])) ? $values["cvc"] : "",
-			"attr:required" => true
+			"required" => true
 		));
 
 		$this->addInput("name", array(
 			"name" => "name",
 			"value" => PayJpUtil::get("name"),
-			"attr:required" => true
+			"required" => true
 		));
 	}
 

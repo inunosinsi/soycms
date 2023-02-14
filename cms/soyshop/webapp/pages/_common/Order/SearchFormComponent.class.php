@@ -260,7 +260,7 @@ class SearchFormComponent extends SOYBodyComponentBase{
 			"name" => "search[orderMemo]",
 			"value" => $this->getOrderMemo(),
 			"style" => "width:80%;",
-			"attr:placeholder" => "スペース区切りで複数ワードで検索できます。"
+			"placeholder" => "スペース区切りで複数ワードで検索できます。"
 		));
 
 		$this->addCheckBox("order_memo_and", array(
@@ -281,7 +281,7 @@ class SearchFormComponent extends SOYBodyComponentBase{
 			"name" => "search[orderComment]",
 			"value" => $this->getOrderComment(),
 			"style" => "width:80%;",
-			"attr:placeholder" => "スペース区切りで複数ワードで検索できます。"
+			"placeholder" => "スペース区切りで複数ワードで検索できます。"
 		));
 
 		$this->addCheckBox("order_comment_and", array(

@@ -37,7 +37,7 @@ class MPFTextConfigPage extends WebPage {
 		$this->addInput("page_name", array(
 			"name" => "Config[name]",
 			"value" => MultiplePageFormUtil::getPageName($this->hash),
-			"attr:required" => "required"
+			"required" => "required"
 		));
 
 		$this->addLabel("page_type", array(
@@ -58,7 +58,7 @@ class MPFTextConfigPage extends WebPage {
 		$this->addInput("button_label", array(
 			"name" => "Config[button]",
 			"value" => (isset($cnf["button"])) ? $cnf["button"] : "",
-			"attr:placeholder" => "次へ"
+			"placeholder" => "次へ"
 		));
 
 		$this->addSelect("page_template", array(

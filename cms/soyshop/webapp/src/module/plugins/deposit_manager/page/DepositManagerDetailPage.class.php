@@ -49,14 +49,14 @@ class DepositManagerDetailPage extends WebPage {
 			"name" => "Deposit[subjectId]",
 			"options" => DepositManagerUtil::getSubjectList(true),
 			"selected" => $deposit->getSubjectId(),
-			"attr:required" => "required"
+			"required" => "required"
 		));
 
 		$this->addInput("deposit_price", array(
 			"name" => "Deposit[depositPrice]",
 			"value" => $deposit->getDepositPrice(),
 			"style" => "width:150px;",
-			"attr:required" => "required"
+			"required" => "required"
 		));
 
 		$this->addInput("deposit_date", array(
@@ -64,7 +64,7 @@ class DepositManagerDetailPage extends WebPage {
 			"value" => ((int)$deposit->getDepositDate() > 0) ? date("Y-m-d", $deposit->getDepositDate()) : "",
 			"style"=> "width:200px;",
 			"readonly" => true,
-			"attr:required" => "required"
+			"required" => "required"
 		));
 
 		$this->addTextArea("memo", array(

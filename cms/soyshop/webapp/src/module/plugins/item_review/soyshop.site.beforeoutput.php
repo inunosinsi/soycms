@@ -190,8 +190,8 @@ class ItemReviewBeforeOutput extends SOYShopSiteBeforeOutputAction{
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"name" => "Review[captcha]",
 			"value" => "",
-			"attr:required" => "required",
-			"attr:placeholder" => "表示されているアルファベットを入力して下さい。"
+			"required" => "required",
+			"placeholder" => "表示されているアルファベットを入力して下さい。"
 		));
 
 		$config = self::_config();

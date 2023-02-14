@@ -111,7 +111,7 @@ class CouponCategoryConfigFormPage extends WebPage {
 		$this->addInput("name", array(
 			"name" => "Category[name]",
 			"value" => "",
-			"attr:required" => "required"
+			"required" => "required"
 		));
 
 		$this->addInput("prefix", array(

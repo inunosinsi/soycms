@@ -33,7 +33,7 @@ class PayJpRecurringOptionPage extends WebPage {
 				"value" => (isset($values["number"])) ? substr($values["number"], (4*$i), 4) : "",
 				"style" => "ime-mode:inactive;",
 				"attr:id" => "card_" . $i,
-				"attr:required" => true
+				"required" => true
 			));
 		}
 
@@ -54,7 +54,7 @@ class PayJpRecurringOptionPage extends WebPage {
 			"name" => "cvc",
 			"value" => (isset($values["cvc"])) ? $values["cvc"] : "",
 			"attr:id" => "cvc",
-			"attr:required" => true
+			"required" => true
 		));
 
 		//サンプル画像
@@ -66,7 +66,7 @@ class PayJpRecurringOptionPage extends WebPage {
 			"name" => "name",
 			"value" => PayJpRecurringUtil::get("name"),
 			"attr:id" => "name",
-			"attr:required" => true
+			"required" => true
 		));
 
 		//非通過型に対応

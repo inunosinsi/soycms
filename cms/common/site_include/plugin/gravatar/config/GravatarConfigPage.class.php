@@ -103,13 +103,13 @@ class GravatarConfigPage extends WebPage{
 		$this->addInput("name", array(
 			"name" => "Account[name]",
 			"value" => "",
-			"attr:required" => "required"
+			"required" => "required"
 		));
 
 		$this->addInput("mail_address", array(
 			"name" => "Account[mailAddress]",
 			"value" => "",
-			"attr:required" => "required"
+			"required" => "required"
 		));
 	}
 

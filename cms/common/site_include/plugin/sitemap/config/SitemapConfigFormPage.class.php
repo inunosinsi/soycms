@@ -106,9 +106,9 @@ class SitemapConfigFormPage extends WebPage{
 		$this->addInput("url", array(
 			"name" => "Url",
 			"value" => "",
-			"attr:placeholder" => UserInfoUtil::getSitePublishURL(),
-			"attr:pattern" => "http(s)?://([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?",
-			"attr:required" => "required"
+			"placeholder" => UserInfoUtil::getSitePublishURL(),
+			"pattern" => "http(s)?://([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?",
+			"required" => "required"
 		));
 
 		DisplayPlugin::toggle("is_urls", count($this->pluginObj->urls));

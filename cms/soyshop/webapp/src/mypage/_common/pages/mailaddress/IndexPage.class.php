@@ -81,7 +81,7 @@ class IndexPage extends MainMyPagePageBase{
     	$this->addInput("mailaddress", array(
     		"name" => "mail",
     		"value" => $mypage->getUser()->getMailAddress(),
-			"attr:required" => "required"
+			"required" => "required"
     	));
 
     	// afrer remind mail

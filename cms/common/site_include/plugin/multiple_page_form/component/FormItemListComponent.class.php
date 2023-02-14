@@ -37,7 +37,7 @@ class FormItemListComponent extends HTMLList {
 		$this->addInput("attribute", array(
 			"name" => "Config[Attribute][" . $idx . "]",
 			"value" => (isset($entity["attribute"])) ? $entity["attribute"] : "",
-			"attr:placeholder" => "class=\"sample\" title=\"サンプル\" placeholder=\"\" pattern=\"\""
+			"placeholder" => "class=\"sample\" title=\"サンプル\" placeholder=\"\" pattern=\"\""
 		));
 
 		$this->addModel("is_advance_config", array(
@@ -58,7 +58,7 @@ class FormItemListComponent extends HTMLList {
 		$this->addInput("replacement", array(
 			"name" => "Config[Replacement][" . $idx . "]",
 			"value" => (isset($entity["replacement"])) ? $entity["replacement"] : "",
-			"attr:placeholder" => "#NAME#"
+			"placeholder" => "#NAME#"
 		));
 
 		$opt = (isset($entity["option"])) ? $entity["option"] : "";

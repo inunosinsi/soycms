@@ -29,7 +29,7 @@ class CategoryListComponent extends HTMLList {
 		$this->addInput("input_name", array(
 			"name" => "Edit[name]",
 			"value" => $entity->getName(),
-			"attr:required" => "required"
+			"required" => "required"
 		));
 
 		$this->addInput("input_prefix", array(

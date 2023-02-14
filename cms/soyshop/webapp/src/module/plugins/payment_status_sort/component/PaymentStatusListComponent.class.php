@@ -12,7 +12,7 @@ class PaymentStatusListComponent extends HTMLList {
 		$this->addInput("sort", array(
 			"name" => "Sort[" . $key . "]",
 			"value" => (isset($this->config[$key]) && is_numeric($this->config[$key])) ? (int)$this->config[$key] : $int,
-			"attr:required" => "required",
+			"required" => "required",
 			"style" => "width:60px;text-align:right;"
 		));
 	}

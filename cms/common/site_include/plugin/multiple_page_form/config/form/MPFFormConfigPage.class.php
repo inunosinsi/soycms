@@ -84,7 +84,7 @@ class MPFFormConfigPage extends WebPage {
 		$this->addInput("page_name", array(
 			"name" => "Config[name]",
 			"value" => MultiplePageFormUtil::getPageName($this->hash),
-			"attr:required" => "required"
+			"required" => "required"
 		));
 
 		$this->addLabel("page_type", array(
@@ -136,13 +136,13 @@ class MPFFormConfigPage extends WebPage {
 		$this->addInput("item_name", array(
 			"name" => "Item[name]",
 			"value" => "",
-			"attr:required" => "required"
+			"required" => "required"
 		));
 
 		$this->addSelect("item_type", array(
 			"name" => "Item[type]",
 			"options" => MPFTypeFormUtil::getTypeList(),
-			"attr:required" => "required"
+			"required" => "required"
 		));
 	}
 

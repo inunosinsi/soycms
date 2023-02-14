@@ -22,7 +22,7 @@ class EntryPreviewConfigPage extends WebPage {
         $this->addInput("postfix", array(
             "name" => "Config[postfix]",
             "value" => $this->pluginObj->getPostfix(),
-            "attr:required" => "required"
+            "required" => "required"
         ));
     }
 

@@ -64,7 +64,7 @@ class CustomFieldCheckerConfigPage extends WebPage {
 		$this->addInput($idx . "_keyword", array(
 			"name" => $idx . "_keyword",
 			"value" => (isset($_POST[$idx . "_keyword"])) ? $_POST[$idx . "_keyword"] : "",
-			"attr:placeholder" => "値で検索"
+			"placeholder" => "値で検索"
 		));
 
 		$fieldLabel = (strlen($fieldId) && isset($opts[$fieldId])) ? $opts[$fieldId] : "";

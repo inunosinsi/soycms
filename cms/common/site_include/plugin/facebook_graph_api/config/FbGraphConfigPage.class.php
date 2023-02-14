@@ -27,7 +27,7 @@ class FbGraphConfigPage extends WebPage {
 		$this->addInput("ver", array(
 			"name" => "Config[ver]",
 			"value" => $cnf["ver"],
-			"attr:placeholder" => "12.0"
+			"placeholder" => "12.0"
 		));
 
 		$this->addInput("bizId", array(

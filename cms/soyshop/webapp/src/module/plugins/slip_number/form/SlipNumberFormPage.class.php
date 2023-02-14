@@ -20,7 +20,7 @@ class SlipNumberFormPage extends WebPage{
 		$this->addInput("slip_number", array(
 			"name" => "SlipNumber",
 			"value" => "",
-			"attr:placeholder" => $placeholder
+			"placeholder" => $placeholder
 		));
 
 		DisplayPlugin::toggle("has_slip_number", strlen($slipNumber));

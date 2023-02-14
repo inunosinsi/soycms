@@ -64,13 +64,13 @@ class SwitchPageConfigPage extends WebPage {
 		$this->addSelect("uri_from", array(
 			"name" => "Config[from]",
 			"options" => $list,
-			"attr:required" => "required"
+			"required" => "required"
 		));
 
 		$this->addSelect("uri_to", array(
 			"name" => "Config[to]",
 			"options" => $list,
-			"attr:required" => "required"
+			"required" => "required"
 		));
 	}
 

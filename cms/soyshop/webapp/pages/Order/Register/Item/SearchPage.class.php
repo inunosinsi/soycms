@@ -62,7 +62,7 @@ class SearchPage extends WebPage{
 		$this->addInput("name", array(
 			"name" => "search_condition[name]",
 			"value" => (isset($cnds["name"])) ? $cnds["name"] : null,
-			"attr:placeholder" => "スペース区切りで複数キーワードで検索可",
+			"placeholder" => "スペース区切りで複数キーワードで検索可",
 			"style" => "width:300px;"
 		));
 
@@ -169,7 +169,7 @@ class SearchPage extends WebPage{
 				"type" => $typeProp,
 				"name" => "Item[" . $t . "]",
 				"value" => $v,
-				"attr:required" => "required"
+				"required" => "required"
 			));
 		}
 

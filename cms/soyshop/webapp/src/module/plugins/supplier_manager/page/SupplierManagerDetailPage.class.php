@@ -41,7 +41,7 @@ class SupplierManagerDetailPage extends WebPage {
 		$this->addInput("name", array(
 			"name" => "Supplier[name]",
 			"value" => $supplier->getName(),
-			"attr:required" => "required"
+			"required" => "required"
 		));
 
 		//郵便番号をバラして使う
@@ -50,14 +50,14 @@ class SupplierManagerDetailPage extends WebPage {
 			"name" => "Supplier[zipCode1]",
 			"value" => (isset($zip[0])) ? $zip[0] : null,
 			"style" => "ime-mode:inactive;",
-			"attr:pattern" => "\d{3}"
+			"pattern" => "\d{3}"
 		));
 
 		$this->addInput("zip_code2", array(
 			"name" => "Supplier[zipCode2]",
 			"value" => (isset($zip[1])) ? $zip[1] : null,
 			"style" => "ime-mode:inactive;",
-			"attr:pattern" => "\d{4}"
+			"pattern" => "\d{4}"
 		));
 
 		//都道府県

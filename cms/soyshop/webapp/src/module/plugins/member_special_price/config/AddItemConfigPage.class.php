@@ -74,7 +74,7 @@ class AddItemConfigPage extends WebPage{
 		$this->addInput("user_attribute_value", array(
 			"name" => "Add[value]",
 			"value" => "",
-			"attr:required" => "required"
+			"required" => "required"
 		));
 	}
 	

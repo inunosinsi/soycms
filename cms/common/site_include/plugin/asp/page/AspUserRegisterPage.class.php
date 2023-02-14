@@ -31,26 +31,26 @@ class AspUserRegisterPage extends WebPage {
 		$this->addInput("user_name", array(
 			"name" => "User[name]",
 			"value" => $admin->getName(),
-			"attr:required" => "required"
+			"required" => "required"
 		));
 
 		//登録時はuser_idにも同じ値を入れる
 		$this->addInput("mail_address", array(
 			"name" => "User[email]",
 			"value" => $admin->getEmail(),
-			"attr:required" => "required"
+			"required" => "required"
 		));
 
 		$this->addInput("mail_address_confirm", array(
 			"name" => "confirm",
 			"value" => (!isset($this->errors["mail_address_confirm_error"])) ? $admin->getEmail() : "",
-			"attr:required" => "required"
+			"required" => "required"
 		));
 
 		$this->addInput("password", array(
 			"name" => "User[userPassword]",
 			"value" => $admin->getUserPassword(),
-			"attr:required" => "required"
+			"required" => "required"
 		));
 
 		$this->addLabel("site_url", array(
@@ -62,8 +62,8 @@ class AspUserRegisterPage extends WebPage {
 			"name" => "siteId",
 			"value" => AspUtil::getSiteId(),
 			"style" => "ime-mode:inactive",
-			"attr:required" => "required",
-			"attr:pattern" => "^[a-zA-Z0-9]+$"
+			"required" => "required",
+			"pattern" => "^[a-zA-Z0-9]+$"
 		));
 
 		//エラー

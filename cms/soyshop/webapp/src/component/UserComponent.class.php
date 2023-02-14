@@ -125,7 +125,7 @@ class UserComponent {
 		$page->addInput("user_code", array(
 			"name" => "Customer[userCode]",
 			"value" => $user->getUserCode(),
-			"attr:required" => "required",
+			"required" => "required",
 			"attr:autocomplete" => "false"
 		));
 
@@ -170,7 +170,7 @@ class UserComponent {
 		$page->addInput("honorific", array(
 			"name" => "Customer[honorific]",
 			"value" => $user->getHonorific(),
-			"attr:placeholder" => "様",
+			"placeholder" => "様",
 			"attr:autocomplete" => "false"
 		));
 

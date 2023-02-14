@@ -42,7 +42,7 @@ class DepositManagerConfigPage extends WebPage {
 
 		$this->addInput("deposit_subject_input", array(
 			"name" => "Add",
-			"attr:required" => "required"
+			"required" => "required"
 		));
 
 		$this->addForm("order_form");
