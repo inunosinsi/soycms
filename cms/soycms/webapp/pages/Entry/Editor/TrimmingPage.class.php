@@ -35,7 +35,11 @@ class TrimmingPage extends CMSWebPageBase {
 			$targ_w = $_POST['w'];
 			$targ_h = $_POST['h'];
 
-			$img_r = imagecreatefromjpeg($src);
+			if(!function_exists("x_get_properties_by_img_tag")) SOY2::import("site_include.plugin.x_cls.func.fn", ".php");
+			$fn = "imagecreatefrom".x_get_extension_by_filepath($_GET["path"]);
+			if(!function_exists($fn)) $fn = "imagecreatefromjpeg";
+			
+			$img_r = $fn($src);
 			$dst_r = ImageCreateTrueColor( $targ_w, $targ_h );
 
 			imagecopyresampled($dst_r, $img_r, 0, 0, $_POST['x'], $_POST['y'], $targ_w, $targ_h, $_POST['w'], $_POST['h']);

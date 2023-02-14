@@ -9098,8 +9098,9 @@ function soy2_image_resizeimage_gd(string $filepath, string $savepath, int $widt
 		trigger_error("Failed [Type is empty] " . __FILE__ . ":" . __LINE__,E_USER_ERROR);
 		return -1;
 	}
-	$type = strtolower($info["extension"]);
-	if($type == "jpg")$type = "jpeg";
+	$mimetype = mime_content_type($filepath);
+	$type = trim(substr($mimetype, strrpos($mimetype, "/")), "/");
+	if($type == "jpg") $type = "jpeg";
 	$from = "imagecreatefrom" . $type;
 	if(!function_exists($from)){
 		trigger_error("Failed [Invalid Type:".$type."] " . __FILE__ . ":" . __LINE__,E_USER_ERROR);
