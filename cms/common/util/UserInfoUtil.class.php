@@ -120,7 +120,7 @@ interface IUserInfoUtil {
     /**
      * サイトの設定を取得
      */
-    public static function getSiteConfig($key = null);
+    public static function getSiteConfig(string $key="");
 
     /**
      * サイトのIDからサイトのURLを取得

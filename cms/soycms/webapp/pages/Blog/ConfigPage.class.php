@@ -358,7 +358,7 @@ class ConfigPage extends CMSWebPageBase{
 			if(!$categoryLabel)$categoryLabel = new Label();
 
 			CMSToolBox::addLink(CMSMessageManager::get("SOYCMS_SHOW_CATEGORYARCHIVEPAGE"),
-				$pageUrl.$page->getCategoryPageUri()."/".rawurlencode($categoryLabel->getAlias()),
+				$pageUrl.$page->getCategoryPageUri()."/".rawurlencode((string)$categoryLabel->getAlias()),
 				false,
 				"this.target = '_blank'"
 			);

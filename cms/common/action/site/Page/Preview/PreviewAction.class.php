@@ -45,7 +45,7 @@ class PreviewAction extends SOY2Action {
 
 		//URI 先頭のスラッシュは削る
 		$uri = $request->getParameter("uri");
-		$uri = preg_replace("/^\//","",$uri);
+		$uri = (is_string($uri) && strlen($uri)) ? preg_replace("/^\//","",$uri) : "";
 		list($uri, $args) = CMSPathInfoBuilder::parsePath($uri);
 
 		$logic = SOY2Logic::createInstance("logic.site.Page.PageLogic");

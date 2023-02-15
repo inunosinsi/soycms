@@ -14,3 +14,12 @@ function soycms_check_is_image_path(string $path){
 
 	return false;
 }
+
+/**
+ * @return SiteConfig
+ */
+function soycms_get_site_config_object(){
+	static $cnf;
+	if(is_null($cnf)) $cnf = SOY2DAOFactory::create("cms.SiteConfigDAO")->get();
+	return $cnf;
+}

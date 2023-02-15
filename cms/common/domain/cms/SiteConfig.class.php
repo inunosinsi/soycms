@@ -282,6 +282,4 @@ class SiteConfig {
     public function setUseLabelCategory($value){
     	$this->setConfigValue("useLabelCategory", (int)$value);
     }
-
 }
-?>

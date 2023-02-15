@@ -51,7 +51,9 @@ class Label {
 	}
 
 	function getAlias() {
-   		return (strlen((string)$this->alias) > 0) ? $this->alias : $this->getId();
+		if(is_numeric($this->alias)) return (string)$this->alias;
+		if(is_string($this->alias) && strlen($this->alias)) return $this->alias;
+		return (string)$this->getId();
 	}
 	function setAlias($alias) {
 		$this->alias = $alias;
