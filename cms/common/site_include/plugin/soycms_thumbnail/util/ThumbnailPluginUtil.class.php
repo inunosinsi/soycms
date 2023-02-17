@@ -101,11 +101,7 @@ class ThumbnailPluginUtil {
 	 * @return SiteConfig
 	 */
 	public static function getSiteConfig(){
-		try{
-			return SOY2DAOFactory::create("cms.SiteConfigDAO")->get();
-		}catch(Exception $e){
-			return new SiteConfig();
-		}
+		return soycms_get_site_config_object();
 	}
 
 	/**
