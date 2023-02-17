@@ -17,7 +17,7 @@ class CMSPageController extends SOY2PageController{
 		CMSUtil::defineSiteConstant();
 		
 		//デフォルトページ
-		$siteConfig = SOY2DAOFactory::create("cms.SiteConfigDAO")->get();
+		$siteConfig = soycms_get_site_config_object();
 
 		//パスからURIと引数に変換
 		SOY2::import("site_include.CMSPathInfoBuilder");

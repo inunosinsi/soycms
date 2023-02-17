@@ -33,7 +33,7 @@ class PreviewAction extends SOY2Action {
 		if(defined("SOYCMS_ALLOW_PHP_SCRIPT")) define("SOY2HTML_ALLOW_PHP_SCRIPT",SOYCMS_ALLOW_PHP_SCRIPT);
 
 		//デフォルトページ
-		$siteConfig = SOY2DAOFactory::create("cms.SiteConfigDAO")->get();
+		$siteConfig = soycms_get_site_config_object();
 
 		//id　GETを優先する
 		if(isset($_GET["id"])){

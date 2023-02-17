@@ -243,7 +243,7 @@ class UserInfoUtil implements IUserInfoUtil{
     }
 
     public static function getSiteConfig(string $key=""){
-    	$config = SOY2DAOFactory::create("cms.SiteConfigDAO")->get();
+    	$config = soycms_get_site_config_object();
     	if(strlen($key)){
     		return $config->getConfigValue($key);
     	}else{

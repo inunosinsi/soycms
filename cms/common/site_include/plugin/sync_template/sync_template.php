@@ -247,7 +247,7 @@ class SyncTemplatePlugin{
 	function exportTemplates($convert = false){
 		 $targetDir = $this->getSiteDirectory().self::TARGET_DIR;
 
-		 $siteConfig = SOY2DAOFactory::create("cms.SiteConfigDAO")->get();
+		 $siteConfig = soycms_get_site_config_object();
 
 		 $pageDao = SOY2DAOFactory::create("cms.PageDAO");
 		 $pages = $pageDao->get();
@@ -323,7 +323,7 @@ class SyncTemplatePlugin{
 		$this->pageDAO = SOY2DAOFactory::create("cms.PageDAO");
 		$this->blogPageDAO = SOY2DAOFactory::create("cms.BlogPageDAO");
 
-		$config = SOY2DAOFactory::create("cms.SiteConfigDAO")->get();
+		$config = soycms_get_site_config_object();
 
 		$output_date = max($this->output_date,$this->sync_date);
 

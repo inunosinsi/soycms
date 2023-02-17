@@ -21,7 +21,7 @@ class IndexPage extends CMSWebPageBase {
     	$this->currentPageId = $result->getAttribute("page_id");
 
     	if($result->success()){
-    		$this->siteConfig = SOY2DAOFactory::create("cms.SiteConfigDAO")->get();
+    		$this->siteConfig = soycms_get_site_config_object();
 
     		$this->page = $result->getAttribute("pageObj");
     		$this->args = $result->getAttribute("args");

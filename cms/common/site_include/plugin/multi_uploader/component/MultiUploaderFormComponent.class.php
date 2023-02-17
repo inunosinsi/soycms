@@ -77,12 +77,7 @@ class MultiUploaderFormComponent {
 	 * @return string url
 	 */
 	private static function _getDomainUrl(){
-		try{
-			$url = SOY2DAOFactory::create("cms.SiteConfigDAO")->get()->getConfigValue("url");
-		}catch(Exception $e){
-			$url = "";
-		}
-
+		$url = (string)soycms_get_site_config_object()->getConfigValue("url");
 		$siteId = UserInfoUtil::getSite()->getSiteId();
 
 		if(strpos($url, "/" . $siteId . "/")){

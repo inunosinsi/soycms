@@ -170,13 +170,9 @@ class CreatePageLogic extends SOY2LogicBase{
     private function getCharset(){
     	static $charset;
     	if(!$charset){
-	    	try{
-		    	$charset = SOY2DAOFactory::create("cms.SiteConfigDAO")->get()->getCharsetText();
-	    	}catch(Exception $e){
-	    		$charset = "UTF-8";
-	    	}
+			$charset = soycms_get_site_config_object()->getCharsetText();
+			if(!is_string($charset) || !strlen((string)$charset)) $charset = "UTF-8";
     	}
     	return $charset;
     }
 }
-?>

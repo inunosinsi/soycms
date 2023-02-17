@@ -84,7 +84,7 @@ class CreateSampleLogic extends SOY2LogicBase {
 		$page->setPageType(Page::PAGE_TYPE_NORMAL);
 
 		// Apply template pack to the webpage
-		$encoding = SOY2DAOFactory::create("cms.SiteConfigDAO")->get()->getCharsetText();
+		$encoding = soycms_get_site_config_object()->getCharsetText();
     	$topPageTemplate = str_replace("@@TITLE@@",$page->getTitle(),$topPageTemplate);
 		$topPageTemplate = str_replace("@@ENCODING@@",$encoding,$topPageTemplate);
 		$page->setTemplate($topPageTemplate);

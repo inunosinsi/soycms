@@ -166,7 +166,7 @@ class TagCloudUtil {
 	}
 
 	private static function _getUrlByPageId(int $pageId){
-		$url = SOY2DAOFactory::create("cms.SiteConfigDAO")->get()->getConfigValue("url");
+		$url = soycms_get_site_config_object()->getConfigValue("url");
 		if(is_null($url)) $url = CMSPageController::createLink("", true);
 		return $url . soycms_get_page_object($pageId)->getUri();
 	}

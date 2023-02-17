@@ -6,11 +6,7 @@ class SocialCustomFieldForm {
 		SOY2::import("site_include.plugin.ButtonSocial.util.ButtonSocialUtil");
 		$imgPath = (string)ButtonSocialUtil::getAttr($entryId)->getValue();
 
-		try{
-			$siteConfig = SOY2DAOFactory::create("cms.SiteConfigDAO")->get();
-		}catch(Exception $e){
-			$siteConfig = new SiteConfig();
-		}
+		$siteConfig = soycms_get_site_config_object();
 
 		$html = array();
 		$html[] = "<div class=\"form-group\">";

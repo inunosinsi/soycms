@@ -28,11 +28,7 @@ class CancelUploadFileAction extends SOY2Action{
     }
 
     private function getDefaultUpload(){
-		try{
-			return SOY2DAOFactory::create("cms.SiteConfigDAO")->get()->getUploadDirectory();
-		}catch(Exception $e){
-			return null;
-		}
+		return soycms_get_site_config_object()->getUploadDirectory();
     }
 }
 

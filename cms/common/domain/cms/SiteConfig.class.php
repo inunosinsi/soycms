@@ -56,8 +56,10 @@ class SiteConfig {
     }
     /**
      * 設定値を返す
+	 * @param string
+	 * @return string|bool
      */
-    public function getConfigValue($key){
+    public function getConfigValue(string $key){
     	$config = $this->getSiteConfigArray();
     	if(is_array($config) && isset($config[$key])){
     		return $config[$key];
@@ -68,8 +70,9 @@ class SiteConfig {
     }
     /**
      * 設定値を保持する
+	 * @param string, string|int
      */
-    public function setConfigValue($key, $value){
+    public function setConfigValue(string $key, $value){
     	$config = $this->getSiteConfigArray();
     	$config[$key] = $value;
     	$this->setSiteConfig($config);
@@ -209,8 +212,10 @@ class SiteConfig {
     /**
      * 文字コード変換
      * (UTF-8→サイトの文字コード)
+	 * @param string
+	 * @return string
      */
-    function convertToSiteCharset($contents){
+    function convertToSiteCharset(string $contents){
     	switch($this->charset){
     		case SiteConfig::CHARSET_UTF_8:
     			break;
@@ -226,6 +231,9 @@ class SiteConfig {
     	return $contents;
     }
 
+	/**
+	 * @return string
+	 */
     function getCharsetText(){
     	switch($this->charset){
     		case SiteConfig::CHARSET_UTF_8:
@@ -240,13 +248,16 @@ class SiteConfig {
     		default:
     			break;
     	}
+		return "";
     }
 
     /**
      * 文字コード変換
      * (サイトの文字コード→UTF8)
+	 * @param string
+	 * @return string
      */
-    function convertFromSiteCharset($contents){
+    function convertFromSiteCharset(string $contents){
     	switch($this->charset){
     		case SiteConfig::CHARSET_UTF_8:
     			break;

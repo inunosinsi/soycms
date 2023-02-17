@@ -160,12 +160,10 @@ class SmartphoneBlogPlugin{
 
 	private function _getUploadDirectory(){
 		// 空文字列または/dir/**/path
-		$dir = SOY2DAOFactory::create("cms.SiteConfigDAO")->get()->getUploadDirectory();
+		$dir = soycms_get_site_config_object()->getUploadDirectory();
 
 		//先頭の/を削除
-		if(strlen($dir) && $dir[0] == "/"){
-			$dir = substr($dir,1);
-		}
+		if(strlen($dir) && $dir[0] == "/") $dir = substr($dir,1);
 
     	return $dir;
     }

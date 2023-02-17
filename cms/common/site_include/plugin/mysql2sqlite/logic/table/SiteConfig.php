@@ -1,11 +1,7 @@
 <?php
 
 function registerSiteConfig($stmt){
-	try{
-		$config = SOY2DAOFactory::create("cms.SiteConfigDAO")->get();
-	}catch(Exception $e){
-		return;
-	}
+	$config = soycms_get_site_config_object();
 
 	$stmt->execute(array(
 		":name" => $config->getName(),
