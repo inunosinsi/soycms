@@ -18,7 +18,12 @@ function soycms_get_entry_id_by_entries(array $entries){
  * @return string
  */
 function soycms_get_site_id_by_frontcontroller(){
-	return ltrim(str_replace($_SERVER["DOCUMENT_ROOT"], "", _SITE_ROOT_), "/");
+	$xamppRoot = str_replace("\\", "/", _SITE_ROOT_);
+	if(_SITE_ROOT_ != $xamppRoot){	// xampp
+		return ltrim(str_replace($_SERVER["DOCUMENT_ROOT"], "", $xamppRoot), "/");
+	}else{
+		return ltrim(str_replace($_SERVER["DOCUMENT_ROOT"], "", _SITE_ROOT_), "/");
+	}
 }
 
 /**

@@ -15,7 +15,7 @@ class CMSPathInfoBuilder extends SOY2_PathInfoPathBuilder{
 			if(is_numeric($res)) $pathInfo = substr($pathInfo, 0, $res);
 
 			//サイトIDを除く
-			$siteId = trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/");
+			$siteId = soycms_get_site_id_by_frontcontroller();
 			$res = strpos($pathInfo, "/".$siteId."/");	//@ToDo サイトIDと同一のディレクトリ名がある場合は正常に動作しない
 			if(is_numeric($res)) {
 				if($res > 0) $pathInfo = substr($pathInfo, $res);	//サイト用のディレクトリを深い階層に移動した場合の対応
