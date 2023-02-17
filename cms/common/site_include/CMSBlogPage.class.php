@@ -363,7 +363,15 @@ class CMSBlogPage extends CMSPage{
 					}else{
 						//トップページのURLチェックを行う 下記の式はトップページURLが空で無い時のチェック
 						$argsError = true;
-						if(count($this->arguments) === 1 && $this->page->getTopPageUri() == $this->arguments[0]) $argsError = false;
+						if(count($this->arguments) === 1){
+							if($this->arguments[0] == $this->page->getTopPageUri()) $argsError = false;
+
+							// args[0]にサイトIDが入っていることがある
+							$siteId = soycms_get_site_id_by_frontcontroller();
+							if($this->page->getTopPageUri() != $siteId && $this->arguments[0] == $siteId) $argsError = false;
+
+							// 上記の判定以外の条件は無視することにする
+						}
 
 						//ブログページのトップページのuriが有りでページャの場合も調べる
 						if(count($this->arguments) === 2 && strpos($this->arguments[0], "page-") === false) $argsError = false;
