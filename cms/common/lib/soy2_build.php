@@ -207,7 +207,7 @@ interface SOY2_PathBuilder{
  	/**
  	 * 他のURLへ移動
  	 */
- 	public static function jump(string $url){}
+ 	public static function jump(string $url=""){}
  	/**
  	 * 現在のURLを再読込（queryは変更可能）
  	 */
@@ -298,12 +298,12 @@ interface SOY2_PathBuilder{
  		$controller = self::init();
  		$controller->defaultPath = $path;
  	}
- 	public static function jump(string $path){
+ 	public static function jump(string $path=""){
  		$url = self::createLink($path, true);
  		header("Location: ".$url);
  		exit;
  	}
- 	public static function redirect(string $path, bool $permanent=false){
+ 	public static function redirect(string $path="", bool $permanent=false){
  		if($permanent){
  			header("HTTP/1.1 301 Moved Permanently");
  		}
@@ -326,12 +326,12 @@ interface SOY2_PathBuilder{
  		if(is_null($builder)) $builder = new SOY2_DefaultClassPathBuilder();
  		return $builder;
  	}
- 	public static function createLink(string $path, bool $isAbsoluteUrl=false){
+ 	public static function createLink(string $path="", bool $isAbsoluteUrl=false){
  		$controller = self::init();
  		$pathBuilder = $controller->getPathBuilder();
  		return $pathBuilder->createLinkFromPath($path, $isAbsoluteUrl);
  	}
- 	public static function createRelativeLink(string $path, bool $isAbsoluteUrl=false){
+ 	public static function createRelativeLink(string $path="", bool $isAbsoluteUrl=false){
  		$controller = self::init();
  		$pathBuilder = $controller->getPathBuilder();
  		return $pathBuilder->createLinkFromRelativePath($path, $isAbsoluteUrl);
