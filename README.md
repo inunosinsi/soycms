@@ -24,3 +24,7 @@ SOY CMSを使用される前に下記の記事の一読をお願いします。
   
 設計理念の含め、SOY CMSの開発の背景をまとめてみました。  
 [SOY CMSの開発秘話前編 - saitodev.co](https://saitodev.co/article/1584)
+  
+  
+SOY CMSに組み込まれているSOY2フレームワークの解説ページを作成しました。  
+[SOY2](https://saitodev.co/soycms/soy2/)
