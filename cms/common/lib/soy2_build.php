@@ -348,8 +348,8 @@ interface SOY2_PathBuilder{
  	var $path;
  	var $arguments;
  	function __construct(){
- 		$pathInfo = (isset($_SERVER['PATH_INFO'])) ? $_SERVER['PATH_INFO'] : "";
- 		if(preg_match('/^((\/[a-zA-Z]*)*)(\/-)?((\/[0-9a-zA-Z_\.]*)*)$/',$pathInfo,$tmp)){
+		$pathInfo = (isset($_SERVER['PATH_INFO'])) ? $_SERVER['PATH_INFO'] : "";
+		if(preg_match('/^((\/[a-zA-Z]*)*)(\/-)?((\/[0-9a-zA-Z_\.]*)*)$/',$pathInfo,$tmp)){
  			$path = preg_replace('/^\/|\/$/',"",$tmp[1]);
  			$path = str_replace("/",".",$path);
  			$arguments = preg_replace("/^\//","",$tmp[4]);
@@ -6070,9 +6070,14 @@ class HTMLCSSLink extends SOY2HTML{
  * @package SOY2.SOY2HTML
  */
 class HTMLUploadForm extends HTMLForm{
+
+	private $accept;
+
 	function execute(){
 		parent::execute();
 		$this->setAttribute("enctype","multipart/form-data");
+		$accept = (is_string($this->accept)) ? trim($this->accept) : "";
+		$this->setAttribute("accept", $accept, false);
 	}
 }
 /**
@@ -6085,6 +6090,7 @@ abstract class HTMLFormElement extends SOY2HTML{
 	private $required;
 	private $placeholder;
 	private $pattern;
+	private $autocomplete;
 	function execute(){
 		parent::execute();
 		$disabled = (is_string($this->disabled) || (is_bool($this->disabled)) && $this->disabled) ? "disabled" : "";
@@ -6097,6 +6103,8 @@ abstract class HTMLFormElement extends SOY2HTML{
 		$this->setAttribute("placeholder", $placeholder, false);
 		$pattern = (is_string($this->pattern)) ? trim($this->pattern) : "";
 		$this->setAttribute("pattern", $pattern, false);
+		$autocomplete = (is_string($this->autocomplete)) ? trim($this->autocomplete) : "";
+		$this->setAttribute("autocomplete", $autocomplete, false);
 	}
 	function setName($value){
 		$this->name = $value;
@@ -6131,6 +6139,12 @@ abstract class HTMLFormElement extends SOY2HTML{
 	}
 	function setPattern($pattern){
 		$this->pattern = $pattern;
+	}
+	function getAutocomplete(){
+		return $this->autocomplete;
+	}
+	function setAutocomplete($autocomplete){
+		$this->autocomplete = $autocomplete;
 	}
 }
 /**
