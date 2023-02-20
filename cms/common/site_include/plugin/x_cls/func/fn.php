@@ -121,8 +121,9 @@ function x_merge_properties(array $props, array $info){
  * @param string, string, array
  * @return string
  */
-function x_rebuild_tag(string $tagType="img", string $oldTag, array $props){
+function x_rebuild_tag(string $tagType, string $oldTag, array $props){
 	if(!is_array($props) || !count($props)) return $oldTag;
+	if(!strlen($tagType)) $tagType = "img";
 	$newTag = "<".$tagType;
 	foreach($props as $idx => $v){
 		if(strlen($v)){

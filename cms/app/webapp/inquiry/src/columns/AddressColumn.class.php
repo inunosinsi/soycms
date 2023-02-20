@@ -59,6 +59,9 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 	//住所フォームを分割するか？
 	private $zipDivide = true;
 
+	//出力する項目	詳細は_getItemsConfig()に記載
+	private $items;
+
 	/**
 	 * ユーザに表示するようのフォーム
 	 * @param array
@@ -134,8 +137,6 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 	}
 
 	function validate(){
-		if(!$this->getIsRequire()) return true;
-
 		$values = $this->getValue();
 
 		if(isset($values["zip"])){
@@ -143,6 +144,24 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 		}else if(isset($values["zip1"])){
 			$zip = trim($values["zip1"] . $values["zip2"]);
 		}
+		
+		// 住所検索
+		$zipTmp = str_replace(array("-", "ー", " "), "", $zip);
+		if(isset($_POST["test"]) && strlen($zipTmp) === 7){
+			
+			list($zip1, $zip2) = self::_divideZipCode($zipTmp);
+			$logic = SOY2Logic::createInstance("logic.AddressSearchLogic");
+			$res = $logic->search($zip1, $zip2);
+			
+			
+			$values["prefecture"] = $res["prefecture"];
+			$values["address1"] = $res["address1"];
+			$values["address2"] = $res["address2"];
+			
+			$this->setValue($values);			
+		}
+
+		if(!$this->getIsRequire()) return true;
 
 		if(
 				empty($values)
@@ -200,7 +219,7 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 				$this->setErrorMessage($msg);
 				return false;
 			}
-		}
+		}	
 
 		return true;
 	}
@@ -219,7 +238,7 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 		}
 
 		if(!$this->zipDivide){
-			list($zip1, $zip2) = self::divideZipCode($values["zip"]);
+			list($zip1, $zip2) = self::_divideZipCode($values["zip"]);
 			$values["zip1"] = $zip1;
 			$values["zip2"] = $zip2;
 		}
@@ -273,6 +292,20 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 		return $config;
 	}
 
+	private function _getItemsConfig(){
+		if(!is_array($this->items)) return array(
+			"address1" => true,	//市区町村
+			"address2" => true,	//番地
+			"address3" => true	//建物名・部屋番号
+		);
+
+		for($i = 1; $i <= 3; $i++){
+			$this->items["address" . $i] = (isset($this->items["address" . $i]));
+		}
+
+		return $this->items;
+	}
+
 	function factoryConnector(){
 		return new AddressConnector();
 	}
@@ -303,7 +336,7 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 		return (strlen($this->replacement) == 0) ? "#ADDRESS#" : $this->replacement;
 	}
 
-	private function divideZipCode($zip){
+	private function _divideZipCode($zip){
 		$zip = trim(mb_convert_kana($zip, "a"));
 		$zip = str_replace(array("-", "ー"), "", $zip);
 		$zip1 = (strlen($zip) > 3) ? substr($zip, 0, 3) : $zip;
