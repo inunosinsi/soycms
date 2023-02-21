@@ -2,10 +2,18 @@
 
 class PluginBlockUtil {
 
+	/**
+	 * @param int
+	 * @return string
+	 */
 	public static function getTemplateByPageId(int $pageId){
 		return self::__getTemplateByPageId($pageId);
 	}
 
+	/**
+	 * @param int
+	 * @return string
+	 */
 	private static function __getTemplateByPageId(int $pageId=0){
 		static $templates;
 		if(is_null($templates)) $templates = array();
@@ -49,16 +57,20 @@ class PluginBlockUtil {
 			$templates[$pageId] = soycms_get_page_object($pageId, false)->getTemplate();
 		}
 
-		return (isset($templates[$pageId])) ? $templates[$pageId] : null;
+		return (isset($templates[$pageId])) ? $templates[$pageId] : "";
 	}
 
 	public static function getBlockByPageId(int $pageId){
 		return self::__getBlockByPageId($pageId);
 	}
 
+	/**
+	 * @param int, string
+	 * @return string
+	 */
 	public static function getSoyIdByPageIdAndPluginId(int $pageId, string $pluginId){
 		$blocks = self::__getBlockByPageId($pageId);
-		if(!count($blocks)) return null;
+		if(!count($blocks)) return "";
 
 		if(!class_exists("PluginBlockComponent")) SOY2::import("site_include.block.PluginBlockComponent.block", ".php");
 		foreach($blocks as $block){
@@ -68,15 +80,19 @@ class PluginBlockUtil {
 			}
 		}
 
-		return null;
+		return "";
 	}
 
+	/**
+	 * @param int
+	 * @return array
+	 */
 	private static function __getBlockByPageId(int $pageId){
 		static $plugBlocks;
 		if(is_null($plugBlocks)) $plugBlocks = array();
 		if(isset($plugBlocks[$pageId])) return $plugBlocks[$pageId];
 		try{
-			$blocks = SOY2DAOFactory::create("cms.BlockDAO")->getByPageId($pageId);
+			$blocks = soycms_get_hash_table_dao("block")->getByPageId($pageId);
 		}catch(Exception $e){
 			$blocks = array();
 		}
@@ -85,15 +101,18 @@ class PluginBlockUtil {
 
 		if(count($blocks)){
 			foreach($blocks as $obj){
-				if($obj->getClass() == "PluginBlockComponent"){
-					$plugBlocks[$pageId][] = $obj;
-				}
+				if($obj->getClass() != "PluginBlockComponent") continue;
+				$plugBlocks[$pageId][] = $obj;
 			}
 		}
-
+		
 		return $plugBlocks[$pageId];
 	}
 
+	/**
+	 * @param int, string
+	 * @return int
+	 */
 	public static function getLimitByPageId(int $pageId, string $soyId=""){
 		$template = self::__getTemplateByPageId($pageId);
 		if(is_null($template)) return 0;
@@ -115,6 +134,10 @@ class PluginBlockUtil {
 		return 0;
 	}
 
+	/**
+	 * @param int
+	 * @return bool
+	 */
 	public static function getSortRandomMode(int $pageId){
 		$template = self::__getTemplateByPageId($pageId);
 		if(is_null($template)) return false;
@@ -133,12 +156,16 @@ class PluginBlockUtil {
 		return false;
 	}
 
+	/**
+	 * @param int, string
+	 * @return int
+	 */
 	public static function getLabelIdByPageId(int $pageId, string $soyId=""){
 		$template = self::__getTemplateByPageId($pageId);
-		if(is_null($template)) return null;
+		if(is_null($template)) return 0;
 
 		$blocks = self::__getBlockByPageId($pageId);
-		if(!is_array($blocks) || !count($blocks)) return null;
+		if(!is_array($blocks) || !count($blocks)) return 0;
 
 		foreach($blocks as $block){
 			//soyIdに指定がある場合は正規表現をする前にチェック
@@ -151,15 +178,19 @@ class PluginBlockUtil {
 			}
 		}
 
-		return null;
+		return 0;
 	}
 
+	/**
+	 * @param int
+	 * @return array
+	 */
 	public static function getLabelIdsByPageId(int $pageId){
 		$template = self::__getTemplateByPageId($pageId);
-		if(is_null($template)) return null;
+		if(is_null($template)) return array();
 
 		$blocks = self::__getBlockByPageId($pageId);
-		if(!is_array($blocks) || !count($blocks)) return null;
+		if(!is_array($blocks) || !count($blocks)) return array();
 
 		foreach($blocks as $block){
 			if(preg_match('/(<[^>]*[^\/]block:id=\"' . $block->getSoyId() . '\"[^>]*>)/', $template, $tmp)){

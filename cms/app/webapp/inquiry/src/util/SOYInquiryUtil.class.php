@@ -304,13 +304,17 @@ class SOYInquiryUtil{
 		return $str;
 	}
 
+	/**
+	 * @param int
+	 * @return string
+	 */
 	public static function getBlogEntryUrlByInquiryId(int $inquiryId){
 		try{
 			$rel = SOY2DAOFactory::create("SOYInquiry_EntryRelationDAO")->getByInquiryId($inquiryId);
 		}catch(Exception $e){
 			$rel = new SOYInquiry_EntryRelation();
 		}
-		if(!is_numeric($rel->getEntryId())) return null;
+		if(!is_numeric($rel->getEntryId())) return "";
 
 		//siteIDからページのURLを辿る
 		CMSApplication::switchAdminMode();
@@ -323,7 +327,7 @@ class SOYInquiryUtil{
 
 		if(!is_numeric($site->getId())){
 			CMSApplication::switchAppMode();
-			return null;
+			return "";
 		}
 
 		//サイトのURLを調べる
@@ -363,7 +367,7 @@ class SOYInquiryUtil{
 
 		CMSApplication::switchAppMode();
 
-		if(!is_numeric($blogPage->getId())) return null;
+		if(!is_numeric($blogPage->getId())) return "";
 
 		if(strlen($blogPage->getUri())) $url .= $blogPage->getUri() . "/";
 		if(strlen($blogPage->getEntryPageUri())) $url .= $blogPage->getEntryPageUri() . "/";
