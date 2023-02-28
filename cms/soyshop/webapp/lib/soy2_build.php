@@ -207,7 +207,7 @@ interface SOY2_PathBuilder{
  	/**
  	 * 他のURLへ移動
  	 */
- 	public static function jump(string $url){}
+ 	public static function jump(string $url=""){}
  	/**
  	 * 現在のURLを再読込（queryは変更可能）
  	 */
@@ -298,12 +298,12 @@ interface SOY2_PathBuilder{
  		$controller = self::init();
  		$controller->defaultPath = $path;
  	}
- 	public static function jump(string $path){
+ 	public static function jump(string $path=""){
  		$url = self::createLink($path, true);
  		header("Location: ".$url);
  		exit;
  	}
- 	public static function redirect(string $path, bool $permanent=false){
+ 	public static function redirect(string $path="", bool $permanent=false){
  		if($permanent){
  			header("HTTP/1.1 301 Moved Permanently");
  		}
@@ -326,12 +326,12 @@ interface SOY2_PathBuilder{
  		if(is_null($builder)) $builder = new SOY2_DefaultClassPathBuilder();
  		return $builder;
  	}
- 	public static function createLink(string $path, bool $isAbsoluteUrl=false){
+ 	public static function createLink(string $path="", bool $isAbsoluteUrl=false){
  		$controller = self::init();
  		$pathBuilder = $controller->getPathBuilder();
  		return $pathBuilder->createLinkFromPath($path, $isAbsoluteUrl);
  	}
- 	public static function createRelativeLink(string $path, bool $isAbsoluteUrl=false){
+ 	public static function createRelativeLink(string $path="", bool $isAbsoluteUrl=false){
  		$controller = self::init();
  		$pathBuilder = $controller->getPathBuilder();
  		return $pathBuilder->createLinkFromRelativePath($path, $isAbsoluteUrl);
@@ -348,7 +348,7 @@ interface SOY2_PathBuilder{
  	var $path;
  	var $arguments;
  	function __construct(){
- 		$pathInfo = (isset($_SERVER['PATH_INFO'])) ? $_SERVER['PATH_INFO'] : "";
+		$pathInfo = (isset($_SERVER['PATH_INFO'])) ? $_SERVER['PATH_INFO'] : "";
  		if(preg_match('/^((\/[a-zA-Z]*)*)(\/-)?((\/[0-9a-zA-Z_\.]*)*)$/',$pathInfo,$tmp)){
  			$path = preg_replace('/^\/|\/$/',"",$tmp[1]);
  			$path = str_replace("/",".",$path);
@@ -4481,7 +4481,7 @@ class SOY2DAO_QueryBuilder{
 	 * @param $queryType タイプ
 	 * @return SOY2DAO_Query
 	 */
-	public static function buildQuery(string $methodName, $entityInfo, array $noPersistents=array(), array $columns=array(), string $queryType=""){
+	public static function buildQuery(string $methodName, SOY2DAO_Entity $entityInfo, array $noPersistents=array(), array $columns=array(), string $queryType=""){
 		if(preg_match("/^insert|^create/",$methodName) || $queryType == "insert"){
 			return SOY2DAO_InsertQueryBuilder::build($methodName,$entityInfo,$noPersistents,$columns);
 		}
@@ -4496,7 +4496,7 @@ class SOY2DAO_QueryBuilder{
 	/**
 	 * @return SOY2DAO_Query
 	 */
-	protected static function build(string $methodName, $entityInfo, array $noPersistents, array $columns){
+	protected static function build(string $methodName, SOY2DAO_Entity $entityInfo, array $noPersistents, array $columns){
 		return new SOY2DAO_Query();
 	}
 }
@@ -4517,7 +4517,7 @@ class SOY2DAO_DeleteQueryBuilder extends SOY2DAO_QueryBuilder{
 	 *
 	 * @return SOY2DAO_Query
 	 */
-	protected static function build(string $methodName, $entityInfo, array $noPersistents, array $columns){
+	protected static function build(string $methodName, SOY2DAO_Entity $entityInfo, array $noPersistents, array $columns){
 		$query = new SOY2DAO_Query();
 		$query->prefix = "delete";
 		$query->table = $entityInfo->table;
@@ -4556,7 +4556,7 @@ class SOY2DAO_InsertQueryBuilder extends SOY2DAO_QueryBuilder{
 	 *
 	 * @return SOY2DAO_Query
 	 */
-	protected static function build(string $methodName, $entityInfo, array $noPersistents, array $columns){
+	protected static function build(string $methodName, SOY2DAO_Entity $entityInfo, array $noPersistents, array $columns){
 		$query = new SOY2DAO_Query();
 		$query->prefix = "insert";
 		$query->table = $entityInfo->table;
@@ -4607,7 +4607,7 @@ class SOY2DAO_SelectQueryBuilder extends SOY2DAO_QueryBuilder{
 	 *
 	 * @return SOY2DAO_Query
 	 */
-	protected static function build(string $methodName, $entityInfo, array $noPersistents, array $columns){
+	protected static function build(string $methodName, SOY2DAO_Entity $entityInfo, array $noPersistents, array $columns){
 		$query = new SOY2DAO_Query();
 		$query->prefix = "select";
 		$query->table = $entityInfo->table;
@@ -4644,7 +4644,7 @@ class SOY2DAO_UpdateQueryBuilder extends SOY2DAO_QueryBuilder{
 	 *
 	 * @return SOY2DAO_Query
 	 */
-	protected static function build(string $methodName, $entityInfo, array $noPersistents, array $columns){
+	protected static function build(string $methodName, SOY2DAO_Entity $entityInfo, array $noPersistents, array $columns){
 		$query = new SOY2DAO_Query();
 		$query->prefix = "update";
 		$query->table = $entityInfo->table;
@@ -6065,14 +6065,19 @@ class HTMLCSSLink extends SOY2HTML{
  	function setDisabled($disabled) {
  		$this->disabled = $disabled;
  	}
- }
+}
 /**
  * @package SOY2.SOY2HTML
  */
 class HTMLUploadForm extends HTMLForm{
+
+	private $accept;
+
 	function execute(){
 		parent::execute();
 		$this->setAttribute("enctype","multipart/form-data");
+		$accept = (is_string($this->accept)) ? trim($this->accept) : "";
+		$this->setAttribute("accept", $accept, false);
 	}
 }
 /**
@@ -6085,6 +6090,7 @@ abstract class HTMLFormElement extends SOY2HTML{
 	private $required;
 	private $placeholder;
 	private $pattern;
+	private $autocomplete;
 	function execute(){
 		parent::execute();
 		$disabled = (is_string($this->disabled) || (is_bool($this->disabled)) && $this->disabled) ? "disabled" : "";
@@ -6097,6 +6103,8 @@ abstract class HTMLFormElement extends SOY2HTML{
 		$this->setAttribute("placeholder", $placeholder, false);
 		$pattern = (is_string($this->pattern)) ? trim($this->pattern) : "";
 		$this->setAttribute("pattern", $pattern, false);
+		$autocomplete = (is_string($this->autocomplete)) ? trim($this->autocomplete) : "";
+		$this->setAttribute("autocomplete", $autocomplete, false);
 	}
 	function setName($value){
 		$this->name = $value;
@@ -6131,6 +6139,12 @@ abstract class HTMLFormElement extends SOY2HTML{
 	}
 	function setPattern($pattern){
 		$this->pattern = $pattern;
+	}
+	function getAutocomplete(){
+		return $this->autocomplete;
+	}
+	function setAutocomplete($autocomplete){
+		$this->autocomplete = $autocomplete;
 	}
 }
 /**
