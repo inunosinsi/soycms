@@ -357,7 +357,7 @@ class Cart01Page extends MainCartPageBase{
 	private function _login(array $userArray){
 		try{
 			$user = soyshop_get_user_object_by_mailaddress($userArray["mailAddress"]);
-			if($user->checkPassword($userArray["password"])){
+			if($user->getUserType() == SOYShop_User::USERTYPE_REGISTER && $user->checkPassword($userArray["password"])){
 				//ログイン成功
 		    	return $user;
 			}
