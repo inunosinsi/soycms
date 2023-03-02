@@ -101,8 +101,10 @@ function x_build_filepath(string $src){
 function x_get_image_info_by_filepath(string $path){
 	$path = x_build_filepath($path);
 	if(!file_exists($path)) return array();
+	
+	$info = @getimagesize($path);
+	if(is_bool($info)) return array();
 
-	$info = getimagesize($path);
 	return array("width" => $info[0], "height" => $info[1]);
 }
 
