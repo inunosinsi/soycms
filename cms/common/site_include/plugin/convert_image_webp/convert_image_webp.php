@@ -21,7 +21,7 @@ class ConvertImageWebpPlugin {
 			"author"=> "齋藤毅",
 			"url"=> "https://saitodev.co/article/4918",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.1"
+			"version"=>"1.2"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -92,13 +92,19 @@ class ConvertImageWebpPlugin {
 							if(!strlen($ext) || $ext == "webp") continue;
 
 							$new = x_convert_file_extension($filepath, "webp");
+							
+							
 							if(!file_exists($new)){
 								switch($ext){
 									case "jpg":
 										$img = imagecreatefromjpeg($filepath);
 										break;
 									case "png":
-										$img = imagecreatefrompng($filepath);
+										$src = imagecreatefrompng($filepath);
+										$img = imagecreatetruecolor(imagesx($src), imagesy($src));
+										$bgc = imagecolorallocate($img, 255, 255, 255);
+										imagefilledrectangle($img, 0, 0, imagesx($src), imagesx($src), $bgc);
+										imagecopy($img, $src, 0, 0, 0, 0, imagesx($src), imagesy($src));
 										break;
 									case "git":
 										$img = imagecreatefromgif($filepath);

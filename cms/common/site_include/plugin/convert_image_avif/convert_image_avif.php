@@ -21,7 +21,7 @@ class ConvertImageAvifPlugin {
 			"author"=> "齋藤毅",
 			"url"=> "https://saitodev.co/article/4919",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.1"
+			"version"=>"1.2"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -98,7 +98,11 @@ class ConvertImageAvifPlugin {
 										$img = imagecreatefromjpeg($filepath);
 										break;
 									case "png":
-										$img = imagecreatefrompng($filepath);
+										$src = imagecreatefrompng($filepath);
+										$img = imagecreatetruecolor(imagesx($src), imagesy($src));
+										$bgc = imagecolorallocate($img, 255, 255, 255);
+										imagefilledrectangle($img, 0, 0, imagesx($src), imagesx($src), $bgc);
+										imagecopy($img, $src, 0, 0, 0, 0, imagesx($src), imagesy($src));
 										break;
 									case "git":
 										$img = imagecreatefromgif($filepath);
