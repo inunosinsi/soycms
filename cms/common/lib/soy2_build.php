@@ -4481,7 +4481,7 @@ class SOY2DAO_QueryBuilder{
 	 * @param $queryType タイプ
 	 * @return SOY2DAO_Query
 	 */
-	public static function buildQuery(string $methodName, $entityInfo, array $noPersistents=array(), array $columns=array(), string $queryType=""){
+	public static function buildQuery(string $methodName, SOY2DAO_Entity $entityInfo, array $noPersistents=array(), array $columns=array(), string $queryType=""){
 		if(preg_match("/^insert|^create/",$methodName) || $queryType == "insert"){
 			return SOY2DAO_InsertQueryBuilder::build($methodName,$entityInfo,$noPersistents,$columns);
 		}
@@ -4496,7 +4496,7 @@ class SOY2DAO_QueryBuilder{
 	/**
 	 * @return SOY2DAO_Query
 	 */
-	protected static function build(string $methodName, $entityInfo, array $noPersistents, array $columns){
+	protected static function build(string $methodName, SOY2DAO_Entity $entityInfo, array $noPersistents, array $columns){
 		return new SOY2DAO_Query();
 	}
 }
@@ -4517,7 +4517,7 @@ class SOY2DAO_DeleteQueryBuilder extends SOY2DAO_QueryBuilder{
 	 *
 	 * @return SOY2DAO_Query
 	 */
-	protected static function build(string $methodName, $entityInfo, array $noPersistents, array $columns){
+	protected static function build(string $methodName, SOY2DAO_Entity $entityInfo, array $noPersistents, array $columns){
 		$query = new SOY2DAO_Query();
 		$query->prefix = "delete";
 		$query->table = $entityInfo->table;
@@ -4556,7 +4556,7 @@ class SOY2DAO_InsertQueryBuilder extends SOY2DAO_QueryBuilder{
 	 *
 	 * @return SOY2DAO_Query
 	 */
-	protected static function build(string $methodName, $entityInfo, array $noPersistents, array $columns){
+	protected static function build(string $methodName, SOY2DAO_Entity $entityInfo, array $noPersistents, array $columns){
 		$query = new SOY2DAO_Query();
 		$query->prefix = "insert";
 		$query->table = $entityInfo->table;
@@ -4607,7 +4607,7 @@ class SOY2DAO_SelectQueryBuilder extends SOY2DAO_QueryBuilder{
 	 *
 	 * @return SOY2DAO_Query
 	 */
-	protected static function build(string $methodName, $entityInfo, array $noPersistents, array $columns){
+	protected static function build(string $methodName, SOY2DAO_Entity $entityInfo, array $noPersistents, array $columns){
 		$query = new SOY2DAO_Query();
 		$query->prefix = "select";
 		$query->table = $entityInfo->table;
@@ -4644,7 +4644,7 @@ class SOY2DAO_UpdateQueryBuilder extends SOY2DAO_QueryBuilder{
 	 *
 	 * @return SOY2DAO_Query
 	 */
-	protected static function build(string $methodName, $entityInfo, array $noPersistents, array $columns){
+	protected static function build(string $methodName, SOY2DAO_Entity $entityInfo, array $noPersistents, array $columns){
 		$query = new SOY2DAO_Query();
 		$query->prefix = "update";
 		$query->table = $entityInfo->table;
