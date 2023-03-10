@@ -36,7 +36,7 @@ class SitemapPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.4"
+			"version"=>"1.5"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
@@ -286,9 +286,7 @@ class SitemapPlugin{
 			$res = array();
 		}
 
-		if(isset($res[0])){
-			$first = (int)$res[0]["cdate"];
-		}
+		$first = (isset($res[0])) ? (int)$res[0]["cdate"] : 0; 
 
 		$addSql = $sql . "ORDER BY ent.cdate DESC LIMIT 1";
 
@@ -298,9 +296,7 @@ class SitemapPlugin{
 			$res = array();
 		}
 
-		if(isset($res[0])){
-			$last = (int)$res[0]["cdate"];
-		}
+		$last = (isset($res[0])) ? (int)$res[0]["cdate"] : 0;
 
 		return array($first, $last);
 	}
