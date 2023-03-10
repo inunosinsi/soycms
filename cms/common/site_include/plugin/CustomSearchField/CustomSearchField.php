@@ -19,7 +19,7 @@ class CustomSearchFieldPlugin{
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co",
 			"mail" => "tsuyoshi@saitodev.co",
-			"version"=>"0.13"
+			"version"=>"0.14"
 		));
 
 		//プラグイン アクティブ
@@ -171,6 +171,19 @@ class CustomSearchFieldPlugin{
 
 		$limit = PluginBlockUtil::getLimitByPageId($pageId, $soyId);
 		if(!is_numeric($limit) || $limit === 0) $limit = 100000;
+
+		$query = (isset($_GET["q"]) && strlen(trim($_GET["q"]))) ? htmlspecialchars(trim($_GET["q"]), ENT_QUOTES, "UTF-8") : "";
+		$freeQuery = (isset($_GET["c_search"]["csf_free_word"]) && strlen(trim($_GET["c_search"]["csf_free_word"]))) ? htmlspecialchars(trim($_GET["c_search"]["csf_free_word"]), ENT_QUOTES, "UTF-8") : "";
+		$obj->addLabel("search_keyword", array(
+			"soy2prefix" => "cms",
+			"text" => (strlen($query) > 0) ? $query : $freeQuery
+		));
+
+		$obj->addLabel("search_free_keyword", array(
+			"soy2prefix" => "cms",
+			"text" => $freeQuery
+		));
+
 
 		$args = $logic->getArgs();
 		$labelId = PluginBlockUtil::getLabelIdByPageId($pageId);

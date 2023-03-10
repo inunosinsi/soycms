@@ -116,7 +116,10 @@
 <h3>タグの記述例</h3>
 <p>他のブロックの時と同じですが、block:id="***"の記述の時に、ラベルIDと表示件数を指定することができます</p>
 
-<pre>&lt;!-- block:id="***" cms:label="1" cms:count="10" --&gt;
+<pre>「&lt;!-- cms:id="search_keyword" --&gt;タグ名&lt;!-- /cms:id="search_keyword" --&gt;」の検索結果
+フリーワード検索の場合：「&lt;!-- cms:id="search_free_keyword" --&gt;タグ名&lt;!-- /cms:id="search_free_keyword" --&gt;」の検索結果
+	
+&lt;!-- block:id="***" cms:label="1" cms:count="10" --&gt;
 表示したい内容のcms:idを追加
 &lt;!-- /block:id="***" --&gt;</pre>
 <div class="alert alert-warning">
