@@ -206,6 +206,9 @@ class SearchLogic extends SOY2LogicBase{
                         }
                         break;
 
+                    case "csf_free_word":	//フリーワード検索は何もしない
+                        break;
+
                     //数字、ラジオボタン、セレクトボックス
                     default:
                         if(isset($params[$key]) && strlen($params[$key])){
@@ -214,6 +217,47 @@ class SearchLogic extends SOY2LogicBase{
                         }
                 }
             }
+
+
+            //フリーワード検索
+			if(isset($params["csf_free_word"]) && strlen($params["csf_free_word"])){
+				$v = htmlspecialchars($params["csf_free_word"], ENT_QUOTES, "UTF-8");
+				$v = str_replace("　", " ", $v);
+				$words = explode(" ", $v);
+				$freeQueries = array();
+				for($i = 0; $i < count($words); $i++){
+					$word = trim($words[$i]);
+					if(!strlen($word)) continue;
+					$freeSubQueries = array();
+
+					$cnfs = CustomSearchFieldUtil::getConfig();
+					if(count($cnfs)){
+						foreach($cnfs as $key => $field){
+							$freeSubQueries[] = "s." . $key . " LIKE :csffree" . $key . $i;
+							$this->binds[":csffree" . $key . $i] = "%" . $word . "%";
+						}
+					}
+					unset($cnfs);
+
+					// 記事関連
+					foreach(array("title", "content", "more") as $key){
+						$freeSubQueries[] = "ent." . $key . " LIKE :csffree" . $key . $i;
+						$this->binds[":csffree" . $key . $i] = "%" . $word . "%";
+					}
+
+					// @ToDo カテゴリ
+					// $freeSubQueries[] = "i.item_category IN (SELECT id FROM soyshop_category WHERE category_name LIKE :csffree_category)";
+					// $this->binds[":csffree_category"] = "%" . $word . "%";
+
+					if(count($freeSubQueries)){
+						$freeQueries[] = "(" . implode(" OR ", $freeSubQueries) . ")";
+					}
+				}
+
+				if(count($freeQueries)){
+					$this->where["csf_free_word"] = "(" . implode(" AND ", $freeQueries) . ")";
+				}
+			}
 
             $this->binds[":now"] = time();
         }
