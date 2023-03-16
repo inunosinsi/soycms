@@ -124,7 +124,7 @@ class CheckBoxColumn extends SOYInquiry_ColumnBase{
 		if(is_null($this->attribute) && isset($this->style)){
 			$attribute = "class=&quot;".htmlspecialchars($this->style,ENT_QUOTES,"UTF-8")."&quot;";
 		}else{
-			$attribute = trim($this->attribute);
+			$attribute = trim((string)$this->attribute);
 		}
 
 		$html .= '<label for="Column[config][style]'.$this->getColumnId().'">属性:</label>';

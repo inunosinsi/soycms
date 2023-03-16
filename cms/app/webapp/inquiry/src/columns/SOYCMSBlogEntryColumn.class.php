@@ -120,7 +120,7 @@ class SOYCMSBlogEntryColumn extends SOYInquiry_ColumnBase{
 		}
 		$html .= '>テキストフォームでブログ記事のタイトルの形式にする</label>';
 
-		$attribute = trim($this->attribute);
+		$attribute = trim((string)$this->attribute);
 
 		$html .= '<label for="Column[config][attribute]'.$this->getColumnId().'">属性:</label>';
 		$html .= '<input id="Column[config][attribute]'.$this->getColumnId().'" name="Column[config][attribute]" type="text" value="'.$attribute.'" style="width:90%;" /><br />';

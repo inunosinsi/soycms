@@ -69,8 +69,7 @@ class CreatePage extends WebPage{
     	
     	$this->createAdd("error","HTMLLabel",array(
     		"html" => $this->errorMessage,
-    		"visible" => strlen($this->errorMessage)
+    		"visible" => strlen((string)$this->errorMessage)
     	));
     }
 }
-?>
