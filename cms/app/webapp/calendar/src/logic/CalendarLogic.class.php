@@ -124,6 +124,7 @@ class CalendarLogic extends SOY2LogicBase{
 	 * @return void
 	 */
 	private function _setSchedulesAndTitlesBulkAcquisition(int $timestamp){
+		if(!file_exists("soycalendar_get_first_date_or_last_date_timestamp")) SOY2::import("func.fn", ".php");
 		list($first, $last) = soycalendar_get_first_date_or_last_date_timestamp($timestamp);
 		try{
 			$items = self::_itemDao()->getItemsFromFirstDateToLastDate($first, $last);
