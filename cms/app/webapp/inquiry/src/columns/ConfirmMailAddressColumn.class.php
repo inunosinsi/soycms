@@ -226,27 +226,28 @@ class ConfirmMailAddressColumn extends SOYInquiry_ColumnBase{
 	 * 携帯の入力モードを設定する属性をキャリアを判別して返す
 	 */
 	function getAttributeForMobileInputMode(){
-		$attributes = array();
-		$attributes["docomo"] = "istyle=\"3\"";
-		$attributes["softbank"] = "mode=\"alphabet\"";
-		$attributes["au"] = "format=\"{$wap_length}x\"";
-		$attributes["docomo_xhtml"] = "style=\"-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:{$wap_length}m;\"";
+		return "";
+		// $attributes = array();
+		// $attributes["docomo"] = "istyle=\"3\"";
+		// $attributes["softbank"] = "mode=\"alphabet\"";
+		// $attributes["au"] = "format=\"{$wap_length}x\"";
+		// $attributes["docomo_xhtml"] = "style=\"-wap-input-format:&quot;*&lt;ja:en&gt;&quot;;-wap-input-format:{$wap_length}m;\"";
 
-		$agent = @$_SERVER['HTTP_USER_AGENT'];
-		switch(true){
-			case preg_match("/^DoCoMo/i", $agent) :
-				return $attributes["docomo"]." ".$attributes["docomo_xhtml"];
-				break;
-			case preg_match("/^(J¥-PHONE|Vodafone|MOT¥-[CV]|SoftBank)/i", $agent) :
-				return $attributes["softbank"];
-				break;
-			case preg_match("/^KDDI¥-/i", $agent) :
-				return $attributes["au"];
-				break;
-			default:
-				return "";
-				break;
-		}
+		// $agent = @$_SERVER['HTTP_USER_AGENT'];
+		// switch(true){
+		// 	case preg_match("/^DoCoMo/i", $agent) :
+		// 		return $attributes["docomo"]." ".$attributes["docomo_xhtml"];
+		// 		break;
+		// 	case preg_match("/^(J¥-PHONE|Vodafone|MOT¥-[CV]|SoftBank)/i", $agent) :
+		// 		return $attributes["softbank"];
+		// 		break;
+		// 	case preg_match("/^KDDI¥-/i", $agent) :
+		// 		return $attributes["au"];
+		// 		break;
+		// 	default:
+		// 		return "";
+		// 		break;
+		// }
 	}
 
 
