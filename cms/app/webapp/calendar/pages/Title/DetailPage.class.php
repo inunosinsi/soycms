@@ -58,7 +58,7 @@ class DetailPage extends WebPage{
 
 		if(isset($_POST["title"])){
 			$title->setTitle($_POST["title"]["title"]);
-			$title->setAttribute($_POST["title"]["attribute"])
+			$title->setAttribute($_POST["title"]["attribute"]);
 		}
 
     	parent::__construct();

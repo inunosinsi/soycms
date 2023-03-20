@@ -150,7 +150,7 @@ class CalendarLogic extends SOY2LogicBase{
 				if(count($titles)){
 					foreach($titles as $title){
 						if(isset($titles[$title->getId()])) continue;
-						$titles[$title->getId()] = $title;
+						$this->titles[$title->getId()] = $title;
 					}
 				}
 			}
@@ -376,7 +376,7 @@ class CalendarLogic extends SOY2LogicBase{
 
 		//今日より前ならbeforeを追加
 		if((strtotime("+1day", $todayTime)) < time()) $classes[] = "before";
-
+		
 		if($isToday) $classes[] = "today";
 		if(in_array(date("Ymd",$todayTime),$this->holiday)) $classes[] = "holiday";
 		if($isNextMonth) $classes[] = " other";
