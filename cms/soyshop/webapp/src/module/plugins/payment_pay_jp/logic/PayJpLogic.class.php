@@ -16,7 +16,7 @@ class PayJpLogic extends SOY2LogicBase {
 			//require_once(SOYSHOP_WEBAPP . "src/module/plugins/payment_pay_jp/payjp/v1/init.php");
 			// PAY.JP v2
 			require_once SOY2::RootDir() . "module/plugins/payment_pay_jp/payjp/v2/vendor/autoload.php";
-			\Payjp\Payjp::setApiKey($config["secret_key"]);
+			\Payjp\Payjp::setApiKey(trim($config["secret_key"]));
 		}
 	}
 
