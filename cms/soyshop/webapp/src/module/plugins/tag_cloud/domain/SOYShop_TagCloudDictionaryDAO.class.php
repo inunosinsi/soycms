@@ -36,6 +36,47 @@ abstract class SOYShop_TagCloudDictionaryDAO extends SOY2DAO{
 	/**
 	 * @final
 	 */
+	function getWordList(){
+		try{
+			$res = $this->executeQuery("SELECT id, word FROM soyshop_tag_cloud_dictionary ORDER BY id ASC");
+		}catch(Exception $e){
+			$res = array();
+		}
+		if(!count($res)) return array();
+
+		$list = array();
+		foreach($res as $v){
+			$list[(int)$v["id"]] = $v["word"];
+		}
+		return $list;
+	}
+
+	/**
+	 * @final
+	 */
+	function getWordListByItemId(int $itemId){
+		try{
+			$res = $this->executeQuery("SELECT id, word ".
+				"FROM soyshop_tag_cloud_dictionary ".
+				"WHERE id IN (SELECT word_id FROM soyshop_tag_cloud_linking WHERE item_id = :itemId) ".
+				"ORDER BY id ASC",
+				array(":itemId" => $itemId)
+			);
+		}catch(Exception $e){
+			$res = array();
+		}
+		if(!count($res)) return array();
+
+		$list = array();
+		foreach($res as $v){
+			$list[(int)$v["id"]] = $v["word"];
+		}
+		return $list;
+	}
+
+	/**
+	 * @final
+	 */
 	function getNoHashWordIds(){
 		try{
 			$res = $this->executeQuery("SELECT id FROM soyshop_tag_cloud_dictionary WHERE hash IS NULL OR hash = ''");

@@ -13,7 +13,11 @@ class TagCloudCustomFieldForm {
 		$html[] = "<label for=\"tag_cloud_plugin\">タグ<span class=\"help\"><i class=\"fa fa-question-circle fa-fw\" data-toggle=\"tooltip\" data-placement=\"right\" title=\"カンマ区切りでタグを登録します\"></i></span></label>";
 		$html[] = "<input type=\"text\" id=\"tag_cloud_plugin\" name=\"TagCloudPlugin[tag]\" class=\"form-control\" value=\"" . $tagValue . "\" placeholder=\"カンマ区切りでタグを登録します\">";
 		$html[] = "</div>";
-
+		
+		if(SOYShopPluginUtil::checkIsActive("util_multi_language") && strlen($tagValue)) {
+			$html[] = "<div><a class=\"btn btn-primary btn-sm\" class=\"margin-top:3px;\" href=\"".SOY2PageController::createLink("Extension.tag_cloud.".$itemId)."\">タグクラウドの多言語化</a></div><br>";
+		}
+		
 		SOY2::import("site_include.plugin.tag_cloud.util.TagCloudUtil");
 		$cnf = TagCloudUtil::getConfig();
 		if(!isset($cnf["tags"]) || !strlen($cnf["tags"])) return implode("\n", $html);

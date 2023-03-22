@@ -14,4 +14,11 @@ CREATE TABLE soyshop_tag_cloud_linking(
 CREATE TABLE soyshop_tag_cloud_category(
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	label VARCHAR UNIQUE
-) ENGINE=InnoDB;
+);
+
+CREATE TABLE soyshop_tag_cloud_language(
+	word_id INTEGER NOT NULL DEFAULT 0,
+	lang VARCHAR,
+	label VARCHAR,
+	UNIQUE(word_id, lang)
+);

@@ -15,3 +15,10 @@ CREATE TABLE soyshop_tag_cloud_category(
 	id INTEGER PRIMARY KEY AUTO_INCREMENT,
 	label VARCHAR(128) UNIQUE
 ) ENGINE=InnoDB;
+
+CREATE TABLE soyshop_tag_cloud_language(
+	word_id INTEGER NOT NULL DEFAULT 0,
+	lang CHAR(2),
+	label VARCHAR(128),
+	UNIQUE(word_id, lang)
+) ENGINE=InnoDB;
