@@ -52,4 +52,26 @@ abstract class SOYShop_TagCloudLanguageDAO extends SOY2DAO{
 
 		return $list;
 	}
+
+	/**
+	 * @final
+	 */
+	function getTranslatedWordListByWordIdAndLang(array $wordIds, string $lang){
+		if(!count($wordIds)) return array();
+
+		try{
+			$res = $this->executeQuery("SELECT * FROM soyshop_tag_cloud_language WHERE word_id IN (".implode(",", $wordIds).") AND lang = :lang", array(":lang" => $lang));
+		}catch(Exception $e){
+			$res = array();
+		}
+		
+		if(!isset($res[0])) return array();
+
+		$list = array();
+		foreach($res as $arr){
+			$list[(int)$arr["word_id"]] = $arr["label"];
+		}
+
+		return $list;
+	}
 }

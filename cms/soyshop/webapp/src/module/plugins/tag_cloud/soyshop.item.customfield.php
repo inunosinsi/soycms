@@ -64,8 +64,14 @@ class TagCloudItemCustomField extends SOYShopItemCustomFieldBase{
 	function onOutput($htmlObj, SOYShop_Item $item){
 		SOY2::import("module.plugins.tag_cloud.util.TagCloudUtil");
 		$tags = (is_numeric($item->getId())) ? TagCloudUtil::getRegisterdTagsByItemId($item->getId()) : array();
-
+		
 		$cnt = count($tags);
+
+		// 多言語化
+		if($cnt > 0 && defined("SOYSHOP_PUBLISH_LANGUAGE") && SOYSHOP_PUBLISH_LANGUAGE != "jp"){
+			$tags = SOY2Logic::createInstance("module.plugins.tag_cloud.logic.MultilingualLogic")->translateOnCustomField($tags);
+		}
+
 		$htmlObj->addModel("no_tag_cloud", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"visible" => ($cnt === 0)

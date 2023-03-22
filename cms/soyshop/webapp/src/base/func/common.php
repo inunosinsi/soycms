@@ -62,6 +62,9 @@ function soyshop_get_arguments(){
 	$uri = trim($_SERVER["REQUEST_URI"], "/");
 	if(strpos($uri, SOYSHOP_ID . "/") === 0) $uri = str_replace(SOYSHOP_ID . "/", "", $uri);
 
+	// GETパラメータを外す
+	if(is_numeric(strpos($uri, "?"))) $uri = substr($uri, 0, strpos($uri, "?"));
+	
 	$pageUri = soyshop_get_page_object(SOYSHOP_PAGE_ID)->getUri();
 	if(strpos($uri, $pageUri) === 0) $uri = str_replace($pageUri, "", $uri);
 

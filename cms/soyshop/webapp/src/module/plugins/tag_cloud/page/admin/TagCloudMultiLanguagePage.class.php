@@ -62,6 +62,13 @@ class TagCloudMultiLanguagePage extends WebPage {
 
 		DisplayPlugin::toggle("failed", isset($_GET["failed"]));
 
+		$item = soyshop_get_item_object($this->itemId);
+		DisplayPlugin::toggle("show_item_detail_link", is_numeric($item->getId()));
+		$this->addLink("item_detail_link", array(
+			"text" => $item->getName() . "の編集画面に戻る",
+			"link" => SOY2PageController::createLink("Item.Detail.".$item->getId())
+		));
+
 		$this->addForm("form");
 
 		$this->addLabel("config_table", array(

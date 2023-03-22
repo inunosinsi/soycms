@@ -141,7 +141,7 @@ class TagCloudUtil {
 		if(is_numeric($pageId)) return $pageId;
 
 		try{
-			$pages = SOY2DAOFactory::create("site.SOYShop_PageDAO")->getByType(SOYShop_Page::TYPE_LIST);
+			$pages = soyshop_get_hash_table_dao("page")->getByType(SOYShop_Page::TYPE_LIST);
 		}catch(Exception $e){
 			$pages = array();
 		}
@@ -164,7 +164,15 @@ class TagCloudUtil {
 
 		//第一引数の値がタグクラウドのワードであるか？を確認する
 		$tagObj = self::_getWordObjectByAlias($args[0]);
-		return (is_numeric($tagObj->getId())) ? $tagObj->getWord() : "";
+		if(!is_numeric($tagObj->getId())) return "";
+
+		if(!defined("SOYSHOP_PUBLISH_LANGUAGE") || SOYSHOP_PUBLISH_LANGUAGE == "jp") return (string)$tagObj->getWord();
+
+		// 多言語対応
+		$res = SOY2Logic::createInstance("module.plugins.tag_cloud.logic.MultilingualLogic")->translateByWordId((int)$tagObj->getId());
+		if(is_string($res)) return $res;
+
+		return $tagObj->getWord();
 	}
 
 	public static function getWordIdByAlias(string $tag){
