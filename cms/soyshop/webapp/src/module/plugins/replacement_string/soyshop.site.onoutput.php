@@ -14,8 +14,11 @@ class ReplacementStringOnOutput extends SOYShopSiteOnOutputAction{
 		$list = ReplacementStringUtil::getConfig();
 		if(!count($list)) return $html;
 
+		$idx = (!defined("SOYSHOP_PUBLISH_LANGUAGE") || SOYSHOP_PUBLISH_LANGUAGE == "jp") ? "string" : SOYSHOP_PUBLISH_LANGUAGE;
+		
 		foreach($list as $v){
-			$html = str_replace($v["symbol"], $v["string"], $html);
+			$str = (isset($v[$idx])) ? $v[$idx] : "";
+			$html = str_replace($v["symbol"], $str, $html);
 		}
 
 		return $html;

@@ -2,63 +2,83 @@
 
 class ReplacementStringConfigPage extends WebPage {
 
-  private $configObj;
+	private $configObj;
+	private $langs = array();
 
-  function __construct(){
-    SOY2::import("module.plugins.replacement_string.util.ReplacementStringUtil");
-  }
-
-  function doPost(){
-    if(soy2_check_token()){
-      $list = ReplacementStringUtil::getConfig();
-
-      if(isset($_POST["add"])){
-
-				$values = array();
-				$values["symbol"] = trim(htmlspecialchars($_POST["symbol"], ENT_QUOTES, "UTF-8"));
-				$values["string"] = trim(htmlspecialchars($_POST["string"], ENT_QUOTES, "UTF-8"));
-
-				$list[] = $values;
-				ReplacementStringUtil::saveConfig($list);
-        $this->configObj->redirect("updated");
+	function __construct(){
+		SOY2::import("module.plugins.replacement_string.util.ReplacementStringUtil");
+		SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");	//多言語化
+		
+		if(SOYShopPluginUtil::checkIsActive("util_multi_language")){
+			foreach(UtilMultiLanguageUtil::allowLanguages() as $lang => $_dust){
+				if($lang == "jp") continue;
+				$this->langs[] = $lang;
 			}
+		}
+	}
 
-      if(isset($_POST["change"])){
-				foreach($list as $key => $values){
-					if(isset($_POST["string"][$key])){
-						$values["string"] = trim(htmlspecialchars($_POST["string"][$key], ENT_QUOTES, "UTF-8"));
-					}
+	function doPost(){
+		if(soy2_check_token()){
+			$list = ReplacementStringUtil::getConfig();
+			
+			if(isset($_POST["add"])){
+				$values = array();
 
-					$list[$key] = $values;
+				foreach(array("symbol", "string") as $idx){
+					$values[$idx] = trim(htmlspecialchars($_POST[$idx], ENT_QUOTES, "UTF-8"));
 				}
 
-        ReplacementStringUtil::saveConfig($list);
-        $this->configObj->redirect("updated");
+				$list[] = $values;
 			}
-    }
-  }
 
-  function execute(){
-    parent::__construct();
+			if(isset($_POST["change"])){
+				//多言語サイトに対応する
+				$types = array("string");
+				if(count($this->langs)){
+					foreach($this->langs as $lang){
+						$types[] = $lang;
+					}
+				}
 
-    if(isset($_GET["remove"])){
-			self::remove();
+				foreach($list as $key => $values){
+					foreach($types as $typ){
+						if(!isset($_POST[$typ][$key])) continue;
+						$values[$typ] = trim(htmlspecialchars($_POST[$typ][$key], ENT_QUOTES, "UTF-8"));
+					}
+					$list[$key] = $values;
+				}
+			}
+
+			ReplacementStringUtil::saveConfig($list);
+			$this->configObj->redirect("updated");
 		}
+	}
 
-    $this->addForm("form");
-    $list = ReplacementStringUtil::getConfig();
+	function execute(){
+    	parent::__construct();
 
-    DisplayPlugin::toggle("has_symbol_list", count($list));
+    	if(isset($_GET["remove"])) self::_remove();
+
+		$this->addForm("form");
+		$list = ReplacementStringUtil::getConfig();
+
+		DisplayPlugin::toggle("has_symbol_list", count($list));
 
 		$this->addForm("change_form");
 
+		SOY2::import("module.plugins.replacement_string.component.ThListComponent");
+		$this->createAdd("lang_list", "ThListComponent", array(
+			"list" => $this->langs,
+		));
+
 		SOY2::import("module.plugins.replacement_string.component.ReplacementStringListComponent");
 		$this->createAdd("string_list", "ReplacementStringListComponent", array(
-			"list" => $list
+			"list" => $list,
+			"languages" => $this->langs
 		));
-  }
+	}
 
-  private function remove(){
+	private function _remove(){
 		$list = ReplacementStringUtil::getConfig();
 		if(isset($list[$_GET["remove"]])){
 			unset($list[$_GET["remove"]]);
@@ -70,12 +90,12 @@ class ReplacementStringConfigPage extends WebPage {
 				}
 			}
 
-      ReplacementStringUtil::saveConfig($list);
-      $this->configObj->redirect("updated");
+    		ReplacementStringUtil::saveConfig($list);
+    		$this->configObj->redirect("updated");
 		}
 	}
 
-  function setConfigObj($configObj){
-    $this->configObj = $configObj;
-  }
+	function setConfigObj($configObj){
+		$this->configObj = $configObj;
+	}
 }
