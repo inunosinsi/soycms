@@ -5,9 +5,14 @@ class UtilMultiLanguageConfig extends SOYShopConfigPageBase{
 	 * @return string
 	 */
 	function getConfigPage(){
-		if(isset($_GET["language"]) && isset($_GET["item_id"])){
-			include_once(dirname(__FILE__)  . "/config/CustomConfigFormPage.class.php");
-			$form = SOY2HTMLFactory::createInstance("CustomConfigFormPage");
+		if(isset($_GET["language"])){
+			if(isset($_GET["item_id"])){
+				include_once(dirname(__FILE__)  . "/config/CustomConfigFormPage.class.php");
+				$form = SOY2HTMLFactory::createInstance("CustomConfigFormPage");
+			}else if(isset($_GET["category_id"])){
+				include_once(dirname(__FILE__)  . "/config/CustomCategoryConfigFormPage.class.php");
+				$form = SOY2HTMLFactory::createInstance("CustomCategoryConfigFormPage");
+			}			
 		}else{
 			include_once(dirname(__FILE__)  . "/config/UtilMultiLanguageConfigFormPage.class.php");
 			$form = SOY2HTMLFactory::createInstance("UtilMultiLanguageConfigFormPage");

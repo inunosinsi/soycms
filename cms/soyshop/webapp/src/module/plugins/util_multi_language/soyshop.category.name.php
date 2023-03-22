@@ -13,7 +13,7 @@ class UtilMultiLanguageCategoryName extends SOYShopCategoryNameBase{
 			if($lang == UtilMultiLanguageUtil::LANGUAGE_JP) continue;
 			$categoryName = self::getCategoryAttribute($category->getId(), $lang)->getValue();
 
-			$html[] = "<h4>カテゴリ名(" . $lang . ")</h4>";
+			$html[] = "<label>カテゴリ名(" . $lang . ")&nbsp;<a href=\"" . SOY2PageController::createLink("Config.Detail?plugin=util_multi_language&category_id=" . $category->getId() . "&language=" . $lang) ."\">カスタムフィールドの設定</a></label>";
 			$html[] = "<input name=\"LanguageConfig[category_name_" . $lang . "]\" value=\"" . $categoryName . "\" type=\"text\" class=\"form-control\">";
 		}
 

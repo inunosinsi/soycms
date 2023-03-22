@@ -19,28 +19,6 @@ class CustomConfigFormPage extends WebPage{
     }
 
     function doPost(){
-
-        if(soy2_check_token()){
-            //カスタムフィールド、カスタムオプション
-            if(isset($_POST["LanguageConfig"])){
-                $indexes = array("LanguageConfig", "custom_field");
-                foreach($indexes as $idx){
-                    foreach($_POST[$idx] as $key => $value) {
-						$attr = soyshop_get_item_attribute_object($this->itemId, $key);
-						$attr->setValue($value);
-                        soyshop_save_item_attribute_object($attr);
-                    }
-                }
-            }
-
-            //カスタムサーチフィールド
-            if(isset($_POST["custom_search"]) && count($_POST["custom_search"])){
-                SOY2Logic::createInstance("module.plugins.custom_search_field.logic.DataBaseLogic")->save($this->itemId, $_POST["custom_search"], $this->lang);
-            }
-
-            SOY2PageController::jump("Config.Detail?plugin=util_multi_language&item_id=" . $this->itemId . "&language=" . $this->lang . "&updated");
-        }
-
         if(isset($_POST["upload"])){
             $urls = $this->uploadImage();
 
@@ -55,6 +33,28 @@ class CustomConfigFormPage extends WebPage{
             }
             echo "</script></head><body></body></html>";
             exit;
+        }
+
+        if(soy2_check_token()){
+            //カスタムフィールド、カスタムオプション
+            if(isset($_POST["LanguageConfig"])){
+                $indexes = array("LanguageConfig", "custom_field");
+                foreach($indexes as $idx){
+                    foreach($_POST[$idx] as $key => $value) {
+                        if(is_array($value)) $value = (count($value)) ? implode(",", $value) : null; // checkboxes対策
+						$attr = soyshop_get_item_attribute_object($this->itemId, $key);
+						$attr->setValue($value);
+                        soyshop_save_item_attribute_object($attr);
+                    }
+                }
+            }
+
+            //カスタムサーチフィールド
+            if(isset($_POST["custom_search"]) && count($_POST["custom_search"])){
+                SOY2Logic::createInstance("module.plugins.custom_search_field.logic.DataBaseLogic")->save($this->itemId, $_POST["custom_search"], $this->lang);
+            }
+
+            SOY2PageController::jump("Config.Detail?plugin=util_multi_language&item_id=" . $this->itemId . "&language=" . $this->lang . "&updated");
         }
 
         SOY2PageController::jump("Config.Detail?plugin=util_multi_language&item_id=" . $this->itemId . "&language=" . $this->lang . "&failed");
