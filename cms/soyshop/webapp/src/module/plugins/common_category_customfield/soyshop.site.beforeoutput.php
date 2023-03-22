@@ -6,6 +6,8 @@
 
 class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
+	private $fieldTable = array();
+
 	function beforeOutput($page){
 
 		$obj = $page->getPageObject();
@@ -65,12 +67,16 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 		soyshop_get_hash_table_dao("category_attribute");
 		$list = SOYShop_CategoryAttributeConfig::load(true);
 		if(count($list)){
+			// カスタムフィールドの値をまとめて取得する
+			$this->fieldTable = self::_getFieldValues((int)$category->getId());
+			
 			foreach($list as $fieldId => $config){
-				$field = soyshop_get_category_attribute_object((int)$category->getId(), $fieldId);
-
+				// 多言語化対策
+				$field = self::_getFieldObject($fieldId);
+				
 				$value = (string)$field->getValue();
 				$value2 = (string)$field->getValue2();
-
+				
 				//空の時の挙動
 				if(!is_null($config->getConfig()) && (is_null($value) || !strlen($value))){
 					$fieldConf = $config->getConfig();
@@ -110,21 +116,12 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 								"soy2prefix" => SOYSHOP_SITE_PREFIX
 							));
 						}else{
-							//imgタグにalt属性を追加するか？
-							if(isset($value2) && is_string($value2) && strlen($value2) > 0){
-								$page->addImage($config->getFieldId(), array(
-									"src" => $value,
-									"attr:alt" => $value2,
-									"soy2prefix" => SOYSHOP_SITE_PREFIX,
-									"visible" => (isset($value))
-								));
-							}else{
-								$page->addImage($config->getFieldId(), array(
-									"src" => $value,
-									"soy2prefix" => SOYSHOP_SITE_PREFIX,
-									"visible" => (isset($value))
-								));
-							}
+							$page->addImage($config->getFieldId(), array(
+								"src" => $value,
+								"attr:alt" => $value2,
+								"soy2prefix" => SOYSHOP_SITE_PREFIX,
+								"visible" => (isset($value))
+							));
 						}
 						$page->addLink($config->getFieldId() . "_link", array(
 							"link" => $value,
@@ -192,6 +189,43 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 				}
 			}
 		}
+	}
+
+	/**
+	 * @param int
+	 * @return array
+	 */
+	private function _getFieldValues(int $categoryId){
+		static $list, $fieldIds;
+		if(is_null($list)) $list = array();
+		if(is_null($fieldIds)) {
+			SOY2::import("domain.shop.SOYShop_CategoryAttribute");
+			$fieldIds = array_keys(SOYShop_CategoryAttributeConfig::load(true));
+		}
+
+		if(isset($list[$categoryId])) return $list[$categoryId];
+		$list[$categoryId] = soyshop_get_hash_table_dao("category_attribute")->getByCategoryIdAndFieldIds($categoryId, $fieldIds, true);
+		return $list[$categoryId];
+	}
+
+	/**
+	 * @param string
+	 * @return SOYShop_CategoryAttribute
+	 */
+	private function _getFieldObject(string $fieldId){
+		$field = null;
+		if(SOYSHOP_PUBLISH_LANGUAGE != "jp") {
+			if(isset($this->fieldTable[$fieldId . "_" . SOYSHOP_PUBLISH_LANGUAGE]) && is_numeric($this->fieldTable[$fieldId . "_" . SOYSHOP_PUBLISH_LANGUAGE]->getCategoryId())){
+				return $this->fieldTable[$fieldId . "_" . SOYSHOP_PUBLISH_LANGUAGE];
+			}
+
+			//多言語化のプレフィックスの方でも値を取得してみる
+			if(SOYSHOP_PUBLISH_LANGUAGE != SOYSHOP_PUBLISH_LANGUAGE_POSTFIX && isset($this->fieldTable[$fieldId . "_" . SOYSHOP_PUBLISH_LANGUAGE_POSTFIX])){
+				return $this->fieldTable[$fieldId . "_" . SOYSHOP_PUBLISH_LANGUAGE_POSTFIX];
+			}
+		}
+
+		return (isset($this->fieldTable[$fieldId])) ? $this->fieldTable[$fieldId] : new SOYShop_CategoryAttribute();
 	}
 }
 SOYShopPlugin::extension("soyshop.site.beforeoutput","common_category_customfield","CommonCategoryCustomfieldBeforeOutput");
