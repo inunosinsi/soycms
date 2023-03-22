@@ -359,7 +359,7 @@ class SOYShop_ItemAttributeConfig{
 									 ' value="'.$h_option.'"' .
 									 ((!is_bool(array_search($option, $values))) ? ' checked="checked"' : "") .
 									 ' />';
-							$body .= '<label for="'.$id.'">'.$h_option.'</label>';
+							$body .= '<label for="'.$id.'">&nbsp;'.$h_option.'</label>&nbsp;&nbsp;';
 						}
 					}
 				}
