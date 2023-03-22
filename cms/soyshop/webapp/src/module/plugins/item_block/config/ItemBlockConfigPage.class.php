@@ -45,7 +45,7 @@ class ItemBlockConfigPage extends WebPage {
 		$to = SOYSHOP_SITE_DIRECTORY . "/.module/parts/";
 		if(!file_exists($to)) mkdir($to);
 		$to .= "item_block_plugin.php";
-		copy($from, $to);
+		if(!file_exists($to)) copy($from, $to);
 
 		//@ToDo countに合わせて、item_block_categoryを複製する
 		$src = file_get_contents(dirname(dirname(__FILE__)) . "/sample/copy.txt");
