@@ -27,6 +27,12 @@ abstract class SOYShop_TagCloudLanguageDAO extends SOY2DAO{
 	abstract function getByLang(string $lang);
 
 	/**
+	 * @return object
+	 * @query lang = :lang AND label = :label
+	 */
+	abstract function getByLangAndLabel(string $lang, string $label);
+
+	/**
 	 * @query word_id = :wordId AND lang = :lang
 	 */
 	abstract function deleteByWordIdAndLang(int $wordId, string $lang);

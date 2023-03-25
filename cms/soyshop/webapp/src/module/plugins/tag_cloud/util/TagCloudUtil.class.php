@@ -193,11 +193,26 @@ class TagCloudUtil {
 					try{
 						return $dao->getById($tag);
 					}catch(Exception $e){
-						return new SOYShop_TagCloudDictionary();
+						//
 					}
 				}
 			}
 		}
+
+		// 多言語化対応
+		if((defined("SOYSHOP_PUBLISH_LANGUAGE") && SOYSHOP_PUBLISH_LANGUAGE != "jp")){
+			// 応急処置
+			if(is_numeric(strpos($tag, "%20"))) $tag = str_replace("%20", " ", $tag);
+			SOY2::import("module.plugins.tag_cloud.domain.SOYShop_TagCloudLanguageDAO");
+			try{
+				 $wordId = SOY2DAOFactory::create("SOYShop_TagCloudLanguageDAO")->getByLangAndLabel(SOYSHOP_PUBLISH_LANGUAGE, $tag)->getWordId();
+				 return $dao->getById($wordId);
+			}catch(Exception $e){
+				//
+			}
+		}
+
+		return new SOYShop_TagCloudDictionary();
 	}
 
 	// soyshop_tag_cloud_dictionaryに格納していないタグも格納しておく

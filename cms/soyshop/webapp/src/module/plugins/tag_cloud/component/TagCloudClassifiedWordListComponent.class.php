@@ -59,6 +59,11 @@ class TagCloudClassifiedWordListComponent extends HTMLList {
 
 			//ページのURLを調べる
 			if(count($words)){
+				// 多言語化
+				if((defined("SOYSHOP_PUBLISH_LANGUAGE") && SOYSHOP_PUBLISH_LANGUAGE != "jp")){
+					$words = SOY2Logic::createInstance("module.plugins.tag_cloud.logic.MultilingualLogic")->translate($words);
+				}
+
 				//ワードID毎の記事数
 				$list = array();
 				foreach($words as $word){
