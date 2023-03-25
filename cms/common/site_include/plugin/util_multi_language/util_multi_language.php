@@ -118,16 +118,30 @@ class UtilMultiLanguagePlugin{
 		$redirectPath = $redirectLogic->getRedirectPath($config);
 
 		if($redirectLogic->checkRedirectPath($redirectPath)){
-			CMSPageController::redirect($redirectPath);
-			exit;
+			// 応急処置
+			if(!defined("SOYCMS_PHP_CGI_MODE")) define("SOYCMS_PHP_CGI_MODE", function_exists("php_sapi_name") && stripos(php_sapi_name(), "cgi") !== false );
+			if(SOYCMS_PHP_CGI_MODE){	// ?pathinfo=***が自動で付与された時にリダイレクトがおかしくなる
+				if(is_bool(strpos($_SERVER["REQUEST_URI"], "?pathinfo="))){
+					SOY2PageController::redirect($redirectPath);
+					exit;
+				}
+
+				// GETパラメータでpathinfoがある時にリダイレクトを行うとリダイレクトループにハマる
+
+			}else{
+				CMSPageController::redirect($redirectPath);
+				exit;
+			}
 		}
 	}
 
 	function onPageOutput($obj){
+		$uri = (isset($_SERVER["REQUEST_URI"])) ? $_SERVER["REQUEST_URI"] : "";
+		if(is_numeric(strpos($uri, "?"))) $uri = substr($uri, 0, strpos($uri, "?"));
 		foreach(SOYCMSUtilMultiLanguageUtil::allowLanguages() as $lang => $title){
 			$obj->addLink("language_" . $lang . "_link", array(
 				"soy2prefix" => "cms",
-				"link" => "?language=" . $lang
+				"link" => $uri."?language=" . $lang
 			));
 		}
 	}
