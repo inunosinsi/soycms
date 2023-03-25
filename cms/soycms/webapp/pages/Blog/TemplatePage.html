@@ -11,8 +11,9 @@
 		<nav  class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" soy:page="_common.UpperMenuPage"><!-- --></nav>
 
 		<div id="page-wrapper">
-
 			<!-- soy:id="BlogMenu" /-->
+
+			<!-- soy:custom="Blog.Notice" --><!-- /soy:custom="Blog.Notice" -->
 
 			<div class="row">
 				<div class="col-lg-9">
@@ -31,7 +32,7 @@
 							<button type="button" class="btn btn-default btn-sm" onclick="common_to_layer(editorLink+'/InsertLink');">リンク挿入</button>
 							<button type="button" class="btn btn-default btn-sm" onclick="common_to_layer(editorLink+'/FileUpload');">画像を挿入</button>
 							<!-- <button type="button" class="btn btn-default btn-sm" onclick="showHelp();" id="helpbutton">ヘルプ表示</button> -->
-							<button type="button" class="btn btn-default btn-sm" onclick="toggle_editor();">エディタの切り替え</button>
+							<button type="button" class="btn btn-default btn-sm" id="switch_editor" onclick="toggle_editor();">エディタの切り替え</button>
 							<button type="button" class="btn btn-default btn-sm" onclick="common_to_layer(mceSOYCMSEmojiURL,{height:510});" id="emojiButton">絵文字の挿入</button>
 							<button type="button" class="btn btn-default btn-sm" soy:id="save_template_button">テンプレート保存</button>
 						</div>
