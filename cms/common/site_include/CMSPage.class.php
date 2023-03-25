@@ -229,26 +229,29 @@ class CMSPage extends WebPage{
 
 		$plugin->setSiteRoot($this->siteRoot);
 
-		while(true){
-			list($tag,$line,$innerHTML,$outerHTML,$value,$suffix,$skipendtag) =
-				$plugin->parse("link","[0-9]+",$this->_soy2_content);
+		if(!is_null($this->_soy2_content)){
+			while(true){
+				list($tag,$line,$innerHTML,$outerHTML,$value,$suffix,$skipendtag) =
+					$plugin->parse("link","[0-9]+",$this->_soy2_content);
 
-			if(!strlen($tag))break;
+				if(!strlen($tag))break;
 
-			$plugin->_attribute = array();
-			$plugin->_soy2_attribute = array();
+				$plugin->_attribute = array();
+				$plugin->_soy2_attribute = array();
 
-			$plugin->setTag($tag);
-			$plugin->parseAttributes($line);
-			$plugin->setInnerHTML($innerHTML);
-			$plugin->setOuterHTML($outerHTML);
-			$plugin->setParent($this);
-			$plugin->setSkipEndTag($skipendtag);
-			$plugin->setSoyValue($value);
-			$plugin->execute();
+				$plugin->setTag($tag);
+				$plugin->parseAttributes($line);
+				$plugin->setInnerHTML($innerHTML);
+				$plugin->setOuterHTML($outerHTML);
+				$plugin->setParent($this);
+				$plugin->setSkipEndTag($skipendtag);
+				$plugin->setSoyValue($value);
+				$plugin->execute();
 
-			$this->_soy2_content = $this->getContent($plugin,$this->_soy2_content);
+				$this->_soy2_content = $this->getContent($plugin,$this->_soy2_content);
+			}
 		}
+		
 
 		//pageブロック
 		$plugins = CMSPlugin::getBlocks("page");
@@ -256,41 +259,43 @@ class CMSPage extends WebPage{
 		$plugin->setPage($this->page);
 		$plugin->setArguments($this->arguments);
 
-		while(true && count($plugins)){
-			list($tag,$line,$innerHTML,$outerHTML,$value,$suffix,$skipendtag) =
-				$plugin->parse("plugin","[a-zA-Z0-9\.\/\-_]*",$this->_soy2_content);
+		if(!is_null($this->_soy2_content)){
+			while(true && count($plugins)){
+				list($tag,$line,$innerHTML,$outerHTML,$value,$suffix,$skipendtag) =
+					$plugin->parse("plugin","[a-zA-Z0-9\.\/\-_]*",$this->_soy2_content);
 
-			if(!strlen($tag))break;
+				if(!strlen($tag))break;
 
-			//リセット
-			$plugin->_attribute = array();
-			$plugin->_soy2_attribute = array();
+				//リセット
+				$plugin->_attribute = array();
+				$plugin->_soy2_attribute = array();
 
-			//ページにプラグインの記述がないとき
-			if(!array_key_exists($value,$plugins)){
-				$tmpTag = $plugin->getTag();
+				//ページにプラグインの記述がないとき
+				if(!array_key_exists($value,$plugins)){
+					$tmpTag = $plugin->getTag();
 
+					$plugin->setTag($tag);
+					$plugin->parseAttributes($line);
+					$plugin->setInnerHTML($innerHTML);
+					$plugin->setOuterHTML($outerHTML);
+					$plugin->setSkipEndTag($skipendtag);
+					$this->_soy2_content = $this->getContent($plugin,$this->_soy2_content);
+					$plugin->setTag($tmpTag);
+					continue;
+				}
+
+				//処理
 				$plugin->setTag($tag);
 				$plugin->parseAttributes($line);
 				$plugin->setInnerHTML($innerHTML);
 				$plugin->setOuterHTML($outerHTML);
+				$plugin->setParent($this);
 				$plugin->setSkipEndTag($skipendtag);
+				$plugin->setSoyValue($plugins[$value]);
+				$plugin->execute();
+
 				$this->_soy2_content = $this->getContent($plugin,$this->_soy2_content);
-				$plugin->setTag($tmpTag);
-				continue;
 			}
-
-			//処理
-			$plugin->setTag($tag);
-			$plugin->parseAttributes($line);
-			$plugin->setInnerHTML($innerHTML);
-			$plugin->setOuterHTML($outerHTML);
-			$plugin->setParent($this);
-			$plugin->setSkipEndTag($skipendtag);
-			$plugin->setSoyValue($plugins[$value]);
-			$plugin->execute();
-
-			$this->_soy2_content = $this->getContent($plugin,$this->_soy2_content);
 		}
 
 		$plugin = null;
@@ -313,25 +318,27 @@ class CMSPage extends WebPage{
 
 		SOY2::import("site_include.CMSPageModulePlugin");
 		$plugin = new CMSPageModulePlugin();
+		
+		if(!is_null($this->_soy2_content)){
+			while(true){
+				list($tag, $line, $innerHTML, $outerHTML, $value, $suffix, $skipendtag) =
+					$plugin->parse("module", "[a-zA-Z0-9\.\_\{\}]+", $this->_soy2_content);
 
-		while(true){
-			list($tag, $line, $innerHTML, $outerHTML, $value, $suffix, $skipendtag) =
-				$plugin->parse("module", "[a-zA-Z0-9\.\_\{\}]+", $this->_soy2_content);
+				if(!strlen($tag)) break;
 
-			if(!strlen($tag)) break;
+				$plugin->_attribute = array();
 
-			$plugin->_attribute = array();
+				$plugin->setTag($tag);
+				$plugin->parseAttributes($line);
+				$plugin->setInnerHTML($innerHTML);
+				$plugin->setOuterHTML($outerHTML);
+				$plugin->setParent($this);
+				$plugin->setSkipEndTag($skipendtag);
+				$plugin->setSoyValue($value);
+				$plugin->execute();
 
-			$plugin->setTag($tag);
-			$plugin->parseAttributes($line);
-			$plugin->setInnerHTML($innerHTML);
-			$plugin->setOuterHTML($outerHTML);
-			$plugin->setParent($this);
-			$plugin->setSkipEndTag($skipendtag);
-			$plugin->setSoyValue($value);
-			$plugin->execute();
-
-			$this->_soy2_content = $this->getContent($plugin, $this->_soy2_content);
+				$this->_soy2_content = $this->getContent($plugin, $this->_soy2_content);
+			}
 		}
     }
 
