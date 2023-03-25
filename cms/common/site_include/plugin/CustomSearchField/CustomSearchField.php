@@ -108,7 +108,7 @@ class CustomSearchFieldPlugin{
 					"visible" => ($csfValueLength === 0)
 				));
 
-				$htmlObj->addLabel($key, array(
+				$htmlObj->createAdd($key, "CMSLabel", array(
 					"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
 					"html" => (isset($csfValue)) ? $csfValue : null
 				));
