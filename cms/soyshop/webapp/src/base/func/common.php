@@ -6,15 +6,15 @@ function soyshop_get_page_url(string $uri, string $suffix=""){
 	SOY2::import("domain.site.SOYShop_Page");
 	if($uri == SOYShop_Page::URI_HOME) $uri = "";
 
-    if($suffix) return soyshop_shape_page_url(soyshop_get_site_url(true) . $uri . "/" . $suffix);
+	if($suffix) return soyshop_shape_page_url(soyshop_get_site_url(true) . $uri . "/" . $suffix);
 
-    return soyshop_shape_page_url(soyshop_get_site_url(true) . $uri);
+	return soyshop_shape_page_url(soyshop_get_site_url(true) . $uri);
 }
 
 //URLの小手先の修正集は下記のラッパー関数で行う
 function soyshop_shape_page_url(string $url){
 	//サイトIDが２つ繋がってしまった時
-	if(strpos($url, "/" . SOYSHOP_ID . "//" . SOYSHOP_ID . "/") !== false){
+	if(is_numeric(strpos($url, "/" . SOYSHOP_ID . "//" . SOYSHOP_ID . "/"))){
 		$url = str_replace("/" . SOYSHOP_ID . "//" . SOYSHOP_ID . "/", "/" . SOYSHOP_ID . "/", $url);
 	}
 
@@ -29,25 +29,25 @@ function soyshop_get_site_url(bool $isAbsolute=false){
 
 	//portがある場合は$_SERVER["SERVER_PORT"]をチェック
 
-    if(isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on" && strpos($url, "http:") >= 0) $url = str_replace("http:", "https:", $url);
+	if(isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on" && strpos($url, "http:") >= 0) $url = str_replace("http:", "https:", $url);
 
-    //ルート設定の場合、ショップIDを削る
-    if(defined("SOYSHOP_IS_ROOT") && SOYSHOP_IS_ROOT){
-        $id = "/" . SOYSHOP_ID . "/";
-        $posId = strrpos($url, $id);
-        if((strlen($url) - strlen($id)) == $posId){
-            $url = substr($url, 0, $posId) . "/";
-        }
-    }
+	//ルート設定の場合、ショップIDを削る
+	if(defined("SOYSHOP_IS_ROOT") && SOYSHOP_IS_ROOT){
+		$id = "/" . SOYSHOP_ID . "/";
+		$posId = strrpos($url, $id);
+		if((strlen($url) - strlen($id)) == $posId){
+			$url = substr($url, 0, $posId) . "/";
+		}
+	}
 
 	return ($isAbsolute) ? $url : preg_replace('/^h[a-z]+:\/\/[^\/]+/', '', $url);
 }
 
 //httpsからはじまるURLに変更
 function soyshop_get_ssl_site_url(){
-    $url = soyshop_get_site_url(true);
-    if(!strpos($url, "https:")) $url = str_replace("http:", "https:", $url);
-    return $url;
+	$url = soyshop_get_site_url(true);
+	if(is_bool(strpos($url, "https:"))) $url = str_replace("http:", "https:", $url);
+	return $url;
 }
 
 function soyshop_get_arguments(){
@@ -108,59 +108,59 @@ function soyshop_get_image_full_path(string $imagePath){
  * サイトのURIを取得する
  */
 function soyshop_get_site_path(){
-    $dir = (defined("SOYCMS_TARGET_DIRECTORY")) ? SOYCMS_TARGET_DIRECTORY : $_SERVER["DOCUMENT_ROOT"];
-    return str_replace($dir, '/', SOYSHOP_SITE_DIRECTORY);
+	$dir = (defined("SOYCMS_TARGET_DIRECTORY")) ? SOYCMS_TARGET_DIRECTORY : $_SERVER["DOCUMENT_ROOT"];
+	return str_replace($dir, '/', SOYSHOP_SITE_DIRECTORY);
 }
 
 /**
  * 商品一覧のURLを取得する
  */
 function soyshop_get_item_list_link(SOYShop_Item $item, SOYShop_Category $category){
-    static $results, $isInstalled, $dao, $listUri;
+	static $results, $isInstalled, $dao, $listUri;
 
-    //カテゴリが存在していない場合は処理を続行しない
-    if(is_null($category->getAlias())) return null;
+	//カテゴリが存在していない場合は処理を続行しない
+	if(is_null($category->getAlias())) return null;
 
-    if(is_null($results)) {
-        $results = array();
+	if(is_null($results)) {
+		$results = array();
 
-        SOY2::import("util.SOYShopPluginUtil");
-        $isInstalled = SOYShopPluginUtil::checkIsActive("common_breadcrumb");
+		SOY2::import("util.SOYShopPluginUtil");
+		$isInstalled = SOYShopPluginUtil::checkIsActive("common_breadcrumb");
 
-        if($isInstalled){
-            SOY2::imports("module.plugins.common_breadcrumb.domain.*");
-            $dao = SOY2DAOFactory::create("SOYShop_BreadcrumbDAO");
-        }
-    }
+		if($isInstalled){
+			SOY2::imports("module.plugins.common_breadcrumb.domain.*");
+			$dao = SOY2DAOFactory::create("SOYShop_BreadcrumbDAO");
+		}
+	}
 
-    $uri = (isset($results[$item->getId()])) ? $results[$item->getId()] : null;
+	$uri = (isset($results[$item->getId()])) ? $results[$item->getId()] : null;
 
-    if(!isset($uri)){
-        if($isInstalled){
-            try{
-                $uri = $dao->getPageUriByItemId($item->getId());
-                $results[$item->getId()] = $uri;
-            }catch(Exception $e){
-                //
-            }
-        //サイトマップから適当に探す
-        }else{
-            if(is_null($listUri)){
-                $values = SOYShop_DataSets::get("site.url_mapping", array());
-                SOY2::import("domain.site.SOYShop_Page");
-                foreach($values as $pageId => $v){
-                    if($v["type"] == SOYShop_Page::TYPE_LIST){
-                        $listUri = $v["uri"];
-                        $results[$item->getId()] = $listUri;
-                        break;
-                    }
-                }
-            }
-            $uri = $listUri;
-        }
-    }
+	if(!isset($uri)){
+		if($isInstalled){
+			try{
+				$uri = $dao->getPageUriByItemId($item->getId());
+				$results[$item->getId()] = $uri;
+			}catch(Exception $e){
+				//
+			}
+		//サイトマップから適当に探す
+		}else{
+			if(is_null($listUri)){
+				$values = SOYShop_DataSets::get("site.url_mapping", array());
+				SOY2::import("domain.site.SOYShop_Page");
+				foreach($values as $pageId => $v){
+					if($v["type"] == SOYShop_Page::TYPE_LIST){
+						$listUri = $v["uri"];
+						$results[$item->getId()] = $listUri;
+						break;
+					}
+				}
+			}
+			$uri = $listUri;
+		}
+	}
 
-    return (isset($uri)) ? soyshop_get_page_url($uri, (string)$category->getAlias()) : "";
+	return (isset($uri)) ? soyshop_get_page_url($uri, (string)$category->getAlias()) : "";
 }
 
 // array(page_id => page_name...)
@@ -189,36 +189,36 @@ function soyshop_get_page_list(){
  * 商品詳細のURLを取得する
  */
 function soyshop_get_item_detail_link(SOYShop_Item $item){
-    static $results, $urls;
-    if(is_null($item->getAlias())) return null;
+	static $results, $urls;
+	if(is_null($item->getAlias())) return null;
 	
-    $url = (isset($results[$item->getDetailPageId()])) ? $results[$item->getDetailPageId()] : null;
+	$url = (isset($results[$item->getDetailPageId()])) ? $results[$item->getDetailPageId()] : null;
 	
-    if(is_null($url)){
-        if(is_null($urls)) $urls = SOYShop_DataSets::get("site.url_mapping", array());
+	if(is_null($url)){
+		if(is_null($urls)) $urls = SOYShop_DataSets::get("site.url_mapping", array());
 
-        if(isset($urls[$item->getDetailPageId()])){
-            $url = $urls[$item->getDetailPageId()]["uri"];
-            $results[$item->getDetailPageId()] = $url;
-        }else{
-            foreach($urls as $array){
-                if($array["type"] == "detail"){
-                    $url = $array["uri"];
-                    $results[$item->getDetailPageId()] = $url;
-                    break;
-                }
-            }
-        }
-    }
+		if(isset($urls[$item->getDetailPageId()])){
+			$url = $urls[$item->getDetailPageId()]["uri"];
+			$results[$item->getDetailPageId()] = $url;
+		}else{
+			foreach($urls as $array){
+				if($array["type"] == "detail"){
+					$url = $array["uri"];
+					$results[$item->getDetailPageId()] = $url;
+					break;
+				}
+			}
+		}
+	}
 	
-    return (isset($url)) ? soyshop_get_page_url($url, $item->getAlias()) : "";
+	return (isset($url)) ? soyshop_get_page_url($url, $item->getAlias()) : "";
 }
 
 /**
  * カテゴリIDからカテゴリ名を取得する
  */
 function soyshop_get_category_name(int $categoryId){
-    return soyshop_get_category_object($categoryId)->getOpenCategoryName();
+	return soyshop_get_category_object($categoryId)->getOpenCategoryName();
 }
 
 function soyshop_check_price_string($price){
@@ -243,16 +243,16 @@ function soyshop_display_price($price){
  * @return string
  */
 function soyshop_get_cart_url(bool $operation=false, bool $isAbsolute=false){
-    $isUseSSL = SOYShop_DataSets::get("config.cart.use_ssl", 0);
+	$isUseSSL = SOYShop_DataSets::get("config.cart.use_ssl", 0);
 
-    if($isUseSSL){
-        $url = SOYShop_DataSets::get("config.cart.ssl_url");
-        $url .= soyshop_get_cart_uri();
-    }else{
-        $url = soyshop_get_site_url($isAbsolute) . soyshop_get_cart_uri();
-    }
+	if($isUseSSL){
+		$url = SOYShop_DataSets::get("config.cart.ssl_url");
+		$url .= soyshop_get_cart_uri();
+	}else{
+		$url = soyshop_get_site_url($isAbsolute) . soyshop_get_cart_uri();
+	}
 
-    return ($operation) ? $url . "/operation" : $url;
+	return ($operation) ? $url . "/operation" : $url;
 }
 
 /**
@@ -262,9 +262,9 @@ function soyshop_get_cart_id(){
 	SOY2::import("util.SOYShopPluginUtil");
 	if(SOYShopPluginUtil::checkIsActive("util_mobile_check")){
 		if( (defined("SOYSHOP_SMARTPHONE_MODE") && SOYSHOP_SMARTPHONE_MODE) || (defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE) ) return SOYShop_DataSets::get("config.cart.smartphone_cart_id", "smart");
-    	if(defined("SOYSHOP_IS_MOBILE") && SOYSHOP_IS_MOBILE) return SOYShop_DataSets::get("config.cart.mobile_cart_id", "mobile");
+		if(defined("SOYSHOP_IS_MOBILE") && SOYSHOP_IS_MOBILE) return SOYShop_DataSets::get("config.cart.mobile_cart_id", "mobile");
 	}
-    return SOYShop_DataSets::get("config.cart.cart_id", "bryon");
+	return SOYShop_DataSets::get("config.cart.cart_id", "bryon");
 }
 
 /**
@@ -276,12 +276,12 @@ function soyshop_get_cart_uri(){
 	$cartUri = null;
 	SOY2::import("util.SOYShopPluginUtil");
 	if(SOYShopPluginUtil::checkIsActive("util_mobile_check")){
-	    if(defined("SOYSHOP_IS_MOBILE") && SOYSHOP_IS_MOBILE){
-	        $cartUri = SOYShop_DataSets::get("config.cart.mobile_cart_url", "mb/cart");
-	    }else if( (defined("SOYSHOP_SMARTPHONE_MODE") && SOYSHOP_SMARTPHONE_MODE) || (defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE) ){
-	        $cartUri = SOYShop_DataSets::get("config.cart.smartphone_cart_url", "i/cart");
-	    }
-    }
+		if(defined("SOYSHOP_IS_MOBILE") && SOYSHOP_IS_MOBILE){
+			$cartUri = SOYShop_DataSets::get("config.cart.mobile_cart_url", "mb/cart");
+		}else if( (defined("SOYSHOP_SMARTPHONE_MODE") && SOYSHOP_SMARTPHONE_MODE) || (defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE) ){
+			$cartUri = SOYShop_DataSets::get("config.cart.smartphone_cart_url", "i/cart");
+		}
+	}
 	if(is_null($cartUri)) $cartUri = SOYShop_DataSets::get("config.cart.cart_url", "cart");
 
 	//多言語化対応
@@ -299,8 +299,8 @@ function soyshop_get_cart_uri(){
 		}
 	}
 
-    define("SOYSHOP_CART_URI", $cartUri);
-    return SOYSHOP_CART_URI;
+	define("SOYSHOP_CART_URI", $cartUri);
+	return SOYSHOP_CART_URI;
 }
 
 /**
@@ -318,10 +318,10 @@ function soyshop_get_cart_page_title(){
  * カートページにリダイレクトする
  */
 function soyshop_redirect_cart($param = null){
-    $url = soyshop_get_cart_url();
-    if($param) $url .= "?" . $param;
-    header("Location: ". $url);
-    exit;
+	$url = soyshop_get_cart_url();
+	if($param) $url .= "?" . $param;
+	header("Location: ". $url);
+	exit;
 }
 
 
@@ -329,10 +329,10 @@ function soyshop_redirect_cart($param = null){
  * カートページにリダイレクトする
  */
 function soyshop_redirect_cart_with_anchor($anchor = null){
-    $url = soyshop_get_cart_url();
-    if($anchor)$url .= "#" . $anchor;
-    header("Location: " . $url);
-    exit;
+	$url = soyshop_get_cart_url();
+	if($anchor)$url .= "#" . $anchor;
+	header("Location: " . $url);
+	exit;
 }
 
 /**
@@ -341,35 +341,35 @@ function soyshop_redirect_cart_with_anchor($anchor = null){
  * @return boolean 正しければtrue
  */
 function soyshop_valid_email($email){
-    $ascii  = '[a-zA-Z0-9!#$%&\'*+\-\/=?^_`{|}~.]';//'[\x01-\x7F]';
-    $domain = '(?:[-a-z0-9]+\.)+[a-z]{2,10}';//'([-a-z0-9]+\.)*[a-z]+';
-    $d3     = '\d{1,3}';
-    $ip     = $d3. '\.'. $d3. '\.'. $d3. '\.'. $d3;
-    $validEmail = "^$ascii+\@(?:$domain|\\[$ip\\])$";
+	$ascii  = '[a-zA-Z0-9!#$%&\'*+\-\/=?^_`{|}~.]';//'[\x01-\x7F]';
+	$domain = '(?:[-a-z0-9]+\.)+[a-z]{2,10}';//'([-a-z0-9]+\.)*[a-z]+';
+	$d3	 = '\d{1,3}';
+	$ip	 = $d3. '\.'. $d3. '\.'. $d3. '\.'. $d3;
+	$validEmail = "^$ascii+\@(?:$domain|\\[$ip\\])$";
 
-    if(! preg_match('/' . $validEmail . '/i', $email) ) {
-        return false;
-    }
+	if(! preg_match('/' . $validEmail . '/i', $email) ) {
+		return false;
+	}
 
-    return true;
+	return true;
 }
 
 /**
  * 住所検索の郵便番号で全角や-を除く
  */
 function soyshop_cart_address_validate($zipcode){
-    $zipcode = mb_convert_kana($zipcode, "a");
-    $zipcode = mb_convert_kana($zipcode, "s");
-    $zipcode = str_replace("-", "", $zipcode);
-    $zipcode = str_replace(" ", "", $zipcode);
-    return $zipcode;
+	$zipcode = mb_convert_kana($zipcode, "a");
+	$zipcode = mb_convert_kana($zipcode, "s");
+	$zipcode = str_replace("-", "", $zipcode);
+	$zipcode = str_replace(" ", "", $zipcode);
+	return $zipcode;
 }
 
 /**
  * trim
  */
 function soyshop_trim($str){
-    return trim($str);
+	return trim($str);
 }
 
 /**
@@ -392,8 +392,8 @@ function soyshop_trim_values_on_array(array $arr){
  * @return string カナ変換後
  */
 function soyshop_conver_kana($str){
-    $str = trim($str);
-    return mb_convert_kana($str, "CK", "UTF-8");
+	$str = trim($str);
+	return mb_convert_kana($str, "CK", "UTF-8");
 }
 
 /**
@@ -419,10 +419,10 @@ function soyshop_get_mypage_id(){
 	SOY2::import("util.SOYShopPluginUtil");
 	if(SOYShopPluginUtil::checkIsActive("util_mobile_check")){
 		if(defined("SOYSHOP_IS_MOBILE") && SOYSHOP_IS_MOBILE){
-	        return SOYShop_DataSets::get("config.mypage.mobile.id", "mobile");
-	    }elseif(defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE){
-	        return SOYShop_DataSets::get("config.mypage.smartphone.id", "smart");
-	    }
+			return SOYShop_DataSets::get("config.mypage.mobile.id", "mobile");
+		}elseif(defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE){
+			return SOYShop_DataSets::get("config.mypage.smartphone.id", "smart");
+		}
 	}
 
 	return SOYShop_DataSets::get("config.mypage.id", "bryon");
@@ -438,12 +438,12 @@ function soyshop_get_mypage_uri(){
 	SOY2::import("util.SOYShopPluginUtil");
 	if(SOYShopPluginUtil::checkIsActive("util_mobile_check")){
 		if(defined("SOYSHOP_IS_MOBILE") && SOYSHOP_IS_MOBILE){
-	        $mypageUri = SOYShop_DataSets::get("config.mypage.mobile.url", "mb/user");
-	    }elseif(defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE){
-	        $mypageUri = SOYShop_DataSets::get("config.mypage.smartphone.url", "i/user");
-	    }
+			$mypageUri = SOYShop_DataSets::get("config.mypage.mobile.url", "mb/user");
+		}elseif(defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE){
+			$mypageUri = SOYShop_DataSets::get("config.mypage.smartphone.url", "i/user");
+		}
 	}
-    if(is_null($mypageUri)) $mypageUri = SOYShop_DataSets::get("config.mypage.url", "user");
+	if(is_null($mypageUri)) $mypageUri = SOYShop_DataSets::get("config.mypage.url", "user");
 
 	//多言語化対応
 	if(defined("SOYSHOP_PUBLISH_LANGUAGE")){
@@ -460,8 +460,8 @@ function soyshop_get_mypage_uri(){
 		}
 	}
 
-    define("SOYSHOP_MYPAGE_URI", $mypageUri);
-    return SOYSHOP_MYPAGE_URI;
+	define("SOYSHOP_MYPAGE_URI", $mypageUri);
+	return SOYSHOP_MYPAGE_URI;
 }
 
 /**
@@ -469,17 +469,17 @@ function soyshop_get_mypage_uri(){
  */
 function soyshop_get_mypage_url(bool $isAbsolute=false){
 
-    $isUseSSL = SOYShop_DataSets::get("config.mypage.use_ssl", 0);
+	$isUseSSL = SOYShop_DataSets::get("config.mypage.use_ssl", 0);
 
-    if($isUseSSL){
-        $url = SOYShop_DataSets::get("config.mypage.ssl_url");
-        $url .= soyshop_get_mypage_uri();
+	if($isUseSSL){
+		$url = SOYShop_DataSets::get("config.mypage.ssl_url");
+		$url .= soyshop_get_mypage_uri();
 
-    }else{
-        $url = soyshop_get_site_url($isAbsolute) . soyshop_get_mypage_uri();
-    }
+	}else{
+		$url = soyshop_get_site_url($isAbsolute) . soyshop_get_mypage_uri();
+	}
 
-    return $url;
+	return $url;
 }
 
 /**
@@ -487,20 +487,20 @@ function soyshop_get_mypage_url(bool $isAbsolute=false){
  */
 function soyshop_get_mypage_top_url(bool $isAbsolute=false){
 
-    $url = soyshop_get_mypage_url($isAbsolute);
+	$url = soyshop_get_mypage_url($isAbsolute);
 
-    if(strrpos($url, "/") == 0) $url = rtrim($url, "/");
+	if(strrpos($url, "/") == 0) $url = rtrim($url, "/");
 
 	SOY2::import("util.SOYShopPluginUtil");
 	if(SOYShopPluginUtil::checkIsActive("util_mobile_check")){
 		if(defined("SOYSHOP_IS_MOBILE") && SOYSHOP_IS_MOBILE){
-	        return $url . "/" . SOYShop_DataSets::get("config.mypage.mobile.top", "mb/top");
-	    }elseif(defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE){
-	        return $url . "/" . SOYShop_DataSets::get("config.mypage.smartphone.top", "i/top");
-	    }
+			return $url . "/" . SOYShop_DataSets::get("config.mypage.mobile.top", "mb/top");
+		}elseif(defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE){
+			return $url . "/" . SOYShop_DataSets::get("config.mypage.smartphone.top", "i/top");
+		}
 	}
 
-    return $url . "/" . SOYShop_DataSets::get("config.mypage.top", "top");
+	return $url . "/" . SOYShop_DataSets::get("config.mypage.top", "top");
 }
 
 /**
@@ -527,29 +527,29 @@ function soyshop_get_mypage_page_title(array $args){
  * マイページにリダイレクトする
  */
 function soyshop_redirect_mypage(string $param=""){
-    $url = soyshop_get_mypage_url();
-    if(strlen($param)) $url .= "?" . $param;
-    header("Location: ". $url);
-    exit;
+	$url = soyshop_get_mypage_url();
+	if(strlen($param)) $url .= "?" . $param;
+	header("Location: ". $url);
+	exit;
 }
 
 /**
  * ログインページにリダイレクトする
  */
 function soyshop_redirect_login_form(string $param=""){
-    $url = soyshop_get_mypage_url() . "/login";
-    if(strlen($param)) $url .= "?" . $param;
-    header("Location: ". $url);
-    exit;
+	$url = soyshop_get_mypage_url() . "/login";
+	if(strlen($param)) $url .= "?" . $param;
+	header("Location: ". $url);
+	exit;
 }
 
 /**
  * プロフィールページからリダイレクトする
  */
 function soyshop_redirect_from_profile(){
-    $referer = (isset($_SERVER["HTTP_REFERER"]) && strlen($_SERVER["HTTP_REFERER"]) > 0) ? $_SERVER["HTTP_REFERER"] : soyshop_get_site_url();
-    header('Location:' . $referer);
-    exit;
+	$referer = (isset($_SERVER["HTTP_REFERER"]) && strlen($_SERVER["HTTP_REFERER"]) > 0) ? $_SERVER["HTTP_REFERER"] : soyshop_get_site_url();
+	header('Location:' . $referer);
+	exit;
 }
 
 /**
@@ -558,7 +558,7 @@ function soyshop_redirect_from_profile(){
  * @return boolean
  */
 function soyshop_is_login_mypage(){
-    return false;
+	return false;
 }
 
 /**
@@ -567,19 +567,19 @@ function soyshop_is_login_mypage(){
 function soyshop_redirect_designated_page($param, $postfix = null){
 	$location = "Location: ". rawurldecode($param);
 
-    if(isset($postfix) && strlen($postfix)){
-        $location .= "?" . $postfix;
-    }
+	if(isset($postfix) && strlen($postfix)){
+		$location .= "?" . $postfix;
+	}
 	header($location);
-    exit;
+	exit;
 }
 
 function soyshop_remove_get_value($param){
-    if(strpos($param, "?")){
-        $param = substr($param, 0, strrpos($param, "?"));
-    }
+	if(strpos($param, "?")){
+		$param = substr($param, 0, strrpos($param, "?"));
+	}
 
-    return $param;
+	return $param;
 }
 
 /**
@@ -588,19 +588,19 @@ function soyshop_remove_get_value($param){
  * @return string url
  */
 function soyshop_add_get_value(string $url){
-    if(count($_GET) > 0){
+	if(count($_GET) > 0){
 		$query = http_build_query($_GET);
-        if(strpos($url, "?")){
-            $url .= "&" . $query;
-        }else{
-            $url .= "?" . $query;
-        }
-    }
+		if(strpos($url, "?")){
+			$url .= "&" . $query;
+		}else{
+			$url .= "?" . $query;
+		}
+	}
 
 	//ページャのURLの整形
 	if(strpos($url, "//page-")) $url = str_replace("//page-", "/page-", $url);
 
-    return $url;
+	return $url;
 }
 
 /**
@@ -609,8 +609,8 @@ function soyshop_add_get_value(string $url){
  * @return path 画像ファイルの絶対パス
  */
 function soyshop_convert_file_path(string $path, SOYShop_Item $item, bool $isAbsolute=false){
-    static $isOwnDomain;
-    if(is_null($isOwnDomain)){
+	static $isOwnDomain;
+	if(is_null($isOwnDomain)){
 		if(defined("SOYSHOP_SITE_URL")){
 			$siteUrl = trim(SOYSHOP_SITE_URL, "/") . "/";
 			//siteUrl内に/siteId/がなければ独自URLとみなす(ルート設定していないことも調べておく)
@@ -618,70 +618,70 @@ function soyshop_convert_file_path(string $path, SOYShop_Item $item, bool $isAbs
 		}else{
 			$isOwnDomain = false;
 		}
-    }
+	}
 
-    //値が無ければそのまま返す
-    if(strlen($path) === 0) return $path;
+	//値が無ければそのまま返す
+	if(strlen($path) === 0) return $path;
 
-    //独自ドメイン + ルート設定してない場合は画像のURLをSITE_IDなしに変換する
-    if($isOwnDomain && strpos($path, "/" . SOYSHOP_ID . "/") !== false) $path = str_replace("/" . SOYSHOP_ID, "", $path);
+	//独自ドメイン + ルート設定してない場合は画像のURLをSITE_IDなしに変換する
+	if($isOwnDomain && strpos($path, "/" . SOYSHOP_ID . "/") !== false) $path = str_replace("/" . SOYSHOP_ID, "", $path);
 
-    $tmp = $path;
+	$tmp = $path;
 
-    //スマホ用で書き換え
-    if(defined("SOYSHOP_CARRIER_PREFIX") && strlen(SOYSHOP_CARRIER_PREFIX)){
-        $codeWithCarrierPrefix = $item->getCode() . "_" . SOYSHOP_CARRIER_PREFIX;
-        $tmp = str_replace("/" . $item->getCode() . "/", "/" . $codeWithCarrierPrefix . "/", $tmp);
-    }
+	//スマホ用で書き換え
+	if(defined("SOYSHOP_CARRIER_PREFIX") && strlen(SOYSHOP_CARRIER_PREFIX)){
+		$codeWithCarrierPrefix = $item->getCode() . "_" . SOYSHOP_CARRIER_PREFIX;
+		$tmp = str_replace("/" . $item->getCode() . "/", "/" . $codeWithCarrierPrefix . "/", $tmp);
+	}
 
-    //多言語用で書き換え
-    if(defined("SOYSHOP_PUBLISH_LANGUAGE") && SOYSHOP_PUBLISH_LANGUAGE != "jp"){
-        //携帯自動振り分けプラグイン分が加味されている場合
-        if(isset($codeWithCarrierPrefix)){
-            $codeWithLangPrefix = $codeWithCarrierPrefix . "_" . SOYSHOP_PUBLISH_LANGUAGE;
-            $tmp = str_replace("/" . $codeWithCarrierPrefix . "/", "/" . $codeWithLangPrefix . "/", $tmp);
-        }else{
-            $codeWithLangPrefix = $item->getCode() . "_" . SOYSHOP_PUBLISH_LANGUAGE;
-            $tmp = str_replace("/" . $item->getCode() . "/", "/" . $codeWithLangPrefix . "/", $tmp);
-        }
-    }
+	//多言語用で書き換え
+	if(defined("SOYSHOP_PUBLISH_LANGUAGE") && SOYSHOP_PUBLISH_LANGUAGE != "jp"){
+		//携帯自動振り分けプラグイン分が加味されている場合
+		if(isset($codeWithCarrierPrefix)){
+			$codeWithLangPrefix = $codeWithCarrierPrefix . "_" . SOYSHOP_PUBLISH_LANGUAGE;
+			$tmp = str_replace("/" . $codeWithCarrierPrefix . "/", "/" . $codeWithLangPrefix . "/", $tmp);
+		}else{
+			$codeWithLangPrefix = $item->getCode() . "_" . SOYSHOP_PUBLISH_LANGUAGE;
+			$tmp = str_replace("/" . $item->getCode() . "/", "/" . $codeWithLangPrefix . "/", $tmp);
+		}
+	}
 
-    //変更したパスの先にファイルがあるか調べる
-    if($path != $tmp){
-        $tmpPath = $tmp;
-        //httpからはじまる場合はURL分を除く
-        if(strpos($tmpPath, SOYSHOP_SITE_URL) === 0){
-            $tmpPath = str_replace(SOYSHOP_SITE_URL, "", $tmpPath);
+	//変更したパスの先にファイルがあるか調べる
+	if($path != $tmp){
+		$tmpPath = $tmp;
+		//httpからはじまる場合はURL分を除く
+		if(strpos($tmpPath, SOYSHOP_SITE_URL) === 0){
+			$tmpPath = str_replace(SOYSHOP_SITE_URL, "", $tmpPath);
 
-            //ショップIDを付与しておく
-            $tmpPath = "/" . SOYSHOP_ID . "/" . $tmpPath;
-        }
+			//ショップIDを付与しておく
+			$tmpPath = "/" . SOYSHOP_ID . "/" . $tmpPath;
+		}
 
-        $tmpPath = str_replace("/" . SOYSHOP_ID . "/", "", SOYSHOP_SITE_DIRECTORY) . $tmpPath;
-        if(!is_dir($tmpPath) && file_exists($tmpPath)){
-            $path = $tmp;
-        }
-    }
+		$tmpPath = str_replace("/" . SOYSHOP_ID . "/", "", SOYSHOP_SITE_DIRECTORY) . $tmpPath;
+		if(!is_dir($tmpPath) && file_exists($tmpPath)){
+			$path = $tmp;
+		}
+	}
 
-    return ($isAbsolute) ? soyshop_get_page_url($path) : $path;
+	return ($isAbsolute) ? soyshop_get_page_url($path) : $path;
 }
 
 /**
  * 独自ドメインで表示している場合、管理画面で画像のパスがずれることがあるのでパスを修正する
  */
 function soyshop_convert_file_path_on_admin(string $path){
-    if(!strlen($path)) return $path;
+	if(!strlen($path)) return $path;
 
-    if(is_bool(strpos(SOYSHOP_SITE_URL, $_SERVER["HTTP_HOST"])) && is_bool(strpos(SOYSHOP_SITE_URL, "/" . SOYSHOP_ID))){
-        $path = "/" . SOYSHOP_ID . "/" . $path;
-    }
+	if(is_bool(strpos(SOYSHOP_SITE_URL, $_SERVER["HTTP_HOST"])) && is_bool(strpos(SOYSHOP_SITE_URL, "/" . SOYSHOP_ID))){
+		$path = "/" . SOYSHOP_ID . "/" . $path;
+	}
 
-	// /SOYSHOP_ID/の出現回数が2回以上の場合は/SOYSHOP_ID/を削る    
-    if(substr_count($path, "/" . SOYSHOP_ID . "/") > 1){
-    	$path = str_replace("/" . SOYSHOP_ID . "/", "", $path);
-    	$path = "/" . SOYSHOP_ID . "/" . $path;
-    }
-    return $path;
+	// /SOYSHOP_ID/の出現回数が2回以上の場合は/SOYSHOP_ID/を削る	
+	if(substr_count($path, "/" . SOYSHOP_ID . "/") > 1){
+		$path = str_replace("/" . SOYSHOP_ID . "/", "", $path);
+		$path = "/" . SOYSHOP_ID . "/" . $path;
+	}
+	return $path;
 }
 
 function soyshop_get_item_sample_image(){
@@ -751,21 +751,21 @@ function soyshop_get_parent_id_by_child_id($itemId){
 function soyshop_convert_item_detail_page_id(SOYShop_Item $item, SOYShop_Page $page){
 	if($page->getType() !== SOYShop_Page::TYPE_DETAIL) return $item;
 
-    if(
-        (defined("SOYSHOP_IS_MOBILE") && SOYSHOP_IS_MOBILE) ||
-        (defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE) ||
+	if(
+		(defined("SOYSHOP_IS_MOBILE") && SOYSHOP_IS_MOBILE) ||
+		(defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE) ||
 		(defined("SOYSHOP_SMARTPHONE_MODE") && SOYSHOP_SMARTPHONE_MODE) ||
-        (defined("SOYSHOP_PUBLISH_LANGUAGE") && SOYSHOP_PUBLISH_LANGUAGE != "jp")
-    ){
-        $item->setDetailPageId($page->getId());
-    }
-    return $item;
+		(defined("SOYSHOP_PUBLISH_LANGUAGE") && SOYSHOP_PUBLISH_LANGUAGE != "jp")
+	){
+		$item->setDetailPageId($page->getId());
+	}
+	return $item;
 }
 
 if(!function_exists("_empty")){
-    function _empty($arg){
-        return empty($arg);
-    }
+	function _empty($arg){
+		return empty($arg);
+	}
 }
 
 /**
