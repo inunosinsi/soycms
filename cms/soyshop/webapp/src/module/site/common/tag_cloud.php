@@ -63,13 +63,13 @@ function soyshop_tag_cloud($html, $page){
 				//
 			}
 
-			// 多言語化
-			if((defined("SOYSHOP_PUBLISH_LANGUAGE") && SOYSHOP_PUBLISH_LANGUAGE != "jp")){
-				$words = SOY2Logic::createInstance("module.plugins.tag_cloud.logic.MultilingualLogic")->translate($words);
-			}
-
 			//ページのURLを調べる
 			if(count($words)){
+				// 多言語化
+				if((defined("SOYSHOP_PUBLISH_LANGUAGE") && SOYSHOP_PUBLISH_LANGUAGE != "jp")){
+					$words = SOY2Logic::createInstance("module.plugins.tag_cloud.logic.MultilingualLogic")->translate($words);
+				}
+
 				$url = soyshop_get_page_url(soyshop_get_page_object($pageId)->getUri());
 
 				//ワードID毎の記事数
