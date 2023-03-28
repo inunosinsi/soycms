@@ -22,3 +22,10 @@ CREATE TABLE soyshop_tag_cloud_language(
 	label VARCHAR(128),
 	UNIQUE(word_id, lang)
 ) ENGINE=InnoDB;
+
+CREATE TABLE soyshop_tag_cloud_category_language(
+	category_id INTEGER NOT NULL DEFAULT 0,
+	lang CHAR(2),
+	label VARCHAR(128),
+	UNIQUE(category_id, lang)
+) ENGINE=InnoDB;

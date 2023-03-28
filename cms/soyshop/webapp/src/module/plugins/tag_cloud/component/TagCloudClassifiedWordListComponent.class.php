@@ -61,7 +61,7 @@ class TagCloudClassifiedWordListComponent extends HTMLList {
 			if(count($words)){
 				// 多言語化
 				if((defined("SOYSHOP_PUBLISH_LANGUAGE") && SOYSHOP_PUBLISH_LANGUAGE != "jp")){
-					$words = SOY2Logic::createInstance("module.plugins.tag_cloud.logic.MultilingualLogic")->translate($words);
+					$words = self::_multiLogic()->translate($words);
 				}
 
 				//ワードID毎の記事数
@@ -102,6 +102,12 @@ class TagCloudClassifiedWordListComponent extends HTMLList {
 			SOY2::import("module.plugins.tag_cloud.domain.SOYShop_TagCloudCategoryDAO");
 			$dao = SOY2DAOFactory::create("SOYShop_TagCloudCategoryDAO");
 		}
+		$label = null;
+		if(defined("SOYSHOP_PUBLISH_LANGUAGE") && SOYSHOP_PUBLISH_LANGUAGE != "jp"){
+			$label = self::_multiLogic()->translateByCategoryId($categoryId);
+		}
+		if(is_string($label)) return $label;
+		
 		try{
 			return $dao->getById($categoryId)->getLabel();
 		}catch(Exception $e){
@@ -117,6 +123,12 @@ class TagCloudClassifiedWordListComponent extends HTMLList {
 			$url = soyshop_get_page_url(soyshop_get_page_object($pageId)->getUri());
 		}
 		return $url;
+	}
+
+	private function _multiLogic(){
+		static $l;
+		if(is_null($l)) $l = SOY2Logic::createInstance("module.plugins.tag_cloud.logic.MultilingualLogic");
+		return $l;
 	}
 
 	function setRandomMode($randomMode){

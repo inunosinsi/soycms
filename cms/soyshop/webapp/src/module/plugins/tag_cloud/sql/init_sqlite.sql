@@ -22,3 +22,10 @@ CREATE TABLE soyshop_tag_cloud_language(
 	label VARCHAR,
 	UNIQUE(word_id, lang)
 );
+
+CREATE TABLE soyshop_tag_cloud_category_language(
+	category_id INTEGER NOT NULL DEFAULT 0,
+	lang VARCHAR,
+	label VARCHAR,
+	UNIQUE(category_id, lang)
+);

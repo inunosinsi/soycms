@@ -5,6 +5,7 @@ class MultilingualLogic extends SOY2LogicBase {
 	function __construct(){
 		if(!defined("SOYSHOP_PUBLISH_LANGUAGE")) define("SOYSHOP_PUBLISH_LANGUAGE", "jp");
 		SOY2::import("module.plugins.tag_cloud.domain.SOYShop_TagCloudLanguageDAO");
+		SOY2::import("module.plugins.tag_cloud.domain.SOYShop_TagCloudCategoryLanguageDAO");
 	}
 
 	/**
@@ -63,5 +64,19 @@ class MultilingualLogic extends SOY2LogicBase {
 		}catch(Exception $e){
 			return null;
 		}
+	}
+
+	/**
+	 * @param int
+	 * @return string|null
+	 */
+	function translateByCategoryId(int $categoryId){
+		static $list;
+		if(is_null($list)){
+			// カテゴリの方は登録数が少ないのでまとめて取得しておく
+			$l = SOY2DAOFactory::create("SOYShop_TagCloudCategoryLanguageDAO")->getTranslatedCategoryList();
+			$list = ($l[SOYSHOP_PUBLISH_LANGUAGE]) ? $l[SOYSHOP_PUBLISH_LANGUAGE] : array();
+		}
+		return (isset($list[$categoryId])) ? $list[$categoryId] : null;
 	}
 }
