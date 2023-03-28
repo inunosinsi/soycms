@@ -223,7 +223,8 @@ class SearchItemUtil extends SOY2LogicBase{
 			$ids = array($categoryId);
 		}
 
-		$itemDAO = soyshop_get_hash_table_dao("item");
+		// ここでは必ずSOY2DAOFactory::createを行う 以下の処理のbindsでおかしなことになる
+		$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 
 		/* まずoffset,limit,sortなしでカウントだけ行う */
 

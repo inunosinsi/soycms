@@ -342,7 +342,7 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
 
 		$query->where = "item_category in (" . implode(",", $categories) . ") AND is_disabled != 1";
 		if(!defined("SOYSHOP_ADMIN_PAGE") || !SOYSHOP_ADMIN_PAGE) $query->where .= " AND detail_page_id > 0 ";
-
+		
 		$result = $this->executeOpenItemQuery($query, $binds);
 
 		if(count($result) > 0){
