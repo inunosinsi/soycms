@@ -59,7 +59,7 @@ function soyshop_category_navigation_build_tree($args,$array,$tree){
 			$href .= "?" . $parameter;
 		}
 
-		$html[] = '<li><a href="'.$href.'" >' . $obj->getName() . '</a>';
+		$html[] = '<li><a href="'.$href.'" >' . $obj->getOpenCategoryName() . '</a>';
 		if(isset($tree[$obj->getId()])){
 			$html[] = '<ul>';
 			$html[] = soyshop_category_navigation_build_tree($args,$tree[$obj->getId()],$tree)."\n";

@@ -11,7 +11,7 @@ abstract class SOYShop_TagCloudCategoryLanguageDAO extends SOY2DAO{
 	abstract function insert(SOYShop_TagCloudCategoryLanguage $bean);
 
 	/**
-	 * @query word_id = :wordId AND lang = :lang
+	 * @query category_id = :categoryId AND lang = :lang
 	 */
 	abstract function update(SOYShop_TagCloudCategoryLanguage $bean);
 
