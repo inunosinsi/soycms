@@ -29,7 +29,7 @@ class CmsTagChecker{
 			"type" => Plugin::TYPE_PAGE,
 			"description"=> "CMSタグの閉じ忘れ等を調べます",
 			"author"=> "齋藤毅",
-			"url" => "",
+			"url" => "https://saitodev.co/article/5056",
 			"mail" => "tsuyoshi@saitodev.co",
 			"version"=>"0.1"
 		));
