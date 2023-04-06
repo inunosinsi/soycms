@@ -215,6 +215,7 @@ class LabelCustomField{
 
  				break;
  			case "textarea":
+				if(!is_string($fieldValue)) $fieldValue = "";
  				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
  				$body = '<textarea class="custom_field_textarea form-control" style="width:100%;"'
  				        .' id="'.$h_formID.'"'
@@ -223,6 +224,7 @@ class LabelCustomField{
  						.$h_value.'</textarea>';
  				break;
  			case "richtext":
+				if(!is_string($fieldValue)) $fieldValue = "";
  				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
  				$body = '<textarea class="custom_field_textarea mceEditor" style="width:100%;"'
  				        .' id="'.$h_formID.'"'
@@ -271,6 +273,7 @@ class LabelCustomField{
 
  				break;
  			case "link":
+				if(!is_string($fieldValue)) $fieldValue = "";
  				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
  				$body =  '<div class="form-inline">'
  						.'<input type="text" class="custom_field_input form-control" style="width:70%"'
@@ -284,6 +287,7 @@ class LabelCustomField{
  				$body .= '</div>';
  				break;
  			case "entry":	//出力する記事を指定 カスタムフィールドアドバンスドのみ使用可
+				if(!is_string($fieldValue)) $fieldValue = "";
  				$values = (strlen($fieldValue)) ? explode("-", $fieldValue) : array();
  				$selectedLabelId = (isset($values[0]) && is_numeric($values[0])) ? (int)$values[0] : null;
  				$selectedEntryId = (isset($values[1]) && is_numeric($values[1])) ? (int)$values[1] : 0;

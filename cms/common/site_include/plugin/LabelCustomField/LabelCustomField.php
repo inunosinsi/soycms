@@ -28,7 +28,7 @@ class LabelCustomFieldPlugin{
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co/article/3532",
 			"mail" => "info@saitodev.co",
-			"version"=>"0.7"
+			"version"=>"0.8"
 		));
 
 		//プラグイン アクティブ
