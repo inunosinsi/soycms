@@ -7,7 +7,7 @@ class OutputLabeledEntriesUtil {
 	const SORT_ASC = 0;
 	const SORT_DESC = 1;
 
-	public static function save($entryId, $fieldId, $value=""){
+	public static function save(int $entryId, string $fieldId, string $value=""){
 		if(is_null($value) || !strlen($value)){	//削除
 			try{
 				self::_dao()->delete($entryId, $fieldId);
@@ -29,20 +29,35 @@ class OutputLabeledEntriesUtil {
 		}
 	}
 
-	public static function getSelectedLabelId($entryId, $postfix){
-		return (int)self::_get($entryId, self::FIELD_ID . "_" . $postfix)->getValue();
+	/**
+	 * @param int, string
+	 * @return int
+	 */
+	public static function getSelectedLabelId(int $entryId, string $postfix){
+		return soycms_get_entry_attribute_value($entryId, self::FIELD_ID . "_" . $postfix, "int");
 	}
 
-	public static function getDisplayCount($entryId, $postfix){
+	/**
+	 * @param int, string
+	 * @return int
+	 */
+	public static function getDisplayCount(int $entryId, string $postfix){
 		$cnfs = self::_getConfigEachEntries($entryId, $postfix);
 		return (isset($cnfs["displayCount"]) && is_numeric($cnfs["displayCount"])) ? (int)$cnfs["displayCount"] : self::DISPLAY_COUNT;
 	}
 
-	public static function getDisplaySort($entryId, $postfix){
+	/**
+	 * @param int, string
+	 * @return int
+	 */
+	public static function getDisplaySort(int $entryId, string $postfix){
 		$cnfs = self::_getConfigEachEntries($entryId, $postfix);
 		return (isset($cnfs["sort"]) && is_numeric($cnfs["sort"])) ? (int)$cnfs["sort"] : self::SORT_ASC;
 	}
 
+	/**
+	 * @return array
+	 */
 	public static function getLabels(){
 		static $list;
 		if(is_null($list)) {
@@ -69,23 +84,24 @@ class OutputLabeledEntriesUtil {
 		);
 	}
 
-	private static function _get($entryId, $fieldId){
-		try{
-			return self::_dao()->get($entryId, $fieldId);
-		}catch(Exception $e){
-			$attr = new EntryAttribute();
-			$attr->setEntryId($entryId);
-			$attr->setFieldId($fieldId);
-			return $attr;
-		}
+	/**
+	 * @param int, string
+	 * @return EntryEttribute
+	 */
+	private static function _get(int $entryId, string $fieldId){
+		return soycms_get_entry_attribute_object($entryId, $fieldId);
 	}
 
-	private static function _getConfigEachEntries($entryId, $postfix){
+	/**
+	 * @param int, string
+	 * @return string
+	 */
+	private static function _getConfigEachEntries(int $entryId, string $postfix){
 		static $cnfs;
 		if(is_null($cnfs)) $cnfs = array();
 		$hash = substr(md5($entryId . $postfix), 0, 3);
 		if(!isset($cnfs[$hash])){
-			$v = trim(self::_get($entryId, self::FIELD_ID . "_" . $postfix . "_config")->getValue());
+			$v = trim(soycms_get_entry_attribute_value($entryId, self::FIELD_ID . "_" . $postfix . "_config", "string"));
 			$cnfs[$hash] = (is_string($v)) ? soy2_unserialize($v) : array();
 		}
 		return $cnfs[$hash];

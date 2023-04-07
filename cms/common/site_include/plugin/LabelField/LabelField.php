@@ -188,8 +188,8 @@ class LabelFieldPlugin {
 	 */
 	function onEntryUpdate($arg){
 		if(count($this->configs)){
-			$arg = SOY2PageController::getArguments();
-			$entryId = (isset($arg[0]) && is_numeric($arg[0])) ? (int)$arg[0] : null;
+			$entry = &$arg["entry"];
+			$entryId = $entry->getId();
 			foreach($this->configs as $cnf){
 				if(!isset($cnf["postfix"]) || !strlen($cnf["postfix"])) continue;
 				$fieldId = OutputLabeledEntriesUtil::FIELD_ID . "_" . $cnf["postfix"];
