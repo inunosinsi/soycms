@@ -18,13 +18,16 @@ class PageCustomFieldListComponent extends HTMLList {
 			"text"=> $entity->getId(),
 		));
 
+		$typeText = (is_string($entity->getType()) && isset(CustomField::$TYPES[$entity->getType()])) ? CustomField::$TYPES[$entity->getType()] : "";
+		if(!strlen($typeText) && is_string($entity->getType()) && isset(PageCustomField::$TYPES[$entity->getType()])) $typeText = PageCustomField::$TYPES[$entity->getType()];
 		$this->addLabel("type", array(
-			"text"=> (is_string($entity->getType()) && isset(CustomField::$TYPES[$entity->getType()])) ? CustomField::$TYPES[$entity->getType()] : "",
+			"text"=> $typeText,
 			"id" => "type_text_" . $i,
 		));
 
+		$soyTag = ($entity->getType() != "id" && $entity->getType() != "class") ? "cms" : "pcf";
 		$this->addLabel("display_form", array(
-			"text"=>'cms:id="'.$entity->getId().'"'
+			"text"=>$soyTag.':id="'.$entity->getId().'"'
 		));
 
 

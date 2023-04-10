@@ -1,7 +1,6 @@
 <?php
 class PageCustomField{
 
-
 	public static $TYPES = array(
 		"input" => "一行テキスト",
 		"textarea" => "複数行テキスト",
@@ -15,7 +14,9 @@ class PageCustomField{
 		//"entry" => "記事",
 		"pair" => "ペア",
 		"list" => "リスト",
-		"dllist" => "定義型リスト"
+		"dllist" => "定義型リスト",
+		"id" => "ID",
+		"class" => "クラス"
 	);
 
 	private $id;
@@ -404,8 +405,9 @@ class PageCustomField{
 				break;
 				case "input":
  			default:
+				$p = ($this->getType() == "id" || $this->getType() == "class") ? "10" : "100";
  				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
- 				$body = '<input type="text" class="custom_field_input form-control" style="width:100%"'
+ 				$body = '<input type="text" class="custom_field_input form-control" style="width:'.$p.'%"'
  				       .' id="'.$h_formID.'"'
  				       .' name="'.$h_formName.'"'
  				       .' value="'.$h_value.'"'

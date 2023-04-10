@@ -195,6 +195,13 @@
 &lt;!-- <strong>/cms:module="customfield.page_customfield"</strong> --&gt;
 </div>
 
+<div class="alert alert-success">
+	<strong>pcf:id="site_id"</strong>と<strong>pcf:id="site_id_class"</strong>は項目を追加しなくても使用できるタグです。<br>
+	テンプレートで&lt;body <strong>pcf:id="site_id"</strong>&gt;と記述すると、&lt;body <strong>id="<!-- soy:id="site_id" -->site_id<!-- /soy:id="site_id" -->"</strong>&gt;に変換されます。<br>
+	&lt;body <strong>pcf:id="site_id_class"</strong>&gt;にすると、&lt;body <strong>class="<!-- soy:id="site_id" -->site_id<!-- /soy:id="site_id" -->"</strong>&gt;に変換されます。<br>
+	<strong>pcf:id</strong>は&lt;!-- cms:module="customfield.page_customfield" --&gt;に関係なく動作します。
+</div>
+
 <div style="padding:0 10px;">
 	<h4>フィールドID_visible</h4>
 	<div class="alert alert-info">

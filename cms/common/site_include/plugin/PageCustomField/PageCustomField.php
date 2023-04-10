@@ -29,7 +29,7 @@ class PageCustomFieldPlugin{
 			"author" => "齋藤毅",
 			"url" => "",
 			"mail" => "info@saitodev.co",
-			"version"=>"0.1"
+			"version"=>"0.5"
 		));
 
 		//プラグイン アクティブ
@@ -51,6 +51,8 @@ class PageCustomFieldPlugin{
 			}else{
 				// 高速化の為にcms:moduleの方で行う
 				//CMSPlugin::setEvent('onPageOutput', self::PLUGIN_ID, array($this, "onPageOutput"));
+
+				CMSPlugin::setEvent('onOutput',self::PLUGIN_ID, array($this,"onOutput"), array("filter"=>"all"));
 			}
 
 		}else{
@@ -62,6 +64,112 @@ class PageCustomFieldPlugin{
 	 * onPageOutput
 	 */
 	function onPageOutput($htmlObj){}
+
+	function onOutput($arg){
+		$html = &$arg["html"];
+
+		if(self::_isCache()){
+			$autoSiteIdPropInsertMode = self::_readCache();
+		}else{
+			$autoSiteIdPropInsertMode = false;
+
+			$lines = explode("\n", $html);
+			$n = count($lines);
+			if($n > 0){
+				for($i = 0; $i < $n; $i++){
+					if(soy2_strpos($lines[$i], "pcf:id=\"site_id") >= 0 && preg_match('/<.*pcf:id=\"(.*?)\">/', $lines[$i])) {
+						$autoSiteIdPropInsertMode = true;
+						break;
+					}
+				}
+			}
+
+			$status = ($autoSiteIdPropInsertMode) ? 1 : 0;
+			self::_saveCache($status);
+		}
+
+		if($autoSiteIdPropInsertMode){
+			if(!is_array($this->customFields)) $this->customFields = array();
+			foreach(array("site_id", "site_id_class") as $fieldId){
+				$siteId = soycms_get_site_id_by_frontcontroller();
+				if(soy2_strpos($siteId,"/") >= 0) $siteId = trim(substr($siteId, strrpos($siteId, "/")), "/");
+				$field = new PageCustomField();
+				$field->setId($fieldId);
+				$typ = (soy2_strpos($fieldId, "class") < 0) ? "id" : "class";
+				$field->setType($typ);
+				$field->setValue($siteId);
+				$this->customFields[$field->getId()] = $field;
+			}	
+		}
+		
+		if(!is_array($this->customFields) || !count($this->customFields)) return $html;
+
+		SOY2::import("site_include.plugin.PageCustomField.util.PageCustomfieldUtil");
+		$fields = PageCustomfieldUtil::getCustomFields($_SERVER["SOYCMS_PAGE_ID"], $this->customFields);
+		if(!count($fields)) return $html;
+
+		$replaceStrings = array();
+		foreach($fields as $field){
+			if(is_null($field->getValue())) continue;
+			if(!isset($this->customFields[$field->getId()])) continue;
+			$master = $this->customFields[$field->getId()];
+			if($master->getType() != "id" && $master->getType() != "class") continue;
+			$replaceStrings["pcf:id=\"".$field->getId()."\""] = $master->getType()."=\"".$field->getValue()."\"";
+		}
+
+		foreach(array("site_id", "site_id_class") as $fieldId){
+			if(!isset($this->customFields[$fieldId])) continue;
+			$field = $this->customFields[$fieldId];
+			$replaceStrings["pcf:id=\"".$field->getId()."\""] = $field->getType()."=\"".$field->getValue()."\"";
+		}
+		
+		if(!count($replaceStrings)) return $html;
+		
+		$lines = explode("\n", $html);
+		$n = count($lines);
+		if($n === 0) return $html;
+
+		for($i = 0; $i < $n; $i++){
+			if(soy2_strpos($lines[$i], "pcf:id") < 0) continue;
+			foreach($replaceStrings as $soyId => $str){
+				if(soy2_strpos($lines[$i], $soyId) < 0) continue;
+				preg_match('/<.*pcf:id=\"(.*?)\">/', $lines[$i], $tmp);
+				if(!count($tmp)) continue;
+				$new = str_replace($soyId, $str, $lines[$i]);
+				$html = str_replace($lines[$i], $new, $html);
+			}
+		}
+
+		return $html;
+	}
+
+	private function _saveCache(bool $status){
+		file_put_contents(self::_cacheFilePath(), $status);
+	}
+
+	private function _isCache(){
+		return (file_exists(self::_cacheFilePath()));	
+	}
+
+	/**
+	 * @return bool
+	 */
+	private function _readCache(){
+		$status = (int)file_get_contents(self::_cacheFilePath());
+		return ($status === 1);
+	}
+
+	private function _cacheFilePath(){
+		return self::_cacheDir() . $_SERVER["SOYCMS_PAGE_ID"].".txt";
+	}
+
+	private function _cacheDir(){
+		$dir = _SITE_ROOT_ . "/.cache/page_customfield/";
+		if(!file_exists($dir)) mkdir($dir);
+		$dir .= "pcf/";
+		if(!file_exists($dir)) mkdir($dir);
+		return $dir;
+	}
 
 	/**
 	 * プラグイン管理画面の表示
@@ -126,6 +234,9 @@ class PageCustomFieldPlugin{
 			soycms_save_page_attribute_object($attr);
 		}
 
+		// キャッシュの削除
+		SOY2Logic::createInstance("logic.cache.CacheLogic")->clearCache();
+		
 		return true;
 	}
 

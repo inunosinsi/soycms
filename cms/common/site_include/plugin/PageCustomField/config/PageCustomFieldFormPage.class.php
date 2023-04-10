@@ -81,6 +81,12 @@ class PageCustomFieldFormPage extends WebPage{
 			"pages" => soycms_get_hash_table_dao("page")->get()
 		));
 
+		//DisplayPlugin::toggle("pcf_description", self::_isCssPropExists());
+
+		$this->addLabel("site_id", array(
+			"text" => UserInfoUtil::getSite()->getSiteId()
+		));
+
 		//sample code
 		$this->addLabel("sample_cms_id", array(
 			"text" => (count($this->pluginObj->customFields)) ? array_key_first($this->pluginObj->customFields) : "hoge"
@@ -107,6 +113,19 @@ class PageCustomFieldFormPage extends WebPage{
 		// 	"label"    => "IDを表示する",
 		// 	"onclick"  => "update_display_sample()"
 		// ));
+	}
+
+	/**
+	 * @return bool
+	 */
+	private function _isCssPropExists(){
+		if(!count($this->pluginObj->customFields)) return false;
+
+		foreach($this->pluginObj->customFields as $field){
+			if($field->getType() == "id" || $field->getType() == "class") return true;
+		}
+
+		return false;
 	}
 
 	private function buildCreateForm(){
