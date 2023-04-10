@@ -20,9 +20,9 @@ function soycms_page_customfield($html, $htmlObj){
 			$isDlListField = PageCustomfieldUtil::checkIsDlListField($customFields);	//
 			
 			foreach($fields as $field){
-
 				//設定を取得
 				$master = (isset($customFields[$field->getId()])) ? $customFields[$field->getId()] : null;
+				if(!$master instanceof PageCustomField || !strlen((string)$master->getType()) || $master->getType() == "id" || $master->getType() == "class") continue;
 				
 				$class = "CMSLabel";
 				$attr = array(
@@ -85,6 +85,13 @@ function soycms_page_customfield($html, $htmlObj){
 							"html" => $attr["html"]
 						));
 						$resetFlag = false;
+					}
+
+					// ID or クラスの場合はHTMLModel
+					if($master->getType() == "id" || $master->getType() == "class"){
+						$class = "HTMLModel";
+						$attr[$master->getType()] = $attr["html"];
+						unset($attr["html"]);	//HTMLModelなのでunsetしなくても出力されないはず
 					}
 
 					//上で空の時の値が入るかも知れず、下でunsetされる可能性があるのでここで設定し直す。

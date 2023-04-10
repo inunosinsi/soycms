@@ -25,7 +25,7 @@ function soycms_module_func_get_endpoints_by_comment(string $html, int $count=-1
 	$endpoints = array();
 	$lines = explode("\n", $html);
 	foreach($lines as $l){
-		if(!strlen($l) || is_bool(strpos($l, "<!--"))) continue;
+		if(!strlen($l) || soy2_strpos($l, "<!--") < 0) continue;
 		preg_match('/oje:endpoint=\"(.*?)\"/', $l, $tmp);
 		if(isset($tmp[1])) {
 			$endpoints[] = trim($tmp[1]);

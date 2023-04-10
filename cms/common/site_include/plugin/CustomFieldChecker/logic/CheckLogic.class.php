@@ -54,7 +54,7 @@ class CheckLogic extends SOY2LogicBase {
 
 				if(strlen($fieldV)){
 					if(strlen($q)){	//検索クエリがある場合
-						if(is_numeric(strpos($fieldV, $q))){
+						if(soy2_strpos($fieldV, $q) >= 0){
 							$haves[$v["id"]] = self::_convert($v);
 						}else{	//検索クエリがある場合はnonesには入れない
 							$nones[$v["id"]] = self::_convert($v);

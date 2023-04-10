@@ -35,7 +35,7 @@ function soycms_check_is_root_site_by_frontcontroller(){
 	if(!count($lines)) return false;
 
 	foreach($lines as $l){
-		if(is_bool(strpos($l, "include_once("))) continue;
+		if(soy2_strpos($l, "include_once(") < 0) continue;
 		preg_match('/include_once\(\"(.*?)\/index.php\"\)/', $l, $tmp);
 		if($tmp[1] == soycms_get_site_id_by_frontcontroller()) return true;
 	}

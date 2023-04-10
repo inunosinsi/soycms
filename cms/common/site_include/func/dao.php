@@ -14,9 +14,9 @@ function soycms_get_hash_table_types(){
 }
 
 function soycms_get_hash_table_mode(string $fnName){
-	if(is_bool(strpos($fnName, "soycms_"))) return $fnName;
+	if(soy2_strpos($fnName, "soycms_") < 0) return $fnName;
 	$fnName = str_replace(array("soycms_get_", "soycms_save_", "_objects", "_object"), "", $fnName);
-	if(is_numeric(strpos($fnName, "_by_"))) $fnName = substr($fnName, 0, strpos($fnName, "_by_"));
+	if(soy2_strpos($fnName, "_by_") >= 0) $fnName = substr($fnName, 0, strpos($fnName, "_by_"));
 	return $fnName;
 }
 

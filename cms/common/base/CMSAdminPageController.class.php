@@ -22,7 +22,7 @@ class CMSAdminPageController extends SOY2PageController{
 		//デフォルトパスの場合はすでにルートにアクセスしているので転送しない（無限リダイレクト回避）
 		if($this->getRequestPath() == "Index") parent::onNotFound();
 
-		if(is_bool(strpos($_SERVER["REQUEST_URI"],"Logout"))){
+		if(soy2_strpos($_SERVER["REQUEST_URI"],"Logout") < 0){
 			$redirectParam = "?r=".rawurlencode(self::createRelativeLink($_SERVER["REQUEST_URI"]));
 		}else{
 			$redirectParam = "";
