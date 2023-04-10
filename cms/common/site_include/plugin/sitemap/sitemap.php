@@ -36,7 +36,7 @@ class SitemapPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.5"
+			"version"=>"1.6"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
@@ -48,7 +48,6 @@ class SitemapPlugin{
 	}
 
 	function config_page(){
-
 		SOY2::import("site_include.plugin.sitemap.config.SitemapConfigFormPage");
 		$form = SOY2HTMLFactory::createInstance("SitemapConfigFormPage");
 		$form->setPluginObj($this);
@@ -61,11 +60,11 @@ class SitemapPlugin{
 		$xml = array();
 
 		//サイトマップの時のみ
-		if(strpos($obj->page->getUri(), "sitemap.xml") !== false){
+		if(soy2_strpos($obj->page->getUri(), "sitemap.xml") >= 0){
 			header("Content-Type: text/xml");
 
 			//全ページ取得
-			$pageDao = SOY2DAOFactory::create("cms.PageDAO");
+			$pageDao = soycms_get_hash_table_dao("page");
 			$sql = "SELECT id, uri, page_type, page_config, udate FROM Page WHERE isPublished != 0 AND openPeriodStart < " . time() . " AND openPeriodEnd > " . time();
 			try{
 				$res = $pageDao->executeQuery($sql, array());
@@ -192,6 +191,7 @@ class SitemapPlugin{
 										foreach($res as $v){
 											if(isset($v["alias"])){
 												$alias = rawurlencode($v["alias"]);
+												if(is_numeric(strpos($alias, "%2F"))) $alias = str_replace("%2F", "/", $alias);
 												$xml[] =  self::buildColumn($url . $alias, 0.5, $page->getUdate());
 											}
 										}
@@ -237,7 +237,6 @@ class SitemapPlugin{
 							//サイトマップに掲載するページ
 							if(isset($this->config_per_page[$page->getId()]) && $this->config_per_page[$page->getId()]){
 
-
 								//httpsのページであるか？
 								$http = ($this->ssl_per_page[$page->getId()]) ? "https" : "http";
 								$url = $http . "://" . $host . "/" . $page->getUri();
@@ -266,7 +265,7 @@ class SitemapPlugin{
 		));
 	}
 
-	private function getEntrySpan($labelId){
+	private function getEntrySpan(int $labelId){
 		$dao = new SOY2DAO();
 
 		//最初の記事
@@ -335,12 +334,8 @@ class SitemapPlugin{
 	}
 
 	public static function register(){
-
 		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
-		if(!$obj){
-			$obj = new SitemapPlugin();
-		}
-
+		if(!$obj) $obj = new SitemapPlugin();
 		CMSPlugin::addPlugin(self::PLUGIN_ID, array($obj, "init"));
 	}
 }
