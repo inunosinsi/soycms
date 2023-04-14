@@ -119,11 +119,34 @@ class IndexPage extends WebPage{
 	function buildForm(){
 		$form = $this->getParameter("SearchForm");
 		$form = (is_array($form)) ? $form : array("is_open" => 1, "is_sale" => 0);
+		
+		
+		foreach(array("name", "code") as $alias){
+			$this->addInput("item_".$alias, array(
+				"name" => "SearchForm[".$alias."]",
+				"value" => (isset($form[$alias])) ? $form[$alias] : "",
+				"placeholder" => "スペース区切りでAND or OR検索ができます"
+			));
 
-		$this->addInput("item_name", array(
-			"name" => "SearchForm[name]",
-			"value" => (isset($form["name"])) ? $form["name"] : ""
-		));
+			// AND or OR
+			foreach(array("and", "or") as $typ){
+				$lab = ($typ == "and") ? "AND" : "OR";
+				$selected = false;
+				if($typ == "and"){
+					$selected = (!isset($form["search_type"][$alias]) || (isset($form["search_type"][$alias]) && $form["search_type"][$alias] == $lab));
+				}else{
+					$selected = ((isset($form["search_type"][$alias]) && $form["search_type"][$alias] == $lab));
+				}
+				$this->addCheckBox("item_".$alias."_search_type_".$typ, array(
+					"name" => "SearchForm[search_type][".$alias."]",
+					"value" => $lab,
+					"selected" => $selected,
+					"label" => $lab
+				));
+			}
+			
+		}
+		
 
 		$this->addCheckBox("is_open", array(
 			"elementId" => "is_open_check",
@@ -144,11 +167,6 @@ class IndexPage extends WebPage{
 			"name" => "SearchForm[is_sale]",
 			"value" => 1,
 			"selected" => (isset($form["is_sale"])),
-		));
-
-		$this->addInput("item_code", array(
-			"name" => "SearchForm[code]",
-			"value" => (isset($form["code"])) ? $form["code"] : ""
 		));
 
 		$this->addCheckBox("is_child", array(
