@@ -26,7 +26,7 @@ class CustomAliasPlugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.14"
+			"version"=>"1.15"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID, array(
@@ -131,6 +131,9 @@ class CustomAliasPlugin{
 		}
 
 		if(isset($newAlias) && is_string($newAlias) && strlen($newAlias)){
+			// エイリアス中にスラッシュがある場合はエンコード
+			if(soy2_strpos($newAlias, "/") > 0) $newAlias = str_replace("/", "_", $newAlias);
+
 			if($entry->getAlias() != $newAlias){	// エイリアスが異なっている時のみ記事の更新を行う
 				$entry->setAlias($newAlias);
 				SOY2Logic::createInstance("logic.site.Entry.EntryLogic")->update($entry);
