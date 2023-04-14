@@ -43,7 +43,7 @@ var PageCustomFieldListField = {
 		var classPropVal = $(".custom_field_" + fieldId + "_" + idx).val();
 		classPropVal = classPropVal.trim();
 		if(classPropVal.length > 0){
-			var url = "/site/?page_customfield_insert_all_page="+$("#page_customfield_token").val()+"&change="+classPropVal+"&field_id="+fieldId;
+			var url = "/"+$("#page_customfield_site_directory").val()+"/?page_customfield_insert_all_page="+$("#page_customfield_token").val()+"&change="+classPropVal+"&field_id="+fieldId;
 			// post
 			$.ajax({
 				type: 'GET',
@@ -65,7 +65,7 @@ var PageCustomFieldListField = {
 		var classPropVal = $(".custom_field_" + fieldId + "_" + idx).val();
 		classPropVal = classPropVal.trim();
 		if(classPropVal.length > 0){
-			var url = "/site/?page_customfield_remove_all_page="+$("#page_customfield_token").val()+"&change="+classPropVal+"&field_id="+fieldId;
+			var url = "/"+$("#page_customfield_site_directory").val()+"/?page_customfield_remove_all_page="+$("#page_customfield_token").val()+"&change="+classPropVal+"&field_id="+fieldId;
 			// post
 			$.ajax({
 				type: 'GET',

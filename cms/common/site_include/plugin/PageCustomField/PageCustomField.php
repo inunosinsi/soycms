@@ -512,6 +512,8 @@ class PageCustomFieldPlugin{
 			$tok = md5(time());
 			$_SESSION[self::TOKEN_INDEX] = $tok;
 			$html .= "<input type=\"hidden\" id=\"page_customfield_token\" value=\"".$tok."\">\n";
+			$siteDir = trim(str_replace($_SERVER["DOCUMENT_ROOT"], "", UserInfoUtil::getSiteDirectory()), "/");
+			$html .= "<input type=\"hidden\" id=\"page_customfield_site_directory\" value=\"".$siteDir."\">\n";
 			$html .= "<script>\n" . file_get_contents(SOY2::RootDir() . "site_include/plugin/PageCustomField/js/list.js") . "\n</script>\n";
 		}
 		if($isDlListField) $html .= "<script>\n" . file_get_contents(SOY2::RootDir() . "site_include/plugin/CustomField/js/dllist.js") . "\n</script>\n";
