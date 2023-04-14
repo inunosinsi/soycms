@@ -49,11 +49,11 @@ class BulletinBoardUtil {
 		));
 	}
 
-	public static function shapeHTML($html){
+	public static function shapeHTML(string $html){
 		return SOY2Logic::createInstance("module.plugins.bulletin_board.logic.ShapeHTMLLogic", array("html" => $html))->shape();
 	}
 
-	public static function nl2br($html){
+	public static function nl2br(string $html){
 		$html = trim($html);
 		if(!strlen($html)) return "";
 
@@ -74,13 +74,13 @@ class BulletinBoardUtil {
 					$line = "<pre>"  . rtrim($line);
 					$isEnclosePreTag = true;
 					//次の行で > から始まらなかった場合は閉じる
-					if(!isset($lines[$i + 1]) || is_bool(strpos($lines[$i + 1], ">"))){
+					if(!isset($lines[$i + 1]) || soy2_strpos($lines[$i + 1], ">") < 0){
 						$line .= "</pre>";
 						$isEnclosePreTag = false;
 					}
 				}
 			}else{
-				if(is_bool(strpos($line, ">"))){
+				if(soy2_strpos($line, ">") < 0){
 					$html = rtrim($html) . "</pre>\n";
 					$isEnclosePreTag = false;
 				}else{
@@ -98,8 +98,8 @@ class BulletinBoardUtil {
 
 			//<code>タグの場合は<pre><code>にする。<backquote>も同様の扱い
 			foreach(array("code", "backquote") as $t){
-				if(is_numeric(strpos($line, "<" . $t . ">")) && is_bool(strpos($line, "<pre><" . $t . ">"))) $line = trim(str_replace("<" . $t . ">", "<pre><" . $t . ">", $line));
-				if(is_numeric(strpos($line, "</" . $t . ">")) && is_bool(strpos($line, "</" . $t . "></pre>"))) {
+				if(is_numeric(strpos($line, "<" . $t . ">")) && soy2_strpos($line, "<pre><" . $t . ">") < 0) $line = trim(str_replace("<" . $t . ">", "<pre><" . $t . ">", $line));
+				if(is_numeric(strpos($line, "</" . $t . ">")) && soy2_strpos($line, "</" . $t . "></pre>") < 0) {
 					$line = trim(str_replace("</" . $t . ">", "</" . $t . "></pre>", $line));
 					if(strpos($line, "</" . $t . ">") === 0){	//何かのテキストの後に</code>がある場合はrtrimを行わない
 						$html = rtrim($html);	//末端の改行を外す
@@ -138,15 +138,15 @@ class BulletinBoardUtil {
 		return trim($html);
 	}
 
-	private static function _removeGreaterString($line){
+	private static function _removeGreaterString(string $line){
 		for(;;){
-			if(is_bool(strpos($line, ">"))) break;
+			if(soy2_strpos($line, ">") < 0) break;
 			$line = substr($line, 1);
 		}
 		return $line;
 	}
 
-	public static function autoInsertAnchorTag($html){
+	public static function autoInsertAnchorTag(string $html){
 		//手動でアンカータグを入れている場合は、アンカータグの自動挿入はなし
 		preg_match('/<a .*?>/', $html, $tmp);
 		if(isset($tmp[0]) && strlen($tmp[0])) return $html;
@@ -169,7 +169,7 @@ class BulletinBoardUtil {
 	}
 
 	//URLの表記を省略する
-	public static function abbrUrlText($html){
+	public static function abbrUrlText(string $html){
 		$html = trim($html);
 		if(!strlen($html)) return "";
 
@@ -191,7 +191,7 @@ class BulletinBoardUtil {
 		return trim($html);
 	}
 
-	public static function returnHTML($html){
+	public static function returnHTML(string $html){
 		return SOY2Logic::createInstance("module.plugins.bulletin_board.logic.ShapeHTMLLogic", array("html" => $html))->return();
 	}
 
@@ -205,7 +205,7 @@ class BulletinBoardUtil {
 		return self::UPLOAD_KEY . "edit_" . $postId . "_" . $topicId . "_" . $userId;
 	}
 
-	public static function pushEmptyValues($array){
+	public static function pushEmptyValues(array $array){
 		$cnt = count($array);
 		$diff = 12 - $cnt;
 		for($i = 0; $i < $diff; $i++){
@@ -215,7 +215,7 @@ class BulletinBoardUtil {
 	}
 
 	//画像のパスからファイル名を取得
-	public static function path2filename($path){
+	public static function path2filename(string $path){
 		return trim(trim(substr($path, strrpos($path, "/")), "/"));
 	}
 
@@ -226,7 +226,7 @@ class BulletinBoardUtil {
 		));
 	}
 
-	public static function saveMailConfig($values){
+	public static function saveMailConfig(array $values){
 		SOYShop_DataSets::put("bulletin_board_mail.config", $values);
 	}
 }

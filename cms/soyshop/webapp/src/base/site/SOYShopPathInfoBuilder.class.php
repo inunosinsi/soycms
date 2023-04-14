@@ -102,7 +102,7 @@ class SOYShopPathInfoBuilder extends SOY2_PathInfoPathBuilder{
 
 	//アプリケーションページのURLのチェック
 	private function _checkAppPage($path, $uri){
-		if(is_bool(strpos($path, $uri))) return false;
+		if(soy2_strpos($path, $uri) < 0) return false;
 
 		//アプリケーションページのパスと設定されているURLが一致する場合はtrue
 		if($path == $uri) return true;

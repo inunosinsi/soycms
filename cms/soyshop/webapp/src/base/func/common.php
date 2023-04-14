@@ -46,7 +46,7 @@ function soyshop_get_site_url(bool $isAbsolute=false){
 //httpsからはじまるURLに変更
 function soyshop_get_ssl_site_url(){
 	$url = soyshop_get_site_url(true);
-	if(is_bool(strpos($url, "https:"))) $url = str_replace("http:", "https:", $url);
+	if(soy2_strpos($url, "https:") < 0) $url = str_replace("http:", "https:", $url);
 	return $url;
 }
 
@@ -614,7 +614,7 @@ function soyshop_convert_file_path(string $path, SOYShop_Item $item, bool $isAbs
 		if(defined("SOYSHOP_SITE_URL")){
 			$siteUrl = trim(SOYSHOP_SITE_URL, "/") . "/";
 			//siteUrl内に/siteId/がなければ独自URLとみなす(ルート設定していないことも調べておく)
-			$isOwnDomain = (!SOYSHOP_IS_ROOT && is_bool(strpos($siteUrl, "/" . SOYSHOP_ID . "/")));
+			$isOwnDomain = (!SOYSHOP_IS_ROOT && soy2_strpos($siteUrl, "/" . SOYSHOP_ID . "/") < 0);
 		}else{
 			$isOwnDomain = false;
 		}
@@ -672,7 +672,7 @@ function soyshop_convert_file_path(string $path, SOYShop_Item $item, bool $isAbs
 function soyshop_convert_file_path_on_admin(string $path){
 	if(!strlen($path)) return $path;
 
-	if(is_bool(strpos(SOYSHOP_SITE_URL, $_SERVER["HTTP_HOST"])) && is_bool(strpos(SOYSHOP_SITE_URL, "/" . SOYSHOP_ID))){
+	if(soy2_strpos(SOYSHOP_SITE_URL, $_SERVER["HTTP_HOST"]) < 0 && soy2_strpos(SOYSHOP_SITE_URL, "/" . SOYSHOP_ID) < 0){
 		$path = "/" . SOYSHOP_ID . "/" . $path;
 	}
 

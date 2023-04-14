@@ -131,7 +131,7 @@ function z_rebuild_image_tag(string $oldTag, array $props){
  * @return string
  */
 function z_get_extension_by_filepath(string $src){
-	if(is_bool(strpos($src, "."))) return "";
+	if(soy2_strpos($src, ".") < 0) return "";
 	$ext = mb_strtolower(substr($src, strrpos($src, ".") + 1));
 	switch($ext){
 		case "jpg":

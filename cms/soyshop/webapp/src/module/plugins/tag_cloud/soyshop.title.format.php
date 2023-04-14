@@ -20,7 +20,7 @@ class TagCloudTitleFormat extends SOYShopTitleFormatBase{
 	}
 
 	function convertOnListPage(string $title){
-		if(is_bool(strpos($title, self::FORMAT))) return $title;
+		if(soy2_strpos($title, self::FORMAT) < 0) return $title;
 
 		SOY2::import("module.plugins.tag_cloud.util.TagCloudUtil");
 		return str_replace(self::FORMAT, TagCloudUtil::getTagCloudAlias(), $title);

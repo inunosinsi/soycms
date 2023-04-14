@@ -20,7 +20,7 @@ class SOYShopCommonSearchTitleFormat extends SOYShopTitleFormatBase{
 	}
 
 	function convertOnSearchPage(string $title){
-		if(is_bool(strpos($title, self::FORMAT))) return $title;
+		if(soy2_strpos($title, self::FORMAT) < 0) return $title;
 
 		$q = (isset($_GET["q"]) && is_string($_GET["q"])) ? htmlspecialchars(trim($_GET["q"]), ENT_QUOTES, "UTF-8") : "";
 		return str_replace(self::FORMAT, $q, $title);

@@ -64,7 +64,7 @@ class UtilMultiLanguagePrepareAction extends SOYShopSitePrepareAction{
 			// 応急処置
 			if(!defined("SOYCMS_PHP_CGI_MODE")) define("SOYCMS_PHP_CGI_MODE", function_exists("php_sapi_name") && stripos(php_sapi_name(), "cgi") !== false );
 			if(SOYCMS_PHP_CGI_MODE){	// ?pathinfo=***が自動で付与された時にリダイレクトがおかしくなる
-				if(is_bool(strpos($_SERVER["REQUEST_URI"], "?pathinfo="))){
+				if(soy2_strpos($_SERVER["REQUEST_URI"], "?pathinfo=") < 0){
 					SOY2PageController::redirect($redirectPath);
 					exit;
 				}

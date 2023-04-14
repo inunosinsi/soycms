@@ -7,14 +7,14 @@
 class GooleSignInUserOnOutput extends SOYShopSiteUserOnOutputAction{
 
 	function onOutput(string $html){
-		if(is_bool(strpos($_SERVER["REQUEST_URI"], "/" . soyshop_get_mypage_uri() . "/login"))) return $html;
+		if(soy2_strpos($_SERVER["REQUEST_URI"], "/" . soyshop_get_mypage_uri() . "/login") < 0) return $html;
 
 		/** ログインページのみ **/
 
 		//</head>の上にclientIDを挿入する
 		SOY2::import("module.plugins.google_sign_in.util.GoogleSignInUtil");
 		$cnf = GoogleSignInUtil::getConfig();
-		if(!isset($cnf["client_id"]) || is_bool(strpos($cnf["client_id"], "apps.googleusercontent.com"))) return $html;
+		if(!isset($cnf["client_id"]) || soy2_strpos($cnf["client_id"], "apps.googleusercontent.com") < 0) return $html;
 
 		/**
 		 * Google Sign-In for Websites → Sign In With Googleへ移行
@@ -30,9 +30,9 @@ class GooleSignInUserOnOutput extends SOYShopSiteUserOnOutputAction{
 
 		$insertTag = "<script src=\"https://accounts.google.com/gsi/client\" async defer></script>";
 
-		if(strpos($html, "</head>")){
+		if(soy2_strpos($html, "</head>") >= 0){
 			return str_replace("</head>", $insertTag . "\n</head>", $html);
-		}else if(strpos($html, "</HEAD>")){
+		}else if(soy2_strpos($html, "</HEAD>") >= 0){
 			return str_replace("</HEAD>", $insertTag . "\n</HEAD>", $html);
 		}else{
 			return $html;

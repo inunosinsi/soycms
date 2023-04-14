@@ -37,7 +37,7 @@ function soyshop_get_hash_table_types(){
 }
 
 function soyshop_get_hash_table_mode(string $fnName){
-	if(is_bool(strpos($fnName, "soyshop_"))) return $fnName;
+	if(soy2_strpos($fnName, "soyshop_") < 0) return $fnName;
 	$fnName = str_replace(array("soyshop_get_", "soyshop_save_", "_objects", "_object"), "", $fnName);
 	if(is_numeric(strpos($fnName, "_by_"))) $fnName = substr($fnName, 0, strpos($fnName, "_by_"));
 	return $fnName;
@@ -668,7 +668,7 @@ function soyshop_get_page_object_by_uri(string $uri){
 		$page = $dao->getByUri($uri);
 	}catch(Exception $e){
 		$page = new SOYShop_Page();
-		if(is_bool(strpos($e->getMessage(), "Failed to return Object"))) $page->setId(-1);	// 任意のuriでページが取得できなかった場合はID:-1を指定
+		if(soy2_strpos($e->getMessage(), "Failed to return Object") < 0) $page->setId(-1);	// 任意のuriでページが取得できなかった場合はID:-1を指定
 		return $page;
 	}
 

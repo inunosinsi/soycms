@@ -3,7 +3,7 @@
 class FacebookLoginUserOnOutput extends SOYShopSiteUserOnOutputAction{
 
 	function onOutput(string $html){
-		if(is_bool(strpos($_SERVER["REQUEST_URI"], "/" . soyshop_get_mypage_uri() . "/login"))) return $html;
+		if(soy2_strpos($_SERVER["REQUEST_URI"], "/" . soyshop_get_mypage_uri() . "/login") < 0) return $html;
 
 		//ログインページのみ
 		SOY2::import("module.plugins.facebook_login.util.FacebookLoginUtil");
@@ -13,7 +13,7 @@ class FacebookLoginUserOnOutput extends SOYShopSiteUserOnOutputAction{
 		$appId = htmlspecialchars(trim($cnf["app_id"]), ENT_QUOTES, "UTF-8");
 		$version = htmlspecialchars(trim($cnf["api_version"]), ENT_QUOTES, "UTF-8");
 
-		if(stripos($html, '<body>') !== false){
+		if(soy2_stripos($html, '<body>') >= 0){
 			return str_ireplace('<body>', '<body>' . "\n" . self::buildFbRoot($appId, $version), $html);
 		}elseif(preg_match('/<body\\s[^>]+>/', $html)){
 			return preg_replace('/(<body\\s[^>]+>)/', "\$0\n" . self::buildFbRoot($appId, $version), $html);

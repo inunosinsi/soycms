@@ -278,32 +278,32 @@ class ShapeHTMLLogic extends SOY2LogicBase {
 			$path = $tmps[1][$i];
 
 			//拡張子がないものはダメ
-			if(is_bool(strpos($path, "."))){
+			if(soy2_strpos($path, ".") < 0){
 				$this->html = str_replace($tmps[0][$i], "", $this->html);
 				continue;
 			}
 
 			//拡張子がjpgでないものはダメ
 			$ext = substr($path, strrpos($path, ".") + 1);
-			if(is_bool(stripos($ext, "jpg")) && is_bool(stripos($ext, "jpeg"))){
+			if(soy2_stripos($ext, "jpg") < 0 && soy2_stripos($ext, "jpeg") < 0){
 				$this->html = str_replace($tmps[0][$i], "", $this->html);
 				continue;
 			}
 
 			//パスが当サイトのものか？
-			if(is_bool(strpos($path, "/" . SOYSHOP_ID . "/.tmp/")) && is_bool(strpos($path, "/" . SOYSHOP_ID . "/files/board/"))){
+			if(soy2_strpos($path, "/" . SOYSHOP_ID . "/.tmp/") < 0 && soy2_strpos($path, "/" . SOYSHOP_ID . "/files/board/") < 0){
 				$this->html = str_replace($tmps[0][$i], "", $this->html);
 				continue;
 			}
 
 			//httpから始まるURLの場合
-			if(strpos($path, "http") === 0){
-				if(is_bool(strpos($path, $_SERVER["HTTP_HOST"]))){
+			if(soy2_strpos($path, "http") === 0){
+				if(soy2_strpos($path, $_SERVER["HTTP_HOST"]) < 0){
 					$this->html = str_replace($tmps[0][$i], "", $this->html);
 					continue;
 				}
 			}else{	// スラッシュから始まる絶対パスの場合
-				if(is_bool(strpos($path, "/" . SOYSHOP_ID . "/"))){
+				if(soy2_strpos($path, "/" . SOYSHOP_ID . "/") < 0){
 					$this->html = str_replace($tmps[0][$i], "", $this->html);
 					continue;
 				}
@@ -406,19 +406,19 @@ class ShapeHTMLLogic extends SOY2LogicBase {
 	private function _removeSpace($try=5){
 		$i = 0;
 		for(;;){
-			if($i++ > $try || is_bool(strpos($this->html, " >"))) break;
+			if($i++ > $try || soy2_strpos($this->html, " >") < 0) break;
 			$this->html = str_replace(" >", ">", $this->html);
 		}
 
 		$i = 0;
 		for(;;){
-			if($i++ > $try || is_bool(strpos($this->html, "> "))) break;
+			if($i++ > $try || soy2_strpos($this->html, "> ") < 0) break;
 			$this->html = str_replace("> ", ">", $this->html);
 		}
 
 		$i = 0;
 		for(;;){
-			if($i++ > $try || is_bool(strpos($this->html, "< "))) break;
+			if($i++ > $try || soy2_strpos($this->html, "< ") < 0) break;
 			$this->html = str_replace("< ", "<", $this->html);
 		}
 	}

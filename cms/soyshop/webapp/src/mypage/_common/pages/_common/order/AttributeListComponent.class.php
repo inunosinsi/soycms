@@ -28,7 +28,7 @@ class AttributeListComponent extends HTMLList{
 	}
 
 	private function isPaymentEditable(string $moduleId){
-		if(is_bool(strpos($moduleId, "payment_"))) return false;
+		if(soy2_strpos($moduleId, "payment_") < 0) return false;
 		if(!SOYShopPluginUtil::checkIsActive("order_edit_on_mypage")) return false;
 
 		//支払い変更のページのテンプレートがあるか？

@@ -20,7 +20,7 @@ class CustomSearchFieldTitleFormat extends SOYShopTitleFormatBase{
 	}
 
 	function convertOnSearchPage(string $title){
-		if(is_bool(strpos($title, self::FORMAT))) return $title;
+		if(soy2_strpos($title, self::FORMAT) < 0) return $title;
 
 		$q = (isset($_GET["q"]) && is_string($_GET["q"])) ? htmlspecialchars(trim($_GET["q"]), ENT_QUOTES, "UTF-8") : "";
 		if(!strlen($q)) $q = (isset($_GET["c_search"]["item_name"]) && is_string($_GET["c_search"]["item_name"])) ? htmlspecialchars(trim($_GET["c_search"]["item_name"]), ENT_QUOTES, "UTF-8") : "";
