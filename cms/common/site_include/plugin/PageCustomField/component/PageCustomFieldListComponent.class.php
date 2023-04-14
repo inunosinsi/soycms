@@ -25,7 +25,7 @@ class PageCustomFieldListComponent extends HTMLList {
 			"id" => "type_text_" . $i,
 		));
 
-		$soyTag = ($entity->getType() != "id" && $entity->getType() != "class") ? "cms" : "pcf";
+		$soyTag = ($entity->getType() != "id" && $entity->getType() != "class" && $entity->getType() != "classlist") ? "cms" : "pcf";
 		$this->addLabel("display_form", array(
 			"text"=>$soyTag.':id="'.$entity->getId().'"'
 		));
@@ -63,7 +63,7 @@ class PageCustomFieldListComponent extends HTMLList {
 
 		$this->addSelect("type_select", array(
 			"name" => "type",
-			"options" => CustomField::$TYPES,
+			"options" => PageCustomField::$TYPES,
 			"id" => "type_select_" . $i,
 			"selected" => $entity->getType(),
 		));

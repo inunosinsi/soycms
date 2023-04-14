@@ -5,6 +5,9 @@ PageCustomFieldPlugin::register();
 class PageCustomFieldPlugin{
 
 	const PLUGIN_ID = "PageCustomFieldPlugin";
+	const MODE_INSERT = 0;
+	const MODE_REMOVE = 1;
+	const TOKEN_INDEX = "page_customfield_token";
 
 	function getId(){
 		return self::PLUGIN_ID;
@@ -52,11 +55,96 @@ class PageCustomFieldPlugin{
 				// 高速化の為にcms:moduleの方で行う
 				//CMSPlugin::setEvent('onPageOutput', self::PLUGIN_ID, array($this, "onPageOutput"));
 
+				CMSPlugin::setEvent('onSiteAccess', self::PLUGIN_ID, array($this, "onSiteAccess"));
 				CMSPlugin::setEvent('onOutput',self::PLUGIN_ID, array($this,"onOutput"), array("filter"=>"all"));
 			}
 
 		}else{
 			CMSPlugin::setEvent('onActive', self::PLUGIN_ID, array($this, "createTable"));
+		}
+	}
+
+	/**
+	 * 全ページに適用ボタンの処理
+	 */
+	function onSiteAccess($args){
+		// サイト側でデータを保存する
+		if(isset($_GET["page_customfield_insert_all_page"]) || isset($_GET["page_customfield_remove_all_page"])){
+			if(session_status() == PHP_SESSION_NONE) session_start();
+
+			$mode = (isset($_GET["page_customfield_insert_all_page"])) ? self::MODE_INSERT : self::MODE_REMOVE;
+			$token = ($mode == self::MODE_INSERT) ? $_GET["page_customfield_insert_all_page"] : $_GET["page_customfield_remove_all_page"];
+			
+			$checkToken = $_SESSION[self::TOKEN_INDEX];
+			if($token != $checkToken) {
+				echo "0";
+				exit;
+			}
+
+			if(!isset($_GET["change"]) || !isset($_GET["field_id"])) {
+				echo "0";
+				exit;
+			}
+			$changeValue = $_GET["change"];
+			$fieldId = $_GET["field_id"];
+			if(!strlen($changeValue) || !strlen($fieldId)) {
+				echo "1";
+				exit;
+			}
+			
+			$dao = soycms_get_hash_table_dao("page");
+			$pages = $dao->get();
+			if(!count($pages)) {
+				echo "1";
+				exit;
+			}
+
+			$pageIds = array();
+			foreach($pages as $page){
+				if($page->getUri() == "_notfound") continue;
+				$pageIds[] = (int)$page->getId();
+			}
+			if(!count($pageIds)) {
+				echo "1";
+				exit;
+			}
+			
+			foreach($pageIds as $pageId){
+				$attr = soycms_get_page_attribute_object($pageId, $fieldId);
+				$v = $attr->getValue();
+				$arr = (is_string($v) && strlen($v)) ? soy2_unserialize($v) : array();
+				$isChange = false;
+				switch($mode){
+					case self::MODE_INSERT;
+						if(is_numeric(array_search($changeValue, $arr))) break;
+						$arr[] = $changeValue;
+						$attr->setValue(soy2_serialize($arr));
+						$isChange = true;
+						break;
+					case self::MODE_REMOVE:
+						if(!count($arr)) break;
+						$idx = array_search($changeValue, $arr);
+						if(is_bool($idx)) break;
+
+						unset($arr[$idx]);
+						$tmp = array();
+						if(count($arr)){
+							foreach($arr as $propValue){
+								$tmp[] = $propValue;
+							}
+							$attr->setValue(soy2_serialize($tmp));
+						}else{
+							$attr->setValue(null);
+						}
+						$isChange = true;
+						break;
+				}
+
+				if($isChange) soycms_save_page_attribute_object($attr);
+			}
+
+			echo "1";
+			exit;
 		}
 	}
 
@@ -113,8 +201,16 @@ class PageCustomFieldPlugin{
 			if(is_null($field->getValue())) continue;
 			if(!isset($this->customFields[$field->getId()])) continue;
 			$master = $this->customFields[$field->getId()];
-			if($master->getType() != "id" && $master->getType() != "class") continue;
-			$replaceStrings["pcf:id=\"".$field->getId()."\""] = $master->getType()."=\"".$field->getValue()."\"";
+			if($master->getType() != "id" && $master->getType() != "class" && $master->getType() != "classlist") continue;
+			$typ = $master->getType();
+			if($typ == "classlist") {
+				$typ = "class";
+				$classlistValues = soy2_unserialize($field->getValue());
+				$classPropValue = (is_array($classlistValues) && count($classlistValues)) ? implode(" ", $classlistValues) : ""; 
+			}else{
+				$classPropValue = $field->getValue();
+			}
+			$replaceStrings["pcf:id=\"".$field->getId()."\""] = $typ."=\"".$classPropValue."\"";
 		}
 
 		foreach(array("site_id", "site_id_class") as $fieldId){
@@ -135,7 +231,30 @@ class PageCustomFieldPlugin{
 				if(soy2_strpos($lines[$i], $soyId) < 0) continue;
 				preg_match('/<.*pcf:id=\"(.*?)\">/', $lines[$i], $tmp);
 				if(!count($tmp)) continue;
-				$new = str_replace($soyId, $str, $lines[$i]);
+				$new = null;;
+
+				// classの場合は追加 class="hoge"にpcf:id="site_id_class"がある場合はclass="hoge site"にする
+				if(soy2_strpos($str, "class=") === 0) {
+					preg_match('/class="(.*?)"/', $tmp[0], $t);
+					if(isset($t[0])){
+						preg_match('/class=\"(.*?)\"/', $str, $tt);
+						if(isset($tt[1])){
+							$newClass = "class=\"".$t[1]." ".$tt[1]."\"";
+							$new = str_replace($t[0], $newClass, $tmp[0]);
+							$new = str_replace("pcf:id=\"".$tmp[1]."\"", "", $new);
+							// 下記は整形
+							for(;;){
+								if(soy2_strpos($new, " >") < 0) break;
+								$new = str_replace(" >", ">", $new);
+							}
+							for(;;){
+								if(soy2_strpos($new, "  ") < 0) break;
+								$new = str_replace("  ", " ", $new);
+							}
+						}
+					}					
+				}
+				if(is_null($new)) $new = str_replace($soyId, $str, $lines[$i]);
 				$html = str_replace($lines[$i], $new, $html);
 			}
 		}
@@ -200,7 +319,8 @@ class PageCustomFieldPlugin{
 			$extra = (isset($extraFields[$key]))? $extraFields[$key]: array();
 
 			//リストフィールド
-			if($field->getType() == "list" && is_array($value)){
+			$isList = ($field->getType() == "list" || $field->getType() == "classlist");
+			if($isList && is_array($value)){
 				//空の値を除く
 				$values = array();
 				if(count($value)){
@@ -379,6 +499,7 @@ class PageCustomFieldPlugin{
 				if(count($selectedPageIds) && is_bool(array_search($pageId, $selectedPageIds))) continue;
 				
 				if(!$isListField && $fieldObj->getType() == "list") $isListField = true;
+				if(!$isListField && $fieldObj->getType() == "classlist") $isListField = true;
 				if(!$isDlListField && $fieldObj->getType() == "dllist") $isDlListField = true;
 				$v = (isset($db_values[$fieldId])) ? $db_values[$fieldId] : null;
 				$extra = (isset($db_extra_values[$fieldId])) ? $db_extra_values[$fieldId] : null;
@@ -387,7 +508,12 @@ class PageCustomFieldPlugin{
 		}
 		
 		// CustomFieldのjsファイルを流用
-		if($isListField) $html .= "<script>\n" . file_get_contents(SOY2::RootDir() . "site_include/plugin/CustomField/js/list.js") . "\n</script>\n";
+		if($isListField) {
+			$tok = md5(time());
+			$_SESSION[self::TOKEN_INDEX] = $tok;
+			$html .= "<input type=\"hidden\" id=\"page_customfield_token\" value=\"".$tok."\">\n";
+			$html .= "<script>\n" . file_get_contents(SOY2::RootDir() . "site_include/plugin/PageCustomField/js/list.js") . "\n</script>\n";
+		}
 		if($isDlListField) $html .= "<script>\n" . file_get_contents(SOY2::RootDir() . "site_include/plugin/CustomField/js/dllist.js") . "\n</script>\n";
 
 		return $html;
