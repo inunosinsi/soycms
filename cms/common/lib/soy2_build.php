@@ -9315,3 +9315,13 @@ function soy2_strrpos(string $haystack, string $needle, int $offset = 0){
 	$res = strrpos($haystack, $needle, $offset);
 	return (is_numeric($res)) ? $res : -1;
 }
+
+function soy2_stripos(string $haystack, string $needle, int $offset = 0){
+	$res = stripos($haystack, $needle, $offset);
+	return (is_numeric($res)) ? $res : -1;
+}
+
+function soy2_strripos(string $haystack, string $needle, int $offset = 0){
+	$res = strripos($haystack, $needle, $offset);
+	return (is_numeric($res)) ? $res : -1;
+}
