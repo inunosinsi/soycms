@@ -7,7 +7,7 @@ include(dirname(__FILE__) . "/common.conf.php");
 $commonDir = dirname(dirname(dirname(dirname(__FILE__)))) . "/common/";
 if(!strpos($_SERVER["REQUEST_URI"], "index.php") && !defined("SOYSHOP_ADMIN_URI") && file_exists($commonDir . "config/admin.uri.config.php")){
 	include($commonDir . "config/admin.uri.config.php");
-	if(is_numeric(strpos($_SERVER["REQUEST_URI"], "soyshop")) && SOYSHOP_ADMIN_URI != "soyshop"){
+	if(soy2_strpos($_SERVER["REQUEST_URI"], "soyshop") >= 0 && SOYSHOP_ADMIN_URI != "soyshop"){
 		$redirect = str_replace("/soyshop/", "/" . SOYSHOP_ADMIN_URI . "/", $_SERVER["REQUEST_URI"]);
 		header("Location:" . $redirect);
 		exit;
