@@ -90,4 +90,5 @@ function list_field_move_up(formId, idx){
 		$("." + formId + "_" + up).val($("." + formId + "_" + idx).val());
 		$("." + formId + "_" + idx).val(tmp);
 	}
+	$(".all-button").hide();
 }

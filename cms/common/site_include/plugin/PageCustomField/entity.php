@@ -368,11 +368,16 @@ class PageCustomField{
 				$html = array();
 				if(count($values)){
 					foreach($values as $idx => $v){
+						//対応状況を調べる
+						$opacity["insert"] = PageCustomfieldUtil::calcOpacity($this->getFormId(), $v);
+						$opacity["remove"] = round(1.0 - $opacity["insert"] + 0.3, 1);
+						if($opacity["remove"] >= 1.0) $opacity["remove"] = 1.0;
+
 						$html[] = "<div class=\"form-inline\">";
 						$html[] = "	<input type=\"text\" name=\"" . $h_formName . "[]\" class=\"form-control " . $h_formID . "_" . $idx . "\" value=\"" . htmlspecialchars($v, ENT_QUOTES, "UTF-8") . "\">";
 						if($this->getType() == "classlist"){
-							$html[] = "<a href=\"javascript:void(0);\" class=\"btn btn-primary\" onclick=\"PageCustomFieldListField.insertAllPage('" . str_replace("custom_field_", "", $h_formID) . "',".$idx.");\">全ページに適用する</a>";
-							$html[] = "<a href=\"javascript:void(0);\" class=\"btn btn-warning\" onclick=\"PageCustomFieldListField.removeAllPage('" . str_replace("custom_field_", "", $h_formID) . "',".$idx.");\">全ページから外す</a>";
+							$html[] = "<a href=\"javascript:void(0);\" class=\"btn btn-primary all-button\" onclick=\"PageCustomFieldListField.insertAllPage('" . str_replace("custom_field_", "", $h_formID) . "',".$idx.");\" style=\"opacity:".$opacity["insert"].";\">全ページに適用する</a>";
+							$html[] = "<a href=\"javascript:void(0);\" class=\"btn btn-warning all-button\" onclick=\"PageCustomFieldListField.removeAllPage('" . str_replace("custom_field_", "", $h_formID) . "',".$idx.");\" style=\"opacity:".$opacity["remove"].";\">全ページから外す</a>";
 						}
 						if($idx > 0) $html[] = "	<a href=\"javascript:void(0);\" class=\"btn btn-default\" onclick=\"list_field_move_up('" . $h_formID . "', " . $idx . ");\">△</a>";	
 						$html[] = "</div>";
@@ -384,6 +389,9 @@ class PageCustomField{
 				$html[] = "	<a href=\"javascript:void(0);\" class=\"btn btn-info btn-sm\" onclick=\"PageCustomFieldListField.add('" . str_replace("custom_field_", "", $h_formID) . "')\">追加</a>";
 				$html[] = "</div>";
 				$body = implode("\n", $html);
+				// if($this->getType() == "classlist"){
+				// 	$body .= "<div class=\"alert alert-warning\" style=\"max-width:450px;\">注：全ページ適用ボタンと項目の上下ボタンは連動していません</div>";
+				// }
 				break;
 			case "dllist":
 				$values = (is_string($fieldValue)) ? soy2_unserialize($fieldValue) : array();
@@ -427,6 +435,9 @@ class PageCustomField{
  				       .' name="'.$h_formName.'"'
  				       .' value="'.$h_value.'"'
  				       .' />';
+				if($this->getType() == "id"){
+					$body .= "<div class=\"alert alert-warning\" style=\"max-width:650px;\">&lt;body&gt;にid属性の記述がある場合は、重複して出力されるので使わないようにしてください。</div>";
+				}
  				break;
  		}
 
