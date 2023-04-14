@@ -61,24 +61,27 @@ class PageSettings
         if (isset($xmlX->WorksheetOptions->PageSetup)) {
             foreach ($xmlX->WorksheetOptions->PageSetup as $pageSetupData) {
                 foreach ($pageSetupData as $pageSetupKey => $pageSetupValue) {
+                    /** @scrutinizer ignore-call */
                     $pageSetupAttributes = $pageSetupValue->attributes($namespaces['x']);
-                    switch ($pageSetupKey) {
-                        case 'Layout':
-                            $this->setLayout($printDefaults, $pageSetupAttributes);
+                    if ($pageSetupAttributes !== null) {
+                        switch ($pageSetupKey) {
+                            case 'Layout':
+                                $this->setLayout($printDefaults, $pageSetupAttributes);
 
-                            break;
-                        case 'Header':
-                            $printDefaults->headerMargin = (float) $pageSetupAttributes->Margin ?: 1.0;
+                                break;
+                            case 'Header':
+                                $printDefaults->headerMargin = (float) $pageSetupAttributes->Margin ?: 1.0;
 
-                            break;
-                        case 'Footer':
-                            $printDefaults->footerMargin = (float) $pageSetupAttributes->Margin ?: 1.0;
+                                break;
+                            case 'Footer':
+                                $printDefaults->footerMargin = (float) $pageSetupAttributes->Margin ?: 1.0;
 
-                            break;
-                        case 'PageMargins':
-                            $this->setMargins($printDefaults, $pageSetupAttributes);
+                                break;
+                            case 'PageMargins':
+                                $this->setMargins($printDefaults, $pageSetupAttributes);
 
-                            break;
+                                break;
+                        }
                     }
                 }
             }
@@ -115,7 +118,7 @@ class PageSettings
 
     private function setLayout(stdClass $printDefaults, SimpleXMLElement $pageSetupAttributes): void
     {
-        $printDefaults->orientation = (string) strtolower($pageSetupAttributes->Orientation) ?: PageSetup::ORIENTATION_PORTRAIT;
+        $printDefaults->orientation = (string) strtolower($pageSetupAttributes->Orientation ?? '') ?: PageSetup::ORIENTATION_PORTRAIT;
         $printDefaults->horizontalCentered = (bool) $pageSetupAttributes->CenterHorizontal ?: false;
         $printDefaults->verticalCentered = (bool) $pageSetupAttributes->CenterVertical ?: false;
     }
