@@ -32,7 +32,7 @@ class PageCustomFieldPlugin{
 			"author" => "齋藤毅",
 			"url" => "",
 			"mail" => "info@saitodev.co",
-			"version"=>"0.5"
+			"version"=>"0.6"
 		));
 
 		//プラグイン アクティブ

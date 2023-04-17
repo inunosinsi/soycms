@@ -10,7 +10,7 @@ class LabelCustomField{
 		"select" => "セレクトボックス",
 		"image" => "画像",
 		//"file" => "ファイル",
-		//"richtext" => "リッチテキスト",
+		"richtext" => "リッチテキスト",
 		//"link" => "リンク",
 		//"entry" => "記事",
 		"pair" => "ペア",
@@ -335,9 +335,10 @@ class LabelCustomField{
  				break;
 			case "list":
 				$values = (is_string($fieldValue)) ? soy2_unserialize($fieldValue) : array();
+				if(!is_array($values)) $values = array($fieldValue);	//何かのフィールド種別からリストに変更した場合の対策
 
 				$html = array();
-				if(count($values)){
+				if(is_array($values) && count($values)){
 					foreach($values as $idx => $v){
 						$html[] = "<div class=\"form-inline\">";
 						$html[] = "	<input type=\"text\" name=\"" . $h_formName . "[]\" class=\"form-control " . $h_formID . "_" . $idx . "\" value=\"" . htmlspecialchars($v, ENT_QUOTES, "UTF-8") . "\">";
@@ -356,7 +357,7 @@ class LabelCustomField{
 				$values = (is_string($fieldValue)) ? soy2_unserialize($fieldValue) : array();
 				
 				$html = array();
-				if(count($values)){
+				if(is_array($values) && count($values)){
 					foreach($values as $idx => $arr){
 						$html[] = "<div class=\"form-inline\" id=\"form-control " . $h_formID . "\">";
 						foreach(array("label", "value") as $l){

@@ -410,6 +410,8 @@ class CustomField{
 				break;
 			case "list":
 				$values = (is_string($fieldValue)) ? soy2_unserialize($fieldValue) : array();
+				if(!is_array($values)) $values = array($fieldValue);	//何かのフィールド種別からリストに変更した場合の対策
+
 				$isUploadMode = (int)$this->getIsImageUploadForm();
 				$placeholderProp = ($isUploadMode) ? " placeholder=\"直接入力可\"" : "";
 
@@ -417,7 +419,7 @@ class CustomField{
 				$idProp = "customfield_" . $h_formID . "_listfield_";
 
 				$html = array();
-				if(count($values)){
+				if(is_array($values) && count($values)){
 					foreach($values as $idx => $v){
 						$html[] = "<div class=\"form-inline\">";
 						$html[] = "	<input type=\"text\" name=\"" . $h_formName . "[]\" class=\"form-control " . $h_formID . "_" . $idx . "\" value=\"" . htmlspecialchars($v, ENT_QUOTES, "UTF-8") . "\" id=\"" . $idProp . $cnt++ . "\"".$placeholderProp.">";
@@ -446,7 +448,7 @@ class CustomField{
 				$idProp = "customfield_" . $h_formID . "_dllistfield_";
 				
 				$html = array();
-				if(count($values)){
+				if(is_array($values) && count($values)){
 					foreach($values as $idx => $arr){
 						$html[] = "<div class=\"form-inline\" id=\"form-control " . $h_formID . "\">";
 						foreach(array("label", "value") as $l){

@@ -364,9 +364,10 @@ class PageCustomField{
 			case "list":
 			case "classlist":
 				$values = (is_string($fieldValue)) ? soy2_unserialize($fieldValue) : array();
+				if(!is_array($values)) $values = array($fieldValue);	//何かのフィールド種別からリストに変更した場合の対策
 
 				$html = array();
-				if(count($values)){
+				if(is_array($values) && count($values)){
 					foreach($values as $idx => $v){
 						//対応状況を調べる
 						$opacity["insert"] = PageCustomfieldUtil::calcOpacity($this->getFormId(), $v);
@@ -397,7 +398,7 @@ class PageCustomField{
 				$values = (is_string($fieldValue)) ? soy2_unserialize($fieldValue) : array();
 				
 				$html = array();
-				if(count($values)){
+				if(is_array($values) && count($values)){
 					foreach($values as $idx => $arr){
 						$html[] = "<div class=\"form-inline\" id=\"form-control " . $h_formID . "\">";
 						foreach(array("label", "value") as $l){

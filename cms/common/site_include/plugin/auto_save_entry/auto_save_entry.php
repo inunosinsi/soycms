@@ -18,7 +18,7 @@ class AutoSaveEntryPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co/",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.5"
+			"version"=>"0.6"
 		));
 
 		if(CMSPlugin::activeCheck($this->getId())){
@@ -46,11 +46,11 @@ class AutoSaveEntryPlugin{
 	}
 
 	function onCallCustomField(){
-		echo self::build();
+		return self::build();
 	}
 
 	function onCallCustomField_inBlog(){
-		echo self::build();
+		return self::build();
 	}
 
 	private function build(){
