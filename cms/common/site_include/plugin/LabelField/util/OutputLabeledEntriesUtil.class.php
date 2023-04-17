@@ -8,25 +8,13 @@ class OutputLabeledEntriesUtil {
 	const SORT_DESC = 1;
 
 	public static function save(int $entryId, string $fieldId, string $value=""){
-		if(is_null($value) || !strlen($value)){	//削除
-			try{
-				self::_dao()->delete($entryId, $fieldId);
-			}catch(Exception $e){
-				//
-			}
+		$attr = soycms_get_entry_attribute_object($entryId, $fieldId);
+		if(is_null($value) || !strlen($value)){
+			$attr->setValue("");
 		}else{
-			$attr = self::_get($entryId, $fieldId);
 			$attr->setValue($value);
-			try{
-				self::_dao()->insert($attr);
-			}catch(Exception $e){
-				try{
-					self::_dao()->update($attr);
-				}catch(Exception $e){
-					//
-				}
-			}
 		}
+		soycms_save_entry_attribute_object($attr);
 	}
 
 	/**
@@ -82,14 +70,6 @@ class OutputLabeledEntriesUtil {
 			self::SORT_ASC => "昇順",
 			self::SORT_DESC => "降順"
 		);
-	}
-
-	/**
-	 * @param int, string
-	 * @return EntryEttribute
-	 */
-	private static function _get(int $entryId, string $fieldId){
-		return soycms_get_entry_attribute_object($entryId, $fieldId);
 	}
 
 	/**

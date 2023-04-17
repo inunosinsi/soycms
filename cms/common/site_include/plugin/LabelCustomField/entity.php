@@ -100,7 +100,7 @@ class LabelCustomField{
 		$this->labelId = $labelId;
 	}
 	function getOutput() {
-		return $this->output;
+		return (is_string($this->output)) ? $this->output : "";
 	}
 	function setOutput($output) {
 		$this->output = $output;

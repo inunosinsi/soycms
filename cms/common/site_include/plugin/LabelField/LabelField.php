@@ -21,7 +21,7 @@ class LabelFieldPlugin {
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co/article/3886",
 			"mail" => "tsuyoshi@saitodev.co",
-			"version" => "0.5"
+			"version" => "0.6"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -228,7 +228,7 @@ class LabelFieldPlugin {
 			foreach($this->configs as $cnf){
 				if(!isset($cnf["postfix"]) || !strlen($cnf["postfix"])) continue;
 				$fieldId = OutputLabeledEntriesUtil::FIELD_ID . "_" . $cnf["postfix"];
-				OutputLabeledEntriesUtil::save($new, $fieldId, OutputLabeledEntriesUtil::getSelectedLabelId($old, $cnf["postfix"]));
+				OutputLabeledEntriesUtil::save($new, $fieldId, (string)OutputLabeledEntriesUtil::getSelectedLabelId($old, $cnf["postfix"]));
 			}
 		}
 		return true;
