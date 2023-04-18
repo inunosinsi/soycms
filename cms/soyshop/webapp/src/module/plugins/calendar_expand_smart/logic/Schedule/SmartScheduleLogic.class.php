@@ -13,7 +13,7 @@ class SmartScheduleLogic extends SOY2LogicBase{
         }
     }
 
-    function getScheduleList($itemId, $year, $month){
+    function getScheduleList(int $itemId, int $year, int $month){
 		$schedules = array();	//タイムスタンプの配列に作り変える
         $list = soyshop_get_hash_table_dao("schedule_calendar")->getScheduleList($itemId, $year, $month);
 		if(count($list)){
@@ -32,7 +32,7 @@ class SmartScheduleLogic extends SOY2LogicBase{
 		$list = soyshop_get_hash_table_dao("schedule_calendar")->getScheduleList($itemId, $year, $month);
 		if(count($list)){
 			foreach($list as $d => $v){
-				$schedules[mktime(0, 0, 0, $month, $d, $year)] = $v;
+				$schedules[mktime(0, 0, 0, $month+1, $d, $year)] = $v;
 			}
 		}
 
