@@ -1,7 +1,17 @@
 <?php
 class ReserveCalendarCustomField extends SOYShopItemCustomFieldBase{
 
-	function doPost(SOYShop_Item $item){}
+	function doPost(SOYShop_Item $item){
+		SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
+		if(isset($_POST[ReserveCalendarUtil::DISPLAY_PERIOD_CONFIG_FIELD_ID]) && is_array($_POST[ReserveCalendarUtil::DISPLAY_PERIOD_CONFIG_FIELD_ID])){
+			foreach($_POST[ReserveCalendarUtil::DISPLAY_PERIOD_CONFIG_FIELD_ID] as $key => $v){
+				$attr = soyshop_get_item_attribute_object($item->getId(), ReserveCalendarUtil::DISPLAY_PERIOD_CONFIG_FIELD_ID."_".$key);
+				$v = (is_numeric($v)) ? (int)$v : null;
+				$attr->setValue($v);
+				soyshop_save_item_attribute_object($attr);
+			}
+		}
+	}
 
 	/**
 	 * 管理画面側の商品詳細画面でフォームを表示します。
@@ -9,6 +19,8 @@ class ReserveCalendarCustomField extends SOYShopItemCustomFieldBase{
 	 * @return string html
 	 */
 	function getForm(SOYShop_Item $item){
+		SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
+
 		//リンクを表示
 		$html = array();
 		$html[] = "<div class=\"alert alert-info\">予約カレンダースケジュール</div>";
@@ -19,6 +31,17 @@ class ReserveCalendarCustomField extends SOYShopItemCustomFieldBase{
 		$html[] = "	<li style=\"margin:12px 0;\"><a href=\"" . SOY2PageController::createLink("Config.Detail?plugin=reserve_calendar&tag&item_id=" . $item->getId()) . "\" class=\"btn btn-default\">テンプレートへの記述例</a></li>";
 		$html[] = "</ul>";
 		$html[] = "<div class=\"alert alert-info\">予約カレンダースケジュールここまで</div>";
+		$html[] = "<br>";
+		$html[] = "<div class=\"alert alert-info\">予約カレンダーの設定</div>";
+		$html[] = "<div class=\"form-group\">";
+		$html[] = "<label>カレンダーの公開月設定</label>";
+		$html[] = "<div class=\"form-inline\">";
+		//$html[] = "<input type=\"number\" class=\"form-control\" name=\"".ReserveCalendarUtil::DISPLAY_PERIOD_CONFIG_FIELD_ID."[start]\" value=\"".soyshop_get_item_attribute_object($item->getId(), ReserveCalendarUtil::DISPLAY_PERIOD_CONFIG_FIELD_ID."_start")->getValue()."\" style=\"width:120px;\">月前";
+		//$html[] = "&nbsp;";
+		$html[] = "<input type=\"number\" class=\"form-control\" name=\"".ReserveCalendarUtil::DISPLAY_PERIOD_CONFIG_FIELD_ID."[end]\" value=\"".soyshop_get_item_attribute_object($item->getId(), ReserveCalendarUtil::DISPLAY_PERIOD_CONFIG_FIELD_ID."_end")->getValue()."\" style=\"width:120px;\">月後まで";
+		$html[] = "</div>";
+		$html[] = "</div>";
+		$html[] = "<div class=\"alert alert-info\">予約カレンダーの設定ここまで</div>";
 		return implode("\n", $html);
 	}
 

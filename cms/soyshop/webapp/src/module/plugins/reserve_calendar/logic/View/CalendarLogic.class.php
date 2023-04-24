@@ -7,6 +7,7 @@ class CalendarLogic extends CalendarBaseComponent{
 	private $month;
 	private $itemId;
 	private $sync;
+	private $isPublished = true;
 
 	private $schList;
 	private $labelList;
@@ -14,7 +15,8 @@ class CalendarLogic extends CalendarBaseComponent{
 	private $addedList = array();
 	private $config;
 
-	function build(int $y, int $m, bool $dspOtherMD=false, bool $dspCaption=true, bool $dspRegHol=true, bool $dspMonthLink=false, bool $isBefore=false, bool $isNextMonth=false){
+	function build(int $y, int $m, bool $dspOtherMD=false, bool $dspCaption=true, bool $dspRegHol=true, bool $dspMonthLink=false, bool $isBefore=false, bool $isNextMonth=false, int $addMonth=1){
+		if(!$this->isPublished) return "";
 		$this->year = $y;
 		$this->month = $m;
 
@@ -129,5 +131,8 @@ class CalendarLogic extends CalendarBaseComponent{
 	}
 	function setSync($sync){
 		$this->sync = $sync;
+	}
+	function setIsPublished(bool $isPublished){
+		$this->isPublished = $isPublished;
 	}
 }

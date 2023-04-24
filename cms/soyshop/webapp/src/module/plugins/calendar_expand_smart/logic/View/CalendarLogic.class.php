@@ -7,6 +7,7 @@ class CalendarLogic extends CalendarBaseComponent{
 	private $month;
 	private $itemId;
 	private $sync;
+	private $isPublished = true;
 
 	private $schList;
 	private $labelList;
@@ -15,11 +16,18 @@ class CalendarLogic extends CalendarBaseComponent{
 
 	private $config;
 
-	function build(int $y, int $m, bool $dspOtherMD=true, bool $dspCaption=false, bool $dspRegHol=true, bool $dspMonthLink=false, bool $isBefore=true, bool $isNextMonth=true){
+	function build(int $y, int $m, bool $dspOtherMD=true, bool $dspCaption=false, bool $dspRegHol=true, bool $dspMonthLink=false, bool $isBefore=true, bool $isNextMonth=true, int $addMonth=1){
+		$commentTag = "<!-- output calendar plugin -->";
+		if(!$this->isPublished) return $commentTag;
+		
 		$this->year = $y;
 		$this->month = $m;
 
-		$this->schList = SOY2Logic::createInstance("module.plugins.calendar_expand_smart.logic.Schedule.SmartScheduleLogic")->getScheduleList($this->itemId, $y, $m);
+		SOY2::import("module.plugins.calendar_expand_smart.util.SmartCalendarUtil");
+		$d = SmartCalendarUtil::getDisplayDayCount($this->itemId) - date("j");
+		$addMonth = ($d > 0) ? (int)($d / 30) + 1 : 1;
+		
+		$this->schList = SOY2Logic::createInstance("module.plugins.calendar_expand_smart.logic.Schedule.SmartScheduleLogic")->getScheduleList($this->itemId, $y, $m, $addMonth);
 		$this->labelList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getLabelList($this->itemId);
 
 		SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
@@ -35,7 +43,20 @@ class CalendarLogic extends CalendarBaseComponent{
 			}
 		}
 
-		return "<!-- output calendar plugin -->\n" . parent::build($y, $m, $dspOtherMD, $dspCaption, $dspRegHol, $dspMonthLink, $isBefore, $isNextMonth);
+		SOY2::import("module.plugins.calendar_expand_smart.util.SmartCalendarUtil");
+		$pagerCount = SmartCalendarUtil::getPagerDayCount($this->itemId);
+		$displayCount = SmartCalendarUtil::getDisplayDayCount($this->itemId);
+		
+		$n = (is_numeric($pagerCount)) ? $pagerCount : $displayCount;
+		$pagerCount = (is_numeric($pagerCount)) ? (int)ceil($displayCount/$pagerCount) : 1;
+
+		$displayCountTag = "<input type=\"hidden\" id=\"reserve_calendar_expand_smart_display_count\" value=\"".$n."\">";
+		$pagerCountTag = "<input type=\"hidden\" id=\"reserve_calendar_expand_smart_pager_count\" value=\"".$pagerCount."\">";
+		if($pagerCount > 1){	// スマホの時のみ表示するボタン
+			$pagerBtn = "<div class=\"text-center mt-3 mb-3 pager_button_area\"><button class=\"btn btn-outline-primary btn-lg\" onclick=\"show_next_page_on_smart_calendar();\">次の日程</button></div>";
+			$pagerCountTag .= $pagerBtn;
+		}
+		return  $commentTag."\n".parent::build($y, $m, $dspOtherMD, $dspCaption, $dspRegHol, $dspMonthLink, $isBefore, $isNextMonth, $addMonth)."\n".$displayCountTag."\n".$pagerCountTag;
 	}
 
 	/**
@@ -74,12 +95,10 @@ class CalendarLogic extends CalendarBaseComponent{
 			$isForceHidden = true;
 		}
 
-		$t = mktime(0, 0, 0, $m, $i, $y);	//タイムスタンプを作成
-
-		$sch = self::getScheduleArray($t);
+		$sch = self::getScheduleArray($cd);
 
 		$html = array();
-		$html[] = "<i>" . $i . "</i>";
+		$html[] = "<i><object class=\"show-month\">".date("n", $cd)."/</object>" . $i . "</i>";
 
 		//予定がある場合
 		if(count($sch)){
@@ -87,9 +106,9 @@ class CalendarLogic extends CalendarBaseComponent{
 
 				//残席があるか調べる
 
-				if(!$isForceHidden && self::checkIsUnsoldSeat($t, $schId, $v["seat"])){
+				if(!$isForceHidden && self::checkIsUnsoldSeat($cd, $schId, $v["seat"])){
 					$label = self::getLabel($v["label_id"]);
-
+					
 					//ラベル名から表示するか決める
 					if(ReserveCalendarUtil::checkLabelString($label, $y, $m, $i)){
 						if($this->sync){
@@ -116,7 +135,11 @@ class CalendarLogic extends CalendarBaseComponent{
 		return implode("<br>", $html);
 	}
 
-	private function checkIsUnsoldSeat($schDate, $schId, $seat){
+	/**
+	 * @param int, int, int
+	 * @return bool
+	 */
+	private function checkIsUnsoldSeat(int $schDate, int $schId, int $seat){
 		//今日よりも前の日の場合は残席数は0になる
 		if($schDate < strtotime("-1 day")) return false;
 
@@ -130,15 +153,26 @@ class CalendarLogic extends CalendarBaseComponent{
 		return ($GLOBALS["reserved_schedules"][$schId] < $seat);
 	}
 
-	private function getScheduleArray($t){
+	/**
+	 * @param int<timestamp>
+	 * @return array
+	 */
+	private function getScheduleArray(int $t){
 		return (isset($this->schList[$t])) ? $this->schList[$t] : array();
 	}
 
-	private function getLabel($labelId){
+	/**
+	 * @param int
+	 * @return string
+	 */
+	private function getLabel(int $labelId){
 		return (isset($this->labelList[$labelId])) ? $this->labelList[$labelId] : "";
 	}
 
-	//カートに入れるプランは一件のみモードであるか？
+	/**
+	 * カートに入れるプランは一件のみモードであるか？
+	 * @return bool
+	 */
 	private function isOnly(){
 		static $isOnly;
 		if(is_null($isOnly)){
@@ -154,5 +188,8 @@ class CalendarLogic extends CalendarBaseComponent{
 	}
 	function setSync($sync){
 		$this->sync = $sync;
+	}
+	function setIsPublished(bool $isPublished){
+		$this->isPublished = $isPublished;
 	}
 }

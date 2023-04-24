@@ -5,7 +5,7 @@ class SmartScheduleLogic extends SOY2LogicBase{
         SOY2::imports("module.plugins.reserve_calendar.domain.*");
     }
 
-    function getScheduleById($scheduleId){
+    function getScheduleById(int $scheduleId){
         try{
             return soyshop_get_hash_table_dao("schedule_calendar")->getById($scheduleId);
         }catch(Exception $e){
@@ -13,33 +13,27 @@ class SmartScheduleLogic extends SOY2LogicBase{
         }
     }
 
-    function getScheduleList(int $itemId, int $year, int $month){
+    function getScheduleList(int $itemId, int $year, int $month, int $addMonth=1){
 		$schedules = array();	//タイムスタンプの配列に作り変える
-        $list = soyshop_get_hash_table_dao("schedule_calendar")->getScheduleList($itemId, $year, $month);
-		if(count($list)){
-			foreach($list as $d => $v){
-				$schedules[mktime(0, 0, 0, $month, $d, $year)] = $v;
+		for($i = 0; $i <= $addMonth; $i++){
+			$y = $year;
+			$m = $month + $i;
+			if($m > 12){
+				$y += 1;
+				$m -= 12;
 			}
-		}
+			$list = soyshop_get_hash_table_dao("schedule_calendar")->getScheduleList($itemId, $y, $m);
+			if(!count($list)) continue;
 
-		//次の月の分
-		$month += 1;
-		if($month > 12){
-			$month -= 12;
-			$year += 1;
-		}
-
-		$list = soyshop_get_hash_table_dao("schedule_calendar")->getScheduleList($itemId, $year, $month);
-		if(count($list)){
 			foreach($list as $d => $v){
-				$schedules[mktime(0, 0, 0, $month+1, $d, $year)] = $v;
+				$schedules[mktime(0, 0, 0, $m, $d, $y)] = $v;
 			}
 		}
 
         return $schedules;
     }
 
-	function findLatestScheduleDate($year, $month){
+	function findLatestScheduleDate(int $year, int $month){
 		return soyshop_get_hash_table_dao("schedule_calendar")->findLatestScheduleDate($year, $month);
 	}
 }

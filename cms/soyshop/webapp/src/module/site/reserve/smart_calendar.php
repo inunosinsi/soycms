@@ -1,16 +1,18 @@
 <?php
-function soyshop_smart_calendar($html, $page){
+function soyshop_smart_calendar(string $html, HTMLPage $page){
 
 	$obj = $page->create("soyshop_smart_calendar", "HTMLTemplatePage", array(
 		"arguments" => array("soyshop_smart_calendar", $html)
 	));
 
+	SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
+
 	$year = (isset($_GET["y"]) && is_numeric($_GET["y"])) ? (int)$_GET["y"] : (int)date("Y");
 	$month = (isset($_GET["m"]) && is_numeric($_GET["m"])) ? (int)$_GET["m"] : (int)date("n");
-
-	//直近の空き予約を調べる
+	
+	//直近の空き予約を調べる → スマホ版の表示に影響を与えてしまうため廃止
 	if(!isset($_GET["y"]) || !isset($_GET["m"])){
-		list($year, $month) = SOY2Logic::createInstance("module.plugins.calendar_expand_smart.logic.Schedule.SmartScheduleLogic")->findLatestScheduleDate($year, $month);
+		//list($year, $month) = SOY2Logic::createInstance("module.plugins.calendar_expand_smart.logic.Schedule.SmartScheduleLogic")->findLatestScheduleDate($year, $month);
 	}
 
 /**
@@ -55,34 +57,6 @@ function soyshop_smart_calendar($html, $page){
 	if(count($nextReserved)) $reserved += $nextReserved;
 	$GLOBALS["reserved_schedules"] = $reserved;
 
-	$url = soyshop_get_page_url($page->getPageObject()->getUri());
-
-	//リンク
-	$obj->addModel("prev_month", array(
-		"soy2prefix" => SOYSHOP_SITE_PREFIX,
-		"visible" => (mktime(0, 0, 0, $prevM + 1, 1, $prevY) - 1 > time())
-	));
-
-	$obj->addLink("prev_month_link", array(
-		"soy2prefix" => SOYSHOP_SITE_PREFIX,
-		"link" => $url . "?y=" . $prevY . "&m=" . $prevM
-	));
-
-	$obj->addModel("next_month", array(
-		"soy2prefix" => SOYSHOP_SITE_PREFIX,
-		"visible" => true	//常にtrue
-	));
-
-	$obj->addLink("next_month_link", array(
-		"soy2prefix" => SOYSHOP_SITE_PREFIX,
-		"link" => $url . "?y=" . $nextY . "&m=" . $nextM
-	));
-
-	$obj->addLabel("caption", array(
-		"soy2prefix" => SOYSHOP_SITE_PREFIX,
-		"text" => $year . "年" . $month . "月"
-	));
-
 	if(!defined("RESERVE_CALENDAR_MODE")) define("RESERVE_CALENDAR_MODE", "bootstrap");
 
 	$itemId = 0;
@@ -115,22 +89,70 @@ function soyshop_smart_calendar($html, $page){
 			"html" => (soyshop_get_item_object($itemId)->isPublished()) ? SOY2Logic::createInstance("module.plugins.calendar_expand_smart.logic.View.CalendarLogic", array("itemId" => $itemId, "sync" => $sync))->build($year, $month) : ""
 		));
 	}else{
-		//商品分だけタグを生成する
-		$itemIdList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getRegisteredItemIdsOnLabel();
-		foreach($itemIdList as $itemId){
-
-			//ボタンの非同期設定 syncがtrueで同期 falseで非同期
-			$sync = true;
-			if(preg_match('/block:id=\"calendar_' . $itemId . '\".*cms:async=\"(.*?)\"/', $html, $tmp)){
-				if(isset($tmp[1]) && is_numeric($tmp[1]) && (int)$tmp[1] === 1) $sync = false;
+		//先にblock:id="calendar_{itemId}"の記述を調べる
+		$itemIds = array();
+		$lines = explode("\n", $html);
+		if(count($lines)){
+			foreach($lines as $line){
+				$line = trim($line);
+				if(!strlen($line) || soy2_strpos($line, "block:id") < 0) continue;
+				preg_match('/block:id=\"calendar_(\d*?)\"/', $line, $tmp);
+				if(!isset($tmp[1]) || !is_numeric($tmp[1])) continue;
+				$id = (int)$tmp[1];
+				if(is_bool(array_search($id, $itemIds))) $itemIds[] = $id;
 			}
-
-			$obj->addLabel("calendar_" . $itemId, array(
-				"soy2prefix" => "block",
-				"html" => (soyshop_get_item_object($itemId)->isPublished()) ? SOY2Logic::createInstance("module.plugins.calendar_expand_smart.logic.View.CalendarLogic", array("itemId" => $itemId, "sync" => $sync))->build($year, $month) : ""
-			));
 		}
+		unset($lines);
+		
+		//商品分だけタグを生成する
+		if(!count($itemIds)) $itemIds = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getRegisteredItemIdsOnLabel();
+		
+		if(count($itemIds)){
+			foreach($itemIds as $itemId){
+				//ボタンの非同期設定 syncがtrueで同期 falseで非同期
+				$sync = true;
+				if(preg_match('/block:id=\"calendar_' . $itemId . '\".*cms:async=\"(.*?)\"/', $html, $tmp)){
+					if(isset($tmp[1]) && is_numeric($tmp[1]) && (int)$tmp[1] === 1) $sync = false;
+				}
+
+				$isPublished = ReserveCalendarUtil::checkIsPublicationPeriod($itemId, $year, $month);
+				
+				$obj->addLabel("calendar_" . $itemId, array(
+					"soy2prefix" => "block",
+					"html" => SOY2Logic::createInstance("module.plugins.calendar_expand_smart.logic.View.CalendarLogic", array("itemId" => $itemId, "sync" => $sync, "isPublished" => $isPublished))->build($year, $month)
+				));
+			}
+		}
+		$itemId = (count($itemIds)) ? $itemIds[0] : 0;
 	}
+
+	$url = soyshop_get_page_url($page->getPageObject()->getUri());
+
+	//リンク
+	$obj->addModel("prev_month", array(
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"visible" => (mktime(0, 0, 0, $prevM + 1, 1, $prevY) - 1 > time())
+	));
+
+	$obj->addLink("prev_month_link", array(
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"link" => $url . "?y=" . $prevY . "&m=" . $prevM
+	));
+
+	$obj->addModel("next_month", array(
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"visible" => (ReserveCalendarUtil::checkIsPublicationPeriod($itemId, $year, $month+1))	// 翌月の公開設定を調べる
+	));
+
+	$obj->addLink("next_month_link", array(
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"link" => $url . "?y=" . $nextY . "&m=" . $nextM
+	));
+
+	$obj->addLabel("caption", array(
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"text" => $year . "年" . $month . "月"
+	));
 
 
 
@@ -147,7 +169,7 @@ function soyshop_smart_calendar($html, $page){
 	// 	"attr:id" => "reserve_calendar_cart_url"
 	// ));
 
-	if(count($itemIdList)){
+	if(count($itemIds)){
 		$obj->display();
 	}else{
 		ob_start();

@@ -9,7 +9,7 @@ class CalendarLogic extends CalendarBaseComponent{
 	private $reservedScheduleList = array();
 	private $labelList;
 
-	function build(int $y, int $m, bool $dspOtherMD=false, bool $dspCaption=false, bool $dspRegHol=true, bool $dspMonthLink=false, bool $isBefore=false, bool $isNextMonth=false){
+	function build(int $y, int $m, bool $dspOtherMD=false, bool $dspCaption=false, bool $dspRegHol=true, bool $dspMonthLink=false, bool $isBefore=false, bool $isNextMonth=false, int $addMonth=1){
 		$this->year = $y;
 		$this->month = $m;
 

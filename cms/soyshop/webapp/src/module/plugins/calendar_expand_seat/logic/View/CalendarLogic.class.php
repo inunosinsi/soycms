@@ -7,6 +7,7 @@ class CalendarLogic extends CalendarBaseComponent{
 	private $month;
 	private $itemId;
 	private $sync;
+	private $isPublished = true;
 
 	private $labelList;
 
@@ -14,7 +15,10 @@ class CalendarLogic extends CalendarBaseComponent{
 
 	private $config;
 
-	function build(int $y, int $m, bool $dspOtherMD=true, bool $dspCaption=false, bool $dspRegHol=true, bool $dspMonthLink=false, bool $isBefore=true, bool $isNextMonth=false){
+	function build(int $y, int $m, bool $dspOtherMD=true, bool $dspCaption=false, bool $dspRegHol=true, bool $dspMonthLink=false, bool $isBefore=true, bool $isNextMonth=false, int $addMonth=1){
+		$commentTag = "<!-- output calendar plugin -->";
+		if(!$this->isPublished) return $commentTag;
+
 		$this->year = $y;
 		$this->month = $m;
 
@@ -34,7 +38,7 @@ class CalendarLogic extends CalendarBaseComponent{
 			}
 		}
 
-		return "<!-- output calendar plugin -->\n" . parent::build($y, $m, $dspOtherMD, $dspCaption, $dspRegHol, $dspMonthLink, $isBefore, $isNextMonth);
+		return $commentTag."\n".parent::build($y, $m, $dspOtherMD, $dspCaption, $dspRegHol, $dspMonthLink, $isBefore, $isNextMonth);
 	}
 
 	/**
@@ -133,5 +137,8 @@ class CalendarLogic extends CalendarBaseComponent{
 	}
 	function setSync($sync){
 		$this->sync = $sync;
+	}
+	function setIsPublished(bool $isPublished){
+		$this->isPublished = $isPublished;
 	}
 }

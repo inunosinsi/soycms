@@ -151,6 +151,13 @@ table.reserve_calendar tbody tr td span {
 table.reserve_calendar tbody tr td.today {
 	background: #FEFBDA;
 }
+object.show-month{
+	display:none;
+}
+
+div.pager_button_area {
+	display:none;
+}
 
 /** スマホで回転禁止 **/
 #calendar{
@@ -284,5 +291,13 @@ table.reserve_calendar tbody tr td.today {
 
 	table.reserve_calendar tbody tr td a.btn {
 		margin:8px;
+	}
+
+	object.show-month{
+		display:inline;
+	}
+
+	div.pager_button_area {
+		display:block;
 	}
 }

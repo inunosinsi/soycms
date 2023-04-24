@@ -1,5 +1,5 @@
 <?php
-function soyshop_divide_calendar_date($html, $page){
+function soyshop_divide_calendar_date(string $html, HTMLPage $page){
 
 	$obj = $page->create("soyshop_divide_calendar_date", "HTMLTemplatePage", array(
 		"arguments" => array("soyshop_divide_calendar_date", $html)

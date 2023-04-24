@@ -1,9 +1,11 @@
 <?php
-function soyshop_seat_calendar($html, $page){
+function soyshop_seat_calendar(string $html, HTMLPage $page){
 
 	$obj = $page->create("soyshop_seat_calendar", "HTMLTemplatePage", array(
 		"arguments" => array("soyshop_seat_calendar", $html)
 	));
+
+	SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
 
 	$year = (isset($_GET["y"]) && is_numeric($_GET["y"])) ? (int)$_GET["y"] : (int)date("Y");
 	$month = (isset($_GET["m"]) && is_numeric($_GET["m"])) ? (int)$_GET["m"] : (int)date("n");
@@ -41,9 +43,7 @@ function soyshop_seat_calendar($html, $page){
 		$itemId = (int)$_GET["item_id"];
 	}else{
 		$itemIdList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getRegisteredItemIdsOnLabel();
-		if(count($itemIdList)){
-			$itemId = (int)array_shift($itemIdList);
-		}
+		if(count($itemIdList)) $itemId = (int)array_shift($itemIdList);
 	}
 
 	//@ToDo 座席数等
@@ -117,9 +117,12 @@ function soyshop_seat_calendar($html, $page){
 	$js .= "};</script>";
 
 	if(!defined("RESERVE_CALENDAR_MODE")) define("RESERVE_CALENDAR_MODE", "bootstrap");
+
+	$isPublished = ReserveCalendarUtil::checkIsPublicationPeriod($itemId, $year, $month);
+	
 	$obj->addLabel("calendar", array(
 		"soy2prefix" => "block",
-		"html" => SOY2Logic::createInstance("module.plugins.calendar_expand_seat.logic.View.CalendarLogic", array("itemId" => $itemId))->build($year, $month) . "\n" . $js
+		"html" => SOY2Logic::createInstance("module.plugins.calendar_expand_seat.logic.View.CalendarLogic", array("itemId" => $itemId, "isPublished" => $isPublished))->build($year, $month) . "\n" . $js
 	));
 
 	$obj->addForm("form", array(

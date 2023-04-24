@@ -13,7 +13,7 @@ class CalendarLogic extends CalendarBaseComponent{
 	private $schList;
 	private $labelList;
 
-	function build(int $y, int $m, bool $dspOtherMD=false, bool $dspCaption=true, bool $dspRegHol=true, bool $dspMonthLink=false, bool $isBefore=false, bool $isNextMonth=false){
+	function build(int $y, int $m, bool $dspOtherMD=false, bool $dspCaption=true, bool $dspRegHol=true, bool $dspMonthLink=false, bool $isBefore=false, bool $isNextMonth=false, int $addMonth=1){
 		$this->year = $y;
 		$this->month = $m;
 

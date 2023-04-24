@@ -59,7 +59,7 @@ class ReserveCalendarCart extends SOYShopCartBase{
 					$attrs = $cart->getAttributes();
 					if(is_array($attrs) && count($attrs)){
 						foreach($attrs as $key => $v){
-							if(soy2_trpos($key, "reserve_calendar_schedule_id_") < 0) continue;
+							if(soy2_strpos($key, "reserve_calendar_schedule_id_") < 0) continue;
 							unset($attrs[$key]);
 						}
 					}

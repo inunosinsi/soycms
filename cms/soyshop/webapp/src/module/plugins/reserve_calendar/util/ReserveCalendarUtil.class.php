@@ -28,6 +28,11 @@ class ReserveCalendarUtil{
 	const DELIVERY_TWO_MONTH = "2ヶ月以降";
 	const DELIVERY_BACK_ORDER = "お取り寄せ";
 
+	const DISPLAY_PERIOD_CONFIG_FIELD_ID = "reserve_calendar_period";
+
+	const PERIOD_MODE_START = 0;
+	const PERIOD_MODE_END = 1;
+
 	private $baseDate;
 
 	public static function getCartAttributeId($optionId, $itemIndex, $itemId){
@@ -236,6 +241,25 @@ class ReserveCalendarUtil{
 		if(isset($results[$schedule->getId()])) return $results[$schedule->getId()];
 
 		return $schedule->getUnsoldSeat() - self::_reserveLogic()->getReservedCountByScheduleId($schedule->getId(), false, true);
+	}
+
+	//公開期限設定内であるか？
+	public static function checkIsPublicationPeriod(int $itemId, int $year, int $month, int $mode=self::PERIOD_MODE_END){
+		if(!soyshop_get_item_object($itemId)->isPublished()) return false;
+
+		$mod = ($mode === self::PERIOD_MODE_START) ? "start" : "end";
+		$v = soyshop_get_item_attribute_value($itemId, ReserveCalendarUtil::DISPLAY_PERIOD_CONFIG_FIELD_ID."_".$mod);
+		if(!is_numeric($v)) return true;	// 設定がない場合は必ずtrue
+
+		$y = (int)date("Y");
+		$m = (int)date("n")+(int)$v;
+		if($m > 12){
+			$y++;
+			$m -= 12;
+		}
+		if($y > $year) return false;	// 年の時点で超えている場合は必ずfalse
+		if($m < $month) return false;	// 月の方で比較する
+		return true;
 	}
 
 	private static function _reserveLogic(){

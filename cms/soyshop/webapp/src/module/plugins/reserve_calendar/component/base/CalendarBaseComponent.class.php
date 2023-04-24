@@ -34,10 +34,12 @@ class CalendarBaseComponent extends SOY2LogicBase{
 	//来月のカレンダーを合わせて表示するか？
 	private $isNextMonth;
 
+	//来月以降、何ヶ月分カレンダーを出力するか？
+	private $addMonth = 1;
+
 	function __construct(){}
 
-	function build(int $y, int $m, bool $dspOtherMD=true, bool $dspCaption=true, bool $dspRegHol=false, bool $dspMonthLink=false, bool $isBefore=false, bool $isNextMonth=false){
-
+	function build(int $y, int $m, bool $dspOtherMD=true, bool $dspCaption=true, bool $dspRegHol=false, bool $dspMonthLink=false, bool $isBefore=false, bool $isNextMonth=false, int $addMonth=1){
 		//週のカウントを初期化する
 		$this->wc = 0;
 
@@ -57,6 +59,7 @@ class CalendarBaseComponent extends SOY2LogicBase{
 
 		//次の月のカレンダーを続けて表示するか？
 		$this->isNextMonth = $isNextMonth;
+		$this->addMonth = $addMonth;
 
 		//captionを表示するか
 		$this->dspCaption = $dspCaption;
@@ -110,8 +113,13 @@ class CalendarBaseComponent extends SOY2LogicBase{
 		//その月の日付の数
 		$last = date("t", $t);
 
-		$nextMonthLast = ($this->isNextMonth) ? date("t", strtotime("+1 month", $t)) : 0;
-
+		$nextMonthLast = 0;
+		if($this->isNextMonth){
+			for($i = 1; $i <= $this->addMonth; $i++){
+				$nextMonthLast += date("t", strtotime("+".$i." month", $t));
+			}
+		}		
+		
 		//表示用の年月日を取得
 		$y = date("Y", $t);
 		$m = date("n", $t);
@@ -175,27 +183,26 @@ class CalendarBaseComponent extends SOY2LogicBase{
 		$today = date("j");
 
 		//カレンダの日付を作成する
+		$l = 0;
 		for($i = 1; $i <= $last + $nextMonthLast; ++$i){
-			//次の月のカレンダー用に日付を書き換える
-			if($i > $last){
-				$ii = $i - $last;
-				$mm = $m + 1;
-				$tt = strtotime("+1 month", $t);	//月始めのタイムスタンプを更新
-			}else{
-				$ii = $i;
-				$mm = $m;
-				$tt = $t;
+			$ii = $i - $l;
+			
+			//カレンダーを次の月に切り替える
+			$tt = mktime(0, 0, 0, $m, $ii, $y);
+			if($i > 1 && (int)date("j", $tt) === 1){	//次の月に切り替える
+				$l = $i - 1;
+				$m++;
+				if($m > 12){
+					$y++;
+					$m = 1;
+				}
 			}
 
-			if($mm > 12){
-				$mm -= 12;
-				$yy = $y + 1;
-			}else{
-				$yy = $y;
-			}
+			// 更新
+			$ii = $i - $l;
 
 			//カラムごとの曜日を取得する
-			$this->cd = mktime(0, 0, 0, $mm, $ii, $yy);
+			$this->cd = mktime(0, 0, 0, $m, $ii, $y);
 			$w = date("w", $this->cd);
 
 			//その月の初日
@@ -212,9 +219,9 @@ class CalendarBaseComponent extends SOY2LogicBase{
 				//初日まで（前月）
 				for($j = 1; $j <= $w; $j++){
 					if($this->dspOtherMonthDate){
-						$lastDate = date("j", self::getPrevMonthLastDate($mm, $yy));
+						$lastDate = date("j", self::getPrevMonthLastDate($m, $y));
 						$int = $lastDate - $w + $j;
-						$html[] = self::createDayColumn($int, 0, 0, 0, $last, true, $tt);
+						$html[] = self::createDayColumn($int, 0, 0, 0, $l, true, $tt);
 					}else{
 						$html[] = "			<td class=\"empty\">&nbsp;</td>";
 					}
@@ -222,7 +229,7 @@ class CalendarBaseComponent extends SOY2LogicBase{
 					$counter++;
 				}
 
-				$html[] = self::createDayColumn($ii, $mm, $w, $d, $last);
+				$html[] = self::createDayColumn($ii, $m, $w, $d, $l);
 				$counter++;
 				//土曜日の場合は</tr>で閉じる
 				if($w == 6){
@@ -233,20 +240,23 @@ class CalendarBaseComponent extends SOY2LogicBase{
 				if($w == 0){
 					if($this->isBefore && TODAY_MONTH == $m && $i + (6 - $w) < $today){	//今日を含む週よりも前の週であればclassにbeforeを追加
 						$html[] = "		<tr class=\"before\">";
-					}else if($this->isNextMonth && TODAY_MONTH == $m && $i > $last){		//次の月のカレンダー
+					}else if($this->isNextMonth && $i > $last){
 						$html[] = "		<tr class=\"next\">";
+					//}else if($this->isNextMonth && TODAY_MONTH == $m && $i > $last){		//次の月のカレンダー
+					//}else if($this->isNextMonth && date("n", $this->cd) > $m){		//この条件も次の月のカレンダーを示す
+					//	$html[] = "		<tr class=\"next\">";
 					}else{
 						$html[] = "		<tr>";
 					}
 				}
-				$html[] = self::createDayColumn($ii, $mm, $w, $d, $last);
+				$html[] = self::createDayColumn($ii, $m, $w, $d, $l);
 				$counter++;
 
 				//末日以降（次の月）
 				if($i == $last + $nextMonthLast && $w < 6){
 					for($k = 1; $k <= 7 - $counter; $k++){
 						if($this->dspOtherMonthDate){
-							$html[] = self::createDayColumn($k, $mm, 0, 0, 0, true, $tt);
+							$html[] = self::createDayColumn($k, $m, 0, 0, 0, true, $tt);
 						}else{
 							$html[] = "			<td class=\"empty\">&nbsp;</td>";
 						}
@@ -321,9 +331,9 @@ class CalendarBaseComponent extends SOY2LogicBase{
 			}
 		}
 
-		//次の月 週が4週目以降 4週目、5週目の場合は念の為に日付を確認し、6週目以降であればすべての日にnextを付与
+		//次の月 週が4週目以降 4週目、5、6週目の場合は念の為に日付を確認し、7週目以降であればすべての日にnextを付与
 		if($this->isNextMonth){
-			if(($this->wc == 4 && $i < 7) || ($this->wc == 5 && $i < 15) || $this->wc > 5){
+			if(($this->wc == 4 && $i < 7) || ($this->wc == 5 && $i < 15) || ($this->wc == 6 && $i < 25) || $this->wc > 6){
 				$class[] = "next";
 				$da = "next";
 			}

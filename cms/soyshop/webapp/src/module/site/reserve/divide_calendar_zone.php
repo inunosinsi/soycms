@@ -1,5 +1,5 @@
 <?php
-function soyshop_divide_calendar_zone($html, $page){
+function soyshop_divide_calendar_zone(string $html, HTMLPage $page){
 
 	$obj = $page->create("soyshop_divide_calendar_zone", "HTMLTemplatePage", array(
 		"arguments" => array("soyshop_divide_calendar_zone", $html)
