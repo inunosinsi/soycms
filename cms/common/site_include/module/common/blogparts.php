@@ -1,5 +1,5 @@
 <?php
-function soycms_blogparts($html, $page){
+function soycms_blogparts(string $html, HTMLPage $page){
 
 	$obj = $page->create("blogparts", "HTMLTemplatePage", array(
 		"arguments" => array("blogparts", $html)
@@ -58,14 +58,10 @@ function soycms_blogparts($html, $page){
 	}
 
 	//ブログページ
-	try{
-		$blog = SOY2DAOFactory::create("cms.BlogPageDAO")->getById($blogPageId);
-	}catch(Exception $e){
-		$blog = new BlogPage();
-	}
+	$blog = soycms_get_hash_table_dao("blog_page")->getById($blogPageId);
 
 	//b_block:id="category"
-	$labelDao = SOY2DAOFactory::create("cms.LabelDAO");
+	$labelDao = soycms_get_hash_table_dao("label");
 	$labels = $labelDao->get();//表示順に並んでいる
 
 	$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
@@ -81,11 +77,11 @@ function soycms_blogparts($html, $page){
 			$categoryLabel[] =	$label;
 			try{
 				//記事の数を数える。
-				$counts = $logic->getOpenEntryCountByLabelIds(array_unique(array($blogLabelId,$labelId)));
+				$count = $logic->getOpenEntryCountByLabelIds(array_unique(array($blogLabelId,$labelId)));
 			}catch(Exception $e){
-				$counts= 0;
+				$count= 0;
 			}
-			$entryCount[$labelId] = $counts;
+			$entryCount[$labelId] = $count;
 		}
 	}
 
@@ -104,9 +100,8 @@ function soycms_blogparts($html, $page){
 	$month_list = $logic->getCountMonth($labels);
 
 	foreach($month_list as $key => $month){
-		if($month == 0){
-			unset($month_list[$key]);
-		}
+		if($month > 0) continue;
+		unset($month_list[$key]);
 	}
 
 	if(!class_exists("MonthArciveListComponent")) SOY2::import("site_include.blog.component.MonthArciveListComponent");
@@ -120,9 +115,8 @@ function soycms_blogparts($html, $page){
 	//b_block:id="archive_every_year"
 	$month_every_year_list = array();
 	foreach($month_list as $key => $month){
-		if($month > 0){
-			$month_every_year_list[date("Y", $key)][$key] = $month;
-		}
+		if($month <= 0) continue;
+		$month_every_year_list[date("Y", $key)][$key] = $month;
 	}
 
 	if(!class_exists("MonthArciveEveryYearListComponent")) SOY2::import("site_include.blog.component.MonthArciveEveryYearListComponent");

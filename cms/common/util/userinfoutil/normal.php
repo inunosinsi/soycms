@@ -206,10 +206,10 @@ class UserInfoUtil implements IUserInfoUtil{
      * サイトの公開URLを取得（ルート設定ならルート設定のURLを返す）
      */
 	public static function getSitePublishURL(){
-    	if(self::getSiteIsDomainRoot()){
+		if(self::getSiteIsDomainRoot()){
     		return self::getSiteURLBySiteId("");
     	}else{
-	    	return self::getSite()->getUrl();
+			return self::getSite()->getUrl();
     	}
     }
 
