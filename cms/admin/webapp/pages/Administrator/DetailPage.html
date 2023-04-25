@@ -59,11 +59,12 @@
 						</div>
 						<form soy:id="detailForm">
 							<table class="table table-striped">
+								<col width="220px">
 								<tr class="no_example" soy:id="show_userid_input">
 									<th class="item_name">管理者ID</th>
 									<td>
 										<input class="form-control" type="text" soy:id="userId" name="userId"><span soy:id="userId_text"></span>
-										<p class="help-block" soy:id="show_userid_input_example">必須、4文字以上30文字以内の半角英数字</p>
+										<div class="alert alert-warning" soy:id="show_userid_input_example">必須、4文字以上30文字以内の半角英数字</div>
 									</td>
 								</tr>
 								<tr class="no_example">
@@ -74,6 +75,23 @@
 									<th class="item_name">e-mail</th>
 									<td><input class="form-control" type="text" soy:id="email" name="email"><span soy:id="email_text"></span></td>
 								</tr>
+
+								<!-- soy:display="token_login" -->
+								<tr class="no_example">
+									<th class="item_name">パスワード無しログイン</th>
+									<td>
+										<!-- soy:display="no_token_login_user" -->
+										<input type="submit" name="tokenLogin[create]" class="btn btn-info" value="有効にする">
+										<!-- /soy:display="no_token_login_user" -->
+										<!-- soy:display="token_login_user" -->
+										<a soy:id="token_login_url">ログイン用URL</a><br>
+										有効期限：<!-- soy:id="token_login_time_limit" /-->&nbsp;&nbsp;
+										<input type="submit" name="tokenLogin[update]" class="btn btn-info btm-xs" value="更新する">&nbsp;&nbsp;
+										<input type="submit" name="tokenLogin[remove]" class="btn btn-danger btm-xs" value="無効にする">
+										<!-- /soy:display="token_login_user" -->&nbsp;
+									</td>
+								</tr>
+								<!-- /soy:display="token_login" -->
 
 								<!-- soy:id="customfield" /-->
 

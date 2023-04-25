@@ -87,6 +87,11 @@ class IndexPage extends CMSWebPageBase{
 			"visible" => UserInfoUtil::isDefaultUser(),
 		));
 
+		$this->addLink("tokenloginconfig", array(
+			"link" => SOY2PageController::createLink("Administrator.TokenLogin"),
+			"visible" => UserInfoUtil::isDefaultUser(),
+		));
+
 		//ページャ
 		//ページャーの作成
 		$start = $offset + 1;

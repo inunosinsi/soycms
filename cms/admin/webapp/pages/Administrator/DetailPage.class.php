@@ -11,13 +11,29 @@ class DetailPage extends CMSUpdatePageBase{
 			exit;
 		}
 
-		if(soy2_check_token() && self::updateAdministrator()){
-			$this->addMessage("UPDATE_SUCCESS");
-			$this->jump("Administrator.Detail." . $this->adminId);
-			exit;
-		}else{
-			$this->failed = true;
+		if(soy2_check_token()){
+			if(isset($_POST["tokenLogin"])){
+				SOY2::import("util.TokenLoginUtil");
+				if(isset($_POST["tokenLogin"]["create"])){
+					$res = TokenLoginUtil::saveTokenLoginByUserId($this->adminId);
+				}else if(isset($_POST["tokenLogin"]["remove"])){
+					$res = TokenLoginUtil::removeTokenLoginByUserId($this->adminId);
+				}else if(isset($_POST["tokenLogin"]["update"])){
+					TokenLoginUtil::removeTokenLoginByUserId($this->adminId);
+					$res = TokenLoginUtil::saveTokenLoginByUserId($this->adminId);
+				}
+			}else{
+				$res = self::updateAdministrator();
+			}
+
+			if($res) {
+				$this->addMessage("UPDATE_SUCCESS");
+				$this->jump("Administrator.Detail." . $this->adminId);
+				exit;
+			}
 		}
+
+		$this->failed = true;
 	}
 
 	function __construct($arg) {
@@ -72,6 +88,23 @@ class DetailPage extends CMSUpdatePageBase{
 		$this->addLabel("email_text", array(
 			"text"=>(strlen($admin->getEmail()) == 0 )? CMSMessageManager::get("ADMIN_NO_SETTING") : $admin->getEmail(),
 			"visible"=> !$showInputForm
+		));
+
+		// token login
+		SOY2::import("util.TokenLoginUtil");
+		DisplayPlugin::toggle("token_login", TokenLoginUtil::isTokenLoginMode());
+		$isTokenLoginUser = TokenLoginUtil::isTokenLoginUser($admin->getId());
+		DisplayPlugin::toggle("no_token_login_user", !$isTokenLoginUser);
+		DisplayPlugin::toggle("token_login_user", $isTokenLoginUser);
+
+		$tokenLoginUrl = TokenLoginUtil::buildEntpointUrlByUserId($admin->getId());
+		$this->addLink("token_login_url", array(
+			"link" => $tokenLoginUrl,
+			"text" => $tokenLoginUrl
+		));
+
+		$this->addLabel("token_login_time_limit", array(
+			"text" => date("Y-m-d H:i:s", TokenLoginUtil::getLoginUrlExpiryByUserId($admin->getId()))
 		));
 
 		$this->addModel("show_userid_input", array(

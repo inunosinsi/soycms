@@ -80,6 +80,4 @@ class AdminDataSets {
 		$dao = SOY2DAOFactory::create("admin.AdminDataSetsDAO");
 		$dao->clear($class);
 	}
-
 }
-?>

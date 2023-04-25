@@ -1,0 +1,5 @@
+CREATE TABLE TokenLogin (
+	user_id INTEGER NOT NULL UNIQUE, 
+	token CHAR(32) NOT NULL UNIQUE, 
+	time_limit INTEGER NOT NULL
+)ENGINE = InnoDB;

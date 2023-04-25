@@ -18,6 +18,4 @@ abstract class AdminDataSetsDAO extends SOY2DAO{
 	abstract function clear($class);
 
 	abstract function get();
-
 }
-?>
