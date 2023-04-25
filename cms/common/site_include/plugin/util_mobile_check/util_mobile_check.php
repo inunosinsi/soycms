@@ -48,7 +48,7 @@ class UtilMobileCheckPlugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"0.10"
+			"version"=>"0.10.1"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID, array(
 			$this, "config_page"
@@ -359,7 +359,10 @@ class UtilMobileCheckPlugin{
 			$obj = new UtilMultiLanguagePlugin();
 		}
 		$config = $obj->getConfig();
+		if(!is_array($config) || !count($config)) return false;
+
 		if(isset($config["check_browser_language_config"])) unset($config["check_browser_language_config"]);
+
 		foreach($config as $conf){
 			if(!isset($conf["prefix"]) || strlen($conf["prefix"]) === 0) continue;
 			if(strpos($path, $reg . $conf["prefix"]) === 0) return true;
