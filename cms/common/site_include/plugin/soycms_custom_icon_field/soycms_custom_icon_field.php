@@ -21,7 +21,7 @@ class CustomIconFieldPlugin{
 			"author" => "株式会社Brassica",
 			"url" => "https://brassica.jp/",
 			"mail" => "soycms@soycms.net",
-			"version" => "1.5"
+			"version" => "1.6"
 		));
 		CMSPlugin::addPluginConfigPage($this->getId(), array(
 			$this, "config_page"
@@ -104,7 +104,8 @@ class CustomIconFieldPlugin{
 
 	function onCallCustomField(){
 		$arg = SOY2PageController::getArguments();
-		$entryId = (isset($arg[0])) ? $arg[0] : null;
+		$entryId = (isset($arg[0])) ? $arg[0] : 0;
+		if(!is_string($this->label)) $this->label = "";
 
 		SOY2::import("site_include.plugin.soycms_custom_icon_field.component.IconFieldComponent");
 		return IconFieldComponent::buildForm($entryId, $this->iconDirectory, $this->label, $this->labels);
@@ -112,7 +113,8 @@ class CustomIconFieldPlugin{
 
 	function onCallCustomField_inBlog(){
 		$arg = SOY2PageController::getArguments();
-		$entryId = (isset($arg[1])) ? $arg[1] : null;
+		$entryId = (isset($arg[1])) ? $arg[1] : 0;
+		if(!is_string($this->label)) $this->label = "";
 
 		SOY2::import("site_include.plugin.soycms_custom_icon_field.component.IconFieldComponent");
 		return IconFieldComponent::buildForm($entryId, $this->iconDirectory, $this->label, $this->labels);

@@ -2,9 +2,13 @@
 
 class IconFieldComponent {
 
-	public static function buildForm($entryId, $iconDir, $label, $labels=array()){
+	/**
+	 * @param int, string, string, array
+	 * @return string
+	 */
+	public static function buildForm(int $entryId, string $iconDir, string $label, array $labels=array()){
 		$icons = self::_get($entryId);
-
+		
 		$files = @scandir(UserInfoUtil::getSiteDirectory() . $iconDir);
 		if(!$files) $files = array();
 
@@ -13,7 +17,7 @@ class IconFieldComponent {
 		$html[] = '<div class="form-group" id="custom_icon_field_area">';
 		$html[] = '<label>' . htmlspecialchars($label) . '</label>';
 
-		$icons_array = explode(",", $icons);
+		$icons_array = (strlen($icons)) ? explode(",", $icons) : array();
 		$html []= '<div id="custom_icon_field_current">';
 		foreach($icons_array as $str){
 			$str = str_replace(CMSUtil::getSiteUrl(), "", $str);
@@ -51,7 +55,11 @@ class IconFieldComponent {
 		return implode("\n", $html);
 	}
 
-	private static function _get($entryId){
+	/**
+	 * @param int
+	 * @return string
+	 */
+	private static function _get(int $entryId){
 		$dao = new SOY2DAO();
 
 		try{
@@ -60,6 +68,6 @@ class IconFieldComponent {
 			$result = array();
 		}
 
-		return (isset($result[0]["custom_icon_field"])) ? $result[0]["custom_icon_field"] : null;
+		return (isset($result[0]["custom_icon_field"])) ? $result[0]["custom_icon_field"] : "";
 	}
 }

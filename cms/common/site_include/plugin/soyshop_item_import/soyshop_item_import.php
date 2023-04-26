@@ -28,7 +28,7 @@ class SOYShopItemImportPlugin{
 			"mail"=>"info@saitodev.co",
 			"label" => "",
 			"entry" => "",
-			"version"=>"0.10"
+			"version"=>"0.11"
 		));
 
 		//二回目以降の動作
@@ -219,9 +219,7 @@ class SOYShopItemImportPlugin{
 		$html = ob_get_contents();
 		ob_end_clean();
 
-		echo $html;
-
-		echo "";
+		return $html;
 	}
 
 	function onCallCustomField_inBlog(){
@@ -235,7 +233,7 @@ class SOYShopItemImportPlugin{
 		$html = ob_get_contents();
 		ob_end_clean();
 
-		echo $html;
+		return $html;
 	}
 
 	/**
