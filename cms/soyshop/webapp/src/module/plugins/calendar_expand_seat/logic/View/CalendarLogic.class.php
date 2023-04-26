@@ -98,10 +98,17 @@ class CalendarLogic extends CalendarBaseComponent{
 		return implode("<br>", $html);
 	}
 
-	private function checkIsUnsoldSeat($d, $schId, $seat){
+	private function checkIsUnsoldSeat(int $d, int $schId, int $seat){
 		//今日よりも前の日の場合は残席数は0になる
 		$schDate = mktime(0, 0, 0, $this->month, $d, $this->year) + 24 * 60 * 60 - 1;
 		if($schDate < time()) return false;
+
+		// 受付期限
+		if(isset($this->config["deadline"]) && is_numeric($this->config["deadline"]) && $this->config["deadline"] > 0) {
+			if($schDate <= soyshop_shape_timestamp(strtotime("+ " . $this->config["deadline"] . "day"))){
+				return false;
+			}
+		}
 
 		//すでにカートに入れてないか？予約一件のみモードの場合はチェックしない
 		if(!self::isOnly() && in_array($schId, $this->addedList)) return false;

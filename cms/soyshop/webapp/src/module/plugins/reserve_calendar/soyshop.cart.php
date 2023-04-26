@@ -24,11 +24,16 @@ class ReserveCalendarCart extends SOYShopCartBase{
 
 					//受付期限内か？
 					$isSch = true;
+					$scheduleDate = mktime(0, 0, 0, $sch->getMonth(), $sch->getDay(), $sch->getYear());
 					if(isset($cnf["deadline"]) && is_numeric($cnf["deadline"]) && (int)$cnf["deadline"]){
-						$scheduleDate = mktime(0, 0, 0, $sch->getMonth(), $sch->getDay(), $sch->getYear());
-						if($scheduleDate < soyshop_shape_timestamp(strtotime("+". $cnf["deadline"] . " day"))){
+						if($scheduleDate <= soyshop_shape_timestamp(strtotime("+". $cnf["deadline"] . " day"))){
 							$isSch = false;
 						}
+					}
+
+					//現時点よりも前の日程の場合も予約不可
+					if($isSch && $scheduleDate < time()){
+						$isSch = false;
 					}
 
 					//残席数の確認もしておきたい

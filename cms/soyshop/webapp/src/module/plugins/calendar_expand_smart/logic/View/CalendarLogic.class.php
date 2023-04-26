@@ -143,6 +143,14 @@ class CalendarLogic extends CalendarBaseComponent{
 		//今日よりも前の日の場合は残席数は0になる
 		if($schDate < strtotime("-1 day")) return false;
 
+		// 受付期限
+		if(isset($this->config["deadline"]) && is_numeric($this->config["deadline"]) && $this->config["deadline"] > 0) {
+			if($schDate <= soyshop_shape_timestamp(strtotime("+ " . $this->config["deadline"] . "day"))){
+				return false;
+			}
+		}
+		
+
 		//すでにカートに入れてないか？ @ToDo 簡易予約カレンダーの方の設定に合わせたい
 		if(!self::isOnly() && in_array($schId, $this->addedList)) return false;
 
