@@ -9,6 +9,9 @@ abstract class TokenLoginDAO extends SOY2DAO{
 	 */
 	abstract function insert(TokenLogin $bean);
 
+	/**
+	 * @query user_id = :userId
+	 */
 	abstract function update(TokenLogin $bean);
 
 	abstract function delete($id);

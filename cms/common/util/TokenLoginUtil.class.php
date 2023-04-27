@@ -106,6 +106,26 @@ class TokenLoginUtil {
 	 * @param int
 	 * @return bool
 	 */
+	public static function updateTokenLoginByUserId(int $userId){
+		if($userId === 0 || !self::isTokenLoginMode()) return false;
+
+		$obj = self::_getTokenLoginObject($userId);
+		$lim = strtotime("+".self::getAllowTokenLoginPeriod()."day");
+		$obj->setLimit($lim);
+		
+		try{
+			SOY2DAOFactory::create("admin.TokenLoginDAO")->update($obj);
+		}catch(Exception $e){
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * @param int
+	 * @return bool
+	 */
 	public static function removeTokenLoginByUserId(int $userId){
 		if($userId === 0 || !self::isTokenLoginMode()) return false;
 

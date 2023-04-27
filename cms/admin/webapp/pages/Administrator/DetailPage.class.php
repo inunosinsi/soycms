@@ -19,8 +19,7 @@ class DetailPage extends CMSUpdatePageBase{
 				}else if(isset($_POST["tokenLogin"]["remove"])){
 					$res = TokenLoginUtil::removeTokenLoginByUserId($this->adminId);
 				}else if(isset($_POST["tokenLogin"]["update"])){
-					TokenLoginUtil::removeTokenLoginByUserId($this->adminId);
-					$res = TokenLoginUtil::saveTokenLoginByUserId($this->adminId);
+					$res = TokenLoginUtil::updateTokenLoginByUserId($this->adminId);
 				}
 			}else{
 				$res = self::updateAdministrator();
