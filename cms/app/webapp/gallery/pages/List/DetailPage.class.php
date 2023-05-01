@@ -9,7 +9,7 @@ class DetailPage extends WebPage{
 		if(soy2_check_token() && isset($_POST["Image"])){
 			
 			$dao = SOY2DAOFactory::create("SOYGallery_ImageDAO");						
-			$image = SOY2::cast($soygallery_get_image_object($this->id), (object)$_POST["Image"]);
+			$image = SOY2::cast(soygallery_get_image_object($this->id), (object)$_POST["Image"]);
 			$image->setAttributes(soy2_serialize($_POST["Image"]["attributes"]));
 			
 			try{
