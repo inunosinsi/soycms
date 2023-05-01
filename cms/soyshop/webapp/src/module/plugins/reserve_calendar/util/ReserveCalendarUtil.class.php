@@ -174,6 +174,19 @@ class ReserveCalendarUtil{
 		SOYShop_DataSets::put("reserve_calendar.other_day_" . $itemId, $values);
 	}
 
+	/**
+	 * 他のプラグインで営業日のチェックができるようにするメソッド
+	 * @param int timestamp, int
+	 * @return bool 営業日であればtrue
+	 */
+	public static function isBD(int $timestamp, int $itemId){
+		static $l;
+		if(is_null($l)) $l = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.HolidayLogic", array("itemId" => $itemId));
+		if($timestamp === 0) return false;
+		return $l->isBD(soyshop_shape_timestamp($timestamp));
+	}
+
+
 	/** 文字列から時間帯を取得してカレンダーにスケジュールを表示するか決める **/
 	public static function checkLabelString(string $label, int $y, int $m, int $d){
 		$now = time();

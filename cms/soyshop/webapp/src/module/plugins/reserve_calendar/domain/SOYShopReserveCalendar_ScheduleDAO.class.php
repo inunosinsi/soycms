@@ -193,7 +193,7 @@ abstract class SOYShopReserveCalendar_ScheduleDAO extends SOY2DAO{
 	 * @param int $itemId, int $now, int $days, int $deadline
 	 * @return array
 	 */
-	function getScheduleListFromDays($itemId, $now, $days, $deadline=0){
+	function getScheduleListFromDays(int $itemId, int $now, int $days, int $deadline=0){
 		//計算前に検索用のデータを必ず最新の状態にしておく schedule_dateを利用する
 		SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Search.CustomSearchLogic")->prepare();
 

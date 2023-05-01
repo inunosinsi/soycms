@@ -109,8 +109,11 @@ class SOYShopAuthUtil {
 		DisplayPlugin::toggle("app_limit_function_rv", AUTH_OPERATE);	//1ページで二回使用している場合の予備
 	}
 
-	//権限を調べ、開いてはいけないページの場合は
-	public static function checkAuthEachPage($classPath){
+	/**
+	 * 権限を調べ、開いてはいけないページの場合は開かずにリダイレクト
+	 * @param string
+	 */
+	public static function checkAuthEachPage(string $classPath){
 		//トップページのみ特別な処理
 		if(!AUTH_HOME && (strpos($classPath, "IndexPage") === 0 || !strlen($classPath))){
 			if(AUTH_ORDER) SOY2PageController::jump("Order");
@@ -131,7 +134,11 @@ class SOYShopAuthUtil {
 		}
 	}
 
-	private static function _check($classPath){
+	/**
+	 * @param string
+	 * @return bool
+	 */
+	private static function _check(string $classPath){
 		if(strpos($classPath, "Order") !== false){
 			//注文の時のみ振る舞いが異なる
 			if(($classPath == "Order.IndexPage" || $classPath == "OrderPage") && !AUTH_ORDER) return false;

@@ -19,6 +19,7 @@ class HolidayLogic extends SOY2LogicBase{
 
 	/**
 	 * 営業日の判定
+	 * @param int
 	 * @return boolean
 	 */
 	private function _calendarIsBD(int $time){
@@ -32,7 +33,7 @@ class HolidayLogic extends SOY2LogicBase{
 
 		//@TODO 指定月日が休みの判定
 		if(self::_MdHoliday($time)) $res = false;
-
+		
 		//@TODO 指定年月日が休みの判定
 		if(self::_YmdHoliday($time)) $res = false;
 
@@ -51,8 +52,9 @@ class HolidayLogic extends SOY2LogicBase{
 	private function _EveryWeekHoliday(int $time){
 		static $yobi;
 		if(!is_numeric($this->itemId)) return null;
-		if(is_null($yobi)) $yobi = ReserveCalendarUtil::getWeekConfig($this->itemId);
-		return (in_array(date("w", $time), $yobi));
+		if(!is_array($yobi)) $yobi = array();
+		if(!isset($yobi[$this->itemId])) $yobi[$this->itemId] = ReserveCalendarUtil::getWeekConfig($this->itemId);
+		return (in_array(date("w", $time), $yobi[$this->itemId]));
 	}
 
 	/**
@@ -61,8 +63,9 @@ class HolidayLogic extends SOY2LogicBase{
 	private function _NthDayHoliday(int $time){
 		static $holidays;
 		if(!is_numeric($this->itemId)) return null;
-		if(is_null($holidays)) $holidays = ReserveCalendarUtil::getDayOfWeekConfig($this->itemId);
-		if(count($holidays) == 0) return false;
+		if(!is_array($holidays)) $holidays = array();
+		if(!isset($holidays[$this->itemId])) $holidays[$this->itemId] = ReserveCalendarUtil::getDayOfWeekConfig($this->itemId);
+		if(count($holidays[$this->itemId]) == 0) return false;
 
 		$DOW = date("w", $time);
 		$day = (int)date("d", $time);
@@ -71,8 +74,8 @@ class HolidayLogic extends SOY2LogicBase{
 		$nth = (int)$nth;
 
 		//週
-		if(array_key_exists($nth, $holidays)){
-			if(in_array($DOW, $holidays[$nth])) return true;
+		if(array_key_exists($nth, $holidays[$this->itemId])){
+			if(in_array($DOW, $holidays[$this->itemId][$nth])) return true;
 		}
 
 		return false;
@@ -84,10 +87,11 @@ class HolidayLogic extends SOY2LogicBase{
 	private function _MdHoliday(int $time){
 		static $holidays;
 		if(!is_numeric($this->itemId)) return null;
-		if(is_null($holidays)) $holidays = ReserveCalendarUtil::getMdConfig($this->itemId);
+		if(!is_array($holidays)) $holidays = array();
+		if(!isset($holidays[$this->itemId])) $holidays[$this->itemId] = ReserveCalendarUtil::getMdConfig($this->itemId);
 
 		$date = date("m/d", $time);
-		return (in_array($date, $holidays));
+		return (in_array($date, $holidays[$this->itemId]));
 	}
 
 	/**
@@ -96,9 +100,10 @@ class HolidayLogic extends SOY2LogicBase{
 	private function _YmdHoliday(int $time){
 		static $holidays;
 		if(!is_numeric($this->itemId)) return null;
-		if(is_null($holidays)) $holidays = ReserveCalendarUtil::getYmdConfig($this->itemId);
+		if(!is_array($holidays)) $holidays = array();
+		if(!isset($holidays[$this->itemId])) $holidays[$this->itemId] = ReserveCalendarUtil::getYmdConfig($this->itemId);
 		$date = date("Y/m/d", $time);
-		return (in_array($date, $holidays));
+		return (in_array($date, $holidays[$this->itemId]));
 	}
 
 	/**
@@ -107,17 +112,19 @@ class HolidayLogic extends SOY2LogicBase{
 	private function _Businessday(int $time){
 		static $businessdays;
 		if(!is_numeric($this->itemId)) return null;
-		if(is_null($businessdays)) $businessdays = ReserveCalendarUtil::getBDConfig($this->itemId);
+		if(!is_array($businessdays)) $businessdays = array();
+		if(!isset($businessdays[$this->itemId])) $businessdays[$this->itemId] = ReserveCalendarUtil::getBDConfig($this->itemId);
 		$date = date("Y/m/d", $time);
-		return (in_array($date, $businessdays));
+		return (in_array($date, $businessdays[$this->itemId]));
 	}
 
 	private function _isOther(int $time){
 		static $other;
 		if(!is_numeric($this->itemId)) return null;
-		if(is_null($other)) $other = ReserveCalendarUtil::getOtherConfig($this->itemId);
+		if(!is_array($other)) $other = array();
+		if(!isset($other[$this->itemId])) $other[$this->itemId] = ReserveCalendarUtil::getOtherConfig($this->itemId);
 		$date = date("Y/m/d", $time);
-		return (in_array($date, $other));
+		return (in_array($date, $other[$this->itemId]));
 	}
 
 	function setItemId($itemId){

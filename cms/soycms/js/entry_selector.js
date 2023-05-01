@@ -10,7 +10,7 @@ Entry.Render = function(){
 	Entry.allLength = 0;
 
 	$.each(Entries, function(id, entry){
-		if(!Entry.currentLabel || entry.label.indexOf(Entry.currentLabel) != -1){
+		if(!isNaN(Entry.currentLabel) || entry.label.includes(parseInt(Entry.currentLabel))){
 			entry.buildTable($("#all_entry_list"));
 		}
 	});
