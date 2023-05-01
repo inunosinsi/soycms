@@ -27,8 +27,28 @@ class ArrivalNewOrderAdminTop extends SOYShopAdminTopBase{
 	}
 
 	function error(){
+		SOY2::import("module.plugins.arrival_new_order.util.ArrivalNewOrderUtil");
+		$config = ArrivalNewOrderUtil::getConfig();
+		if(!isset($config["error"]) || !is_array($config["error"]) || !count($config["error"])) return null;
+
+		$errCnf = $config["error"];
+	
 		$dao = soyshop_get_hash_table_dao("order");
-		$sql = "SELECT tracking_number, order_date FROM soyshop_order WHERE order_status = " . SOYShop_Order::ORDER_STATUS_INTERIM . " AND payment_status = " . SOYShop_Order::PAYMENT_STATUS_CONFIRMED;
+		$sql = "SELECT tracking_number, payment_status, order_date FROM soyshop_order WHERE order_status = " . SOYShop_Order::ORDER_STATUS_INTERIM;
+
+		// payment_status
+		$subquery = array();
+		if(isset($errCnf[SOYShop_Order::PAYMENT_STATUS_WAIT]) && (int)$errCnf[SOYShop_Order::PAYMENT_STATUS_WAIT] === ArrivalNewOrderUtil::ON){
+			$subquery[] = "payment_status = " . SOYShop_Order::PAYMENT_STATUS_WAIT;
+		}
+
+		if(isset($errCnf[SOYShop_Order::PAYMENT_STATUS_CONFIRMED]) && (int)$errCnf[SOYShop_Order::PAYMENT_STATUS_CONFIRMED] === ArrivalNewOrderUtil::ON){
+			$subquery[] = "payment_status = " . SOYShop_Order::PAYMENT_STATUS_CONFIRMED;
+		}
+
+		if(!count($subquery)) return null;
+		$sql .= " AND (".implode(" OR ", $subquery).")";
+
 		try{
 			$res = $dao->executeQuery($sql);
 		}catch(Exception $e){
@@ -40,8 +60,10 @@ class ArrivalNewOrderAdminTop extends SOYShopAdminTopBase{
 		$mes[] = "クレジットカード支払いで失敗している可能性のある注文があります。";
 		$mes[] = "注文の検索画面で下記の注文番号 + 注文状況を<strong>仮登録</strong>の条件で検索をして注文詳細をご確認ください。";
 		$mes[] = "<ul>";
+		$paymentList = SOYShop_Order::getPaymentStatusList();
 		foreach($res as $v){
-			$mes[] = "<li><strong>" . $v["tracking_number"] . "</strong> （" . date("Y-m-d H:i:s", $v["order_date"]) . "）</li>";
+			if(!isset($paymentList[$v["payment_status"]])) continue;
+			$mes[] = "<li><strong>" . $v["tracking_number"] . "</strong> （" . date("Y-m-d H:i:s", $v["order_date"]) . "）支払い状況：<strong>".$paymentList[$v["payment_status"]]."</strong></li>";
 		}
 		$mes[] = "</ul>";
 

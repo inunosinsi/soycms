@@ -1,0 +1,14 @@
+<div class="alert alert-success" soy:display="updated">変更しました</div>
+<div class="alert alert-info">
+	クレジットカード支払いが正常に終了しなかった場合の通知の設定を行います。<br>
+	<a target="_blank" rel="noopener" href="https://saitodev.co/article/3896" style="text-decoration:underline;">SOY Shopでクレジットカード支払いが正常に終了しなかった注文を通知する機能を追加しました - saitodev.co</a>
+</div>
+<form soy:id="form">
+	<label for="">エラー通知設定</label><br>
+	<input type="checkbox" soy:id="error_wait"><br>
+	<input type="checkbox" soy:id="error_confirm">
+	
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="変更" />
+	</div>
+</form>
