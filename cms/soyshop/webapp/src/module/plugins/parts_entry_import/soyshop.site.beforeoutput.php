@@ -18,7 +18,8 @@ class EntryImportBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		SOY2::import("util.CMSPlugin");
 		SOY2::import("util.UserInfoUtil");
 
-		$site = EntryImportUtil::getSite($config["siteId"]);
+		$siteId = (isset($config["siteId"])) ? $config["siteId"] : null;
+		$site = EntryImportUtil::getSite($siteId);
 
 		SOYAppUtil::resetAdminDsn($old);
 
@@ -27,7 +28,6 @@ class EntryImportBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
 		/* サイト → ブログ → 記事一覧 */
 		$blogId = (isset($config["blogId"])) ? (int)$config["blogId"] : null;
-		$siteId = (isset($config["siteId"])) ? $config["siteId"] : null;
 		$count = (isset($config["count"])) ? (int)$config["count"] : 0;
 		$page->createAdd("entry_list","EntryListComponent", array(
 			"soy2prefix" => "block",

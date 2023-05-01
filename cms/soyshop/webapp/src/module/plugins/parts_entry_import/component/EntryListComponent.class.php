@@ -13,6 +13,7 @@ class EntryListComponent extends HTMLList{
 	private $thumbnailConfig;
 
 	protected function populateItem($entity){
+		if(!class_exists("Entry")) SOY2::import("domain.cms.Entry");
 		if(!$entity instanceof Entry) $entity = new Entry();
 
 		$alias = (is_string($entity->getAlias())) ? $entity->getAlias() : "";
