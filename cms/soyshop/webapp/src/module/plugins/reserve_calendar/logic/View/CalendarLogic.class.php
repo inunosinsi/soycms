@@ -75,7 +75,8 @@ class CalendarLogic extends CalendarBaseComponent{
 					//ラベル名から表示するか決める
 					if(ReserveCalendarUtil::checkLabelString($label, $this->year, $this->month, $i)){
 						if($this->sync){
-							$html[] = "<a href=\"" . soyshop_get_cart_url(true) . "?a=add&schId=" . $schId . "\" id=\"" . $this->year . "-" . $this->month . "-" . $i . "\"><button>" . $label . "</button></a>";
+							$html[] = "<a href=\"" . soyshop_get_cart_url(true) . "?a=add&schId=" . $schId . "\" id=\"" . $this->year . "-" . $this->month . "-" . $i . "\"><button id=\"" . $this->year . "-" . $this->month . "-" . $i . "_button\">" . $label . "</button></a>";
+							//$html[] = "<button onclick=\"location.href='" . soyshop_get_cart_url(true) . "?a=add&schId=" . $schId . "'\" id=\"" . $this->year . "-" . $this->month . "-" . $i . "\">" . $label . "</button>";
 						//非同期ボタン
 						}else{
 							$html[] = "<button id=\"reserve_calendar_async_button_" . $schId . "\" onclick=\"AsyncReserveCalendar.add(this," . $schId . ");\">" . $label . "</button>";
