@@ -435,6 +435,7 @@ class SOYShop_Item {
 	 * @return boolean
 	 */
 	function isPublished(){
+		if(!defined("SOY2_NOW")) define("SOY2_NOW", time());
 		if(
 			$this->isOpen > 0 &&
 			$this->getOpenPeriodStart() <= SOY2_NOW &&
