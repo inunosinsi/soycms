@@ -105,7 +105,7 @@ class SOYGallery_ImageComponent extends SOYBodyComponentBase{
 
 		$limit = (isset($config["count"]) && (int)$config["count"] > 0) ? (int)$config["count"] : 10;
 		if(count($args) > 0) $page = (isset($args[0])) ? $args[0] : null;
-		if(is_null($page)) $page = 1;
+		if(!is_numeric($page)) $page = 1;
 		$offset = ($page - 1) * $limit;
 
 		$dao = SOY2DAOFactory::create("SOYGallery_ImageViewDAO");
