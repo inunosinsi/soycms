@@ -8,25 +8,15 @@ function soyshop_simple_news($html, $htmlObj){
 	));
 
 	$news = SOYShop_DataSets::get("plugin.simple_news", array());
-
-	$obj->createAdd("news_list", "HTMLList", array(
+	
+	$obj->createAdd("news_list", "SimpleNewsListComponent", array(
 		"list" => $news,
 		"soy2prefix" => SOYSHOP_SITE_PREFIX,//互換性のため残しておく
-		'populateItem:function($array,$key)' =>
-				'$url = (isset($array["url"]) && is_string($array["url"])) ? $array["url"] : "";' .
-				'$createDate = (isset($array["create_date"]) && is_numeric($array["create_date"])) ? (int)$array["create_date"] : 0;'.
-				'$this->createAdd("create_date","HTMLLabel", array("soy2prefix" => SOYSHOP_SITE_PREFIX, "text" => $createDate));' .
-				'$this->createAdd("title","HTMLLabel", array("soy2prefix" => SOYSHOP_SITE_PREFIX, "html" => (strlen($url) > 0) ? "<a href=\"".$url."\">" . $array["text"] . "</a>" : @$array["text"]));'
 	));
 
-	$obj->createAdd("news_list", "HTMLList", array(
+	$obj->createAdd("news_list", "SimpleNewsListComponent", array(
 		"list" => $news,
 		"soy2prefix" => "block",
-		'populateItem:function($array,$key)' =>
-				'$url = (isset($array["url"]) && is_string($array["url"])) ? $array["url"] : "";' .
-				'$createDate = (isset($array["create_date"]) && is_numeric($array["create_date"])) ? (int)$array["create_date"] : 0;'.
-				'$this->createAdd("create_date","HTMLLabel", array("soy2prefix" => SOYSHOP_SITE_PREFIX, "text" => $createDate));' .
-				'$this->createAdd("title","HTMLLabel", array("soy2prefix" => SOYSHOP_SITE_PREFIX, "html" => (strlen($url) > 0) ? "<a href=\"".$url."\">" . $array["text"] . "</a>" : @$array["text"]));'
 	));
 
 
@@ -37,5 +27,28 @@ function soyshop_simple_news($html, $htmlObj){
 		ob_start();
 		$obj->display();
 		ob_end_clean();
+	}
+}
+
+if(!class_exists("SimpleNewsListComponent")){
+
+	class SimpleNewsListComponent extends HTMLList {
+		protected function populateItem($entity){
+			$url = (isset($entity["url"]) && is_string($entity["url"])) ? $entity["url"] : "";
+			if(strlen($url) && preg_match('/\/\/$/', $url)) $url = "";	// $urlが//で終わっている場合は空文字にする
+			
+			$createDate = (isset($entity["create_date"]) && is_string($entity["create_date"]) && preg_match('/[\d]{4}-[\d]{1,2}-[\d]{1,2}/', $entity["create_date"])) ? $entity["create_date"] : "";
+
+			$this->addLabel("create_date", array(
+				"soy2prefix" => SOYSHOP_SITE_PREFIX, 
+				"text" => $createDate
+			));
+
+			$txt = (isset($entity["text"])) ? $entity["text"] : "";
+			$this->addLabel("title", array(
+				"soy2prefix" => SOYSHOP_SITE_PREFIX,
+				"html" => (strlen($url) > 0) ? "<a href=\"".$url."\">" . $txt . "</a>" : $txt
+			));
+		}
 	}
 }
