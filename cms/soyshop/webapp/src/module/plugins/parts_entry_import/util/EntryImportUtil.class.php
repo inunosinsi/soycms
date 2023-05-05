@@ -8,8 +8,8 @@ class EntryImportUtil{
 	 */
 	public static function getConfig(){
 		return SOYShop_DataSets::get("parts.entry.import", array(
-			"siteId" => null,
-			"blogId" => null,
+			"siteId" => "",
+			"blogId" => 0,
 			"count" => 5
 		));
 	}
