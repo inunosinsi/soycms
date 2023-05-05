@@ -152,12 +152,12 @@ class EntryImportUtil{
 		}
 	}
 
-	public static function getCustomfieldConfig($siteId){
+	public static function getCustomfieldConfig(string $siteId){
 		$fname = $_SERVER["DOCUMENT_ROOT"] . $siteId . '/.plugin/CustomFieldAdvanced.config';
 		if(file_exists($fname)){
 			include_once(dirname(dirname(__FILE__)) . "/class/CustomFieldPluginAdvanced.class.php");
 			include_once(dirname(dirname(__FILE__)) . "/class/CustomField.class.php");
-			$obj = unserialize(file_get_contents($fname));
+			$obj = @unserialize(file_get_contents($fname));	//Creation of dynamic property CustomField〜
 			return $obj->customFields;
 		}else{
 			return array();
