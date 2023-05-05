@@ -46,6 +46,8 @@ class EntryImportConfigPage extends WebPage{
 
 		//SOY CMS サイト一覧
 		$this->addForm("form");
+
+		$siteCnfId = (isset($config["siteId"])) ? (string)$config["siteId"] : "";
 		$this->addLabel("site", array(
 			"html" => self::getSiteForm(self::getSiteList(), $config["siteId"])
 		));
@@ -76,14 +78,14 @@ class EntryImportConfigPage extends WebPage{
 			"value" => (isset($config["siteId"])) ? $config["siteId"] : ""
 		));
 
-		$blogId = (isset($config["blogId"])) ? $config["blogId"] : null;
+		$blogId = (isset($config["blogId"])) ? (int)$config["blogId"] : 0;
 		$this->addLabel("page", array(
 			"html" => self::getPageForm($blogs, $blogId)
 		));
 
 		$this->addInput("entry_count", array(
 			"name" => "site[count]",
-			"value" => (isset($config["count"])) ? $config["count"] : 0,
+			"value" => (isset($config["count"])) ? (int)$config["count"] : 0,
 			"size" => 3,
 			"style" => "text-align:right;ime-mode:disabled;"
 		));
@@ -134,7 +136,7 @@ class EntryImportConfigPage extends WebPage{
 	 * @param array $siteConfig このプラグインの設定 array(["siteId"],["blogId"],["count"])
 	 * @return string $html
 	 */
-	function getSiteForm($sites, $siteId){
+	function getSiteForm(array $sites, string $siteId){
 
 		$html = array();
 		foreach($sites as $site){
@@ -157,7 +159,7 @@ class EntryImportConfigPage extends WebPage{
 	 * @param array $siteConfig このプラグインの設定 array(["siteId"],["blogId"],["count"])
 	 * @return string $html
 	 */
-	private function getPageForm($blogs, $blogId){
+	private function getPageForm(array $blogs, int $blogId){
 
 		$html = array();
 		foreach($blogs as $blog){
