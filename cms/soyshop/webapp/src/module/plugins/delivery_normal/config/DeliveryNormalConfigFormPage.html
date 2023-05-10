@@ -154,6 +154,23 @@
 	</div>
 
 	<div class="form-group">
+		<label>お届け日の地域設定</label>
+		<p class="alert alert-warning" style="width:400px;">お届け日の最短日の設定より +1 日の地域を選択する</p>
+		<div class="form-inline">
+			<!-- soy:id="delivery_shortest_date_after_1_day_area_list" -->
+			<input type="checkbox" soy:id="area">
+			<!-- /soy:id="delivery_shortest_date_after_1_day_area_list" -->
+		</div>
+
+		<p class="alert alert-warning" style="width:400px;">お届け日の最短日の設定より +2 日の地域を選択する</p>
+		<div class="form-inline">
+			<!-- soy:id="delivery_shortest_date_after_2_day_area_list" -->
+			<input type="checkbox" soy:id="area">
+			<!-- /soy:id="delivery_shortest_date_after_2_day_area_list" -->
+		</div>
+	</div>
+
+	<div class="form-group">
 		<label>営業日の設定</label><br>
 		<input type="checkbox" soy:id="use_re_calc_shortest_date">
 		<div class="alert alert-info" soy:display="notice_re_calc_shortest_date">営業日の設定を利用する場合はカレンダープラグインをインストールしてください。</div>

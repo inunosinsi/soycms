@@ -55,7 +55,9 @@ class DeliveryNormalOnOutput extends SOYShopSiteUserOnOutputAction{
 		return $html;
 	}
 
-	private function buildCalendarScript($config){
+	private function buildCalendarScript(array $config){
+		$shortest = DeliveryNormalUtil::getShortestDate();
+
 		$script = array();
 		$script[] = "$(function(){";
 
@@ -67,8 +69,8 @@ class DeliveryNormalOnOutput extends SOYShopSiteUserOnOutputAction{
 		$script[] = "	}";
 
 		$script[] = "	$(\"#jquery-ui-calendar\").datepicker({";
-		$script[] = "		minDate: '+" . ($config["delivery_shortest_date"] + 1) . "d',";
-		$script[] = "		maxDate: '+" . ($config["delivery_shortest_date"] + 1 + $config["delivery_date_period"]) . "d',";
+		$script[] = "		minDate: '+" . ($shortest) . "d',";
+		$script[] = "		maxDate: '+" . ($shortest + $config["delivery_date_period"]) . "d',";
 		$script[] = "		dateFormat: '" . SOY2Logic::createInstance("module.plugins.delivery_normal.logic.DeliveryDateFormatLogic")->getDateFormat() . "'";
 		$script[] = "	});";
 

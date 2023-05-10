@@ -8,6 +8,7 @@ class DeliveryNormalConfigFormPage extends WebPage{
 		SOY2::import("module.plugins.delivery_normal.component.DeliveryPriceListComponent");
 		SOY2::import("module.plugins.delivery_normal.component.DeliveryTimeConfigListComponent");
 		SOY2::import("module.plugins.delivery_normal.component.FeeExceptionListComponent");
+		SOY2::import("module.plugins.delivery_normal.component.DeliveryShortestDateListComponent");
 		SOY2DAOFactory::importEntity("config.SOYShop_Area");
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
 		SOY2::import("util.SOYShopPluginUtil");
@@ -45,6 +46,13 @@ class DeliveryNormalConfigFormPage extends WebPage{
 				self::_copyFiles();
 				DeliveryNormalUtil::saveDeliveryDateConfig($_POST["Date"]);
 			}
+
+			// 地域によっては+n日後の設定
+			for($i = 1; $i <= DeliveryNormalUtil::SHORTEST_DAY_ALFER; $i++){
+				$afterDays = (isset($_POST["Date"]["delivery_shortest_date_after"][$i]) && is_array($_POST["Date"]["delivery_shortest_date_after"][$i])) ? $_POST["Date"]["delivery_shortest_date_after"][$i] : array();
+				DeliveryNormalUtil::saveDeliveryDateAfterConfig($afterDays, $i);
+			}		
+			
 
 			/** 配送料無料の例外設定 **/
 			if(isset($_POST["Add"]) && isset($_POST["Add"]["code"]) && is_array($_POST["Add"]["code"]) && count($_POST["Add"]["code"])){
@@ -210,6 +218,15 @@ class DeliveryNormalConfigFormPage extends WebPage{
 			"value" => (isset($config["delivery_shortest_date"])) ? (int)$config["delivery_shortest_date"] : "",
 			"style" => "width:60px;text-align:right;"
 		));
+
+		for($i = 1; $i <= DeliveryNormalUtil::SHORTEST_DAY_ALFER; $i++){
+			$this->createAdd("delivery_shortest_date_after_".(string)$i."_day_area_list", "DeliveryShortestDateListComponent", array(
+				"list" => SOYShop_Area::getAreas(),
+				"selected" => DeliveryNormalUtil::getDeliveryDateAfterConfig($i),
+				"mode" => $i,
+			));
+		}
+		
 
 		$this->addCheckBox("use_re_calc_shortest_date", array(
 			"name" => "Date[use_re_calc_shortest_date]",

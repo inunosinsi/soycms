@@ -6,6 +6,8 @@ class DeliveryNormalUtil{
 	const PATTERN_OR = 1;	//カートに指定の商品のどれかが含まれている時
 	const PATTERN_MATCH = 2;	//カートに指定の商品のみの時
 
+	const SHORTEST_DAY_ALFER = 2;
+
 	public static function getFreePrice(){
 		return SOYShop_DataSets::get("delivery.default.free_price", array(
 			"free" => null
@@ -66,6 +68,17 @@ class DeliveryNormalUtil{
 		SOYShop_DataSets::put("delivery.default.delivery_date.config", $values);
 	}
 
+	public static function getDeliveryDateAfterConfig($mode=1){
+		return SOYShop_DataSets::get("delivery.default.delivery_date_after_".$mode.".config", array());
+	}
+
+	/**
+	 * @param array, int
+	 */
+	public static function saveDeliveryDateAfterConfig($values, $mode=1){
+		SOYShop_DataSets::put("delivery.default.delivery_date_after_".$mode.".config", $values);
+	}
+
 	public static function getExceptionFeeConfig(){
 		return SOYShop_DataSets::get("delivery.default.fee_exception.config", array());
 	}
@@ -99,7 +112,32 @@ class DeliveryNormalUtil{
 		SOYShop_DataSets::put("delivery.default.description", $value);
 	}
 
-	public static function getDeliveryDateOptions($config){
+	/**
+	 * @return int
+	 */
+	public static function getShortestDate(){
+		$cnf = self::getDeliveryDateConfig();
+		$d = (isset($cnf["delivery_shortest_date"])) ? (int)$cnf["delivery_shortest_date"] : 0;
+
+		// 地域性を加味
+		$area = (int)CartLogic::getCart()->getCustomerInformation()->getArea();
+		if($area === 0) return $d;
+
+		for($i = 1; $i <= self::SHORTEST_DAY_ALFER; $i++){
+			$afterCnf = self::getDeliveryDateAfterConfig($i);
+			if(!is_array($afterCnf) || !count($afterCnf) || is_bool(array_search((string)$area, $afterCnf))) continue;
+
+			$d += 1;
+		}
+
+		return $d;
+	}
+
+	/**
+	 * @param array
+	 * @return array
+	 */
+	public static function getDeliveryDateOptions(array $config){
 		static $logic;
 		if(is_null($logic)) $logic = SOY2Logic::createInstance("module.plugins.delivery_normal.logic.DeliveryDateFormatLogic");
 
@@ -115,7 +153,7 @@ class DeliveryNormalUtil{
 			$time = SOY2Logic::createInstance("module.plugins.parts_calendar.logic.BusinessDateLogic")->getNextBusinessDate();
 		}
 
-		$shortest = $time + (int)$config["delivery_shortest_date"] * 24 * 60 * 60;
+		$shortest = $time + self::getShortestDate() * 24 * 60 * 60;
 		$last = $shortest + (int)$config["delivery_date_period"] * 24 * 60 * 60;
 
 		$opts = array();
