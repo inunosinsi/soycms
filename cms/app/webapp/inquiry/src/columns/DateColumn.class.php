@@ -30,13 +30,12 @@ class DateColumn extends SOYInquiry_ColumnBase{
 		$required = $this->getRequiredProp();
 
 		$values = $this->getValue();
-
+		
 		if(!is_array($values)){
-			$hasToday = $this->hasToday;
 			$values = array();
-
+			
 			//ディフォルトで今日を表示する
-			if(isset($hasToday)){
+			if($this->hasToday){
 				//設定した表示年数に今日があるかチェックする
 				if(date("Y") >= $startYear && date("Y") <= $endYear){
 					$values = array("year" => date("Y"), "month" => date("m"), "day" => date("d"));
@@ -115,8 +114,6 @@ class DateColumn extends SOYInquiry_ColumnBase{
 	 * 設定画面で表示する用のフォーム
 	 */
 	function getConfigForm(){
-		$hasToday = $this->hasToday;
-
 		$html  = "表示年数:";
 		$html .= '<input type="text" name="Column[config][startYear]" value="'.$this->startYear.'" size="4" />';
 		$html .= "から";
@@ -127,7 +124,7 @@ class DateColumn extends SOYInquiry_ColumnBase{
 		$html .= '月:<input type="text" name="Column[config][labels][m]" value="'.$this->labels["m"].'" size="3"> ';
 		$html .= '日:<input type="text" name="Column[config][labels][d]" value="'.$this->labels["d"].'" size="3"><br>';
 
-		if(isset($hasToday)){
+		if($this->hasToday){
 			$html .= '<input type="checkbox" name="Column[config][hasToday]" value="1" checked="checked" />';
 		}else{
 			$html .= '<input type="checkbox" name="Column[config][hasToday]" value="1" />';
@@ -160,13 +157,12 @@ class DateColumn extends SOYInquiry_ColumnBase{
 	 */
 	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
-
-		$this->startYear = (isset($config["startYear"]) && is_numeric($config["startYear"])) ? (int)$config["startYear"] : null;
-		$this->endYear = (isset($config["endYear"]) && is_numeric($config["endYear"])) ? (int)$config["endYear"] : null;
-		$this->hasToday = isset($config["hasToday"]) ? 1 : null;
-		$this->attribute = (isset($config["attribute"])) ? str_replace("\"","&quot;",$config["attribute"]) : null;
+		$this->startYear = (isset($config["startYear"]) && is_numeric($config["startYear"])) ? (int)$config["startYear"] : "";
+		$this->endYear = (isset($config["endYear"]) && is_numeric($config["endYear"])) ? (int)$config["endYear"] : "";
+		$this->hasToday = (isset($config["hasToday"]) && $config["hasToday"]);
+		$this->attribute = (isset($config["attribute"]) && is_string($config["attribute"])) ? str_replace("\"","&quot;",$config["attribute"]) : "";
 		$this->labels = (isset($config["labels"]) && is_array($config["labels"])) ? $config["labels"] : array("y" => "----", "m" => "--", "d" => "--");
-		$this->requiredProp = (isset($config["requiredProp"])) ? $config["requiredProp"] : null;
+		$this->requiredProp = (isset($config["requiredProp"]) && $config["requiredProp"]);
 	}
 
 	function getConfigure(){

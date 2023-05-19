@@ -150,9 +150,9 @@ class RadioColumn extends SOYInquiry_ColumnBase{
 	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
 		$this->items = (isset($config["items"])) ? $config["items"] : "*項目１\n項目２\n項目３";
-		$this->style = (isset($config["style"])) ? $config["style"] : null ;
-		$this->attribute = (isset($config["attribute"])) ? str_replace("\"","&quot;",$config["attribute"]) : null;
-		$this->requiredProp = (isset($config["requiredProp"])) ? $config["requiredProp"] : null;
+		$this->style = (isset($config["style"])) ? (string)$config["style"] : "";
+		$this->attribute = (isset($config["attribute"]) && is_string($config["attribute"])) ? str_replace("\"","&quot;",$config["attribute"]) : "";
+		$this->requiredProp = (isset($config["requiredProp"]) && $config["requiredProp"]);
 		$this->isBr = (isset($config["isBr"]) && $config["isBr"] == 1);
 		$this->isThumbnail = (isset($config["isThumbnail"]) && $config["isThumbnail"] == 1);
 		$this->thumbWidth = (isset($config["thumbWidth"]) && is_numeric($config["thumbWidth"])) ? (int)$config["thumbWidth"] : SOYInquiry_ColumnBase::THUMBNAIL_WIDTH;

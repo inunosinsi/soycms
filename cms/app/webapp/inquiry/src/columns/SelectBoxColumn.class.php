@@ -73,7 +73,7 @@ class SelectBoxColumn extends SOYInquiry_ColumnBase{
 
 	function getAttributes(){
 		$attributes = array();
-		if($this->size)$attributes[] = "size=\"".$this->size."\"";
+		if(is_numeric($this->size))$attributes[] = "size=\"".$this->size."\"";
 
 		//1.0.0以前のバージョンに対応
 		if(is_null($this->attribute) && isset($this->style)){
@@ -108,7 +108,7 @@ class SelectBoxColumn extends SOYInquiry_ColumnBase{
 			$html .= '<input type="checkbox" name="Column[config][emptyOption]" value="1" />';
 		}
 		$html .= "先頭に値が空の項目を追加する。<br/>";
-		$html .= '文言: <input type="text" name="Column[config][emptyOptionText]" value="'.htmlspecialchars($this->emptyOptionText,ENT_QUOTES,"UTF-8").'" style="width:90%;" />';
+		$html .= '文言: <input type="text" name="Column[config][emptyOptionText]" value="'.htmlspecialchars((string)$this->emptyOptionText,ENT_QUOTES,"UTF-8").'" style="width:90%;" />';
 		$html .= "</p>";
 
 		if(is_null($this->attribute) && isset($this->style)){
@@ -137,10 +137,10 @@ class SelectBoxColumn extends SOYInquiry_ColumnBase{
 		SOYInquiry_ColumnBase::setConfigure($config);
 		$this->items = (isset($config["items"])) ? $config["items"] : "*項目１\n項目２\n項目３";
 		$this->emptyOption = (isset($config["emptyOption"]) && $config["emptyOption"] == 1) ? 1 : 0;
-		$this->emptyOptionText = (isset($config["emptyOptionText"])) ? $config["emptyOptionText"] : null;
-		$this->style = (isset($config["style"])) ? $config["style"] : null ;
-		$this->attribute = (isset($config["attribute"])) ? str_replace("\"","&quot;",$config["attribute"]) : null;
-		$this->requiredProp = (isset($config["requiredProp"])) ? $config["requiredProp"] : null;
+		$this->emptyOptionText = (isset($config["emptyOptionText"])) ? $config["emptyOptionText"] : "";
+		$this->style = (isset($config["style"])) ? (string)$config["style"] : "";
+		$this->attribute = (isset($config["attribute"]) && is_string($config["attribute"])) ? str_replace("\"","&quot;",$config["attribute"]) : "";
+		$this->requiredProp = (isset($config["requiredProp"]) && $config["requiredProp"]);
 	}
 	function getConfigure(){
 		$config = parent::getConfigure();

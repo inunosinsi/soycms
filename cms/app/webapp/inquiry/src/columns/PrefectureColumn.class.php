@@ -67,7 +67,7 @@ class PrefectureColumn extends SOYInquiry_ColumnBase{
 	function getForm(array $attrs=array()){
 
 		$attributes = array();
-		if($this->size)$attributes[] = "size=\"".$this->size."\"";
+		if(is_numeric($this->size))$attributes[] = "size=\"".$this->size."\"";
 
 		$required = $this->getRequiredProp();
 
@@ -116,8 +116,8 @@ class PrefectureColumn extends SOYInquiry_ColumnBase{
 	 */
 	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
-		$this->size = (isset($config["size"]) && is_numeric($config["size"])) ? (int)$config["size"] : null;
-		$this->requiredProp = (isset($config["requiredProp"])) ? $config["requiredProp"] : null;
+		$this->size = (isset($config["size"]) && is_numeric($config["size"])) ? (int)$config["size"] : "";
+		$this->requiredProp = (isset($config["requiredProp"]) && $config["requiredProp"]);
 	}
 
 	function getConfigure(){

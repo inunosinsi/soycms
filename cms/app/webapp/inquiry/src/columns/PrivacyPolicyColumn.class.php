@@ -42,8 +42,8 @@ class PrivacyPolicyColumn extends SOYInquiry_ColumnBase{
 	function getForm(array $attrs=array()){
 
 		$attributes = array();
-		$attributes[] = ($this->cols) ? "cols=\"".$this->cols."\"" : 'style="width:90%;"';
-		if($this->rows)$attributes[] = "rows=\"".$this->rows."\"";
+		$attributes[] = (is_numeric($this->cols)) ? "cols=\"".$this->cols."\"" : 'style="width:90%;"';
+		if(is_numeric($this->rows)) $attributes[] = "rows=\"".$this->rows."\"";
 
 		foreach($attrs as $key => $value){
 			$attributes[] = htmlspecialchars($key,ENT_QUOTES,"UTF-8") . "=\"".htmlspecialchars($value,ENT_QUOTES,"UTF-8")."\"";
@@ -86,14 +86,14 @@ class PrivacyPolicyColumn extends SOYInquiry_ColumnBase{
 
 		$html.= "<br/>";
 		$html.= '<label for="">チェックボックスの文言：</label>';
-		$html.= '<input type="input" size="60" name="Column[config][checkLabel]" value="'.htmlspecialchars($this->checkLabel,ENT_QUOTES,"UTF-8").'" />';
+		$html.= '<input type="text" size="60" name="Column[config][checkLabel]" value="'.htmlspecialchars($this->checkLabel,ENT_QUOTES,"UTF-8").'" />';
 		$html.= "<br/>";
 		$html.= '<label for="">チェックされなかったときのの文言：</label>';
-		$html.= '<input type="input" size="60" name="Column[config][noCheckMessage]" value="'.htmlspecialchars($this->noCheckMessage,ENT_QUOTES,"UTF-8").'" />';
+		$html.= '<input type="text" size="60" name="Column[config][noCheckMessage]" value="'.htmlspecialchars($this->noCheckMessage,ENT_QUOTES,"UTF-8").'" />';
 
 		$html.= "<br/>";
-		$html .= '幅:<input type="text" name="Column[config][cols]" value="'.$this->cols.'" size="3"/>&nbsp;';
-		$html .= '高さ:<input type="text" name="Column[config][rows]" value="'.$this->rows.'" size="3" />';
+		$html .= '幅:<input type="number" name="Column[config][cols]" value="'.$this->cols.'" size="6"/>&nbsp;';
+		$html .= '高さ:<input type="number" name="Column[config][rows]" value="'.$this->rows.'" size="6" />';
 
 		return $html;
 	}
@@ -104,8 +104,8 @@ class PrivacyPolicyColumn extends SOYInquiry_ColumnBase{
 	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
 		$this->mode = (isset($config["mode"]) && is_numeric($config["mode"])) ? (int)$config["mode"] : self::MODE_TEXTAREA;
-		$this->cols = (isset($config["cols"]) && is_numeric($config["cols"])) ? (int)$config["cols"] : null;
-		$this->rows = (isset($config["rows"]) && is_numeric($config["rows"])) ? (int)$config["rows"] : null;
+		$this->cols = (isset($config["cols"]) && is_numeric($config["cols"])) ? (int)$config["cols"] : "";
+		$this->rows = (isset($config["rows"]) && is_numeric($config["rows"])) ? (int)$config["rows"] : "";
 		$this->policy = (isset($config["policy"])) ? $config["policy"] : self::POLICYDEFAULT;
 		$this->checkLabel = (isset($config["checkLabel"])) ? $config["checkLabel"] : self::CHECK_LABEL_DEFAULT ;
 		$this->noCheckMessage = (isset($config["noCheckMessage"])) ? $config["noCheckMessage"] : self::NO_CHECK_MESSAGE_DEFAULT ;

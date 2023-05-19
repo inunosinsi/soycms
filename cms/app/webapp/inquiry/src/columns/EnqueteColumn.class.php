@@ -103,8 +103,8 @@ class EnqueteColumn extends SOYInquiry_ColumnBase{
 		SOYInquiry_ColumnBase::setConfigure($config);
 		$this->question = (isset($config["question"])) ? $config["question"] : "";
 		$this->items = (isset($config["items"])) ? $config["items"] : "*項目１\n項目２\n項目３";
-		$this->style = (isset($config["style"])) ? $config["style"] : null ;
-		$this->attribute = (isset($config["attribute"])) ? str_replace("\"","&quot;",$config["attribute"]) : null;
+		$this->style = (isset($config["style"])) ? (string)$config["style"] : "";
+		$this->attribute = (isset($config["attribute"]) && is_string($config["attribute"])) ? str_replace("\"","&quot;",$config["attribute"]) : "";
 	}
 	function getConfigure(){
 		$config = parent::getConfigure();

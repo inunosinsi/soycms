@@ -318,8 +318,8 @@ class FileColumn extends SOYInquiry_ColumnBase{
 
 		$this->uploadsize  = (isset($config["uploadsize"]) && is_numeric($config["uploadsize"])) ? (int)$config["uploadsize"] : 500;
 		$this->extensions = (isset($config["extensions"]) && strlen($config["extensions"])) ? $config["extensions"] : "jpg,gif,png";
-		$this->resize_w = (isset($config["resize_w"]) && is_numeric($config["resize_w"])) ? (int)$config["resize_w"] : null;
-		$this->resize_h = (isset($config["resize_h"]) && is_numeric($config["resize_h"])) ? (int)$config["resize_h"] : null;
+		$this->resize_w = (isset($config["resize_w"]) && is_numeric($config["resize_w"])) ? (int)$config["resize_w"] : "";
+		$this->resize_h = (isset($config["resize_h"]) && is_numeric($config["resize_h"])) ? (int)$config["resize_h"] : "";
 	}
 
 	function getConfigure(){

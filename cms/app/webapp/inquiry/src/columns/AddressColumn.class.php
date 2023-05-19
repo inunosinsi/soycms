@@ -281,8 +281,8 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 	 */
 	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
-		$this->requiredProp = (isset($config["requiredProp"])) ? $config["requiredProp"] : null;
-		$this->zipDivide = (isset($config["zipDivide"])) ? $config["zipDivide"] : null;
+		$this->requiredProp = (isset($config["requiredProp"]) && $config["requiredProp"]);
+		$this->zipDivide = (isset($config["zipDivide"]) && $config["zipDivide"]);
 	}
 
 	function getConfigure(){

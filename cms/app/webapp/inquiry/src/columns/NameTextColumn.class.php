@@ -63,8 +63,8 @@ class NameTextColumn extends SOYInquiry_ColumnBase{
 
 	function getAttributes(){
 		$attributes = array();
-		if($this->maxLength) $attributes[] = "maxlength=\"{$this->maxLength}\"";
-		if($this->size)      $attributes[] = "size=\"{$this->size}\"";
+		if(is_numeric($this->maxLength)) $attributes[] = "maxlength=\"{$this->maxLength}\"";
+		if(is_numeric($this->size))      $attributes[] = "size=\"{$this->size}\"";
 
 		return $attributes;
 	}
@@ -145,16 +145,16 @@ class NameTextColumn extends SOYInquiry_ColumnBase{
 	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
 
-		$this->maxLength = (isset($config["maxLength"]) && is_numeric($config["maxLength"])) ? (int)$config["maxLength"] : null;
-		$this->size = (isset($config["size"]) && is_numeric($config["size"])) ? (int)$config["size"] : null;
-		$this->type = (isset($config["type"]) && is_numeric($config["type"])) ? (int)$config["type"] : null;
+		$this->maxLength = (isset($config["maxLength"]) && is_numeric($config["maxLength"])) ? (int)$config["maxLength"] : "";
+		$this->size = (isset($config["size"]) && is_numeric($config["size"])) ? (int)$config["size"] : "";
+		$this->type = (isset($config["type"]) && is_numeric($config["type"])) ? (int)$config["type"] : "";
 		$this->label1 = (isset($config["label1"]) && strlen($config["label1"]) > 0) ? $config["label1"] : "姓：";
 		$this->label2 = (isset($config["label2"]) && strlen($config["label2"]) > 0) ? $config["label2"] : "名：";
 		$this->ime_mode = (isset($config["ime_mode"])) ? $config["ime_mode"] : 0 ;
 		$this->mobile_ime_mode = (isset($config["mobile_ime_mode"])) ? $config["mobile_ime_mode"] : 0 ;
-		$this->attribute1 = (isset($config["attribute1"])) ? str_replace("\"","&quot;",$config["attribute1"]) : null;
-		$this->attribute2 = (isset($config["attribute2"])) ? str_replace("\"","&quot;",$config["attribute2"]) : null;
-		$this->requiredProp = (isset($config["requiredProp"])) ? $config["requiredProp"] : null;
+		$this->attribute1 = (isset($config["attribute1"]) && is_string($config["attribute1"])) ? str_replace("\"","&quot;",$config["attribute1"]) : "";
+		$this->attribute2 = (isset($config["attribute2"]) && is_string($config["attribute2"])) ? str_replace("\"","&quot;",$config["attribute2"]) : "";
+		$this->requiredProp = (isset($config["requiredProp"]) && $config["requiredProp"]);
 	}
 
 	function getConfigure(){

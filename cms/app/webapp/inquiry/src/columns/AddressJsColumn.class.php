@@ -331,10 +331,10 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 	 */
 	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
-		$this->requiredProp = (isset($config["requiredProp"])) ? $config["requiredProp"] : null;
+		$this->requiredProp = (isset($config["requiredProp"]) && $config["requiredProp"]);
 		$this->autoSearchMode = (isset($config["autoSearchMode"])) ? $config["autoSearchMode"] : 0;
-		$this->zipDivide = (isset($config["zipDivide"])) ? $config["zipDivide"] : false;
-		$this->items = (isset($config["items"]) && is_array($config["items"])) ? $config["items"] : null;
+		$this->zipDivide = (isset($config["zipDivide"]) && $config["zipDivide"]);
+		$this->items = (isset($config["items"]) && is_array($config["items"])) ? $config["items"] : array();
 	}
 
 	function getConfigure(){

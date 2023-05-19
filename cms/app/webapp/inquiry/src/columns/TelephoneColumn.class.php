@@ -34,16 +34,37 @@ class TelephoneColumn extends SOYInquiry_ColumnBase{
 		$tel3 = (isset($values[2])) ? $values[2] : "";
 
 		$html = array();
-		$html[] = "<input type=\"".$inputType."\" name=\"data[".$this->getColumnId()."][]\" value=\"".$tel1."\" size=\"".$this->size1."\" ".$this->getFormAttribute($this->attribute1)."" . $required . ">";
+		$html[] = "<input type=\"".$inputType."\" name=\"data[".$this->getColumnId()."][]\" value=\"".$tel1."\" ".self::_getFormAttribute($this->attribute1, 1)."" . $required . ">";
 		$html[] = "-";
-		$html[] = "<input type=\"".$inputType."\" name=\"data[".$this->getColumnId()."][]\" value=\"".$tel2."\" size=\"".$this->size2."\" ".$this->getFormAttribute($this->attribute2)."" . $required . ">";
+		$html[] = "<input type=\"".$inputType."\" name=\"data[".$this->getColumnId()."][]\" value=\"".$tel2."\" ".self::_getFormAttribute($this->attribute2, 2)."" . $required . ">";
 		$html[] = "-";
-		$html[] = "<input type=\"".$inputType."\" name=\"data[".$this->getColumnId()."][]\" value=\"".$tel3."\" size=\"".$this->size3."\" ".$this->getFormAttribute($this->attribute3)."" . $required . ">";
+		$html[] = "<input type=\"".$inputType."\" name=\"data[".$this->getColumnId()."][]\" value=\"".$tel3."\" ".self::_getFormAttribute($this->attribute3, 3)."" . $required . ">";
 		return implode("\n",$html);
 	}
 
-	function getFormAttribute($attribute){
-		return (isset($attribute) && strlen($attribute) > 0) ? str_replace("&quot;","\"",$attribute) : "";
+	/**
+	 * @param string, int
+	 * @return string
+	 */
+	private function _getFormAttribute(string $attribute, int $mode=1){
+		$attrs = array();
+		if(isset($attribute) && strlen($attribute) > 0) $attrs[] = str_replace("&quot;","\"",$attribute);
+
+		$size = null;
+		switch($mode){
+			case 1:
+				if(is_numeric($this->size1)) $size = $this->size1;
+				break;
+			case 2:
+				if(is_numeric($this->size2)) $size = $this->size2;
+				break;
+			case 3:
+				if(is_numeric($this->size3)) $size = $this->size3;
+				break;
+		}
+		if(is_numeric($size)) $attrs[] = "size=\"".$size."\"";
+
+		return (count($attrs)) ? implode(" ", $attrs) : "";
 	}
 
 	function getRequiredProp(){
@@ -54,9 +75,9 @@ class TelephoneColumn extends SOYInquiry_ColumnBase{
 	 * 個々のフォームのサイズを変更するフォーム
 	 */
 	function getConfigForm(){
-		$html  = '幅:<input type="text" name="Column[config][size1]" value="'.$this->size1.'" size="3" />';
-		$html .= '-<input type="text" name="Column[config][size2]" value="'.$this->size2.'" size="3" />';
-		$html .= '-<input type="text" name="Column[config][size3]" value="'.$this->size3.'" size="3" />';
+		$html  = '幅:<input type="number" name="Column[config][size1]" value="'.$this->size1.'" size="6" />';
+		$html .= '-<input type="number" name="Column[config][size2]" value="'.$this->size2.'" size="6" />';
+		$html .= '-<input type="number" name="Column[config][size3]" value="'.$this->size3.'" size="6" />';
 
 		$html .= "<br>";
 
@@ -89,14 +110,14 @@ class TelephoneColumn extends SOYInquiry_ColumnBase{
 	 */
 	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
-		$this->size1 = (isset($config["size1"]) && is_numeric($config["size1"])) ? (int)$config["size1"] : null;
-		$this->size2 = (isset($config["size2"]) && is_numeric($config["size2"])) ? (int)$config["size2"] : null;
-		$this->size3 = (isset($config["size3"]) && is_numeric($config["size3"])) ? (int)$config["size3"] : null;
-		$this->attribute1 = (isset($config["attribute1"])) ? str_replace("\"","&quot;",$config["attribute1"]) : null;
-		$this->attribute2 = (isset($config["attribute2"])) ? str_replace("\"","&quot;",$config["attribute2"]) : null;
-		$this->attribute3 = (isset($config["attribute3"])) ? str_replace("\"","&quot;",$config["attribute3"]) : null;
+		$this->size1 = (isset($config["size1"]) && is_numeric($config["size1"])) ? (int)$config["size1"] : "";
+		$this->size2 = (isset($config["size2"]) && is_numeric($config["size2"])) ? (int)$config["size2"] : "";
+		$this->size3 = (isset($config["size3"]) && is_numeric($config["size3"])) ? (int)$config["size3"] : "";
+		$this->attribute1 = (isset($config["attribute1"]) && is_string($config["attribute1"])) ? str_replace("\"","&quot;",$config["attribute1"]) : "";
+		$this->attribute2 = (isset($config["attribute2"]) && is_string($config["attribute2"])) ? str_replace("\"","&quot;",$config["attribute2"]) : "";
+		$this->attribute3 = (isset($config["attribute3"]) && is_string($config["attribute3"])) ? str_replace("\"","&quot;",$config["attribute3"]) : "";
 		$this->inputType = (isset($config["inputType"])) && strlen($config["inputType"]) ? $config["inputType"] : "text";
-		$this->requiredProp = (isset($config["requiredProp"])) ? $config["requiredProp"] : null;
+		$this->requiredProp = (isset($config["requiredProp"]) && $config["requiredProp"]);
 	}
 
 	function getConfigure(){

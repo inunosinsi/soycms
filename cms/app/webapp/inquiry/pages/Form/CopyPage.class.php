@@ -2,9 +2,9 @@
 
 class CopyPage extends WebPage{
 	
-	var $dao;
-	var $form;
-	var $errorMessage;
+	private $dao;
+	private $form;
+	private $errorMessage="";
 	
 	function doPost(){
 		$form = $this->dao->getById($_POST["copy_from"]);
@@ -63,26 +63,26 @@ class CopyPage extends WebPage{
     	    	 
     	parent::__construct();
     	
-    	$this->createAdd("form_list","HTMLSelect",array(
+    	$this->addSelect("form_list", array(
     		"options" => $this->getFormList(),
     		"name" => "copy_from"
     	));
     	
-    	$this->createAdd("form_name","HTMLInput",array(
+    	$this->addInput("form_name", array(
     		"name" => "Form[name]",
     		"value" => $this->form->getName()
     	));
     	
-    	$this->createAdd("form_id","HTMLInput",array(
+    	$this->addInput("form_id", array(
     		"name" => "Form[formId]",
     		"value" => $this->form->getFormId()
     	));
     	
-    	$this->createAdd("create_form","HTMLForm");
+    	$this->addForm("create_form");
     	
-    	$this->createAdd("error","HTMLLabel",array(
+    	$this->addLabel("error", array(
     		"html" => $this->errorMessage,
-    		"visible" => strlen($this->errorMessage)
+    		"visible" => strlen((string)$this->errorMessage)
     	));
     }
     

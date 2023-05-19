@@ -55,8 +55,8 @@ class MultiTextColumn extends SOYInquiry_ColumnBase{
 
 	function getAttributes(){
 		$attributes = array();
-		if($this->cols)$attributes[] = "cols=\"".$this->cols."\"";
-		if($this->rows)$attributes[] = "rows=\"".$this->rows."\"";
+		if(is_numeric($this->cols)) $attributes[] = "cols=\"".$this->cols."\"";
+		if(is_numeric($this->rows)) $attributes[] = "rows=\"".$this->rows."\"";
 
 		//1.0.0以前のバージョンに対応
 		if(is_null($this->attribute) && isset($this->style)){
@@ -121,11 +121,11 @@ class MultiTextColumn extends SOYInquiry_ColumnBase{
 	 */
 	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
-		$this->cols = (isset($config["cols"]) && is_numeric($config["cols"])) ? (int)$config["cols"] : null;
-		$this->rows = (isset($config["rows"]) && is_numeric($config["rows"])) ? (int)$config["rows"] : null;
-		$this->style = (isset($config["style"])) ? $config["style"] : null ;
-		$this->attribute = (isset($config["attribute"])) ? str_replace("\"","&quot;",$config["attribute"]) : null;
-		$this->requiredProp = (isset($config["requiredProp"])) ? $config["requiredProp"] : null;
+		$this->cols = (isset($config["cols"]) && is_numeric($config["cols"])) ? (int)$config["cols"] : "";
+		$this->rows = (isset($config["rows"]) && is_numeric($config["rows"])) ? (int)$config["rows"] : "";
+		$this->style = (isset($config["style"])) ? (string)$config["style"] : "";
+		$this->attribute = (isset($config["attribute"]) && is_string($config["attribute"])) ? str_replace("\"","&quot;",$config["attribute"]) : "";
+		$this->requiredProp = (isset($config["requiredProp"]) && $config["requiredProp"]);
 	}
 	function getConfigure(){
 		$config = parent::getConfigure();

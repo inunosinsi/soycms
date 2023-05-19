@@ -44,7 +44,7 @@ class PlainTextColumn extends SOYInquiry_ColumnBase{
 	 */
 	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
-		$this->noPersistent = (isset($config["noPersistent"])) ? str_replace("\"","&quot;",$config["noPersistent"]) : null;
+		$this->noPersistent = (isset($config["noPersistent"])) ? str_replace("\"","&quot;",$config["noPersistent"]) : "";
 	}
 
 	function getConfigure(){

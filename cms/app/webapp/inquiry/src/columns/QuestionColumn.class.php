@@ -18,8 +18,8 @@ class QuestionColumn extends SOYInquiry_ColumnBase{
 	function getForm($attrs=array()){
 
 		$attributes = array();
-		if($this->maxLength) $attributes[] = "maxlength=\"".$this->maxLength."\"";
-		if($this->size) $attributes[] = "size=\"".$this->size."\"";
+		if(is_numeric($this->maxLength)) $attributes[] = "maxlength=\"".$this->maxLength."\"";
+		if(is_numeric($this->size)) $attributes[] = "size=\"".$this->size."\"";
 
 		foreach($attrs as $key => $value){
 			$attributes[] = htmlspecialchars($key,ENT_QUOTES,"UTF-8") . "=\"".htmlspecialchars($value,ENT_QUOTES,"UTF-8")."\"";
@@ -50,10 +50,10 @@ class QuestionColumn extends SOYInquiry_ColumnBase{
 	 */
 	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
-		$this->maxLength = (isset($config["maxLength"]) && is_numeric($config["maxLength"])) ? (int)$config["maxLength"] : null;
-		$this->size = (isset($config["size"]) && is_numeric($config["size"])) ? (int)$config["size"] : null;
-		$this->answer = (isset($config["answer"])) ? $config["answer"] : null;
-		$this->question = (isset($config["question"])) ? $config["question"] : null;
+		$this->maxLength = (isset($config["maxLength"]) && is_numeric($config["maxLength"])) ? (int)$config["maxLength"] : "";
+		$this->size = (isset($config["size"]) && is_numeric($config["size"])) ? (int)$config["size"] : "";
+		$this->answer = (isset($config["answer"])) ? $config["answer"] : "";
+		$this->question = (isset($config["question"])) ? $config["question"] : "";
 	}
 	function getConfigure(){
 		$config = parent::getConfigure();

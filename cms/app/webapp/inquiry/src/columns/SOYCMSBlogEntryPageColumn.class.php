@@ -52,7 +52,7 @@ class SOYCMSBlogEntryPageColumn extends SOYInquiry_ColumnBase{
 	 */
 	function setConfigure(array $config){
 		SOYInquiry_ColumnBase::setConfigure($config);
-		$this->cms_id = isset($config["cms_id"]) ? $config["cms_id"] : null;
+		$this->cms_id = isset($config["cms_id"]) ? $config["cms_id"] : "";
 	}
 
 	function getConfigure(){

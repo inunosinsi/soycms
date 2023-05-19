@@ -66,8 +66,8 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 	function getConfigForm(){
 		$html  = 'サイズ:<input type="text" name="Column[config][uploadsize]" value="'.htmlspecialchars($this->uploadsize,ENT_QUOTES).'" size="3">KB&nbsp;';
 		$html .= '拡張子:<input type="text" name="Column[config][extensions]" value="'.htmlspecialchars($this->extensions,ENT_QUOTES).'"><br>';
-		$html .= '画像のリサイズ: width:<input type="text" name="Column[config][resize_w]" value="'.htmlspecialchars($this->resize_w, ENT_QUOTES) . '" size="5">px ';
-		$html .= 'height:<input type="text" name="Column[config][resize_h]" value="'.htmlspecialchars($this->resize_h, ENT_QUOTES) . '" size="5">px(アスペクト比は維持)<br>';
+		$html .= '画像のリサイズ: width:<input type="text" name="Column[config][resize_w]" value="'.htmlspecialchars((string)$this->resize_w, ENT_QUOTES) . '" size="5">px ';
+		$html .= 'height:<input type="text" name="Column[config][resize_h]" value="'.htmlspecialchars((string)$this->resize_h, ENT_QUOTES) . '" size="5">px(アスペクト比は維持)<br>';
 		$html .= '同時アップロードファイル数:<input type="number" value="' . $this->upload_limit . '" style="width:50px;">';
 
 		return $html;
@@ -316,8 +316,8 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 
 		$this->uploadsize  = (isset($config["uploadsize"]) && is_numeric($config["uploadsize"])) ? (int)$config["uploadsize"] : 500;
 		$this->extensions = (isset($config["extensions"]) && strlen($config["extensions"])) ? $config["extensions"] : "jpg,gif,png";
-		$this->resize_w = (isset($config["resize_w"]) && is_numeric($config["resize_w"])) ? (int)$config["resize_w"] : null;
-		$this->resize_h = (isset($config["resize_h"]) && is_numeric($config["resize_h"])) ? (int)$config["resize_h"] : null;
+		$this->resize_w = (isset($config["resize_w"]) && is_numeric($config["resize_w"])) ? (int)$config["resize_w"] : "";
+		$this->resize_h = (isset($config["resize_h"]) && is_numeric($config["resize_h"])) ? (int)$config["resize_h"] : "";
 	}
 
 	function getConfigure(){
