@@ -43,6 +43,14 @@ class SOYShopPluginUtil {
 					}
 				}
 			}
+
+			if(true){
+			//if(DEBUG_MODE){
+				$pluginCacheDir = SOYSHOP_SITE_DIRECTORY.".cache/plugin/";
+				if(!file_exists($pluginCacheDir)) mkdir($pluginCacheDir);
+				file_put_contents($pluginCacheDir."commons.txt", var_export($commons, true));
+				file_put_contents($pluginCacheDir."others.txt", var_export($others, true));
+			}
 		}
 
 		if(preg_match('/common_/', $pluginId, $_tmp)){
