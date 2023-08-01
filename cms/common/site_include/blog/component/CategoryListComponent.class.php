@@ -37,6 +37,17 @@ class CategoryListComponent extends HTMLList{
 			"soy2prefix"=>"cms"
 		));
 
+		$isDescription = (strlen(trim((string)$entry->getDescription())));
+		$this->addModel("is_category_description", array(
+			"visible" => $isDescription,
+			"soy2prefix" => "cms"
+		));
+
+		$this->addModel("no_category_description", array(
+			"visible" => !$isDescription,
+			"soy2prefix" => "cms"
+		));
+
 		$this->createAdd("category_description", "CMSLabel", array(
 			"text" => $entry->getDescription(),
 			"soy2prefix" => "cms"
