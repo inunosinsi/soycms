@@ -4,7 +4,7 @@
 https://saitodev.co/category/SEO  
 
 下記のページからダウンロードできます。  
-[SOY CMS - ブログやネットショップを構築できる自由度が高いオープンソースのコンテンツマネージメントシステムです](https://saitodev.co/soycms/)
+https://saitodev.co/soycms/
   
 当リポジトリの改修内容を公式の開発の方が採用することを節に願います。  
 公式:http://www.soycms.net/  
