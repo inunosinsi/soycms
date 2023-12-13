@@ -39,6 +39,20 @@ class CustomSearchFieldConfigFormPage extends WebPage{
 			}
 		}
 
+		//update
+		if(isset($_POST["update_submit"])){
+			$fieldId = $_POST["update_submit"];
+
+			$configs = CustomSearchFieldUtil::getConfig();;
+			$config = $configs[$fieldId];
+			$config["label"] = $_POST["obj"]["label"];
+			
+			$configs[$fieldId] = $config;
+			
+			CustomSearchFieldUtil::saveConfig($configs);
+			$this->configObj->redirect("updated");
+		}
+
 		//advanced config
 		if(isset($_POST["update_advance"])){
 			$key = $_POST["update_advance"];

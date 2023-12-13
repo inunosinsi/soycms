@@ -122,6 +122,9 @@ foreach($scripts as $script){
 						<li class="site_template">
 							<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Site/Template"><i class="fa fa-html5 fa-fw"></i>テンプレート管理</a>
 						</li>
+						<li class="site_category_tree">
+							<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Site/Config/Category"><i class="fa fa-folder-open fa-fw"></i><span>カテゴリツリー設定</span></a>
+						</li>
 						<li class="site_file">
 							<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Site/File"><i class="fa fa-folder-open fa-fw"></i><span>ファイル管理</span></a>
 						</li>

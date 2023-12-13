@@ -39,6 +39,16 @@ class TagCloudUtil {
 		return false;
 	}
 
+	/**
+	 * @param string
+	 * @return bool
+	 */
+	public static function checkIsTagExists(string $v){
+		if(!strlen($v)) return false;
+		SOY2::import("site_include.plugin.tag_cloud.domain.TagCloudDictionaryDAO");
+		return SOY2DAOFactory::create("TagCloudDictionaryDAO")->checkIsTagExists($v);
+	}
+
 	public static function getRank(int $i){
 		static $div, $rank;
 		if(is_null($rank)) $rank = 0;

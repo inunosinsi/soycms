@@ -1,12 +1,8 @@
 <?php
-/*
- * soyshop.site.beforeoutput.php
- * Created: 2010/03/11
- */
 
 class UtilMobileCheckBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
-	function beforeOutput($page){
+	function beforeOutput(WebPage $page){
 
 		if(SOYSHOP_MOBILE_CARRIER == "PC" || (defined("SOYSHOP_DOCOMO_CSS") && SOYSHOP_DOCOMO_CSS == 0) ) return;
 

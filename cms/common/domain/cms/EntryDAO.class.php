@@ -118,4 +118,54 @@ abstract class EntryDAO extends SOY2DAO{
 	 * @return column_openPeriodStartMin
 	 */
 	abstract function getNearestOpeningEntry($now);
+
+	/**
+	 * @final
+	 * @paran int, int, int
+	 * @return Entry
+	 */
+	function getOpenEntryByIdAndBlogLabelId(int $entryId,int $blogLabelId, int $now){
+		try{
+			$res = $this->executeQuery(
+				"SELECT ent.* FROM Entry ent ".
+				"INNER JOIN EntryLabel lab ".
+				"ON ent.id = lab.entry_id ".
+				"WHERE ent.id = :entry_id ".
+				"AND ent.isPublished = 1 ".
+				"AND (ent.openPeriodEnd > :start AND ent.openPeriodStart <= :end) ".
+				"AND lab.label_id = :label_id ".
+				"LIMIT 1",
+				array(":entry_id" => $entryId, ":label_id" => $blogLabelId, ":start" => $now, ":end" => $now)
+			);
+		}catch(Exception $e){
+			$res = array();
+		}
+
+		return (isset($res[0])) ? $this->getObject($res[0]) : new Entry();
+	}
+
+	/**
+	 * @final
+	 * @param string, int, int
+	 * @return Entry
+	 */
+	function getOpenEntryByAliasAndBlogLabelId(string $alias,int $blogLabelId, int $now){
+		try{
+			$res = $this->executeQuery(
+				"SELECT ent.* FROM Entry ent ".
+				"INNER JOIN EntryLabel lab ".
+				"ON ent.id = lab.entry_id ".
+				"WHERE ent.alias = :alias ".
+				"AND ent.isPublished = 1 ".
+				"AND (ent.openPeriodEnd > :start AND ent.openPeriodStart <= :end) ".
+				"AND lab.label_id = :label_id ".
+				"LIMIT 1",
+				array(":alias" => $alias, ":label_id" => $blogLabelId, ":start" => $now, ":end" => $now)
+			);
+		}catch(Exception $e){
+			$res = array();
+		}
+
+		return (isset($res[0])) ? $this->getObject($res[0]) : new Entry();
+	}
 }

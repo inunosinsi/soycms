@@ -76,6 +76,27 @@ class ConvertImageFileFormatOnOutput extends SOYShopSiteOnOutputAction{
 								}
 
 								if(!$img instanceof GdImage) continue;
+
+								// 縦横比
+								$exif = exif_read_data($filepath);
+								if(isset($exif["Orientation"])){
+									switch($exif["Orientation"]){
+										case 3:
+											$rotate = 180;
+											break;
+										case 6:
+											$rotate = 270;
+											break;
+										case 8:
+											$rotate = 90;
+											break;
+										default:
+											$rotate = 0;
+									}
+
+									if($rotate > 0) $img = imagerotate($img, $rotate, 0);
+								}
+
 								switch($to){
 									case ImgFmtUtil::FMT_TYPE_WEBP:
 										imagewebp($img, $new);

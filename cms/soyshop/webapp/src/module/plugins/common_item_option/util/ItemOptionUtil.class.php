@@ -129,7 +129,7 @@ class ItemOptionUtil {
 			default:
 				
 				$html = array();
-				$html[] = "<select name=\"" . $name . "\" required=\"required\">";
+				$html[] = "<select name=\"" . $name . "\" required=\"required\" id=\"".self::_generateIdByNameProperty($name)."\">";
 
 				$cnfs = ItemOptionUtil::getOptions();
 				preg_match('/\[(.*?)\]/', $name, $tmp);
@@ -151,6 +151,21 @@ class ItemOptionUtil {
 				return implode("\n", $html);
 		}
 	}
+
+	/**
+	 * Item[idx][attributes][option_id]をattribute_{option_id}_{idx}に変換する　selenium用
+	 * @paran string
+	 * @return string
+	 */
+	private static function _generateIdByNameProperty(string $nameProp){
+		$nameProp = str_replace(array("Item", "[attributes]"), "", $nameProp);
+		preg_match('/\[(\d*)\]/', $nameProp, $tmp);
+		$idx = (isset($tmp[1])) ? (string)$tmp[1] : "0";
+		$nameProp = str_replace("[".$idx."]", "", $nameProp);
+		$optionId = str_replace(array("[", "]"), "", $nameProp);
+		return "attribute_".$optionId."_".$idx;
+	}
+
 
 	private static function _getInitialValue(){
 		if(!defined("SOYSHOP_PUBLISH_LANGUAGE") || SOYSHOP_PUBLISH_LANGUAGE == "jp") return "選択してください";

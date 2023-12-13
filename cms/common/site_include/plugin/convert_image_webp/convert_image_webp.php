@@ -21,7 +21,7 @@ class ConvertImageWebpPlugin {
 			"author"=> "齋藤毅",
 			"url"=> "https://saitodev.co/article/4918",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.2"
+			"version"=>"1.3"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -115,7 +115,7 @@ class ConvertImageWebpPlugin {
 								}
 
 								if(!$img instanceof GdImage) continue;
-								
+
 								// 縦横比
 								$exif = exif_read_data($filepath);
 								if(isset($exif["Orientation"])){
@@ -135,7 +135,7 @@ class ConvertImageWebpPlugin {
 
 									if($rotate > 0) $img = imagerotate($img, $rotate, 0);
 								}
-								
+
 								imagewebp($img, $new);
 							}
 

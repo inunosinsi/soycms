@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head soy:page="_common.HeaderPage">
+
+<body>
+
+	<div id="wrapper">
+		<!-- Navigation -->
+		<nav  class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" soy:page="_common.UpperMenuPage"><!-- --></nav>
+		<div id="page-wrapper">
+			<div class="row">
+				<div class="col-lg-12">
+					<h1 class="page-header">パスワード無しログインの設定</h1>
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
+			<div class="row" >
+				<div class="col-lg-12">
+					<div class="panel panel-default panel-message">
+				  		<div class="alert alert-danger" soy:display="failed">更新に失敗しました。</div>
+						<div class="alert alert-success" soy:display="updated">更新しました。</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<ul class="nav nav-pills">
+								<li><a soy:link="Admin">管理者一覧に戻る</a></li>
+						   </ul>
+						</div>
+					 </div>
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
+			<!-- /.row -->
+
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="panel panel-green">
+						<div class="panel-heading">パスワード無しログインの設定</div>
+						<div class="panel-body">
+							<form soy:id="form">
+								<div class="form-group">
+									<input type="checkbox" soy:id="token_login_mode">
+								</div>
+								<!-- soy:display="token_login_mode" -->
+								<div class="form-group">
+									<label>エンドポイントURL</label>
+									<div class="form-inline">
+										<!-- soy:id="site_url" /-->
+										<input type="text" class="form-control" soy:id="endpoint_uri">
+										/index.php
+									</div>
+								</div>
+								<div class="form-group">
+									<label>生成したURLでログインを許可する日数</label>
+									<div class="form-inline">
+										<input type="number" class="form-control" soy:id="allow_login_day_period">&nbsp;日
+									</div>
+								</div>
+								<!-- /soy:display="token_login_mode" -->
+								<input id="update_button" class="btn btn-primary btn-lg btn-block" type="submit" value="更新">
+							</form>
+						</div>
+					</div>
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
+		</div>
+		<!-- /#page-wrapper -->
+		<!-- soy:page="_common.FooterPage" /-->
+	</div>
+	<!-- /#wrapper -->
+
+</body>
+</html>

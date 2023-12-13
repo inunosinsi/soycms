@@ -3,7 +3,8 @@
 class DeliveryEachProductAddMailAddress extends SOYShopAddMailAddress{
 
     function getMailAddress(SOYShop_Order $order, bool $orderFlag=false){
-		$itemOrders = soyshop_get_item_orders($order->getId());
+        if(!is_numeric($order->getId())) return array();
+		$itemOrders = soyshop_get_item_orders((int)$order->getId());
         if(!count($itemOrders)) return array();
 
         $list = array();

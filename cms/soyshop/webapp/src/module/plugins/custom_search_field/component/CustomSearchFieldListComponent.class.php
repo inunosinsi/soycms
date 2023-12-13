@@ -11,8 +11,10 @@ class CustomSearchFieldListComponent extends HTMLList{
             "text" => $key
         ));
 
+		$label = (isset($entity["label"])) ? $entity["label"] : "";
         $this->addLabel("label", array(
-            "text" => (isset($entity["label"])) ? $entity["label"] : ""
+            "text" => $label,
+			"attr:id" => "label_text_" . $key,
         ));
 
         $this->addLabel("type", array(
@@ -22,6 +24,45 @@ class CustomSearchFieldListComponent extends HTMLList{
         $this->addLabel("display", array(
             "text" => self::_getPrefix() . ":id=\"" . $key . "\""
         ));
+
+		/* 設定変更用 */
+		$this->addLink("toggle_update", array(
+			"link" => "javascript:void(0)",
+			"onclick" => '$(\'#label_input_' . $key . '\').show();' .
+						 '$(\'#label_text_' . $key . '\').hide();' .
+						'$(\'#update_link_' . $key . '\').show();' .
+						'$(this).hide();'
+		));
+
+		//設定変更 リンク
+		$this->addLink("update_link", array(
+			"link" => "javascript:void(0)",
+			"attr:id" => "update_link_" . $key,
+			"onclick" => '$(\'#update_submit_' . $key . '\').click();' .
+						'return false;'
+		));
+
+		//変更を保存する リンク
+		$this->addInput("update_submit", array(
+			"name" => "update_submit",
+			"value" => $key,
+			"attr:id" => "update_submit_" . $key
+		));
+
+		//タイプ
+		$this->addInput("label_input", array(
+			"name" => "obj[label]",
+			"attr:id" => "label_input_" . $key,
+			"value" => $label,
+			"onchange" => "$(\"#label_input_hidden_" . $key ."\").val($(\"#label_input_" . $key ."\").val())"
+		));
+
+		$this->addInput("label_input_hidden", array(
+			"type" => "hidden",
+			"name" => "obj[label]",
+			"value" => $label,
+			"attr:id" => "label_input_hidden_" . $key,
+		));
 
         /* 高度な設定 */
         $this->addLink("toggle_config", array(

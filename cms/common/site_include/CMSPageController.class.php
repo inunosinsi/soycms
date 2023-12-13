@@ -103,7 +103,7 @@ class CMSPageController extends SOY2PageController{
 				$pageClass = "CMSPage";
 				break;
 		}
-		
+
 		// Argsの値を調べる必要があるか？
 		$isCheckArgs = ($pageClass != "CMSBlogPage");
 		if($isCheckArgs && $pageClass == "CMSApplicationPage"){
@@ -118,11 +118,18 @@ class CMSPageController extends SOY2PageController{
 
 		// ブログページ以外ではargsにページャに関するもの以外がないことを確認
 		if($isCheckArgs && count($args) && strlen($args[0])){
-			preg_match('/^page-\d+/', $args[0], $tmp);
-			if(!isset($tmp[0])) $this->onNotFound();
+			// タグクラウドプラグインのページの場合
+			if(CMSPlugin::activeCheck("TagCloud")){
+				SOY2::import("site_include.plugin.tag_cloud.util.TagCloudUtil");
+				if(TagCloudUtil::getPageIdSettedTagCloudBlock() != $_SERVER["SOYCMS_PAGE_ID"] || !TagCloudUtil::checkIsTagExists($args[0])) $this->onNotFound();
+			// ページャの場合
+			}else{
+				preg_match('/^page-\d+/', $args[0], $tmp);
+				if(!isset($tmp[0])) $this->onNotFound();
 
-			//page-\d/文字列形式のargsであった場合
-			if(isset($tmp[0]) && count($args) > 1) $this->onNotFound();
+				//page-\d/文字列形式のargsであった場合
+				if(isset($tmp[0]) && count($args) > 1) $this->onNotFound();
+			}
 		}
 
 		SOY2::import("site_include." . $pageClass);

@@ -1,0 +1,71 @@
+<div class="alert alert-info">
+	バックアップ対象ページ<br>
+	<strong>
+		当プラグインはHTMLキャッシュプラグインの仕組みを用いています。<br>
+		下記のバックアップしたいページにチェックを入れた後、公開側のページを開きキャッシュが生成されたものがバックアップファイルとなります。<br>
+		サイトマッププラグインを利用している場合は、サイトマッププラグインに記載されているURLのキャッシュを削除してからZIPに圧縮します。
+	</strong>
+</div>
+
+<form soy:id="form">
+	<ul>
+		<li soy:id="page_list" style="list-style:none">
+			<input type="checkbox" soy:id="page_item">
+			<ul soy:id="for_blog_page" style="list-style:none">
+				<li><input type="checkbox" soy:id="blog_top"></li>
+				<li><input type="checkbox" soy:id="blog_month"></li>
+				<li><input type="checkbox" soy:id="blog_category"></li>
+				<li><input type="checkbox" soy:id="blog_entry"></li>
+			</ul soy:id="for_blog_page">
+		</li soy:id="page_list">
+	</ul>	
+
+	<input type="submit" name="save" class="btn btn-primary btn-lg" value="設定保存">&nbsp;
+	<input type="submit" name="create" class="btn btn-primary btn-lg" value="ZIPファイルの生成">&nbsp;
+</form>
+
+<!-- soy:display="is_zip" -->
+<br>
+<form soy:id="download_form" id="export_form">
+	<input type="submit" name="download" class="btn btn-warning btn-lg" value="ダウンロード">
+</form>
+<!-- /soy:display="is_zip" -->
+
+<!-- soy:display="show_zip_path" -->
+<br>
+<div class="alert alert-info mt-5">
+	<!-- soy:id="download_file_path" /--><br>
+	ダウンロードボタンを押した後は、画面の再読込を行ってください。
+</div>
+<!-- /soy:display="show_zip_path" -->
+
+<script type="text/javascript">
+	function update_blog_pages(selfId){
+		if($("#"+selfId).prop("checked")){
+			$("#"+selfId+"-top").attr("disabled",false);
+			$("#"+selfId+"-month").attr("disabled",false);
+			$("#"+selfId+"-category").attr("disabled",false);
+			$("#"+selfId+"-entry").attr("disabled",false);
+		}else{
+			$("#"+selfId+"-top").attr("disabled",true);
+			$("#"+selfId+"-month").attr("disabled",true);
+			$("#"+selfId+"-category").attr("disabled",true);
+			$("#"+selfId+"-entry").attr("disabled",true);
+		}
+	}
+
+	window.onload = function(){
+		$.each($(".blog"), function(){
+			update_blog_pages(this.id);
+		});
+	};
+
+	$(function() {
+        $("#export_form").attr("target", "download_frame");
+        $("#export_form").submit(function() {
+            setTimeout(function() {
+                location.reload();
+            }, 1000);
+        });
+    });
+</script>

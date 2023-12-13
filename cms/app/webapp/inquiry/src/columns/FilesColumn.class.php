@@ -84,7 +84,7 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 				if(isset($v["tmp_name"]) && strlen($v["tmp_name"])){
 					$html[] = htmlspecialchars($v["name"] . " (".(int)($v["size"] / self::KB_SIZE)."KB)", ENT_QUOTES, "UTF-8");
 				}else{	//エラー
-					$html[] = "<span style=\"color:red;\">" . htmlspecialchars($v["name"], ENT_QUOTES, "UTF-8") . "のアップロードを失敗しました。</span>";
+					//$html[] = "<span style=\"color:red;\">" . htmlspecialchars($v["name"], ENT_QUOTES, "UTF-8") . "のアップロードを失敗しました。</span>";
 				}
 			}
 			return implode("<br>", $html);
@@ -141,14 +141,12 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 						if(!$res && is_numeric(stripos($pathinfo["extension"], $ext))) $res = true;
 					}
 
-					// @ToDo 何らかのエラーを出力したい
-					if(!$res) $v = self::setError($v);
+					if(!$res) $v = self::setError($v, $this->getLabel()."の形式が不正です。");
 				}
 
 				//ファイルサイズチェック
 				if(($this->uploadsize * self::KB_SIZE) < $v["size"]){
-					// @ToDo 何らかのエラーを出力したい
-					$v = self::setError($v);
+					$v = self::setError($v, $this->getLabel()."が大きすぎます。");
 				}
 
 				//一時的にアップロードする
@@ -163,8 +161,7 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 					if($result){
 						$v["tmp_name"] = $path_to;	//tmp_nameを上書き
 					}else{
-						// @ToDo 何らかのエラーを出力したい
-						$v = self::setError($v);
+						$v = self::setError($v, "アップロードに失敗しました");
 					}
 
 					//$path_toにあるファイルをリサイズする
@@ -188,8 +185,8 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 				$values[] = $v;
 			}
 		}else{	//アップロードしていない
-			$this->setValue(self::getValues());
-			return;
+			//$this->setValue(self::getValues());
+			//return;
 		}
 
 		//必須チェック
@@ -209,6 +206,15 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 
 		$this->setValue($values);
 		$_POST["data"][$this->getColumnId()] = base64_encode(serialize($this->getValue()));
+
+		// エラーがあった場合は処理を止める
+		if(count($values)){
+			foreach($values as $v){
+				if(!isset($v["error_messege"]) || !is_string($v["error_messege"]) || !strlen($v["error_messege"])) continue;
+				$this->setErrorMessage($v["error_messege"]);
+				return false;
+			}
+		}
 
 		return true;
 	}

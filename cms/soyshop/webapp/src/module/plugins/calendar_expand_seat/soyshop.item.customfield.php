@@ -15,16 +15,16 @@ class CalendarExpandSeatItemCustomField extends SOYShopItemCustomFieldBase{
 	 * @param object htmlObj, object SOYShop_Item
 	 */
 	function onOutput($htmlObj, SOYShop_Item $item){
-		list($low, $high) = self::logic()->getLowPriceAndHighPriceByItemId($item->getId());
+		list($low, $high) = (is_numeric($item->getId())) ? self::logic()->getLowPriceAndHighPriceByItemId($item->getId()) : array(0, 0);
 		
 		$htmlObj->addLabel("child_price_min", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"text" => number_format($low)
+			"text" => number_format((int)$low)
 		));
 
 		$htmlObj->addLabel("child_price_max", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"text" => number_format($high)
+			"text" => number_format((int)$high)
 		));
 	}
 

@@ -1,12 +1,9 @@
 <?php
-/*
- * soyshop.site.beforeoutput.php
- * Created: 2010/03/11
- */
 include_once(dirname(__FILE__) . "/common.php");
+
 class ButtonSocialBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
-    function beforeOutput($page){
+    function beforeOutput(WebPage $page){
 
         //カート内の場合は動作しない
         $className = get_class($page);

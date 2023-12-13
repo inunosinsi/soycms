@@ -91,7 +91,7 @@ class ReadEntryCountPlugin{
 				switch(SOYCMS_BLOG_PAGE_MODE){
 					case CMSBlogPage::MODE_ENTRY:
 						$labels = $obj->entry->getLabels();
-						if(count($labels)){
+						if(is_array($labels) && count($labels)){
 							foreach($labels as $label){
 									$labelIds[] = $label->getId();
 							}

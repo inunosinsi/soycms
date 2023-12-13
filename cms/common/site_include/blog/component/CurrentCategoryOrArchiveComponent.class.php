@@ -57,6 +57,18 @@ class CurrentCategoryOrArchiveComponent extends SOYBodyComponentBase{
 			"text"=>$alias,
 			"soy2prefix"=>"cms"
 		));
+
+		$isDescription = (strlen(trim($description)) > 0);
+		$this->addModel("is_description", array(
+			"visible" => $isDescription,
+			"soy2prefix" => "cms"
+		));
+
+		$this->addModel("no_description", array(
+			"visible" => !$isDescription,
+			"soy2prefix" => "cms"
+		));
+
 		$this->createAdd("category_description","CMSLabel",array(
 			"text"=>$description,
 			"soy2prefix"=>"cms"

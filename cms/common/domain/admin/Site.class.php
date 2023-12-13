@@ -90,7 +90,7 @@ class Site {
 	}
 
 	function getDataSourceName() {
-		return $this->dataSourceName;
+		return (is_string($this->dataSourceName)) ? $this->dataSourceName : "";
 	}
 	function setDataSourceName($dataSourceName) {
 		$this->dataSourceName = $dataSourceName;

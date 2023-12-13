@@ -226,7 +226,7 @@ class FieldList extends HTMLList{
 		$this->createAdd("editer_show","HTMLCheckBox",array(
 			"name" => "config[showInput]",
 			"value" => CustomFieldPluginFormPage::SHOW_INPUT_YES,
-			"selected" => $entity->getShowInput() && strlen($entity->getLabelId())==0,
+			"selected" => $entity->getShowInput() && strlen((string)$entity->getLabelId())==0,
 			"label" => "常に表示",
 		));
 		$this->createAdd("editer_hide","HTMLCheckBox",array(
@@ -238,7 +238,7 @@ class FieldList extends HTMLList{
 		$this->createAdd("editer_label","HTMLCheckBox",array(
 			"name" => "config[showInput]",
 			"value" => CustomFieldPluginFormPage::SHOW_INPUT_LABEL,
-			"selected" => strlen($entity->getLabelId()),
+			"selected" => strlen((string)$entity->getLabelId()),
 			"label" => "ラベルと連動",
 		));
 		$this->createAdd("labels","HTMLSelect",array(

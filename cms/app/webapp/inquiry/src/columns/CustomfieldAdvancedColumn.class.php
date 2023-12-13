@@ -34,6 +34,10 @@ class CustomfieldAdvancedColumn extends SOYInquiry_ColumnBase{
 		return $site;
 	}
 
+	/**
+	 * @param string
+	 * @return string
+	 */
 	private function _getEntryAttrValue(string $dsn){
 		$old["dsn"] = SOY2DAOConfig::dsn();
 		$old["user"] = SOY2DAOConfig::user();
@@ -59,7 +63,8 @@ class CustomfieldAdvancedColumn extends SOYInquiry_ColumnBase{
 		SOY2DAOConfig::user($old["user"]);
 		SOY2DAOConfig::pass($old["pass"]);
 
-		return "usa";
+		/** @ToDo 作りかけ */
+		return "";
 	}
 
 	function getAttributes(){

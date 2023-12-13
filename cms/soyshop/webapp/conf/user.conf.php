@@ -8,6 +8,9 @@ define("SOYSHOP_WEBAPP",SOYSHOP_ROOT . "webapp/");
 define("SOYSHOP_SITE_PREFIX","cms");
 define("SOY2_NOW",time());	//現在時刻
 
+//SOYShop側のサイトを表示しているか？
+define("DISPLAY_SOYSHOP_SITE", true);
+
 //SOY CMSのphp.config.phpを読み込む
 if(file_exists(dirname(SOYSHOP_ROOT) . "/common/config/php.config.php")){
 	include_once(dirname(SOYSHOP_ROOT) . "/common/config/php.config.php");
@@ -102,9 +105,6 @@ if(!defined("SOYSHOP_CONSUMPTION_TAX_MODE")){
 	define("SOYSHOP_CONSUMPTION_TAX_INCLUSIVE_PRICING_MODE", ($config->getConsumptionTaxInclusivePricing() == SOYShop_ShopConfig::CONSUMPTION_TAX_MODE_ON));
 }
 
-//SOYShop側のサイトを表示しているか？
-define("DISPLAY_SOYSHOP_SITE", true);
-
 //PHP許可モード
 //SOY CMSのuser.config.phpを読み込む
 if(file_exists(dirname(SOYSHOP_ROOT) . "/common/config/user.config.php")) include_once(dirname(SOYSHOP_ROOT) . "/common/config/user.config.php");
@@ -118,9 +118,3 @@ if(defined("SOYCMS_ALLOW_PHP_SCRIPT")){
 //define("SOYSHOP_USE_CART_TABLE_MODE", false && extension_loaded("sqlite3") && extension_loaded("pdo_sqlite"));
 define("SOYSHOP_USE_CART_TABLE_MODE", false);
 if(SOYSHOP_USE_CART_TABLE_MODE) SOY2::import("base.cart.db", ".php");
-
-//さくらの共有サーバのSSL対策
-if(!isset($_SERVER["HTTPS"]) && isset($_SERVER["HTTP_X_SAKURA_FORWARDED_FOR"])){
-	$_SERVER["HTTPS"] = "on";
-	$_SERVER["SERVER_PORT"] = "443";
-}

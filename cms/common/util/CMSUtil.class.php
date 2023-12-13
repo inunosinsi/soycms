@@ -88,6 +88,18 @@ class CMSUtil {
 		/** @ToDo データベースからサイトオブジェクトを取得して、ドキュメントルートの設定の確認が必要かもしれない */
 
 		define("SOYCMS_IS_DOCUMENT_ROOT", $isDocumentRoot);
+		
+		// @ToDo サイトディレクトリが /DOCUMENT_ROOT/サブディレクトリ/サイトID/の場合はPATH_INFOの処理を止めておく
+		// if(soy2_strpos(trim(str_replace($_SERVER["DOCUMENT_ROOT"], "", _SITE_ROOT_), "/"), "/") < 0){
+		// 	// PATH_INFO
+		// 	if(!isset($_SERVER["PATH_INFO"]) || !strlen($_SERVER["PATH_INFO"])){
+		// 		if(soy2_strpos($_SERVER["REDIRECT_URL"], "/".SOYCMS_SITE_ID."/") === 0){
+		// 			$_SERVER["PATH_INFO"] = substr(ltrim($_SERVER["REDIRECT_URL"],"/"), strlen(SOYCMS_SITE_ID));
+		// 		}else{
+		// 			$_SERVER["PATH_INFO"] = $_SERVER["REDIRECT_URL"];
+		// 		}
+		// 	}
+		// }
 	}
 
 	/**

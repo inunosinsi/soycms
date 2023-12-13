@@ -18,7 +18,7 @@ class DisplayRestrictionsPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/3046",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.1"
+			"version"=>"0.5"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -42,7 +42,8 @@ class DisplayRestrictionsPlugin{
 			SOY2::import("domain.admin.Site");
 
 			if(!UserInfoUtil::isLoggined()){
-				throw new Exception();
+				//throw new Exception();
+				soycms_jump_notfound_page();
 			}
 		}
 	}

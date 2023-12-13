@@ -71,7 +71,7 @@ function soyshop_smart_calendar(string $html, HTMLPage $page){
 
 	//メモリの節約のために個別に出力できるようにする
 	if($itemId > 0){
-		$itemIdList = array($itemId);
+		$itemIds = array($itemId);
 
 		$obj->addLabel("item_name", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,

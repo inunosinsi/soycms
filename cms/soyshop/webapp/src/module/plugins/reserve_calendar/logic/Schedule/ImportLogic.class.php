@@ -91,7 +91,7 @@ class ImportLogic extends SOY2LogicBase {
 			"mode" => "csv",
 		))->getList();
 
-		if(!count($items)) return array();
+		if(!is_array($items) || !count($items)) return array();
 
 		$list = array();
 		foreach($items as $moduleId => $v){

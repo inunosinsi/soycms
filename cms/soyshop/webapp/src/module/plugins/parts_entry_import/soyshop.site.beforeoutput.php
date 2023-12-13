@@ -1,12 +1,8 @@
 <?php
-/*
- * soyshop.site.beforeoutput.php
- * Created: 2010/03/11
- */
 
 class EntryImportBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
-	function beforeOutput($page){
+	function beforeOutput(WebPage $page){
 
 		SOY2::import("util.SOYAppUtil");
 		SOY2::import("module.plugins.parts_entry_import.component.EntryListComponent");

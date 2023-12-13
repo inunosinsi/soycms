@@ -13,16 +13,28 @@
 	        <th>ID</th>
 	        <th>ラベル</th>
 	        <th>タイプ</th>
+			<th>操作</th>
 	        <th>表示順</th>
 	        <th>表示のさせ方</th>
-	        <th>操作</th>
+	        <th>&nbsp;</th>
 	    </tr>
 
 	    <!-- soy:id="field_list" -->
 	    <tr>
 	        <td soy:id="key"></td>
-	        <td soy:id="label"></td>
+	        <td>
+				<span soy:id="label">説明</span>
+				<input soy:id="label_input" style="display:none;">
+			</td>
 	        <td soy:id="type"></td>
+			<td>
+				<a soy:id="toggle_update" class="btn btn-primary btn-sm">設定変更</a>
+				<a soy:id="update_link" class="btn btn-primary btn-sm" style="display:none;">変更を保存する</a>
+				<form method="post">
+					<input type="hidden" name="obj[label]" soy:id="label_input_hidden">
+					<input type="submit" soy:id="update_submit" style="display:none;">
+				</form>
+			</td>
 	        <td>
 	                <form method="post">
 	                    <input type="hidden" soy:id="field_id" />

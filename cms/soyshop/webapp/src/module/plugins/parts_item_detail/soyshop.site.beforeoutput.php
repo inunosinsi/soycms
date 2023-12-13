@@ -1,14 +1,9 @@
 <?php
-/*
- * soyshop.site.beforeoutput.php
- * Created: 2010/03/11
- */
-
 SOY2::import("module.site.common.output_item",".php");
 
 class ItemDetailBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
-	function beforeOutput($page){
+	function beforeOutput(WebPage $page){
 		$alias = "";
 
 		//カートページとマイページでは読み込まない

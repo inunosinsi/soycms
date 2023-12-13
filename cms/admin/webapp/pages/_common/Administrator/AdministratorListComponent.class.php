@@ -15,32 +15,34 @@ class AdministratorListComponent extends HTMLList{
 		));
 
 		$this->addLink("detail_link", array(
-			"link" => SOY2PageController::createLink("Administrator.SiteRole.".$entity->getId()),
+			"link" => SOY2PageController::createLink("Admin.SiteRole.".$entity->getId()),
 			"visible"=> !$entity->getIsDefaultUser(),
 			"text"=>(UserInfoUtil::isDefaultUser()) ? CMSMessageManager::get("ADMIN_ROLE_SETTING") : CMSMessageManager::get("ADMIN_DISPLAY_ROLES")
 		));
 
 		$this->addLink("update_link", array(
-			"link" => SOY2PageController::createLink("Administrator.Detail.".$entity->getId()),
-			"text"=>(UserInfoUtil::isDefaultUser() || $entity->getId() == UserInfoUtil::getUserId()) ? CMSMessageManager::get("ADMIN_DETAIL_EDIT") : CMSMessageManager::get("ADMIN_DISPLAY_DETAILS")
+			"link" => SOY2PageController::createLink("Admin.Detail.".$entity->getId()),
+			"text"=>(UserInfoUtil::isDefaultUser() || $entity->getId() == UserInfoUtil::getUserId()) ? CMSMessageManager::get("ADMIN_DETAIL_EDIT") : CMSMessageManager::get("ADMIN_DISPLAY_DETAILS"),
+			"id" => "detail_".$entity->getUserId()
 		));
 
 		//パスワード変更（初期管理者限定）
 		//遷移先では現在のパスワードがなくても変更できてしまうので、自身のパスワード変更は行えないようにしておく
 		$this->addLink("update_password_link", array(
-				"link" => SOY2PageController::createLink("Administrator.Password.".$entity->getId()),
+				"link" => SOY2PageController::createLink("Admin.Password.".$entity->getId()),
 				"visible"=> UserInfoUtil::isDefaultUser() && $entity->getId() != UserInfoUtil::getUserId(),
 		));
 
 		//自身のパスワード変更
 		$this->addLink("update_password_link_for_current_user", array(
-				"link" => SOY2PageController::createLink("Administrator.ChangePassword"),
+				"link" => SOY2PageController::createLink("Admin.ChangePassword"),
 				"visible"=> $entity->getId() == UserInfoUtil::getUserId(),
 		));
 
 		$this->addLink("remove_link", array(
-			"link" => SOY2PageController::createLink("Administrator.Remove." . $entity->getId()),
+			"link" => SOY2PageController::createLink("Admin.Remove." . $entity->getId()),
 			"visible"=> UserInfoUtil::isDefaultUser() && !$entity->getIsDefaultUser(),
+			"id" => "remove_".$entity->getUserId()
 		));
 
 		$siteName = array();

@@ -90,6 +90,7 @@ class SOYInquiry_FormConfig{
 	private $isSendConfirmMail = true;
 	private $isIncludeAdminURL = true;
 	private $isUseCaptcha = false;
+	private $isCsrf = false;
 	private $isSmartPhone = false;
 	private $isReplyToUser = false;
 
@@ -195,6 +196,13 @@ class SOYInquiry_FormConfig{
 
 	function setIsUseCaptcha($isUseCaptcha) {
 		$this->isUseCaptcha = $isUseCaptcha;
+	}
+
+	function getIsCsrf(){
+		return $this->isCsrf;
+	}
+	function setIsCsrf($isCsrf){
+		$this->isCsrf = $isCsrf;
 	}
 
 	function getIsSmartPhone(){

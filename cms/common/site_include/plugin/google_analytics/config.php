@@ -23,6 +23,13 @@ class GoogleAnalyticsPluginConfigPage extends WebPage{
 		if(isset($_POST["google_analytics_global_site_tag_conversion_tag"])){
 			$this->pluginObj->google_analytics_global_site_tag_conversion_tag = $_POST["google_analytics_global_site_tag_conversion_tag"];
 		}
+		if(isset($_POST["google_analytics_gtm_header"])){
+			$this->pluginObj->google_analytics_gtm_header = $_POST["google_analytics_gtm_header"];
+		}
+		if(isset($_POST["google_analytics_gtm_body"])){
+			$this->pluginObj->google_analytics_gtm_body = $_POST["google_analytics_gtm_body"];
+		}
+		
 		if(isset($_POST["google_analytics_position"])){
 			$this->pluginObj->position = $_POST["google_analytics_position"];
 		}
@@ -83,6 +90,18 @@ class GoogleAnalyticsPluginConfigPage extends WebPage{
 			"style" => "display:block; margin:0; width:90%; height:80px;"
 		));
 
+		$this->addTextArea("google_analytics_gtm_header", array(
+			"name" => "google_analytics_gtm_header",
+			"value" => $this->pluginObj->google_analytics_gtm_header,
+			"style" => "display:block; margin:0; width:90%; height:120px;"
+		));
+
+		$this->addTextArea("google_analytics_gtm_body", array(
+			"name" => "google_analytics_gtm_body",
+			"value" => $this->pluginObj->google_analytics_gtm_body,
+			"style" => "display:block; margin:0; width:90%; height:120px;"
+		));
+		
 		//挿入箇所の指定
 		$this->createAdd("insert_into_the_beginning_of_head","HTMLCheckBox",array(
 			"value" => GoogleAnalytics::INSERT_INTO_THE_BEGINNING_OF_HEAD,

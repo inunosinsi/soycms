@@ -1,17 +1,14 @@
 <?php
-/*
- * soyshop.site.beforeoutput.php
- * Created: 2010/03/11
- */
 
 class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
 	private $fieldTable = array();
 
-	function beforeOutput($page){
+	function beforeOutput(WebPage $page){
+		if(!is_object($page)) return;
 
 		$obj = $page->getPageObject();
-
+		
 		//カートページとマイページでは読み込まない
 		if(!is_object($obj) || !$obj instanceof SOYShop_Page) return;
 

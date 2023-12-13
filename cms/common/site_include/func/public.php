@@ -22,7 +22,12 @@ function soycms_get_site_id_by_frontcontroller(){
 	if(_SITE_ROOT_ != $xamppRoot){	// xampp
 		return ltrim(str_replace($_SERVER["DOCUMENT_ROOT"], "", $xamppRoot), "/");
 	}else{
-		return ltrim(str_replace($_SERVER["DOCUMENT_ROOT"], "", _SITE_ROOT_), "/");
+		$siteId = ltrim(str_replace($_SERVER["DOCUMENT_ROOT"], "", _SITE_ROOT_), "/");
+		if(!strlen($siteId) || $siteId == "//"){
+			$siteRoot = rtrim(_SITE_ROOT_, "/");
+			$siteId = trim(trim(substr($siteRoot, strrpos($siteRoot, "/"))), "/");
+		}
+		return $siteId;
 	}
 }
 

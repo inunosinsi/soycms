@@ -25,7 +25,7 @@ class CouponFormPage extends WebPage {
 			"text" => $error
 		));
 
-		$categoryList = (isset($userId)) ? $this->categoryLogic->getCategoryList() : array();	//処理の削減
+		$categoryList = $this->categoryLogic->getCategoryList();
 		DisplayPlugin::toggle("has_category_list", count($categoryList));
 
 		$this->addSelect("category", array(

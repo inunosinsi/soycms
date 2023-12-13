@@ -1,3 +1,5 @@
+2.6.0
+	- PHP8.1対応漏れを対応　SimpleCaptchaGenerator
 2.5.4
 	- 管理者宛メールの見出しと備考の設定を<input type="text">から<textarea>に変更
 2.5.3

@@ -93,7 +93,7 @@ class DiscountFreeCouponOrderCustomfieldModule extends SOYShopOrderCustomfield{
 	}
 
 	function getForm(CartLogic $cart){
-		if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE && strpos($_SERVER["REQUEST_URI"], "/Order/Register")){
+		if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE && is_numeric(strpos($_SERVER["REQUEST_URI"], "/Order/Register"))){
 			SOY2::import("module.plugins.discount_free_coupon.admin.CouponFormPage");
 			$form = SOY2HTMLFactory::createInstance("CouponFormPage");
 			$form->setCart($cart);

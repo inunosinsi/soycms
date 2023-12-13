@@ -170,19 +170,20 @@ class CMSBlogPage extends CMSPage{
 		switch(SOYCMS_BLOG_PAGE_MODE){
 			case CMSBlogPage::MODE_ENTRY:
 				if(!$this->page->getGenerateEntryFlag()){
-					$tihs->error = new Exception("EntryPageは表示できません");
+					$this->error = new Exception("EntryPageは表示できません");
 					return;
 				}
 				
 				// mixed int|string
-				$alias = mb_convert_encoding(
+				$alias = self::_alias(mb_convert_encoding(
 					str_replace($this->page->getEntryPageUri()."/",
 							"",
 							$arguments
 					),
 					"UTF-8",
 					"UTF-8,ASCII,JIS,Shift_JIS,EUC-JP,SJIS,SJIS-win"
-				);
+				));
+
 				list($this->entry,$this->nextEntry,$this->prevEntry) = self::_entry($alias);
 				if(!is_numeric($this->entry->getId())){
 					$this->error = new Exception("EntryPageは表示できません");
@@ -220,7 +221,7 @@ class CMSBlogPage extends CMSPage{
 				}
 				$this->limit = $this->page->getCategoryDisplayCount();
 
-				$alias = mb_convert_encoding(
+				$alias = self::_alias(mb_convert_encoding(
 					str_replace(
 						$this->page->getCategoryPageUri()."/",
 						"",
@@ -228,8 +229,8 @@ class CMSBlogPage extends CMSPage{
 					),
 					"UTF-8",
 					"UTF-8,ASCII,JIS,Shift_JIS,EUC-JP,SJIS,SJIS-win"
-				);
-
+				));
+				
 				$this->label = self::_label((string)$alias);
 				if(!is_numeric($this->label->getId())){
 					$this->error = new Exception("ラベルの取得を失敗しました");
@@ -453,6 +454,15 @@ class CMSBlogPage extends CMSPage{
 	}
 
 	/**
+	 * @param string
+	 * @return string
+	 */
+	private function _alias(string $alias){
+		if(!preg_match('/%[0-9A-F][0-9A-F]%[0-9A-F][0-9A-F]/', $alias)) return $alias;
+		return rawurldecode($alias);
+	}
+
+	/**
 	 * カノニカルURLを生成する
 	 */
 	private function _executeCanonicalUrlCreate(){
@@ -581,9 +591,14 @@ class CMSBlogPage extends CMSPage{
 			SOY2::import("site_include.blog.entry", ".php");
 
 			//entry
+			$_dust = soycms_get_hash_table_dao("labeled_entry");
+			unset($_dust);
+			if(!$this->entry instanceof LabeledEntry) $this->entry = new LabeledEntry();
 			soy_cms_blog_output_entry($this,$this->entry);
 
 			//次のエントリー、前のエントリー
+			if(!$this->nextEntry instanceof LabeledEntry) $this->nextEntry = new LabeledEntry();
+			if(!$this->prevEntry instanceof LabeledEntry) $this->prevEntry = new LabeledEntry();
 			soy_cms_blog_output_entry_navi($this,$this->nextEntry,$this->prevEntry);
 
 			//コメントフォームを出力
@@ -701,7 +716,7 @@ class CMSBlogPage extends CMSPage{
 			"soy2prefix"=>"b_block"
 		));
 		$this->createAdd("blog_url_path", "CMSLabel", array(
-			"link" => $this->getTopPageURL(true),
+			"text" => $this->getTopPageURL(true),
 			"soy2prefix"=>"b_block"
 		));
 		$this->createAdd("blog_description","CMSLabel",array(

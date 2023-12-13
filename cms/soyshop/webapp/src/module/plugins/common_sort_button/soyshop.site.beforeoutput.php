@@ -1,12 +1,8 @@
 <?php
-/*
- * soyshop.site.beforeoutput.php
- * Created: 2010/03/11
- */
 
 class SOYShopSortButtonBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
-	function beforeOutput($page){
+	function beforeOutput(WebPage $page){
 
 		//カートとマイページで動作しない様にする
 		if(is_null($page->getPageObject())) return;

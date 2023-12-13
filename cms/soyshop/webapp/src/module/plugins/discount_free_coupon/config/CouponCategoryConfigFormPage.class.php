@@ -18,7 +18,7 @@ class CouponCategoryConfigFormPage extends WebPage {
 				try{
 					$this->dao->insert($category);
 				}catch(Exception $e){
-					var_dump($e);
+					//var_dump($e);
 				}
 				$this->configObj->redirect("category&updated");
 			}

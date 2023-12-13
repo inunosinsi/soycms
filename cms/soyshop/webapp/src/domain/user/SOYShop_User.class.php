@@ -613,7 +613,7 @@ class SOYShop_User {
 		$cnf = SOYShop_ShopConfig::load();
 		$keys = array_keys($cnf->getSendAddressDisplayFormConfigList());
 		$keys[] = "office";	// officeを追加
-
+		
 		$isNotEmpty = false;	//何かしら入力があるかどうか確認
 		foreach($keys as $idx){
 			if($idx === "address") continue;
@@ -643,6 +643,8 @@ class SOYShop_User {
 		if(isset($displayCnf["address"]) && $displayCnf["address"] && isset($requiredCnf["address"]) && $requiredCnf["address"]){
 			SOY2::import("util.SOYShopAddressUtil");
 			$addressItems = SOYShopAddressUtil::getAddressItems();
+			if(isset($addr["area"]) && !strlen($addr["area"])) return 0;
+
 			for($i = 1; $i <= 4; $i++){
 				if(!isset($addressItems[$i - 1]) || !isset($addressItems[$i - 1]["required"]) || (bool)$addressItems[$i - 1]["required"] === false) continue;	//調べない
 				if(strlen($addr["address" . $i]) === 0) return 0;

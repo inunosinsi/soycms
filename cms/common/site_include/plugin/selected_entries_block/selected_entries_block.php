@@ -21,7 +21,7 @@ class SelectedEntriesBlockPlugin{
 			"author" => "齋藤毅",
 			"url" => "http://saitodev.co",
 			"mail" => "tsuyoshi@saitodev.co",
-			"version" => "0.7"
+			"version" => "0.8"
 		));
 
 		//プラグイン アクティブ
@@ -77,7 +77,7 @@ class SelectedEntriesBlockPlugin{
 
 		$count = PluginBlockUtil::getLimitByPageId($pageId, $soyId);
 
-		$dao = soycms_get_hash_table_dao("entry");
+		$entryDao = soycms_get_hash_table_dao("entry");
         $sql = "SELECT ent.* FROM Entry ent ".
              "INNER JOIN EntryAttribute attr ".
              "ON ent.id = attr.entry_id ".

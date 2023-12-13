@@ -2,6 +2,8 @@
 
 class CommonNoticeStockConfigFormPage extends WebPage{
 
+	private $configObj;
+
     function __construct() {
     	SOY2DAOFactory::importEntity("SOYShop_DataSets");
     	SOY2::import("module.plugins.common_notice_stock.common.CommonNoticeStockCommon");
@@ -46,6 +48,6 @@ class CommonNoticeStockConfigFormPage extends WebPage{
     }
 
     function setConfigObj($obj) {
-		$this->config = $obj;
+		$this->configObj = $obj;
 	}
 }

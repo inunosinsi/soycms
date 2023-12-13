@@ -10,7 +10,12 @@ define("SOYCMS_NOW",time());
 include_once(dirname(__FILE__) . "/config/php.config.php");
 
 //SOY2のinclude
-include_once("lib/soy2_build.php");
+if(file_exists(__DIR__."/lib/soy2_build.min.php")){
+	include_once("lib/soy2_build.min.php");
+}else{
+	include_once("lib/soy2_build.php");
+}
+
 include_once("lib/magic_quote_gpc.php");
 include_once("lib/json_lib.php");
 

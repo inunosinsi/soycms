@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head soy:page="_common.HeaderPage">
+
+<body>
+
+	<div id="wrapper">
+		<!-- Navigation -->
+		<nav  class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" soy:page="_common.UpperMenuPage"><!-- --></nav>
+		<div id="page-wrapper">
+			<div class="row">
+				<div class="col-lg-12">
+					<h1 class="page-header">管理者削除</h1>
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
+			<div class="row" soy:id="has_message">
+				<div class="col-lg-12">
+					<div class="panel panel-default panel-message">
+						<div  class="panel-heading" soy:id="message">メッセージ</div>
+					</div>
+				</div>
+			</div soy:id="has_message">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<ul class="nav nav-pills">
+								<li><a soy:link="Admin">管理者一覧に戻る</a></li>
+						   </ul>
+						</div>
+					 </div>
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
+			<!-- /.row -->
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="panel panel-yellow">
+						<div class="panel-heading">
+							以下の管理者を削除します
+						</div>
+						<form soy:id="removeForm">
+							<table class="table table-striped">
+								<tr>
+									<th class="item_name">管理者ID</th>
+									<td><span soy:id="userId"></span></td>
+								</tr>
+								<tr>
+									<th class="item_name">名前</th>
+									<td><span soy:id="name_text"></span></td>
+								</tr>
+								<tr>
+									<th class="item_name">e-mail</th>
+									<td><span soy:id="email_text"></span></td>
+								</tr>
+								<tr>
+									<td>&nbsp;</td>
+									<td class="button">
+										<input id="update_button" class="btn btn-danger btn-lg" type="submit" value="削除">
+									</td>
+								</tr>
+							</table>
+						</form soy:id="removeForm">
+					</div>
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
+
+
+		</div>
+		<!-- /#page-wrapper -->
+		<!-- soy:page="_common.FooterPage" /-->
+	</div>
+	<!-- /#wrapper -->
+
+</body>
+
+</html>

@@ -10,6 +10,7 @@ class CmsTagChecker{
 		"soy:id",
 		"b_block:id",
 		"m_block;id",
+		"p_block:id",
 		"block:id",
 		"cms:id",
 		"app:id",
@@ -31,7 +32,7 @@ class CmsTagChecker{
 			"author"=> "齋藤毅",
 			"url" => "https://saitodev.co/article/5056",
 			"mail" => "tsuyoshi@saitodev.co",
-			"version"=>"0.1"
+			"version"=>"0.2"
 		));
 
 		if(!defined("_SITE_ROOT_")){

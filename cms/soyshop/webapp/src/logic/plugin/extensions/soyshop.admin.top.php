@@ -70,40 +70,32 @@ class SOYShopAdminTopDeletageAction implements SOY2PluginDelegateAction{
 	function run($extetensionId, $moduleId, SOY2PluginAction $action){
 		switch($this->mode){
 			case "notice":
-				$notice = $action->notice();
-				if(!is_string($notice)) $notice = "";
+				$notice = (string)$action->notice();
 				if(strlen($notice)) {
-					$array = array();
-					$array["wording"] = $notice;
-					$array["always"] = $action->always();
-					$this->_contents[$moduleId] = $array;
+					$this->_contents[$moduleId] = array("wording" => $notice, "always" => $action->always());
 				}
 				break;
 			case "error":
-				$error = $action->error();
-				if(!is_string($error)) $error = "";
-				if(strlen($error)) {
-					$array = array();
-					$array["wording"] = $error;
-					$array["always"] = $action->always();
-					$this->_contents[$moduleId] = $array;
+				$err = (string)$action->error();
+				if(strlen($err)) {
+					$this->_contents[$moduleId] = array("wording" => $err, "always" => $action->always());
 				}
 				break;
 			default:
 				if($action->allowDisplay()){
-					$array = array();
-					$array["title"] = $action->getTitle();
-					$array["content"] = $action->getContent();
-					$link = $action->getLink();
-					if(!is_string($link)) $link = "";
-					if(strpos($link, "/Config/") && !AUTH_CONFIG && !AUTH_CONFIG_DETAIL){
+					$arr = array();
+					$arr["title"] = $action->getTitle();
+					$arr["content"] = $action->getContent();
+					$link = (string)$action->getLink();
+					if(!defined("AUTH_CONFIG_DETAIL_EXTENSION")) define("AUTH_CONFIG_DETAIL_EXTENSION", false);
+					if(AUTH_CONFIG_DETAIL_EXTENSION || AUTH_CONFIG_DETAIL){ // AUTH_CONFIG_DETAIL_EXTENSIONの方は拡張ポイント(soyshop.admin.prepare)で追加を想定しています。 
+						$arr["link"] = $link;
+						$arr["link_title"] = $action->getLinkTitle();
+						$arr["target_blank"] = $action->getTargetBlank();
+					}else if(is_numeric(strpos($link, "/Config/")) && !AUTH_CONFIG){
 						//リンクタイトルを表示させない
-					}else{
-						$array["link"] = $link;
-						$array["link_title"] = $action->getLinkTitle();
-						$array["target_blank"] = $action->getTargetBlank();
 					}
-					$this->_contents[$moduleId] = $array;
+					$this->_contents[$moduleId] = $arr;
 				}
 		}
 	}

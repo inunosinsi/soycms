@@ -1,10 +1,10 @@
 <?php
 /**
  * ページ出力前の共通処理
- * @param page, array
+ * @param SOYShop_Page, array
  * @return webPage
  */
-function common_process_before_output($page, array $args){
+function common_process_before_output(SOYShop_Page $page, array $args){
 	//ページ種別によって読み込むページクラスを変える
 	include_page_class($page->getType());
 	if(DEBUG_MODE) count_timer("Search");
@@ -34,7 +34,7 @@ function common_process_before_output($page, array $args){
  * ページ出力
  * @param WebPage $webPage
  */
-function output_page($webPage){
+function output_page(WebPage $webPage){
 	/* Event BeforeOutput */
 	SOYShopPlugin::load("soyshop.site.beforeoutput");
 	SOYShopPlugin::invoke("soyshop.site.beforeoutput", array("page" => $webPage));

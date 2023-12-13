@@ -28,7 +28,7 @@ class SOYShopItemImportPlugin{
 			"mail"=>"info@saitodev.co",
 			"label" => "",
 			"entry" => "",
-			"version"=>"0.11"
+			"version"=>"0.12"
 		));
 
 		//二回目以降の動作
@@ -95,7 +95,7 @@ class SOYShopItemImportPlugin{
 			self::checkMultiLanguagePrefix();
 
 			SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
-			$values = SOY2Logic::createInstance("module.plugins.custom_search_field.logic.DataBaseLogic")->getByItemId($item->getId());
+			$values = (is_numeric($item->getId())) ? SOY2Logic::createInstance("module.plugins.custom_search_field.logic.DataBaseLogic")->getByItemId($item->getId()) : array();
 
 			foreach(CustomSearchFieldUtil::getConfig() as $key => $field){
 				if(!isset($values[$key])) continue;

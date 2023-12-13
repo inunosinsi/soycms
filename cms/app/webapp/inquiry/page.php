@@ -226,7 +226,9 @@ class SOYInquiry_PageApplication{
 			$captcha = (isset($_POST["data"]["captcha"])) ? str_replace(array(".", "/", "\\"), "", $_POST["data"]["captcha"]) : "";
 
 			if(!$config->getIsUseCaptcha() || ($captcha !== "" && $captcha == $captcha_value)){
-				if(soy2_check_token()){	// soy2_check_tokenで誤動作防止
+				//soy2_check_tokenで誤動作防止 isCsrfが1であればsoy2_check_tokenを行い、0であれば常にtrue
+				$isTokenCheck = ((int)$config->getIsCsrf() === 1) ? soy2_check_token() : true;
+				if($isTokenCheck){
 					$errors = $this->checkPostData($_POST["data"], $columns);
 
 					//問い合わせを追加＆メール送信

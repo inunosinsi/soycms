@@ -66,6 +66,10 @@ class CategoryPage extends WebPage{
 			$root . "tree.css",
 		);
 	}
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("カテゴリツリー設定");
+	}
 }
 
 SOY2HTMLFactory::importWebPage("_base.TreeComponent");

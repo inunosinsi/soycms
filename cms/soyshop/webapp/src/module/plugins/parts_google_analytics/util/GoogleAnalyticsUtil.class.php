@@ -16,7 +16,8 @@ class GoogleAnalyticsUtil{
 	public static function getConfig(){
 		return SOYShop_DataSets::get("google_analytics", array(
 			"tracking_code" => "",
-			"insert_to_head" => self::INSERT_AFTER_THE_END_OF_BODY
+			"insert_to_head" => self::INSERT_AFTER_THE_END_OF_BODY,
+			"gtm" => array("header" => "", "body" => "")
 		));
 	}
 

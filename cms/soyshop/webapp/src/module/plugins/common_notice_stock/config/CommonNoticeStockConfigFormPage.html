@@ -1,40 +1,37 @@
 <div class="alert alert-success" soy:display="updated">更新しました</div>
 
 <form soy:id="form">
-<dl>
-	<dt>残りわずか通知の在庫数</dt>
-	<dd>
-		<input type="text" soy:id="stock" value="" style="text-align:right;ime-mode:inactive;" />個
-	</dd>
+	<div class="form-group">
+		<label>残りわずか通知の在庫数</label>
+		<div class="form-inline">
+			<input type="number" soy:id="stock" class="form-control">個
+		</div>
+	</div>
 
-	<dt>通常の文言</dt>
-	<dd>
-		<textarea soy:id="has_stock_text"></textarea>
-		<p>※##COUNT##は残りの在庫数に置換されます</p>
-	</dd>
+	<div class="form-group">
+		<label>通常の文言</label>
+		<textarea soy:id="has_stock_text" class="form-control"></textarea>
+		<div class="alert alert-warning">※<strong>##COUNT##</strong>は残りの在庫数に置換されます</div>
+	</div>
 
-	<dt>在庫数残りわずかの文言</dt>
-	<dd>
-		<textarea soy:id="notice_stock_text"></textarea>
-		<p>※##COUNT##は残りの在庫数に置換されます</p>
-	</dd>
+	<div class="form-group">
+		<label>在庫数残りわずかの文言</label>
+		<textarea soy:id="notice_stock_text" class="form-control"></textarea>
+		<div class="alert alert-warning">※<strong>##COUNT##</strong>は残りの在庫数に置換されます</div>
+	</div>
 
-	<dt>在庫切れの文言</dt>
-	<dd>
-		<textarea soy:id="no_stock_text"></textarea>
-	</dd>
-</dl>
-<div class="text-center">
-	<input type="submit" name="update" class="btn btn-primary btn-lg" value="更新">
-</div>
+	<div class="form-group">
+		<label>在庫切れの文言</label>
+		<textarea soy:id="no_stock_text" class="form-control"></textarea>
+	</div>
+	<div class="text-center">
+		<input type="submit" name="update" class="btn btn-primary btn-lg" value="更新">
+	</div>
 </form>
 
 <h4>テンプレートへの記述例</h4>
-<pre>
-<strong>&lt;!-- cms:id="notice_stock" --&gt;</strong>
+<pre><strong>&lt;!-- cms:id="notice_stock" --&gt;</strong>
 	<strong>&lt;!-- cms:id="notice_stock_text" --&gt;</strong>在庫残りわずか！<strong>&lt;!-- /cms:id="notice_stock_text" --&gt;</strong>
-<strong>&lt;!-- /cms:id="notice_stock" --&gt;</strong>
-</pre>
-<p style="padding:0 0 0 35px;">※cms:id="notice_stock"で囲まれた箇所は在庫切れに近づいた時に表示されます。<br />
-※cms:id="notice_stock_text"は常に表示されます。</p>
-<br />
+<strong>&lt;!-- /cms:id="notice_stock" --&gt;</strong></pre>
+<div class="alert alert-warning">※cms:id="notice_stock"で囲まれた箇所は在庫切れに近づいた時に表示されます。<br />
+※cms:id="notice_stock_text"は常に表示されます。</div>

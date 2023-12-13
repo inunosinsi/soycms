@@ -59,6 +59,29 @@ function soycms_blogparts(string $html, HTMLPage $page){
 
 	//ブログページ
 	$blog = soycms_get_hash_table_dao("blog_page")->getById($blogPageId);
+	
+	$obj->createAdd("blog_name", "CMSLabel", array(
+		"soy2prefix" => "b_block",
+		"text" => $blog->getTitle()
+	));
+
+	$blogUrl = soycms_get_site_url_by_frontcontroller(false).$blog->getTopPageURL(false);
+	if(strlen((string)$blog->getUri())) $blogUrl .= $blog->getUri()."/";
+	if(strlen((string)$blog->getTopPageURL(false))) $blogUrl .= $blog->getTopPageURL(false)."/";
+	
+	$obj->addLink("blog_url", array(
+		"link" => $blogUrl,
+		"soy2prefix"=>"b_block"
+	));
+	$obj->createAdd("blog_url_path", "CMSLabel", array(
+		"text" => $blogUrl,
+		"soy2prefix"=>"b_block"
+	));
+
+	$obj->createAdd("blog_description","CMSLabel",array(
+		"html"=>str_replace(array("\r\n","\r","\n"),"<br />",htmlspecialchars($blog->getDescription())),
+		"soy2prefix"=>"b_block"
+	));
 
 	//b_block:id="category"
 	$labelDao = soycms_get_hash_table_dao("label");
@@ -176,7 +199,10 @@ if(!function_exists("convertUrlOnModuleBlogParts")){
 		static $siteUrl;
 		if(is_null($siteUrl)){
 			$siteUrl = "/";
-			if(!SOYCMS_IS_DOCUMENT_ROOT) $siteUrl .= SOYCMS_SITE_ID . "/";
+			if(!SOYCMS_IS_DOCUMENT_ROOT) {
+				// SCRIPT_NAMEは必ずある
+				$siteUrl .= trim(substr($_SERVER["SCRIPT_NAME"], 0, strrpos($_SERVER["SCRIPT_NAME"], "/")), "/") . "/";
+			}
 		}
 		return $siteUrl . $url;
 	}

@@ -15,8 +15,6 @@ class GoogleAnalyticsOnOutput extends SOYShopSiteOnOutputAction{
 		$config = GoogleAnalyticsUtil::getConfig();
 		$code = $config["tracking_code"];
 
-		if(!strlen($code)) return $html;
-
 		//アナリティクスタグの挿入設定　カートとマイページは無条件で挿入→マイページはログインが必要なページは除く
 		if(defined("SOYSHOP_PAGE_ID")){
 			$displayConfig = GoogleAnalyticsUtil::getPageDisplayConfig();
@@ -53,7 +51,23 @@ class GoogleAnalyticsOnOutput extends SOYShopSiteOnOutputAction{
 		}
 
 		//完了ページならば、eコマーストラッキングを挿入する
-		if($isCompletePage) $code = self::_convertTrackingCode($html, $code);
+		if(strlen($code) && $isCompletePage) $code = self::_convertTrackingCode($html, $code);
+
+		//先にタグマネージャ(GTM)
+		if(isset($config["gtm"]) && is_array($config["gtm"])){
+			foreach(array("header", "body") as $typ){
+				if(isset($config["gtm"][$typ]) && strlen($config["gtm"][$typ])){
+					$tag = ($typ == "header") ? "head" : "body";
+					if(is_numeric(stripos($html,'<'.$tag.'>'))){
+						$html = str_ireplace('<'.$tag.'>','<'.$tag.'>'."\n".$config["gtm"][$typ],$html);
+					}else if(preg_match('/'.$tag.'\\s[^>]+>/', $html)){
+						$html = preg_replace('/(<'.$tag.'\\s[^>]+>)/', "\$0\n".$config["gtm"][$typ], $html);
+					}
+				}
+			}
+		}
+
+		if(!strlen($code)) return $html;
 
 		switch($config["insert_to_head"]){
 			case GoogleAnalyticsUtil::INSERT_INTO_THE_BEGINNING_OF_HEAD:	//<head>の直後

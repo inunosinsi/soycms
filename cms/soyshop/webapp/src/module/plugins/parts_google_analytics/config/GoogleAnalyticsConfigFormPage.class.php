@@ -34,6 +34,14 @@ class GoogleAnalyticsConfigFormPage extends WebPage{
 			"name"  => "google_analytics[tracking_code]"
 		));
 
+		foreach(array("header", "body") as $typ){
+			$this->addTextArea("gtm_".$typ, array(
+				"name" => "google_analytics[gtm][".$typ."]",
+				"value" => (isset($code["gtm"][$typ])) ? $code["gtm"][$typ] : ""
+			));
+		}
+		
+
 		//nameがinsert_to_headなのは歴史的経緯による
 		$this->addCheckBox("insert_to_head", array(
 			"value" => GoogleAnalyticsUtil::INSERT_INTO_THE_BEGINNING_OF_HEAD,

@@ -4,7 +4,7 @@
 	<div class="form-group">
 		<label>Google Analytics トラッキングコード</label>
 		<textarea class="minieditor form-control" soy:id="tracking_code" style="height:200px;"></textarea>
-		<p>※注文完了画面にご注文番号を表示させている場合、<a href="https://developers.google.com/analytics/devguides/collection/gajs/gaTrackingEcommerce?hl=ja-JP" target="_blank">非同期型eコマーストラッキングタグ</a>が挿入されます。</p>
+		<div class="alert alert-warning">※注文完了画面にご注文番号を表示させている場合、<a href="https://developers.google.com/analytics/devguides/collection/gajs/gaTrackingEcommerce?hl=ja-JP" target="_blank">非同期型eコマーストラッキングタグ</a>が挿入されます。</div>
 	</div>
 
 	<div class="form-group">
@@ -17,6 +17,16 @@
 			<li><input type="radio" soy:id="insert_to_the_end_of_body"></li>
 			<li><input type="radio" soy:id="insert_to_the_end_of_html"></li>
 		</ul>
+	</div>
+
+	<div class="form-group">
+		<label>Google Tag Manager(GTM) &lt;head&gt;直後で出力するタグ</label>
+		<textarea class="minieditor form-control" soy:id="gtm_header" style="height:200px;"></textarea>
+	</div>
+
+	<div class="form-group">
+		<label>Google Tag Manager(GTM) &lt;body&gt;直後で出力するタグ</label>
+		<textarea class="minieditor form-control" soy:id="gtm_body" style="height:200px;"></textarea>
 	</div>
 
 	<div class="form-group">

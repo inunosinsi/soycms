@@ -14,7 +14,7 @@ class TagCloudPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.10"
+			"version"=>"1.12"
 		));
 
 		//active or non active
@@ -156,10 +156,10 @@ class TagCloudPlugin{
 		//検索結果ブロックプラグインのUTILクラスを利用する
 		SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
 		$pageId = (int)$_SERVER["SOYCMS_PAGE_ID"];
-
+		
 		$soyId = PluginBlockUtil::getSoyIdByPageIdAndPluginId($pageId, self::PLUGIN_ID);
 		if(!is_string($soyId)) return array();
-
+		
 		//ラベルIDを取得とデータベースから記事の取得件数指定
 		$labelId = PluginBlockUtil::getLabelIdByPageId($pageId, $soyId);
 		if(!is_numeric($labelId)) return array();
@@ -216,7 +216,7 @@ class TagCloudPlugin{
 			"current" => $current,
 			"last"	 => $last_page_number,
 			"url"		=> $url,
-			"queries" => array("tagcloud" => $wordId),
+			//"queries" => array("tagcloud" => $wordId),
 			"soy2prefix" => "p_block",
 		));
 
@@ -236,7 +236,7 @@ class TagCloudPlugin{
 
 		$obj->addLink("s_last_page", array(
 			"soy2prefix" => "p_block",
-			"link" => ($last_page_number > 1) ? $url . "page-" . ($last_page_number - 1) . "?tagcloud=" . $wordId : null,
+			"link" => ($last_page_number > 1) ? $url . "page-" . ($last_page_number - 1) : null,
 		));
 
 		$obj->addLabel("s_current_page", array(
@@ -256,7 +256,7 @@ class TagCloudPlugin{
 
 		$obj->addLink("s_next_page", array(
 			"soy2prefix" => "p_block",
-			"link" => $url . "page-" . ($current + 1) . "?tagcloud=" . $wordId,
+			"link" => $url . "page-" . ($current + 1),
 		));
 
 		$obj->addModel("s_has_prev_page", array(
@@ -266,7 +266,7 @@ class TagCloudPlugin{
 
 		$obj->addLink("s_prev_page", array(
 			"soy2prefix" => "p_block",
-			"link" => $url . "page-" . ($current - 1) . "?tagcloud=" . $wordId,
+			"link" => $url . "page-" . ($current - 1),
 		));
 	}
 
@@ -280,18 +280,30 @@ class TagCloudPlugin{
 	}
 
 	private function _getWordIdFromGetParam(){
-		if(!isset($_GET["tagcloud"])) return null;
-		if(is_numeric($_GET["tagcloud"])){
-			return (int)$_GET["tagcloud"];
-		//ハッシュ値の場合
+		if(isset($_GET["tagcloud"])) {
+			if(is_numeric($_GET["tagcloud"])){
+				return (int)$_GET["tagcloud"];
+			//ハッシュ値の場合
+			}else{
+				SOY2::import("site_include.plugin.tag_cloud.domain.TagCloudDictionaryDAO");
+				try{
+					return SOY2DAOFactory::create("TagCloudDictionaryDAO")->getByHash($_GET["tagcloud"])->getId();
+				}catch(Exception $e){
+					//
+				}
+			}
+		// エイリアスの場合
 		}else{
-			SOY2::import("site_include.plugin.tag_cloud.domain.TagCloudDictionaryDAO");
-			try{
-				return SOY2DAOFactory::create("TagCloudDictionaryDAO")->getByHash($_GET["tagcloud"])->getId();
-			}catch(Exception $e){
-				//
+			$pathBuilder = new CMSPathInfoBuilder();
+			$args = $pathBuilder->getArguments();
+			unset($pathBuilder);
+			if(isset($args[0]) && strlen($args[0])){
+				SOY2::import("site_include.plugin.tag_cloud.domain.TagCloudDictionaryDAO");
+				$wordId = SOY2DAOFactory::create("TagCloudDictionaryDAO")->getWordIdByWordOrHash($args[0]);
+				if($wordId > 0) return $wordId;
 			}
 		}
+		
 		return null;
 	}
 

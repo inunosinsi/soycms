@@ -35,7 +35,11 @@ function soyshop_category_navigation(){
 
 }
 
-function soyshop_category_navigation_build_tree($args,$array,$tree){
+/**
+ * @param array, array, array
+ * @return string
+ */
+function soyshop_category_navigation_build_tree(array $args, array $array, array $tree){
 	$html = array();
 
 	$config = $args["config"];
@@ -50,7 +54,7 @@ function soyshop_category_navigation_build_tree($args,$array,$tree){
 	}
 
 	foreach($array as $obj){
-		$id = (isset($config[$obj->getId()])) ? $config[$obj->getId()]["id"] : null;
+		$id = (isset($config[$obj->getId()])) ? $config[$obj->getId()]["id"] : 0;
 		$parameter = (isset($config[$obj->getId()])) ? $config[$obj->getId()]["parameter"] : "";
 
 		$url = (!isset($urls[$id])) ? $defaultUrl : $urls[$id]["uri"];

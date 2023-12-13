@@ -129,6 +129,10 @@ class XPublisherPlugin{
 			$lastDir = (count($dirs)) ? end($dirs) : "";
 			$staticFilePath = (strlen($lastDir) && strpos($lastDir, ".html")) ? rtrim($currentDir . "/" . $lastDir, "/") : $currentDir . "/index.html";
 			file_put_contents($staticFilePath, $html);
+
+			// if(CMSPlugin::activeCheck("x_html_backup")){
+			// 	SOY2Logic::createInstance("site_include.plugin.x_html_backup.logic.HTMLBackupLogic")->save($html, $_SERVER["PATH_INFO"]);
+			// }
 		}
 	}
 

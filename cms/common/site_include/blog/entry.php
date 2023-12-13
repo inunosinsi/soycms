@@ -56,7 +56,7 @@ function soy_cms_blog_output_entry($page, Entry $entry){
  * 	<a cms:id="entry_link"><!-- cms:id="title" --><!--/cms:id="title" --></a>
  * </div b_block:id="prev_entry">
  */
-function soy_cms_blog_output_entry_navi($page,$next,$prev){
+function soy_cms_blog_output_entry_navi(CMSPage $page, LabeledEntry $next, LabeledEntry $prev){
 
 	if(!class_exists("EntryNavigationComponent")) SOY2::import("site_include.blog.component.EntryNavigationComponent");
 

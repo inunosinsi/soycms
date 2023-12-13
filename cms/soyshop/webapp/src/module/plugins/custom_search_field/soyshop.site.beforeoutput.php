@@ -1,8 +1,4 @@
 <?php
-/*
- * soyshop.site.beforeoutput.php
- * Created: 2010/03/11
- */
 
 class CustomSearchFieldBeforeOutput extends SOYShopSiteBeforeOutputAction{
 

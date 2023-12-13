@@ -19,6 +19,7 @@ class ItemSubtitleItemName extends SOYShopItemNameBase{
 		// 	$html[] = "<input name=\"LanguageConfig[item_name_" . $lang . "]\" value=\"" . $itemName . "\" type=\"text\" class=\"form-control\">";
 		// 	$html[] = "</dd>";
 		// }
+		$html[] = "</div>";
 
 		return implode("\n", $html);
 	}

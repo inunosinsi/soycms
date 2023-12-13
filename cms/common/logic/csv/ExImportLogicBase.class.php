@@ -90,6 +90,7 @@ class ExImportLogicBase extends SOY2LogicBase{
         $quote = $this->getQuote();
         $separator = $this->getSeparator();
         foreach($array as $key => $value){
+            if(is_null($value)) continue;
             if(
               $quote
               || ( strpos($value, "\"") !== false )

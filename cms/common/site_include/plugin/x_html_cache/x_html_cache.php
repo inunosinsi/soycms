@@ -121,6 +121,10 @@ class HTMLCachePlugin{
 		}
 
 		file_put_contents($dir . $hash . ".html", $html);
+
+		// if(CMSPlugin::activeCheck("x_html_backup")){
+		// 	SOY2Logic::createInstance("site_include.plugin.x_html_backup.logic.HTMLBackupLogic")->save($html, $_SERVER["PATH_INFO"]);
+		// }
 	}
 
 	function onPageUpdate($arg){

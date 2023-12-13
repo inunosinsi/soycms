@@ -4,6 +4,8 @@ class CustomSearchFieldAdmin extends SOYShopAdminBase{
     function execute(){
         //多言語化
         SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
+        if(!class_exists("UtilMultiLanguageUtil")) return;
+
         if(SOYShopPluginUtil::checkIsActive("util_multi_language")){
             $langs = UtilMultiLanguageUtil::allowLanguages();
         }else{

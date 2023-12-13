@@ -142,6 +142,19 @@ class ConfigPage extends FormPageBase{
 		// GoogleのreCAPTCHA v3が使用できる場合はSOY CMSのreCAPTCHA v3の使用を促す
 		DisplayPlugin::toggle("enabledGoogleReCAPTCHA_v3", function_exists("curl_init"));
 
+		$this->addInput("config_noCsrf", array(
+			"type" => "hidden",
+			"name" => "Config[isCsrf]",
+			"value" => 0
+		));
+
+		$this->addCheckBox("config_isCsrf", array(
+			"name" => "Config[isCsrf]",
+			"value" => 1,
+			"selected" => $config->getIsCsrf(),
+			"label" => "トークンチェックを有効にする"
+		));
+
     	$this->addInput("config_notSmartPhone", array(
     		"type" => "hidden",
 			"name" => "Config[isSmartPhone]",

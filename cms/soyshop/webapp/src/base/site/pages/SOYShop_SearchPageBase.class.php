@@ -44,7 +44,7 @@ class SOYShop_SearchPageBase extends SOYShopPageBase{
 		/**
 		 * 検索実行
 		 */
-		$items = $delegate->getItems($this->currentPage, $this->limit);
+		$items = $delegate->getItems((int)$this->currentPage, (int)$this->limit);
 		$total = $delegate->getTotal();
 		$this->setTotal($total);
 

@@ -15,7 +15,7 @@ interface IUserInfoUtil {
 	/**
 	 * ログイン：ログイン状態をセッションに保存する
 	 */
-	public static function login($user);
+	public static function login(Administrator $user, bool $isTokenLogin);
 
 	/**
 	 * サイトへログイン：権限をセッションに保存する
@@ -38,6 +38,11 @@ interface IUserInfoUtil {
      * 現在ログインユーザがデフォルトユーザであるかどうか
      */
     public static function isDefaultUser();
+
+    /**
+     * 現在ログインしているユーザがトークンログインであるか
+     */
+    public static function isTokenLogin();
 
     /**
      * 現在ログインしているユーザが一般管理者権限を持っているか

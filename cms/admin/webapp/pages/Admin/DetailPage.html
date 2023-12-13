@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head soy:page="_common.HeaderPage">
+
+<body>
+
+	<div id="wrapper">
+		<!-- Navigation -->
+		<nav  class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" soy:page="_common.UpperMenuPage"><!-- --></nav>
+		<div id="page-wrapper">
+			<div class="row">
+				<div class="col-lg-12">
+					<h1 class="page-header">管理者詳細設定</h1>
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
+			<div class="row" soy:id="has_message_or_error">
+				<div class="col-lg-12">
+					<div class="panel panel-default panel-message">
+						<div  class="alert alert-info" soy:id="message">メッセージ</div>
+						<div  class="alert alert-danger" soy:id="error">情報の更新に失敗しました。</div>
+					</div>
+				</div>
+			</div soy:id="has_message_or_error">
+			<div class="row" soy:display="for_default_user">
+				<div class="col-lg-12">
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<ul class="nav nav-pills">
+								<li><a soy:link="Admin">管理者一覧に戻る</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<!-- /.col-lg-12 -->
+			</div soy:display="for_default_user">
+			<!-- soy:display="for_not_default_user" -->
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<ul class="nav nav-pills">
+								<li><a soy:link="Administrator.ChangePassword">パスワード変更</a></li>
+							</ul>
+						</div>
+					 </div>
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
+			<!-- /soy:display="for_not_default_user" -->
+			<!-- /.row -->
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="panel panel-yellow">
+						<div class="panel-heading">
+							管理者名とメールアドレス
+						</div>
+						<form soy:id="detailForm">
+							<table class="table table-striped">
+								<col width="220px">
+								<tr class="no_example" soy:id="show_userid_input">
+									<th class="item_name">管理者ID</th>
+									<td>
+										<input class="form-control" type="text" soy:id="userId" name="userId"><span soy:id="userId_text"></span>
+										<div class="alert alert-warning" soy:id="show_userid_input_example">必須、4文字以上30文字以内の半角英数字</div>
+									</td>
+								</tr>
+								<tr class="no_example">
+									<th class="item_name">名前</th>
+									<td><input class="form-control" type="text" soy:id="name" name="name"><span soy:id="name_text"></span></td>
+								</tr>
+								<tr class="no_example">
+									<th class="item_name">e-mail</th>
+									<td><input class="form-control" type="text" soy:id="email" name="email"><span soy:id="email_text"></span></td>
+								</tr>
+
+								<!-- soy:display="token_login" -->
+								<tr class="no_example">
+									<th class="item_name">パスワード無しログイン</th>
+									<td>
+										<!-- soy:display="no_token_login_user" -->
+										<input type="submit" name="tokenLogin[create]" class="btn btn-info" value="有効にする">
+										<!-- /soy:display="no_token_login_user" -->
+										<!-- soy:display="token_login_user" -->
+										<a soy:id="token_login_url" id="token_login_url">ログイン用URL</a><br>
+										有効期限：<!-- soy:id="token_login_time_limit" /-->&nbsp;&nbsp;
+										<input type="submit" name="tokenLogin[update]" class="btn btn-info btm-xs" value="更新する">&nbsp;&nbsp;
+										<input type="submit" name="tokenLogin[remove]" class="btn btn-danger btm-xs" value="無効にする">
+										<!-- /soy:display="token_login_user" -->&nbsp;
+									</td>
+								</tr>
+								<!-- /soy:display="token_login" -->
+
+								<!-- soy:id="customfield" /-->
+
+								<tr soy:id="button_toggle">
+									<td>&nbsp;</td>
+									<td class="button">
+										<input id="update_button" class="btn btn-primary btn-lg" type="submit" value="更新">
+										<!-- soy:display="instead_login" -->
+										&nbsp;&nbsp;&nbsp;
+										<a soy:id="instead_login_link" class="btn btn-warning btn-lg">このユーザでログイン</a>
+										<!-- /soy:display="instead_login" -->
+									</td>
+								</tr>
+							</table>
+						</form>
+					</div>
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
+		</div>
+		<!-- /#page-wrapper -->
+		<!-- soy:page="_common.FooterPage" /-->
+	</div>
+	<!-- /#wrapper -->
+<!-- soy:id="custom_html" /-->
+</body>
+
+</html>

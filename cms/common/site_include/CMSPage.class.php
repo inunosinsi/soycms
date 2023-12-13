@@ -200,7 +200,7 @@ class CMSPage extends WebPage{
 
 		while(true){
 			list($tag,$line,$innerHTML,$outerHTML,$value,$suffix,$skipendtag) =
-				$plugin->parse($id,$soyValue,$this->_soy2_content);
+				$plugin->parse($id,$soyValue,(string)$this->_soy2_content);
 
 			if(!strlen($tag))break;
 

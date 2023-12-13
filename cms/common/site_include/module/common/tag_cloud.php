@@ -16,7 +16,7 @@ function soycms_tag_cloud($html, $page){
 		//タグクラウドブロックを設置しているページを調べる
 		SOY2::import("site_include.plugin.tag_cloud.util.TagCloudUtil");
 		$pageId = TagCloudUtil::getPageIdSettedTagCloudBlock();
-
+		
 		if(isset($pageId) && is_numeric($pageId)){
 			SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
 			$labelId = PluginBlockUtil::getLabelIdByPageId($pageId);
@@ -24,7 +24,7 @@ function soycms_tag_cloud($html, $page){
 				//表示速度の改善の為にここでランクの区切りの位を取得する
 				$cnf = TagCloudUtil::getConfig();
 				if(isset($cnf["divide"]) && (int)$cnf["divide"]) $rankDivide = (int)$cnf["divide"];
-
+				
 				$dao = new SOY2DAO();
 
 				//タグを設定した記事が公開であること。記事が任意のラベルと紐付いていること

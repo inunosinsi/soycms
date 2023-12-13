@@ -1,18 +1,41 @@
-<html>
+<!DOCTYPE html>
+<html lang="ja">
 
 <head soy:page="_common.HeaderPage" isOverWrite="true">
 </head soy:page="_common.HeaderPage">
 
 <body>
 
-<div id="wrapper">
-	<div id="upperMenu" soy:page="_common.UpperMenuPage"><!-- --></div>
-	<div id="content">
-		<h2>CMS管理 - データベースの更新</h2>
+	<div id="wrapper">
+		<!-- Navigation -->
+		<nav  class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" soy:page="_common.UpperMenuPage"><!-- --></nav>
+		<div id="page-wrapper">
+			<div class="row">
+				<div class="col-lg-12">
+					<h1 class="page-header">CMS管理 - <span>データベースの更新</span></h1>
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
+			<div class="row" soy:id="has_message_or_error">
+				<div class="col-lg-12">
+					<div class="panel panel-default panel-message">
+						<div  class="panel-heading" soy:id="message">メッセージ</div>
+						<div  class="panel-heading" soy:id="error">エラー</div>
+					</div>
+				</div>
+			</div soy:id="has_message_or_error">
 
-		<p class="notify">管理側のデータベースのバージョンアップを行なってください → <a soy:id="update_link">バージョンアップする</a></p>
-				
+			<div class="row">
+				<div class="col-lg-12">
+					<a class="btn btn-primary btn-block btn-lg" soy:id="update_link">バージョンアップする</a>
+				</div>
+			</div>
+
+		</div>
+		<!-- /#page-wrapper -->
+		<!-- soy:page="_common.FooterPage" /-->
 	</div>
-	<div soy:page="_common.FooterPage"></div>
-</div>
+	<!-- /#wrapper -->
+
+</body>
 </html>

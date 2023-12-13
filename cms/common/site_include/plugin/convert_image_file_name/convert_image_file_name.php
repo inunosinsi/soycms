@@ -19,7 +19,7 @@ class ConvertImageFileNamePlugin {
 			"author"=> "齋藤毅",
 			"url"=> "https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.0.1"
+			"version"=>"1.1"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -43,13 +43,10 @@ class ConvertImageFileNamePlugin {
 				$extension = "jpg";
 				break;
 			case "png":
-				$extension = "png";
-				break;
 			case "gif":
-				$extension = "gif";
-				break;
 			case "webp":
-				$extension = "webp";
+			case "avif":
+				// そのまま
 				break;
 			default:
 				$extension = null;

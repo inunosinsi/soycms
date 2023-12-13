@@ -41,3 +41,44 @@ if(!isset($_SERVER["HTTPS"])){
 		$_SERVER["SERVER_PORT"] = "443";
 	}
 }
+
+// NGINX対応
+if(!isset($_SERVER["REDIRECT_URL"])){
+	$_SERVER["REDIRECT_URL"] = (isset($_SERVER["REQUEST_URI"]) && strlen($_SERVER["REQUEST_URI"])) ? $_SERVER["REQUEST_URI"] : "/";
+	if(strlen($_SERVER["REDIRECT_URL"]) > 1){
+		foreach(array("?", "#") as $_sym){
+			if(is_numeric(strpos($_SERVER["REDIRECT_URL"], $_sym))) $_SERVER["REDIRECT_URL"] = substr($_SERVER["REDIRECT_URL"], 0, strpos($_SERVER["REDIRECT_URL"], $_sym));
+		}
+	}
+}
+
+// NGINX対応
+if(!isset($_SERVER["HTTP_HOST"]) || !is_string($_SERVER["HTTP_HOST"])) {
+	$_SERVER["HTTP_HOST"] = (isset($_SERVER["SERVER_NAME"])) ? $_SERVER["SERVER_NAME"] : "";
+}
+
+// NGINX対応
+if((!isset($_SERVER["SCRIPT_NAME"]) || is_bool(strpos($_SERVER["SCRIPT_NAME"], "index.php"))) && isset($_SERVER["SCRIPT_FILENAME"])){
+	$_SERVER["SCRIPT_NAME"] = "/" . ltrim(str_replace($_SERVER["DOCUMENT_ROOT"], "", $_SERVER["SCRIPT_FILENAME"]), "/");
+}
+
+// PATH_INFOを補完する SOYCMS_PHP_CGI_MODE(php_sapi_name() == "cgi")対策
+if(isset($_GET["pathinfo"])){
+	$_SERVER["PATH_INFO"] = "/".$_GET["pathinfo"];
+	unset($_GET["pathinfo"]);
+}
+
+if(!isset($_SERVER["PATH_INFO"])){
+	// 公開側
+	if(defined("_SITE_ROOT_") || (defined("DISPLAY_SOYSHOP_SITE") && DISPLAY_SOYSHOP_SITE)){
+		$_SERVER["PATH_INFO"] = "/".ltrim(str_replace(str_replace("index.php", "", $_SERVER["SCRIPT_NAME"]), "", $_SERVER["REDIRECT_URL"]), "/");
+	// 管理画面側
+	}else{
+		if(is_numeric(strpos($_SERVER["REDIRECT_URL"], "/index.php"))){
+			$_SERVER["PATH_INFO"] = "/".ltrim(substr($_SERVER["REDIRECT_URL"], strpos($_SERVER["REDIRECT_URL"], "index.php")+strlen("index.php")), "/");
+		}
+	}
+
+	// $_SERVER["PATH_INFO"]が / のみの場合は削除
+	if(isset($_SERVER["PATH_INFO"]) && strlen($_SERVER["PATH_INFO"]) <= 1) unset($_SERVER["PATH_INFO"]);
+}

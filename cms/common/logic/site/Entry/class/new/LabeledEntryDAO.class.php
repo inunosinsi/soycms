@@ -143,9 +143,9 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 		}
 
 		//endに等号は付けない
-		$where[] = "(entry.cdate >= :start AND entry.cdate < :end)";
+		$where[] = "(entry.cdate BETWEEN :start AND :end)";
 		$binds[":start"] = $start;
-		$binds[":end"] = $end;
+		$binds[":end"] = $end-1;
 
 		if(count($where)){
 			$sql .= "WHERE " . implode(" AND ", $where);
@@ -212,9 +212,9 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 		}
 
 		//endに等号は付けない
-		$where[] = "(entry.cdate >= :start AND entry.cdate < :end)";
+		$where[] = "(entry.cdate BETWEEN :start AND :end)";
 		$binds[":start"] = $start;
-		$binds[":end"] = $end;
+		$binds[":end"] = $end-1;
 		
 		if(count($where)){
 			$sql .= "WHERE " . implode(" AND ", $where);
@@ -381,7 +381,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 				'WHERE EntryLabel.label_id in (' . implode(",",$labelIds) .') ' .
 				'AND Entry.isPublished = 1 ' .
 				'AND (Entry.openPeriodEnd > :now AND Entry.openPeriodStart <= :now)' .
-				'AND (Entry.cdate >= :begin AND Entry.cdate < :end)';
+				'AND (Entry.cdate BETWEEN :begin AND :end)';
 
 		for($y = $minYear; $y <= $maxYear; $y++){
 			$span_min = ($y == $minYear)?$minMonth:1;
@@ -394,7 +394,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 
 				$result = $this->executeQuery($countSQL,array(
 					":begin"=>$begin,
-					":end"=>$end,
+					":end"=>$end-1,
 					":now"=>SOYCMS_NOW
 				));
 
@@ -480,7 +480,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 				'WHERE EntryLabel.label_id in (' . implode(",",$labelIds) .') ' .
 				'AND Entry.isPublished = 1 ' .
 				'AND (Entry.openPeriodEnd > :now AND Entry.openPeriodStart <= :now)' .
-				'AND (Entry.cdate >= :begin AND Entry.cdate < :end)';
+				'AND (Entry.cdate BETWEEN :begin AND :end)';
 
 		for($y = $minYear; $y <= $maxYear; $y++){
 			$begin = mktime(0,0,0,1,1,$y);
@@ -488,7 +488,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 
 			$result = $this->executeQuery($countSQL,array(
 				":begin"=>$begin,
-				":end"=>$end,
+				":end"=>$end-1,
 				":now"=>SOYCMS_NOW
 			));
 

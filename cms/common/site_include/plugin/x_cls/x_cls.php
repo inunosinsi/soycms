@@ -29,7 +29,7 @@ class CLSPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.7"
+			"version"=>"0.8"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){

@@ -14,9 +14,9 @@ class UserInfoUtil implements IUserInfoUtil{
 
 	/**
 	 * ログイン状態をセッションに保存する
-	 * @param Administrator
+	 * @param Administrator, bool
 	 */
-	public static function login($user){
+	public static function login(Administrator $user, bool $isTokenLogin=false){
 		$session = SOY2ActionSession::getUserSession();
 
 		$session->setAuthenticated(true);
@@ -24,10 +24,11 @@ class UserInfoUtil implements IUserInfoUtil{
 		$session->setAttribute('loginid',$user->getUserId());
 
 		$name = $user->getName();
-		if(!$name)$name = $user->getUserId();
+		if(!$name) $name = $user->getUserId();
 		$session->setAttribute('username',$name);
 		$session->setAttribute('email',$user->getEmail());
 		$session->setAttribute('isdefault',(int)$user->getIsDefaultUser());
+		$session->setAttribute("isTokenLogin", (int)$isTokenLogin);
 
 		SOY2ActionSession::regenerateSessionId();
 	}
@@ -109,6 +110,13 @@ class UserInfoUtil implements IUserInfoUtil{
      */
     public static function isDefaultUser(){
     	return SOY2ActionSession::getUserSession()->getAttribute("isdefault");
+    }
+
+	/**
+     * 現在ログインしているユーザがトークンログインであるか
+     */
+    public static function isTokenLogin(){
+    	return SOY2ActionSession::getUserSession()->getAttribute("isTokenLogin");
     }
 
     /**

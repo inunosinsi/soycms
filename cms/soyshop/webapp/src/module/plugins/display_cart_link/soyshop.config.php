@@ -21,4 +21,3 @@ class DisplayCartLinkConfig extends SOYShopConfigPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.config", "display_cart_link", "DisplayCartLinkConfig");
-?>

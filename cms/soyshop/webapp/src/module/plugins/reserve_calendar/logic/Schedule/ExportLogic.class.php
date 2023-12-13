@@ -13,7 +13,7 @@ class ExportLogic extends SOY2LogicBase {
  			"mode" => "csv",
  		))->getList();
 
-		if(count($items)){
+		if(is_array($items) && count($items)){
 			foreach($items as $moduleId => $v){
 				$labels[$v["key"]] = $v["label"];
 			}

@@ -591,6 +591,7 @@ class CartLogic extends SOY2LogicBase{
 		$key = $this->getAttribute("address_key");
 		if(is_null($key)) $key = -1;
 		$addrs = $this->customerInformation->getAddress($key);
+		if(!is_array($addrs)) $addrs = array();
 		
 		// 自動補完は名前と電話番号のみ
 		if($isComplement){
@@ -615,6 +616,11 @@ class CartLogic extends SOY2LogicBase{
 						break;
 				}
 			}
+		}
+
+		// エラーの報告があった分を補填する
+		foreach(array("name", "reading", "zipCode", "area", "telephoneNumber") as $key){
+			if(!isset($addrs[$key])) $addrs[$key] = "";
 		}
 
 		return $addrs;

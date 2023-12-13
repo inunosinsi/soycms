@@ -28,7 +28,7 @@ class LabelCustomFieldPlugin{
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co/article/3532",
 			"mail" => "info@saitodev.co",
-			"version"=>"0.8"
+			"version"=>"0.9.1"
 		));
 
 		//プラグイン アクティブ
@@ -47,6 +47,8 @@ class LabelCustomFieldPlugin{
 				CMSPlugin::setEvent('onLabelCreate', self::PLUGIN_ID, array($this, "onLabelUpdate"));
 				CMSPlugin::setEvent('onLabelRemove', self::PLUGIN_ID, array($this, "onLabelRemove"));
 				CMSPlugin::addCustomFieldFunction(self::PLUGIN_ID, "Label.Detail", array($this, "onCallCustomField"));
+
+				CMSPlugin::setEvent("onLabelSetupWYSIWYG",self::PLUGIN_ID,array($this,"onSetupWYSIWYG"));
 
 			//公開側
 			}else{
@@ -573,6 +575,23 @@ class LabelCustomFieldPlugin{
 		// $this->displayID = ( $config["display_id"] >0 ) ? 1 : 0 ;
 
 		CMSPlugin::savePluginConfig(self::PLUGIN_ID,$this);
+	}
+
+	function onSetupWYSIWYG(){
+		// 他のプラグインで設定している場合は判定を続けない
+		if(isset($_COOKIE["label_text_editor"]) && $_COOKIE["label_text_editor"] == "tinyMCE") return;
+
+		$isWysiwyg = false;
+		if(is_array($this->customFields) && count($this->customFields)){
+			foreach($this->customFields as $field){
+				if($field->getType() == "richtext") {
+					$isWysiwyg = true;
+					break;
+				}
+			}
+		}
+		
+		$_COOKIE["label_text_editor"] = ($isWysiwyg) ? "tinyMCE" : "plain";
 	}
 
 	/**

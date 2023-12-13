@@ -100,7 +100,8 @@ function soy_cms_blog_output_current_archive($page){
 
     if(!class_exists("CategoryListComponent")) SOY2::import("site_include.blog.component.CategoryListComponent");
 
-	$label = (!is_null($page->label) && $page->label instanceof Label) ? $page->label : new Label();
+    if(!class_exists("Label")) SOY2::import("domain.cms.Label");
+    $label = (!is_null($page->label) && $page->label instanceof Label) ? $page->label : new Label();
 	$isArchive = (SOYCMS_BLOG_PAGE_MODE==CMSBlogPage::MODE_MONTH_ARCHIVE);
     $page->createAdd("current_archive","CategoryListComponent",array(
         "soy2prefix"=>"b_block",

@@ -65,13 +65,19 @@ class SOYShopSiteController extends SOY2PageController{
 
 		//404
 		if(SOYSHOP_404_PAGE_MARKER == $page->getUri()){
-			self::_onNotFound();
+			$e = new Exception("this page is 404 notfound.");
+			self::_onNotFound($e);
 		}
 
 		include_once("controller/output.php");
 		$webPage = common_process_before_output($page, $args);
 		if(is_null($webPage) || $webPage->getError() instanceof Exception){
-			self::_onNotFound();
+			if(is_object($webPage) && method_exists($webPage, "getError") && $webPage->getError() instanceof Exception){
+				$e = $webPage->getError();
+			}else{
+				$e = new Exception("webpage is null.");
+			}
+			self::_onNotFound($e);
 		}
 
 		output_page($webPage);
@@ -89,7 +95,7 @@ class SOYShopSiteController extends SOY2PageController{
 		exit;
 	}
 
-	private function _onNotFound(){
+	private function _onNotFound(Exception $e){
 		SOYShopPlugin::load("soyshop.site.404notfound");
 		SOYShopPlugin::invoke("soyshop.site.404notfound");
 		header("HTTP/1.0 404 Not Found");

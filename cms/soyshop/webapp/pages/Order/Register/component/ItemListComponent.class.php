@@ -54,8 +54,9 @@ class ItemListComponent extends HTMLList {
 		));
 
 		$this->addInput("item_price", array(
-			"name" => "Item[$id][itemPrice]",
+			"name" => "Item[".$id."][itemPrice]",
 			"value" => $entity->getItemPrice(),
+			"id" => "item_price_".$id
 		));
 		$this->addLabel("item_price_text", array(
 			"text" => soy2_number_format($entity->getItemPrice()),
@@ -71,8 +72,9 @@ class ItemListComponent extends HTMLList {
 		));
 
 		$this->addInput("item_count", array(
-			"name" => "Item[$id][itemCount]",
+			"name" => "Item[".$id."][itemCount]",
 			"value" => $entity->getItemCount(),
+			"id" => "item_count_".$id
 		));
 		$this->addLabel("item_count_text", array(
 			"text" => soy2_number_format($entity->getItemCount()),

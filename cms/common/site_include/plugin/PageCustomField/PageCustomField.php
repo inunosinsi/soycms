@@ -32,7 +32,7 @@ class PageCustomFieldPlugin{
 			"author" => "齋藤毅",
 			"url" => "",
 			"mail" => "info@saitodev.co",
-			"version"=>"0.6"
+			"version"=>"0.8"
 		));
 
 		//プラグイン アクティブ
@@ -528,7 +528,7 @@ class PageCustomFieldPlugin{
 	private function _getScripts(){
 
 		$script = '<script type="text/javascript">';
-		$script .= file_get_contents(dirname(dirname(__FILE__)) . "/CustomFieldAdvanced/custom_field.js");
+		$script .= file_get_contents(dirname(__FILE__) . "/js/custom_field.js");
 		$script .= '</script>';
 		$script = str_replace("#FILE_UPLOAD_LINK#", SOY2PageController::createLink("Page.Editor.FileUpload"), $script);
 		$script = str_replace("#PUBLIC_URL#", UserInfoUtil::getSiteURLBySiteId(""), $script);

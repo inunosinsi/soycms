@@ -163,9 +163,9 @@ class SOYShopAuthUtil {
 			if(!AUTH_CONFIG) {
 				if(strpos($classPath, "Customfield") || strpos($classPath, "Setting")) return false;
 				if(is_numeric(strpos($classPath, "Config"))){
-					//AUTH_CONFIG_DETAILがtrueの場合はConfig.Detailは許可する
+					//AUTH_CONFIG_DETAILまたはAUTH_CONFIG_DETAIL_EXTENSIONがtrueの場合はConfig.Detailは許可する
 					if(is_numeric(strpos($classPath, "Config"))){
-						if(AUTH_CONFIG_DETAIL && isset($_GET["plugin"])){
+						if((AUTH_CONFIG_DETAIL || AUTH_CONFIG_DETAIL_EXTENSION) && isset($_GET["plugin"])){
 							//許可
 						}else{
 							return false;

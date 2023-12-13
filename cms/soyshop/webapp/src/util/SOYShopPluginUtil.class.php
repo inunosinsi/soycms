@@ -44,8 +44,7 @@ class SOYShopPluginUtil {
 				}
 			}
 
-			if(defined("SOYSHOP_SITE_DIRECTORY")){
-			//if(DEBUG_MODE && defined("SOYSHOP_SITE_DIRECTORY")){
+			if(defined("DEBUG_MODE") && DEBUG_MODE && defined("SOYSHOP_SITE_DIRECTORY")){
 				$pluginCacheDir = SOYSHOP_SITE_DIRECTORY.".cache/plugin/";
 				if(!file_exists($pluginCacheDir)) mkdir($pluginCacheDir);
 				file_put_contents($pluginCacheDir."commons.txt", var_export($commons, true));

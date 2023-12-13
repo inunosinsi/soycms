@@ -10,7 +10,7 @@ function soyshop_fixed_form_module($html,$page){
 		SOY2::import("module.plugins.fixed_form_module.util.FixedFormModuleUtil");
 
 		//商品毎にsoyValueを切り替える
-		$soyValue = FixedFormModuleUtil::getAttr($page->getItem()->getId())->getValue();
+		$soyValue = soyshop_get_item_attribute_value($page->getItem()->getId(), FixedFormModuleUtil::PLUGIN_ID, "string");
 		if(strlen($soyValue)){
 			$array = explode(".", $soyValue);
 			if(count($array) > 1){

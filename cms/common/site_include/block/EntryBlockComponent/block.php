@@ -111,7 +111,7 @@ class EntryBlockComponent_FormPage extends HTMLPage{
 
 
 
-		$allEntry = $this->getAllEntry();
+		$allEntry = self::getAllEntry();
 		$allEntryIds = array_map(function($v) { return $v["id"]; }, $allEntry);
 
 

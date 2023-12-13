@@ -262,24 +262,24 @@ class Cart04Page extends MainCartPageBase{
 		));
 
 		$this->addLabel("send_name", array(
-			"text" => $send["name"]
+			"text" => (isset($send["name"])) ? $send["name"] : ""
 		));
 
 		$this->addLabel("send_reading", array(
-			"text" => $send["reading"]
+			"text" => (isset($send["reading"])) ? $send["reading"] : ""
 		));
 
-		$nameFull = $send["name"];
+		$nameFull = (isset($send["name"])) ? $send["name"] : "";
 		if(isset($send["reading"]) && strlen($send["reading"])) $nameFull .= " (" . $send["reading"] . ")";
 		$this->addLabel("send_name_full", array(
 			"text" => $nameFull 
 		));
 
 		$this->addLabel("send_zip_code", array(
-			"text" => $send["zipCode"]
+			"text" => (isset($send["zipCode"])) ? $send["zipCode"] : "" 
 		));
 
-		$addrTxt = SOYShop_Area::getAreaText((int)$send["area"]);
+		$addrTxt = (isset($send["area"])) ? SOYShop_Area::getAreaText((int)$send["area"]) : "";
 		$this->addLabel("send_area", array(
 			"text" => $addrTxt
 		));
@@ -299,7 +299,7 @@ class Cart04Page extends MainCartPageBase{
 		));
 
 		$this->addLabel("send_tel", array(
-			"text" => $send["telephoneNumber"]
+			"text" => (isset($send["telephoneNumber"])) ? $send["telephoneNumber"] : ""
 		));
 
 		$this->addModel("is_use_address", array(

@@ -1,14 +1,10 @@
 <?php
-/*
- * soyshop.site.beforeoutput.php
- * Created: 2010/03/11
- */
 
 class ItemListCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
 	const MODULE_ID = "item_list_category_customfield";
 
-	function beforeOutput($page){
+	function beforeOutput(WebPage $page){
 
 		$obj = $page->getPageObject();
 

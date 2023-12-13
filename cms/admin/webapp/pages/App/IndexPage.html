@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head soy:page="_common.HeaderPage">
+
+<body>
+
+	<div id="wrapper">
+		<!-- Navigation -->
+		<nav  class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" soy:page="_common.UpperMenuPage"><!-- --></nav>
+		<div id="page-wrapper">
+			<div class="row">
+				<div class="col-lg-12">
+					<h1 class="page-header">アプリケーション</h1>
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="panel panel-red">
+						<div class="panel-heading">
+							アプリケーション一覧
+						</div>
+						<div class="panel-body">
+							<div class="row">
+
+											<div class="col-lg-4" soy:id="application_list">
+											<div class="panel panel-default">
+												<div class="panel-heading"  soy:id="name">
+													Green Panel
+												</div>
+												<div  class="panel-body">
+													<p class="description" soy:id="description"></p>
+													<p class="pull-left" soy:id="version"></p>
+													<a class="btn btn-info pull-right" soy:id="login_link" href="javascript:void(0);">ログイン</a>
+												</div>
+												<div class="panel-footer" soy:display="for_default_user">
+													<a class="btn btn-default" soy:id="auth_link" style="color:#000000;">権限設定</a>
+												</div soy:display="for_default_user">
+											</div>
+										</div soy:id="application_list">
+
+
+									</div>
+						</div>
+						</div>
+					</div>
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
+
+
+		</div>
+		<!-- /#page-wrapper -->
+		<!-- soy:page="_common.FooterPage" /-->
+	</div>
+	<!-- /#wrapper -->
+
+
+</body>
+
+</html>

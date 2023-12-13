@@ -22,11 +22,11 @@ class RedirectLanguageSiteLogic extends SOY2LogicBase{
 		$language = UtilMultiLanguageUtil::LANGUAGE_JP;
 
 		foreach($config as $key => $conf){
-			if($conf["is_use"] == UtilMultiLanguageUtil::IS_USE && $lang == $key){
+			if(isset($conf["is_use"]) && $conf["is_use"] == UtilMultiLanguageUtil::IS_USE && $lang == $key){
 				$language = $lang;
 				break;
 			//prefixの方でも調べてみる
-			}else if(strlen($conf["prefix"]) && $lang == $conf["prefix"]){
+			}else if(isset($conf["prefix"]) && strlen($conf["prefix"]) && $lang == $conf["prefix"]){
 				$language = $key;
 				break;
 			}

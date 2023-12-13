@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @param string
  * @return array
@@ -16,6 +15,11 @@ function x_get_properties_by_tag(string $t){
 			$v = trim(trim($prop[1], "\""));
 			if(!strlen($v)) continue;
 			$idx = trim($prop[0]);
+			if($idx === "src" && count($prop) > 2) {	//GETパラメータ付きのSRCの場合 @ToDo パラメータ２つある場合はどうしよう？
+				for($i = 2; $i < count($prop); $i++){
+					$v .= "=".$prop[$i]; 
+				}
+			}
 			$list[$idx] = $v;
 		}
 	}
@@ -29,6 +33,11 @@ function x_get_properties_by_tag(string $t){
 			$v = trim(trim($prop[1], "'"));
 			if(!strlen($v)) continue;
 			$idx = trim($prop[0]);
+			if($idx === "src" && count($prop) > 2) {	//GETパラメータ付きのSRCの場合 @ToDo パラメータ２つある場合はどうしよう？
+				for($i = 2; $i < count($prop); $i++){
+					$v .= "=".$prop[$i]; 
+				}
+			}
 			$list[$idx] = $v;
 		}
 	}
@@ -117,6 +126,16 @@ function x_merge_properties(array $props, array $info){
 		$props[$idx] = $v;
 	}
 	return $props;
+}
+
+/**
+ * @param string
+ * @return string
+ */
+function x_get_tag_element(string $tag){
+	$tag = trim(str_replace(array("<", ">"), "", $tag));
+	$ele = explode(" ", $tag);
+	return (isset($ele[0])) ? $ele[0] : "";
 }
 
 /**

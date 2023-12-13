@@ -2,7 +2,7 @@
 
 class BulletinBoardBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
-	function beforeOutput($page){
+	function beforeOutput(WebPage $page){
 		$pageObj = $page->getPageObject();
 
 		//カートページとマイページでは読み込まない

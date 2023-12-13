@@ -1,12 +1,8 @@
 <?php
-/*
- * soyshop.site.beforeoutput.php
- * Created: 2010/03/11
- */
 
 class ItemInfoEditBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
-	function beforeOutput($page){
+	function beforeOutput(WebPage $page){
 
 		//商品詳細ページ以外は動作しません
 		$obj = $page->getPageObject();

@@ -1,12 +1,8 @@
 <?php
-/*
- * soyshop.site.beforeoutput.php
- * Created: 2010/03/11
- */
 
 class FacebookCatalogManagerBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
-	function beforeOutput($page){
+	function beforeOutput(WebPage $page){
 		$pageObj = $page->getPageObject();
 
 		//カートページとマイページでは読み込まない

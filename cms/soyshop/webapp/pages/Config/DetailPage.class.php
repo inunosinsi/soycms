@@ -38,7 +38,11 @@ class DetailPage extends WebPage{
 	}
 
 	function getBreadcrumb(){
-		return BreadcrumbComponent::build($this->title, array("Config" => "設定"));
+		if(AUTH_CONFIG){
+			return BreadcrumbComponent::build($this->title, array("Config" => "設定"));
+		}else{
+			return BreadcrumbComponent::build($this->title, array());
+		}
 	}
 
 	function getScripts(){

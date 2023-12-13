@@ -36,7 +36,7 @@ class TokenLoginUtil {
 		
 		// ログイン成功
 		SOY2::import("util.UserInfoUtil");
-		UserInfoUtil::login($admin);
+		UserInfoUtil::login($admin, true);
 		
 		return true;
 	}
@@ -48,7 +48,7 @@ class TokenLoginUtil {
 		try{
 			$dao->executeQuery(self::_schema());
 		}catch(Exception $e){
-			var_dump($e);
+			//var_dump($e);
 		}
 	}
 

@@ -83,8 +83,9 @@ class ReserveCalendarCart extends SOYShopCartBase{
 				}
 
 				//大人と子供の人数をセッションに入れる
+				$items = $cart->getItems();
 				$idx = key($items);
-				if(isset($_POST["Option"]["adult"]) && isset($_POST["Option"]["child"])){
+				if(isset($_POST["Option"]["adult"]) && isset($_POST["Option"]["child"]) && $items[$idx] instanceof SOYShop_ItemOrder){
 					$cart->setAttribute(ReserveCalendarUtil::getCartAttributeId("seat_div_adult", $idx, $items[$idx]->getItemId()), (int)$_POST["Option"]["adult"]);
 					$cart->setAttribute(ReserveCalendarUtil::getCartAttributeId("seat_div_child", $idx, $items[$idx]->getItemId()), (int)$_POST["Option"]["child"]);
 				}
@@ -93,11 +94,14 @@ class ReserveCalendarCart extends SOYShopCartBase{
 			$schLogic = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Schedule.ScheduleLogic");
 
 			//価格の更新
-			foreach($items as $index => $itemOrder){
-				$schId = (int)$cart->getAttribute(ReserveCalendarUtil::getCartAttributeId("schedule_id", $index, $itemOrder->getItemId()));
-				$schPrice = (int)$schLogic->getScheduleById($schId)->getPrice();
-				$itemOrder->setItemPrice($schPrice);
-				$itemOrder->setTotalPrice($schPrice * $itemOrder->getItemCount());
+			$items = $cart->getItems();
+			if(count($items)){
+				foreach($items as $index => $itemOrder){
+					$schId = (int)$cart->getAttribute(ReserveCalendarUtil::getCartAttributeId("schedule_id", $index, $itemOrder->getItemId()));
+					$schPrice = (int)$schLogic->getScheduleById($schId)->getPrice();
+					$itemOrder->setItemPrice($schPrice);
+					$itemOrder->setTotalPrice($schPrice * $itemOrder->getItemCount());
+				}
 			}
 		}
 	}

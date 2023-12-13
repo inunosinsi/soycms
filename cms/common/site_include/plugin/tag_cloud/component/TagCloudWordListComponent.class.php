@@ -7,6 +7,7 @@ class TagCloudWordListComponent extends HTMLList {
 
 	protected function populateItem($entity){
 		$wordId = (isset($entity["word_id"]) && is_numeric($entity["word_id"])) ? (int)$entity["word_id"] : 0;
+		$word = ($wordId > 0 && isset($entity["word"])) ? $entity["word"] : "";
 
 		$this->addLabel("tag_word_id", array(
 			"soy2prefix" => "cms",
@@ -16,7 +17,8 @@ class TagCloudWordListComponent extends HTMLList {
 		$rank = (isset($this->ranks[$wordId]) && is_numeric($this->ranks[$wordId])) ? $this->ranks[$wordId] : 1;
 		$this->addLink("tag_link", array(
 			"soy2prefix" => "cms",
-			"link" => (is_numeric($wordId)) ? $this->url . "?tagcloud=" . $wordId : "",
+			//"link" => (is_numeric($wordId)) ? $this->url . "?tagcloud=" . $wordId : "",
+			"link" => (strlen($word)) ? $this->url . "/" . $word : "",
 			"attr:class" => self::_buildClass($rank)
 		));
 
@@ -29,13 +31,14 @@ class TagCloudWordListComponent extends HTMLList {
 
 		$this->addLink("tag_hash_link", array(
 			"soy2prefix" => "cms",
-			"link" => (strlen($hash)) ? $this->url . "?tagcloud=" . $hash : "",
+			//"link" => (strlen($hash)) ? $this->url . "?tagcloud=" . $hash : "",
+			"link" => (strlen($hash)) ? $this->url . "/" . $hash : "",
 			"attr:class" => self::_buildClass($rank)
 		));
 
 		$this->addLabel("tag", array(
 			"soy2prefix" => "cms",
-			"text" => (isset($entity["word"])) ? $entity["word"] : ""
+			"text" => $word
 		));
 	}
 

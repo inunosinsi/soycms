@@ -2,7 +2,7 @@
 
 class TwitterProductCardsBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
-	function beforeOutput($page){
+	function beforeOutput(WebPage $page){
 
 		//カート内の場合は動作しない
 		$className = get_class($page);

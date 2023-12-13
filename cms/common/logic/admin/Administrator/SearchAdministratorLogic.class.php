@@ -16,6 +16,8 @@ class SearchAdministratorLogic extends SOY2LogicBase {
 		if(!is_array($search) || !count($search)) return;
 
 		foreach($search as $key => $cnd){
+			$cnd = trim($cnd);
+			if(!strlen($cnd)) continue;
 			$this->where[$key] = $key . " LIKE :" . $key;
 			$this->binds[":" . $key] = "%" . $cnd . "%";
 		}

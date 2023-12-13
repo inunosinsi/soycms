@@ -5,12 +5,10 @@ class CompletePage extends CMSWebPageBase{
 	function __construct(){
 
 		if(soy2_check_token()){
-			$logic = SOY2LogicContainer::get("logic.admin.Upgrade.UpdateAdminLogic", array(
+			SOY2LogicContainer::get("logic.admin.Upgrade.UpdateAdminLogic", array(
 				"target" => "admin"
-			));
-
-			$logic->update();
-
+			))->update();
+			
 			/**
 			 * @データベースの変更後に何らかの操作が必要な場合
 			 */
@@ -21,4 +19,3 @@ class CompletePage extends CMSWebPageBase{
 		parent::__construct();
 	}
 }
-?>

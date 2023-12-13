@@ -505,11 +505,11 @@ class CMSPlugin {
 	static function loadPluginConfig(string $id){
 		$fname = self::getSiteDirectory().'/.plugin/'.$id.'.config';
 		if(file_exists($fname)){
-			return unserialize(file_get_contents($fname));
+			$res = unserialize(file_get_contents($fname));
+			return (!is_bool($res)) ? $res : null;
 		}else{
 			return null;
 		}
-
 	}
 
 	/**

@@ -1,12 +1,8 @@
 <?php
-/*
- * soyshop.site.beforeoutput.php
- * Created: 2010/03/11
- */
 
 class CommonFavoriteItemBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
-	function beforeOutput($page){
+	function beforeOutput(WebPage $page){
 
 		//これらの条件を満たさないと処理は開始しない
 		if(isset($_GET["favorite"]) && isset($_GET["a"]) && soy2_check_token()){
@@ -39,4 +35,4 @@ class CommonFavoriteItemBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		header("Location:" . $_SERVER["HTTP_REFERER"]);
 	}
 }
-SOYShopPlugin::extension("soyshop.site.beforeoutput","common_favorite_item","CommonFavoriteItemBeforeOutput");
+SOYShopPlugin::extension("soyshop.site.beforeoutput", "common_favorite_item", "CommonFavoriteItemBeforeOutput");

@@ -397,18 +397,18 @@ class EntryLogic extends SOY2LogicBase{
 		}else{
 			if(is_numeric($entryId)){
 				try{
-					$entry = $dao->getOpenEntryById($entryId, SOYCMS_NOW);
+					$entry = $dao->getOpenEntryByIdAndBlogLabelId((int)$entryId, $blogLabelId, SOYCMS_NOW);
 				}catch(Exception $e){
 					//記事IDで取得できなければ、エイリアスの方でも取得を試みる
 					try{
-						$entry = $dao->getOpenEntryByAlias($entryId, SOYCMS_NOW);
+						$entry = $dao->getOpenEntryByAliasAndBlogLabelId((string)$entryId, $blogLabelId, SOYCMS_NOW);
 					}catch(Exception $e){
 						$entry = new Entry();
 					}
 				}
 			}else{
 				try{
-					$entry = $dao->getOpenEntryByAlias($entryId, SOYCMS_NOW);
+					$entry = $dao->getOpenEntryByAliasAndBlogLabelId((string)$entryId, $blogLabelId, SOYCMS_NOW);
 				}catch(Exception $e){
 					$entry = new Entry();
 				}
@@ -416,11 +416,11 @@ class EntryLogic extends SOY2LogicBase{
 		}
 
 		$entry = SOY2::cast("LabeledEntry", soycms_set_entry_object($entry, (int)$entryId));
-		if(!is_numeric($entry->getId())) return $entry;
+		return (is_numeric($entry->getId())) ? $entry : new LabeledEntry();
 		
-		//ブログに所属しているエントリーかどうかチェックする
-		$labelIds = $this->getLabelIdsByEntryId($entry->getId());
-		return (in_array($blogLabelId, $labelIds)) ? $entry : new LabeledEntry();	//throw new Exception("This entry (id: {$entryId}) does not belong to the designated blog (label: {$blogLabelId}).");
+		//ブログに所属しているエントリーかどうかチェックする → 上の処理で確認しているので不要になった。
+		//$labelIds = $this->getLabelIdsByEntryId($entry->getId());
+		//return (in_array($blogLabelId, $labelIds)) ? $entry : new LabeledEntry();	//throw new Exception("This entry (id: {$entryId}) does not belong to the designated blog (label: {$blogLabelId}).");
 	}
 
 	/**

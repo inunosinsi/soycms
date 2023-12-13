@@ -7,8 +7,8 @@ class PageCustomField{
 		//"checkbox" => "チェックボックス",
 		//"radio" => "ラジオボタン",
 		//"select" => "セレクトボックス",
-		//"image" => "画像",
-		//"file" => "ファイル",
+		"image" => "画像",
+		"file" => "ファイル",
 		//"richtext" => "リッチテキスト",
 		//"link" => "リンク",
 		//"entry" => "記事",
@@ -91,7 +91,7 @@ class PageCustomField{
 		$this->type = $type;
 	}
 	function getOption() {
-		return $this->option;
+		return (is_string($this->option)) ? $this->option : "";
 	}
 	function setOption($option) {
 		$this->option = $option;
@@ -139,7 +139,7 @@ class PageCustomField{
 		$this->output = $output;
 	}
 	function getDescription(){
-		return $this->description;
+		return (is_string($this->description)) ? $this->description : "";
 	}
 	function setDescription($description){
 		$this->description = $description;
@@ -248,7 +248,7 @@ class PageCustomField{
 
  				break;
  			case "textarea":
- 				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
+ 				$h_value = (is_string($fieldValue)) ? htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8") : "";
  				$body = '<textarea class="custom_field_textarea form-control" style="width:100%;"'
  				        .' id="'.$h_formID.'"'
  				        .' name="'.$h_formName.'"'
@@ -256,7 +256,7 @@ class PageCustomField{
  						.$h_value.'</textarea>';
  				break;
  			case "richtext":
- 				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
+				$h_value = (is_string($fieldValue)) ? htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8") : "";
  				$body = '<textarea class="custom_field_textarea mceEditor" style="width:100%;"'
  				        .' id="'.$h_formID.'"'
  				        .' name="'.$h_formName.'"'
@@ -265,13 +265,13 @@ class PageCustomField{
  				break;
  			case "image":
  			case "file":
- 				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
+				$h_value = (is_string($fieldValue)) ? htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8") : "";
  				$body = '<input type="text" class="custom_field_input" style="width:50%"'
  				       .' id="'.$h_formID.'"'
  				       .' name="'.$h_formName.'"'
  				       .' value="'.$h_value.'"'
  				       .' />'
- 				       .' <button type="button" class="btn btn-primary btn-sm" onclick="open_customfield_filemanager($(\'#'.$h_formID.'\'));" style="margin-right:10px;">ファイルを指定する</button>';
+ 				       .' <input type="button" class="btn btn-primary btn-sm" onclick="open_page_customfield_filemanager(\''.$h_formID.'\');" style="margin-right:10px;" value="ファイルを指定する">';
 
  				if($h_value){
  					if($this->getType() == "image"){
@@ -282,7 +282,7 @@ class PageCustomField{
  					}
  				}
 
- 				$extraOutputs = explode("\n", str_replace(array("\r\n", "\r"), "\n", $this->extraOutputs));
+ 				$extraOutputs = explode("\n", str_replace(array("\r\n", "\r"), "\n", (string)$this->extraOutputs));
 
  				foreach($extraOutputs as $key => $extraOutput){
  					$extraOutput = trim($extraOutput);

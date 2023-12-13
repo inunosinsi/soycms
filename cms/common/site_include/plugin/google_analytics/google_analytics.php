@@ -23,6 +23,8 @@ class GoogleAnalytics{
 	var $google_analytics_track_code_smartphone;
 	var $google_analytics_global_site_tag;
 	var $google_analytics_global_site_tag_conversion_tag;
+	var $google_analytics_gtm_header;
+	var $google_analytics_gtm_body;
 
 	//挿入箇所
 	var $position = self::INSERT_INTO_THE_END_OF_HEAD;
@@ -43,7 +45,7 @@ class GoogleAnalytics{
 			"modifier"=>"Jun Okada",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.12"
+			"version"=>"1.13"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -84,10 +86,10 @@ class GoogleAnalytics{
 
 		if(defined("PLUGIN_PREVIEW_MODE") && PLUGIN_PREVIEW_MODE) return null;
 		
-		//トラックコードが空なら挿入しない
-		if(!strlen(trim($this->google_analytics_track_code.$this->google_analytics_track_code_smartphone.$this->google_analytics_track_code_mobile))){
-			return null;
-		}
+		//トラックコードが空なら挿入しない 廃止
+		// if(!strlen(trim($this->google_analytics_track_code.$this->google_analytics_track_code_smartphone.$this->google_analytics_track_code_mobile))){
+		// 	return null;
+		// }
 
 		if($this->isConfigPerPageEnabled()){
 			//1.2.7以上
@@ -119,6 +121,17 @@ class GoogleAnalytics{
 
 		/* コードを挿入 */
 
+		//GTM
+		foreach(array("head", "body") as $typ){
+			$code = ($typ == "head") ? $this->google_analytics_gtm_header : $this->google_analytics_gtm_body;
+			if(!is_string($code) || !strlen($code)) continue;
+			if(is_numeric(stripos($html,'<'.$typ.'>'))){
+				$html = str_ireplace('<'.$typ.'>','<'.$typ.'>'."\n".$code,$html);
+			}else if(preg_match('/'.$typ.'\\s[^>]+>/', $html)){
+				$html = preg_replace('/(<'.$typ.'\\s[^>]+>)/', "\$0\n".$code, $html);
+			}
+		}
+		
 		//モバイルで見てる時
 		if(defined("SOYCMS_IS_MOBILE") && SOYCMS_IS_MOBILE == true){
 			$html = self::_insertCodeMobile($html);
@@ -147,7 +160,7 @@ class GoogleAnalytics{
 		return $html;
 	}
 
-	private function _insertCode($html,$carrier="pc"){
+	private function _insertCode(string $html, string $carrier="pc"){
 		switch($carrier){
 			case "smartphone":
 				$code = $this->google_analytics_track_code_smartphone;
@@ -221,7 +234,7 @@ class GoogleAnalytics{
     	return $html.$code;
 	}
 
-	private function _insertCodeMobile($html){
+	private function _insertCodeMobile(string $html){
 		$imageTag = self::_googleAnalyticsGetImageUrl();
 
 		if(stripos($html,'</body>') !== false){

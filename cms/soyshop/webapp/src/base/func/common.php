@@ -317,9 +317,14 @@ function soyshop_get_cart_page_title(){
 /**
  * カートページにリダイレクトする
  */
-function soyshop_redirect_cart($param = null){
+function soyshop_redirect_cart(string $param=""){
+	if(isset($_GET[session_name()]) && soy2_strpos($param, session_name()."=") < 0) {
+		if(strlen($param)) $param .= "&";
+		$param .= session_name()."=".session_id();
+	}
+
 	$url = soyshop_get_cart_url();
-	if($param) $url .= "?" . $param;
+	if(strlen($param)) $url .= "?" . $param;
 	header("Location: ". $url);
 	exit;
 }
@@ -564,13 +569,10 @@ function soyshop_is_login_mypage(){
 /**
  * ログイン後に指定したページにリダイレクトする
  */
-function soyshop_redirect_designated_page($param, $postfix = null){
-	$location = "Location: ". rawurldecode($param);
-
-	if(isset($postfix) && strlen($postfix)){
-		$location .= "?" . $postfix;
-	}
-	header($location);
+function soyshop_redirect_designated_page(string $param, string $postfix=""){
+	$loc = "Location: ". rawurldecode($param);
+	if(strlen($postfix)) $loc .= "?" . $postfix;
+	header($loc);
 	exit;
 }
 

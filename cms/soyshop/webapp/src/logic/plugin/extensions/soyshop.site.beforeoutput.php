@@ -6,16 +6,9 @@
 
 class SOYShopSiteBeforeOutputAction implements SOY2PluginAction{
 
-    function doPost($page){
+    function doPost(WebPage $page){}
 
-    }
-
-    /**
-     * @return string
-     */
-    function beforeOutput($page){
-
-    }
+    function beforeOutput(WebPage $page){}
 
 }
 class SOYShopSiteBeforeOutputDelegateAction implements SOY2PluginDelegateAction{

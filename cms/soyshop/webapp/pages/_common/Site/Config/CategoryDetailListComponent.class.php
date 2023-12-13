@@ -6,37 +6,37 @@ class CategoryDetailListComponent extends HTMLList{
 	private $pages;
 
 	protected function populateItem($entity, $key){
+		$id = (is_numeric($entity->getId())) ? (int)$entity->getId() : 0;
 		
 		$this->addModel("list_row", array(
-			"attr:id" => "category_detail_" . $entity->getId()
+			"attr:id" => "category_detail_" . $id
 		));
 
 		$this->addLabel("category_name", array(
 			"text" => $entity->getName()
 		));
 
-		$config = @$this->config[$entity->getId()];
-		if(!$config || !is_array($config)) $config = array();
-
+		$config = (is_array($this->config) && count($this->config) && isset($this->config[$id])) ? $this->config[$id] : array();
+		
 		$this->addSelect("list_page_select", array(
-			"selected" => @$config["id"],
+			"selected" => (isset($config["id"])) ? $config["id"] : "",
 			"options" => $this->pages,
 			"property" => "name",
-			"name" => "Config[" . $entity->getId() . "][id]"
+			"name" => "Config[".$id."][id]"
 		));
 
 		$this->addInput("page_parameter", array(
-			"name" => "Config[" . $entity->getId() . "][parameter]",
+			"name" => "Config[".$id."][parameter]",
 			"value" => (isset($config["parameter"])) ? $config["parameter"] : ""
 		));
 
 		$this->addInput("page_keyword", array(
-			"name" => "Config[" . $entity->getId() . "][keyword]",
+			"name" => "Config[".$id."][keyword]",
 			"value" => (isset($config["keyword"])) ? $config["keyword"] : ""
 		));
 
 		$this->addTextArea("page_description", array(
-			"name" => "Config[" . $entity->getId() . "][description]",
+			"name" => "Config[".$id."][description]",
 			"value" => (isset($config["description"])) ? $config["description"] : ""
 		));
 	}
@@ -55,4 +55,3 @@ class CategoryDetailListComponent extends HTMLList{
 		$this->pages = $pages;
 	}
 }
-?>

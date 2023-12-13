@@ -30,7 +30,7 @@ class UpperMenuPage extends CMSWebPageBase{
 
 	function execute(){
 		$this->addLink("update_link", array(
-			"link" => SOY2PageController::createLink("Administrator.Detail." . UserInfoUtil::getUserId())
+			"link" => SOY2PageController::createLink("Admin.Detail." . UserInfoUtil::getUserId())
 		));
 
 		$this->addLabel("adminname", array(

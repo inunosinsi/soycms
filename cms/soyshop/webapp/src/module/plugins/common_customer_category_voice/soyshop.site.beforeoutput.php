@@ -1,12 +1,9 @@
 <?php
-/*
- * soyshop.site.beforeoutput.php
- * Created: 2010/03/11
- */
 include(dirname(__FILE__) . "/common.php");
+
 class CommonCustomerCategoryVoiceBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
-	function beforeOutput($page){
+	function beforeOutput(WebPage $page){
 
 		$obj = $page->getPageObject();
 

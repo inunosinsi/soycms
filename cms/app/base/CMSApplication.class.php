@@ -132,6 +132,28 @@ class CMSApplication {
 		return implode("\n", $html);
 	}
 
+	public static function buildCompressionStyle(){
+		$links = CMSApplication::getInstance()->links;
+		if(!count($links)) return "";
+		
+		$code = "";
+		foreach($links as $link){
+			preg_match('/href=\"(.*?)\"/', $link, $tmp);
+			if(!isset($tmp[1])) continue;
+			$path = $_SERVER["DOCUMENT_ROOT"] . $tmp[1];
+			if(!file_exists($path)) continue;
+
+			$code = file_get_contents($path);
+		}
+
+		// 圧縮
+		$code = preg_replace( '!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $code); 
+		$code = str_replace(': ', ':', $code);
+		$code = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $code);
+
+		return "<style>".$code."</style>";
+	}
+
 	/**
 	 * 上部メニューを表示
 	 */

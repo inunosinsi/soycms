@@ -44,6 +44,13 @@ class CategoryInfoPlugin{
     }
 
 	function onSetupWYSIWYG(){
+        if($this->getIsWYSIWYG()) {
+            $_COOKIE["label_memo_editor_config"] = 1;
+        }
+
+        // 他のプラグインで設定している場合は判定を続けない
+        if(isset($_COOKIE["label_text_editor"]) && $_COOKIE["label_text_editor"] == "tinyMCE") return;
+
 		$_COOKIE["label_text_editor"] = ($this->getIsWYSIWYG()) ? "tinyMCE" : "plain";
 	}
 

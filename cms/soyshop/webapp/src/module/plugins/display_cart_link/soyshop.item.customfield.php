@@ -7,54 +7,29 @@ class DisplayCartLink extends SOYShopItemCustomFieldBase{
 	const CHECKED = 1;
 
 	function doPost(SOYShop_Item $item){
-			
-		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		$configs = SOYShop_ItemAttributeConfig::load(true);
-
-		try{
-			$dao->delete($item->getId(), self::PLUGIN_ID);
-		}catch(Exception $e){
-			//	
-		}
-
+		$attr = soyshop_get_item_attribute_object((int)$item->getId(), self::PLUGIN_ID);
 		if(isset($_POST[self::PLUGIN_ID])){
-			
-			try{
-				$obj = new SOYShop_ItemAttribute();
-				$obj->setItemId($item->getId());
-				$obj->setFieldId(self::PLUGIN_ID);
-				$obj->setValue(self::CHECKED);
-	
-				$dao->insert($obj);
-			}catch(Exception $e){
-				//
-			}
-		}			
+			$attr->setValue(self::CHECKED);
+		}else{
+			$attr->setValue(null);
+		}
+		soyshop_save_item_attribute_object($attr);
 	}
 
 	function getForm(SOYShop_Item $item){
+		$checked = (soyshop_get_item_attribute_value((int)$item->getId(), self::PLUGIN_ID, "int") == self::CHECKED);
 
-		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		try{
-			$obj = $dao->get($item->getId(), self::PLUGIN_ID);
-		}catch(Exception $e){
-			$obj = new SOYShop_ItemAttribute();
-		}
-
-		$checked = ($obj->getValue() == self::CHECKED);
-
-		$html = array();
-		
-		$html[] = "<dt>カートに入れるボタンの設定</dt>";
-
-		$html[] = "<dd>";
+		$html = array();		
+		$html[] = "<div class=\"form-group\">";
+		$html[] = "<label>カートに入れるボタンの設定</label><br>";
+		$html[] = "<label>";
 		if($checked){
 			$html[] = "<input type=\"checkbox\" name=\"display_cart_link_plugin\" value=\"1\" id=\"display_cart_link\" checked=\"checked\" />";
 		}else{
 			$html[] = "<input type=\"checkbox\" name=\"display_cart_link_plugin\" value=\"1\" id=\"display_cart_link\" />";
 		}
-		$html[] = "<label for\"display_cart_link\">カートに入れるボタンを非表示にする</label>";
-		$html[] = "</dd>";
+		$html[] = "カートに入れるボタンを非表示にする</label>";
+		$html[] = "</div>";
 		
 		return implode("\n", $html);
 	}
@@ -63,24 +38,18 @@ class DisplayCartLink extends SOYShopItemCustomFieldBase{
 	 * onOutput
 	 */
 	function onOutput($htmlObj, SOYShop_Item $item){
-		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		try{
-			$obj = $dao->get($item->getId(), self::PLUGIN_ID);
-		}catch(Exception $e){
-			$obj = new SOYShop_ItemAttribute();
-		}
+		$attrValue = soyshop_get_item_attribute_value((int)$item->getId(), self::PLUGIN_ID, "int");
 		
 		//カートを表示する場合は$obj->getValue()が1ではない		
 		$htmlObj->addModel("has_cart_link", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"visible" => ($obj->getValue() != self::CHECKED)
+			"visible" => ($attrValue != self::CHECKED)
 		));
 		
 		$htmlObj->addModel("no_cart_link", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"visible" => ($obj->getValue() == self::CHECKED)
+			"visible" => ($attrValue == self::CHECKED)
 		));
-
 	}
 
 	function onDelete(int $itemId){

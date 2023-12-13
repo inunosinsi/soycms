@@ -277,7 +277,7 @@ class ImportPage extends WebPage{
 				}
 			}
 		}
-		if(is_numeric($user->getId())) self::_logic()->remove($uesr->getId());
+		if(is_numeric($user->getId())) self::_logic()->remove($user->getId());
 
 		try{
 			//ユーザーカスタムフィールドも削除する

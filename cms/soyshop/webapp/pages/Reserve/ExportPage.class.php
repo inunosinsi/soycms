@@ -11,7 +11,7 @@ class ExportPage extends WebPage{
 		}
 
 		$pluginId = (isset($_POST["plugin"])) ? $_POST["plugin"] : null;
-		if(is_null($plugin)){
+		if(is_null($pluginId)){
 			echo "invalid plugin id";
 			exit;
 		}

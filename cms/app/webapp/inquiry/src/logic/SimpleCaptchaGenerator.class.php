@@ -122,7 +122,7 @@ class SimpleCaptchaGenerator{
 
 			for($j=0; $j<$self->blurCount; $j++) {
 				$data[$i]['blur'][$j] = array (
-					'size'		=> $size*(1+(mt_rand(-$self->blurLevel[0],$self->blurLevel[0])/100)),
+					'size'		=> $size*(1+(mt_rand(-(int)$self->blurLevel[0]*10,(int)$self->blurLevel[0]*10)/100)),
 					'angle'	=> $angle+mt_rand(-$self->blurLevel[1],$self->blurLevel[1]),
 					'pos_x'	=> $pos_x+mt_rand(-$self->blurLevel[2],$self->blurLevel[2]),
 					'pos_y'	=> $pos_y+mt_rand(-$self->blurLevel[3],$self->blurLevel[3]),
@@ -179,10 +179,10 @@ class SimpleCaptchaGenerator{
 	function drawWords(GDImage $im, array $data){
 		$l=0;
 		foreach($data as $d) {
-			imagettftext($im, $d['size'], $d['angle'], $d['pos_x'], $d['pos_y'], $d['color'], $d['font'], $d['char'] );
+			imagettftext($im, $d['size'], $d['angle'], (int)$d['pos_x'], (int)$d['pos_y'], (int)$d['color'], $d['font'], $d['char'] );
 
 			for($j=0; $j<$this->blurCount; $j++) {
-				imagettftext($im, $d['blur'][$j]['size'], $d['blur'][$j]['angle'], $d['blur'][$j]['pos_x'], $d['blur'][$j]['pos_y'], $d['color'], $d['font'], $d['char'] );
+				imagettftext($im, $d['blur'][$j]['size'], $d['blur'][$j]['angle'], (int)$d['blur'][$j]['pos_x'], (int)$d['blur'][$j]['pos_y'], (int)$d['color'], $d['font'], $d['char'] );
 			}
 		}
 	}
@@ -212,7 +212,11 @@ class SimpleCaptchaGenerator{
 				$line_data[$l][4] = $line_data[$l][2] + $thick;
 				$line_data[$l][6] = $line_data[$l][0] + $thick;
 			}
-			imagefilledpolygon($im, $line_data[$l], 4, $line_color[$l]);
+			if((int)phpversion() >= 8){	// PHP8.0以降 https://www.php.net/manual/ja/function.imagefilledpolygon.php
+				imagefilledpolygon($im, $line_data[$l], $line_color[$l]);
+			}else{
+				imagefilledpolygon($im, $line_data[$l], 4, $line_color[$l]);
+			}
 		}
 	}
 

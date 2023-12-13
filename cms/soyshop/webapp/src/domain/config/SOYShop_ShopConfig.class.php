@@ -199,6 +199,7 @@ class SOYShop_ShopConfig {
 			"name" => "名前",
 			"reading" => "フリガナ",
 			"zipCode" => "郵便番号",
+			"area" => "都道府県",
 			"address" => "住所",
 			"telephoneNumber" => "電話番号"
 		);

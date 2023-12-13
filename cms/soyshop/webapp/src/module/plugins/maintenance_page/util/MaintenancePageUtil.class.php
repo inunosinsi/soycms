@@ -23,7 +23,7 @@ class MaintenancePageUtil {
 		if(!isset($timeCnf["on"]) || !is_numeric($timeCnf["on"]) || (int)$timeCnf["on"] !== 1) return false;
 
 		//時限設定した時刻が今よりも前の場合はメンテナンスモードをon
-		if(self::_getTimmingSettingTimestamp($timeCnf) < time()) return true;
+		if(self::_getTimmingSettingTimestamp($timeCnf) > time()) return true;
 
 		return false;
 	}
@@ -52,7 +52,11 @@ class MaintenancePageUtil {
 	//時限設定で設定した値のタイムスタンプを取得する
 	private static function _getTimmingSettingTimestamp($timeCnf){
 		//dateの記述が正しいか？も最後に見る
-		if(!isset($timeCnf["date"]) || !strlen($timeCnf["date"]) || !preg_match('/\d{4}-\d{2}-\d{2}/', $timeCnf["date"])) return strtotime("+1 day");
+		if(!isset($timeCnf["date"]) || !strlen($timeCnf["date"])) return strtotime("+1 day");
+
+		// YYYY/mm/ddの場合、YYYY-dd-mmに変更する
+		if(is_numeric(strpos($timeCnf["date"], "/"))) $timeCnf["date"] = str_replace("/", "-", $timeCnf["date"]); 
+		if(!preg_match('/\d{4}-\d{2}-\d{2}/', $timeCnf["date"])) return strtotime("+1 day");
 
 		//timeの記述が正しいか？も最後に見る
 		$t = (isset($timeCnf["time"]) && strlen($timeCnf["time"]) && preg_match('/\d{2}:\d{2}/', $timeCnf["time"])) ? $timeCnf["time"] . ":00" : "00:00:00";

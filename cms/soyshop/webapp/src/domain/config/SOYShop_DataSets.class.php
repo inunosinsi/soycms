@@ -61,6 +61,8 @@ class SOYShop_DataSets {
 		if(is_null($dataTable)){	//よく使うものだけ事前に取得しておく
 			$dataTable = array();
 			$classTable = array();
+			// ルート設定のときにdao.phpが読まれていないことがある
+			if(!function_exists("soyshop_get_hash_table_dao")) include_once(SOY2::RootDir()."base/func/dao.php");
 			try{
 				$res = soyshop_get_hash_table_dao("data_sets")->executeQuery(
 					"SELECT class_name, object_data ".

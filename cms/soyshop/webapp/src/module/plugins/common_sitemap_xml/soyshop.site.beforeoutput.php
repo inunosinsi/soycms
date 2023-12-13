@@ -1,6 +1,6 @@
 <?php
 /*
- * soyshop.site.beforeoutput.php
+ * .php
  * Created: 2010/03/11
  */
 
@@ -9,7 +9,7 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 	private $csfConfigs;
 	private $languages = array();
 
-	function beforeOutput($page){
+	function beforeOutput(WebPage $page){
 		$pageObj = $page->getPageObject();
 
 		//カートページとマイページでは読み込まない
@@ -273,7 +273,7 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		}
 	}
 
-	private function _getItems($pageId){
+	private function _getItems(int $pageId){
 		static $dao;
 		if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 

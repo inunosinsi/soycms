@@ -1,5 +1,7 @@
-<?php /* soy2_build 2018-12-27 04:49:07 */
-/* SOY2/SOY2.php */
+<?php
+/**
+ * https://github.com/inunosinsi/SOY2
+ */
 class SOY2{
 	private $_rootDir = "webapp/";
 	/**
@@ -165,7 +167,6 @@ class SOY2{
 		}
 	}
 }
-/* SOY2/SOY2_Controller.class.php */
 /**
  * @package SOY2.controller
  */
@@ -185,1824 +186,299 @@ interface SOY2_PathBuilder{
 	function getPath();
 	function getArguments();
 }
-/* SOY2/class/SOY2ActionController.php */
 /**
  * @package SOY2.controller
  *
  * mod_rewriteを使ったフロントコントローラー
  */
- class SOY2ActionController implements SOY2_Controller{
- 	/**
- 	 * 準備
- 	 */
- 	public static function init(array $options=array()){}
- 	/**
- 	 * 実行
- 	 */
- 	public static function run(){}
- 	/**
- 	 * フロントコントローラー取得
- 	 */
- 	public static function getInstance(){}
- 	/**
- 	 * 他のURLへ移動
- 	 */
- 	public static function jump(string $url=""){}
- 	/**
- 	 * 現在のURLを再読込（queryは変更可能）
- 	 */
- 	public static function reload(string $query=""){}
-
- 	private $path;
- 	private $arguments = array();
- }
-/* SOY2/class/SOY2PageController.php */
+class SOY2ActionController implements SOY2_Controller{
+	/**
+	 * 準備
+	 */
+	public static function init(array $options=array()){}
+	/**
+	 * 実行
+	 */
+	public static function run(){}
+	/**
+	 * フロントコントローラー取得
+	 */
+	public static function getInstance(){}
+	/**
+	 * 他のURLへ移動
+	 */
+	public static function jump(string $url=""){}
+	/**
+	 * 現在のURLを再読込（queryは変更可能）
+	 */
+	public static function reload(string $query=""){}
+		
+	private $path;
+	private $arguments = array();
+}
 /**
  * @package SOY2.controller
  */
- class SOY2PageController implements SOY2_Controller{
- 	var $defaultPath = "Index";
- 	var $requestPath = "";
- 	var $arguments = array();
- 	public static function init(string $controller=""){
- 		static $_controller;
- 		if(is_null($_controller)){
- 			$_controller = strlen($controller) ? new $controller() : new SOY2PageController();
- 		}
- 		return $_controller;
- 	}
- 	final public static function run(){
- 		$controller = self::init();
- 		$controller->execute();
- 	}
- 	final public static function getRequestPath(){
- 		$controller = self::init();
- 		return $controller->requestPath;
- 	}
- 	public static function getArguments(){
- 		$controller = self::init();
- 		return $controller->arguments;
- 	}
- 	function execute(){
- 		$pathBuilder = $this->getPathBuilder();
- 		$path = $pathBuilder->getPath();
- 		$args = $pathBuilder->getArguments();
- 		if(!strlen($path) || substr($path,strlen($path)-1,1) == "."){
- 			$path .= $this->getDefaultPath();
- 		}
- 		$this->requestPath = $path;
- 		$this->arguments = $args;
- 		$classPathBuilder = $this->getClassPathBuilder();
- 		$classPath = $classPathBuilder->getClassPath($path);
- 		$classPath .= 'Page';
- 		if(!SOY2HTMLFactory::pageExists($classPath)){
- 			$path = $pathBuilder->getPath();
- 			$classPath = $classPathBuilder->getClassPath($path);
- 			if(!preg_match('/.+Page$/',$classPath)){
- 				$classPath .= '.IndexPage';
- 			}
- 		}
- 		if(!SOY2HTMLFactory::pageExists($classPath)){
- 			$this->onNotFound($path, $args, $classPath);
- 		}
- 		$webPage = &SOY2HTMLFactory::createInstance($classPath, array(
- 			"arguments" => $args
- 		));
- 		try{
- 			$webPage->display();
- 		}catch(Exception $e){
- 			$this->onError($e);
- 		}
- 	}
- 	function onError(Exception $e){
- 		throw $e;
- 	}
- 	/**
- 	 * ページが存在しない場合
- 	 * 引数はオーバーロード用
- 	 * @param $path
- 	 * @param $args
- 	 * @param $classPath
- 	 */
- 	function onNotFound(string $path="", array $args=array(), string $classPath=""){
- 		header("HTTP/1.1 404 Not Found");
- 		header("Content-Type: text/html; charset=utf-8");
- 		echo "<h1>404 Not Found</h1><hr>指定のパスへのアクセスは有効でありません。";
- 		exit;
- 	}
- 	function getDefaultPath(){
- 		$controller = self::init();
- 		return $controller->defaultPath;
- 	}
- 	function setDefaultPath(string $path){
- 		$controller = self::init();
- 		$controller->defaultPath = $path;
- 	}
- 	public static function jump(string $path=""){
- 		$url = self::createLink($path, true);
- 		header("Location: ".$url);
- 		exit;
- 	}
- 	public static function redirect(string $path="", bool $permanent=false){
- 		if($permanent){
- 			header("HTTP/1.1 301 Moved Permanently");
- 		}
- 		$url = self::createRelativeLink($path, true);
- 		header("Location: ".$url);
- 		exit;
- 	}
- 	public static function reload(){
- 		$url = self::createLink(self::getRequestPath(), true) ."/". implode("/",self::getArguments());
- 		header("Location: ".$url);
- 		exit;
- 	}
- 	function &getPathBuilder(){
- 		static $builder;
- 		if(is_null($builder)) $builder = new SOY2_PathInfoPathBuilder();
- 		return $builder;
- 	}
- 	function &getClassPathBuilder(){
- 		static $builder;
- 		if(is_null($builder)) $builder = new SOY2_DefaultClassPathBuilder();
- 		return $builder;
- 	}
- 	public static function createLink(string $path="", bool $isAbsoluteUrl=false){
- 		$controller = self::init();
- 		$pathBuilder = $controller->getPathBuilder();
- 		return $pathBuilder->createLinkFromPath($path, $isAbsoluteUrl);
- 	}
- 	public static function createRelativeLink(string $path="", bool $isAbsoluteUrl=false){
- 		$controller = self::init();
- 		$pathBuilder = $controller->getPathBuilder();
- 		return $pathBuilder->createLinkFromRelativePath($path, $isAbsoluteUrl);
- 	}
- }
- /**
-  * @package SOY2.controller
-  * PathInfoから呼び出しパスを作成
-  * 後半の数字を含む部分は引数として渡す
-  *
-  * DOCUMENT_ROOTを仮想的にSOY2_DOCUMENT_ROOTで上書き可能
-  */
- class SOY2_PathInfoPathBuilder implements SOY2_PathBuilder{
- 	var $path;
- 	var $arguments;
- 	function __construct(){
+class SOY2PageController implements SOY2_Controller{
+	var $defaultPath = "Index";
+	var $requestPath = "";
+	var $arguments = array();
+	public static function init(string $controller=""){
+		static $_controller;
+		if(is_null($_controller)){
+			$_controller = strlen($controller) ? new $controller() : new SOY2PageController();
+		}
+		return $_controller;
+	}
+	final public static function run(){
+		$controller = self::init();
+		$controller->execute();
+	}
+	final public static function getRequestPath(){
+		$controller = self::init();
+		return $controller->requestPath;
+	}
+	public static function getArguments(){
+		$controller = self::init();
+		return $controller->arguments;
+	}
+	function execute(){
+		$pathBuilder = $this->getPathBuilder();
+		$path = $pathBuilder->getPath();
+		$args = $pathBuilder->getArguments();
+		if(!strlen($path) || substr($path,strlen($path)-1,1) == "."){
+			$path .= $this->getDefaultPath();
+		}
+		$this->requestPath = $path;
+		$this->arguments = $args;
+		$classPathBuilder = $this->getClassPathBuilder();
+		$classPath = $classPathBuilder->getClassPath($path);
+		$classPath .= 'Page';
+		if(!SOY2HTMLFactory::pageExists($classPath)){
+			$path = $pathBuilder->getPath();
+			$classPath = $classPathBuilder->getClassPath($path);
+			if(!preg_match('/.+Page$/',$classPath)){
+				$classPath .= '.IndexPage';
+			}
+		}
+		if(!SOY2HTMLFactory::pageExists($classPath)){
+			$this->onNotFound($path, $args, $classPath);
+		}
+		$webPage = &SOY2HTMLFactory::createInstance($classPath, array(
+			"arguments" => $args
+		));
+		try{
+			$webPage->display();
+		}catch(Exception $e){
+			$this->onError($e);
+		}
+	}
+	function onError(Exception $e){
+		throw $e;
+	}
+	/**
+	 * ページが存在しない場合
+	 * 引数はオーバーロード用
+	 * @param $path
+	 * @param $args
+	 * @param $classPath
+	 */
+	function onNotFound(string $path="", array $args=array(), string $classPath=""){
+		header("HTTP/1.1 404 Not Found");
+		header("Content-Type: text/html; charset=utf-8");
+		echo "<h1>404 Not Found</h1><hr>指定のパスへのアクセスは有効でありません。";
+		exit;
+	}
+	function getDefaultPath(){
+		$controller = self::init();
+		return $controller->defaultPath;
+	}
+	function setDefaultPath(string $path){
+		$controller = self::init();
+		$controller->defaultPath = $path;
+	}
+	public static function jump(string $path=""){
+		$url = self::createLink($path, true);
+		header("Location: ".$url);
+		exit;
+	}
+	public static function redirect(string $path, bool $permanent=false){
+		if($permanent){
+			header("HTTP/1.1 301 Moved Permanently");
+		}
+		$url = self::createRelativeLink($path, true);
+		header("Location: ".$url);
+		exit;
+	}
+	public static function reload(){
+		$url = self::createLink(self::getRequestPath(), true) ."/". implode("/",self::getArguments());
+		header("Location: ".$url);
+		exit;
+	}
+	function &getPathBuilder(){
+		static $builder;
+		if(is_null($builder)) $builder = new SOY2_PathInfoPathBuilder();
+		return $builder;
+	}
+	function &getClassPathBuilder(){
+		static $builder;
+		if(is_null($builder)) $builder = new SOY2_DefaultClassPathBuilder();
+		return $builder;
+	}
+	public static function createLink(string $path, bool $isAbsoluteUrl=false){
+		$controller = self::init();
+		$pathBuilder = $controller->getPathBuilder();
+		return $pathBuilder->createLinkFromPath($path, $isAbsoluteUrl);
+	}
+	public static function createRelativeLink(string $path, bool $isAbsoluteUrl=false){
+		$controller = self::init();
+		$pathBuilder = $controller->getPathBuilder();
+		return $pathBuilder->createLinkFromRelativePath($path, $isAbsoluteUrl);
+	}
+}
+/**
+ * @package SOY2.controller
+ * PathInfoから呼び出しパスを作成
+ * 後半の数字を含む部分は引数として渡す
+ *
+ * DOCUMENT_ROOTを仮想的にSOY2_DOCUMENT_ROOTで上書き可能
+ */
+class SOY2_PathInfoPathBuilder implements SOY2_PathBuilder{
+	var $path;
+	var $arguments;
+	function __construct(){
 		$pathInfo = (isset($_SERVER['PATH_INFO'])) ? $_SERVER['PATH_INFO'] : "";
 		if(preg_match('/^((\/[a-zA-Z]*)*)(\/-)?((\/[0-9a-zA-Z_\.]*)*)$/',$pathInfo,$tmp)){
- 			$path = preg_replace('/^\/|\/$/',"",$tmp[1]);
- 			$path = str_replace("/",".",$path);
- 			$arguments = preg_replace("/^\//","",$tmp[4]);
- 			$arguments = explode("/",$arguments);
- 			foreach($arguments as $key => $value){
- 				if(!strlen($value)){
- 					$arguments[$key] = null;
- 					unset($arguments[$key]);
- 				}
- 			}
- 			$this->path = $path;
- 			$this->arguments = $arguments;
- 		}
- 	}
- 	function getPath(){
- 		return $this->path;
- 	}
- 	function getArguments(){
- 		return $this->arguments;
- 	}
- 	/**
- 	 * パスからURLを生成する
- 	 * スクリプトのファイル名を含む（ただし$pathが空の時はスクリプト名を付けない）
- 	 */
- 	function createLinkFromPath(string $path, bool $isAbsoluteUrl=false){
- 		$scriptPath = self::getScriptPath();
- 		if(strlen($path)>0){
- 			$path = $scriptPath . "/" . str_replace(".","/",$path);
- 		}else{
- 			$path = strrev(strstr(strrev($scriptPath),"/"));
- 		}
- 		if($isAbsoluteUrl){
- 			return self::createAbsoluteURL($path);
- 		}else{
- 			return $path;
- 		}
- 	}
- 	/**
- 	 * 相対パスを解釈してURLを生成する
- 	 * @param String $path 相対パス
- 	 * @param Boolean $isAbsoluteUrl 返り値を絶対URL（http://example.com/path/to）で返すかルートからの絶対パス（/path/to）で返すか
- 	 */
- 	function createLinkFromRelativePath(string $path, bool $isAbsoluteUrl=false){
- 		if(preg_match("/^https?:/",$path)){
- 			return $path;
- 		}
- 		if(preg_match("/^\//",$path)){
- 		}else{
- 			$scriptPath = self::getScriptPath();
- 			$scriptDir = preg_replace("/".basename($scriptPath)."\$/", "", $scriptPath);
- 			$path = self::convertRelativePathToAbsolutePath($path, $scriptDir);
- 		}
- 		if($isAbsoluteUrl){
- 			return self::createAbsoluteURL($path);
- 		}else{
- 			return $path;
- 		}
- 	}
- 	/**
- 	 * フロントコントローラーのURLでの絶対パスを取得する
- 	 * （ファイルシステムのパスではない）
- 	 */
- 	protected static function getScriptPath(){
- 		static $script;
- 		if(is_null($script)){
- 			/**
- 			 * @TODO ルート的にアクセスされた場合は、フロントコントローラーの設置場所をDocumentRootとみなす。
- 			 */
- 			$documentRoot = (defined("SOY2_DOCUMENT_ROOT")) ? SOY2_DOCUMENT_ROOT : ((isset($_SERVER["SOY2_DOCUMENT_ROOT"])) ? $_SERVER["SOY2_DOCUMENT_ROOT"] : $_SERVER["DOCUMENT_ROOT"]);
- 			$documentRoot = str_replace("\\","/",$documentRoot);
- 			if(strlen($documentRoot) >0 && $documentRoot[strlen($documentRoot)-1] != "/") $documentRoot .= "/";
- 			$script = str_replace($documentRoot,"/",str_replace("\\","/",$_SERVER["SCRIPT_FILENAME"]));
- 			$script = str_replace("\\","/",$_SERVER["SCRIPT_FILENAME"]);
- 			$script = str_replace($documentRoot, "/", $script);
- 		}
- 		return $script;
- 	}
- 	/**
- 	 * 絶対パスにドメインなどを付加して絶対URLに変換する
- 	 */
- 	protected static function createAbsoluteURL(string $path){
- 		static $scheme, $domain, $port;
- 		if(is_null($scheme)) $scheme = (isset($_SERVER["HTTPS"]) || defined("SOY2_HTTPS") && SOY2_HTTPS) ? "https" : "http";
- 		if(is_null($domain) && isset($_SERVER["SERVER_NAME"])) $domain = $_SERVER["SERVER_NAME"];
- 		if(is_null($port)){
- 			if(!isset($_SERVER["SERVER_PORT"])) $_SERVER["SERVER_PORT"] = 80;
- 			if( $_SERVER["SERVER_PORT"] == "80" && !isset($_SERVER["HTTPS"]) || $_SERVER["SERVER_PORT"] == "443" && isset($_SERVER["HTTPS"]) ){
- 				$port = "";
- 			}elseif(strlen($_SERVER["SERVER_PORT"]) > 0){
- 				$port = ":".$_SERVER["SERVER_PORT"];
- 			}else{
- 				$port = "";
- 			}
- 		}
- 		return $scheme."://".$domain.$port.$path;
- 	}
- 	/**
- 	 * 指定したディレクトリからの相対パスを絶対パスに変換する
- 	 */
- 	protected static function convertRelativePathToAbsolutePath(string $relativePath, string $base){
- 		$base = str_replace("\\","/",$base);
- 		$base = preg_replace("/\/+/","/",$base);
- 		$relativePath = str_replace("\\","/",$relativePath);
- 		$relativePath = preg_replace("/\/+/","/",$relativePath);
- 		$dirs = explode("/", $base);
- 		if($dirs[0] == "") array_shift($dirs);
- 		if(count($dirs) > 0 && $dirs[count($dirs)-1] == "") array_pop($dirs);
- 		$paths = explode("/",$relativePath);
- 		$pathStack = array();
- 		foreach($paths as $path){
- 			if($path == ".."){
- 				array_pop($dirs);
- 			}elseif($path == "."){
- 			}else{
- 				array_push($pathStack,$path);
- 			}
- 		}
- 		$absolutePath = implode("/",array_merge($dirs,$pathStack));
- 		$absolutePath = "/".$absolutePath;
- 		return $absolutePath;
- 	}
- }
- /**
-  * @package SOY2.controller
-  */
- class SOY2_DefaultClassPathBuilder implements SOY2_ClassPathBuilder{
- 	function getClassPath(string $path){
- 		return $path;
- 	}
- }
-/* SOY2Mail/SOY2Mail.php */
-class SOY2Mail {
-	/**
-	 *
-	 */
-    public static function create($type, $options = array()){
-		$mail = null;
-    	switch($type){
-    		case "imap":
-    			$mail = new SOY2Mail_IMAPLogic($options);
-    			break;
-    		case "pop":
-    			$mail = new SOY2Mail_POPLogic($options);
-    			break;
-    		case "smtp":
-    			$mail = new SOY2Mail_SMTPLogic($options);
-    			break;
-    		case "sendmail":
-    			$mail = new SOY2Mail_SendMailLogic($options);
-    			break;
-    		default:
-    			throw new SOY2MailException("[SOY2Mail]Invalid Logic type " . $type);
-    			break;
-    	}
-    	return $mail;
-    }
-    private $subject;
-    private $encodedSubject;
-    private $text;
-    private $encodedText;
-    private $attachments = array();
-    private $headers = array();
-    private $from = array();
-    private $recipients = array();
-    private $bccRecipients = array();
-    private $encoding = "UTF-8";
-    private $subjectEncoding = "ISO-2022-JP";
-    private $rawData = "";
-    function getSubject() {
-    	return $this->subject;
-    }
-    function setSubject($subject) {
-    	$this->subject = $subject;
-    	$this->encodedSubject = "";
-    }
-    function getEncodedSubject() {
-    	if(strlen($this->encodedSubject)<1){
-    		$this->encodedSubject = mb_encode_mimeheader($this->subject,
-				$this->getSubjectEncodingForConvert(),"B","\r\n",strlen("Subject: "));
-    	}
-    	return $this->encodedSubject;
-    }
-    function setEncodedSubject($encodedSubject) {
-    	$this->encodedSubject = $encodedSubject;
-    }
-    function getText() {
-    	return $this->text;
-    }
-    function setText($text, $encoding = null) {
-    	$this->text = $text;
-    	if(!$this->encodedText){
-    		if(!$encoding)$encoding = $this->getEncodingForConvert();
-    		$this->encodedText = mb_convert_encoding($text, $encoding);
-    	}
-    }
-    function getEncodedText() {
-    	return $this->encodedText;
-    }
-    function setEncodedText($encodedText) {
-    	$this->encodedText = $encodedText;
-    }
-    function getAttachments() {
-    	return $this->attachments;
-    }
-    function setAttachments($attachments) {
-    	$this->attachments = $attachments;
-    }
-    function getHeaders() {
-    	return $this->headers;
-    }
-    function setHeaders($headers) {
-    	$this->headers = $headers;
-    }
-    function getFrom() {
-    	return $this->from;
-    }
-    function setFrom($from, $label = null, $encoding = null) {
-		if(!$encoding)$encoding = $this->getEncoding();
-    	$this->from = new SOY2Mail_MailAddress($from, $label, $encoding);
-    }
-    function getRecipients() {
-    	return $this->recipients;
-    }
-    function setRecipients($recipients) {
-    	$this->recipients = $recipients;
-    }
-    function getEncodedRecipients() {
-    	return $this->encodedRecipients;
-    }
-    function setEncodedRecipients($encodedRecipients) {
-    	$this->encodedRecipients = $encodedRecipients;
-    }
-    /**
-     * 本文の文字コード
-     * 件名の文字コードは別のプロパティ：subjectEncoding
-     */
-	function getEncoding() {
-		return $this->encoding;
-	}
-	function setEncoding($encoding) {
-		$this->encoding = $encoding;
-	}
-	function getBccRecipients() {
-    	return $this->bccRecipients;
-    }
-    function setBccRecipients($bccRecipients) {
-    	$this->bccRecipients = $bccRecipients;
-    }
-    function getRawData(){
-    	return $this->rawData;
-    }
-    function setRawData($rawData){
-    	$this->rawData = $rawData;
-    }
-    /**
-     * 件名をリセットする
-     */
-    function clearSubject(){
-    	$this->subject = null;
-    	$this->encodedSubject = null;
-    }
-    /**
-     * 本文をリセットする
-     */
-    function clearText(){
-    	$this->text = null;
-    	$this->encodedText = null;
-    }
-    /**
-     * 受信者を追加する
-     */
-    function addRecipient($address, $label = null, $encoding = null){
-    	if(!$encoding)$encoding = $this->getEncoding();
-    	$recipient = new SOY2Mail_MailAddress($address, $label, $encoding);
-    	$this->recipients[$address] = $recipient;
-    	return $this;
-    }
-    /**
-     * 受信者を削除する
-     */
-    function removeRecipient($address){
-    	$this->recipients[$address] = null;
-    	unset($this->recipients[$address]);
-    }
-    /**
-     * 受信者をすべて削除する
-     */
-    function clearRecipients(){
-    	$this->recipients = array();
-    }
-    /**
-     * BCC受信者を追加する
-     */
-    function addBccRecipient($address, $label = null, $encoding = null){
-    	if(!$encoding)$encoding = $this->getEncoding();
-    	$recipient = new SOY2Mail_MailAddress($address, $label, $encoding);
-    	$this->bccRecipients[$address] = $recipient;
-    	return $this;
-    }
-    /**
-     * BCC受信者を削除する
-     */
-    function removeBccRecipient($address){
-    	$this->bccRecipients[$address] = null;
-    	unset($this->bccRecipients[$address]);
-    }
-    /**
-     * BCC受信者をすべて削除する
-     */
-    function clearBccRecipients(){
-    	$this->bccRecipients = array();
-    }
-    /**
-     * headerを追加する
-     */
-    function setHeader($key, $value){
-    	if(strlen($value)>0){
-	    	$this->headers[$key] = $value;
-    	}else{
-    		if(array_key_exists($key, $this->headers)){
-    			unset($this->headers[$key]);
-    		}
-    	}
-    	return $this;
-    }
-    /**
-     * ヘッダーを設定する
-     */
-    function getHeader($key){
-    	return (isset($this->headers[$key])) ? $this->headers[$key] : "";
-    }
-    /**
-     * ヘッダーをリセットする
-     */
-    function clearHeaders(){
-    	$this->headers = array();
-    }
-    /**
-     * 添付ファイルを追加する
-     */
-    function addAttachment($filename, $type, $contents){
-    	$this->attachments[$filename] = array(
-    		"filename" => $filename,
-    		"mime-type" => $type,
-    		"contents" => $contents
-    	);
-    }
-    /**
-     * 添付ファイルを削除する
-     */
-    function removeAttachment($filename){
-    	$this->attachments[$filename] = null;
-    	unset($this->attachments[$filename]);
-    }
-    /**
-     * 添付ファイルをすべて削除する
-     */
-    function clearAttachments(){
-    	$this->attachments = array();
-    }
-	/**
-	 * 件名の文字コード
-	 */
-    function getSubjectEncoding() {
-    	return $this->subjectEncoding;
-    }
-    function setSubjectEncoding($subjectEncoding) {
-    	$this->subjectEncoding = $subjectEncoding;
-    }
-    /**
-     * 文字コード変換のための本文の文字コード
-     */
-    function getEncodingForConvert(){
-    	return self::getPracticalEncoding($this->getEncoding());
-    }
-    /**
-     * 文字コード変換のための件名の文字コード
-     */
-    function getSubjectEncodingForConvert(){
-    	return self::getPracticalEncoding($this->getSubjectEncoding());
-    }
-    /**
-     * 文字コード変換に使用する文字コードを返す
-     * ヘッダーなどに記載する文字コードとは別の文字コードを変換に使用するために用意した
-     */
-    public static function getPracticalEncoding($encoding){
-    	switch(strtoupper($encoding)){
-    		case "ISO-2022-JP":
-    			/*
-    			 * 半角カナが文字化けしないように
-    			 * ISO-2022-JP: ASCII, JIS X 0201 のラテン文字, JIS X 0208
-    			 * JIS: ISO-2022-JPに加え、JIS X 0201の半角カナ, JIS X 0212
-    			 * ISO-2022-JP-MS: JISに加え、NEC特殊文字とNEC選定IBM拡張文字を扱える
-    			 *   http://legacy-encoding.sourceforge.jp/wiki/
-    			 */
-    			if(version_compare(PHP_VERSION,"5.2.1") >= 0){
-	    			return "ISO-2022-JP-MS";
-    			}else{
-	    			return "JIS";
-    			}
-    		default:
-    			return $encoding;
-    	}
-    }
-}
-class SOY2Mail_MailAddress{
-	private $address;
-	private $label;
-	private $encoding;
-	function __construct($address, $label = "", $encoding = ""){
-		$this->address = $address;
-		$this->label = $label;
-		$this->encoding = $encoding;
-	}
-	function getAddress() {
-		if(strpos($this->address, '"') === false && ( strpos($this->address, "..") !== false || strpos($this->address, ".@") !== false )){
-			list($local, $domain) = explode("@", $this->address);
-			$quoted = '"'.$local.'"@'.$domain;
-			return $quoted;
-		}else{
-			return $this->address;
+			$path = preg_replace('/^\/|\/$/',"",$tmp[1]);
+			$path = str_replace("/",".",$path);
+			$arguments = preg_replace("/^\//","",$tmp[4]);
+			$arguments = explode("/",$arguments);
+			foreach($arguments as $key => $value){
+				if(!strlen($value)){
+					$arguments[$key] = null;
+					unset($arguments[$key]);
+				}
+			}
+			$this->path = $path;
+			$this->arguments = $arguments;
 		}
 	}
-	function setAddress($address) {
-		$this->address = $address;
+	function getPath(){
+		return $this->path;
 	}
-	function getLabel() {
-		return $this->label;
-	}
-	function setLabel($label) {
-		$this->label = $label;
-	}
-	function getEncoding() {
-		return $this->encoding;
-	}
-	function setEncoding($encoding) {
-		$this->encoding = $encoding;
-	}
-    /**
-     * 文字コード変換のための文字コード
-     */
-    function getEncodingForConvert(){
-    	return SOY2Mail::getPracticalEncoding($this->getEncoding());
-    }
-    /**
-     * メールヘッダー記載用の文字列
-     * ダブルクオートは使わない
-     */
-	function getString(){
-		if(strlen($this->address)<1)return '';
-		if(strlen($this->label)<1)return '<' . $this->address . '>';
-		return mb_encode_mimeheader($this->label, $this->getEncodingForConvert()).' <'.$this->address.'>';
-	}
-	function __toString(){
-		return $this->getString();
+	function getArguments(){
+		return $this->arguments;
 	}
 	/**
-	 * メールアドレスの書式チェック
-	 * @param string $email
-	 * @param boolean trueなら厳密なチェックを行なわない
-	 * @return boolean
-	 *
-	 * $lazy: true
-	 * @の前後に1文字以上、ドメイン部に.区切りの文字列があればOK
-	 * $lazy: false
-	 * 使える文字がRFC準拠。
-	 * ただしローカルパート部のドット「.」の連続や末尾のドットがあってもNGとはしない（docomoなどのRFC違反アドレスを許容する）。
+	 * パスからURLを生成する
+	 * スクリプトのファイル名を含む（ただし$pathが空の時はスクリプト名を付けない）
 	 */
-	protected static function _validation($email, $lazy = false){
-		if($lazy){
-			$validEmail = "^.+\@[^.]+(?:\\.[^.]+)+\$";
+	function createLinkFromPath(string $path, bool $isAbsoluteUrl=false){
+		$scriptPath = self::getScriptPath();
+		if(strlen($path)>0){
+			$path = $scriptPath . "/" . str_replace(".","/",$path);
 		}else{
-			$ascii  = '[a-zA-Z0-9!#$%&\'*+\-\/=?^_`{|}~.]';//'[\x01-\x7F]';
-			$domain = '(?:[-a-z0-9]+\.)+[a-z]{2,10}';//'([-a-z0-9]+\.)*[a-z]+';
-			$d3     = '\d{1,3}';
-			$ip     = $d3.'\.'.$d3.'\.'.$d3.'\.'.$d3;
-			$validEmail = "^$ascii+\@(?:$domain|\\[$ip\\])\$";
+			$path = strrev(strstr(strrev($scriptPath),"/"));
 		}
-		if(! preg_match('/'.$validEmail.'/i', $email) ) {
-			return false;
+		if($isAbsoluteUrl){
+			return self::createAbsoluteURL($path);
+		}else{
+			return $path;
 		}
-		return true;
 	}
 	/**
-	 * メールアドレスの書式チェック（簡易）
-	 * @param string $email
-	 * @return boolean
+	 * 相対パスを解釈してURLを生成する
+	 * @param String $path 相対パス
+	 * @param Boolean $isAbsoluteUrl 返り値を絶対URL（http://example.com/path/to）で返すかルートからの絶対パス（/path/to）で返すか
 	 */
-	public static function simpleValidation($email){
-		return self::_validation($email, true);
+	function createLinkFromRelativePath(string $path, bool $isAbsoluteUrl=false){
+		if(preg_match("/^https?:/",$path)){
+			return $path;
+		}
+		if(preg_match("/^\//",$path)){
+		}else{
+			$scriptPath = self::getScriptPath();
+			$scriptDir = preg_replace("/".basename($scriptPath)."\$/", "", $scriptPath);
+			$path = self::convertRelativePathToAbsolutePath($path, $scriptDir);
+		}
+		if($isAbsoluteUrl){
+			return self::createAbsoluteURL($path);
+		}else{
+			return $path;
+		}
 	}
 	/**
-	 * メールアドレスの書式チェック（やや厳密）
-	 * @param string $email
-	 * @return boolean
+	 * フロントコントローラーのURLでの絶対パスを取得する
+	 * （ファイルシステムのパスではない）
 	 */
-	public static function validation($email){
-		return self::_validation($email, false);
-	}
-}
-interface SOY2Mail_SenderInterface{
-	function open();
-	function send();
-	function close();
-}
-interface SOY2Mail_ReceiverInterface{
-	function open();
-	function receive();
-	function close();
-}
-class SOY2MailException extends Exception{}
-/* SOY2Mail/SOY2Mail_IMAPLogic.class.php */
-class SOY2Mail_IMAPLogic extends SOY2Mail implements SOY2Mail_ReceiverInterface{
-	private $con;
-	private $host;
-	private $port;
-	private $flag;
-	private $folder;
-	private $user;
-	private $pass;
-	function __construct($options) {
-		if(!function_exists("imap_open")){//extension_loaded("imap")
-			throw new SOY2MailException("The extension 'imap' is necessary.");
+	protected static function getScriptPath(){
+		static $script;
+		if(is_null($script)){
+			/**
+			 * @TODO ルート的にアクセスされた場合は、フロントコントローラーの設置場所をDocumentRootとみなす。
+			 */
+			$documentRoot = (defined("SOY2_DOCUMENT_ROOT")) ? SOY2_DOCUMENT_ROOT : ((isset($_SERVER["SOY2_DOCUMENT_ROOT"])) ? $_SERVER["SOY2_DOCUMENT_ROOT"] : $_SERVER["DOCUMENT_ROOT"]);
+			$documentRoot = str_replace("\\","/",$documentRoot);
+			if(strlen($documentRoot) >0 && $documentRoot[strlen($documentRoot)-1] != "/") $documentRoot .= "/";
+			$script = str_replace($documentRoot,"/",str_replace("\\","/",$_SERVER["SCRIPT_FILENAME"]));
+			$script = str_replace("\\","/",$_SERVER["SCRIPT_FILENAME"]);
+			$script = str_replace($documentRoot, "/", $script);
 		}
-		if(!isset($options["imap.host"])){
-			throw new SOY2MailException("[imap.host] is necessary.");
-		}
-		if(!isset($options["imap.port"])){
-			throw new SOY2MailException("[imap.port] is necessary.");
-		}
-		if(!isset($options["imap.user"])){
-			throw new SOY2MailException("[imap.user] is necessary.");
-		}
-		if(!isset($options["imap.pass"])){
-			throw new SOY2MailException("[imap.pass] is necessary.");
-		}
-		$this->host = $options["imap.host"];
-		$this->port = $options["imap.port"];
-		if(isset($options["imap.flag"]))$this->flag = $options["imap.flag"];
-		if(isset($options["imap.folder"]))$this->folder = $options["imap.folder"];
-		$this->user = $options["imap.user"];
-		$this->pass = $options["imap.pass"];
-	}
-	function __destruct(){
-		if($this->con) $this->close();
-	}
-	function open(){
-		$host = $this->host;
-		$host .= ":" . $this->port;
-		if($this->flag)$host .= "/" . $this->flag;
-		$this->con = imap_open("{" . $host . "}" . $this->folder, $this->user, $this->pass);
-		if($this->con === false){
-			throw new SOY2MailException("imap_open(): login failed");
-		}
-	}
-	function close(){
-		imap_close($this->con);
-		$this->con = null;
-	}
-	function receive(){
-		if(!$this->con)$this->open();
-		$unseen = imap_search($this->con, "UNSEEN");
-		if($unseen == false){
-			return false;
-		}
-		$mail = new SOY2Mail();
-		$i = array_shift($unseen);
-		$head = imap_headerinfo($this->con, $i);
-		$title = mb_decode_mimeheader(@$head->subject);
-		$rawHeader = imap_fetchheader($this->con, $i);
-		$mail->setRawData($rawHeader.imap_body($this->con, $i));
-		$Structure = imap_fetchstructure($this->con, $i);	//メール構造読み込み
-		$mimeType = $this->getMimeType($Structure->type,$Structure->subtype);	//メールタイプ読み込み
-		if(strpos($mimeType,"multipart") !== false && count($Structure->parts)>1){
-			$numberOfParts = count($Structure->parts);	//添付ファイルの数数え
-			for($j=1; $j<$numberOfParts; $j++){
-				$part = $Structure->parts[$j];
-				if($part->ifdparameters){
-					$filename = $this->getParameterValue($part->dparameters,"filename");
-				}
-				if(!$filename && $part->ifparameters){
-					$filename = $this->getParameterValue($part->parameters,"name");
-				}
-				if($filename){
-					$attachmentName = $filename;	//添付ファイル名読み込み
-					$attachmentName = mb_encode_mimeheader($attachmentName);//日本語名だったらエンコード
-				}else{
-					$attachmentName = "file-".$i."-".$j;
-				}
-				$attachmentFile = imap_fetchbody ($this->con,$i,$j+1);	//添付部分取り出し
-				$attachmentFile = imap_base64 ($attachmentFile);		//デコード
-				$mail->addAttachment($attachmentName, $this->getMimeType($part->type,$part->subtype), $attachmentFile);
-			}
-			$body = imap_fetchbody($this->con, $i, 1);
-			if($encoding = $this->getParameterValue($Structure->parts[0]->parameters,"charset")){
-				$mail->setEncoding($encoding);
-			}else{
-				$encoding = null;
-			}
-		}else{
-			if($encoding = $this->getParameterValue($Structure->parameters,"charset")){
-				$mail->setEncoding($encoding);
-			}else{
-				$encoding = null;
-			}
-			$body = imap_body($this->con, $i);
-		}
-		imap_setflag_full($this->con, $i, "\\Seen");
-		$from = $head->from[0];
-		$mail->setFrom($from->mailbox . "@" . $from->host, @$from->personal);
-		$to = $head->to[0];
-		$mail->addRecipient($to->mailbox . "@" . $to->host, @$to->personal);
-		$mail->setSubject($title);
-		$mail->setEncodedText($body);
-		if($encoding){
-			$mail->setText(mb_convert_encoding($body,"UTF-8",$encoding));
-		}else{
-			$mail->setText(mb_convert_encoding($body,"UTF-8","JIS,SJIS,EUC-JP,UTF-8,ASCII"));
-		}
-		$mail->setHeaders((array)$head);
-		return $mail;
+		return $script;
 	}
 	/**
-	 * imap_fetchstructureの返り値のオブジェクトのtypeとsubtypeからMIME-Typeをテキストで返す
+	 * 絶対パスにドメインなどを付加して絶対URLに変換する
 	 */
-	function getMimeType($type, $subType){
-		$mimeType = "";
-		switch($type){
-			case 0:
-				$mimeType = "text";
-				break;
-			case 1:
-				$mimeType = "multipart";
-				break;
-			case 2:
-				$mimeType = "message";
-				break;
-			case 3:
-				$mimeType = "application";
-				break;
-			case 4:
-				$mimeType = "audio";
-				break;
-			case 5:
-				$mimeType = "image";
-				break;
-			case 6:
-				$mimeType = "video";
-				break;
-			case 7:
-				$mimeType = "other";
-				break;
+	protected static function createAbsoluteURL(string $path){
+		static $scheme, $domain, $port;
+		if(is_null($scheme)) $scheme = (isset($_SERVER["HTTPS"]) || defined("SOY2_HTTPS") && SOY2_HTTPS) ? "https" : "http";
+		if(is_null($domain) && isset($_SERVER["SERVER_NAME"])) $domain = $_SERVER["SERVER_NAME"];
+		if(is_null($port)){
+			if(!isset($_SERVER["SERVER_PORT"])) $_SERVER["SERVER_PORT"] = 80;
+			if( $_SERVER["SERVER_PORT"] == "80" && !isset($_SERVER["HTTPS"]) || $_SERVER["SERVER_PORT"] == "443" && isset($_SERVER["HTTPS"]) ){
+				$port = "";
+			}elseif(strlen($_SERVER["SERVER_PORT"]) > 0){
+				$port = ":".$_SERVER["SERVER_PORT"];
+			}else{
+				$port = "";
+			}
 		}
-		if(strlen($subType)){
-			$mimeType .= "/".strtolower($subType);
-		}
-		return $mimeType;
+		return $scheme."://".$domain.$port.$path;
 	}
 	/**
-	 * imap_fetchstructureの返り値のオブジェクトのparametersから欲しいattributeの値を返す
+	 * 指定したディレクトリからの相対パスを絶対パスに変換する
 	 */
-	function getParameterValue($parameters, $attribute){
-		$attribute = strtolower($attribute);
-		foreach($parameters as $param){
-			if(strtolower($param->attribute) == $attribute){
-				return $param->value;
+	protected static function convertRelativePathToAbsolutePath(string $relativePath, string $base){
+		$base = str_replace("\\","/",$base);
+		$base = preg_replace("/\/+/","/",$base);
+		$relativePath = str_replace("\\","/",$relativePath);
+		$relativePath = preg_replace("/\/+/","/",$relativePath);
+		$dirs = explode("/", $base);
+		if($dirs[0] == "") array_shift($dirs);
+		if(count($dirs) > 0 && $dirs[count($dirs)-1] == "") array_pop($dirs);
+		$paths = explode("/",$relativePath);
+		$pathStack = array();
+		foreach($paths as $path){
+			if($path == ".."){
+				array_pop($dirs);
+			}elseif($path == "."){
+			}else{
+				array_push($pathStack,$path);
 			}
 		}
-		return false;
-	}
-	function getCon() {
-		return $this->con;
-	}
-	function setCon($con) {
-		$this->con = $con;
-	}
-	function getHost() {
-		return $this->host;
-	}
-	function setHost($host) {
-		$this->host = $host;
-	}
-	function getPort() {
-		return $this->port;
-	}
-	function setPort($port) {
-		$this->port = $port;
-	}
-	function getFlag() {
-		return $this->flag;
-	}
-	function setFlag($flag) {
-		$this->flag = $flag;
-	}
-	function getUser() {
-		return $this->user;
-	}
-	function setUser($user) {
-		$this->user = $user;
-	}
-	function getPass() {
-		return $this->pass;
-	}
-	function setPass($pass) {
-		$this->pass = $pass;
+		$absolutePath = implode("/",array_merge($dirs,$pathStack));
+		$absolutePath = "/".$absolutePath;
+		return $absolutePath;
 	}
 }
-/* SOY2Mail/SOY2Mail_POPLogic.class.php */
-class SOY2Mail_POPLogic extends SOY2Mail implements SOY2Mail_ReceiverInterface{
-	private $con;
-	private $host;
-	private $port;
-	private $flag;
-	private $folder;
-	private $user;
-	private $pass;
-	function __construct($options){
-		if(!isset($options["pop.host"])){
-			throw new SOY2MailException("[pop.host] is necessary.");
-		}
-		if(!isset($options["pop.port"])){
-			throw new SOY2MailException("[pop.port] is necessary.");
-		}
-		if(!isset($options["pop.user"])){
-			throw new SOY2MailException("[pop.user] is necessary.");
-		}
-		if(!isset($options["pop.pass"])){
-			throw new SOY2MailException("[pop.pass] is necessary.");
-		}
-		$this->host = $options["pop.host"];
-		$this->port = $options["pop.port"];
-		if(isset($options["pop.flag"]))$this->flag = $options["pop.flag"];
-		if(isset($options["pop.folder"]))$this->folder = $options["pop.folder"];
-		$this->user = $options["pop.user"];
-		$this->pass = $options["pop.pass"];
-	}
-	function __destruct(){
-		if($this->con) $this->close();
-	}
-	function open(){
-		$this->con = fsockopen($this->host, $this->port, $errono, $errnstr);
-		if(!$this->con){
-			$this->close();
-			throw new SOY2MailException("failed to connect");
-		}
-		$buff = $this->popCommand("USER ".$this->user);
-		if(!$buff)throw new SOY2MailException("Failed to connect pop server");
-		$buff = $this->popCommand("PASS ".$this->pass);
-		if(!$buff)throw new SOY2MailException("Failed to connect pop server");
-	}
-	function close(){
-		if($this->con){
-			$this->popCommand("QUIT");
-			fclose($this->con);
-			$this->con = null;
-		}
-	}
-	function receive(){
-		if(!$this->con)$this->open();
-		$res = $this->popCommand("LIST");
-		if(!$res)throw new SOY2MailException("failed to open Receive Server");
-		$mailId = null;
-		while(true){
-			$buff = $this->getPopResponse();
-			if($buff == ".")break;
-			$array = explode(" ",$buff);
-			if(!is_numeric($array[0]))continue;
-			if(!$mailId)$mailId = $array[0];
-		}
-		if(!$mailId)return false;
-		$res = $this->popCommand("RETR ".$mailId);
-		$flag = false;
-		$header = "";
-		$body = "";
-		$encoding = "JIS";
-		$headers = array();
-		$mail = new SOY2Mail();
-		while(true){
-			$buff = $this->getPopResponse();
-			if($buff == ".")break;
-			if(!$flag && strlen($buff)==0){
-				$flag = true;
-				continue;
-			}
-			if(strpos($buff,"..")===0){
-				$buff = substr($buff,1);
-			}
-			if($flag){
-				$body .= $buff . "\r\n";
-			}else{
-				$header .= $buff . "\r\n";
-			}
-		}
-		$this->popCommand("DELE " . $mailId);
-		$mail->setRawData($header."\r\n".$body);
-		$headers = $this->parseHeaders($header);
-		if(isset($headers["Content-Type"]) && preg_match("/boundary=\"?(.*?)\"?/",$headers["Content-Type"], $tmp)){
-			$boundary = $tmp[1];
-			$bodies = explode("--". $boundary, $body);
-			$attachCount = count($bodies);
-			for($i=0;$i<$attachCount;++$i){
-				$tmpHeader = substr($bodies[$i], 0, strpos($bodies[$i], "\r\n\r\n"));
-				$tmpBody = substr($bodies[$i], strpos($bodies[$i], "\r\n\r\n")+4);
-				$tmpHeaders = $this->parseHeaders($tmpHeader);
-				if(isset($tmpHeaders["Content-Disposition"]) && preg_match("/filename.*=(.*)/",$tmpHeaders["Content-Disposition"], $tmp)){
-					$filename = preg_replace('/["\']/',"",$tmp[1]);
-					$mail->addAttachment($filename, "", base64_decode($tmpBody));
-					continue;
-				}
-				if(isset($tmpHeaders["Content-Type"]) && preg_match("/charset=(.*)/",$tmpHeaders["Content-Type"],$tmp)){
-					$encoding = $tmp[1];
-					$body = $tmpBody;
-				}
-			}
-		}else{
-			if(isset($headers["Content-Type"]) && preg_match("/charset=(.*)/",$headers["Content-Type"],$tmp)){
-				$encoding = $tmp[1];
-			}
-		}
-		if(isset($headers["From"])){
-			$from = explode(",",$headers["From"]);
-			$from = trim($from[0]);
-			if(preg_match('/"?(.*?)"?\s*<?(.+@.+)>?/',$from,$tmp)){
-				$label = mb_decode_mimeheader($tmp[1]);
-				$address = $tmp[2];
-				$mail->setFrom($address, $label);
-			}
-		}
-		if(isset($headers["To"])){
-			$toes = explode(",",$headers["To"]);
-			foreach($toes as $to){
-				$to = trim($to);
-				if(preg_match('/"?(.*?)"?\s?<?(.+@.+)>?/',$to,$tmp)){
-					$label = mb_decode_mimeheader($tmp[1]);
-					$address = $tmp[2];
-					$mail->addRecipient($address, $label);
-				}
-			}
-		}
-		if(isset($headers["Subject"])){
-			$mail->setSubject(mb_decode_mimeheader(@$headers["Subject"]));
-		}
-		$mail->setHeaders($headers);
-		$mail->setEncodedText($body);
-		$mail->setText(mb_convert_encoding($body,"UTF-8",$encoding));
-		$mail->setEncoding($encoding);
-		return $mail;
-	}
-	function popCommand($string){
-		fputs($this->con, $string."\r\n");
-  		$buff = fgets($this->con);
-		if(strpos($buff,"+OK") == 0){
-			return $buff;
-		}else{
-			return false;
-		}
-	}
-	function getPopResponse(){
-		$buff = fgets($this->con);
-		$buff = rtrim($buff, "\r\n");
-		return $buff;
-	}
-	/**
-	 * 受信メッセージのヘッダーを解析し配列にする
-	 */
-	function parseHeaders($header){
-		$headers = array();
-		$header = preg_replace("/\r\n[ \t]+/", ' ', $header);
-		$raw_headers = explode("\r\n", $header);
-		foreach($raw_headers as $value){
-			$name  = substr($value, 0, $pos = strpos($value, ':'));
-			$value = ltrim(substr($value, $pos + 1));
-			if (isset($headers[$name]) AND is_array($headers[$name])) {
-				$headers[$name][] = $value;
-			} elseif (isset($headers[$name])) {
-				$headers[$name] = array($headers[$name], $value);
-			} else {
-				$headers[$name] = $value;
-			}
-		}
-		return $headers;
-	}
-}
-/* SOY2Mail/SOY2Mail_SMTPLogic.class.php */
-class SOY2Mail_SMTPLogic extends SOY2Mail implements SOY2Mail_SenderInterface{
-	private $con;
-	private $host;
-	private $port;
-	private $isSMTPAuth = false;
-	private $isStartTLS = false;
-	private $user;
-	private $pass;
-	private $debugHTML = false;
-	private $debug = false;
-	private $esmtpOptions = array();
-	private $isSecure = false;
-	function __construct($options){
-		if(!isset($options["smtp.host"])){
-			throw new SOY2MailException("[smtp.host] is necessary.");
-		}
-		if(!isset($options["smtp.port"])){
-			throw new SOY2MailException("[smtp.port] is necessary.");
-		}
-		$this->host = $options["smtp.host"];
-		$this->port = $options["smtp.port"];
-		$this->isSMTPAuth = (isset($options["smtp.auth"])) ? $options["smtp.auth"] : false;
-		$this->isStartTLS = (isset($options["smtp.starttls"])) ? $options["smtp.starttls"] : false;
-		$this->user =  (isset($options["smtp.user"])) ? $options["smtp.user"] : null;
-		$this->pass =  (isset($options["smtp.pass"])) ? $options["smtp.pass"] : null;
-		if(isset($options["debug"]) && $options["debug"]){
-			if(isset($_SERVER["REMOTE_ADDR"])){
-				$this->debugHTML = true;
-			}else{
-				$this->debug = true;
-			}
-		}
-	}
-	function open(){
-		$this->con = fsockopen($this->host, $this->port, $errono, $errnstr, 60);
-		if(!$this->con){
-			$this->close();
-			throw new SOY2MailException("failed to connect");
-		}
-		stream_set_timeout($this->con, 1);
-		$buff = $this->getSmtpResponse();
-		if(substr($buff,0,3) != "220"){
-			throw new SOY2MailException("failed to receive greeting message.");
-		}
-		$this->ehlo();
-		if(stripos($this->host, 'ssl://') === 0 || stripos($this->host, 'tls://') === 0){
-			$this->isSecure = true;
-		}elseif(
-			$this->isStartTLS &&//使う設定
-			function_exists("openssl_open") &&//OpenSSLが利用可能 extension_loaded("openssl")
-			function_exists("stream_socket_enable_crypto") &&//PHP 5.1.0以上
-			isset($this->esmtpOptions['STARTTLS'])//STARTTLSが利用可能
-		){
-			if( $this->startTLS() ){
-				$this->isSecure = true;
-				$this->ehlo();
-			}
-		}
-		if($this->isSMTPAuth && isset($this->esmtpOptions["AUTH"]) && is_array($this->esmtpOptions["AUTH"])){
-			$authTypes = $this->esmtpOptions["AUTH"];
-			/** CRAM-MD5を最優先にしてDIGEST-MD5の優先度を下げる **/
-			if(in_array("CRAM-MD5",$authTypes)){
-				$this->smtpCommand("AUTH CRAM-MD5");
-				$buff = $this->getSmtpResponse();
-				if(strlen($buff) < 5 || substr($buff,0,3) != "334") throw new SOY2MailException("smtp login failed");
-				$challenge = base64_decode(substr(($buff),4));
-				$response = SOY2Mail_SMTPAuth_CramMD5::getResponse($this->user,$this->pass,$challenge);
-				$this->smtpCommand(base64_encode($response));
-				while(true){
-					$buff = $this->getSmtpResponse();
-					if(substr($buff,0,3) == "235") break;
-					if(substr($buff,0,3) == "501") throw new SOY2MailException("smtp login failed: wrong parameter");
-					if(substr($buff,0,3) == "535") throw new SOY2MailException("smtp login failed: wrong id or password");
-				}
-			}else if(in_array("DIGEST-MD5",$authTypes)){
-				$hostname = str_replace("ssl://", "", $this->host);
-				$this->smtpCommand("AUTH DIGEST-MD5");
-				$buff = $this->getSmtpResponse();
-				if(strlen($buff) < 5 || substr($buff,0,3) != "334") throw new SOY2MailException("smtp login failed");
-				$challenge = base64_decode(substr(trim($buff),4));
-				$response = SOY2Mail_SMTPAuth_DigestMD5::getResponse($this->user,$this->pass,$challenge,$hostname);
-				$this->smtpCommand(base64_encode($response));
-				while(true){
-					$buff = $this->getSmtpResponse();
-					if(substr($buff,0,3) == "334") break;
-					if(substr($buff,0,3) == "501") throw new SOY2MailException("smtp login failed: wrong parameter");
-					if(substr($buff,0,3) == "535") throw new SOY2MailException("smtp login failed: wrong id or password");
-				}
-				$this->smtpCommand("");
-				while(true){
-					$buff = $this->getSmtpResponse();
-					if(substr($buff,0,3) == "235") break;
-					if(substr($buff,0,3) == "501") throw new SOY2MailException("smtp login failed: wrong parameter");
-					if(substr($buff,0,3) == "535") throw new SOY2MailException("smtp login failed: wrong id or password");
-				}
-			}elseif(in_array("PLAIN",$authTypes)){
-				$this->smtpCommand("AUTH PLAIN ".base64_encode(
-					$this->user . "\0" .
-					$this->user . "\0" .
-					$this->pass ));
-				while(true){
-					$buff = $this->getSmtpResponse();
-					if(substr($buff,0,3) == "235") break;
-					if(substr($buff,0,3) == "501") throw new SOY2MailException("smtp login failed: wrong parameter");
-					if(substr($buff,0,3) == "535") throw new SOY2MailException("smtp login failed: wrong id or password");
-				}
-			}elseif(in_array("LOGIN",$authTypes)){
-				$this->smtpCommand("AUTH LOGIN");
-				$buff = $this->getSmtpResponse();
-				if(substr($buff,0,3) != "334") throw new SOY2MailException("smtp login failed");
-				$this->smtpCommand(base64_encode($this->user));
-				$buff = $this->getSmtpResponse();
-				if(substr($buff,0,3) != "334") throw new SOY2MailException("smtp login failed");
-				$this->smtpCommand(base64_encode($this->pass));
-				while(true){
-					$buff = $this->getSmtpResponse();
-					if(substr($buff,0,3) == "235") break;
-					if(substr($buff,0,3) == "501") throw new SOY2MailException("smtp login failed: wrong parameter");
-					if(substr($buff,0,3) == "535") throw new SOY2MailException("smtp login failed: wrong id or password");
-				}
-			}else{
-			}
-		}
-	}
-	function ehlo(){
-		$this->smtpCommand("EHLO ". php_uname("n"));// gethostname php_uname("n") $_SERVER["HOSTNAME"]
-		$buff = $this->getSmtpResponse();//最初はドメイン
-		while(strlen($buff) && substr($buff,0,4) != "250 "){
-			$buff = $this->getSmtpResponse();
-			if(preg_match("/^250[- ]([-A-Z0-9]+)(?:[= ](.*))?\$/i",trim($buff),$matches)){
-				if(isset($matches[2])){
-					if(strpos($matches[2]," ")!==false){
-						$this->esmtpOptions[$matches[1]] = explode(" ",$matches[2]);
-					}else{
-						$this->esmtpOptions[$matches[1]] = $matches[2];
-					}
-				}else{
-					$this->esmtpOptions[$matches[1]] = true;
-				}
-			}
-		}
-	}
-	function startTLS(){
-		$this->smtpCommand("STARTTLS");
-		$buff = $this->getSmtpResponse();
-		if( substr($buff,0,3) == "220" ){
-			return stream_socket_enable_crypto($this->con, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
-		}
-	}
-	function send(){
-		$bccRecipients = $this->getBccRecipients();
-		$recipients = $this->getRecipients();
-		foreach($recipients as $recipient){
-			$this->sendMail($recipient, $bccRecipients);
-		}
-	}
-	function sendMail(SOY2Mail_MailAddress $sendTo,$bccRecipients = array()){
-		$sent = false;
-		$try = $try_connect = 0;
-		while(!$sent){
-			$try++;
-			while(!$this->con){
-				$try_connect++;
-				try{
-					$this->open();
-				}catch(Exception $e){
-					$this->close();
-					if($try_connect > 10){
-						if($this->debug)echo "SMTP Failed to open SMTP connection.\n";
-						throw $e;
-					}
-				}
-				if($try_connect > 20){
-					$this->close();
-					throw new SOY2MailException("Too many failure to connect server.");
-				}
-			}
-			try{
-				$this->_sendMail($sendTo, $bccRecipients);
-				$sent = true;
-			}catch(Exception $e){
-				$this->close();
-				if($try > 2){
-					throw $e;
-				}
-			}
-			if($try > 5){
-				$this->close();
-				throw new SOY2MailException("Too many failure to send email.");
-			}
-		}
-	}
-	private function _sendMail(SOY2Mail_MailAddress $sendTo,$bccRecipients = array()){
-		$from = $this->getFrom();
-		$title = $this->getEncodedSubject();
-		$body = $this->getEncodedText();
-		$body = str_replace(array("\r\n", "\r"), "\n", $body);  // CRLF, CR -> LF 正規表現で m オプションを使うためにLFにする
-		$body = preg_replace('/^\\./m','..', $body);          // .～        -> ..～
-		$body = str_replace("\n", "\r\n", $body);                // LF       -> CRLF
-		$this->smtpCommand("MAIL FROM:<".$from->getAddress().">");
-		while(true){
-			$str = $this->getSmtpResponse();
-			if(substr($str,0,3) == "250") break;
-			if(!is_null($str) && strlen($str)<1)sleep(1);
-			if(strlen($str) && substr($str,0,3)!="250")throw new SOY2MailException("Failed: MAIL FROM " . $str);
-		}
-		$this->isSendMailFrom = true;
-		$this->smtpCommand("RCPT TO:<".$sendTo->getAddress().">");
-		foreach($bccRecipients as $bccSendTo){
-			$this->smtpCommand("RCPT TO:<".$bccSendTo->getAddress().">");
-		}
-		while(true){
-			$str = $this->getSmtpResponse();
-			if(strlen($str)<1)break;
-			if(preg_match("/Ok/i",$str)) break;
-			if(substr($str,0,3)!="250")throw new SOY2MailException("Failed: RCPT TO " . $str);
-		}
-		$this->smtpCommand("DATA");
-		while(true){
-			$str = $this->getSmtpResponse();
-			if(strlen($str)<1)break;
-			if(preg_match("/354/i",$str)) break;
-			if(substr($str,0,3)!="250")throw new SOY2MailException("Failed: DATA " . $str);
-		}
-		$headers = $this->getHeaders();
-		foreach($headers as $key => $value){
-			if( "Content-Type" == $key ){ continue; }
-			$this->data("$key: $value");
-		}
-		$this->data("MIME-Version: 1.0");
-		$this->data("Subject: ".$title);
-		$this->data("From: ".$from->getString());
-		$this->data("To: ".$sendTo->getString());
-		$attachments = $this->getAttachments();
-		if(count($attachments)<1){
-			if(isset($headers["Content-Type"])){
-				$this->data("Content-Type: ".$headers["Content-Type"]);
-			}else{
-				$this->data("Content-Type: text/plain; charset=".$this->getEncoding()."");
-			}
-			$this->data("");
-			$this->data($body);
-		}else{
-			$boundary = "----------" . md5(time());
-			$this->data("Content-Type: multipart/mixed;  boundary=\"$boundary\"");
-			$this->data("");
-			$this->data("--".$boundary);
-			if(isset($headers["Content-Type"])){
-				$this->data("Content-Type: ".$headers["Content-Type"]);
-			}else{
-				$this->data("Content-Type: text/plain; charset=".$this->getEncoding()."");
-			}
-			$this->data("");
-			$this->data($body);
-			foreach($attachments as $filename => $attachment){
-				if( !isset($attachment["contents"]) ){ continue; }
-				$this->data("--".$boundary);
-				if( !isset($attachment["mime-type"]) || strlen($attachment["mime-type"]) <1 ){
-					$attachment["mime-type"] = "application/octet-stream";
-				}
-				$this->data("Content-Type: ".$attachment["mime-type"].";"."\r\n"." name=\"".mb_encode_mimeheader($filename)."\"");
-				$this->data("Content-Disposition: inline;"."\r\n"." filename=\"".mb_encode_mimeheader($filename)."\"");
-				$this->data("Content-Transfer-Encoding: base64");
-				$this->data("");
-				$this->data(wordwrap(base64_encode($attachment["contents"]),72, "\r\n", true));
-			}
-			$this->data("--". $boundary . "--");
-		}
-		$this->smtpCommand(".");
-	}
-	function close(){
-		if($this->con && $this->smtpCommand("QUIT")){
-			fclose($this->con);
-		}
-		$this->con = null;
-	}
-	function data($string){
-		$this->smtpCommand($string);
-	}
-	function smtpCommand($string){
-		if(!$this->con){
-			throw new SOY2MailException('SMTP is null');
- 			return;
- 		}
- 		if($this->debugHTML)echo "> ". htmlspecialchars($string) . "<br>";
-		if($this->debug)echo "SMTP> ".$string."\n";
- 		$result = fputs($this->con, $string."\r\n");
- 		if($result == false){
-			throw new SOY2MailException('Result is false.');
- 		}
-	}
-	function getSmtpResponse(){
-		$buff = fgets($this->con);
-		while($buff === false || !strlen($buff)){
-			$buff = fgets($this->con);
-			$meta = stream_get_meta_data($this->con);
-			if(feof($this->con) || $meta["timed_out"]){
-				return null;
-			}
-		}
-		if($this->debugHTML)echo "> ". htmlspecialchars($buff) . "<br>";
-		if($this->debug)echo "SMTP< ".$buff;
-		return $buff;
-	}
-	function getCon() {
-		return $this->con;
-	}
-	function setCon($con) {
-		$this->con = $con;
-	}
-	function getHost() {
-		return $this->host;
-	}
-	function setHost($host) {
-		$this->host = $host;
-	}
-	function getPort() {
-		return $this->port;
-	}
-	function setPort($port) {
-		$this->port = $port;
-	}
-	function getIsSMTPAuth() {
-		return $this->isSMTPAuth;
-	}
-	function setIsSMTPAuth($isSMTPAuth) {
-		$this->isSMTPAuth = $isSMTPAuth;
-	}
-	function getUser() {
-		return $this->user;
-	}
-	function setUser($user) {
-		$this->user = $user;
-	}
-	function getPass() {
-		return $this->pass;
-	}
-	function setPass($pass) {
-		$this->pass = $pass;
-	}
-	function getDebug() {
-		return $this->debug;
-	}
-	function setDebug($debug) {
-		$this->debug = $debug;
-	}
-}
-class SOY2Mail_SMTPAuth_CramMD5{
-	static function getResponse($user, $pass, $challengeStr){
-		return $user." ".hash_hmac("md5",$challengeStr,$pass);
-	}
-}
-class SOY2Mail_SMTPAuth_DigestMD5{
-	static function getResponse($user, $pass, $challengeStr, $hostname){
-		$challenge = array();
-		if(preg_match_all('/([-a-z]+)=(?:"([^"]*)"|([^=,]*))(?:,|$)/u',$challengeStr,$matches,PREG_SET_ORDER)){
-			foreach($matches as $matche){
-				$challenge[$matche[1]] = strlen($matche[2]) ? $matche[2] : $matche[3] ;
-			}
-		}
-		if(!isset($challenge["algorithm"]) || !isset($challenge["nonce"])){
-			throw new SOY2MailException("smtp login failed");
-		}
-		if(isset($challenge["qop"]) && strlen($challenge["qop"])){
-			$qop = explode(",",$challenge["qop"]);
-			if(!in_array("auth",$qop)){
-				throw new SOY2MailException("smtp login failed");
-			}
-		}
-		if(!isset($challenge["realm"])){
-			$challenge["realm"] = "";
-		}
-		if(!isset($challenge["maxbuf"])){
-			$challenge["maxbuf"] = "65536";
-		}
-		$response = array(
-			"username" => $user,
-			"realm" => $challenge["realm"],
-			"nonce" => $challenge["nonce"],
-			"cnonce" => preg_replace("/[^[:alnum:]]/", "", substr(base64_encode( md5(mt_rand(),true) ),0,21)),
-			"nc" => "00000001",
-			"qop" => "auth",
-			"digest-uri" => 'smtp/'.$hostname,
-			"response" => "",
-			"maxbuf" => $challenge["maxbuf"],
-		);
-		$hashed = pack('H32', md5($user.":".$response["realm"].":".$pass));
-		$a1 = $hashed.":".$response["nonce"].":".$response["cnonce"];
-		$a2 = "AUTHENTICATE:".$response["digest-uri"];
-		$response["response"] = md5(md5($a1).":".$response["nonce"].":".$response["nc"].":".$response["cnonce"].":".$response["qop"].":".md5($a2));
-		$responseArr = array();
-		foreach($response as $key => $value){
-			$isContinue = false;
-			switch($key){
-				case "realm":
-					if(!strlen($value)) $isContinue = false;
-					break;
-				case "username":
-				case "nonce":
-				case "cnonce":
-				case "digest-uri":
-					$value = '"'.$value.'"';
-					break;
-			}
-			if(!$isContinue) continue;
-			$responseArr[] = $key."=".$value;
-		}
-		$resonseStr = implode(",",$responseArr);
-		return $resonseStr;
-	}
-}
-/* SOY2Mail/SOY2Mail_SendMailLogic.class.php */
-class SOY2Mail_SendMailLogic extends SOY2Mail implements SOY2Mail_SenderInterface{
-    function __construct($options) {
-    }
-    function open(){}
-    function close(){}
-    function send(){
-    	$bccRecipients = $this->getBccRecipients();
-    	$recipients = $this->getRecipients();
-		foreach($recipients as $recipient){
-			$this->sendMail($recipient, $bccRecipients);
-		}
-    }
-    function sendMail($sendTo,$bccRecipients = array()){
-		$to = $sendTo->getString();
-		$from = $this->getFrom();
-		$title = $this->getEncodedSubject();
-		$body = $this->getEncodedText();
-		$headers = array();
-		$_headers = $this->getHeaders();
-		foreach($_headers as $key => $value){
-			if( "Content-Type" == $key ){ continue; }
-			$headers[] = "$key: $value";
-		}
-		$headers[] = "MIME-Version: 1.0" ;
-		$headers[] = "From: " . $from->getString();
-		$attachments = $this->getAttachments();
-		if(count($attachments)<1){
-			if(isset($_headers["Content-Type"])){
-				$headers[] = "Content-Type: ".$_headers["Content-Type"];
-			}else{
-				$headers[] = "Content-Type: text/plain; charset=".$this->getEncoding();
-			}
-		}else{
-			$boundary = "----------" . md5(time());
-			$headers[] = "Content-Type: multipart/mixed;  boundary=\"$boundary\"";
-			$_body = "--" . $boundary . "\r\n";
-			if(isset($_headers["Content-Type"])){
-				$_body .= "Content-Type: ".$_headers["Content-Type"] . "\r\n";
-			}else{
-				$_body .= "Content-Type: text/plain; charset=".$this->getEncoding()."" . "\r\n";
-			}
-			$body = $_body . "\r\n" . $body . "\r\n";
-			foreach($attachments as $filename => $attachment){
-				if( !isset($attachment["contents"]) ){ continue; }
-				$body .= "--" . $boundary . "\r\n";
-				if( !isset($attachment["mime-type"]) || strlen($attachment["mime-type"]) <1 ){
-					$attachment["mime-type"] = "application/octet-stream";
-				}
-				$body .= "Content-Type: ".$attachment["mime-type"].";"."\r\n".
-				         " name=\"".mb_encode_mimeheader($filename)."\"" . "\r\n";
-				$body .= "Content-Disposition: inline;"."\r\n".
-				         " filename=\"".mb_encode_mimeheader($filename)."\"" . "\r\n";
-				$body .= "Content-Transfer-Encoding: base64" . "\r\n";
-				$body .= "\r\n";
-				$body .= wordwrap(base64_encode($attachment["contents"]),72, "\r\n", true) . "\r\n";
-			}
-			$body .= "--" . $boundary . "--";
-		}
-		/**
-		 * RFC2821 4.5.2：SMTPクライアントは .から始まる行に.を付加し、サーバーは .から始まる行の.を除去する
-		 * ただし、sendmailに渡す場合は「.」の処理はsendmailがやってくれる。
-		 * Windows版mail()ではPHPがSMTP通信を行うが「.」の処理はPHP側がやってくれる。
-		 */
-		/**
-		 * 改行コードはLF（Windows版mail()はSMTP通信を行うのでCRLF）を使う
-		 *
-		 * PHPマニュアルにはヘッダーの改行コードはCRLFとあるがこれは間違い。
-		 * mail()の改行コードの扱いは問題がある。
-		 * Manual: http://jp2.php.net/manual/ja/function.mail.php
-		 * Bug report: http://bugs.php.net/15841
-		 * http://www.webmasterworld.com/forum88/4368.htm
-		 *
-		 * RFC2822ではメールの改行コードはCRLFだが、
-		 * *nix版PHPのmailはSMTP通信を行うのではなくsendmailコマンドを使うため
-		 * ローカル環境の改行コードを使って値を渡すのが正しいとも言える。
-		 * そのためmail()内部ではadditional_headerとTo:, Subject, 本文をLFで結合している。
-		 * メール末尾もLF.LFとなっている。
-		 *
-		 * 改行コードをLFに統一してもmail()にはまだ問題がある。
-		 * CRLF＋スペースorタブ以外の制御コードはいったんスペースに置換しているようで、
-		 * ヘッダーのfoldingのためのLF+スペースがスペース＋スペースに置換されたまま戻らなくなってしまう。
-		 * http://www.pubbs.net/php/200908/44353/
-		 * RFC2822では一行は998文字までがMUST、78文字はSHOULDなのでRFC違反ではない。
-		 *
-		 * ただし、改行コードがLFのメールをsendmailに渡してもCRLFに変換してくれないことが
-		 * 多いようなので、改行コードについてはRFC違反となる。
-		 * が、CRLFとLFが混在するよりはましなので、LFで統一することにする。
-		 */
-		$title = str_replace(array("\r\n", "\r"), "\n", $title);
-		$body = str_replace(array("\r\n", "\r"), "\n", $body);
-		$to = str_replace(array("\r\n", "\r"), "\n", $to);
-		$headersText = implode("\n",$headers);
-		if($this->isWindows()){
-			$title = str_replace("\n", "\r\n", $title);
-			$body = str_replace("\n", "\r\n", $body);
-			$to = str_replace("\n", "\r\n", $to);
-			$headersText = implode("\r\n",$headers);
-		}
-		$sendmail_params  = "-f".$from->getAddress();
-		mail($to, $title, $body, $headersText, $sendmail_params);
-		if(count($bccRecipients) >0){
-			$headers[] = "X-To: ".$sendTo->getString();
-			if($this->isWindows()){
-				$headersText = implode("\r\n",$headers);
-			}else{
-				$headersText = implode("\n",$headers);
-			}
-			foreach($bccRecipients as $bccSendTo){
-				$to = $bccSendTo->getString();
-				$to = str_replace(array("\r\n", "\r"), "\n", $to);
-				if(isset($_SERVER["WINDIR"]) || isset($_SERVER["windir"])){
-					$to = str_replace("\n", "\r\n", $to);
-				}
-				mail($to, $title, $body, $headersText, $sendmail_params);
-			}
-		}
-    }
-    /**
-     * OSがWindowsかどうかを返す
-     */
-    private function isWindows(){
-		if(isset($_SERVER["WINDIR"]) || isset($_SERVER["windir"])){
-			return true;
-		}elseif(isset($_SERVER["SystemRoot"]) && strpos(strtolower($_SERVER["SystemRoot"]),"windows") !== false){
-			return true;
-		}elseif(isset($_SERVER["SYSTEMROOT"]) && strpos(strtolower($_SERVER["SYSTEMROOT"]),"windows") !== false){
-			return true;
-		}else{
-			return false;
-		}
-    }
-}
-/* SOY2Mail/SOY2Mail_ServerConfig.class.php */
 /**
- * SOY2Mail 標準サーバ設定クラス
- *
- * SOY2Mail#importを使うにはSOY2が必要です。
+ * @package SOY2.controller
  */
-class SOY2Mail_ServerConfig {
-    const SERVER_TYPE_SMTP = 0;
-	const SERVER_TYPE_SENDMAIL = 2;
-	const RECEIVE_SERVER_TYPE_POP  = 0;
-	const RECEIVE_SERVER_TYPE_IMAP = 1;
-    private $sendServerType = SOY2Mail_ServerConfig::SERVER_TYPE_SENDMAIL;
-    private $isUseSMTPAuth = true;
-    private $isUsePopBeforeSMTP = false;
-    private $sendServerAddress = "localhost";
-    private $sendServerPort = 25;
-    private $sendServerUser = "";
-    private $sendServerPassword = "";
-    private $isUseSSLSendServer = false;
-    private $receiveServerType = SOY2Mail_ServerConfig::RECEIVE_SERVER_TYPE_POP;
-    private $receiveServerAddress = "localhost";
-    private $receiveServerPort = 110;
-    private $receiveServerUser = "";
-    private $receiveServerPassword = "";
-    private $isUseSSLReceiveServer = false;
-    private $fromMailAddress = "";
-    private $fromMailAddressName = "";
-    private $returnMailAddress = "";
-    private $returnMailAddressName = "";
-    private $encoding = "ISO-2022-JP";
-    /**
-     * 設定からSOY2Mailオブジェクトを生成する
-     */
-    function buildReceiveMail(){
-    	switch($this->receiveServerType){
-    		case self::RECEIVE_SERVER_TYPE_IMAP:
-    			$flag = null;
-    			if($this->getIsUseSSLReceiveServer())$flag = "ssl";
-    			return SOY2Mail::create("imap",array(
-    				"imap.host" => $this->getReceiveServerAddress(),
-    				"imap.port" => $this->getReceiveServerPort(),
-    				"imap.user" => $this->getReceiveServerUser(),
-    				"imap.pass" => $this->getReceiveServerPassword(),
-    				"imap.flag" => $flag
-    			));
-    			break;
-    		case self::RECEIVE_SERVER_TYPE_POP:
-    		default:
-    			$host = $this->getReceiveServerAddress();
-    			if($this->getIsUseSSLReceiveServer())$host =  "ssl://" . $host;
-    			return SOY2Mail::create("pop",array(
-    				"pop.host" => $host,
-    				"pop.port" => $this->getReceiveServerPort(),
-    				"pop.user" => $this->getReceiveServerUser(),
-    				"pop.pass" => $this->getReceiveServerPassword()
-    			));
-    			break;
-    	}
-    }
-    /**
-     * 設定からSOY2Mailオブジェクトを生成する
-     */
-    function buildSendMail(){
-    	$mail = null;
-    	switch($this->sendServerType){
-    		case self::SERVER_TYPE_SMTP:
-    			$host = $this->getSendServerAddress();
-    			if($this->getIsUseSSLSendServer())$host =  "ssl://" . $host;
-    			$mail = SOY2Mail::create("smtp",array(
-    				"smtp.host" => $host,
-    				"smtp.port" => $this->getSendServerPort(),
-    				"smtp.user" => $this->getSendServerUser(),
-    				"smtp.pass" => $this->getSendServerPassword(),
-    				"smtp.auth" => ($this->getIsUseSMTPAuth()) ? "PLAIN" : false
-    			));
-    			break;
-    		case self::SERVER_TYPE_SENDMAIL:
-    		default:
-    			$mail = SOY2Mail::create("sendmail",array());
-    			break;
-    	}
-    	if($mail){
-    		$mail->setEncoding($this->getEncoding());
-    		$mail->setSubjectEncoding($this->getEncoding());
-    		$mail->setFrom($this->getFromMailAddress(),$this->getFromMailAddressName());
-			if(strlen($this->getReturnMailAddress())>0){
-				$replyTo = new SOY2Mail_MailAddress($this->getReturnMailAddress(), $this->getReturnMailAddressName(), $this->getEncoding());
-				$mail->setHeader("Reply-To", $replyTo->getString());
-			}
-    	}
-    	return $mail;
-    }
-    /**
-     * export config
-     */
-    function export(){
-    	return base64_encode(addslashes(serialize($this)));
-    }
-    /**
-     * import config
-     */
-    function import($str){
-    	$obj = unserialize(stripslashes($str));
-    	if($obj && $obj instanceof SOY2Mail_ServerConfig){
-    		SOY2::cast($this,$obj);
-    	}else{
-    		throw new SOY2MailException("Failed to import");
-    	}
-    }
-    function getSendServerType() {
-    	return $this->sendServerType;
-    }
-    function setSendServerType($sendServerType) {
-    	$this->sendServerType = $sendServerType;
-    }
-    function getIsUseSMTPAuth() {
-    	return $this->isUseSMTPAuth;
-    }
-    function setIsUseSMTPAuth($isUseSMTPAuth) {
-    	$this->isUseSMTPAuth = $isUseSMTPAuth;
-    }
-    function getIsUsePopBeforeSMTP() {
-    	return $this->isUsePopBeforeSMTP;
-    }
-    function setIsUsePopBeforeSMTP($isUsePopBeforeSMTP) {
-    	$this->isUsePopBeforeSMTP = $isUsePopBeforeSMTP;
-    }
-    function getSendServerAddress() {
-    	return $this->sendServerAddress;
-    }
-    function setSendServerAddress($sendServerAddress) {
-    	$this->sendServerAddress = $sendServerAddress;
-    }
-    function getSendServerPort() {
-    	return $this->sendServerPort;
-    }
-    function setSendServerPort($sendServerPort) {
-    	$this->sendServerPort = $sendServerPort;
-    }
-    function getSendServerUser() {
-    	return $this->sendServerUser;
-    }
-    function setSendServerUser($sendServerUser) {
-    	$this->sendServerUser = $sendServerUser;
-    }
-    function getSendServerPassword() {
-    	return $this->sendServerPassword;
-    }
-    function setSendServerPassword($sendServerPassword) {
-    	$this->sendServerPassword = $sendServerPassword;
-    }
-    function getIsUseSSLSendServer() {
-    	return $this->isUseSSLSendServer;
-    }
-    function setIsUseSSLSendServer($isUseSSLSendServer) {
-    	$this->isUseSSLSendServer = $isUseSSLSendServer;
-    }
-    function getReceiveServerType() {
-    	return $this->receiveServerType;
-    }
-    function setReceiveServerType($receiveServerType) {
-    	$this->receiveServerType = $receiveServerType;
-    }
-    function getReceiveServerAddress() {
-    	return $this->receiveServerAddress;
-    }
-    function setReceiveServerAddress($receiveServerAddress) {
-    	$this->receiveServerAddress = $receiveServerAddress;
-    }
-    function getReceiveServerPort() {
-    	return $this->receiveServerPort;
-    }
-    function setReceiveServerPort($receiveServerPort) {
-    	$this->receiveServerPort = $receiveServerPort;
-    }
-    function getReceiveServerUser() {
-    	return $this->receiveServerUser;
-    }
-    function setReceiveServerUser($receiveServerUser) {
-    	$this->receiveServerUser = $receiveServerUser;
-    }
-    function getReceiveServerPassword() {
-    	return $this->receiveServerPassword;
-    }
-    function setReceiveServerPassword($receiveServerPassword) {
-    	$this->receiveServerPassword = $receiveServerPassword;
-    }
-    function getIsUseSSLReceiveServer() {
-    	return $this->isUseSSLReceiveServer;
-    }
-    function setIsUseSSLReceiveServer($isUseSSLReceiveServer) {
-    	$this->isUseSSLReceiveServer = $isUseSSLReceiveServer;
-    }
-    function getFromMailAddress() {
-    	return $this->fromMailAddress;
-    }
-    function setFromMailAddress($fromMailAddress) {
-    	$this->fromMailAddress = $fromMailAddress;
-    }
-    function getFromMailAddressName() {
-    	return $this->fromMailAddressName;
-    }
-    function setFromMailAddressName($fromMailAddressName) {
-    	$this->fromMailAddressName = $fromMailAddressName;
-    }
-    function getReturnMailAddress() {
-    	return $this->returnMailAddress;
-    }
-    function setReturnMailAddress($returnMailAddress) {
-    	$this->returnMailAddress = $returnMailAddress;
-    }
-    function getReturnMailAddressName() {
-    	return $this->returnMailAddressName;
-    }
-    function setReturnMailAddressName($returnMailAddressName) {
-    	$this->returnMailAddressName = $returnMailAddressName;
-    }
-    function getEncoding() {
-    	return $this->encoding;
-    }
-    function setEncoding($encoding) {
-    	$this->encoding = $encoding;
-    }
+class SOY2_DefaultClassPathBuilder implements SOY2_ClassPathBuilder{
+	function getClassPath(string $path){
+		return $path;
+	}
 }
-/* SOY2Action/SOY2Action.php */
 /**
  * @package SOY2.SOY2Action
  */
@@ -2331,22 +807,327 @@ class SOY2ActionFactory extends SOY2ActionBase{
 		file_put_contents($fullPath,"<?php \n".implode("\n",$docComment) ."\n". implode("\n",$class)."\n?>");
 	}
 }
-/* SOY2Action/soy2action/SOY2ActionBase.class.php */
+/**
+ * @package SOY2.SOY2Action
+ *
+ * ヴァリデート
+ *
+ * 使い方
+ * setterのコメントに
+ * @validator ＜形式＞ ＜オプション＞
+ *
+ * オプションは省略化
+ * ヴァリデーターによって設定出来るオプションはさまざま
+ *
+ */
+abstract class SOY2ActionFormValidator{
+	var $_isRequire;
+	var $_message;
+	/**
+	 * @access public
+	 * 対応するバリデータを取得。
+	 * 無かったらnullを返す。
+	 *
+	 * @return SOY2ActionFormValidator
+	 */
+	public static function getValidator($param,ReflectionProperty &$property,ReflectionMethod &$reflectionMethod){
+		$comment = $reflectionMethod->getDocComment();
+		$comment = preg_replace('/^\s*\*|^\/\*\*|\/$|\n/m','',$comment);
+		$tmp = array();
+		if(!preg_match('/@validator\s+([^\s]*)(?:\s+(\{.*\}))?/m',$comment,$tmp))return null;
+		$type = $tmp[1];
+		$json = @$tmp[2];
+		$class = "SOY2ActionFormValidator_".ucwords($type)."Validator";
+		if(!class_exists($class)){
+			throw new Exception("[SOY2ActionFormValidator]".$class." is not defined.");
+		}
+		$obj = json_decode($json);
+		$validator = new $class($obj,$param);
+		$validator->_isRequire = (isset($obj->require)) ? $obj->require : false;
+		if(!empty($obj->message)){
+			$validator->_message = (array)$obj->message;
+		}
+		return $validator;
+	}
+	function getMessage($error){
+		return (isset($this->_message[$error])) ? $this->_message[$error] : null;
+	}
+	abstract function validate(SOY2ActionForm &$form,$propName,$value,$isRequire);
+}
 /**
  * @package SOY2.SOY2Action
  */
-class SOY2ActionBase{
-	private $_classPath;
-	protected function getClassPath(){
-		if(is_null($this->_soy2_classPath)){
-			$reflection = new ReflectionClass(get_class($this));
-			$classFilePath = $reflection->getFileName();
-			$this->_soy2_classPath = str_replace("\\", "/", $classFilePath);
+class SOY2ActionRequest{
+	private $_hash;
+	private $_method;
+	public static function &getInstance(){
+		static  $_static;
+		if(!$_static){
+			$_static = new SOY2ActionRequest();
+			$_static->_hash = array_merge($_POST,$_GET);
+			$_static->_method = $_SERVER['REQUEST_METHOD'];
 		}
-		return $this->_classPath;
+		return $_static;
+	}
+	function getCookies(){
+	}
+	function getHeader($name){
+	}
+	function getMethod(){
+		return $this->_method;
+	}
+	function setMethod($method){
+		$this->_method = $method;
+	}
+	function getParameter($name){
+		return (isset($this->_hash[$name])) ? $this->_hash[$name] : null;
+	}
+	function getParameterNames(){
+		return array_keys($this->_hash);
+	}
+	function &getParameters(){
+		return $this->_hash;
+	}
+	function setParameter($key,$value){
+		$this->_hash[$key] = $value;
+	}
+	function addParameter($key,$value){
+		if(!isset($this->_hash[$key])){
+			$this->_hash[$key] = array($value);
+			return;
+		}
+		if(is_array($this->_hash[$key])){
+			$this->_hash[$key][] = $value;
+		}else{
+			$this->_hash[$key] = array($this->_hash[$key],$value);
+		}
 	}
 }
-/* SOY2Action/soy2action/SOY2ActionForm.class.php */
+/**
+ * @package SOY2.SOY2Action
+ */
+class SOY2ActionResponse{
+	private $_header = array();
+	public static function &getInstance(){
+		static  $_static;
+		if(!$_static){
+			$_static = new SOY2ActionResponse();
+		}
+		return $_static;
+	}
+	/**
+	 * @todo デストラクタでヘッダー送信はスマートじゃないかも。でも壊されない限り呼ばれないしな
+	 */
+	function __destruct(){
+		foreach($this->_header as $key => $value){
+			header($key.": ".$value);
+		}
+	}
+	function addHeader($key,$value){
+		if(!is_array(@$this->_header[$key])){
+			$this->_header[$key] = array(@$this->header[$key]);
+		}
+		$this->_header[$key] = $value;
+	}
+	function sendRedirect($url){
+		header("Location: ".$url);
+	}
+	function setHeader($key,$value){
+		$this->_header[$key] = $value;
+	}
+}
+/**
+ * @package SOY2.SOY2Action
+ */
+class SOY2ActionSession {
+    const session_user_key = "_SOY2_USER_";
+    const session_flash_key = "_SOY2_FLASH_";
+    /**
+     * @return SOY2UserSession
+     */
+    public static function &getUserSession(){
+    	if(session_status() == PHP_SESSION_NONE) session_start();
+    	if(!isset($_SESSION[self::session_user_key])){
+    		$_SESSION[self::session_user_key] = new SOY2UserSession();
+    	}
+    	return $_SESSION[self::session_user_key];
+    }
+    /**
+     * @return SOY2FlashSession
+     */
+    public static function &getFlashSession(){
+		static $_request;
+		if(session_status() == PHP_SESSION_NONE) session_start();
+    	if(is_null($_request)){
+    		$_request = true;
+    	}
+    	if(!isset($_SESSION[self::session_flash_key])){
+    		$_SESSION[self::session_flash_key] = new SOY2FlashSession();
+    	}
+    	if($_request == true){
+    		$_SESSION[self::session_flash_key]->checkFlash();
+    		$_request = false;
+    	}
+    	return $_SESSION[self::session_flash_key];
+    }
+    public static function regenerateSessionId(){
+		if(session_status() == PHP_SESSION_NONE){
+			session_start();
+			session_regenerate_id(true);
+		}
+    }
+}
+/**
+ * @package SOY2.SOY2Action
+ */
+class SOY2ActionSessionBase{
+	private $_hash = array();
+	function setAttribute($key,$value){
+		$this->_hash[$key] = soy2_serialize($value);
+		if(is_null($value)){
+			unset($this->_hash[$key]);
+		}
+	}
+	function getAttribute($key){
+		return (isset($this->_hash[$key]) && is_string($this->_hash[$key])) ? soy2_unserialize($this->_hash[$key]) : null;
+	}
+	function clearAttributes(){
+		$this->_hash = array();
+	}
+	function getAttributeKeys(){
+		return array_keys($this->_hash);
+	}
+}
+/**
+ * @package SOY2.SOY2Action
+ */
+class SOY2UserSession extends SOY2ActionSessionBase{
+	private $isAuthenticated = array();
+	private $credentials = array();
+	function setAuthenticated($key,$flag = null){
+		if(is_null($flag) && is_bool($key)){
+			$flag = $key;
+			$key = "default";
+		}
+		/**
+		 * 以前のハッシュでない$isAuthenticatedがセッションに残っていた時のため
+		 * 旧バージョンでのログイン中にファイルを入れ替えるとsetAuthenticatedをしても値が変わらなかった
+		 */
+		if(!is_array($this->isAuthenticated)){
+			$this->isAuthenticated = array();
+		}
+		$this->isAuthenticated[$key] = $flag;
+	}
+	function getAuthenticated($key = null){
+		if(is_null($key))$key = "default";
+		return (isset($this->isAuthenticated[$key])) ? $this->isAuthenticated[$key] : false;
+	}
+	function addCredential(){
+		$args = func_get_args();
+		foreach($args as $key => $value){
+			$this->credentials[$key] = $args[$key];
+		}
+	}
+	function hasCredential($key){
+		return (in_array($key,$this->credentials)) ? true : false;
+	}
+	function removeCredential($key){
+		if(!isset($this->credentials[$key]))return;
+		$this->credentials[$key] = null;
+		unset($this->credentials[$key]);
+	}
+	function clearCredentials(){
+		$this->credentials = array();
+	}
+}
+/**
+ * @package SOY2.SOY2Action
+ */
+class SOY2FlashSession extends SOY2ActionSessionBase{
+	private $isFlash = 0;
+	function checkFlash(){
+		$this->isFlash++;
+		if($this->isFlash >= 2){
+			$this->clearAttributes();
+			$this->resetFlashCounter();
+		}
+	}
+	function resetFlashCounter(){
+		$this->isFlash = 0;
+	}
+	/**
+	 * reset all flash session
+	 */
+	function reset($array = null){
+		$this->clearAttributes();
+    	$this->resetFlashCounter();
+    	if(is_array($array)){
+	    	foreach($array as $key => $value){
+	    		$this->setAttribute($key,$value);
+	    	}
+    	}
+	}
+}
+/**
+ * @package SOY2.SOY2Action
+ */
+class SOY2ActionFormValidator_NumberValidator extends SOY2ActionFormValidator{
+	var $max;
+	var $min;
+	function __construct($obj){
+		$this->max = @$obj->max;
+		$this->min = @$obj->min;
+	}
+	function validate(SOY2ActionForm &$form,$propName,$value,$require){
+		if($require && is_null($value)){
+			$form->setError($propName,new ActionFormError(get_class($form),$propName,get_class($this),"require",$this->getMessage("require")));
+		}
+		if(!$require && is_null($value)){
+			return null;
+		}
+		if(!is_numeric($value)){
+			$form->setError($propName,new ActionFormError(get_class($form),$propName,get_class($this),"type",$this->getMessage("type")));
+		}
+		if(isset($this->max) && (int)$this->max < (int)$value){
+			$form->setError($propName,new ActionFormError(get_class($form),$propName,get_class($this),"max",$this->getMessage("max")));
+		}
+		if(isset($this->min) && (int)$this->min > (int)$value){
+			$form->setError($propName,new ActionFormError(get_class($form),$propName,get_class($this),"min",$this->getMessage("min")));
+		}
+		return $value;
+	}
+}
+/**
+ * @package SOY2.SOY2Action
+ */
+class SOY2ActionFormValidator_StringValidator extends SOY2ActionFormValidator{
+	var $max;
+	var $min;
+	var $regex;
+	function __construct($obj){
+		$this->max = @$obj->max;
+		$this->min = @$obj->min;
+		$this->regex = @$obj->regex;
+	}
+	function validate(SOY2ActionForm &$form,$propName,$value,$require){
+		if($require && strlen($value) < 1){
+			$form->setError($propName,new ActionFormError(get_class($form),$propName,get_class($this),"require",$this->getMessage("require")));
+		}
+		if(!$require && strlen($value) < 1){
+			return null;
+		}
+		if(isset($this->max) && $this->max < strlen($value)){
+			$form->setError($propName,new ActionFormError(get_class($form),$propName,get_class($this),"max",$this->getMessage("max")));
+		}
+		if(isset($this->min) && $this->min > strlen($value)){
+			$form->setError($propName,new ActionFormError(get_class($form),$propName,get_class($this),"min",$this->getMessage("min")));
+		}
+		if(isset($this->regex) && !preg_match("/".$this->regex."/",$value)){
+			$form->setError($propName,new ActionFormError(get_class($form),$propName,get_class($this),"regex",$this->getMessage("regex")));
+		}
+		return $value;
+	}
+}
 /**
  * @package SOY2.SOY2Action
  */
@@ -2488,331 +1269,20 @@ class ActionFormError{
 		return $this->format();
 	}
 }
-/* SOY2Action/soy2action/SOY2ActionFormValidator.class.php */
-/**
- * @package SOY2.SOY2Action
- *
- * ヴァリデート
- *
- * 使い方
- * setterのコメントに
- * @validator ＜形式＞ ＜オプション＞
- *
- * オプションは省略化
- * ヴァリデーターによって設定出来るオプションはさまざま
- *
- */
-abstract class SOY2ActionFormValidator{
-	var $_isRequire;
-	var $_message;
-	/**
-	 * @access public
-	 * 対応するバリデータを取得。
-	 * 無かったらnullを返す。
-	 *
-	 * @return SOY2ActionFormValidator
-	 */
-	public static function getValidator($param,ReflectionProperty &$property,ReflectionMethod &$reflectionMethod){
-		$comment = $reflectionMethod->getDocComment();
-		$comment = preg_replace('/^\s*\*|^\/\*\*|\/$|\n/m','',$comment);
-		$tmp = array();
-		if(!preg_match('/@validator\s+([^\s]*)(?:\s+(\{.*\}))?/m',$comment,$tmp))return null;
-		$type = $tmp[1];
-		$json = @$tmp[2];
-		$class = "SOY2ActionFormValidator_".ucwords($type)."Validator";
-		if(!class_exists($class)){
-			throw new Exception("[SOY2ActionFormValidator]".$class." is not defined.");
-		}
-		$obj = json_decode($json);
-		$validator = new $class($obj,$param);
-		$validator->_isRequire = (isset($obj->require)) ? $obj->require : false;
-		if(!empty($obj->message)){
-			$validator->_message = (array)$obj->message;
-		}
-		return $validator;
-	}
-	function getMessage($error){
-		return (isset($this->_message[$error])) ? $this->_message[$error] : null;
-	}
-	abstract function validate(SOY2ActionForm &$form,$propName,$value,$isRequire);
-}
-/* SOY2Action/soy2action/SOY2ActionFormValidators.php */
 /**
  * @package SOY2.SOY2Action
  */
-class SOY2ActionFormValidator_NumberValidator extends SOY2ActionFormValidator{
-	var $max;
-	var $min;
-	function __construct($obj){
-		$this->max = @$obj->max;
-		$this->min = @$obj->min;
-	}
-	function validate(SOY2ActionForm &$form,$propName,$value,$require){
-		if($require && is_null($value)){
-			$form->setError($propName,new ActionFormError(get_class($form),$propName,get_class($this),"require",$this->getMessage("require")));
+class SOY2ActionBase{
+	private $_classPath;
+	protected function getClassPath(){
+		if(is_null($this->_soy2_classPath)){
+			$reflection = new ReflectionClass(get_class($this));
+			$classFilePath = $reflection->getFileName();
+			$this->_soy2_classPath = str_replace("\\", "/", $classFilePath);
 		}
-		if(!$require && is_null($value)){
-			return null;
-		}
-		if(!is_numeric($value)){
-			$form->setError($propName,new ActionFormError(get_class($form),$propName,get_class($this),"type",$this->getMessage("type")));
-		}
-		if(isset($this->max) && (int)$this->max < (int)$value){
-			$form->setError($propName,new ActionFormError(get_class($form),$propName,get_class($this),"max",$this->getMessage("max")));
-		}
-		if(isset($this->min) && (int)$this->min > (int)$value){
-			$form->setError($propName,new ActionFormError(get_class($form),$propName,get_class($this),"min",$this->getMessage("min")));
-		}
-		return $value;
+		return $this->_classPath;
 	}
 }
-/**
- * @package SOY2.SOY2Action
- */
-class SOY2ActionFormValidator_StringValidator extends SOY2ActionFormValidator{
-	var $max;
-	var $min;
-	var $regex;
-	function __construct($obj){
-		$this->max = @$obj->max;
-		$this->min = @$obj->min;
-		$this->regex = @$obj->regex;
-	}
-	function validate(SOY2ActionForm &$form,$propName,$value,$require){
-		if($require && strlen($value) < 1){
-			$form->setError($propName,new ActionFormError(get_class($form),$propName,get_class($this),"require",$this->getMessage("require")));
-		}
-		if(!$require && strlen($value) < 1){
-			return null;
-		}
-		if(isset($this->max) && $this->max < strlen($value)){
-			$form->setError($propName,new ActionFormError(get_class($form),$propName,get_class($this),"max",$this->getMessage("max")));
-		}
-		if(isset($this->min) && $this->min > strlen($value)){
-			$form->setError($propName,new ActionFormError(get_class($form),$propName,get_class($this),"min",$this->getMessage("min")));
-		}
-		if(isset($this->regex) && !preg_match("/".$this->regex."/",$value)){
-			$form->setError($propName,new ActionFormError(get_class($form),$propName,get_class($this),"regex",$this->getMessage("regex")));
-		}
-		return $value;
-	}
-}
-/* SOY2Action/soy2action/SOY2ActionRequest.class.php */
-/**
- * @package SOY2.SOY2Action
- */
-class SOY2ActionRequest{
-	private $_hash;
-	private $_method;
-	public static function &getInstance(){
-		static  $_static;
-		if(!$_static){
-			$_static = new SOY2ActionRequest();
-			$_static->_hash = array_merge($_POST,$_GET);
-			$_static->_method = $_SERVER['REQUEST_METHOD'];
-		}
-		return $_static;
-	}
-	function getCookies(){
-	}
-	function getHeader($name){
-	}
-	function getMethod(){
-		return $this->_method;
-	}
-	function setMethod($method){
-		$this->_method = $method;
-	}
-	function getParameter($name){
-		return (isset($this->_hash[$name])) ? $this->_hash[$name] : null;
-	}
-	function getParameterNames(){
-		return array_keys($this->_hash);
-	}
-	function &getParameters(){
-		return $this->_hash;
-	}
-	function setParameter($key,$value){
-		$this->_hash[$key] = $value;
-	}
-	function addParameter($key,$value){
-		if(!isset($this->_hash[$key])){
-			$this->_hash[$key] = array($value);
-			return;
-		}
-		if(is_array($this->_hash[$key])){
-			$this->_hash[$key][] = $value;
-		}else{
-			$this->_hash[$key] = array($this->_hash[$key],$value);
-		}
-	}
-}
-/* SOY2Action/soy2action/SOY2ActionResponse.class.php */
-/**
- * @package SOY2.SOY2Action
- */
-class SOY2ActionResponse{
-	private $_header = array();
-	public static function &getInstance(){
-		static  $_static;
-		if(!$_static){
-			$_static = new SOY2ActionResponse();
-		}
-		return $_static;
-	}
-	/**
-	 * @todo デストラクタでヘッダー送信はスマートじゃないかも。でも壊されない限り呼ばれないしな
-	 */
-	function __destruct(){
-		foreach($this->_header as $key => $value){
-			header($key.": ".$value);
-		}
-	}
-	function addHeader($key,$value){
-		if(!is_array(@$this->_header[$key])){
-			$this->_header[$key] = array(@$this->header[$key]);
-		}
-		$this->_header[$key] = $value;
-	}
-	function sendRedirect($url){
-		header("Location: ".$url);
-	}
-	function setHeader($key,$value){
-		$this->_header[$key] = $value;
-	}
-}
-/* SOY2Action/soy2action/SOY2ActionSession.class.php */
-/**
- * @package SOY2.SOY2Action
- */
-class SOY2ActionSession {
-    const session_user_key = "_SOY2_USER_";
-    const session_flash_key = "_SOY2_FLASH_";
-    /**
-     * @return SOY2UserSession
-     */
-    public static function &getUserSession(){
-		if(session_status() == PHP_SESSION_NONE) session_start();
-    	if(!isset($_SESSION[self::session_user_key])){
-    		$_SESSION[self::session_user_key] = new SOY2UserSession();
-    	}
-    	return $_SESSION[self::session_user_key];
-    }
-    /**
-     * @return SOY2FlashSession
-     */
-    public static function &getFlashSession(){
-		if(session_status() == PHP_SESSION_NONE) session_start();
-    	static $_request;
-    	if(is_null($_request)){
-    		$_request = true;
-    	}
-    	if(!isset($_SESSION[self::session_flash_key])){
-    		$_SESSION[self::session_flash_key] = new SOY2FlashSession();
-    	}
-    	if($_request == true){
-    		$_SESSION[self::session_flash_key]->checkFlash();
-    		$_request = false;
-    	}
-    	return $_SESSION[self::session_flash_key];
-    }
-    public static function regenerateSessionId(){
-		if(session_status() == PHP_SESSION_NONE) session_start();
-		session_regenerate_id(true);
-    }
-}
-/**
- * @package SOY2.SOY2Action
- */
-class SOY2ActionSessionBase{
-	private $_hash = array();
-	function setAttribute($key,$value){
-		$this->_hash[$key] = soy2_serialize($value);
-		if(is_null($value)){
-			unset($this->_hash[$key]);
-		}
-	}
-	function getAttribute($key){
-		return (isset($this->_hash[$key]) && is_string($this->_hash[$key])) ? soy2_unserialize($this->_hash[$key]) : null;
-	}
-	function clearAttributes(){
-		$this->_hash = array();
-	}
-	function getAttributeKeys(){
-		return array_keys($this->_hash);
-	}
-}
-/**
- * @package SOY2.SOY2Action
- */
-class SOY2UserSession extends SOY2ActionSessionBase{
-	private $isAuthenticated = array();
-	private $credentials = array();
-	function setAuthenticated($key,$flag = null){
-		if(is_null($flag) && is_bool($key)){
-			$flag = $key;
-			$key = "default";
-		}
-		/**
-		 * 以前のハッシュでない$isAuthenticatedがセッションに残っていた時のため
-		 * 旧バージョンでのログイン中にファイルを入れ替えるとsetAuthenticatedをしても値が変わらなかった
-		 */
-		if(!is_array($this->isAuthenticated)){
-			$this->isAuthenticated = array();
-		}
-		$this->isAuthenticated[$key] = $flag;
-	}
-	function getAuthenticated($key = null){
-		if(is_null($key))$key = "default";
-		return (isset($this->isAuthenticated[$key])) ? $this->isAuthenticated[$key] : false;
-	}
-	function addCredential(){
-		$args = func_get_args();
-		foreach($args as $key => $value){
-			$this->credentials[$key] = $args[$key];
-		}
-	}
-	function hasCredential($key){
-		return (in_array($key,$this->credentials)) ? true : false;
-	}
-	function removeCredential($key){
-		if(!isset($this->credentials[$key]))return;
-		$this->credentials[$key] = null;
-		unset($this->credentials[$key]);
-	}
-	function clearCredentials(){
-		$this->credentials = array();
-	}
-}
-/**
- * @package SOY2.SOY2Action
- */
-class SOY2FlashSession extends SOY2ActionSessionBase{
-	private $isFlash = 0;
-	function checkFlash(){
-		$this->isFlash++;
-		if($this->isFlash >= 2){
-			$this->clearAttributes();
-			$this->resetFlashCounter();
-		}
-	}
-	function resetFlashCounter(){
-		$this->isFlash = 0;
-	}
-	/**
-	 * reset all flash session
-	 */
-	function reset($array = null){
-		$this->clearAttributes();
-    	$this->resetFlashCounter();
-    	if(is_array($array)){
-	    	foreach($array as $key => $value){
-	    		$this->setAttribute($key,$value);
-	    	}
-    	}
-	}
-}
-/* SOY2DAO/SOY2DAO.php */
 /**
  * @package SOY2.SOY2DAO
  * SOY2DAO全般の設定をするSingletonクラス
@@ -2859,27 +1329,27 @@ class SOY2DAOConfig{
 		if(!$_static)$_static = new SOY2DAOConfig();
 		return $_static;
 	}
-	public static function Dsn($dsn = null){
+	public static function Dsn(string $dsn=""){
 		$config =& self::getInstance();
 		$res = $config->dsn;
-		if($dsn){
+		if(strlen($dsn)){
 			$config->dsn = $dsn;
 			$config->type = substr($dsn,0,strpos($dsn,":"));
 		}
 		return $res;
 	}
-	public static function user($user = null){
+	public static function user(string $user=""){
 		$config =& self::getInstance();
 		$res = $config->user;
-		if($user){
+		if(strlen($user)){
 			$config->user = $user;
 		}
 		return $res;
 	}
-	public static function pass($pass = null){
+	public static function pass(string $pass=""){
 		$config =& self::getInstance();
 		$res = $config->pass;
-		if($pass){
+		if(strlen($pass)){
 			$config->pass = $pass;
 		}
 		return $res;
@@ -2888,10 +1358,10 @@ class SOY2DAOConfig{
 		$config =& self::getInstance();
 		return $config->type;
 	}
-	public static function DaoDir($dir = null){
+	public static function DaoDir(string $dir=""){
 		$config = self::getInstance();
 		$res = $config->daoDir;
-		if($dir){
+		if(strlen($dir)){
 			if(substr($dir,strlen($dir)-1) != '/'){
 				throw new SOY2DAOException("[SOY2DAO] DaoDir must end by '/'.");
 			}
@@ -2899,10 +1369,10 @@ class SOY2DAOConfig{
 		}
 		return $res;
 	}
-	public static function EntityDir($dir = null){
+	public static function EntityDir(string $dir=""){
 		$config = self::getInstance();
 		$res = $config->entityDir;
-		if($dir){
+		if(strlen($dir)){
 			if(substr($dir,strlen($dir)-1) != '/'){
 				throw new SOY2DAOException("[SOY2DAO] EntityDir must end by '/'.");
 			}
@@ -2910,10 +1380,10 @@ class SOY2DAOConfig{
 		}
 		return $res;
 	}
-	public static function DaoCacheDir($dir = null){
+	public static function DaoCacheDir(string $dir=""){
 		$config = self::getInstance();
 		$res = $config->daoCacheDir;
-		if($dir){
+		if(strlen($dir)){
 			if(substr($dir,strlen($dir)-1) != '/'){
 				throw new SOY2DAOException("[SOY2DAO] EntityDir must end by '/'.");
 			}
@@ -2921,20 +1391,20 @@ class SOY2DAOConfig{
 		}
 		return $res;
 	}
-	public static function setOption($key, $value = null){
+	public static function setOption(string $key, string $value=""){
 		$config = self::getInstance();
 		if($value)$config->options[$key] = $value;
 		return (isset($config->options[$key]) ) ? $config->options[$key] : null;
 	}
-	public static function getOption($key){
+	public static function getOption(string $key){
 		return self::setOption($key);
 	}
-	public static function setTableMapping($key, $value = null){
+	public static function setTableMapping(string $key, string $value=""){
 		$config = self::getInstance();
 		if($value)$config->tableMappings[$key] = $value;
 		return (isset($config->tableMappings[$key]) ) ? $config->tableMappings[$key] : $key;
 	}
-	public static function getTableMapping($key){
+	public static function getTableMapping(string $key){
 		return self::setTableMapping($key);
 	}
 	/*
@@ -2998,7 +1468,6 @@ class SOY2DAO{
 		if(!strlen($this->_method) || !isset($this->_query[$this->_method])){
 			return $this->buildQuery($this->_method);
 		}
-		
 		return $this->_query[$this->_method];
 	}
 	/**
@@ -3529,7 +1998,499 @@ class SOY2DAOException extends Exception{
 		$this->query = $query;
 	}
 }
-/* SOY2DAO/soy2dao/SOY2DAOContainer.class.php */
+/**
+ * 保存・削除などを自動化するメソッドを自動で追加
+ */
+class SOY2DAO_EntityBase {
+	/**
+	 * permanent me
+	 */
+    final function save(){
+    	$dao = $this->getDAO();
+    	if($this->check()){
+    		if(strlen($this->getId())>0){
+	    		$dao->update($this);
+	    	}else{
+	    		$id = $dao->insert($this);
+	    		$this->setId($id);
+	    	}
+	    	return $this->getId();
+    	}else{
+    		return null;
+    	}
+    }
+    /**
+     * delete me
+     */
+    final function delete(){
+    	$this->getDAO()->delete($this->getId());
+    }
+    public static function deleteAll(){
+    	eval('$obj = new static;');
+    	$dao = $obj->getDAO();
+    	$dao->deleteAll();
+    }
+	/**
+     * get by id
+     */
+    final function get(int $id=0){
+    	if($id > 0){
+    		$res = $this->getDAO()->getById($id);
+    	}else{
+    		$res = $this->getDAO()->getById($this->getId());
+    	}
+    	return $res;
+    }
+    private $_dao;
+    /**
+     * build dao
+     */
+    final function getDAO(){
+    	if(is_null($this->_dao)){
+	    	$daoClass = get_class($this) . "DAO";
+	    	if(!class_exists($daoClass)){
+	    		$ref = new ReflectionClass($this);
+	    		$filepath = dirname($ref->getFileName()) . "/" . $daoClass . ".class.php";
+	    		if(file_exists($filepath))include_once($filepath);
+	    	}
+	    	$this->_dao = SOY2DAOFactory::create($daoClass);
+    	}
+    	return $this->_dao;
+    }
+	public final function begin(){
+		$dao = $this->getDAO();
+		$dao->begin();
+	}
+	public final function commit(){
+		$dao = $this->getDAO();
+		$dao->commit();
+	}
+	public final function rollback(){
+		$dao = $this->getDAO();
+		$dao->rollback();
+	}
+    function __wakeup(){
+    	$this->_dao = null;
+    }
+}
+/**
+ * SOY2DAO Entity Class
+ *
+ * @package SOY2.SOY2DAO
+ * @see SOY2DAO_EntityColumn
+ * @author Miyazawa
+ */
+class SOY2DAO_Entity{
+	var $name;
+	var $table;
+	var $id;
+	var $columns = array();
+	var $reverseColumns = array();	//逆引きテーブル
+	/**
+	 * @return EntityClassのProperty名を連想配列のキーとし、値にカラム名が入ったArrayを返す
+	 * @param readOnlyな属性も取得するかどうか
+	 */
+	function getColumns(bool $flag=false){
+		$array = array();
+		foreach($this->columns as $column){
+			 if(!$flag && $column->readOnly)continue;
+			 $array[strtolower($column->prop)] = $column->name;
+		}
+		return $array;
+	}
+	/**
+	 * @param $key EntityClassのProperty名
+	 * @return EntityClassのProperty名から対応するSOY2DAO_EntityColumnオブジェクトを返す。
+	 */
+	function getColumn($key){
+		$key = strtolower($key);
+		return (isset($this->columns[$key])) ? $this->columns[$key] : null;
+	}
+	/**
+	 * カラム名からSOY2DAO_EntityColumnオブジェクトを取得
+	 * @param $name カラム名
+	 */
+	function getColumnByName(string $name, bool $isThrow=true){
+		$name = strtolower($name);
+		if(!isset($this->reverseColumns[$name])){
+			if($isThrow){
+				trigger_error("[SOY2DAO]".$this->name." does not have $name.");
+			}else{
+				return null;
+			}
+		}
+		return $this->getColumn(@$this->reverseColumns[$name]);
+	}
+	/**
+	 * 逆引きテーブルを作成
+	 */
+	function buildReverseColumns(){
+		foreach($this->columns as $key => $column){
+			$name = ($column->getAlias()) ? $column->getAlias() : $column->getName();
+			$name = strtolower($name);
+			$this->reverseColumns[$name] = $key;
+		}
+	}
+}
+/**
+ * SOY2DAO_InsertQueryBuilder
+ * insert文のQueryオブジェクトを作る
+ *
+ * @package SOY2.SOY2DAO
+ * @author Miyazawa
+ */
+class SOY2DAO_InsertQueryBuilder extends SOY2DAO_QueryBuilder{
+	/**
+	 * DAOのメソッド名と、EntityクラスのアノテーションなどからSOY2DAO_Queryオブジェクトを作る
+	 *
+	 * @param $methodName DAOクラスにあるメソッド名
+	 * @param $entityInfo EntityClassのAnnotationなどの情報
+	 *
+	 * @return SOY2DAO_Query
+	 */
+	protected static function build(string $methodName, SOY2DAO_Entity $entityInfo, array $noPersistents, array $columns){
+		$query = new SOY2DAO_Query();
+		$query->prefix = "insert";
+		$query->table = $entityInfo->table;
+		if(empty($columns)){
+			$columns = $entityInfo->getColumns();
+		}
+		$columnString = array();
+		foreach($columns as $key => $value){
+			$column = $entityInfo->getColumnByName($value);
+			if($column->isPrimary && !$column->sequence){
+				continue;
+			}
+			$columnString[] = $query->quoteIdentifier($column->name);
+		}
+		$sql = "(".implode(",",$columnString).") ";
+		$values = array();
+		foreach($columns as $key => $value){
+			$column = $entityInfo->getColumnByName($value);
+			if($column->isPrimary && $column->sequence){
+				$values[] = "nextval(".$query->quoteIdentifier($column->sequence).")";
+				$query->sequence = $column->sequence;
+				continue;
+			}
+			if($column->isPrimary){
+				continue;
+			}
+			$values[] = ":".$column->prop;
+		}
+		$sql.= "values(".implode(",",$values).") ";
+		$query->sql = $sql;
+		return $query;
+	}
+}
+/**
+ * SOY2DAO_UpdateQueryBuiler
+ * Update文のQueryオブジェクトを作る
+ *
+ * @package SOY2.SOY2DAO
+ * @author Miyazawa
+ */
+class SOY2DAO_UpdateQueryBuilder extends SOY2DAO_QueryBuilder{
+	/**
+	 * DAOのメソッド名と、EntityクラスのアノテーションなどからSOY2DAO_Queryオブジェクトを作る
+	 *
+	 * @param $methodName DAOクラスにあるメソッド名
+	 * @param $entityInfo EntityClassのAnnotationなどの情報
+	 *
+	 * @return SOY2DAO_Query
+	 */
+	protected static function build(string $methodName, SOY2DAO_Entity $entityInfo, array $noPersistents, array $columns){
+		$query = new SOY2DAO_Query();
+		$query->prefix = "update";
+		$query->table = $entityInfo->table;
+		if(empty($columns)){
+			$columns = $entityInfo->getColumns();
+		}
+		$sql = array();
+		foreach($columns as $key => $value){
+			$column = $entityInfo->getColumnByName($value);
+			if(in_array($column->prop,$noPersistents)){
+				continue;
+			}
+			if(in_array($column->name,$noPersistents)){
+				continue;
+			}
+			if($column->isPrimary){
+				$query->where = $query->quoteIdentifier($column->name)." = :{$column->prop}";
+			}else{
+				$sql[] = $query->quoteIdentifier($column->name)." = :{$column->prop}";
+			}
+		}
+		$query->sql = implode(",",$sql);
+		return $query;
+	}
+}
+/**
+ * SOY2DAO_DeleteQueryBuilder
+ * delete文のQueryオブジェクトを作る
+ *
+ * @package SOY2.SOY2DAO
+ * @author Miyazawa
+ */
+class SOY2DAO_DeleteQueryBuilder extends SOY2DAO_QueryBuilder{
+	/**
+	 * DAOのメソッド名と、EntityクラスのアノテーションなどからSOY2DAO_Queryオブジェクトを作る
+	 *
+	 * @param $methodName DAOクラスにあるメソッド名
+	 * @param $entityInfo EntityClassのAnnotationなどの情報
+	 *
+	 * @return SOY2DAO_Query
+	 */
+	protected static function build(string $methodName, SOY2DAO_Entity $entityInfo, array $noPersistents, array $columns){
+		$query = new SOY2DAO_Query();
+		$query->prefix = "delete";
+		$query->table = $entityInfo->table;
+		$columns = $entityInfo->getColumns();
+		if(preg_match('/By([a-zA-Z0-9_]*)$/',$methodName,$tmp)){
+			$param = $tmp[1];
+			$column = $entityInfo->getColumn($param);
+			if($column){
+				$query->where = $query->quoteIdentifier($column->name)." = :{$column->prop}";
+			}
+		}else{
+			foreach($columns as $key => $value){
+				$column = $entityInfo->getColumn($key);
+				if($column->isPrimary){
+					$query->where = $query->quoteIdentifier($column->name)." = :{$column->prop}";
+				}
+			}
+		}
+		return $query;
+	}
+}
+/**
+ * SOY2DAO_Query
+ *
+ * @package SOY2.SOY2DAO
+ */
+class SOY2DAO_Query{
+	var $prefix;
+	var $table;
+	var $sql;
+	var $where;
+	var $order;
+	var $group;
+	var $having;	//new!!
+	var $distinct;
+	var $sequence;
+	var $binds = array();
+	/*
+	 * キーワードと区別するために識別子を囲む引用符
+	 * http://dev.mysql.com/doc/refman/5.1/ja/identifiers.html
+	 * http://www.postgresql.jp/document/pg825doc/html/sql-syntax-lexical.html
+	 * http://www.sqlite.org/lang_keywords.html
+	 */
+	const IDENTIFIER_QUALIFIER_MYSQL = "`";
+	const IDENTIFIER_QUALIFIER_SQLITE = '"';
+	const IDENTIFIER_QUALIFIER_POSTGRES = '"';
+	/**
+	 * @return このオブジェクトが持つ情報を元にSQL文が返る
+	 */
+	function __toString(){
+		switch($this->prefix){
+			case "insert":
+				$sql =  $this->prefix." into ".$this->quoteIdentifier($this->table)." ".$this->sql;
+				if(is_string($this->where) && strlen($this->where)){
+					$sql .= " where ".$this->where;
+				}
+				break;
+			case "select":
+				$sql =  $this->prefix." ";
+				if($this->distinct){
+					$sql .= "distinct ";
+				}
+				$sql .= $this->sql." from ".$this->quoteIdentifier($this->table);
+				if(is_string($this->where) && strlen($this->where)){
+					$sql .= " where ".$this->where;
+				}
+				if(is_string($this->group) && strlen($this->group)){
+					$sql .= " group by ".$this->group;
+				}
+				if(is_string($this->having) && strlen($this->having)){
+					$sql .= " having ".$this->having;
+				}
+				if(is_string($this->order) && strlen($this->order)){
+					$sql .= " order by ".$this->order;
+				}
+				break;
+			case "update":
+				$sql =  $this->prefix." ".$this->quoteIdentifier($this->table)." set ".$this->sql;
+				if(is_string($this->where) && strlen($this->where)){
+					$sql .= " where ".$this->where;
+				}
+				break;
+			case "delete":
+				$sql =  $this->prefix." from ".$this->quoteIdentifier($this->table);
+				if(is_string($this->where) && strlen($this->where)){
+					$sql .= " where ".$this->where;
+				}
+				break;
+		}
+		return $sql;
+	}
+	/**
+	 * where句およびhaving句のPHP式の実行
+	 * :を使うときは\でエスケープしておく必要がある
+	 */
+	function parseExpression(array $arguments){
+		/*
+		 * 引数の$argumentsはevalの中で使われている
+		 */
+		$phpExpression = '/<\?php\s(.*)?\?>/';
+		if(is_string($this->where) && preg_match($phpExpression,$this->where,$tmp)){
+			$expression = $tmp[1];
+			$expression = str_replace("\\:","@:@",$expression);
+			$expression = preg_replace("/:([a-zA-Z0-9_]+)/",'$arguments[\'$1\']',$expression);
+			$expression = str_replace("@:@",":",$expression);
+			$replace = "";
+			eval('$replace = '.$expression.";");
+			if(!is_string($replace) AND !is_numeric($replace))throw new SOY2DAOException("PHP式の変換に失敗しました。(".$tmp[1].")");
+			$this->where = preg_replace($phpExpression,$replace,$this->where);
+		}
+		if(is_string($this->having) && preg_match($phpExpression,$this->having,$tmp)){
+			$expression = $tmp[1];
+			$expression = preg_replace("/:([a-zA-Z0-9_]*)/",'$arguments[\'$1\']',$expression);
+			$replace = "";
+			eval('$replace = '.$expression.";");
+			if(!is_string($replace) AND !is_numeric($replace))throw new SOY2DAOException("PHP式の変換に失敗しました。(".$tmp[1].")");
+			$this->having = preg_replace($phpExpression,$replace,$this->having);
+		}
+	}
+	/**
+	 * テーブル名を変換します。
+	 * （使われていない模様）
+	 */
+	function replaceTableNames(){
+		if(is_string($this->table)) $this->table = preg_replace_callback('/([a-zA-Z_0-9]+)\?/',array($this,'replaceTableName'),$this->table);
+		if(is_string($this->sql)) $this->sql = preg_replace_callback('/([a-zA-Z_0-9]+)\?/',array($this,'replaceTableName'),$this->sql);
+		if(is_string($this->where))	$this->where = preg_replace_callback('/([a-zA-Z_0-9]+)\?/',array($this,'replaceTableName'),$this->where);
+		if(is_string($this->having)) $this->having = preg_replace_callback('/([a-zA-Z_0-9]+)\?/',array($this,'replaceTableName'),$this->having);
+	}
+	function replaceTableName($key){
+		return SOY2DAOConfig::getTableMapping($key[1]);
+	}
+	/**
+	 * 識別子を引用符で囲みます
+	 * MySQL: ` バッククォート
+	 * SQLite, PostgreSQL: " ダブルクォート
+	 */
+	public function quoteIdentifier(string $identifier){
+		if(strlen(preg_replace("/[a-zA-Z0-9_]+/","",$identifier))>0){
+			/*
+			 * @table table1 join table2 on (table1.id=table2.subid)
+			 * や
+			 * @column table1.id
+			 * のような記述がされているものは囲まない
+			 */
+			return $identifier;
+		}else{
+			switch(SOY2DAOConfig::type()){
+				case SOY2DAOConfig::DB_TYPE_MYSQL :
+					return self::IDENTIFIER_QUALIFIER_MYSQL . $identifier . self::IDENTIFIER_QUALIFIER_MYSQL;
+				case SOY2DAOConfig::DB_TYPE_SQLITE :
+					return self::IDENTIFIER_QUALIFIER_SQLITE . $identifier . self::IDENTIFIER_QUALIFIER_SQLITE;
+				case SOY2DAOConfig::DB_TYPE_POSTGRES :
+					return self::IDENTIFIER_QUALIFIER_POSTGRES . $identifier . self::IDENTIFIER_QUALIFIER_POSTGRES;
+				default:
+					return $identifier;
+			}
+		}
+	}
+	/**
+	 * 識別子の引用符を外す
+	 */
+	public function unquote(string $value){
+		$quote = "";
+		switch(SOY2DAOConfig::type()){
+			case SOY2DAOConfig::DB_TYPE_MYSQL :
+				$quote = self::IDENTIFIER_QUALIFIER_MYSQL;
+				break;
+			case SOY2DAOConfig::DB_TYPE_SQLITE :
+				$quote = self::IDENTIFIER_QUALIFIER_SQLITE;
+				break;
+			case SOY2DAOConfig::DB_TYPE_POSTGRES :
+				$quote = self::IDENTIFIER_QUALIFIER_POSTGRES;
+				break;
+		}
+		if(strlen($quote)>0 && strlen($value)>1 && $value[0]===$quote && $value[strlen($value)-1]===$quote){
+			$value = substr($value,1,strlen($value)-2);
+		}
+		return $value;
+	}
+	/**
+	 * SQL文を生成し、返します。
+	 * PHP 5.2.0以前では__toStringが呼ばれないのでこちらを使用してください。
+	 *
+	 * @return string SQL文
+	 */
+	function getQuery(){
+		return $this->__toString();
+	}
+	function getPrefix() {
+		return $this->prefix;
+	}
+	function setPrefix($prefix) {
+		$this->prefix = $prefix;
+	}
+	function getTable() {
+		return $this->table;
+	}
+	function setTable($table) {
+		$this->table = $table;
+	}
+	function getSql() {
+		return $this->sql;
+	}
+	function setSql($sql) {
+		$this->sql = $sql;
+	}
+	function getWhere() {
+		return $this->where;
+	}
+	function setWhere($where) {
+		$this->where = $where;
+	}
+	function getOrder() {
+		return $this->order;
+	}
+	function setOrder($order) {
+		$this->order = $order;
+	}
+	function getGroup() {
+		return $this->group;
+	}
+	function setGroup($group) {
+		$this->group = $group;
+	}
+	function getHaving() {
+		return $this->having;
+	}
+	function setHaving($having) {
+		$this->having = $having;
+	}
+	function getDistinct() {
+		return $this->distinct;
+	}
+	function setDistinct($distinct) {
+		$this->distinct = $distinct;
+	}
+	function getSequence() {
+		return $this->sequence;
+	}
+	function setSequence($sequence) {
+		$this->sequence = $sequence;
+	}
+	function getBinds() {
+		return $this->binds;
+	}
+	function setBinds($binds) {
+		$this->binds = $binds;
+	}
+}
 /**
  * @package SOY2.SOY2DAO
  */
@@ -3559,7 +2520,6 @@ class SOY2DAOContainer{
 		return $dao;
     }
 }
-/* SOY2DAO/soy2dao/SOY2DAOFactory.class.php */
 /**
  * SOY2DAOFactory
  * クラス名からDAOImplを生成する
@@ -4043,144 +3003,6 @@ class SOY2DAOFactoryImpl extends SOY2DAOFactory {
 		return $entityInfo;
 	}
 }
-
-/* SOY2DAO/soy2dao/SOY2DAO_Entity.class.php */
-/**
- * SOY2DAO Entity Class
- *
- * @package SOY2.SOY2DAO
- * @see SOY2DAO_EntityColumn
- * @author Miyazawa
- */
-class SOY2DAO_Entity{
-	var $name;
-	var $table;
-	var $id;
-	var $columns = array();
-	var $reverseColumns = array();	//逆引きテーブル
-	/**
-	 * @return EntityClassのProperty名を連想配列のキーとし、値にカラム名が入ったArrayを返す
-	 * @param readOnlyな属性も取得するかどうか
-	 */
-	function getColumns(bool $flag=false){
-		$array = array();
-		foreach($this->columns as $column){
-			 if(!$flag && $column->readOnly)continue;
-			 $array[strtolower($column->prop)] = $column->name;
-		}
-		return $array;
-	}
-	/**
-	 * @param $key EntityClassのProperty名
-	 * @return EntityClassのProperty名から対応するSOY2DAO_EntityColumnオブジェクトを返す。
-	 */
-	function getColumn($key){
-		$key = strtolower($key);
-		return (isset($this->columns[$key])) ? $this->columns[$key] : null;
-	}
-	/**
-	 * カラム名からSOY2DAO_EntityColumnオブジェクトを取得
-	 * @param $name カラム名
-	 */
-	function getColumnByName(string $name, bool $isThrow=true){
-		$name = strtolower($name);
-		if(!isset($this->reverseColumns[$name])){
-			if($isThrow){
-				trigger_error("[SOY2DAO]".$this->name." does not have $name.");
-			}else{
-				return null;
-			}
-		}
-		return $this->getColumn(@$this->reverseColumns[$name]);
-	}
-	/**
-	 * 逆引きテーブルを作成
-	 */
-	function buildReverseColumns(){
-		foreach($this->columns as $key => $column){
-			$name = ($column->getAlias()) ? $column->getAlias() : $column->getName();
-			$name = strtolower($name);
-			$this->reverseColumns[$name] = $key;
-		}
-	}
-}
-/* SOY2DAO/soy2dao/SOY2DAO_EntityBase.class.php */
-/**
- * 保存・削除などを自動化するメソッドを自動で追加
- */
-class SOY2DAO_EntityBase {
-	/**
-	 * permanent me
-	 */
-    final function save(){
-    	$dao = $this->getDAO();
-    	if($this->check()){
-    		if(strlen($this->getId())>0){
-	    		$dao->update($this);
-	    	}else{
-	    		$id = $dao->insert($this);
-	    		$this->setId($id);
-	    	}
-	    	return $this->getId();
-    	}else{
-    		return null;
-    	}
-    }
-    /**
-     * delete me
-     */
-    final function delete(){
-    	$this->getDAO()->delete($this->getId());
-    }
-    public static function deleteAll(){
-    	eval('$obj = new static;');
-    	$dao = $obj->getDAO();
-    	$dao->deleteAll();
-    }
-	/**
-     * get by id
-     */
-    final function get(int $id=0){
-    	if($id > 0){
-    		$res = $this->getDAO()->getById($id);
-    	}else{
-    		$res = $this->getDAO()->getById($this->getId());
-    	}
-    	return $res;
-    }
-    private $_dao;
-    /**
-     * build dao
-     */
-    final function getDAO(){
-    	if(is_null($this->_dao)){
-	    	$daoClass = get_class($this) . "DAO";
-	    	if(!class_exists($daoClass)){
-	    		$ref = new ReflectionClass($this);
-	    		$filepath = dirname($ref->getFileName()) . "/" . $daoClass . ".class.php";
-	    		if(file_exists($filepath))include_once($filepath);
-	    	}
-	    	$this->_dao = SOY2DAOFactory::create($daoClass);
-    	}
-    	return $this->_dao;
-    }
-	public final function begin(){
-		$dao = $this->getDAO();
-		$dao->begin();
-	}
-	public final function commit(){
-		$dao = $this->getDAO();
-		$dao->commit();
-	}
-	public final function rollback(){
-		$dao = $this->getDAO();
-		$dao->rollback();
-	}
-    function __wakeup(){
-    	$this->_dao = null;
-    }
-}
-/* SOY2DAO/soy2dao/SOY2DAO_EntityColumn.class.php */
 /**
  * SOY2DAO_EntityColumn
  *
@@ -4232,237 +3054,6 @@ class SOY2DAO_EntityColumn{
 		$this->sequence = $sequence;
 	}
 }
-/* SOY2DAO/soy2dao/SOY2DAO_Query.class.php */
-/**
- * SOY2DAO_Query
- *
- * @package SOY2.SOY2DAO
- */
-class SOY2DAO_Query{
-	var $prefix;
-	var $table;
-	var $sql;
-	var $where;
-	var $order;
-	var $group;
-	var $having;	//new!!
-	var $distinct;
-	var $sequence;
-	var $binds = array();
-	/*
-	 * キーワードと区別するために識別子を囲む引用符
-	 * http://dev.mysql.com/doc/refman/5.1/ja/identifiers.html
-	 * http://www.postgresql.jp/document/pg825doc/html/sql-syntax-lexical.html
-	 * http://www.sqlite.org/lang_keywords.html
-	 */
-	const IDENTIFIER_QUALIFIER_MYSQL = "`";
-	const IDENTIFIER_QUALIFIER_SQLITE = '"';
-	const IDENTIFIER_QUALIFIER_POSTGRES = '"';
-	/**
-	 * @return このオブジェクトが持つ情報を元にSQL文が返る
-	 */
-	function __toString(){
-		switch($this->prefix){
-			case "insert":
-				$sql =  $this->prefix." into ".$this->quoteIdentifier($this->table)." ".$this->sql;
-				if(is_string($this->where) && strlen($this->where)){
-					$sql .= " where ".$this->where;
-				}
-				break;
-			case "select":
-				$sql =  $this->prefix." ";
-				if($this->distinct){
-					$sql .= "distinct ";
-				}
-				$sql .= $this->sql." from ".$this->quoteIdentifier($this->table);
-				if(is_string($this->where) && strlen($this->where)){
-					$sql .= " where ".$this->where;
-				}
-				if(is_string($this->group) && strlen($this->group)){
-					$sql .= " group by ".$this->group;
-				}
-				if(is_string($this->having) && strlen($this->having)){
-					$sql .= " having ".$this->having;
-				}
-				if(is_string($this->order) && strlen($this->order)){
-					$sql .= " order by ".$this->order;
-				}
-				break;
-			case "update":
-				$sql =  $this->prefix." ".$this->quoteIdentifier($this->table)." set ".$this->sql;
-				if(is_string($this->where) && strlen($this->where)){
-					$sql .= " where ".$this->where;
-				}
-				break;
-			case "delete":
-				$sql =  $this->prefix." from ".$this->quoteIdentifier($this->table);
-				if(is_string($this->where) && strlen($this->where)){
-					$sql .= " where ".$this->where;
-				}
-				break;
-		}
-		return $sql;
-	}
-	/**
-	 * where句およびhaving句のPHP式の実行
-	 * :を使うときは\でエスケープしておく必要がある
-	 */
-	function parseExpression($arguments){
-		/*
-		 * 引数の$argumentsはevalの中で使われている
-		 */
-		$phpExpression = '/<\?php\s(.*)?\?>/';
-		if(is_string($this->where) && preg_match($phpExpression,$this->where,$tmp)){
-			$expression = $tmp[1];
-			$expression = str_replace("\\:","@:@",$expression);
-			$expression = preg_replace("/:([a-zA-Z0-9_]+)/",'$arguments[\'$1\']',$expression);
-			$expression = str_replace("@:@",":",$expression);
-			$replace = "";
-			eval('$replace = '.$expression.";");
-			if(!is_string($replace) AND !is_numeric($replace))throw new SOY2DAOException("PHP式の変換に失敗しました。(".$tmp[1].")");
-			$this->where = preg_replace($phpExpression,$replace,$this->where);
-		}
-		if(is_string($this->having) && preg_match($phpExpression,$this->having,$tmp)){
-			$expression = $tmp[1];
-			$expression = preg_replace("/:([a-zA-Z0-9_]*)/",'$arguments[\'$1\']',$expression);
-			$replace = "";
-			eval('$replace = '.$expression.";");
-			if(!is_string($replace) AND !is_numeric($replace))throw new SOY2DAOException("PHP式の変換に失敗しました。(".$tmp[1].")");
-			$this->having = preg_replace($phpExpression,$replace,$this->having);
-		}
-	}
-	/**
-	 * テーブル名を変換します。
-	 * （使われていない模様）
-	 */
-	function replaceTableNames(){
-		if(is_string($this->table)) $this->table = preg_replace_callback('/([a-zA-Z_0-9]+)\?/',array($this,'replaceTableName'),$this->table);
-		if(is_string($this->sql)) $this->sql = preg_replace_callback('/([a-zA-Z_0-9]+)\?/',array($this,'replaceTableName'),$this->sql);
-		if(is_string($this->where))	$this->where = preg_replace_callback('/([a-zA-Z_0-9]+)\?/',array($this,'replaceTableName'),$this->where);
-		if(is_string($this->having)) $this->having = preg_replace_callback('/([a-zA-Z_0-9]+)\?/',array($this,'replaceTableName'),$this->having);
-	}
-	function replaceTableName(string $key){
-		return SOY2DAOConfig::getTableMapping($key[1]);
-	}
-	/**
-	 * 識別子を引用符で囲みます
-	 * MySQL: ` バッククォート
-	 * SQLite, PostgreSQL: " ダブルクォート
-	 */
-	public function quoteIdentifier(string $identifier){
-		if(strlen(preg_replace("/[a-zA-Z0-9_]+/","",$identifier))>0){
-			/*
-			 * @table table1 join table2 on (table1.id=table2.subid)
-			 * や
-			 * @column table1.id
-			 * のような記述がされているものは囲まない
-			 */
-			return $identifier;
-		}else{
-			switch(SOY2DAOConfig::type()){
-				case SOY2DAOConfig::DB_TYPE_MYSQL :
-					return self::IDENTIFIER_QUALIFIER_MYSQL . $identifier . self::IDENTIFIER_QUALIFIER_MYSQL;
-				case SOY2DAOConfig::DB_TYPE_SQLITE :
-					return self::IDENTIFIER_QUALIFIER_SQLITE . $identifier . self::IDENTIFIER_QUALIFIER_SQLITE;
-				case SOY2DAOConfig::DB_TYPE_POSTGRES :
-					return self::IDENTIFIER_QUALIFIER_POSTGRES . $identifier . self::IDENTIFIER_QUALIFIER_POSTGRES;
-				default:
-					return $identifier;
-			}
-		}
-	}
-	/**
-	 * 識別子の引用符を外す
-	 */
-	public function unquote(string $value){
-		$quote = "";
-		switch(SOY2DAOConfig::type()){
-			case SOY2DAOConfig::DB_TYPE_MYSQL :
-				$quote = self::IDENTIFIER_QUALIFIER_MYSQL;
-				break;
-			case SOY2DAOConfig::DB_TYPE_SQLITE :
-				$quote = self::IDENTIFIER_QUALIFIER_SQLITE;
-				break;
-			case SOY2DAOConfig::DB_TYPE_POSTGRES :
-				$quote = self::IDENTIFIER_QUALIFIER_POSTGRES;
-				break;
-		}
-		if(strlen($quote)>0 && strlen($value)>1 && $value[0]===$quote && $value[strlen($value)-1]===$quote){
-			$value = substr($value,1,strlen($value)-2);
-		}
-		return $value;
-	}
-	/**
-	 * SQL文を生成し、返します。
-	 * PHP 5.2.0以前では__toStringが呼ばれないのでこちらを使用してください。
-	 *
-	 * @return string SQL文
-	 */
-	function getQuery(){
-		return $this->__toString();
-	}
-	function getPrefix() {
-		return $this->prefix;
-	}
-	function setPrefix($prefix) {
-		$this->prefix = $prefix;
-	}
-	function getTable() {
-		return $this->table;
-	}
-	function setTable($table) {
-		$this->table = $table;
-	}
-	function getSql() {
-		return $this->sql;
-	}
-	function setSql($sql) {
-		$this->sql = $sql;
-	}
-	function getWhere() {
-		return $this->where;
-	}
-	function setWhere($where) {
-		$this->where = $where;
-	}
-	function getOrder() {
-		return $this->order;
-	}
-	function setOrder($order) {
-		$this->order = $order;
-	}
-	function getGroup() {
-		return $this->group;
-	}
-	function setGroup($group) {
-		$this->group = $group;
-	}
-	function getHaving() {
-		return $this->having;
-	}
-	function setHaving($having) {
-		$this->having = $having;
-	}
-	function getDistinct() {
-		return $this->distinct;
-	}
-	function setDistinct($distinct) {
-		$this->distinct = $distinct;
-	}
-	function getSequence() {
-		return $this->sequence;
-	}
-	function setSequence($sequence) {
-		$this->sequence = $sequence;
-	}
-	function getBinds() {
-		return $this->binds;
-	}
-	function setBinds($binds) {
-		$this->binds = $binds;
-	}
-}
-/* SOY2DAO/soy2dao/SOY2DAO_QueryBuilder.class.php */
 /**
  * SOY2DAO_QueryBuilder
  *
@@ -4500,97 +3091,6 @@ class SOY2DAO_QueryBuilder{
 		return new SOY2DAO_Query();
 	}
 }
-/* SOY2DAO/soy2dao/SOY2DAO_QueryBuilder_DeleteQueryBuilder.class.php */
-/**
- * SOY2DAO_DeleteQueryBuilder
- * delete文のQueryオブジェクトを作る
- *
- * @package SOY2.SOY2DAO
- * @author Miyazawa
- */
-class SOY2DAO_DeleteQueryBuilder extends SOY2DAO_QueryBuilder{
-	/**
-	 * DAOのメソッド名と、EntityクラスのアノテーションなどからSOY2DAO_Queryオブジェクトを作る
-	 *
-	 * @param $methodName DAOクラスにあるメソッド名
-	 * @param $entityInfo EntityClassのAnnotationなどの情報
-	 *
-	 * @return SOY2DAO_Query
-	 */
-	protected static function build(string $methodName, SOY2DAO_Entity $entityInfo, array $noPersistents, array $columns){
-		$query = new SOY2DAO_Query();
-		$query->prefix = "delete";
-		$query->table = $entityInfo->table;
-		$columns = $entityInfo->getColumns();
-		if(preg_match('/By([a-zA-Z0-9_]*)$/',$methodName,$tmp)){
-			$param = $tmp[1];
-			$column = $entityInfo->getColumn($param);
-			if($column){
-				$query->where = $query->quoteIdentifier($column->name)." = :{$column->prop}";
-			}
-		}else{
-			foreach($columns as $key => $value){
-				$column = $entityInfo->getColumn($key);
-				if($column->isPrimary){
-					$query->where = $query->quoteIdentifier($column->name)." = :{$column->prop}";
-				}
-			}
-		}
-		return $query;
-	}
-}
-/* SOY2DAO/soy2dao/SOY2DAO_QueryBuilder_InsertQueryBuilder.class.php */
-/**
- * SOY2DAO_InsertQueryBuilder
- * insert文のQueryオブジェクトを作る
- *
- * @package SOY2.SOY2DAO
- * @author Miyazawa
- */
-class SOY2DAO_InsertQueryBuilder extends SOY2DAO_QueryBuilder{
-	/**
-	 * DAOのメソッド名と、EntityクラスのアノテーションなどからSOY2DAO_Queryオブジェクトを作る
-	 *
-	 * @param $methodName DAOクラスにあるメソッド名
-	 * @param $entityInfo EntityClassのAnnotationなどの情報
-	 *
-	 * @return SOY2DAO_Query
-	 */
-	protected static function build(string $methodName, SOY2DAO_Entity $entityInfo, array $noPersistents, array $columns){
-		$query = new SOY2DAO_Query();
-		$query->prefix = "insert";
-		$query->table = $entityInfo->table;
-		if(empty($columns)){
-			$columns = $entityInfo->getColumns();
-		}
-		$columnString = array();
-		foreach($columns as $key => $value){
-			$column = $entityInfo->getColumnByName($value);
-			if($column->isPrimary && !$column->sequence){
-				continue;
-			}
-			$columnString[] = $query->quoteIdentifier($column->name);
-		}
-		$sql = "(".implode(",",$columnString).") ";
-		$values = array();
-		foreach($columns as $key => $value){
-			$column = $entityInfo->getColumnByName($value);
-			if($column->isPrimary && $column->sequence){
-				$values[] = "nextval(".$query->quoteIdentifier($column->sequence).")";
-				$query->sequence = $column->sequence;
-				continue;
-			}
-			if($column->isPrimary){
-				continue;
-			}
-			$values[] = ":".$column->prop;
-		}
-		$sql.= "values(".implode(",",$values).") ";
-		$query->sql = $sql;
-		return $query;
-	}
-}
-/* SOY2DAO/soy2dao/SOY2DAO_QueryBuilder_SelectQueryBuilder.class.php */
 /**
  * SOY2DAO_SelectQueryBuilder
  * Select文のQueryオブジェクトを作る
@@ -4627,50 +3127,6 @@ class SOY2DAO_SelectQueryBuilder extends SOY2DAO_QueryBuilder{
 		return $query;
 	}
 }
-/* SOY2DAO/soy2dao/SOY2DAO_QueryBuilder_UpdateQueryBuilder.class.php */
-/**
- * SOY2DAO_UpdateQueryBuiler
- * Update文のQueryオブジェクトを作る
- *
- * @package SOY2.SOY2DAO
- * @author Miyazawa
- */
-class SOY2DAO_UpdateQueryBuilder extends SOY2DAO_QueryBuilder{
-	/**
-	 * DAOのメソッド名と、EntityクラスのアノテーションなどからSOY2DAO_Queryオブジェクトを作る
-	 *
-	 * @param $methodName DAOクラスにあるメソッド名
-	 * @param $entityInfo EntityClassのAnnotationなどの情報
-	 *
-	 * @return SOY2DAO_Query
-	 */
-	protected static function build(string $methodName, SOY2DAO_Entity $entityInfo, array $noPersistents, array $columns){
-		$query = new SOY2DAO_Query();
-		$query->prefix = "update";
-		$query->table = $entityInfo->table;
-		if(empty($columns)){
-			$columns = $entityInfo->getColumns();
-		}
-		$sql = array();
-		foreach($columns as $key => $value){
-			$column = $entityInfo->getColumnByName($value);
-			if(in_array($column->prop,$noPersistents)){
-				continue;
-			}
-			if(in_array($column->name,$noPersistents)){
-				continue;
-			}
-			if($column->isPrimary){
-				$query->where = $query->quoteIdentifier($column->name)." = :{$column->prop}";
-			}else{
-				$sql[] = $query->quoteIdentifier($column->name)." = :{$column->prop}";
-			}
-		}
-		$query->sql = implode(",",$sql);
-		return $query;
-	}
-}
-/* SOY2Debug/SOY2Debug.class.php */
 /**
  * @package SOY2.SOY2Debug
  */
@@ -4716,7 +3172,6 @@ class SOY2Debug {
 		return $_host;
 	}
 }
-/* SOY2HTML/SOY2HTML.php */
 /**
  * SOY2HTMLの基底クラス
  * @package SOY2.SOY2HTML
@@ -4758,7 +3213,6 @@ class SOY2HTMLBase{
 		}
 		return eval($variant.$code.";");
 	}
-
 	/**
 	 * 関数を追加登録します
 	 *
@@ -4985,7 +3439,7 @@ abstract class SOY2HTML extends SOY2HTMLBase{
 	 * @param $content HTMLソースコード
 	 */
 	function setContent($content){
-		list($tag,$line,$innerHTML,$outerHTML,$value,$suffix,$skipendtag) = $this->parse("id",$this->_soy2_id,(string)$content);
+		list($tag,$line,$innerHTML,$outerHTML,$value,$suffix,$skipendtag) = $this->parse("id",$this->_soy2_id, (string)$content);
 		$this->tag = $tag;
 		$this->parseAttributes($line);
 		$this->_soy2_innerHTML = $innerHTML;
@@ -5584,7 +4038,6 @@ class SOY2HTMLFactory extends SOY2HTMLBase{
 				$class->setAttribute($key, (string)$value);
 			}
 		}
-
 		return $class;
 	}
 	/**
@@ -5771,661 +4224,156 @@ class SOY2HTMLFactory extends SOY2HTMLBase{
  * SOY2HTMLが出力するSOY2HTMLException
  */
 class SOY2HTMLException extends Exception{}
-/* SOY2HTML/SOY2HTMLComponents/HTMLBase.php */
 /**
  * @package SOY2.SOY2HTML
  */
-class SOYBodyComponentBase extends SOY2HTML{
-	protected $_components = array();
-	protected $_tmpList = array();
-	protected $_childSoy2Prefix  = "soy";
-	const SOY_TYPE = SOY2HTML::SOY_BODY;
-    function add(string $id, $obj){
-    	$obj->setId($id);
-    	$obj->setParentObject($this);
-    	$obj->init();
-    	$this->_components[$id] = $obj;
-    }
-    /**
-	 * コンポーネントクラスを指定してadd
-	 *
-	 * @param $id SoyId
-	 * @param $className クラス名
-	 * @param $array = array()　setter injection
-	 * @see HTMLPage.add
-	 */
-	function createAdd(string $id, string $className, array $array=array()){
-		if(!isset($array["soy2prefix"]) && $this->_childSoy2Prefix) {
-			if(!is_array($array)) $array = array();
-			$array["soy2prefix"] = $this->_childSoy2Prefix;
-		}
-		$this->add($id,SOY2HTMLFactory::createInstance($className,$array));
+class HTMLLabel extends SOY2HTML{
+	const SOY_TYPE = SOY2HTML::HTML_BODY;
+	var $text;
+	private $width;
+	private $isFolding;
+	private $foldingTag = "<br />";
+	private $isHtml = false;
+	private $suffix = "...";
+	function setText($text){
+		$this->text = (string)$text;
 	}
-	function getStartTag(){
-    	return '<?php $'.$this->getId().' = $'.$this->getPageParam().'["'.$this->getId().'"]; ?>'.parent::getStartTag();
-    }
+	function getText(){
+		return (string)$this->text;
+	}
+	function setHtml($html){
+		$this->text = (is_string($html)) ? (string)$html : "";
+		$this->isHtml = true;
+	}
 	function getObject(){
-    	return $this->_tmpList;
-    }
-	function execute(){
-		$innerHTML = $this->getInnerHTML();
-		$tmpList = array();
-		foreach($this->_components as $key => $obj){
-			if($obj instanceof HTMLPage){
-				$obj->setParentPageParam($this->getId());
-    		}
-			$obj->setParentId($this->getId());
-			$obj->setPageParam($this->getId());
-			$obj->setContent($innerHTML);
-			$obj->execute();
-			$this->set($key,$obj,$tmpList);
-			if($innerHTML){
-				$innerHTML = $this->getContent($obj,$innerHTML);
+		$text = $this->getText();
+		if($this->isHtml){
+			return $text;
+		}else{
+			if(is_numeric($this->width) && (int)$this->width >= 0){
+				$this->width = (int)$this->width;
+				if($this->isFolding != true){
+					$width = max(0, $this->width - mb_strwidth($this->suffix));
+					$short_text = mb_strimwidth($text,0,$width);
+		    		if(mb_strwidth($short_text) < mb_strwidth($text)){
+				    	$short_text .= $this->suffix;
+		    		}
+		    		if(mb_strwidth($short_text) < mb_strwidth($text)){
+		    			$text = $short_text;
+		    		}
+					return htmlspecialchars($text,ENT_QUOTES,SOY2HTML::ENCODING);
+				}else{
+					$folded = "";
+					while(strlen($text)>0){
+						$tmp = mb_strimwidth($text, 0, $this->width);
+						$text = mb_substr($text, mb_strlen($tmp));
+						$folded .= htmlspecialchars($tmp,ENT_QUOTES,SOY2HTML::ENCODING);
+						if(strlen($text) >0) $folded .= $this->foldingTag;
+					}
+					return $folded;
+				}
+			}else{
+				return htmlspecialchars($text,ENT_QUOTES,SOY2HTML::ENCODING);
 			}
 		}
-		$this->_tmpList = $tmpList;
-		$this->setInnerHTML($innerHTML);
 	}
-	function setChildSoy2Prefix($prefix){
-		$this->_childSoy2Prefix = $prefix;
+	function setWidth($width){
+		$this->width = $width;
 	}
-	function isMerge(){
-		return true;
+	function setIsFolding($flag){
+		$this->isFolding = (boolean)$flag;
 	}
-
-	/** PHP7.4対応 __call()の廃止 **/
-	function addForm(string $id, array $array=array()){self::createAdd($id, "HTMLForm", $array);}
-	function addUploadForm(string $id, array $array=array()){self::createAdd($id, "HTMLUploadForm", $array);}
-	function addModel(string $id, array $array=array()){self::createAdd($id, "HTMLModel", $array);}
-	function addLabel(string $id, array $array=array()){self::createAdd($id, "HTMLLabel", $array);}
-	function addImage(string $id, array $array=array()){self::createAdd($id, "HTMLImage", $array);}
-	function addLink(string $id, array $array=array()){self::createAdd($id, "HTMLLink", $array);}
-	function addActionLink(string $id, array $array=array()){self::createAdd($id, "HTMLActionLink", $array);}
-	function addInput(string $id, array $array=array()){
-		self::createAdd($id, "HTMLInput", $array);
-		self::addText($id, $array);
+	function setFoldingTag($tag){
+		$this->foldingTag = $tag;
 	}
-	function addTextArea(string $id, array $array=array()){
-		self::createAdd($id, "HTMLTextArea", $array);
-		self::addText($id, $array);
+	public function getSuffix() {
+		return $this->suffix;
 	}
-	function addCheckBox(string $id, array $array=array()){
-		self::createAdd($id, "HTMLCheckBox", $array);
-		self::addText($id, $array);
+	public function setSuffix($suffix) {
+		$this->suffix = $suffix;
 	}
-	function addSelect(string $id, array $array=array()){
-		self::createAdd($id, "HTMLSelect", $array);
-		self::addText($id, $array);
+}
+function soy2html_layout_include(string $file){
+	$layoutDir = SOY2HTMLConfig::LayoutDir();
+	@include($layoutDir . $file);
+}
+function soy2html_layout_get(string $file){
+	try{
+		ob_start();
+		soy2html_layout_include($file);
+		$html = ob_get_contents();
+		ob_end_clean();
+		return $html;
+	}catch(Exception $e){
+		ob_end_flush();
+		throw $e;
 	}
-	function addHidden(string $id, array $array=array()){self::createAdd($id, "HTMLHidden", $array);}
-	function addScript(string $id, array $array=array()){self::createAdd($id, "HTMLScript", $array);}
-	function addCSS(string $id, array $array=array()){self::createAdd($id, "HTMLCSS", $array);}
-	function addCSSLink(string $id, array $array=array()){self::createAdd($id, "HTMLCSSLink", $array);}
-	function addText(string $id, array $array=array()){
-		$new = array();
-		if(isset($array["soy2prefix"]) && strlen($array["soy2prefix"])) $new["soy2prefix"] = $array["soy2prefix"];
-		$new["text"] = (isset($array["value"])) ? $array["value"] : "";
-		if(!strlen($new["text"]) && isset($array["text"]) && strlen($array["text"])) $new["text"] = $array["text"]; //addTextAreaの場合
-		self::createAdd($id. "_text", "HTMLLabel", $new);
-	}
-	function addList(string $id, array $array=array()){self::createAdd($id, "HTMLList", $array);}
 }
 /**
  * @package SOY2.SOY2HTML
  */
-class SOY2HTMLElement extends SOY2HTML{
-	const TEXT_ELEMENT = "_text_element_";
-	var $_elements = array();
-	var $_innerHTML;
-	var $_tag;
-	public static function &createElement($tag){
-		return SOY2HTMLFactory::createInstance("SOY2HTMLElement",array(
-			"elementTag" => $tag
-		));
-	}
-	public static function &createTextElement($text){
-		$ele =  SOY2HTMLFactory::createInstance("SOY2HTMLElement",array(
-			"elementTag" => SOY2HTMLElement::TEXT_ELEMENT
-		));
-		$ele->_innerHTML = htmlspecialchars($text, ENT_QUOTES, SOY2HTML::ENCODING);
-		return $ele;
-	}
-	public static function &createHtmlElement($html){
-		$ele =  SOY2HTMLFactory::createInstance("SOY2HTMLElement",array(
-			"elementTag" => SOY2HTMLElement::TEXT_ELEMENT
-		));
-		$ele->_innerHTML = $html;
-		return $ele;
-	}
-	function setElementTag($tag){
-		$this->_tag = $tag;
-	}
-	function getStartTag(){
-		return "";
+class HTMLLink extends HTMLLabel{
+	var $tag = "a";
+	const SOY_TYPE = SOY2HTML::HTML_BODY;
+	var $link;
+	var $target;
+		function getStartTag(){
+		return '<?php if(strlen($'.$this->getPageParam().'["'.$this->getId().'_attribute"]["href"])>0){ ?>' .
+			parent::getStartTag() .
+			'<?php } ?>';
 	}
 	function getEndTag(){
-		return "";
+		return '<?php if(strlen($'.$this->getPageParam().'["'.$this->getId().'_attribute"]["href"])>0){ ?>' .
+			parent::getEndTag() .
+			'<?php } ?>';
 	}
-	function setAttribute(string $key, string $value="", bool $flag=true){
-		$this->_attribute[$key] = $value;
-	}
-	function getObject(){
-		return $this->toHTML();
-	}
-	function toHTML(){
-		$this->tag = $this->_tag;
-		if($this->tag == SOY2HTMLElement::TEXT_ELEMENT){
-			return $this->_innerHTML;
-		}
-		$html = SOY2HTML::getStartTag();
-		$innerHTML = "";
-		foreach($this->_elements as $ele){
-			$innerHTML .= $ele->toHTML();
-		}
-		if(strlen($innerHTML)){
-			$html .= $innerHTML;
-			$html .= SOY2HTML::getEndTag();
-		}else{
-			$html = preg_replace('/>$/','/>',$html);
-		}
-		return $html;
-	}
-	function appendChild(SOY2HTMLElement &$ele){
-		$this->_elements[] = $ele;
-	}
-}
-/**
- * @package SOY2.SOY2HTML
- */
-class SOY2HTMLStyle{
-	var $_styles = array();
-	function __construct($style = ""){
-		$styles = (is_string($style) && strlen($style)) ? explode(";",$style) : array();
-		foreach($styles as $str){
-			if(!strstr($str,":"))continue;
-			$array = explode(":",$str,2);
-			$this->_styles[$array[0]] = $array[1];
-		}
-	}
-	function __toString(){
-		$style = '';
-		foreach($this->_styles as $key => $value){
-			if(!strlen($key) OR !strlen($value))continue;
-			$style .= "$key:$value;";
-		}
-		return $style;
-	}
-	function __set($key, $value){
-		//$key = preg_replace_callback('/[A-Z]/',create_function('$word','return \'-\'.strtolower($word[0]);'),$key);
-		$key = preg_replace_callback('/[A-Z]/', function($word) use ($key) { return '-'.strtolower($word[0]); }, $key);
-		$this->_styles[$key] = $value;
-	}
-	function __get($key){
-		//$key = preg_replace_callback('/[A-Z]/',create_function('$word','return \'-\'.strtolower($word[0]);'),$key);
-		$key = preg_replace_callback('/[A-Z]/', function($word) use ($key) { return '-'.strtolower($word[0]); }, $key);
-		return $this->_styles[$key];
-	}
-}
-/**
- * @package SOY2.SOY2HTML
- * 何もしないコンポーネント
- */
-class HTMLModel extends SOY2HTML{
-	const SOY_TYPE = SOY2HTML::HTML_BODY;
-	function execute(){}
-	function getObject(){
-		return "";
-	}
-}
-/* SOY2HTML/SOY2HTMLComponents/HTMLCSS.class.php */
-/**
- * @package SOY2.SOY2HTML
- */
-class HTMLCSS extends SOY2HTML{
-	var $tag = "style";
-	const SOY_TYPE = SOY2HTML::HTML_BODY;
-	var $text = "";
-	function execute(){
-		$this->setAttribute("type","text/css");
-		parent::execute();
-	}
-	function setStyle($text){
-		$this->text = $text;
-	}
-	function getObject(){
-		return $this->text;//htmlspecialchars((string)$this->text,ENT_QUOTES,SOY2HTML::ENCODING)
-	}
-}
-/* SOY2HTML/SOY2HTMLComponents/HTMLCSSLink.class.php */
-/**
- * @package SOY2.SOY2HTML
- */
-class HTMLCSSLink extends SOY2HTML{
-	var $tag = "link";
-	const SOY_TYPE = SOY2HTML::SKIP_BODY;
-	var $link;
 	function setLink($link){
 		$this->link = $link;
 	}
+	function setTarget($target){
+		$this->target = $target;
+	}
 	function execute(){
-		$this->setAttribute("href",$this->link);
+		if(!is_null($this->text)){
+			parent::execute();
+		}
+		$suffix = $this->getAttribute($this->_soy2_prefix . ":suffix");
+		if($suffix) $this->link .= $suffix;
+		$this->setAttribute("href",(string)$this->link);
+		if(is_string($this->target) && strlen($this->target)){
+			$this->setAttribute("target",$this->target);
+		}elseif(isset($this->target)){
+			$this->clearAttribute("target");
+		}
 	}
 	function getObject(){
+		if(!is_null($this->text)){
+			return parent::getObject();
+		}
 		return $this->link;
 	}
 }
-/* SOY2HTML/SOY2HTMLComponents/HTMLForm.class.php */
 /**
  * @package SOY2.SOY2HTML
+ *
+ * @see function soy2_get_token
  */
- class HTMLForm extends SOYBodyComponentBase{
-     var $tag = "form";
-     var $action;
-     var $_method = "post";
- 	private $disabled;
-     function setTag($tag){
-     	throw new SOY2HTMLException("[HTMLForm]タグの書き換えは不可です。");
-     }
-     function setMethod($method){
-     	$this->_method = $method;
-     }
-     function setAction($action){
-     	$this->action = $action;
-     }
-     function setTarget($target){
-     	$this->setAttribute("target",$target);
-     }
-     function getStartTag(){
-     	if(strtolower($this->_method) == "post"){
-     		$token = '<input type="hidden" name="soy2_token" value="<?php echo soy2_get_token(); ?>" />';
-     		return parent::getStartTag() . $token;
-     	}
-     	return parent::getStartTag();
-     }
-     function execute(){
- 		SOYBodyComponentBase::execute();
- 		if(is_string($this->action)){
- 			$this->setAttribute("action", $this->action);
- 		}else if(isset($_SERVER["REQUEST_URI"])){
- 			$this->setAttribute("action", $_SERVER["REQUEST_URI"]);
- 		}
- 		$this->setAttribute('method', (string)$this->_method);
- 		$disabled = ($this->disabled) ? "disabled" : "";
- 		$this->setAttribute("disabled",$disabled, false);
-     }
-     function setOnSubmit($value){
-     	if(!preg_match("/^javascript:/i",$value)){
-     		$value = "javascript:".$value;
-     	}
-     	$this->setAttribute("onsubmit", (string)$value);
-     }
- 	function getDisabled() {
- 		return $this->disabled;
- 	}
- 	function setDisabled($disabled) {
- 		$this->disabled = $disabled;
- 	}
- }
-/**
- * @package SOY2.SOY2HTML
- */
-class HTMLUploadForm extends HTMLForm{
-
-	private $accept;
-
+class HTMLActionLink extends HTMLLink{
 	function execute(){
-		parent::execute();
-		$this->setAttribute("enctype","multipart/form-data");
-		$accept = (is_string($this->accept)) ? trim($this->accept) : "";
-		$this->setAttribute("accept", $accept, false);
-	}
-}
-/**
- * @package SOY2.SOY2HTML
- */
-abstract class HTMLFormElement extends SOY2HTML{
-	var $name;
-	private $disabled;
-	private $readonly;
-	private $required;
-	private $placeholder;
-	private $pattern;
-	private $autocomplete;
-	function execute(){
-		parent::execute();
-		$disabled = (is_string($this->disabled) || (is_bool($this->disabled)) && $this->disabled) ? "disabled" : "";
-		$this->setAttribute("disabled", $disabled, false);
-		$readonly = (is_string($this->readonly) || (is_bool($this->readonly) && $this->readonly)) ? "readonly" : "";
-		$this->setAttribute("readonly", $readonly, false);
-		$required = (is_string($this->required) || (is_bool($this->required) && $this->required)) ? "required" : "";
-		$this->setAttribute("required", $required, false);
-		$placeholder = (is_string($this->placeholder)) ? trim($this->placeholder) : "";
-		$this->setAttribute("placeholder", $placeholder, false);
-		$pattern = (is_string($this->pattern)) ? trim($this->pattern) : "";
-		$this->setAttribute("pattern", $pattern, false);
-		$autocomplete = (is_string($this->autocomplete)) ? trim($this->autocomplete) : "";
-		$this->setAttribute("autocomplete", $autocomplete, false);
-	}
-	function setName($value){
-		$this->name = $value;
-		$this->setAttribute("name", $value);
-	}
-	function getDisabled() {
-		return $this->disabled;
-	}
-	function setDisabled($disabled) {
-		$this->disabled = $disabled;
-	}
-	function getReadonly() {
-		return $this->readonly;
-	}
-	function setReadonly($readonly) {
-		$this->readonly = $readonly;
-	}
-	function getRequired(){
-		return $this->required = $required;
-	}
-	function setRequired($required){
-		$this->required = $required;
-	}
-	function getPlaceholder(){
-		return $this->placeholder;
-	}
-	function setPlaceholder($placeholder){
-		$this->placeholder = $placeholder;
-	}
-	function getPattern(){
-		return $this->pattern;
-	}
-	function setPattern($pattern){
-		$this->pattern = $pattern;
-	}
-	function getAutocomplete(){
-		return $this->autocomplete;
-	}
-	function setAutocomplete($autocomplete){
-		$this->autocomplete = $autocomplete;
-	}
-}
-/**
- * @package SOY2.SOY2HTML
- */
-class HTMLInput extends HTMLFormElement{
-	const SOY_TYPE = SOY2HTML::SKIP_BODY;
-	var $tag = "input";
-	var $value;
-	var $type;
-	function setValue($value){
-		$this->value = $value;
-		$this->setAttribute("value", (string)$this->value);
-	}
-	function execute(){
-		parent::execute();
-	}
-	function getObject(){
-		return $this->value;
-	}
-	function setType($value){
-		$this->type = $value;
-		$this->setAttribute("type",$this->type);
-	}
-	function getType(){
-		return $this->type;
-	}
-}
-/**
- * @package SOY2.SOY2HTML
- */
-class HTMLHidden extends HTMLInput{
-	function execute(){
-		parent::execute();
-		$this->setAttribute("type","hidden");
-	}
-}
-/**
- * @package SOY2.SOY2HTML
- */
-class HTMLTextArea extends HTMLFormElement{
-	var $tag = "textarea";
-	const SOY_TYPE = SOY2HTML::HTML_BODY;
-	var $text;
-	function setText($value){
-		$this->text = $value;
-	}
-	function setValue($value){
-		$this->text = $value;
-	}
-	function getText(){
-		return (string) $this->text;
-	}
-	function getObject(){
-		return "\n".htmlspecialchars($this->getText(),ENT_QUOTES,SOY2HTML::ENCODING);
-	}
-}
-/**
- * HTMLSelect
- * @package SOY2.SOY2HTML
- * 使い方
- * <select soy:id="test_select"></select>
- *
- * $this->createAdd("test_select","HTMLSelect",array(
- * 		"selected" => $selectedvalue,
- * 		"options" => array(
- * 			"りんご","みかん","マンゴー"
- * 		),
- * 		"each" => array(
- * 			"onclick"=>"alert(this.value);"
- * 		),
- * 		"indexOrder" => $boolean,
- * 		"name" => $name
- * ));
- *
- * indexOrderがtrueの場合、またはoptionsに指定した配列が連想配列の場合は
- * <option value="0">りんご</option>
- * <option value="1">みかん</option>
- * <option value="2">マンゴー</option>
- * または
- * <option value="apple">りんご</option>
- * <option value="mandarin">みかん</option>
- * <option value="mango">マンゴー</option>
- * に展開されます。
- *
- * optionsに指定した配列が連想配列で無い場合（かつindexOrderがtrueでない場合）は
- * <option>りんご</option>
- * <option>みかん</option>
- * <option>マンゴー</option>
- * です。
- *
- * optionsを多重配列にすることで<optgroup>を指定できます。
- *
- * selectedを複数指定するときは配列にします。
- */
-class HTMLSelect extends HTMLFormElement {
-	var $tag = "select";
-	const SOY_TYPE = SOY2HTML::HTML_BODY;
-	var $options;
-	var $selected;//複数指定するときは配列
-	private $multiple = false;
-	var $indexOrder = false;
-	var $property;
-	var $each = "";
-	function setOptions($options){
-		$this->options = $options;
-	}
-	function setSelected($selected){
-		$this->selected = $selected;
-	}
-	function getMultiple() {
-		return $this->multiple;
-	}
-	function setMultiple($multiple) {
-		$this->multiple = $multiple;
-	}
-	function setIndexOrder(){
-		$this->indexOrder = true;
-	}
-	function setProperty($name){
-		$this->property = $name;
-	}
-	function setEach($each){
-		if(is_array($each) && count($each)){
-			$attr = array();
-			foreach($each as $key => $value){
-				$attr[] = htmlspecialchars((string)$key, ENT_QUOTES,SOY2HTML::ENCODING).'="'.htmlspecialchars((string)$value, ENT_QUOTES,SOY2HTML::ENCODING).'"';
-			}
-			$this->each = implode(" ",$attr);
+		if(!is_null($this->text)){
+			HTMLLabel::execute();
 		}
-	}
-	function execute(){
-		$innerHTML  = $this->getInnerHTML();
-		parent::execute();
-		$this->setInnerHTML($innerHTML.$this->getInnerHTML());
-		$multiple = ($this->multiple) ? "multiple" : "";
-		$this->setAttribute("multiple",$multiple, false);
-	}
-	function getObject(){
-		$first = (is_array($this->options) && count($this->options)) ? array_slice($this->options, 0, 1) : array();
-		if(is_array(array_shift($first))){
-			$twoDimensional = true;
-			$isHash = false;
+		$link = $this->link;
+		if(!is_string($link)) $link = "";
+		if(is_bool(strpos($link,"?"))){
+			$link .= "?";
 		}else{
-			$twoDimensional = false;
-			$isHash = (is_array($this->options) && array_keys($this->options) === range(0,count($this->options)-1)) ? false : true;
+			$link .= "&";
 		}
-		if($this->indexOrder){
-			$isHash = true;
-		}
-		$buff = "";
-		if($twoDimensional && is_array($this->options) && count($this->options)){
-			foreach($this->options as $key => $value){
-				if(is_array($value)){
-					$key = (string)$key;
-					$buff .= '<optgroup label="'.htmlspecialchars((string)$key, ENT_QUOTES,SOY2HTML::ENCODING).'">';
-					$buff .= $this->buildOptions($value, $isHash);
-					$buff .= '</optgroup>';
-				}else{
-					$buff .= $this->buildOption($key, $value, $isHash);
-				}
-			}
-		}else{
-			$buff .= $this->buildOptions($this->options, $isHash);
-		}
-		return $buff;
-	}
-	function buildOptions($options, $isHash){
-		$buff = "";
-		if(is_array($options) && count($options)){
-			foreach($options as $key => $value){
-				$buff .= $this->buildOption($key, $value, $isHash);
-			}
-		}
-		return $buff;
-	}
-	function buildOption($key, $value, $isHash){
-		$buff = "";
-		$selected = '';
-		$key = (string)$key;
-		if(is_object($value) && $this->property){
-			$propName = $this->property;
-			$funcName = "get" . ucwords($propName);
-			if(method_exists($value,$funcName)){
-				$value = $value->$funcName();
-			}else{
-				$value = $value->$propName;
-			}
-		}
-		if($isHash || !is_numeric($key)){
-			$selected = ($this->selected($key)) ? 'selected="selected"' : '';
-		}else{
-			$selected = ($this->selected($value)) ? 'selected="selected"' : '';
-		}
-		$attributes = "";
-		if(strlen($selected))   $attributes .= " ".$selected;
-		if(strlen($this->each)) $attributes .= " ".$this->each;
-		if($isHash || !is_numeric($key)){
-			$attributes .= ' value="'.htmlspecialchars((string)$key,ENT_QUOTES,SOY2HTML::ENCODING).'"';
-		}
-		$buff .= "<option".$attributes.">".htmlspecialchars((string)$value,ENT_QUOTES,SOY2HTML::ENCODING)."</option>";
-		return $buff;
-	}
-	/**
-	 * 値がselectedであるかどうか
-	 */
-	function selected($value){
-		if(is_array($this->selected)){
-			return in_array($value,$this->selected);
-		}else{
-			return ($value == $this->selected);
-		}
-	}
-	function setValue($value){
-		$this->setSelected($value);
+		$link .= "soy2_token=" . soy2_get_token();
+		$this->setAttribute("href",$link);
 	}
 }
-/**
- * HTMLCheckBox
- *
- * 使い方１
- * <input type="checkbox" soy:id="soyid" />
- * $this->createAdd("soyid", "HTMLCheckbox", array(
- *  "label" => "LABEL",//<label for="thisid">LABEL</label>が自動的に生成される
- * 	"selected" => true, //or false //checked="checked"生成
- *  "isBoolean" => true, //<input type="hidden" value="0" />生成
- * ));
- *
- * 使い方２
- * <input type="checkbox" soy:id="soyid" id="checkboxid" /><label for="checkboxid">MY LABEL</label>
- * $this->createAdd("soyid", "HTMLCheckbox", array(
- * 	"elementId" => "checkboxid",
- * 	"selected" => true, //or false
- *  "isBoolean" => true,
- * ));
- */
-class HTMLCheckBox extends HTMLInput {
-	var $label;
-	var $elementId;
-	var $selected;
-	var $type = "checkbox";
-	var $isBoolean;
-	function setLabel($label){
-		$this->label = $label;
-	}
-	function setSelected($selected){
-		$this->selected = $selected;
-	}
-	function setElementId($elementId){
-		$this->elementId = $elementId;
-	}
-	function getStartTag(){
-		$zero = "";
-		$label = '<?php if(strlen($'.$this->getPageParam().'["'.$this->getId().'"])>0){ ?><label for="<?php echo $'.$this->getPageParam().'["'.$this->getId().'_attribute"]["id"]; ?>">'.
-			'<?php echo $'.$this->getPageParam().'["'.$this->getId().'"]; ?></label><?php } ?>';
-		if($this->isBoolean()){
-			$zero = '<input type="hidden" name="<?php echo $'.$this->getPageParam().'["'.$this->getId().'_attribute"]["name"]; ?>" value="0" />';
-		}
-		return $zero . parent::getStartTag() . $label;
-	}
-	function execute(){
-		parent::execute();
-		if(!is_string($this->elementId)) $this->elementId = "label_" . md5((string)$this->value.(string)$this->name.(string)rand(0,1));
-		$this->setAttribute("id",$this->elementId);
-		$checked = ($this->selected) ? "checked" : "";
-		$this->setAttribute("checked",$checked, false);
-	}
-	function getLabel(){
-		return (string) $this->label;
-	}
-	function getObject(){
-		return htmlspecialchars($this->getLabel(),ENT_QUOTES,SOY2HTML::ENCODING);
-	}
-	function setIsBoolean($flag){
-		$this->isBoolean = $flag;
-	}
-	function isBoolean(){
-		return (boolean)$this->isBoolean;
-	}
-}
-/* SOY2HTML/SOY2HTMLComponents/HTMLHead.class.php */
 /**
  * @package SOY2.SOY2HTML
  * HTMLHeadコンポーネント
@@ -6572,288 +4520,6 @@ class HTMLHead extends SOY2HTML{
 		return ((!empty($linkArray)) ? "\n" : "") . implode("\n",$linkArray);
     }
 }
-/* SOY2HTML/SOY2HTMLComponents/HTMLImage.class.php */
-/**
- * @package SOY2.SOY2HTML
- */
-class HTMLImage extends SOY2HTML{
-    var $src;
-    const SOY_TYPE = SOY2HTML::SKIP_BODY;
-    function setSrc($path){
-    	$this->src = $path;
-    }
-    function setImagePath($path){
-    	$this->setSrc($path);
-    }
-    function execute(){
-    	$this->setAttribute("src", (string)$this->src);
-    }
-    function getObject(){
-    	return $this->src;
-    }
-    function setAlt($alt){
-    	$this->setAttribute("alt", (string)$alt);
-    }
-}
-/* SOY2HTML/SOY2HTMLComponents/HTMLLabel.class.php */
-/**
- * @package SOY2.SOY2HTML
- */
-class HTMLLabel extends SOY2HTML{
-	const SOY_TYPE = SOY2HTML::HTML_BODY;
-	var $text;
-	private $width;
-	private $isFolding;
-	private $foldingTag = "<br />";
-	private $isHtml = false;
-	private $suffix = "...";
-	function setText($text){
-		$this->text = (string)$text;
-	}
-	function getText(){
-		return (string)$this->text;
-	}
-	function setHtml($html){
-		$this->text = (is_string($html)) ? (string)$html : "";
-		$this->isHtml = true;
-	}
-	function getObject(){
-		$text = $this->getText();
-		if($this->isHtml){
-			return $text;
-		}else{
-			if(is_numeric($this->width) && (int)$this->width >= 0){
-				$this->width = (int)$this->width;
-				if($this->isFolding != true){
-					$width = max(0, $this->width - mb_strwidth($this->suffix));
-					$short_text = mb_strimwidth($text,0,$width);
-		    		if(mb_strwidth($short_text) < mb_strwidth($text)){
-				    	$short_text .= $this->suffix;
-		    		}
-		    		if(mb_strwidth($short_text) < mb_strwidth($text)){
-		    			$text = $short_text;
-		    		}
-					return htmlspecialchars($text,ENT_QUOTES,SOY2HTML::ENCODING);
-				}else{
-					$folded = "";
-					while(strlen($text)>0){
-						$tmp = mb_strimwidth($text, 0, $this->width);
-						$text = mb_substr($text, mb_strlen($tmp));
-						$folded .= htmlspecialchars($tmp,ENT_QUOTES,SOY2HTML::ENCODING);
-						if(strlen($text) >0) $folded .= $this->foldingTag;
-					}
-					return $folded;
-				}
-			}else{
-				return htmlspecialchars($text,ENT_QUOTES,SOY2HTML::ENCODING);
-			}
-		}
-	}
-	function setWidth($width){
-		$this->width = $width;
-	}
-	function setIsFolding($flag){
-		$this->isFolding = (boolean)$flag;
-	}
-	function setFoldingTag($tag){
-		$this->foldingTag = $tag;
-	}
-	public function getSuffix() {
-		return $this->suffix;
-	}
-	public function setSuffix($suffix) {
-		$this->suffix = $suffix;
-	}
-}
-/* SOY2HTML/SOY2HTMLComponents/HTMLLink.class.php */
-/**
- * @package SOY2.SOY2HTML
- */
-class HTMLLink extends HTMLLabel{
-	var $tag = "a";
-	const SOY_TYPE = SOY2HTML::HTML_BODY;
-	var $link;
-	var $target;
-		function getStartTag(){
-		return '<?php if(strlen($'.$this->getPageParam().'["'.$this->getId().'_attribute"]["href"])>0){ ?>' .
-			parent::getStartTag() .
-			'<?php } ?>';
-	}
-	function getEndTag(){
-		return '<?php if(strlen($'.$this->getPageParam().'["'.$this->getId().'_attribute"]["href"])>0){ ?>' .
-			parent::getEndTag() .
-			'<?php } ?>';
-	}
-	function setLink($link){
-		$this->link = $link;
-	}
-	function setTarget($target){
-		$this->target = $target;
-	}
-	function execute(){
-		if(!is_null($this->text)){
-			parent::execute();
-		}
-		$suffix = $this->getAttribute($this->_soy2_prefix . ":suffix");
-		if($suffix) $this->link .= $suffix;
-
-		$this->setAttribute("href", (string)$this->link);
-		if(is_string($this->target) && strlen($this->target)){
-			$this->setAttribute("target",$this->target);
-		}elseif(isset($this->target)){
-			$this->clearAttribute("target");
-		}
-	}
-	function getObject(){
-		if(!is_null($this->text)){
-			return parent::getObject();
-		}
-		return $this->link;
-	}
-}
-/**
- * @package SOY2.SOY2HTML
- *
- * @see function soy2_get_token
- */
-class HTMLActionLink extends HTMLLink{
-	function execute(){
-		if(!is_null($this->text)){
-			HTMLLabel::execute();
-		}
-		$link = $this->link;
-		if(!is_string($link)) $link = "";
-		if(is_bool(strpos($link,"?"))){
-			$link .= "?";
-		}else{
-			$link .= "&";
-		}
-		$link .= "soy2_token=" . soy2_get_token();
-		$this->setAttribute("href",$link);
-	}
-}
-/* SOY2HTML/SOY2HTMLComponents/HTMLList.class.php */
-/**
- * @package SOY2.SOY2HTML
- */
-class HTMLList extends SOYBodyComponentBase{
-	var $list = array();
-	var $_list = array();
-	var $htmls = array();
-	var $_includeParentTag = true;
-	protected $_notMerge = false;
-	function setList($list){
-		if(!is_array($list)){
-			$list = (array)$list;
-		}
-		$this->list = $list;
-	}
-	function getStartTag(){
-		$this->_includeParentTag = $this->getAttribute("includeParentTag");
-		$this->clearAttribute("includeParentTag");
-		if($this->_includeParentTag){
-		 	return SOY2HTML::getStartTag() . "\n".'<?php $'.$this->getId().'_counter = -1; foreach($'.$this->getPageParam().'["'.$this->getId().'"] as $key => $'.$this->getId().'){ $'.$this->getId().'_counter++; ?>';
-		}else{
-		 return '<?php $'.$this->getId().'_counter = -1;foreach($'.$this->getPageParam().'["'.$this->getId().'"] as $key => $'.$this->getId().'){ $'.$this->getId().'_counter++; ?>'
-			 	. SOY2HTML::getStartTag();
-		}
-	}
-	function getEndTag(){
-		if($this->_includeParentTag){
-		 	return '<?php } ?>' . "\n" .SOY2HTML::getEndTag();
-		 }else{
-			return SOY2HTML::getEndTag() . '<?php } ?>';
-		}
-	}
-	function getObject(){
-		return $this->_list;
-	}
-	function execute(){
-		$innerHTML = $this->getInnerHTML();
-		$old = error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING);
-		$this->populateItemImpl(new HTMLList_DummyObject(),null,-1,count($this->list));
-		$this->addLabel("index", array("text" => ""));
-		$this->createAdd("loop","HTMLList_LoopModel",array("counter" => -1));
-		$this->addModel("at_first", array("visible" => false));
-		$this->addModel("not_first", array("visible" => false));
-		$this->addModel("at_last", array("visible" => false));
-		$this->addModel("not_last", array("visible" => false));
-		error_reporting($old);
-		parent::execute();
-		$counter = 0;
-		$length = count($this->list);
-		if($length > 0){
-			foreach($this->list as $listKey => $listObj){
-				$counter++;
-				$tmpList = array();
-				$res = $this->populateItemImpl($listObj,$listKey,$counter,$length);
-				$this->addLabel("index", array("text" => $counter));
-				$this->createAdd("loop","HTMLList_LoopModel",array("counter" => $counter));
-				$this->addModel("at_first", array("visible" => $counter == 1));
-				$this->addModel("not_first", array("visible" => $counter != 1));
-				$this->addModel("at_last", array("visible" => $counter == $length));
-				$this->addModel("not_last", array("visible" => $counter != $length));
-				if($res === false)continue;
-				foreach($this->_components as $key => $obj){
-					$obj->setContent($innerHTML);
-					$obj->execute();
-					$this->set($key,$obj,$tmpList);
-				}
-				$this->_list[$listKey] = $tmpList;//WebPage::getPage($this->getParentId());
-			}
-		}
-	}
-	function isMerge(){
-		return false;
-	}
-	function populateItemImpl($entity,$key,$counter,$length){
-		if(method_exists($this,"populateItem")){
-			return $this->populateItem($entity,$key,$counter,$length);
-		}
-		if($this->_soy2_functions["populateItem"]){
-			return $this->__call("populateItem",array($entity,$key,$counter,$length));
-		}
-		return null;
-	}
-}
-/**
- * @package SOY2.SOY2HTML
- */
-class HTMLList_DummyObject extends ArrayObject{
-	function __call($func,$args){
-		return new HTMLList_DummyObject();
-	}
-	function __get($key){
-		return new HTMLList_DummyObject();
-	}
-	function __toString(){
-		return "";
-	}
-}
-/**
- * @package SOY2.SOY2HTML
- */
-class HTMLList_LoopModel extends HTMLModel{
-	private $counter;
-	function getStartTag(){
-		$step = (int)$this->getAttribute("step");
-		$func ='<?php $'.$this->getId().'_loop_visible = !(boolean)'.$step.';' .
-				'if('.$step.')$'.$this->getId().'_loop_visible=(($'.$this->getPageParam().'_counter+1) % '.$step.' === 0); ' .
-		 		'if($'.$this->getId().'_loop_visible){ ?>';
-		$res = $func . parent::getStartTag();
-		return $res;
-	}
-	function getEndTag(){
-		return parent::getEndTag() . "<?php } ?>";
-	}
-	function setCounter($counter){
-		$this->counter = $counter;
-	}
-	function getCounter(){
-		return $this->counter;
-	}
-}
-/* SOY2HTML/SOY2HTMLComponents/HTMLPage.class.php */
 /**
  * 各ページの設定をするクラスの基底となるクラス
  *
@@ -6865,13 +4531,11 @@ class HTMLPage extends SOYBodyComponentBase{
 	protected $_soy2_page;
 	private $_soy2_body_element;
 	private $_soy2_head_element;
-
 	/**
 	 * キャッシュファイルの生成に失敗しているか判定する為の文字数
 	 * キャッシュファイルの生成に失敗すると白紙ページになってしまい、一定期間キャッシュが残ってしまう
 	 */
 	const CACHE_CONTENTS_LENGTH_MIN = 81;
-
 	function __construct(){
 		$this->prepare();
 	}
@@ -7085,7 +4749,6 @@ class HTMLPage extends SOYBodyComponentBase{
 		}else{
 			$html = "";
 		}
-
 		$layoutDir = SOY2HTMLConfig::LayoutDir();
 		$layout = $this->getLayout();
 		if($layoutDir && is_file($layoutDir . $layout)){
@@ -7156,7 +4819,6 @@ class HTMLPage extends SOYBodyComponentBase{
 		if(file_exists($hidden_mode_html)){
 			return $hidden_mode_html;
 		}
-
 		return $dir . get_class($this) . ".html";
 	}
 	/**
@@ -7527,7 +5189,6 @@ class HTMLPage_HeadElement extends HTMLPage_ChildElement{
 		return $html;
 	}
 }
-/* SOY2HTML/SOY2HTMLComponents/HTMLPager.class.php */
 /**
  * ページャーコンポーネント
  */
@@ -7540,7 +5201,7 @@ class HTMLPager extends SOYBodyComponentBase{
 	private $query = "";
 	private $pagerCount = 10;
 	private $limit = 0;
-	function execute(){
+    function execute(){
     	if($this->_soy2_parent){
 			$this->_soy2_parent->addLabel("count_start", array(
 				"text" => $this->getStart()
@@ -7718,7 +5379,255 @@ class SOY2HTMLPager_List extends HTMLList{
 		$this->current = $cuttent;
 	}
 }
-/* SOY2HTML/SOY2HTMLComponents/HTMLScript.class.php */
+/**
+ * @package SOY2.SOY2HTML
+ */
+class WebPage extends HTMLPage{
+	const SOY_TYPE = SOY2HTML::HTML_BODY;
+	function __construct(){
+		$this->init();
+		$this->prepare();
+	}
+	/**
+	 * prepareMethodにおいて
+	 * Post時はこちらが呼ばれます。
+	 *
+	 */
+	function doPost(){}
+	/**
+	 * doPostがよばれるように拡張
+	 */
+	function prepare(){
+		if($_SERVER['REQUEST_METHOD'] == 'POST'){
+			$this->doPost();
+		}
+		parent::prepare();
+	}
+	function getLayout(){
+		return "default.php";
+	}
+}
+/**
+ * @package SOY2.SOY2HTML
+ */
+class SOYBodyComponentBase extends SOY2HTML{
+	protected $_components = array();
+	protected $_tmpList = array();
+	protected $_childSoy2Prefix  = "soy";
+	const SOY_TYPE = SOY2HTML::SOY_BODY;
+    function add(string $id, $obj){
+    	$obj->setId($id);
+    	$obj->setParentObject($this);
+    	$obj->init();
+    	$this->_components[$id] = $obj;
+    }
+    /**
+	 * コンポーネントクラスを指定してadd
+	 *
+	 * @param $id SoyId
+	 * @param $className クラス名
+	 * @param $array = array()　setter injection
+	 * @see HTMLPage.add
+	 */
+	function createAdd(string $id, string $className, array $array=array()){
+		if(!isset($array["soy2prefix"]) && $this->_childSoy2Prefix) {
+			if(!is_array($array)) $array = array();
+			$array["soy2prefix"] = $this->_childSoy2Prefix;
+		}
+		$this->add($id,SOY2HTMLFactory::createInstance($className,$array));
+	}
+	function getStartTag(){
+    	return '<?php $'.$this->getId().' = $'.$this->getPageParam().'["'.$this->getId().'"]; ?>'.parent::getStartTag();
+    }
+	function getObject(){
+    	return $this->_tmpList;
+    }
+	function execute(){
+		$innerHTML = $this->getInnerHTML();
+		$tmpList = array();
+		foreach($this->_components as $key => $obj){
+			if($obj instanceof HTMLPage){
+				$obj->setParentPageParam($this->getId());
+    		}
+			$obj->setParentId($this->getId());
+			$obj->setPageParam($this->getId());
+			$obj->setContent($innerHTML);
+			$obj->execute();
+			$this->set($key,$obj,$tmpList);
+			if($innerHTML){
+				$innerHTML = $this->getContent($obj,$innerHTML);
+			}
+		}
+		$this->_tmpList = $tmpList;
+		$this->setInnerHTML($innerHTML);
+	}
+	function setChildSoy2Prefix($prefix){
+		$this->_childSoy2Prefix = $prefix;
+	}
+	function isMerge(){
+		return true;
+	}
+	/** PHP7.4対応 __call()の廃止 **/
+	function addForm(string $id, array $array=array()){self::createAdd($id, "HTMLForm", $array);}
+	function addUploadForm(string $id, array $array=array()){self::createAdd($id, "HTMLUploadForm", $array);}
+	function addModel(string $id, array $array=array()){self::createAdd($id, "HTMLModel", $array);}
+	function addLabel(string $id, array $array=array()){self::createAdd($id, "HTMLLabel", $array);}
+	function addImage(string $id, array $array=array()){self::createAdd($id, "HTMLImage", $array);}
+	function addLink(string $id, array $array=array()){self::createAdd($id, "HTMLLink", $array);}
+	function addActionLink(string $id, array $array=array()){self::createAdd($id, "HTMLActionLink", $array);}
+	function addInput(string $id, array $array=array()){
+		self::createAdd($id, "HTMLInput", $array);
+		self::addText($id, $array);
+	}
+	function addTextArea(string $id, array $array=array()){
+		self::createAdd($id, "HTMLTextArea", $array);
+		self::addText($id, $array);
+	}
+	function addCheckBox(string $id, array $array=array()){
+		self::createAdd($id, "HTMLCheckBox", $array);
+		self::addText($id, $array);
+	}
+	function addSelect(string $id, array $array=array()){
+		self::createAdd($id, "HTMLSelect", $array);
+		self::addText($id, $array);
+	}
+	function addHidden(string $id, array $array=array()){self::createAdd($id, "HTMLHidden", $array);}
+	function addScript(string $id, array $array=array()){self::createAdd($id, "HTMLScript", $array);}
+	function addCSS(string $id, array $array=array()){self::createAdd($id, "HTMLCSS", $array);}
+	function addCSSLink(string $id, array $array=array()){self::createAdd($id, "HTMLCSSLink", $array);}
+	function addText(string $id, array $array=array()){
+		$new = array();
+		if(isset($array["soy2prefix"]) && strlen($array["soy2prefix"])) $new["soy2prefix"] = $array["soy2prefix"];
+		$new["text"] = (isset($array["value"])) ? $array["value"] : "";
+		if(!strlen($new["text"]) && isset($array["text"]) && strlen($array["text"])) $new["text"] = $array["text"]; //addTextAreaの場合
+		self::createAdd($id. "_text", "HTMLLabel", $new);
+	}
+	function addList(string $id, array $array=array()){self::createAdd($id, "HTMLList", $array);}
+}
+/**
+ * @package SOY2.SOY2HTML
+ */
+class SOY2HTMLElement extends SOY2HTML{
+	const TEXT_ELEMENT = "_text_element_";
+	var $_elements = array();
+	var $_innerHTML;
+	var $_tag;
+	public static function &createElement($tag){
+		return SOY2HTMLFactory::createInstance("SOY2HTMLElement",array(
+			"elementTag" => $tag
+		));
+	}
+	public static function &createTextElement($text){
+		$ele =  SOY2HTMLFactory::createInstance("SOY2HTMLElement",array(
+			"elementTag" => SOY2HTMLElement::TEXT_ELEMENT
+		));
+		$ele->_innerHTML = htmlspecialchars($text, ENT_QUOTES, SOY2HTML::ENCODING);
+		return $ele;
+	}
+	public static function &createHtmlElement($html){
+		$ele =  SOY2HTMLFactory::createInstance("SOY2HTMLElement",array(
+			"elementTag" => SOY2HTMLElement::TEXT_ELEMENT
+		));
+		$ele->_innerHTML = $html;
+		return $ele;
+	}
+	function setElementTag($tag){
+		$this->_tag = $tag;
+	}
+	function getStartTag(){
+		return "";
+	}
+	function getEndTag(){
+		return "";
+	}
+	function setAttribute(string $key, string $value="", bool $flag=true){
+		$this->_attribute[$key] = $value;
+	}
+	function getObject(){
+		return $this->toHTML();
+	}
+	function toHTML(){
+		$this->tag = $this->_tag;
+		if($this->tag == SOY2HTMLElement::TEXT_ELEMENT){
+			return $this->_innerHTML;
+		}
+		$html = SOY2HTML::getStartTag();
+		$innerHTML = "";
+		foreach($this->_elements as $ele){
+			$innerHTML .= $ele->toHTML();
+		}
+		if(strlen($innerHTML)){
+			$html .= $innerHTML;
+			$html .= SOY2HTML::getEndTag();
+		}else{
+			$html = preg_replace('/>$/','/>',$html);
+		}
+		return $html;
+	}
+	function appendChild(SOY2HTMLElement &$ele){
+		$this->_elements[] = $ele;
+	}
+}
+/**
+ * @package SOY2.SOY2HTML
+ */
+class SOY2HTMLStyle{
+	var $_styles = array();
+	function __construct($style = ""){
+		$styles = (is_string($style) && strlen($style)) ? explode(";",$style) : array();
+		foreach($styles as $str){
+			if(!strstr($str,":"))continue;
+			$array = explode(":",$str,2);
+			$this->_styles[$array[0]] = $array[1];
+		}
+	}
+	function __toString(){
+		$style = '';
+		foreach($this->_styles as $key => $value){
+			if(!strlen($key) OR !strlen($value))continue;
+			$style .= "$key:$value;";
+		}
+		return $style;
+	}
+	function __set($key, $value){
+		//$key = preg_replace_callback('/[A-Z]/',create_function('$word','return \'-\'.strtolower($word[0]);'),$key);
+		$key = preg_replace_callback('/[A-Z]/', function($word) use ($key) { return '-'.strtolower($word[0]); }, $key);
+		$this->_styles[$key] = $value;
+	}
+	function __get($key){
+		//$key = preg_replace_callback('/[A-Z]/',create_function('$word','return \'-\'.strtolower($word[0]);'),$key);
+		$key = preg_replace_callback('/[A-Z]/', function($word) use ($key) { return '-'.strtolower($word[0]); }, $key);
+		return $this->_styles[$key];
+	}
+}
+/**
+ * @package SOY2.SOY2HTML
+ * 何もしないコンポーネント
+ */
+class HTMLModel extends SOY2HTML{
+	const SOY_TYPE = SOY2HTML::HTML_BODY;
+	function execute(){}
+	function getObject(){
+		return "";
+	}
+}
+/**
+ * @package SOY2.SOY2HTML
+ */
+class HTMLCSSLink extends SOY2HTML{
+	var $tag = "link";
+	const SOY_TYPE = SOY2HTML::SKIP_BODY;
+	var $link;
+	function setLink($link){
+		$this->link = $link;
+	}
+	function execute(){
+		$this->setAttribute("href", (string)$this->link);
+	}
+	function getObject(){
+		return $this->link;
+	}
+}
 /**
  * @package SOY2.SOY2HTML
  */
@@ -7748,7 +5657,556 @@ class HTMLScript extends SOY2HTML{
     	}
     }
 }
-/* SOY2HTML/SOY2HTMLComponents/HTMLTree.class.php */
+/**
+ * @package SOY2.SOY2HTML
+ */
+class HTMLList extends SOYBodyComponentBase{
+	var $list = array();
+	var $_list = array();
+	var $htmls = array();
+	var $_includeParentTag = true;
+	protected $_notMerge = false;
+	function setList($list){
+		if(!is_array($list)){
+			$list = (array)$list;
+		}
+		$this->list = $list;
+	}
+	function getStartTag(){
+		$this->_includeParentTag = $this->getAttribute("includeParentTag");
+		$this->clearAttribute("includeParentTag");
+		if($this->_includeParentTag){
+		 	return SOY2HTML::getStartTag() . "\n".'<?php $'.$this->getId().'_counter = -1; foreach($'.$this->getPageParam().'["'.$this->getId().'"] as $key => $'.$this->getId().'){ $'.$this->getId().'_counter++; ?>';
+		}else{
+		 return '<?php $'.$this->getId().'_counter = -1;foreach($'.$this->getPageParam().'["'.$this->getId().'"] as $key => $'.$this->getId().'){ $'.$this->getId().'_counter++; ?>'
+			 	. SOY2HTML::getStartTag();
+		}
+	}
+	function getEndTag(){
+		if($this->_includeParentTag){
+		 	return '<?php } ?>' . "\n" .SOY2HTML::getEndTag();
+		 }else{
+			return SOY2HTML::getEndTag() . '<?php } ?>';
+		}
+	}
+	function getObject(){
+		return $this->_list;
+	}
+	function execute(){
+		$innerHTML = $this->getInnerHTML();
+		$old = error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING);
+		$this->populateItemImpl(new HTMLList_DummyObject(),null,-1,count($this->list));
+		$this->addLabel("index", array("text" => ""));
+		$this->createAdd("loop","HTMLList_LoopModel",array("counter" => -1));
+		$this->addModel("at_first", array("visible" => false));
+		$this->addModel("not_first", array("visible" => false));
+		$this->addModel("at_last", array("visible" => false));
+		$this->addModel("not_last", array("visible" => false));
+		error_reporting($old);
+		parent::execute();
+		$counter = 0;
+		$length = count($this->list);
+		if($length > 0){
+			foreach($this->list as $listKey => $listObj){
+				$counter++;
+				$tmpList = array();
+				$res = $this->populateItemImpl($listObj,$listKey,$counter,$length);
+				$this->addLabel("index", array("text" => $counter));
+				$this->createAdd("loop","HTMLList_LoopModel",array("counter" => $counter));
+				$this->addModel("at_first", array("visible" => $counter == 1));
+				$this->addModel("not_first", array("visible" => $counter != 1));
+				$this->addModel("at_last", array("visible" => $counter == $length));
+				$this->addModel("not_last", array("visible" => $counter != $length));
+				if($res === false)continue;
+				foreach($this->_components as $key => $obj){
+					$obj->setContent($innerHTML);
+					$obj->execute();
+					$this->set($key,$obj,$tmpList);
+				}
+				$this->_list[$listKey] = $tmpList;//WebPage::getPage($this->getParentId());
+			}
+		}
+	}
+	function isMerge(){
+		return false;
+	}
+	function populateItemImpl($entity,$key,$counter,$length){
+		if(method_exists($this,"populateItem")){
+			return $this->populateItem($entity,$key,$counter,$length);
+		}
+		if($this->_soy2_functions["populateItem"]){
+			return $this->__call("populateItem",array($entity,$key,$counter,$length));
+		}
+		return null;
+	}
+}
+/**
+ * @package SOY2.SOY2HTML
+ */
+class HTMLList_DummyObject extends ArrayObject{
+	function __call($func,$args){
+		return new HTMLList_DummyObject();
+	}
+	function __get($key){
+		return new HTMLList_DummyObject();
+	}
+	function __toString(){
+		return "";
+	}
+}
+/**
+ * @package SOY2.SOY2HTML
+ */
+class HTMLList_LoopModel extends HTMLModel{
+	private $counter;
+	function getStartTag(){
+		$step = (int)$this->getAttribute("step");
+		$func ='<?php $'.$this->getId().'_loop_visible = !(boolean)'.$step.';' .
+				'if('.$step.')$'.$this->getId().'_loop_visible=(($'.$this->getPageParam().'_counter+1) % '.$step.' === 0); ' .
+		 		'if($'.$this->getId().'_loop_visible){ ?>';
+		$res = $func . parent::getStartTag();
+		return $res;
+	}
+	function getEndTag(){
+		return parent::getEndTag() . "<?php } ?>";
+	}
+	function setCounter($counter){
+		$this->counter = $counter;
+	}
+	function getCounter(){
+		return $this->counter;
+	}
+}
+/**
+ * @package SOY2.SOY2HTML
+ */
+class HTMLForm extends SOYBodyComponentBase{
+    var $tag = "form";
+    var $action;
+    var $_method = "post";
+	private $disabled;
+    function setTag($tag){
+    	throw new SOY2HTMLException("[HTMLForm]タグの書き換えは不可です。");
+    }
+    function setMethod($method){
+    	$this->_method = $method;
+    }
+    function setAction($action){
+    	$this->action = $action;
+    }
+    function setTarget($target){
+    	$this->setAttribute("target",$target);
+    }
+    function getStartTag(){
+    	if(strtolower($this->_method) == "post"){
+    		$token = '<input type="hidden" name="soy2_token" value="<?php echo soy2_get_token(); ?>" />';
+    		return parent::getStartTag() . $token;
+    	}
+    	return parent::getStartTag();
+    }
+    function execute(){
+		SOYBodyComponentBase::execute();
+		if(is_string($this->action)){
+			$this->setAttribute("action", $this->action);
+		}else if(isset($_SERVER["REQUEST_URI"])){
+			$this->setAttribute("action", $_SERVER["REQUEST_URI"]);
+		}
+		$this->setAttribute('method', (string)$this->_method);
+		$disabled = ($this->disabled) ? "disabled" : "";
+		$this->setAttribute("disabled",$disabled, false);
+    }
+    function setOnSubmit($value){
+    	if(!preg_match("/^javascript:/i",$value)){
+    		$value = "javascript:".$value;
+    	}
+    	$this->setAttribute("onsubmit", (string)$value);
+    }
+	function getDisabled() {
+		return $this->disabled;
+	}
+	function setDisabled($disabled) {
+		$this->disabled = $disabled;
+	}
+}
+/**
+ * @package SOY2.SOY2HTML
+ */
+class HTMLUploadForm extends HTMLForm{
+	private $accept;
+	function execute(){
+		parent::execute();
+		$this->setAttribute("enctype","multipart/form-data");
+		$accept = (is_string($this->accept)) ? trim($this->accept) : "";
+		$this->setAttribute("accept", $accept, false);
+	}
+}
+/**
+ * @package SOY2.SOY2HTML
+ */
+abstract class HTMLFormElement extends SOY2HTML{
+	var $name;
+	private $disabled;
+	private $readonly;
+	private $required;
+	private $placeholder;
+	private $pattern;
+	private $autocomplete;
+	function execute(){
+		parent::execute();
+		$disabled = (is_string($this->disabled) || (is_bool($this->disabled)) && $this->disabled) ? "disabled" : "";
+		$this->setAttribute("disabled", $disabled, false);
+		$readonly = (is_string($this->readonly) || (is_bool($this->readonly) && $this->readonly)) ? "readonly" : "";
+		$this->setAttribute("readonly", $readonly, false);
+		$required = (is_string($this->required) || (is_bool($this->required) && $this->required)) ? "required" : "";
+		$this->setAttribute("required", $required, false);
+		$placeholder = (is_string($this->placeholder)) ? trim($this->placeholder) : "";
+		$this->setAttribute("placeholder", $placeholder, false);
+		$pattern = (is_string($this->pattern)) ? trim($this->pattern) : "";
+		$this->setAttribute("pattern", $pattern, false);
+		$autocomplete = (is_string($this->autocomplete)) ? trim($this->autocomplete) : "";
+		$this->setAttribute("autocomplete", $autocomplete, false);
+	}
+	function setName($value){
+		$this->name = $value;
+		$this->setAttribute("name", $value);
+	}
+	function getDisabled() {
+		return $this->disabled;
+	}
+	function setDisabled($disabled) {
+		$this->disabled = $disabled;
+	}
+	function getReadonly() {
+		return $this->readonly;
+	}
+	function setReadonly($readonly) {
+		$this->readonly = $readonly;
+	}
+	function getRequired(){
+		return $this->required = $required;
+	}
+	function setRequired($required){
+		$this->required = $required;
+	}
+	function getPlaceholder(){
+		return $this->placeholder;
+	}
+	function setPlaceholder($placeholder){
+		$this->placeholder = $placeholder;
+	}
+	function getPattern(){
+		return $this->pattern;
+	}
+	function setPattern($pattern){
+		$this->pattern = $pattern;
+	}
+	function getAutocomplete(){
+		return $this->autocomplete;
+	}
+	function setAutocomplete($autocomplete){
+		$this->autocomplete = $autocomplete;
+	}
+}
+/**
+ * @package SOY2.SOY2HTML
+ */
+class HTMLInput extends HTMLFormElement{
+	const SOY_TYPE = SOY2HTML::SKIP_BODY;
+	var $tag = "input";
+	var $value;
+	var $type;
+	function setValue($value){
+		$this->value = $value;
+		$this->setAttribute("value", (string)$this->value);
+	}
+	function execute(){
+		parent::execute();
+	}
+	function getObject(){
+		return $this->value;
+	}
+	function setType($value){
+		$this->type = $value;
+		$this->setAttribute("type",$this->type);
+	}
+	function getType(){
+		return $this->type;
+	}
+}
+/**
+ * @package SOY2.SOY2HTML
+ */
+class HTMLHidden extends HTMLInput{
+	function execute(){
+		parent::execute();
+		$this->setAttribute("type","hidden");
+	}
+}
+/**
+ * @package SOY2.SOY2HTML
+ */
+class HTMLTextArea extends HTMLFormElement{
+	var $tag = "textarea";
+	const SOY_TYPE = SOY2HTML::HTML_BODY;
+	var $text;
+	function setText($value){
+		$this->text = $value;
+	}
+	function setValue($value){
+		$this->text = $value;
+	}
+	function getText(){
+		return (string) $this->text;
+	}
+	function getObject(){
+		return "\n".htmlspecialchars($this->getText(),ENT_QUOTES,SOY2HTML::ENCODING);
+	}
+}
+/**
+ * HTMLSelect
+ * @package SOY2.SOY2HTML
+ * 使い方
+ * <select soy:id="test_select"></select>
+ *
+ * $this->createAdd("test_select","HTMLSelect",array(
+ * 		"selected" => $selectedvalue,
+ * 		"options" => array(
+ * 			"りんご","みかん","マンゴー"
+ * 		),
+ * 		"each" => array(
+ * 			"onclick"=>"alert(this.value);"
+ * 		),
+ * 		"indexOrder" => $boolean,
+ * 		"name" => $name
+ * ));
+ *
+ * indexOrderがtrueの場合、またはoptionsに指定した配列が連想配列の場合は
+ * <option value="0">りんご</option>
+ * <option value="1">みかん</option>
+ * <option value="2">マンゴー</option>
+ * または
+ * <option value="apple">りんご</option>
+ * <option value="mandarin">みかん</option>
+ * <option value="mango">マンゴー</option>
+ * に展開されます。
+ *
+ * optionsに指定した配列が連想配列で無い場合（かつindexOrderがtrueでない場合）は
+ * <option>りんご</option>
+ * <option>みかん</option>
+ * <option>マンゴー</option>
+ * です。
+ *
+ * optionsを多重配列にすることで<optgroup>を指定できます。
+ *
+ * selectedを複数指定するときは配列にします。
+ */
+class HTMLSelect extends HTMLFormElement {
+	var $tag = "select";
+	const SOY_TYPE = SOY2HTML::HTML_BODY;
+	var $options;
+	var $selected;//複数指定するときは配列
+	private $multiple = false;
+	var $indexOrder = false;
+	var $property;
+	var $each = "";
+	function setOptions($options){
+		$this->options = $options;
+	}
+	function setSelected($selected){
+		$this->selected = $selected;
+	}
+	function getMultiple() {
+		return $this->multiple;
+	}
+	function setMultiple($multiple) {
+		$this->multiple = $multiple;
+	}
+	function setIndexOrder(){
+		$this->indexOrder = true;
+	}
+	function setProperty($name){
+		$this->property = $name;
+	}
+	function setEach($each){
+		if(is_array($each) && count($each)){
+			$attr = array();
+			foreach($each as $key => $value){
+				$attr[] = htmlspecialchars((string)$key, ENT_QUOTES,SOY2HTML::ENCODING).'="'.htmlspecialchars((string)$value, ENT_QUOTES,SOY2HTML::ENCODING).'"';
+			}
+			$this->each = implode(" ",$attr);
+		}
+	}
+	function execute(){
+		$innerHTML  = $this->getInnerHTML();
+		parent::execute();
+		$this->setInnerHTML($innerHTML.$this->getInnerHTML());
+		$multiple = ($this->multiple) ? "multiple" : "";
+		$this->setAttribute("multiple",$multiple, false);
+	}
+	function getObject(){
+		$first = (is_array($this->options) && count($this->options)) ? array_slice($this->options, 0, 1) : array();
+		if(is_array(array_shift($first))){
+			$twoDimensional = true;
+			$isHash = false;
+		}else{
+			$twoDimensional = false;
+			$isHash = (is_array($this->options) && array_keys($this->options) === range(0,count($this->options)-1)) ? false : true;
+		}
+		if($this->indexOrder){
+			$isHash = true;
+		}
+		$buff = "";
+		if($twoDimensional && is_array($this->options) && count($this->options)){
+			foreach($this->options as $key => $value){
+				if(is_array($value)){
+					$key = (string)$key;
+					$buff .= '<optgroup label="'.htmlspecialchars((string)$key, ENT_QUOTES,SOY2HTML::ENCODING).'">';
+					$buff .= $this->buildOptions($value, $isHash);
+					$buff .= '</optgroup>';
+				}else{
+					$buff .= $this->buildOption($key, $value, $isHash);
+				}
+			}
+		}else{
+			$buff .= $this->buildOptions($this->options, $isHash);
+		}
+		return $buff;
+	}
+	function buildOptions($options, $isHash){
+		$buff = "";
+		if(is_array($options) && count($options)){
+			foreach($options as $key => $value){
+				$buff .= $this->buildOption($key, $value, $isHash);
+			}
+		}
+		return $buff;
+	}
+	function buildOption($key, $value, $isHash){
+		$buff = "";
+		$selected = '';
+		$key = (string)$key;
+		if(is_object($value) && $this->property){
+			$propName = $this->property;
+			$funcName = "get" . ucwords($propName);
+			if(method_exists($value,$funcName)){
+				$value = $value->$funcName();
+			}else{
+				$value = $value->$propName;
+			}
+		}
+		if($isHash || !is_numeric($key)){
+			$selected = ($this->selected($key)) ? 'selected="selected"' : '';
+		}else{
+			$selected = ($this->selected($value)) ? 'selected="selected"' : '';
+		}
+		$attributes = "";
+		if(strlen($selected))   $attributes .= " ".$selected;
+		if(strlen($this->each)) $attributes .= " ".$this->each;
+		if($isHash || !is_numeric($key)){
+			$attributes .= ' value="'.htmlspecialchars((string)$key,ENT_QUOTES,SOY2HTML::ENCODING).'"';
+		}
+		$buff .= "<option".$attributes.">".htmlspecialchars((string)$value,ENT_QUOTES,SOY2HTML::ENCODING)."</option>";
+		return $buff;
+	}
+	/**
+	 * 値がselectedであるかどうか
+	 */
+	function selected($value){
+		if(is_array($this->selected)){
+			return in_array($value,$this->selected);
+		}else{
+			return ($value == $this->selected);
+		}
+	}
+	function setValue($value){
+		$this->setSelected($value);
+	}
+}
+/**
+ * HTMLCheckBox
+ *
+ * 使い方１
+ * <input type="checkbox" soy:id="soyid" />
+ * $this->createAdd("soyid", "HTMLCheckbox", array(
+ *  "label" => "LABEL",//<label for="thisid">LABEL</label>が自動的に生成される
+ * 	"selected" => true, //or false //checked="checked"生成
+ *  "isBoolean" => true, //<input type="hidden" value="0" />生成
+ * ));
+ *
+ * 使い方２
+ * <input type="checkbox" soy:id="soyid" id="checkboxid" /><label for="checkboxid">MY LABEL</label>
+ * $this->createAdd("soyid", "HTMLCheckbox", array(
+ * 	"elementId" => "checkboxid",
+ * 	"selected" => true, //or false
+ *  "isBoolean" => true,
+ * ));
+ */
+class HTMLCheckBox extends HTMLInput {
+	var $label;
+	var $elementId;
+	var $selected;
+	var $type = "checkbox";
+	var $isBoolean;
+	function setLabel($label){
+		$this->label = $label;
+	}
+	function setSelected($selected){
+		$this->selected = $selected;
+	}
+	function setElementId($elementId){
+		$this->elementId = $elementId;
+	}
+	function getStartTag(){
+		$zero = "";
+		$label = '<?php if(strlen($'.$this->getPageParam().'["'.$this->getId().'"])>0){ ?><label for="<?php echo $'.$this->getPageParam().'["'.$this->getId().'_attribute"]["id"]; ?>">'.
+			'<?php echo $'.$this->getPageParam().'["'.$this->getId().'"]; ?></label><?php } ?>';
+		if($this->isBoolean()){
+			$zero = '<input type="hidden" name="<?php echo $'.$this->getPageParam().'["'.$this->getId().'_attribute"]["name"]; ?>" value="0" />';
+		}
+		return $zero . parent::getStartTag() . $label;
+	}
+	function execute(){
+		parent::execute();
+		if(!is_string($this->elementId)) $this->elementId = "label_" . md5((string)$this->value.(string)$this->name.(string)rand(0,1));
+		$this->setAttribute("id",$this->elementId);
+		$checked = ($this->selected) ? "checked" : "";
+		$this->setAttribute("checked",$checked, false);
+	}
+	function getLabel(){
+		return (string) $this->label;
+	}
+	function getObject(){
+		return htmlspecialchars($this->getLabel(),ENT_QUOTES,SOY2HTML::ENCODING);
+	}
+	function setIsBoolean($flag){
+		$this->isBoolean = $flag;
+	}
+	function isBoolean(){
+		return (boolean)$this->isBoolean;
+	}
+}
+/**
+ * @package SOY2.SOY2HTML
+ */
+class HTMLImage extends SOY2HTML{
+    var $src;
+    const SOY_TYPE = SOY2HTML::SKIP_BODY;
+    function setSrc($path){
+    	$this->src = $path;
+    }
+    function setImagePath($path){
+    	$this->setSrc($path);
+    }
+    function execute(){
+    	$this->setAttribute("src", (string)$this->src);
+    }
+    function getObject(){
+    	return $this->src;
+    }
+    function setAlt($alt){
+    	$this->setAttribute("alt", (string)$alt);
+    }
+}
 class HTMLTreeComponent_Child extends HTMLModel{
 	private $func = "";
 	function getStartTag(){
@@ -7890,7 +6348,24 @@ class HTMLTree extends SOYBodyComponentBase{
     	$this->setTree($list);
     }
 }
-/* SOY2HTML/SOY2HTMLComponents/PluginBase.class.php */
+/**
+ * @package SOY2.SOY2HTML
+ */
+class HTMLCSS extends SOY2HTML{
+	var $tag = "style";
+	const SOY_TYPE = SOY2HTML::HTML_BODY;
+	var $text = "";
+	function execute(){
+		$this->setAttribute("type","text/css");
+		parent::execute();
+	}
+	function setStyle($text){
+		$this->text = $text;
+	}
+	function getObject(){
+		return $this->text;//htmlspecialchars((string)$this->text,ENT_QUOTES,SOY2HTML::ENCODING)
+	}
+}
 /**
  * @package SOY2.SOY2HTML
  */
@@ -8156,138 +6631,6 @@ class SOY2HTML_ControllPlugin extends PluginBase{
 		return  parent::getEndTag() . "<?php } ?>";
 	}
 }
-/* SOY2HTML/SOY2HTMLComponents/WebPage.class.php */
-/**
- * @package SOY2.SOY2HTML
- */
-class WebPage extends HTMLPage{
-	const SOY_TYPE = SOY2HTML::HTML_BODY;
-	function __construct(){
-		$this->init();
-		$this->prepare();
-	}
-	/**
-	 * prepareMethodにおいて
-	 * Post時はこちらが呼ばれます。
-	 *
-	 */
-	function doPost(){}
-	/**
-	 * doPostがよばれるように拡張
-	 */
-	function prepare(){
-		if($_SERVER['REQUEST_METHOD'] == 'POST'){
-			$this->doPost();
-		}
-		parent::prepare();
-	}
-	function getLayout(){
-		return "default.php";
-	}
-}
-/* SOY2HTML/SOY2HTMLComponents/functions.inc.php */
-function soy2html_layout_include($file){
-	$layoutDir = SOY2HTMLConfig::LayoutDir();
-	@include($layoutDir . $file);
-}
-function soy2html_layout_get($file){
-	try{
-		ob_start();
-		soy2html_layout_include($file);
-		$html = ob_get_contents();
-		ob_end_clean();
-		return $html;
-	}catch(Exception $e){
-		ob_end_flush();
-		throw $e;
-	}
-}
-/* SOY2Logic/SOY2Logic.php */
-/**
- * @package SOY2.SOY2Logic
- */
-interface SOY2LogicInterface{
-	public static function getInstance(string $className, array $args);
-}
-/**
- * @package SOY2.SOY2Logic
- */
-abstract class SOY2LogicBase implements SOY2LogicInterface{
-	public static function getInstance(string $className, array $args){
-		$obj = new $className();
-		foreach($args as $key => $value){
-			$method = "set".ucwords($key);
-			if(method_exists($obj,$method)){
-				$obj->$method($args[$key]);
-			}
-		}
-		return $obj;
-	}
-}
-/**
- * @package SOY2.SOY2Logic
- */
-class SOY2Logic{
-	public static function createInstance(string $classPath, array $array=array()){
-		if(!class_exists($classPath)){
-			if(SOY2::import($classPath) == false){
-				throw new Exception("Failed to include ".$classPath);
-			}
-		}
-		if(preg_match('/\.?([a-zA-Z0-9_]+$)/',$classPath,$tmp)){
-			$classPath = $tmp[1];
-		}
-		$refClass = new ReflectionClass($classPath);
-		$interfaces = $refClass->getInterfaces();
-		$flag = false;
-		if(array_key_exists("SOY2LogicInterface",$interfaces)){
-			$flag = true;
-		}else{
-			foreach($interfaces as $key => $interface){
-				if($interface->getName() == "SOY2LogicInterface"){
-					$flag = true;
-					break;
-				}
-			}
-		}
-		if(!$flag){
-			throw new Exception("[SOY2Logic]$classPath"." must be subclass of SOY2LogicBase.");
-		}
-		$method = $refClass->getMethod("getInstance");
-		return $method->invoke(NULL,$classPath,$array);
-	}
-}
-/**
- * @package SOY2.SOY2Logic
- */
-class SOY2LogicContainer {
-	private $logics = array();
-	private function __construct(){
-	}
-	public static function get(string $name, array $array=array()){
-		static $instance;
-		if(!$instance){
-			$instance = new SOY2LogicContainer;
-		}
-		return $instance->_get($name,$array);
-	}
-    private function _get(string $name, array $array=array()){
-    	if(isset($this->logics[$name])){
-    		$obj = $this->logics[$name];
-    	}else{
-    		$obj = SOY2Logic::createInstance($name,$array);
-    		$this->logics[$name] = $obj;
-    	}
-    	foreach($array as $key => $value){
-			$method = "set".ucwords($key);
-			if(method_exists($obj,$method)){
-				$obj->$method($array[$key]);
-			}
-		}
-		return $obj;
-    }
-}
-/* SOY2Logger/SOY2Logger.php */
 /**
  * @package SOY2.SOY2Logger
  */
@@ -8592,8 +6935,8 @@ class SOY2Logger_RotationFileLogger extends SOY2Logger_FileLogger{
 			$logs[] = $nextFilePath;
 		}
 		$logs = array_reverse($logs);
-		$logsCnt = count($logs)-1;
-		for($i=0;$i<$logsCnt;++$i){
+		$logCnt = count($logs) - 1;
+		for($i=0;$i<$logCnt;++$i){
 			@unlink($dirname.$logs[$i]);
 			rename($dirname.$logs[($i+1)],$dirname.$logs[$i]);
 		}
@@ -8638,7 +6981,1606 @@ class SOY2Logger_DateRotationFileLogger extends SOY2Logger_RotationFileLogger{
 		return $filepath . "_" . date("Ymd");
 	}
 }
-/* SOY2Plugin/SOY2Plugin.php */
+/**
+ * @package SOY2.SOY2Logic
+ */
+interface SOY2LogicInterface{
+	public static function getInstance(string $className, array $args);
+}
+/**
+ * @package SOY2.SOY2Logic
+ */
+abstract class SOY2LogicBase implements SOY2LogicInterface{
+	public static function getInstance(string $className, array $args){
+		$obj = new $className();
+		foreach($args as $key => $value){
+			$method = "set".ucwords($key);
+			if(method_exists($obj,$method)){
+				$obj->$method($args[$key]);
+			}
+		}
+		return $obj;
+	}
+}
+/**
+ * @package SOY2.SOY2Logic
+ */
+class SOY2Logic{
+	public static function createInstance(string $classPath, array $array=array()){
+		if(!class_exists($classPath)){
+			if(SOY2::import($classPath) == false){
+				throw new Exception("Failed to include ".$classPath);
+			}
+		}
+		if(preg_match('/\.?([a-zA-Z0-9_]+$)/',$classPath,$tmp)){
+			$classPath = $tmp[1];
+		}
+		$refClass = new ReflectionClass($classPath);
+		$interfaces = $refClass->getInterfaces();
+		$flag = false;
+		if(array_key_exists("SOY2LogicInterface",$interfaces)){
+			$flag = true;
+		}else{
+			foreach($interfaces as $key => $interface){
+				if($interface->getName() == "SOY2LogicInterface"){
+					$flag = true;
+					break;
+				}
+			}
+		}
+		if(!$flag){
+			throw new Exception("[SOY2Logic]$classPath"." must be subclass of SOY2LogicBase.");
+		}
+		$method = $refClass->getMethod("getInstance");
+		return $method->invoke(NULL,$classPath,$array);
+	}
+}
+/**
+ * @package SOY2.SOY2Logic
+ */
+class SOY2LogicContainer {
+	private $logics = array();
+	private function __construct(){
+	}
+	public static function get(string $name, array $array=array()){
+		static $instance;
+		if(!$instance){
+			$instance = new SOY2LogicContainer;
+		}
+		return $instance->_get($name,$array);
+	}
+    private function _get(string $name, array $array=array()){
+    	if(isset($this->logics[$name])){
+    		$obj = $this->logics[$name];
+    	}else{
+    		$obj = SOY2Logic::createInstance($name,$array);
+    		$this->logics[$name] = $obj;
+    	}
+    	foreach($array as $key => $value){
+			$method = "set".ucwords($key);
+			if(method_exists($obj,$method)){
+				$obj->$method($array[$key]);
+			}
+		}
+		return $obj;
+    }
+}
+class SOY2Mail {
+	/**
+	 *
+	 */
+    public static function create($type, $options = array()){
+		$mail = null;
+    	switch($type){
+    		case "imap":
+    			$mail = new SOY2Mail_IMAPLogic($options);
+    			break;
+    		case "pop":
+    			$mail = new SOY2Mail_POPLogic($options);
+    			break;
+    		case "smtp":
+    			$mail = new SOY2Mail_SMTPLogic($options);
+    			break;
+    		case "sendmail":
+    			$mail = new SOY2Mail_SendMailLogic($options);
+    			break;
+    		default:
+    			throw new SOY2MailException("[SOY2Mail]Invalid Logic type " . $type);
+    			break;
+    	}
+    	return $mail;
+    }
+    private $subject;
+    private $encodedSubject;
+    private $text;
+    private $encodedText;
+    private $attachments = array();
+    private $headers = array();
+    private $from = array();
+    private $recipients = array();
+    private $bccRecipients = array();
+    private $encoding = "UTF-8";
+    private $subjectEncoding = "ISO-2022-JP";
+    private $rawData = "";
+    function getSubject() {
+    	return $this->subject;
+    }
+    function setSubject($subject) {
+    	$this->subject = $subject;
+    	$this->encodedSubject = "";
+    }
+    function getEncodedSubject() {
+    	if(strlen($this->encodedSubject)<1){
+    		$this->encodedSubject = mb_encode_mimeheader($this->subject,
+				$this->getSubjectEncodingForConvert(),"B","\r\n",strlen("Subject: "));
+    	}
+    	return $this->encodedSubject;
+    }
+    function setEncodedSubject($encodedSubject) {
+    	$this->encodedSubject = $encodedSubject;
+    }
+    function getText() {
+    	return $this->text;
+    }
+    function setText($text, $encoding = null) {
+    	$this->text = $text;
+    	if(!$this->encodedText){
+    		if(!$encoding)$encoding = $this->getEncodingForConvert();
+    		$this->encodedText = mb_convert_encoding($text, $encoding);
+    	}
+    }
+    function getEncodedText() {
+    	return $this->encodedText;
+    }
+    function setEncodedText($encodedText) {
+    	$this->encodedText = $encodedText;
+    }
+    function getAttachments() {
+    	return $this->attachments;
+    }
+    function setAttachments($attachments) {
+    	$this->attachments = $attachments;
+    }
+    function getHeaders() {
+    	return $this->headers;
+    }
+    function setHeaders($headers) {
+    	$this->headers = $headers;
+    }
+    function getFrom() {
+    	return $this->from;
+    }
+    function setFrom($from, $label = null, $encoding = null) {
+		if(!$encoding)$encoding = $this->getEncoding();
+    	$this->from = new SOY2Mail_MailAddress($from, $label, $encoding);
+    }
+    function getRecipients() {
+    	return $this->recipients;
+    }
+    function setRecipients($recipients) {
+    	$this->recipients = $recipients;
+    }
+    function getEncodedRecipients() {
+    	return $this->encodedRecipients;
+    }
+    function setEncodedRecipients($encodedRecipients) {
+    	$this->encodedRecipients = $encodedRecipients;
+    }
+    /**
+     * 本文の文字コード
+     * 件名の文字コードは別のプロパティ：subjectEncoding
+     */
+	function getEncoding() {
+		return $this->encoding;
+	}
+	function setEncoding($encoding) {
+		$this->encoding = $encoding;
+	}
+	function getBccRecipients() {
+    	return $this->bccRecipients;
+    }
+    function setBccRecipients($bccRecipients) {
+    	$this->bccRecipients = $bccRecipients;
+    }
+    function getRawData(){
+    	return $this->rawData;
+    }
+    function setRawData($rawData){
+    	$this->rawData = $rawData;
+    }
+    /**
+     * 件名をリセットする
+     */
+    function clearSubject(){
+    	$this->subject = null;
+    	$this->encodedSubject = null;
+    }
+    /**
+     * 本文をリセットする
+     */
+    function clearText(){
+    	$this->text = null;
+    	$this->encodedText = null;
+    }
+    /**
+     * 受信者を追加する
+     */
+    function addRecipient($address, $label = null, $encoding = null){
+    	if(!$encoding)$encoding = $this->getEncoding();
+    	$recipient = new SOY2Mail_MailAddress($address, $label, $encoding);
+    	$this->recipients[$address] = $recipient;
+    	return $this;
+    }
+    /**
+     * 受信者を削除する
+     */
+    function removeRecipient($address){
+    	$this->recipients[$address] = null;
+    	unset($this->recipients[$address]);
+    }
+    /**
+     * 受信者をすべて削除する
+     */
+    function clearRecipients(){
+    	$this->recipients = array();
+    }
+    /**
+     * BCC受信者を追加する
+     */
+    function addBccRecipient($address, $label = null, $encoding = null){
+    	if(!$encoding)$encoding = $this->getEncoding();
+    	$recipient = new SOY2Mail_MailAddress($address, $label, $encoding);
+    	$this->bccRecipients[$address] = $recipient;
+    	return $this;
+    }
+    /**
+     * BCC受信者を削除する
+     */
+    function removeBccRecipient($address){
+    	$this->bccRecipients[$address] = null;
+    	unset($this->bccRecipients[$address]);
+    }
+    /**
+     * BCC受信者をすべて削除する
+     */
+    function clearBccRecipients(){
+    	$this->bccRecipients = array();
+    }
+    /**
+     * headerを追加する
+     */
+    function setHeader($key, $value){
+    	if(strlen($value)>0){
+	    	$this->headers[$key] = $value;
+    	}else{
+    		if(array_key_exists($key, $this->headers)){
+    			unset($this->headers[$key]);
+    		}
+    	}
+    	return $this;
+    }
+    /**
+     * ヘッダーを設定する
+     */
+    function getHeader($key){
+    	return (isset($this->headers[$key])) ? $this->headers[$key] : "";
+    }
+    /**
+     * ヘッダーをリセットする
+     */
+    function clearHeaders(){
+    	$this->headers = array();
+    }
+    /**
+     * 添付ファイルを追加する
+     */
+    function addAttachment($filename, $type, $contents){
+    	$this->attachments[$filename] = array(
+    		"filename" => $filename,
+    		"mime-type" => $type,
+    		"contents" => $contents
+    	);
+    }
+    /**
+     * 添付ファイルを削除する
+     */
+    function removeAttachment($filename){
+    	$this->attachments[$filename] = null;
+    	unset($this->attachments[$filename]);
+    }
+    /**
+     * 添付ファイルをすべて削除する
+     */
+    function clearAttachments(){
+    	$this->attachments = array();
+    }
+	/**
+	 * 件名の文字コード
+	 */
+    function getSubjectEncoding() {
+    	return $this->subjectEncoding;
+    }
+    function setSubjectEncoding($subjectEncoding) {
+    	$this->subjectEncoding = $subjectEncoding;
+    }
+    /**
+     * 文字コード変換のための本文の文字コード
+     */
+    function getEncodingForConvert(){
+    	return self::getPracticalEncoding($this->getEncoding());
+    }
+    /**
+     * 文字コード変換のための件名の文字コード
+     */
+    function getSubjectEncodingForConvert(){
+    	return self::getPracticalEncoding($this->getSubjectEncoding());
+    }
+    /**
+     * 文字コード変換に使用する文字コードを返す
+     * ヘッダーなどに記載する文字コードとは別の文字コードを変換に使用するために用意した
+     */
+    public static function getPracticalEncoding($encoding){
+    	switch(strtoupper($encoding)){
+    		case "ISO-2022-JP":
+    			/*
+    			 * 半角カナが文字化けしないように
+    			 * ISO-2022-JP: ASCII, JIS X 0201 のラテン文字, JIS X 0208
+    			 * JIS: ISO-2022-JPに加え、JIS X 0201の半角カナ, JIS X 0212
+    			 * ISO-2022-JP-MS: JISに加え、NEC特殊文字とNEC選定IBM拡張文字を扱える
+    			 *   http://legacy-encoding.sourceforge.jp/wiki/
+    			 */
+    			if(version_compare(PHP_VERSION,"5.2.1") >= 0){
+	    			return "ISO-2022-JP-MS";
+    			}else{
+	    			return "JIS";
+    			}
+    		default:
+    			return $encoding;
+    	}
+    }
+}
+class SOY2Mail_MailAddress{
+	private $address;
+	private $label;
+	private $encoding;
+	function __construct($address, $label = "", $encoding = ""){
+		$this->address = $address;
+		$this->label = $label;
+		$this->encoding = $encoding;
+	}
+	function getAddress() {
+		if(strpos($this->address, '"') === false && ( strpos($this->address, "..") !== false || strpos($this->address, ".@") !== false )){
+			list($local, $domain) = explode("@", $this->address);
+			$quoted = '"'.$local.'"@'.$domain;
+			return $quoted;
+		}else{
+			return $this->address;
+		}
+	}
+	function setAddress($address) {
+		$this->address = $address;
+	}
+	function getLabel() {
+		return $this->label;
+	}
+	function setLabel($label) {
+		$this->label = $label;
+	}
+	function getEncoding() {
+		return $this->encoding;
+	}
+	function setEncoding($encoding) {
+		$this->encoding = $encoding;
+	}
+    /**
+     * 文字コード変換のための文字コード
+     */
+    function getEncodingForConvert(){
+    	return SOY2Mail::getPracticalEncoding($this->getEncoding());
+    }
+    /**
+     * メールヘッダー記載用の文字列
+     * ダブルクオートは使わない
+     */
+	function getString(){
+		if(strlen($this->address)<1)return '';
+		if(strlen($this->label)<1)return '<' . $this->address . '>';
+		return mb_encode_mimeheader($this->label, $this->getEncodingForConvert()).' <'.$this->address.'>';
+	}
+	function __toString(){
+		return $this->getString();
+	}
+	/**
+	 * メールアドレスの書式チェック
+	 * @param string $email
+	 * @param boolean trueなら厳密なチェックを行なわない
+	 * @return boolean
+	 *
+	 * $lazy: true
+	 * @の前後に1文字以上、ドメイン部に.区切りの文字列があればOK
+	 * $lazy: false
+	 * 使える文字がRFC準拠。
+	 * ただしローカルパート部のドット「.」の連続や末尾のドットがあってもNGとはしない（docomoなどのRFC違反アドレスを許容する）。
+	 */
+	protected static function _validation($email, $lazy = false){
+		if($lazy){
+			$validEmail = "^.+\@[^.]+(?:\\.[^.]+)+\$";
+		}else{
+			$ascii  = '[a-zA-Z0-9!#$%&\'*+\-\/=?^_`{|}~.]';//'[\x01-\x7F]';
+			$domain = '(?:[-a-z0-9]+\.)+[a-z]{2,10}';//'([-a-z0-9]+\.)*[a-z]+';
+			$d3     = '\d{1,3}';
+			$ip     = $d3.'\.'.$d3.'\.'.$d3.'\.'.$d3;
+			$validEmail = "^$ascii+\@(?:$domain|\\[$ip\\])\$";
+		}
+		if(! preg_match('/'.$validEmail.'/i', $email) ) {
+			return false;
+		}
+		return true;
+	}
+	/**
+	 * メールアドレスの書式チェック（簡易）
+	 * @param string $email
+	 * @return boolean
+	 */
+	public static function simpleValidation($email){
+		return self::_validation($email, true);
+	}
+	/**
+	 * メールアドレスの書式チェック（やや厳密）
+	 * @param string $email
+	 * @return boolean
+	 */
+	public static function validation($email){
+		return self::_validation($email, false);
+	}
+}
+interface SOY2Mail_SenderInterface{
+	function open();
+	function send();
+	function close();
+}
+interface SOY2Mail_ReceiverInterface{
+	function open();
+	function receive();
+	function close();
+}
+class SOY2MailException extends Exception{}
+/**
+ * SOY2Mail 標準サーバ設定クラス
+ *
+ * SOY2Mail#importを使うにはSOY2が必要です。
+ */
+class SOY2Mail_ServerConfig {
+    const SERVER_TYPE_SMTP = 0;
+	const SERVER_TYPE_SENDMAIL = 2;
+	const RECEIVE_SERVER_TYPE_POP  = 0;
+	const RECEIVE_SERVER_TYPE_IMAP = 1;
+    private $sendServerType = SOY2Mail_ServerConfig::SERVER_TYPE_SENDMAIL;
+    private $isUseSMTPAuth = true;
+    private $isUsePopBeforeSMTP = false;
+    private $sendServerAddress = "localhost";
+    private $sendServerPort = 25;
+    private $sendServerUser = "";
+    private $sendServerPassword = "";
+    private $isUseSSLSendServer = false;
+    private $receiveServerType = SOY2Mail_ServerConfig::RECEIVE_SERVER_TYPE_POP;
+    private $receiveServerAddress = "localhost";
+    private $receiveServerPort = 110;
+    private $receiveServerUser = "";
+    private $receiveServerPassword = "";
+    private $isUseSSLReceiveServer = false;
+    private $fromMailAddress = "";
+    private $fromMailAddressName = "";
+    private $returnMailAddress = "";
+    private $returnMailAddressName = "";
+    private $encoding = "ISO-2022-JP";
+    /**
+     * 設定からSOY2Mailオブジェクトを生成する
+     */
+    function buildReceiveMail(){
+    	switch($this->receiveServerType){
+    		case self::RECEIVE_SERVER_TYPE_IMAP:
+    			$flag = null;
+    			if($this->getIsUseSSLReceiveServer())$flag = "ssl";
+    			return SOY2Mail::create("imap",array(
+    				"imap.host" => $this->getReceiveServerAddress(),
+    				"imap.port" => $this->getReceiveServerPort(),
+    				"imap.user" => $this->getReceiveServerUser(),
+    				"imap.pass" => $this->getReceiveServerPassword(),
+    				"imap.flag" => $flag
+    			));
+    			break;
+    		case self::RECEIVE_SERVER_TYPE_POP:
+    		default:
+    			$host = $this->getReceiveServerAddress();
+    			if($this->getIsUseSSLReceiveServer())$host =  "ssl://" . $host;
+    			return SOY2Mail::create("pop",array(
+    				"pop.host" => $host,
+    				"pop.port" => $this->getReceiveServerPort(),
+    				"pop.user" => $this->getReceiveServerUser(),
+    				"pop.pass" => $this->getReceiveServerPassword()
+    			));
+    			break;
+    	}
+    }
+    /**
+     * 設定からSOY2Mailオブジェクトを生成する
+     */
+    function buildSendMail(){
+    	$mail = null;
+    	switch($this->sendServerType){
+    		case self::SERVER_TYPE_SMTP:
+    			$host = $this->getSendServerAddress();
+    			if($this->getIsUseSSLSendServer())$host =  "ssl://" . $host;
+    			$mail = SOY2Mail::create("smtp",array(
+    				"smtp.host" => $host,
+    				"smtp.port" => $this->getSendServerPort(),
+    				"smtp.user" => $this->getSendServerUser(),
+    				"smtp.pass" => $this->getSendServerPassword(),
+    				"smtp.auth" => ($this->getIsUseSMTPAuth()) ? "PLAIN" : false
+    			));
+    			break;
+    		case self::SERVER_TYPE_SENDMAIL:
+    		default:
+    			$mail = SOY2Mail::create("sendmail",array());
+    			break;
+    	}
+    	if($mail){
+    		$mail->setEncoding($this->getEncoding());
+    		$mail->setSubjectEncoding($this->getEncoding());
+    		$mail->setFrom($this->getFromMailAddress(),$this->getFromMailAddressName());
+			if(strlen($this->getReturnMailAddress())>0){
+				$replyTo = new SOY2Mail_MailAddress($this->getReturnMailAddress(), $this->getReturnMailAddressName(), $this->getEncoding());
+				$mail->setHeader("Reply-To", $replyTo->getString());
+			}
+    	}
+    	return $mail;
+    }
+    /**
+     * export config
+     */
+    function export(){
+    	return base64_encode(addslashes(serialize($this)));
+    }
+    /**
+     * import config
+     */
+    function import($str){
+    	$obj = unserialize(stripslashes($str));
+    	if($obj && $obj instanceof SOY2Mail_ServerConfig){
+    		SOY2::cast($this,$obj);
+    	}else{
+    		throw new SOY2MailException("Failed to import");
+    	}
+    }
+    function getSendServerType() {
+    	return $this->sendServerType;
+    }
+    function setSendServerType($sendServerType) {
+    	$this->sendServerType = $sendServerType;
+    }
+    function getIsUseSMTPAuth() {
+    	return $this->isUseSMTPAuth;
+    }
+    function setIsUseSMTPAuth($isUseSMTPAuth) {
+    	$this->isUseSMTPAuth = $isUseSMTPAuth;
+    }
+    function getIsUsePopBeforeSMTP() {
+    	return $this->isUsePopBeforeSMTP;
+    }
+    function setIsUsePopBeforeSMTP($isUsePopBeforeSMTP) {
+    	$this->isUsePopBeforeSMTP = $isUsePopBeforeSMTP;
+    }
+    function getSendServerAddress() {
+    	return $this->sendServerAddress;
+    }
+    function setSendServerAddress($sendServerAddress) {
+    	$this->sendServerAddress = $sendServerAddress;
+    }
+    function getSendServerPort() {
+    	return $this->sendServerPort;
+    }
+    function setSendServerPort($sendServerPort) {
+    	$this->sendServerPort = $sendServerPort;
+    }
+    function getSendServerUser() {
+    	return $this->sendServerUser;
+    }
+    function setSendServerUser($sendServerUser) {
+    	$this->sendServerUser = $sendServerUser;
+    }
+    function getSendServerPassword() {
+    	return $this->sendServerPassword;
+    }
+    function setSendServerPassword($sendServerPassword) {
+    	$this->sendServerPassword = $sendServerPassword;
+    }
+    function getIsUseSSLSendServer() {
+    	return $this->isUseSSLSendServer;
+    }
+    function setIsUseSSLSendServer($isUseSSLSendServer) {
+    	$this->isUseSSLSendServer = $isUseSSLSendServer;
+    }
+    function getReceiveServerType() {
+    	return $this->receiveServerType;
+    }
+    function setReceiveServerType($receiveServerType) {
+    	$this->receiveServerType = $receiveServerType;
+    }
+    function getReceiveServerAddress() {
+    	return $this->receiveServerAddress;
+    }
+    function setReceiveServerAddress($receiveServerAddress) {
+    	$this->receiveServerAddress = $receiveServerAddress;
+    }
+    function getReceiveServerPort() {
+    	return $this->receiveServerPort;
+    }
+    function setReceiveServerPort($receiveServerPort) {
+    	$this->receiveServerPort = $receiveServerPort;
+    }
+    function getReceiveServerUser() {
+    	return $this->receiveServerUser;
+    }
+    function setReceiveServerUser($receiveServerUser) {
+    	$this->receiveServerUser = $receiveServerUser;
+    }
+    function getReceiveServerPassword() {
+    	return $this->receiveServerPassword;
+    }
+    function setReceiveServerPassword($receiveServerPassword) {
+    	$this->receiveServerPassword = $receiveServerPassword;
+    }
+    function getIsUseSSLReceiveServer() {
+    	return $this->isUseSSLReceiveServer;
+    }
+    function setIsUseSSLReceiveServer($isUseSSLReceiveServer) {
+    	$this->isUseSSLReceiveServer = $isUseSSLReceiveServer;
+    }
+    function getFromMailAddress() {
+    	return $this->fromMailAddress;
+    }
+    function setFromMailAddress($fromMailAddress) {
+    	$this->fromMailAddress = $fromMailAddress;
+    }
+    function getFromMailAddressName() {
+    	return $this->fromMailAddressName;
+    }
+    function setFromMailAddressName($fromMailAddressName) {
+    	$this->fromMailAddressName = $fromMailAddressName;
+    }
+    function getReturnMailAddress() {
+    	return $this->returnMailAddress;
+    }
+    function setReturnMailAddress($returnMailAddress) {
+    	$this->returnMailAddress = $returnMailAddress;
+    }
+    function getReturnMailAddressName() {
+    	return $this->returnMailAddressName;
+    }
+    function setReturnMailAddressName($returnMailAddressName) {
+    	$this->returnMailAddressName = $returnMailAddressName;
+    }
+    function getEncoding() {
+    	return $this->encoding;
+    }
+    function setEncoding($encoding) {
+    	$this->encoding = $encoding;
+    }
+}
+class SOY2Mail_POPLogic extends SOY2Mail implements SOY2Mail_ReceiverInterface{
+	private $con;
+	private $host;
+	private $port;
+	private $flag;
+	private $folder;
+	private $user;
+	private $pass;
+	function __construct($options){
+		if(!isset($options["pop.host"])){
+			throw new SOY2MailException("[pop.host] is necessary.");
+		}
+		if(!isset($options["pop.port"])){
+			throw new SOY2MailException("[pop.port] is necessary.");
+		}
+		if(!isset($options["pop.user"])){
+			throw new SOY2MailException("[pop.user] is necessary.");
+		}
+		if(!isset($options["pop.pass"])){
+			throw new SOY2MailException("[pop.pass] is necessary.");
+		}
+		$this->host = $options["pop.host"];
+		$this->port = $options["pop.port"];
+		if(isset($options["pop.flag"]))$this->flag = $options["pop.flag"];
+		if(isset($options["pop.folder"]))$this->folder = $options["pop.folder"];
+		$this->user = $options["pop.user"];
+		$this->pass = $options["pop.pass"];
+	}
+	function __destruct(){
+		if($this->con) $this->close();
+	}
+	function open(){
+		$this->con = fsockopen($this->host, $this->port, $errono, $errnstr);
+		if(!$this->con){
+			$this->close();
+			throw new SOY2MailException("failed to connect");
+		}
+		$buff = $this->popCommand("USER ".$this->user);
+		if(!$buff)throw new SOY2MailException("Failed to connect pop server");
+		$buff = $this->popCommand("PASS ".$this->pass);
+		if(!$buff)throw new SOY2MailException("Failed to connect pop server");
+	}
+	function close(){
+		if($this->con){
+			$this->popCommand("QUIT");
+			fclose($this->con);
+			$this->con = null;
+		}
+	}
+	function receive(){
+		if(!$this->con)$this->open();
+		$res = $this->popCommand("LIST");
+		if(!$res)throw new SOY2MailException("failed to open Receive Server");
+		$mailId = null;
+		while(true){
+			$buff = $this->getPopResponse();
+			if($buff == ".")break;
+			$array = explode(" ",$buff);
+			if(!is_numeric($array[0]))continue;
+			if(!$mailId)$mailId = $array[0];
+		}
+		if(!$mailId)return false;
+		$res = $this->popCommand("RETR ".$mailId);
+		$flag = false;
+		$header = "";
+		$body = "";
+		$encoding = "JIS";
+		$headers = array();
+		$mail = new SOY2Mail();
+		while(true){
+			$buff = $this->getPopResponse();
+			if($buff == ".")break;
+			if(!$flag && strlen($buff)==0){
+				$flag = true;
+				continue;
+			}
+			if(strpos($buff,"..")===0){
+				$buff = substr($buff,1);
+			}
+			if($flag){
+				$body .= $buff . "\r\n";
+			}else{
+				$header .= $buff . "\r\n";
+			}
+		}
+		$this->popCommand("DELE " . $mailId);
+		$mail->setRawData($header."\r\n".$body);
+		$headers = $this->parseHeaders($header);
+		if(isset($headers["Content-Type"]) && preg_match("/boundary=\"?(.*?)\"?/",$headers["Content-Type"], $tmp)){
+			$boundary = $tmp[1];
+			$bodies = explode("--". $boundary, $body);
+			$attachCount = count($bodies);
+			for($i=0;$i<$attachCount;++$i){
+				$tmpHeader = substr($bodies[$i], 0, strpos($bodies[$i], "\r\n\r\n"));
+				$tmpBody = substr($bodies[$i], strpos($bodies[$i], "\r\n\r\n")+4);
+				$tmpHeaders = $this->parseHeaders($tmpHeader);
+				if(isset($tmpHeaders["Content-Disposition"]) && preg_match("/filename.*=(.*)/",$tmpHeaders["Content-Disposition"], $tmp)){
+					$filename = preg_replace('/["\']/',"",$tmp[1]);
+					$mail->addAttachment($filename, "", base64_decode($tmpBody));
+					continue;
+				}
+				if(isset($tmpHeaders["Content-Type"]) && preg_match("/charset=(.*)/",$tmpHeaders["Content-Type"],$tmp)){
+					$encoding = $tmp[1];
+					$body = $tmpBody;
+				}
+			}
+		}else{
+			if(isset($headers["Content-Type"]) && preg_match("/charset=(.*)/",$headers["Content-Type"],$tmp)){
+				$encoding = $tmp[1];
+			}
+		}
+		if(isset($headers["From"])){
+			$from = explode(",",$headers["From"]);
+			$from = trim($from[0]);
+			if(preg_match('/"?(.*?)"?\s*<?(.+@.+)>?/',$from,$tmp)){
+				$label = mb_decode_mimeheader($tmp[1]);
+				$address = $tmp[2];
+				$mail->setFrom($address, $label);
+			}
+		}
+		if(isset($headers["To"])){
+			$toes = explode(",",$headers["To"]);
+			foreach($toes as $to){
+				$to = trim($to);
+				if(preg_match('/"?(.*?)"?\s?<?(.+@.+)>?/',$to,$tmp)){
+					$label = mb_decode_mimeheader($tmp[1]);
+					$address = $tmp[2];
+					$mail->addRecipient($address, $label);
+				}
+			}
+		}
+		if(isset($headers["Subject"])){
+			$mail->setSubject(mb_decode_mimeheader(@$headers["Subject"]));
+		}
+		$mail->setHeaders($headers);
+		$mail->setEncodedText($body);
+		$mail->setText(mb_convert_encoding($body,"UTF-8",$encoding));
+		$mail->setEncoding($encoding);
+		return $mail;
+	}
+	function popCommand($string){
+		fputs($this->con, $string."\r\n");
+  		$buff = fgets($this->con);
+		if(strpos($buff,"+OK") == 0){
+			return $buff;
+		}else{
+			return false;
+		}
+	}
+	function getPopResponse(){
+		$buff = fgets($this->con);
+		$buff = rtrim($buff, "\r\n");
+		return $buff;
+	}
+	/**
+	 * 受信メッセージのヘッダーを解析し配列にする
+	 */
+	function parseHeaders($header){
+		$headers = array();
+		$header = preg_replace("/\r\n[ \t]+/", ' ', $header);
+		$raw_headers = explode("\r\n", $header);
+		foreach($raw_headers as $value){
+			$name  = substr($value, 0, $pos = strpos($value, ':'));
+			$value = ltrim(substr($value, $pos + 1));
+			if (isset($headers[$name]) AND is_array($headers[$name])) {
+				$headers[$name][] = $value;
+			} elseif (isset($headers[$name])) {
+				$headers[$name] = array($headers[$name], $value);
+			} else {
+				$headers[$name] = $value;
+			}
+		}
+		return $headers;
+	}
+}
+class SOY2Mail_IMAPLogic extends SOY2Mail implements SOY2Mail_ReceiverInterface{
+	private $con;
+	private $host;
+	private $port;
+	private $flag;
+	private $folder;
+	private $user;
+	private $pass;
+	function __construct($options) {
+		if(!function_exists("imap_open")){//extension_loaded("imap")
+			throw new SOY2MailException("The extension 'imap' is necessary.");
+		}
+		if(!isset($options["imap.host"])){
+			throw new SOY2MailException("[imap.host] is necessary.");
+		}
+		if(!isset($options["imap.port"])){
+			throw new SOY2MailException("[imap.port] is necessary.");
+		}
+		if(!isset($options["imap.user"])){
+			throw new SOY2MailException("[imap.user] is necessary.");
+		}
+		if(!isset($options["imap.pass"])){
+			throw new SOY2MailException("[imap.pass] is necessary.");
+		}
+		$this->host = $options["imap.host"];
+		$this->port = $options["imap.port"];
+		if(isset($options["imap.flag"]))$this->flag = $options["imap.flag"];
+		if(isset($options["imap.folder"]))$this->folder = $options["imap.folder"];
+		$this->user = $options["imap.user"];
+		$this->pass = $options["imap.pass"];
+	}
+	function __destruct(){
+		if($this->con) $this->close();
+	}
+	function open(){
+		$host = $this->host;
+		$host .= ":" . $this->port;
+		if($this->flag)$host .= "/" . $this->flag;
+		$this->con = imap_open("{" . $host . "}" . $this->folder, $this->user, $this->pass);
+		if($this->con === false){
+			throw new SOY2MailException("imap_open(): login failed");
+		}
+	}
+	function close(){
+		imap_close($this->con);
+		$this->con = null;
+	}
+	function receive(){
+		if(!$this->con)$this->open();
+		$unseen = imap_search($this->con, "UNSEEN");
+		if($unseen == false){
+			return false;
+		}
+		$mail = new SOY2Mail();
+		$i = array_shift($unseen);
+		$head = imap_headerinfo($this->con, $i);
+		$title = mb_decode_mimeheader(@$head->subject);
+		$rawHeader = imap_fetchheader($this->con, $i);
+		$mail->setRawData($rawHeader.imap_body($this->con, $i));
+		$Structure = imap_fetchstructure($this->con, $i);	//メール構造読み込み
+		$mimeType = $this->getMimeType($Structure->type,$Structure->subtype);	//メールタイプ読み込み
+		if(strpos($mimeType,"multipart") !== false && count($Structure->parts)>1){
+			$numberOfParts = count($Structure->parts);	//添付ファイルの数数え
+			for($j=1; $j<$numberOfParts; $j++){
+				$part = $Structure->parts[$j];
+				if($part->ifdparameters){
+					$filename = $this->getParameterValue($part->dparameters,"filename");
+				}
+				if(!$filename && $part->ifparameters){
+					$filename = $this->getParameterValue($part->parameters,"name");
+				}
+				if($filename){
+					$attachmentName = $filename;	//添付ファイル名読み込み
+					$attachmentName = mb_encode_mimeheader($attachmentName);//日本語名だったらエンコード
+				}else{
+					$attachmentName = "file-".$i."-".$j;
+				}
+				$attachmentFile = imap_fetchbody ($this->con,$i,$j+1);	//添付部分取り出し
+				$attachmentFile = imap_base64 ($attachmentFile);		//デコード
+				$mail->addAttachment($attachmentName, $this->getMimeType($part->type,$part->subtype), $attachmentFile);
+			}
+			$body = imap_fetchbody($this->con, $i, 1);
+			if($encoding = $this->getParameterValue($Structure->parts[0]->parameters,"charset")){
+				$mail->setEncoding($encoding);
+			}else{
+				$encoding = null;
+			}
+		}else{
+			if($encoding = $this->getParameterValue($Structure->parameters,"charset")){
+				$mail->setEncoding($encoding);
+			}else{
+				$encoding = null;
+			}
+			$body = imap_body($this->con, $i);
+		}
+		imap_setflag_full($this->con, $i, "\\Seen");
+		$from = $head->from[0];
+		$mail->setFrom($from->mailbox . "@" . $from->host, @$from->personal);
+		$to = $head->to[0];
+		$mail->addRecipient($to->mailbox . "@" . $to->host, @$to->personal);
+		$mail->setSubject($title);
+		$mail->setEncodedText($body);
+		if($encoding){
+			$mail->setText(mb_convert_encoding($body,"UTF-8",$encoding));
+		}else{
+			$mail->setText(mb_convert_encoding($body,"UTF-8","JIS,SJIS,EUC-JP,UTF-8,ASCII"));
+		}
+		$mail->setHeaders((array)$head);
+		return $mail;
+	}
+	/**
+	 * imap_fetchstructureの返り値のオブジェクトのtypeとsubtypeからMIME-Typeをテキストで返す
+	 */
+	function getMimeType($type, $subType){
+		$mimeType = "";
+		switch($type){
+			case 0:
+				$mimeType = "text";
+				break;
+			case 1:
+				$mimeType = "multipart";
+				break;
+			case 2:
+				$mimeType = "message";
+				break;
+			case 3:
+				$mimeType = "application";
+				break;
+			case 4:
+				$mimeType = "audio";
+				break;
+			case 5:
+				$mimeType = "image";
+				break;
+			case 6:
+				$mimeType = "video";
+				break;
+			case 7:
+				$mimeType = "other";
+				break;
+		}
+		if(strlen($subType)){
+			$mimeType .= "/".strtolower($subType);
+		}
+		return $mimeType;
+	}
+	/**
+	 * imap_fetchstructureの返り値のオブジェクトのparametersから欲しいattributeの値を返す
+	 */
+	function getParameterValue($parameters, $attribute){
+		$attribute = strtolower($attribute);
+		foreach($parameters as $param){
+			if(strtolower($param->attribute) == $attribute){
+				return $param->value;
+			}
+		}
+		return false;
+	}
+	function getCon() {
+		return $this->con;
+	}
+	function setCon($con) {
+		$this->con = $con;
+	}
+	function getHost() {
+		return $this->host;
+	}
+	function setHost($host) {
+		$this->host = $host;
+	}
+	function getPort() {
+		return $this->port;
+	}
+	function setPort($port) {
+		$this->port = $port;
+	}
+	function getFlag() {
+		return $this->flag;
+	}
+	function setFlag($flag) {
+		$this->flag = $flag;
+	}
+	function getUser() {
+		return $this->user;
+	}
+	function setUser($user) {
+		$this->user = $user;
+	}
+	function getPass() {
+		return $this->pass;
+	}
+	function setPass($pass) {
+		$this->pass = $pass;
+	}
+}
+class SOY2Mail_SendMailLogic extends SOY2Mail implements SOY2Mail_SenderInterface{
+    function __construct($options) {
+    }
+    function open(){}
+    function close(){}
+    function send(){
+    	$bccRecipients = $this->getBccRecipients();
+    	$recipients = $this->getRecipients();
+		foreach($recipients as $recipient){
+			$this->sendMail($recipient, $bccRecipients);
+		}
+    }
+    function sendMail($sendTo,$bccRecipients = array()){
+		$to = $sendTo->getString();
+		$from = $this->getFrom();
+		$title = $this->getEncodedSubject();
+		$body = $this->getEncodedText();
+		$headers = array();
+		$_headers = $this->getHeaders();
+		foreach($_headers as $key => $value){
+			if( "Content-Type" == $key ){ continue; }
+			$headers[] = "$key: $value";
+		}
+		$headers[] = "MIME-Version: 1.0" ;
+		$headers[] = "From: " . $from->getString();
+		$attachments = $this->getAttachments();
+		if(count($attachments)<1){
+			if(isset($_headers["Content-Type"])){
+				$headers[] = "Content-Type: ".$_headers["Content-Type"];
+			}else{
+				$headers[] = "Content-Type: text/plain; charset=".$this->getEncoding();
+			}
+		}else{
+			$boundary = "----------" . md5(time());
+			$headers[] = "Content-Type: multipart/mixed;  boundary=\"$boundary\"";
+			$_body = "--" . $boundary . "\r\n";
+			if(isset($_headers["Content-Type"])){
+				$_body .= "Content-Type: ".$_headers["Content-Type"] . "\r\n";
+			}else{
+				$_body .= "Content-Type: text/plain; charset=".$this->getEncoding()."" . "\r\n";
+			}
+			$body = $_body . "\r\n" . $body . "\r\n";
+			foreach($attachments as $filename => $attachment){
+				if( !isset($attachment["contents"]) ){ continue; }
+				$body .= "--" . $boundary . "\r\n";
+				if( !isset($attachment["mime-type"]) || strlen($attachment["mime-type"]) <1 ){
+					$attachment["mime-type"] = "application/octet-stream";
+				}
+				$body .= "Content-Type: ".$attachment["mime-type"].";"."\r\n".
+				         " name=\"".mb_encode_mimeheader($filename)."\"" . "\r\n";
+				$body .= "Content-Disposition: inline;"."\r\n".
+				         " filename=\"".mb_encode_mimeheader($filename)."\"" . "\r\n";
+				$body .= "Content-Transfer-Encoding: base64" . "\r\n";
+				$body .= "\r\n";
+				$body .= wordwrap(base64_encode($attachment["contents"]),72, "\r\n", true) . "\r\n";
+			}
+			$body .= "--" . $boundary . "--";
+		}
+		/**
+		 * RFC2821 4.5.2：SMTPクライアントは .から始まる行に.を付加し、サーバーは .から始まる行の.を除去する
+		 * ただし、sendmailに渡す場合は「.」の処理はsendmailがやってくれる。
+		 * Windows版mail()ではPHPがSMTP通信を行うが「.」の処理はPHP側がやってくれる。
+		 */
+		/**
+		 * 改行コードはLF（Windows版mail()はSMTP通信を行うのでCRLF）を使う
+		 *
+		 * PHPマニュアルにはヘッダーの改行コードはCRLFとあるがこれは間違い。
+		 * mail()の改行コードの扱いは問題がある。
+		 * Manual: http://jp2.php.net/manual/ja/function.mail.php
+		 * Bug report: http://bugs.php.net/15841
+		 * http://www.webmasterworld.com/forum88/4368.htm
+		 *
+		 * RFC2822ではメールの改行コードはCRLFだが、
+		 * *nix版PHPのmailはSMTP通信を行うのではなくsendmailコマンドを使うため
+		 * ローカル環境の改行コードを使って値を渡すのが正しいとも言える。
+		 * そのためmail()内部ではadditional_headerとTo:, Subject, 本文をLFで結合している。
+		 * メール末尾もLF.LFとなっている。
+		 *
+		 * 改行コードをLFに統一してもmail()にはまだ問題がある。
+		 * CRLF＋スペースorタブ以外の制御コードはいったんスペースに置換しているようで、
+		 * ヘッダーのfoldingのためのLF+スペースがスペース＋スペースに置換されたまま戻らなくなってしまう。
+		 * http://www.pubbs.net/php/200908/44353/
+		 * RFC2822では一行は998文字までがMUST、78文字はSHOULDなのでRFC違反ではない。
+		 *
+		 * ただし、改行コードがLFのメールをsendmailに渡してもCRLFに変換してくれないことが
+		 * 多いようなので、改行コードについてはRFC違反となる。
+		 * が、CRLFとLFが混在するよりはましなので、LFで統一することにする。
+		 */
+		$title = str_replace(array("\r\n", "\r"), "\n", $title);
+		$body = str_replace(array("\r\n", "\r"), "\n", $body);
+		$to = str_replace(array("\r\n", "\r"), "\n", $to);
+		$headersText = implode("\n",$headers);
+		if($this->isWindows()){
+			$title = str_replace("\n", "\r\n", $title);
+			$body = str_replace("\n", "\r\n", $body);
+			$to = str_replace("\n", "\r\n", $to);
+			$headersText = implode("\r\n",$headers);
+		}
+		$sendmail_params  = "-f".$from->getAddress();
+		mail($to, $title, $body, $headersText, $sendmail_params);
+		if(count($bccRecipients) >0){
+			$headers[] = "X-To: ".$sendTo->getString();
+			if($this->isWindows()){
+				$headersText = implode("\r\n",$headers);
+			}else{
+				$headersText = implode("\n",$headers);
+			}
+			foreach($bccRecipients as $bccSendTo){
+				$to = $bccSendTo->getString();
+				$to = str_replace(array("\r\n", "\r"), "\n", $to);
+				if(isset($_SERVER["WINDIR"]) || isset($_SERVER["windir"])){
+					$to = str_replace("\n", "\r\n", $to);
+				}
+				mail($to, $title, $body, $headersText, $sendmail_params);
+			}
+		}
+    }
+    /**
+     * OSがWindowsかどうかを返す
+     */
+    private function isWindows(){
+		if(isset($_SERVER["WINDIR"]) || isset($_SERVER["windir"])){
+			return true;
+		}elseif(isset($_SERVER["SystemRoot"]) && strpos(strtolower($_SERVER["SystemRoot"]),"windows") !== false){
+			return true;
+		}elseif(isset($_SERVER["SYSTEMROOT"]) && strpos(strtolower($_SERVER["SYSTEMROOT"]),"windows") !== false){
+			return true;
+		}else{
+			return false;
+		}
+    }
+}
+class SOY2Mail_SMTPLogic extends SOY2Mail implements SOY2Mail_SenderInterface{
+	private $con;
+	private $host;
+	private $port;
+	private $isSMTPAuth = false;
+	private $isStartTLS = false;
+	private $user;
+	private $pass;
+	private $debugHTML = false;
+	private $debug = false;
+	private $esmtpOptions = array();
+	private $isSecure = false;
+	function __construct($options){
+		if(!isset($options["smtp.host"])){
+			throw new SOY2MailException("[smtp.host] is necessary.");
+		}
+		if(!isset($options["smtp.port"])){
+			throw new SOY2MailException("[smtp.port] is necessary.");
+		}
+		$this->host = $options["smtp.host"];
+		$this->port = $options["smtp.port"];
+		$this->isSMTPAuth = (isset($options["smtp.auth"])) ? $options["smtp.auth"] : false;
+		$this->isStartTLS = (isset($options["smtp.starttls"])) ? $options["smtp.starttls"] : false;
+		$this->user =  (isset($options["smtp.user"])) ? $options["smtp.user"] : null;
+		$this->pass =  (isset($options["smtp.pass"])) ? $options["smtp.pass"] : null;
+		if(isset($options["debug"]) && $options["debug"]){
+			if(isset($_SERVER["REMOTE_ADDR"])){
+				$this->debugHTML = true;
+			}else{
+				$this->debug = true;
+			}
+		}
+	}
+	function open(){
+		$this->con = fsockopen($this->host, $this->port, $errono, $errnstr, 60);
+		if(!$this->con){
+			$this->close();
+			throw new SOY2MailException("failed to connect");
+		}
+		stream_set_timeout($this->con, 1);
+		$buff = $this->getSmtpResponse();
+		if(substr($buff,0,3) != "220"){
+			throw new SOY2MailException("failed to receive greeting message.");
+		}
+		$this->ehlo();
+		if(stripos($this->host, 'ssl://') === 0 || stripos($this->host, 'tls://') === 0){
+			$this->isSecure = true;
+		}elseif(
+			$this->isStartTLS &&//使う設定
+			function_exists("openssl_open") &&//OpenSSLが利用可能 extension_loaded("openssl")
+			function_exists("stream_socket_enable_crypto") &&//PHP 5.1.0以上
+			isset($this->esmtpOptions['STARTTLS'])//STARTTLSが利用可能
+		){
+			if( $this->startTLS() ){
+				$this->isSecure = true;
+				$this->ehlo();
+			}
+		}
+		if($this->isSMTPAuth && isset($this->esmtpOptions["AUTH"]) && is_array($this->esmtpOptions["AUTH"])){
+			$authTypes = $this->esmtpOptions["AUTH"];
+			/** CRAM-MD5を最優先にしてDIGEST-MD5の優先度を下げる **/
+			if(in_array("CRAM-MD5",$authTypes)){
+				$this->smtpCommand("AUTH CRAM-MD5");
+				$buff = $this->getSmtpResponse();
+				if(strlen($buff) < 5 || substr($buff,0,3) != "334") throw new SOY2MailException("smtp login failed");
+				$challenge = base64_decode(substr(($buff),4));
+				$response = SOY2Mail_SMTPAuth_CramMD5::getResponse($this->user,$this->pass,$challenge);
+				$this->smtpCommand(base64_encode($response));
+				while(true){
+					$buff = $this->getSmtpResponse();
+					if(substr($buff,0,3) == "235") break;
+					if(substr($buff,0,3) == "501") throw new SOY2MailException("smtp login failed: wrong parameter");
+					if(substr($buff,0,3) == "535") throw new SOY2MailException("smtp login failed: wrong id or password");
+				}
+			}else if(in_array("DIGEST-MD5",$authTypes)){
+				$hostname = str_replace("ssl://", "", $this->host);
+				$this->smtpCommand("AUTH DIGEST-MD5");
+				$buff = $this->getSmtpResponse();
+				if(strlen($buff) < 5 || substr($buff,0,3) != "334") throw new SOY2MailException("smtp login failed");
+				$challenge = base64_decode(substr(trim($buff),4));
+				$response = SOY2Mail_SMTPAuth_DigestMD5::getResponse($this->user,$this->pass,$challenge,$hostname);
+				$this->smtpCommand(base64_encode($response));
+				while(true){
+					$buff = $this->getSmtpResponse();
+					if(substr($buff,0,3) == "334") break;
+					if(substr($buff,0,3) == "501") throw new SOY2MailException("smtp login failed: wrong parameter");
+					if(substr($buff,0,3) == "535") throw new SOY2MailException("smtp login failed: wrong id or password");
+				}
+				$this->smtpCommand("");
+				while(true){
+					$buff = $this->getSmtpResponse();
+					if(substr($buff,0,3) == "235") break;
+					if(substr($buff,0,3) == "501") throw new SOY2MailException("smtp login failed: wrong parameter");
+					if(substr($buff,0,3) == "535") throw new SOY2MailException("smtp login failed: wrong id or password");
+				}
+			}elseif(in_array("PLAIN",$authTypes)){
+				$this->smtpCommand("AUTH PLAIN ".base64_encode(
+					$this->user . "\0" .
+					$this->user . "\0" .
+					$this->pass ));
+				while(true){
+					$buff = $this->getSmtpResponse();
+					if(substr($buff,0,3) == "235") break;
+					if(substr($buff,0,3) == "501") throw new SOY2MailException("smtp login failed: wrong parameter");
+					if(substr($buff,0,3) == "535") throw new SOY2MailException("smtp login failed: wrong id or password");
+				}
+			}elseif(in_array("LOGIN",$authTypes)){
+				$this->smtpCommand("AUTH LOGIN");
+				$buff = $this->getSmtpResponse();
+				if(substr($buff,0,3) != "334") throw new SOY2MailException("smtp login failed");
+				$this->smtpCommand(base64_encode($this->user));
+				$buff = $this->getSmtpResponse();
+				if(substr($buff,0,3) != "334") throw new SOY2MailException("smtp login failed");
+				$this->smtpCommand(base64_encode($this->pass));
+				while(true){
+					$buff = $this->getSmtpResponse();
+					if(substr($buff,0,3) == "235") break;
+					if(substr($buff,0,3) == "501") throw new SOY2MailException("smtp login failed: wrong parameter");
+					if(substr($buff,0,3) == "535") throw new SOY2MailException("smtp login failed: wrong id or password");
+				}
+			}else{
+			}
+		}
+	}
+	function ehlo(){
+		$this->smtpCommand("EHLO ". php_uname("n"));// gethostname php_uname("n") $_SERVER["HOSTNAME"]
+		$buff = $this->getSmtpResponse();//最初はドメイン
+		while(strlen($buff) && substr($buff,0,4) != "250 "){
+			$buff = $this->getSmtpResponse();
+			if(preg_match("/^250[- ]([-A-Z0-9]+)(?:[= ](.*))?\$/i",trim($buff),$matches)){
+				if(isset($matches[2])){
+					if(strpos($matches[2]," ")!==false){
+						$this->esmtpOptions[$matches[1]] = explode(" ",$matches[2]);
+					}else{
+						$this->esmtpOptions[$matches[1]] = $matches[2];
+					}
+				}else{
+					$this->esmtpOptions[$matches[1]] = true;
+				}
+			}
+		}
+	}
+	function startTLS(){
+		$this->smtpCommand("STARTTLS");
+		$buff = $this->getSmtpResponse();
+		if( substr($buff,0,3) == "220" ){
+			return stream_socket_enable_crypto($this->con, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
+		}
+	}
+	function send(){
+		$bccRecipients = $this->getBccRecipients();
+		$recipients = $this->getRecipients();
+		foreach($recipients as $recipient){
+			$this->sendMail($recipient, $bccRecipients);
+		}
+	}
+	function sendMail(SOY2Mail_MailAddress $sendTo,$bccRecipients = array()){
+		$sent = false;
+		$try = $try_connect = 0;
+		while(!$sent){
+			$try++;
+			while(!$this->con){
+				$try_connect++;
+				try{
+					$this->open();
+				}catch(Exception $e){
+					$this->close();
+					if($try_connect > 10){
+						if($this->debug)echo "SMTP Failed to open SMTP connection.\n";
+						throw $e;
+					}
+				}
+				if($try_connect > 20){
+					$this->close();
+					throw new SOY2MailException("Too many failure to connect server.");
+				}
+			}
+			try{
+				$this->_sendMail($sendTo, $bccRecipients);
+				$sent = true;
+			}catch(Exception $e){
+				$this->close();
+				if($try > 2){
+					throw $e;
+				}
+			}
+			if($try > 5){
+				$this->close();
+				throw new SOY2MailException("Too many failure to send email.");
+			}
+		}
+	}
+	private function _sendMail(SOY2Mail_MailAddress $sendTo,$bccRecipients = array()){
+		$from = $this->getFrom();
+		$title = $this->getEncodedSubject();
+		$body = $this->getEncodedText();
+		$body = str_replace(array("\r\n", "\r"), "\n", $body);  // CRLF, CR -> LF 正規表現で m オプションを使うためにLFにする
+		$body = preg_replace('/^\\./m','..', $body);          // .～        -> ..～
+		$body = str_replace("\n", "\r\n", $body);                // LF       -> CRLF
+		$this->smtpCommand("MAIL FROM:<".$from->getAddress().">");
+		while(true){
+			$str = $this->getSmtpResponse();
+			if(substr($str,0,3) == "250") break;
+			if(!is_null($str) && strlen($str)<1)sleep(1);
+			if(strlen($str) && substr($str,0,3)!="250")throw new SOY2MailException("Failed: MAIL FROM " . $str);
+		}
+		$this->isSendMailFrom = true;
+		$this->smtpCommand("RCPT TO:<".$sendTo->getAddress().">");
+		foreach($bccRecipients as $bccSendTo){
+			$this->smtpCommand("RCPT TO:<".$bccSendTo->getAddress().">");
+		}
+		while(true){
+			$str = $this->getSmtpResponse();
+			if(strlen($str)<1)break;
+			if(preg_match("/Ok/i",$str)) break;
+			if(substr($str,0,3)!="250")throw new SOY2MailException("Failed: RCPT TO " . $str);
+		}
+		$this->smtpCommand("DATA");
+		while(true){
+			$str = $this->getSmtpResponse();
+			if(strlen($str)<1)break;
+			if(preg_match("/354/i",$str)) break;
+			if(substr($str,0,3)!="250")throw new SOY2MailException("Failed: DATA " . $str);
+		}
+		$headers = $this->getHeaders();
+		foreach($headers as $key => $value){
+			if( "Content-Type" == $key ){ continue; }
+			$this->data("$key: $value");
+		}
+		$this->data("MIME-Version: 1.0");
+		$this->data("Subject: ".$title);
+		$this->data("From: ".$from->getString());
+		$this->data("To: ".$sendTo->getString());
+		$attachments = $this->getAttachments();
+		if(count($attachments)<1){
+			if(isset($headers["Content-Type"])){
+				$this->data("Content-Type: ".$headers["Content-Type"]);
+			}else{
+				$this->data("Content-Type: text/plain; charset=".$this->getEncoding()."");
+			}
+			$this->data("");
+			$this->data($body);
+		}else{
+			$boundary = "----------" . md5(time());
+			$this->data("Content-Type: multipart/mixed;  boundary=\"$boundary\"");
+			$this->data("");
+			$this->data("--".$boundary);
+			if(isset($headers["Content-Type"])){
+				$this->data("Content-Type: ".$headers["Content-Type"]);
+			}else{
+				$this->data("Content-Type: text/plain; charset=".$this->getEncoding()."");
+			}
+			$this->data("");
+			$this->data($body);
+			foreach($attachments as $filename => $attachment){
+				if( !isset($attachment["contents"]) ){ continue; }
+				$this->data("--".$boundary);
+				if( !isset($attachment["mime-type"]) || strlen($attachment["mime-type"]) <1 ){
+					$attachment["mime-type"] = "application/octet-stream";
+				}
+				$this->data("Content-Type: ".$attachment["mime-type"].";"."\r\n"." name=\"".mb_encode_mimeheader($filename)."\"");
+				$this->data("Content-Disposition: inline;"."\r\n"." filename=\"".mb_encode_mimeheader($filename)."\"");
+				$this->data("Content-Transfer-Encoding: base64");
+				$this->data("");
+				$this->data(wordwrap(base64_encode($attachment["contents"]),72, "\r\n", true));
+			}
+			$this->data("--". $boundary . "--");
+		}
+		$this->smtpCommand(".");
+	}
+	function close(){
+		if($this->con && $this->smtpCommand("QUIT")){
+			fclose($this->con);
+		}
+		$this->con = null;
+	}
+	function data($string){
+		$this->smtpCommand($string);
+	}
+	function smtpCommand($string){
+		if(!$this->con){
+			throw new SOY2MailException('SMTP is null');
+ 			return;
+ 		}
+ 		if($this->debugHTML)echo "> ". htmlspecialchars($string) . "<br>";
+		if($this->debug)echo "SMTP> ".$string."\n";
+ 		$result = fputs($this->con, $string."\r\n");
+ 		if($result == false){
+			throw new SOY2MailException('Result is false.');
+ 		}
+	}
+	function getSmtpResponse(){
+		$buff = fgets($this->con);
+		while($buff === false || !strlen($buff)){
+			$buff = fgets($this->con);
+			$meta = stream_get_meta_data($this->con);
+			if(feof($this->con) || $meta["timed_out"]){
+				return null;
+			}
+		}
+		if($this->debugHTML)echo "> ". htmlspecialchars($buff) . "<br>";
+		if($this->debug)echo "SMTP< ".$buff;
+		return $buff;
+	}
+	function getCon() {
+		return $this->con;
+	}
+	function setCon($con) {
+		$this->con = $con;
+	}
+	function getHost() {
+		return $this->host;
+	}
+	function setHost($host) {
+		$this->host = $host;
+	}
+	function getPort() {
+		return $this->port;
+	}
+	function setPort($port) {
+		$this->port = $port;
+	}
+	function getIsSMTPAuth() {
+		return $this->isSMTPAuth;
+	}
+	function setIsSMTPAuth($isSMTPAuth) {
+		$this->isSMTPAuth = $isSMTPAuth;
+	}
+	function getUser() {
+		return $this->user;
+	}
+	function setUser($user) {
+		$this->user = $user;
+	}
+	function getPass() {
+		return $this->pass;
+	}
+	function setPass($pass) {
+		$this->pass = $pass;
+	}
+	function getDebug() {
+		return $this->debug;
+	}
+	function setDebug($debug) {
+		$this->debug = $debug;
+	}
+}
+class SOY2Mail_SMTPAuth_CramMD5{
+	static function getResponse($user, $pass, $challengeStr){
+		return $user." ".hash_hmac("md5",$challengeStr,$pass);
+	}
+}
+class SOY2Mail_SMTPAuth_DigestMD5{
+	static function getResponse($user, $pass, $challengeStr, $hostname){
+		$challenge = array();
+		if(preg_match_all('/([-a-z]+)=(?:"([^"]*)"|([^=,]*))(?:,|$)/u',$challengeStr,$matches,PREG_SET_ORDER)){
+			foreach($matches as $matche){
+				$challenge[$matche[1]] = strlen($matche[2]) ? $matche[2] : $matche[3] ;
+			}
+		}
+		if(!isset($challenge["algorithm"]) || !isset($challenge["nonce"])){
+			throw new SOY2MailException("smtp login failed");
+		}
+		if(isset($challenge["qop"]) && strlen($challenge["qop"])){
+			$qop = explode(",",$challenge["qop"]);
+			if(!in_array("auth",$qop)){
+				throw new SOY2MailException("smtp login failed");
+			}
+		}
+		if(!isset($challenge["realm"])){
+			$challenge["realm"] = "";
+		}
+		if(!isset($challenge["maxbuf"])){
+			$challenge["maxbuf"] = "65536";
+		}
+		$response = array(
+			"username" => $user,
+			"realm" => $challenge["realm"],
+			"nonce" => $challenge["nonce"],
+			"cnonce" => preg_replace("/[^[:alnum:]]/", "", substr(base64_encode( md5(mt_rand(),true) ),0,21)),
+			"nc" => "00000001",
+			"qop" => "auth",
+			"digest-uri" => 'smtp/'.$hostname,
+			"response" => "",
+			"maxbuf" => $challenge["maxbuf"],
+		);
+		$hashed = pack('H32', md5($user.":".$response["realm"].":".$pass));
+		$a1 = $hashed.":".$response["nonce"].":".$response["cnonce"];
+		$a2 = "AUTHENTICATE:".$response["digest-uri"];
+		$response["response"] = md5(md5($a1).":".$response["nonce"].":".$response["nc"].":".$response["cnonce"].":".$response["qop"].":".md5($a2));
+		$responseArr = array();
+		foreach($response as $key => $value){
+			$isContinue = false;
+			switch($key){
+				case "realm":
+					if(!strlen($value)) $isContinue = false;
+					break;
+				case "username":
+				case "nonce":
+				case "cnonce":
+				case "digest-uri":
+					$value = '"'.$value.'"';
+					break;
+			}
+			if(!$isContinue) continue;
+			$responseArr[] = $key."=".$value;
+		}
+		$resonseStr = implode(",",$responseArr);
+		return $resonseStr;
+	}
+}
 /**
  * @package SOY2.SOY2Plugin
  */
@@ -8801,7 +8743,6 @@ class SOY2Plugin{
 		$this->objects = $objects;
 	}
 }
-/* SOY2Session/SOY2Session.class.php */
 class SOY2Session{
 	const _KEY_ = "_soy2_session_";
 	private static $_deleted_class = null;
@@ -8922,75 +8863,40 @@ class SOY2SessionValue{
 		$this->classObject = SOY2::cast($this->className,(object)$obj);
 	}
 }
-/* function/function.soy2_cancel_magic_quotes_gpc.php */
-function soy2_cancel_magic_quotes_gpc(){
-	if(get_magic_quotes_gpc()){
-		$_POST = soy2_stripslashes($_POST);
-		$_GET = soy2_stripslashes($_GET);
-		$_COOKIE = soy2_stripslashes($_COOKIE);
-		$_REQUEST = soy2_stripslashes($_REQUEST);
-	}
-}
-function soy2_stripslashes($value){
-	return is_array($value) ? array_map('soy2_stripslashes', $value) : stripslashes($value);
-}
-/* function/function.soy2_image.php */
-/*
- * soy2_image_info
- * @param String filepath
- * @return Array("width" => int, "height" => int)
- * 指定した画像の幅と高さを返す
- */
-function soy2_image_info(string $filepath){
-	if(!is_readable($filepath) || is_dir($filepath)){
-		return false;
-	}
-	/*
-	 * GD
-	 * http://php.net/manual/en/book.image.php
-	 */
-	if(function_exists("getimagesize")){
-		$imageSize = getimagesize($filepath);
-		return array("width" => $imageSize[0], "height" => $imageSize[1]);
-	}
-	/*
-	 * Image Magick
-	 * http://php.net/manual/en/book.imagick.php
-	 */
-	if(class_exists("Imagick")){
-		$thumb = new Imagick($filepath);
-		return array("width" => $thumb->getImageWidth(), "height" => $thumb->getImageHeight());
-	}
-	/*
-	 * Gmagick
-	 * http://php.net/manual/en/book.gmagick.php
-	 */
-	if(class_exists("Gmagick")){
-		$thumb = new Gmagick($filepath);
-		return array("width" => $thumb->getimagewidth(), "height" => $thumb->getimageheight());
-	}
-	/*
-	 * NewMagickWand
-	 * http://www.magickwand.org/
-	 */
-	if(function_exists("NewMagickWand")){
-		$thumb = NewMagickWand();
-		MagickReadImage($thumb,$filepath);
-		return array("width" => MagickGetImageWidth($thumb), "height" => MagickGetImageHeight($thumb));
-	}
-	return null;
-}
-/* function/function.soy2_path2url.php */
 /**
- * PathをURLに変換
+ * serializeしたあとにaddslashesを行う
+ *
+ * @param $var 配列やインスタンスなど
  */
-function soy2_path2url(string $path){
-	$path = soy2_realpath($path);
-	$root = soy2_realpath($_SERVER["DOCUMENT_ROOT"]);
-	$url = str_replace($root,"/",$path);
-	return $url;
+function soy2_serialize($var){
+	return addslashes(serialize($var));
 }
-/* function/function.soy2_realpath.php */
+/**
+ * stripslashesしてからunserializeを行う
+ *
+ * @param $string soy2_serializeの出力する文字列
+ */
+function soy2_unserialize(string $string){
+	return (strlen($string)) ? unserialize(stripslashes($string)) : array();
+}
+/**
+ * soy2_scanfiles
+ * 特定のディレクトリの下にあるファイルを全て列挙
+ */
+function soy2_scanfiles(string $dir, int $depth=-1){
+	$res = array();
+	$dir = soy2_realpath($dir);
+	if($depth == 0)return $res;
+	$files = soy2_scandir($dir);
+	foreach($files as $file){
+		if(is_dir($dir . $file)){
+			$res = array_merge($res,soy2_scanfiles($dir . $file,($depth-1)));
+		}else{
+			$res[] = $dir . $file;
+		}
+	}
+	return $res;
+}
 /**
  * realpath 末尾が必ず「/」で返値
  */
@@ -9011,7 +8917,6 @@ function soy2_realurl(string $url){
 	if(preg_match('/\.html$|\.htm$|\.xml$|\.css$|\.js$|\.json$|\.php$/i', $arg)) return $url;
 	return $url . "/";
 }
-/* function/function.soy2_require.php */
 /**
  * include file(replace require(*))
  * @param path
@@ -9023,7 +8928,74 @@ function soy2_require(string $file, bool $isThrowException=false){
 	if($isThrowException && !$res)throw new Exception("File Not Found:" . $file);
 	return $res;
 }
-/* function/function.soy2_resizeimage.php */
+/**
+ * 「.」から始まるディレクトリを取り除いたscandir
+ *
+ * @param $dir ディレクトリ
+ */
+function soy2_scandir(string $dir){
+	$res = array();
+	$files = scandir($dir);
+	foreach($files as $row){
+		if($row[0] == ".")continue;
+		$res[] = $row;
+	}
+	return $res;
+}
+/*
+ * PHPのバージョンによってsetcookieのオプションの値を変える
+ */
+function soy2_setcookie(string $key, string $value="", array $opts=array()){
+	if(!count($opts)) $opts = session_get_cookie_params();	//optsが空の場合はセッションの設定を用いる
+	if(!strlen($value))	$opts["expires"] = time()-1;	//valueが空文字の場合はクッキーを削除する
+	if(isset($opts["lifetime"])) unset($opts["lifetime"]);	//lifetimeがある場合は削除
+	if(!isset($opts["path"]) || !is_string($opts["path"]) || !strlen($opts["path"])) $opts["path"] = "/";
+	if(!isset($opts["domain"]) || !is_string($opts["domain"]) || !strlen($opts["domain"])) $opts["domain"] = null;
+	if(!isset($opts["expires"]) || !is_numeric($opts["expires"])) $opts["expires"] = 0;
+	if(!isset($opts["httponly"]) || !is_bool($opts["httponly"])) $opts["httponly"] = true;
+	if(!isset($opts["secure"]) || !is_bool($opts["secure"])) $opts["secure"] = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on");
+	$vArr = explode(".", phpversion());
+	if(($vArr[0] >= 8 || ($vArr[0] >= 7 && $vArr[1] >= 3))){	//php 7.3以降 samesiteの指定が出来る
+		if(!isset($opts["samesite"])) {	// SameSiteの値はセッションの設定から取得する
+			$sessParams = session_get_cookie_params();
+			$opts["samesite"] = (isset($sessParams["samesite"]) && strlen($sessParams["samesite"])) ? $sessParams["samesite"] : "Lax";
+			unset($sessParams);
+		}
+		setcookie($key, $value, $opts);
+	}else{
+		setcookie($key, $value , $opts["expires"], $opts["path"], $opts["domain"], $opts["secure"], $opts["httponly"]);
+	}
+}
+/*
+ * number_formatの第一引数が数字ではなかった場合
+ */
+function soy2_number_format($int){
+	if(!is_numeric($int)) return 0;
+	return number_format($int);
+}
+/*
+ * tokenを発行など
+ */
+function soy2_get_token(){
+	if(session_status() == PHP_SESSION_NONE) session_start();
+	if(!isset($_SESSION["soy2_token"])){
+		$_SESSION["soy2_token"] = soy2_generate_token();
+	}
+	return $_SESSION["soy2_token"];
+}
+function soy2_check_token(){
+	if(session_status() == PHP_SESSION_NONE) session_start();
+	if(isset($_SESSION["soy2_token"]) && isset($_REQUEST["soy2_token"])){
+		if($_REQUEST["soy2_token"] === $_SESSION["soy2_token"]){
+			$_SESSION["soy2_token"] = soy2_generate_token();
+			return true;
+		}
+	}
+	return false;
+}
+function soy2_generate_token(){
+	return md5(mt_rand());
+}
 /**
  * 縦横の最大の大きさ指定してリサイズ
  */
@@ -9151,93 +9123,20 @@ function soy2_image_resizeimage_gd(string $filepath, string $savepath, int $widt
 			break;
 	}
 }
-/* function/function.soy2_scandir.php */
 /**
- * 「.」から始まるディレクトリを取り除いたscandir
- *
- * @param $dir ディレクトリ
+ * PathをURLに変換
  */
-function soy2_scandir(string $dir){
-	$res = array();
-	$files = scandir($dir);
-	foreach($files as $row){
-		if($row[0] == ".")continue;
-		$res[] = $row;
-	}
-	return $res;
-}
-/* function/function.soy2_scanfiles.php */
-/**
- * soy2_scanfiles
- * 特定のディレクトリの下にあるファイルを全て列挙
- */
-function soy2_scanfiles(string $dir, int $depth=-1){
-	$res = array();
-	$dir = soy2_realpath($dir);
-	if($depth == 0)return $res;
-	$files = soy2_scandir($dir);
-	foreach($files as $file){
-		if(is_dir($dir . $file)){
-			$res = array_merge($res,soy2_scanfiles($dir . $file,($depth-1)));
-		}else{
-			$res[] = $dir . $file;
-		}
-	}
-	return $res;
-}
-/* function/function.soy2_serialize.php */
-/**
- * serializeしたあとにaddslashesを行う
- *
- * @param $var 配列やインスタンスなど
- */
-function soy2_serialize($var){
-	return addslashes(serialize($var));
-}
-/**
- * stripslashesしてからunserializeを行う
- *
- * @param $string soy2_serializeの出力する文字列
- */
-function soy2_unserialize(string $string){
-	$string = trim($string);
-	if(!strlen($string)) return array();
-	$string = stripslashes($string);
-	if(!strlen($string)) return array();
-	$res = @unserialize($string);
-	return (!is_null($res)) ? $res : array();
-}
-/* function/function.soy2_token.php */
-/*
- * tokenを発行など
- */
-function soy2_get_token(){
-	if(session_status() == PHP_SESSION_NONE) session_start();
-	if(!isset($_SESSION["soy2_token"])){
-		$_SESSION["soy2_token"] = soy2_generate_token();
-	}
-	return $_SESSION["soy2_token"];
-}
-function soy2_check_token(){
-	if(session_status() == PHP_SESSION_NONE) session_start();
-	if(isset($_SESSION["soy2_token"]) && isset($_REQUEST["soy2_token"])){
-		if($_REQUEST["soy2_token"] === $_SESSION["soy2_token"]){
-			$_SESSION["soy2_token"] = soy2_generate_token();
-			return true;
-		}
-	}
-	return false;
-}
-function soy2_generate_token(){
-	return md5(mt_rand());
+function soy2_path2url(string $path){
+	$path = soy2_realpath($path);
+	$root = soy2_realpath($_SERVER["DOCUMENT_ROOT"]);
+	$url = str_replace($root,"/",$path);
+	return $url;
 }
 function soy2_check_referer(){
 	$referer = parse_url($_SERVER['HTTP_REFERER']);
 	$port = (isset($referer["port"]) && ($referer["port"] != 80 || $referer["port"] != 443)) ? ":" . $referer["port"] : "";
 	if($referer['host'] . $port !== $_SERVER['HTTP_HOST']) return false;
-
 	$_path = $referer["path"];
-
 	//pathinfoがある時は削除する
 	$queryString = $_SERVER['QUERY_STRING'];
 	if(is_numeric(strpos($queryString, "pathinfo"))){
@@ -9248,7 +9147,6 @@ function soy2_check_referer(){
 			if($v[0] == "pathinfo" || !isset($v[1])) continue;
 			$params[$v[0]] = $v[1];
 		}
-
 		$queryString = "";
 		if(count($params)){
 			foreach($params as $key => $v){
@@ -9257,49 +9155,9 @@ function soy2_check_referer(){
 			}
 		}
 	}
-
 	if(isset($queryString) && strlen($queryString)) $_path .= "?" . $queryString;
 	return ($_path == $_SERVER['REQUEST_URI']);
 }
-
-/* function/function.soy2_setcookie.php */
-/*
- * PHPのバージョンによってsetcookieのオプションの値を変える
- */
-function soy2_setcookie(string $key, string $value="", array $opts=array()){
-	if(!count($opts)) $opts = session_get_cookie_params();	//optsが空の場合はセッションの設定を用いる
-	if(is_null($value))	$opts["expires"] = time()-1;	//valueがnullの場合はクッキーを削除する
-	if(isset($opts["lifetime"])) unset($opts["lifetime"]);	//lifetimeがある場合は削除
-
-	if(!isset($opts["path"]) || !is_string($opts["path"]) || !strlen($opts["path"])) $opts["path"] = "/";
-	if(!isset($opts["domain"]) || !is_string($opts["domain"]) || !strlen($opts["domain"])) $opts["domain"] = null;
-	if(!isset($opts["expires"]) || !is_numeric($opts["expires"])) $opts["expires"] = 0;
-	if(!isset($opts["httponly"]) || !is_bool($opts["httponly"])) $opts["httponly"] = true;
-	if(!isset($opts["secure"]) || !is_bool($opts["secure"])) $opts["secure"] = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on");
-
-	$vArr = explode(".", phpversion());
-	if(($vArr[0] >= 8 || ($vArr[0] >= 7 && $vArr[1] >= 3))){	//php 7.3以降 samesiteの指定が出来る
-		if(!isset($opts["samesite"])) {	// SameSiteの値はセッションの設定から取得する
-			$sessParams = session_get_cookie_params();
-			$opts["samesite"] = (isset($sessParams["samesite"]) && strlen($sessParams["samesite"])) ? $sessParams["samesite"] : "Lax";
-			unset($sessParams);
-		}
-		setcookie($key, $value, $opts);
-	}else{
-		setcookie($key, $value , $opts["expires"], $opts["path"], $opts["domain"], $opts["secure"], $opts["httponly"]);
-	}
-}
-
-/* function/function.soy2_number_format.php */
-/*
- * number_formatの第一引数が数字ではなかった場合
- */
-function soy2_number_format($int){
-	if(!is_numeric($int)) return 0;
-	return number_format($int);
-}
-
-/* function/function.soy2_strpos.php */
 /**
  * 文字列中に、ある部分文字列が最初に現れる場所を探す ヒットしない場合は-1を返す
  */
@@ -9307,7 +9165,6 @@ function soy2_strpos(string $haystack, string $needle, int $offset = 0){
 	$res = strpos($haystack, $needle, $offset);
 	return (is_numeric($res)) ? $res : -1;
 }
-
 /**
  * 文字列中に、ある部分文字列が最後に現れる場所を探す ヒットしない場合は-1を返す
  */
@@ -9315,13 +9172,67 @@ function soy2_strrpos(string $haystack, string $needle, int $offset = 0){
 	$res = strrpos($haystack, $needle, $offset);
 	return (is_numeric($res)) ? $res : -1;
 }
-
 function soy2_stripos(string $haystack, string $needle, int $offset = 0){
 	$res = stripos($haystack, $needle, $offset);
 	return (is_numeric($res)) ? $res : -1;
 }
-
 function soy2_strripos(string $haystack, string $needle, int $offset = 0){
 	$res = strripos($haystack, $needle, $offset);
 	return (is_numeric($res)) ? $res : -1;
+}
+/*
+ * soy2_image_info
+ * @param String filepath
+ * @return Array("width" => int, "height" => int)
+ * 指定した画像の幅と高さを返す
+ */
+function soy2_image_info(string $filepath){
+	if(!is_readable($filepath) || is_dir($filepath)){
+		return false;
+	}
+	/*
+	 * GD
+	 * http://php.net/manual/en/book.image.php
+	 */
+	if(function_exists("getimagesize")){
+		$imageSize = getimagesize($filepath);
+		return array("width" => $imageSize[0], "height" => $imageSize[1]);
+	}
+	/*
+	 * Image Magick
+	 * http://php.net/manual/en/book.imagick.php
+	 */
+	if(class_exists("Imagick")){
+		$thumb = new Imagick($filepath);
+		return array("width" => $thumb->getImageWidth(), "height" => $thumb->getImageHeight());
+	}
+	/*
+	 * Gmagick
+	 * http://php.net/manual/en/book.gmagick.php
+	 */
+	if(class_exists("Gmagick")){
+		$thumb = new Gmagick($filepath);
+		return array("width" => $thumb->getimagewidth(), "height" => $thumb->getimageheight());
+	}
+	/*
+	 * NewMagickWand
+	 * http://www.magickwand.org/
+	 */
+	if(function_exists("NewMagickWand")){
+		$thumb = NewMagickWand();
+		MagickReadImage($thumb,$filepath);
+		return array("width" => MagickGetImageWidth($thumb), "height" => MagickGetImageHeight($thumb));
+	}
+	return null;
+}
+function soy2_cancel_magic_quotes_gpc(){
+	if(get_magic_quotes_gpc()){
+		$_POST = soy2_stripslashes($_POST);
+		$_GET = soy2_stripslashes($_GET);
+		$_COOKIE = soy2_stripslashes($_COOKIE);
+		$_REQUEST = soy2_stripslashes($_REQUEST);
+	}
+}
+function soy2_stripslashes($value){
+	return is_array($value) ? array_map('soy2_stripslashes', $value) : stripslashes($value);
 }

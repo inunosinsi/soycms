@@ -21,7 +21,7 @@ class ConvertImageAvifPlugin {
 			"author"=> "齋藤毅",
 			"url"=> "https://saitodev.co/article/4919",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.2"
+			"version"=>"1.3"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -116,6 +116,27 @@ class ConvertImageAvifPlugin {
 								}
 
 								if(!$img instanceof GdImage) continue;
+
+								// 縦横比
+								$exif = exif_read_data($filepath);
+								if(isset($exif["Orientation"])){
+									switch($exif["Orientation"]){
+										case 3:
+											$rotate = 180;
+											break;
+										case 6:
+											$rotate = 270;
+											break;
+										case 8:
+											$rotate = 90;
+											break;
+										default:
+											$rotate = 0;
+									}
+
+									if($rotate > 0) $img = imagerotate($img, $rotate, 0);
+								}
+
 								imageavif($img, $new);
 							}
 

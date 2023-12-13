@@ -5,7 +5,7 @@ XLazyLoadPlugin::register();
 class XLazyLoadPlugin{
 
 	const PLUGIN_ID = "x_lazy_load";
-
+	
 	function getId(){
 		return self::PLUGIN_ID;
 	}
@@ -18,7 +18,7 @@ class XLazyLoadPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/3278",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.8"
+			"version"=>"0.9"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
@@ -40,47 +40,33 @@ class XLazyLoadPlugin{
 
 		//記事詳細ページを開いている時のみ
 		if($htmlObj instanceOf EntryComponent){
-			$content = (is_numeric($entryId)) ? self::_getContent($entryId) : "";
+			$content = (is_numeric($entryId)) ? soycms_get_entry_object($entryId)->getContent() : "";
 			$lines = explode("\n", $content);
 			if(count($lines)){
+				if(!function_exists("x_get_properties_by_img_tag")) SOY2::import("site_include.plugin.x_cls.func.fn", ".php");
+				if(!function_exists("get_loading_property")) SOY2::import("site_include.plugin.x_lazy_load.func.fn", ".php");
+
 				$html = array();
-				$imgTagCnt = 0;	//imgタグが何回出現したか？
 				foreach($lines as $idx => $line){
-					//if($idx === 10) $html[] = "<div style=\"content-visibility:auto;\">";
+					if(is_numeric(stripos($line, "img")) || is_numeric(stripos($line, "iframe"))){
+						$tags = x_get_tags($line);
+						if(count($tags)){							
+							$old = x_get_embedded_element_tag($tags);
+							if(strlen($old)){
+								$props = x_get_properties_by_tag($old);
+								
+								$embedType = x_get_tag_element($old);
+								$props["loading"] = get_loading_property($embedType);
+								if($embedType == "img" && isset($props["alt"])) unset($props["alt"]);
 
-					if(is_numeric(stripos($line, "<img"))){
-						//alt=""があれば消しておく
-						if(strpos($line, "alt=\"\"")){
-							$line = str_replace("alt=\"\"", "", $line);
-						}
-
-						switch($imgTagCnt){
-							case 0:	//最初の画像は必ずloading="eager"
-								$loadProp = "eager";
-								break;
-							case 1:	//2番目の画像は必ずloading="auto"
-								$loadProp = "auto";
-								break;
-							default://残りはすべてloading="lazy"
-								$loadProp = "lazy";
-								break;
-						}
-						$imgTagCnt++;
-						preg_match('/<img.*?loading=\".*\".*?>/', $line, $tmp);
-						if(!count($tmp)){
-							$line = str_replace("<img ", "<img loading=\"" . $loadProp . "\" ", $line);
-						}
-
-					}else if(is_numeric(stripos($line, "<iframe"))){	//iframeは必ずlazyload
-						preg_match('/<iframe.*?loading=\".*\".*?>/', $line, $tmp);
-						if(!count($tmp)){
-							$line = str_replace("<iframe ", "<iframe loading=\"lazy\" ", $line);
+								$new = x_rebuild_tag($embedType, $old, $props);
+								if($new != $old) $line = str_replace($old, $new, $line);
+							}
 						}
 					}
+
 					$html[] = $line;
 				}
-
-				//if(count($lines) > 10) $html[] = "</div>";
 
 				$content = implode("\n", $html);
 			}
@@ -91,17 +77,7 @@ class XLazyLoadPlugin{
 			"html" => $content
 		));
 	}
-
-	//高速化の為に本文のみを取得する
-	private function _getContent(int $entryId){
-		try{
-			$res = soycms_get_hash_table_dao("entry")->executeQuery("SELECT content FROM Entry WHERE id = :entryId LIMIT 1;", array(":entryId" => $entryId));
-		}catch(Exception $e){
-			$res = array();
-		}
-		return (isset($res[0]["content"])) ? $res[0]["content"] : "";
-	}
-
+	
 	function config_page(){
 		SOY2::import("site_include.plugin.x_lazy_load.config.LazyLoadConfigPage");
 		$form = SOY2HTMLFactory::createInstance("LazyLoadConfigPage");

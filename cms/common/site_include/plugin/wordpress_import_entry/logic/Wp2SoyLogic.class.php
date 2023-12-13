@@ -4,6 +4,8 @@
  */
 class Wp2SoyLogic extends SOY2LogicBase {
 
+	const MODE_WP = 0;
+	const MODE_SOY = 1;
 	const POST_LIMIT = 500;
 
 	//post_status
@@ -25,6 +27,7 @@ class Wp2SoyLogic extends SOY2LogicBase {
 	);
 
 	private $pdo;
+	private $soyPdo;
 
 	function __construct(){}
 
@@ -32,47 +35,50 @@ class Wp2SoyLogic extends SOY2LogicBase {
 		$this->pdo = self::_pdo();
 		if(is_null($this->pdo)) return false;
 
+		$this->soyPdo = self::_pdo(self::MODE_SOY);
+		if(is_null($this->soyPdo)) return false;
+
 		//カテゴリの移行 wp_temrs → Label
 		self::_importLabels();
 
 		//記事の移行 wp_posts → Entry
 		self::_importEntries();
 
+		self::_importRelations();
+
 		//接続を閉じる
 		$this->pdo = null;
+		$this->soyPdo = null;
 	}
 
 	// WPのカテゴリをSOYのラベルとして登録
 	private function _importLabels(){
 		$terms = self::_getTerms();
 		if(!count($terms)) return false;
-
+		
 		//taxonomyを取得する
 		$taxonomies = self::_getTaxonomies();
-
-		$dao = SOY2DAOFactory::create("cms.LabelDAO");
-
+		
+		$labelHashList = self::_getLabelHashList();
+		
+		$this->soyPdo->beginTransaction();
+		$stmt = $this->soyPdo->prepare("INSERT INTO Label(caption, alias, description) VALUES(:caption, :alias, :description)");
 		foreach($terms as $term){
 			if($term["slug"] == "uncategorized") continue;
 			$caption = trim($term["name"]);
+			if(!strlen($caption) || is_numeric(array_search(md5($caption), $labelHashList))) continue;
+			
 			try{
-				$label = $dao->getByCaption($caption);
-				continue;
+				$stmt->execute(array(
+					":caption" => $caption, 
+					":alias" => $caption, 
+					":description" => (isset($taxonomies[$term["term_id"]])) ? $taxonomies[$term["term_id"]] : ""
+				));
 			}catch(Exception $e){
 				//
 			}
-
-			//ラベルとして登録する
-			$label = new Label();
-			$label->setCaption($caption);
-			if(isset($taxonomies[$term["term_id"]])) $label->setDescription($taxonomies[$term["term_id"]]);
-
-			try{
-				$dao->insert($label);
-			}catch(Exception $e){
-
-			}
 		}
+		$this->soyPdo->commit();
 
 		return true;
 	}
@@ -80,9 +86,7 @@ class Wp2SoyLogic extends SOY2LogicBase {
 	private function _getTerms(){
 		$stmt = $this->pdo->prepare("SELECT * FROM wp_terms;");
 		$successed = $stmt->execute();
-		if(!$successed) return array();
-
-		return $stmt->fetchAll(PDO::FETCH_ASSOC);
+		return ($successed) ? $stmt->fetchAll(PDO::FETCH_ASSOC) : array();
 	}
 
 	private function _getTaxonomies(){
@@ -92,7 +96,7 @@ class Wp2SoyLogic extends SOY2LogicBase {
 
 		$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		if(!count($results)) return array();
-
+		
 		$list = array();
 		foreach($results as $res){
 			if(!isset($res["term_id"]) || !is_numeric($res["term_id"])) continue;
@@ -117,11 +121,7 @@ class Wp2SoyLogic extends SOY2LogicBase {
 		$total = (int)$res[0]["CNT"];
 		if($total === 0) return false;
 
-		$relations = self::_getTermRelationships();
-
-		$dao = SOY2DAOFactory::create("cms.EntryDAO");
-		$entryLogic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
-		$entryLabelDao = SOY2DAOFactory::create("cms.EntryLabelDAO");
+		$aliasHashList = self::_getAliasHashList();
 
 		$i = 0;
 		for(;;){
@@ -138,6 +138,12 @@ class Wp2SoyLogic extends SOY2LogicBase {
 			$posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 			if(!count($posts)) break;
 
+			$this->soyPdo->beginTransaction();
+			$stmt = $this->soyPdo->prepare(
+				"INSERT INTO ".
+				"Entry(title, alias, content, cdate, udate, openPeriodStart, openPeriodEnd, isPublished) ".
+				"VALUES(:title, :alias, :content, :cdate, :udate, :openPeriodStart, :openPeriodEnd, :isPublished)"
+			);
 			foreach($posts as $post){
 				//3番目の記事まではサンプル記事なので除外する
 				if(!isset($post["ID"]) || !is_numeric($post["ID"]) || (int)$post["ID"] <= 3) continue;
@@ -149,23 +155,13 @@ class Wp2SoyLogic extends SOY2LogicBase {
 				if($post["post_type"] == "page") continue;
 
 				$title = trim($post["post_title"]);
-				//既に登録済みの記事であればスルー
-				try{
-					$entryId = $dao->getByAlias($title)->getId();
-					if(is_numeric($entryId)) continue;
-				}catch(Exception $e){
-					//
-				}
 
+				//既に登録済みの記事であればスルー
+				if(is_numeric(array_search(md5($title), $aliasHashList))) continue;
+				
 				$content = trim($post["post_content"]);
 				$excerpt = trim($post["post_excerpt"]);	// @ToDo post_excerpt 記事の抜粋はどうすべきか？
 				if(!strlen($title) && !strlen($content)) continue;
-
-				$entry = new Entry();
-				$entry->setTitle($title);
-				$entry->setContent($content);
-				$entry->setCdate(strtotime($post["post_date"]));
-				$entry->setUdate(strtotime($post["post_modified"]));
 
 				/**
 				 * post_status
@@ -178,32 +174,31 @@ class Wp2SoyLogic extends SOY2LogicBase {
 				switch($status){
 					case "publish":
 					case "future":
-						$entry->setIsPublished(Entry::ENTRY_ACTIVE);
+						$isPublished = Entry::ENTRY_ACTIVE;
 						break;
 					case "draft":
 					case "pending":
 					case "private":
-						$entry->setIsPublished(Entry::ENTRY_NOTPUBLIC);
+						$isPublished = Entry::ENTRY_NOTPUBLIC;
 						break;
 				}
 
-				$entryId = $entryLogic->create($entry);
-				if(!is_numeric($entryId) || (int)$entryId === 0) continue;
-
-				if(!isset($relations[$post["ID"]]) || !count($relations[$post["ID"]])) continue;
-
-				// @ToDo ラベル
-				foreach($relations[$post["ID"]] as $labelId){
-					$entryLabelObj = new EntryLabel();
-					$entryLabelObj->setEntryId($entryId);
-					$entryLabelObj->setLabelId($labelId);
-					try{
-						$entryLabelDao->insert($entryLabelObj);
-					}catch(Exception $e){
-						//
-					}
+				try{
+					$stmt->execute(array(
+						":title" => $title, 
+						":alias" => $title,
+						":content" => $content,
+						":cdate" => strtotime($post["post_date"]),
+						":udate" => strtotime($post["post_modified"]),
+						":openPeriodStart" => 0,
+						":openPeriodEnd" => 2147483647,
+						":isPublished" => $isPublished
+					));
+				}catch(Exception $e){
+					//
 				}
 			}
+			$this->soyPdo->commit();
 		}
 	}
 
@@ -237,6 +232,49 @@ class Wp2SoyLogic extends SOY2LogicBase {
 		return $list;
 	}
 
+	private function _importRelations(){
+		$relations = self::_getTermRelationships();
+
+		$aliasHashList = self::_getAliasHashList();
+
+		$i = 0;
+		for(;;){
+			$stmt = $this->pdo->prepare(
+				"SELECT ID, post_title FROM wp_posts ".
+				"WHERE post_type != 'page' ".
+				"AND post_status NOT IN (\"" . implode("\",\"", $this->exclude_status_list) . "\") ".
+				"LIMIT " . self::POST_LIMIT . " ".
+				"OFFSET " . (self::POST_LIMIT * $i++)
+			);
+			$successed = $stmt->execute();
+			if(!$successed) break;
+
+			$posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			if(!count($posts)) break;
+
+			$this->soyPdo->beginTransaction();
+			$stmt = $this->soyPdo->prepare("INSERT INTO EntryLabel(entry_id, label_id) VALUES(:entry_id, :label_id)");
+			foreach($posts as $post){
+				if(!isset($relations[$post["ID"]]) || !count($relations[$post["ID"]])) continue;
+
+				$entryId = array_search(md5($post["post_title"]), $aliasHashList);
+				if(!is_numeric($entryId)) continue;
+
+				foreach($relations[$post["ID"]] as $labelId){
+					try{
+						$stmt->execute(array(
+							":entry_id" => $entryId, 
+							":label_id" => $labelId
+						));
+					}catch(Exception $e){
+						//
+					}
+				}
+			}
+			$this->soyPdo->commit();
+		}
+	}
+
 	/**
 	 * wp_terms(WordPress)とLabel(SOY CMS)の対応表
 	 */
@@ -248,27 +286,67 @@ class Wp2SoyLogic extends SOY2LogicBase {
 		$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		if(!count($results)) return array();
 
-		$dao = SOY2DAOFactory::create("cms.LabelDAO");
+		$labelHashList = self::_getLabelHashList();
 		$table = array();
 		foreach($results as $res){
-			try{
-				$labelId = $dao->getByCaption($res["name"])->getId();
-			}catch(Exception $e){
-				continue;
-			}
+			$labelId = array_search(md5($res["name"]), $labelHashList);
 			if(!is_numeric($labelId)) continue;
-			$table[$res["term_id"]] = $labelId;
+			$table[$res["term_id"]] = (int)$labelId;
 		}
 		return $table;
 	}
+	
+	private function _getLabelHashList(){
+		$labels = SOY2DAOFactory::create("cms.LabelDAO")->get();
+		if(!count($labels)) return array();
 
-	private function _pdo(){
-		SOY2::import("site_include.plugin.wordpress_import_entry.util.WordPressImportEntryUtil");
-		$cnf = WordPressImportEntryUtil::getConfig();
+		$list = array();
+		foreach($labels as $label){
+			if(!is_numeric($label->getId())) continue;
+			$list[(int)$label->getId()] = md5($label->getCaption());
+		}
+		return $list;
+	}
+
+	/**
+	 * 記事のエイリアスをハッシュ化したリスト
+	 */
+	private function _getAliasHashList(){
+		$dao = new SOY2DAO();
 		try{
-			return new PDO("mysql:dbname=" . $cnf["name"] . ";charset=utf8;host=" . $cnf["host"], $cnf["user"], $cnf["password"]);
+			$res = $dao->executeQuery("SELECT id, alias FROM Entry");
 		}catch(Exception $e){
-			return null;
+			$res = array();
+		}
+		if(!count($res)) return array();
+
+		$l = array();
+		foreach($res as $v){
+			$l[(int)$v["id"]] = md5($v["alias"]);
+		}
+		return $l;
+	}
+
+	/**
+	 * @param int
+	 * @return PDO|null
+	 */
+	private function _pdo(int $mode=self::MODE_WP){
+		switch($mode){
+			case self::MODE_WP:
+				SOY2::import("site_include.plugin.wordpress_import_entry.util.WordPressImportEntryUtil");
+				$cnf = WordPressImportEntryUtil::getConfig();
+				try{
+					return new PDO("mysql:dbname=".$cnf["name"].";charset=utf8;host=".$cnf["host"], $cnf["user"], $cnf["password"]);
+				}catch(Exception $e){
+					return null;
+				}
+			case self::MODE_SOY:
+				try{
+					return new PDO(SOY2DAOConfig::Dsn(), SOY2DAOConfig::user(), SOY2DAOConfig::pass());
+				}catch(Exception $e){
+					return null;
+				}
 		}
 	}
 }

@@ -86,9 +86,18 @@ class DetailPage extends CMSWebPageBase{
 			"id" => "labelicon"
 		));
 
+		$descriptionClass = "form-control";
+		/**
+		 * カテゴリー詳細プラグインのWYSIWYGエディタの使用チェック 二段階チェック
+		 * もう一つのチェックはsetupWYSIWYGメソッド内にある
+		 */
+		if(isset($_COOKIE["label_memo_editor_config"]) && (int)$_COOKIE["label_memo_editor_config"] === 1){
+			$descriptionClass .= " mceEditor";
+		}
 		$this->addTextArea("description", array(
 			"value" => $entity->getDescription(),
-			"name" => "description"
+			"name" => "description",
+			"class" => $descriptionClass
 		));
 
 		$this->addInput("color", array(

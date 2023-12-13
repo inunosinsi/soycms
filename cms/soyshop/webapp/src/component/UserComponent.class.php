@@ -560,7 +560,7 @@ class UserComponent {
 
 		/* 住所 */
 		if(self::_checkFormConfig("address")){
-			if(tstrlen($user->getArea()) < 1){
+			if(tstrlen($user->getArea()) < 1 || (is_numeric($user->getArea()) && $user->getArea() <= 0)){
 				//住所を入力していない場合
 				$app->addErrorMessage("address", MessageManager::get("ADDRESS_EMPTY"));
 				$res = false;

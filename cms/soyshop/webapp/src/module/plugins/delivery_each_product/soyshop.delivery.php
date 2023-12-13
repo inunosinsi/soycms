@@ -2,19 +2,19 @@
 
 class DeliveryEachProductModule extends SOYShopDelivery{
 
-    function onSelect(CartLogic $cart){
-      $module = new SOYShop_ItemModule();
-      $module->setId("delivery_each_product");
-      $module->setName("送料");
-      $module->setType("delivery_module");    //typeを指定しておくといいことがある
-      $module->setPrice($this->getPrice());
-      $cart->addModule($module);
+	function onSelect(CartLogic $cart){
+	  $module = new SOYShop_ItemModule();
+	  $module->setId("delivery_each_product");
+	  $module->setName("送料");
+	  $module->setType("delivery_module");	//typeを指定しておくといいことがある
+	  $module->setPrice($this->getPrice());
+	  $cart->addModule($module);
 
-      //属性の登録
+	  //属性の登録
   		$cart->setOrderAttribute("delivery_each_product", MessageManager::get("METHOD_DELIVERY"), $this->getName());
 
-      //お届け日の指定を利用するか？
-      SOY2::import("module.plugins.delivery_normal.util.DeliveryNormalUtil");
+	  //お届け日の指定を利用するか？
+	  SOY2::import("module.plugins.delivery_normal.util.DeliveryNormalUtil");
   		$config = DeliveryNormalUtil::getDeliveryDateConfig();
   		if(isset($config["use_delivery_date"]) && $config["use_delivery_date"] == 1){
   			if(isset($_POST["delivery_date"]) && strlen($_POST["delivery_date"]) > 0){
@@ -42,36 +42,37 @@ class DeliveryEachProductModule extends SOYShopDelivery{
   				$cart->setOrderAttribute("delivery_each_product.time", MessageManager::get("DELIVERY_TIME"), MessageManager::get("UNSPECIFIED"));
   			}
   		}
-    }
+	}
 
-    function getName(){
-        return "宅配便";
-    }
+	function getName(){
+		return "宅配便";
+	}
 
-    function getDescription(){
-        SOY2::import("module.plugins.delivery_normal.cart.DeliveryNormalCartPage");
-        $form = SOY2HTMLFactory::createInstance("DeliveryNormalCartPage");
-    		$form->setConfigObj($this);
-    		$form->setCart($this->getCart());
-    		$form->execute();
-    		return $form->getObject();
-    }
+	function getDescription(){
+		SOY2::import("module.plugins.delivery_normal.cart.DeliveryNormalCartPage");
+		$form = SOY2HTMLFactory::createInstance("DeliveryNormalCartPage");
+		$form->setConfigObj($this);
+		$form->setCart($this->getCart());
+		$form->execute();
+		return $form->getObject();
+	}
 
-    function getPrice(){
-        $price = 0;
+	function getPrice(){
+		$price = 0;
 
-        SOY2::import("module.plugins.delivery_each_product.util.DeliveryEachProductUtil");
+		SOY2::import("module.plugins.delivery_each_product.util.DeliveryEachProductUtil");
 
-        $address = $this->getCart()->getAddress();
+		$address = $this->getCart()->getAddress();
 
-        $itemOrders = $this->getCart()->getItems();
-        foreach($itemOrders as $itemOrder){
-            $prices = soy2_unserialize((string)DeliveryEachProductUtil::get($itemOrder->getItemId(), DeliveryEachProductUtil::MODE_FEE));
-            if(!isset($prices[$address["area"]])) continue;
-            $price += (int)$prices[$address["area"]];
-        }
+		$itemOrders = $this->getCart()->getItems();
+		foreach($itemOrders as $itemOrder){
+			if(!isset($address["area"])) continue;
+			$prices = soy2_unserialize((string)DeliveryEachProductUtil::get($itemOrder->getItemId(), DeliveryEachProductUtil::MODE_FEE));
+			if(!isset($prices[$address["area"]])) continue;
+			$price += (int)$prices[$address["area"]];
+		}
 
-        return $price;
-    }
+		return $price;
+	}
 }
 SOYShopPlugin::extension("soyshop.delivery", "delivery_each_product", "DeliveryEachProductModule");

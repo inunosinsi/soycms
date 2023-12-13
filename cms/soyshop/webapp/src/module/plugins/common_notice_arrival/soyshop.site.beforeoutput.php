@@ -1,14 +1,10 @@
 <?php
-/*
- * soyshop.site.beforeoutput.php
- * Created: 2010/03/11
- */
 
 class CommonNoticeArrivalBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
 	private $uri;
 
-    function beforeOutput($page){
+    function beforeOutput(WebPage $page){
 
         //これらの条件を満たさないと処理は開始しない
         if(isset($_GET["notice"]) && isset($_GET["notice"]) && isset($_GET["a"]) && soy2_check_token()){

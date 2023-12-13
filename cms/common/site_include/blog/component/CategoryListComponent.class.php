@@ -38,12 +38,12 @@ class CategoryListComponent extends HTMLList{
 		));
 
 		$isDescription = (strlen(trim((string)$entry->getDescription())) > 0);
-		$this->addModel("is_category_description", array(
+		$this->addModel("is_description", array(
 			"visible" => $isDescription,
 			"soy2prefix" => "cms"
 		));
 
-		$this->addModel("no_category_description", array(
+		$this->addModel("no_description", array(
 			"visible" => !$isDescription,
 			"soy2prefix" => "cms"
 		));

@@ -32,7 +32,8 @@ class ApplicationListComponent extends HTMLList{
 		));
 
 		$this->addLink("auth_link", array(
-			"link" => SOY2PageController::createLink("Application.Role") . "?app_id=" . $key
+			"link" => SOY2PageController::createLink("App.Role") . "?app_id=" . $key,
+			"id" => $key
 		));
 
 		//SOY Shopの場合はApp操作者の場合であればログインできないようにする

@@ -11,7 +11,7 @@ if(file_exists(dirname(__FILE__) . "/session.conf.php")) include_once("session.c
 define("SOYSHOP_ROOT", str_replace("\\", "/", dirname(dirname(dirname(__FILE__)))) . "/");
 define("SOYSHOP_WEBAPP", SOYSHOP_ROOT . "webapp/");
 define("SOY2_NOW", time());	//現在時刻
-define("SOYSHOP_RAW", 20230510101748);	//Apache Ant(JDK17)対策 ここでしか使わない定数
+define("SOYSHOP_RAW", 20231214080116);	//Apache Ant(JDK17)対策 ここでしか使わない定数
 //ビルド日時：ビルド時に置換される SOYSHOP_RAWからtimestampを組み立てる
 define("SOYSHOP_BUILD_TIME", mktime(substr(SOYSHOP_RAW, 8, 2), substr(SOYSHOP_RAW, 10, 2), substr(SOYSHOP_RAW, 12), substr(SOYSHOP_RAW, 4, 2), substr(SOYSHOP_RAW, 6, 2), substr(SOYSHOP_RAW, 0, 4)));
 define("SOYSHOP_VERSION", trim(file_get_contents(SOYSHOP_ROOT . "VERSION")));
@@ -34,10 +34,10 @@ if(file_exists(dirname(SOYSHOP_ROOT) . "/common/config/php.config.php")){
 //include SOY2
 if(!class_exists("SOY2")) {
 	//デバックモードの場合はSOY CMSの方から読み込む
-	if(DEBUG_MODE && file_exists(dirname(SOYSHOP_ROOT) . "/common/lib/soy2_build.php")){
-		include_once(dirname(SOYSHOP_ROOT) . "/common/lib/soy2_build.php");
+	if(DEBUG_MODE && file_exists(dirname(SOYSHOP_ROOT) . "/common/lib/soy2_build.min.php")){
+		include_once(dirname(SOYSHOP_ROOT) . "/common/lib/soy2_build.min.php");
 	}else{
-		include_once(SOYSHOP_WEBAPP . "lib/soy2_build.php");
+		include_once(SOYSHOP_WEBAPP . "lib/soy2_build.min.php");
 	}
 }
 include_once(SOYSHOP_WEBAPP . "lib/magic_quote_gpc.php");

@@ -2,7 +2,7 @@
 
 class TagCloudBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
-    function beforeOutput($page){
+    function beforeOutput(WebPage $page){
 		$wordId = self::_getWordIdFromParam();
 		$tag = (strlen($wordId)) ? self::_getTagByWordId($wordId) : "";
 		

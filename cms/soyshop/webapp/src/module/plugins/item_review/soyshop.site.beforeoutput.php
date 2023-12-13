@@ -3,7 +3,7 @@ class ItemReviewBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
 	private $review = array();
 
-	function doPost($page){
+	function doPost(WebPage $page){
 
 		$obj = $page->getPageObject();
 
@@ -46,7 +46,7 @@ class ItemReviewBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		}
 	}
 
-	function beforeOutput($page){
+	function beforeOutput(WebPage $page){
 
 		$pageObj = $page->getPageObject();
 
