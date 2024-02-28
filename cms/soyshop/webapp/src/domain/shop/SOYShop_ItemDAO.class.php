@@ -266,7 +266,7 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
 	 * 公開している商品に限定するQueryを追加
 	 */
 	function executeOpenItemQuery($query, $binds){
-		$query->where .= (strlen($query->where) > 0) ? " AND " : "";
+		$query->where .= (strlen((string)$query->where) > 0) ? " AND " : "";
 		$query->where .= "item_is_open = 1 AND open_period_start <= :now AND open_period_end >= :now AND is_disabled != 1";
 		if(!defined("SOYSHOP_ADMIN_PAGE") || !SOYSHOP_ADMIN_PAGE) $query->where .= " AND detail_page_id > 0 ";
 
