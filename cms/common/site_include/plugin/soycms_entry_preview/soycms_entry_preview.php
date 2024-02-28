@@ -20,7 +20,7 @@ class EntryPreviewPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/4610",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.6"
+			"version"=>"0.8"
 		));
 
 		CMSPlugin::addPluginConfigPage($this->getId(),array(

@@ -74,7 +74,7 @@ class EntryPreviewUtil {
 	}
 
 	public static function getPreviewPostfix(int $entryId){
-		return soycms_get_entry_attribute_value($entryId, self::FIELD_ID . "_postfix", "");
+		return soycms_get_entry_attribute_value($entryId, self::FIELD_ID . "_postfix", "string");
 	}
 
 	/**
