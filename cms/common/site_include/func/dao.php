@@ -412,7 +412,7 @@ function soycms_save_page_attribute_object(PageAttribute $attr){
 		}
 	}else{
 		try{
-			$dao->delete($attr->getEntryId(), $attr->getFieldId());
+			$dao->delete($attr->getPageId(), $attr->getFieldId());
 		}catch(Exception $e){
 			//
 		}
