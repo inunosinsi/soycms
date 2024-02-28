@@ -44,7 +44,7 @@ class SyncTemplatePlugin{
 			"modifier"=>"Jun Okada",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.4"
+			"version"=>"1.5"
 		));
 
 		CMSPlugin::addPluginConfigPage($this->getId(),array(
@@ -178,7 +178,7 @@ class SyncTemplatePlugin{
 		$convert = $this->convertURL;
 		$imports = @$_POST["imports"];
 
-		SOY2Debug::trace($_POST);
+		if(class_exists("SOY2Debug")) SOY2Debug::trace($_POST);
 
 //		if(empty($imports)){
 //			$imports = scandir($this->getSiteDirectory().self::TARGET_DIR);
@@ -306,7 +306,7 @@ class SyncTemplatePlugin{
 
 			//URLの変換: /siteId => http://example.com/siteId
 			$regex = '/(href|src)="\/?'.$siteId.'\/(.*?)"/i';
-			SOY2Debug::trace($regex);
+			if(class_exsits("SOY2Debug")) SOY2Debug::trace($regex);
 			$template = preg_replace($regex,'$1="'.$url.'$2"',$template);
 		}
 
@@ -500,4 +500,3 @@ class SyncTemplatePlugin{
 		CMSPlugin::redirectConfigPage();
 	}
 }
-?>
