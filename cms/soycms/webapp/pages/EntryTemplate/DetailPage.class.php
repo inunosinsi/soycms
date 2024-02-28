@@ -32,64 +32,58 @@ class DetailPage extends CMSWebPageBase{
 
 	function __construct($arg) {
 
-		$id = @$arg[0];
-		$this->id =$id;
+		$id = (isset($arg[0]) && is_numeric($arg[0])) ? (int)$arg[0] : null;
 		parent::__construct();
 
-		$this->createAdd("page_title","HTMLLabel",array(
-				"text" => ($this->id) ? CMSMessageManager::get("SOYCMS_ENTRY_TEMPLATE_DETAIL") : CMSMessageManager::get("SOYCMS_CREATE_NEW")
+		$this->addLabel("page_title", array(
+				"text" => (is_numeric($id)) ? CMSMessageManager::get("SOYCMS_ENTRY_TEMPLATE_DETAIL") : CMSMessageManager::get("SOYCMS_CREATE_NEW")
 		));
-
 
 		$result = SOY2ActionFactory::createInstance("EntryTemplate.TemplateDetailAction",array("id"=>$id))->run();
 		$template = $result->getAttribute("entity");
-		$this->createAdd("template_id","HTMLInput",array(
+		$this->addInput("template_id", array(
 			"value"=>$template->getId(),
 			"name"=>"template_id"
 		));
-		$this->createAdd("name","HTMLInput",array(
+		$this->addInput("name", array(
 			"value"=>$template->getName(),
 			"name"=>"name"
 		));
 
-		$this->createAdd("description","HTMLTextArea",array(
+		$this->addTextArea("description", array(
 			"text"=>$template->getDescription(),
 			"name"=>"description"
 		));
 		$temp = $template->getTemplates();
-		$this->createAdd("content","HTMLTextArea",array(
+		$this->addTextArea("content", array(
 			"text" => (isset($temp['content'])) ? $temp['content'] : "",
 			"name"=>"templates[content]"
 		));
-		$this->createAdd("more","HTMLTextArea",array(
+		$this->addTextArea("more", array(
 			"text" => (isset($temp['more'])) ? $temp['more'] : "",
 			"name"=>"templates[more]"
 		));
-		$this->createAdd("style","HTMLTextArea",array(
+		$this->addTextArea("style", array(
 			"text" => (isset($temp['style'])) ? $temp['style'] : "",
 			"name" => "templates[style]"
 		));
 
-		$this->createAdd("label_list","HTMLSelect",array(
+		$this->addSelect("label_list", array(
 			"name" => "templates[labelId]",
 			"options" => $this->getLabelList(),
 			"property" => "caption",
 			"selected" => (isset($temp["labelId"])) ? $temp["labelId"] : false
 		));
 
-		$this->createAdd("submit_button","HTMLInput",array(
-			"value" => (strlen($id)<1) ? CMSMessageManager::get("SOYCMS_CREATE") : CMSMessageManager::get("SOYCMS_UPDATE")
+		$this->addInput("submit_button", array(
+			"value" => (is_null($id)) ? CMSMessageManager::get("SOYCMS_CREATE") : CMSMessageManager::get("SOYCMS_UPDATE")
 		));
 
-		$this->createAdd("update_form","HTMLForm");
+		$this->addForm("update_form");
 	}
 
 	function getLabelList(){
 		$res = $this->run("Label.LabelListAction");
-		if($res->success()){
-			return $res->getAttribute("list");
-		}
-
-		return array();
+		return ($res->success()) ? $res->getAttribute("list") : array();
 	}
 }
