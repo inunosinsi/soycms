@@ -58,7 +58,7 @@ class CurrentCategoryOrArchiveComponent extends SOYBodyComponentBase{
 			"soy2prefix"=>"cms"
 		));
 
-		$isDescription = (strlen(trim($description)) > 0);
+		$isDescription = (strlen(trim((string)$description)) > 0);
 		$this->addModel("is_description", array(
 			"visible" => $isDescription,
 			"soy2prefix" => "cms"
