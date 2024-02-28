@@ -42,6 +42,18 @@ if(!isset($_SERVER["HTTPS"])){
 	}
 }
 
+// $_SERVER["REQUEST_URI"]の整形
+if(isset($_SERVER["REQUEST_URI"])){
+	for(;;){
+		$_pos = strpos($_SERVER["REQUEST_URI"], "//");
+		if(is_bool($_pos) || $_pos > 0) {
+			unset($_pos);
+			break;
+		}
+		$_SERVER["REQUEST_URI"] = substr($_SERVER["REQUEST_URI"], 1);
+	}	
+}
+
 // NGINX対応
 if(!isset($_SERVER["REDIRECT_URL"])){
 	$_SERVER["REDIRECT_URL"] = (isset($_SERVER["REQUEST_URI"]) && strlen($_SERVER["REQUEST_URI"])) ? $_SERVER["REQUEST_URI"] : "/";
@@ -71,7 +83,12 @@ if(isset($_GET["pathinfo"])){
 if(!isset($_SERVER["PATH_INFO"])){
 	// 公開側
 	if(defined("_SITE_ROOT_") || (defined("DISPLAY_SOYSHOP_SITE") && DISPLAY_SOYSHOP_SITE)){
-		$_SERVER["PATH_INFO"] = "/".ltrim(str_replace(str_replace("index.php", "", $_SERVER["SCRIPT_NAME"]), "", $_SERVER["REDIRECT_URL"]), "/");
+		if($_SERVER["SCRIPT_NAME"] === "/index.php"){
+			$_SERVER["PATH_INFO"] = $_SERVER["REDIRECT_URL"];
+		}else{
+			$_SERVER["PATH_INFO"] = "/".ltrim(str_replace(trim(str_replace("index.php", "", $_SERVER["SCRIPT_NAME"])), "", $_SERVER["REDIRECT_URL"]), "/");
+		}
+		
 	// 管理画面側
 	}else{
 		if(is_numeric(strpos($_SERVER["REDIRECT_URL"], "/index.php"))){
