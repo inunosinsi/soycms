@@ -27,7 +27,7 @@ class SOYCMSThumbnailPlugin{
 			"author"=>"日本情報化農業研究所",
 			"url"=>"http://www.n-i-agroinformatics.com/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.6"
+			"version"=>"1.6.1"
 		));
 
 		if(CMSPlugin::activeCheck($this->getId())){
@@ -392,7 +392,9 @@ class SOYCMSThumbnailPlugin{
 	 * @return string url
 	 */
 	private function _getDomainUrl(){
-		$siteUrl = (string)ThumbnailPluginUtil::getSiteConfig()->getConfigValue("url");
+		$siteUrl = trim((string)ThumbnailPluginUtil::getSiteConfig()->getConfigValue("url"));
+		if(!strlen($siteUrl)) $siteUrl = UserInfoUtil::getSiteURL();
+		
 		$siteId = UserInfoUtil::getSite()->getSiteId();
 		if(is_numeric(strpos($siteUrl, "/" . $siteId . "/"))) $siteUrl = str_replace("/" . $siteId . "/", "/" , $siteUrl);
 
