@@ -14,7 +14,11 @@ class OrderHistoryLogic extends SOY2LogicBase{
 		$history->setContent($content);
 		$history->setMore($more);
 		$history->setAuthor(self::_getAuthor());
-		$dao->insert($history);
+		try{
+			$dao->insert($history);
+		}catch(Exception $e){
+			error_log($e);
+		}
 	}
 
 	/**
