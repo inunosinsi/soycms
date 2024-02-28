@@ -58,10 +58,11 @@ class SearchAction extends SOY2Action{
 			foreach(array("title","content","more") as $column){
 				$freeword = array();
 				foreach($keywords as $keyword){
+					$keyword = trim($keyword);
 
 					$bind_key = ':freeword'.$keywordCounts;
 
-					if($keyword[0] == "-"){
+					if(strlen($keyword) >= 1 && $keyword[0] == "-"){
 						$keyword = substr($keyword,1);
 						$freeword[] = 'Entry.'.$column." not like ".$bind_key."";
 					}else{

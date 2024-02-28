@@ -163,8 +163,8 @@ class UploadFileAction extends SOY2Action{
 					switch($ext){
 						case "jpeg":
 							exec("jpegoptim -V", $out);
-							if(isset($out) && count($out)){
-								exec("jpegoptim --strip-all " . $filepath);
+							if(is_array($out) && count($out)){
+								exec("jpegoptim --strip-all " . escapeshellarg($filepath));
 							}
 							break;
 					}
