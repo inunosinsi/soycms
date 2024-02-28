@@ -98,8 +98,8 @@ class LabeledBlockComponent implements BlockComponent{
 				if(defined("CMS_PREVIEW_MODE")){
 					$articlePageUrl = SOY2PageController::createLink("Page.Preview") ."/". $blogPage->getId() . "?uri=". $blogPage->getEntryPageURL();
 				}else{
-					$articlePageUrl = $page->siteRoot . $blogPage->getEntryPageURL();
-					$categoryPageUrl = $page->siteRoot . $blogPage->getCategoryPageURL();
+					$articlePageUrl = $page->getSiteRootUrl() . $blogPage->getEntryPageURL();
+					$categoryPageUrl = $page->getSiteRootUrl() . $blogPage->getCategoryPageURL();
 				}
 			}else{
 				$this->isStickUrl = false;
