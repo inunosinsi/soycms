@@ -295,15 +295,18 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 				$sort = "cdate";
 		}
 		$order = ($orderReverse) ? "ASC" : "DESC";
-		
-		if(!is_array($labelIds) || !count($labelIds)) return " Order By entry.".$sort." " . $order . ", entry.id " . $order;
-		$labelId = (int)$labelIds[count($labelIds) - 1];	//末尾のラベルID
-		if(count($labelIds) === 1 && $labelId === 0) return " Order By entry.".$sort." " . $order . ", entry.id " . $order;	//記事毎の表示順が使えるブロックはラベルブロックのみ
 
-		//ブログリンクブロックの場合
-		if(is_string($this->blockClass) && $this->blockClass === "MultiLabelBlockComponent") return " Order By entry.".$sort." " . $order . ", entry.id " . $order;
-
-		return " Order By (SELECT display_order FROM EntryLabel WHERE label_id = " . $labelId . " AND entry_id = entry.id), entry.".$sort." " . $order . ", entry.id " . $order;
+		switch((string)$this->blockClass){
+			//記事毎の表示順が使えるブロックはラベルブロックのみ
+			case "LabeledBlockComponent":
+				$labelId = (count($labelIds) >= 1) ? $labelIds[count($labelIds)-1] : 0;	// 設定に不備がないか？を念の為に確認しておく
+				if($labelId > 0){
+					return " Order By (SELECT display_order FROM EntryLabel WHERE label_id = " . $labelId . " AND entry_id = entry.id), entry.".$sort." " . $order . ", entry.id " . $order;
+				}
+				// pass through					
+			default:
+				return " Order By entry.".$sort." " . $order . ", entry.id " . $order;
+		}
 	}
 
 	/**

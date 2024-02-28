@@ -334,6 +334,7 @@ class EntryLogic extends SOY2LogicBase{
 	 */
 	function getOpenEntryByLabelId(int $labelId){
 		$dao = soycms_get_hash_table_dao("labeled_entry");
+		$dao->setBlockClass($this->blockClass);
 		$dao->setSort((int)$this->sort);
 		$dao->setLimit($this->getLimit());
 		$dao->setOffset($this->getOffset());
