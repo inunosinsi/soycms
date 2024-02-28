@@ -3,74 +3,74 @@
 <form soy:id="form">
 
 	<!-- soy:id="language_list" -->
-    <div class="form-group">
-        <label><!-- soy:id="language_type" /-->サイトのプリフィックスの設定</label>
-        <div class="form-inline">
-            <input type="hidden" soy:id="no_use_hidden">
-            <input type="checkbox" soy:id="is_use_checkbox">
+	<h2 class="alert-info"><!-- soy:id="language_type*" /-->サイトのプリフィックスの設定</h2>
+	<div class="form-group">
+		<div class="form-inline">
+			<input type="hidden" soy:id="no_use_hidden">
+			<input type="checkbox" soy:id="is_use_checkbox">
 			<input type="text" soy:id="prefix_input" />&nbsp;&nbsp;
 			<a soy:id="create_pc_page_link" class="btn btn-default">PC版ページの追加</a>&nbsp;&nbsp;
 			<a soy:id="create_i_page_link" class="btn btn-default">スマホ版ページの追加</a>
-        </div>
+		</div>
 	</div>
-    <h4>▶&nbsp;PC</h4>
+	<h4>▶&nbsp;PC</h4>
 	<div class="alert alert-warning">
-        ※http://
-        <!-- soy:id="domain" /-->
-        <!-- soy:id="shop_id" /-->の場合、http://
-        <!-- soy:id="domain*" /-->
-        <!-- soy:id="shop_id*" /--><strong><!-- soy:id="prefix_text" /--></strong>にリダイレクトします<br /> ※http://
-        <!-- soy:id="domain*" /-->
-        <!-- soy:id="shop_id*" /-->/item/listの場合、http://
-        <!-- soy:id="domain*" /-->
-        <!-- soy:id="shop_id*" /--><strong><!-- soy:id="prefix_text*" /--></strong>/item/listにリダイレクトします
+		※http://
+		<!-- soy:id="domain" /-->
+		<!-- soy:id="shop_id" /-->の場合、http://
+		<!-- soy:id="domain*" /-->
+		<!-- soy:id="shop_id*" /--><strong><!-- soy:id="prefix_text" /--></strong>にリダイレクトします<br /> ※http://
+		<!-- soy:id="domain*" /-->
+		<!-- soy:id="shop_id*" /-->/item/listの場合、http://
+		<!-- soy:id="domain*" /-->
+		<!-- soy:id="shop_id*" /--><strong><!-- soy:id="prefix_text*" /--></strong>/item/listにリダイレクトします
 	</div>
 
-    <!-- soy:id="display_mobile_check_config" -->
-    <h4>▶&nbsp;スマホ</h4>
+	<!-- soy:id="display_mobile_check_config" -->
+	<h4>▶&nbsp;スマホ</h4>
 	<div class="alert alert-warning">
-        ※http://
-        <!-- soy:id="domain" /-->
-        <!-- soy:id="shop_id" /-->の場合、http://
-        <!-- soy:id="domain*" /-->
-        <!-- soy:id="shop_id*" /--><strong><!-- soy:id="smartphone_prefix_text" /--><!-- soy:id="prefix_text" /--></strong>にリダイレクトします<br /> ※http://
-        <!-- soy:id="domain*" /-->
-        <!-- soy:id="shop_id*" /-->/item/listの場合、http://
-        <!-- soy:id="domain*" /-->
-        <!-- soy:id="shop_id*" /--><strong><!-- soy:id="smartphone_prefix_text*" /--><!-- soy:id="prefix_text*" /--></strong>/item/listにリダイレクトします
+		※http://
+		<!-- soy:id="domain" /-->
+		<!-- soy:id="shop_id" /-->の場合、http://
+		<!-- soy:id="domain*" /-->
+		<!-- soy:id="shop_id*" /--><strong><!-- soy:id="smartphone_prefix_text" /--><!-- soy:id="prefix_text" /--></strong>にリダイレクトします<br /> ※http://
+		<!-- soy:id="domain*" /-->
+		<!-- soy:id="shop_id*" /-->/item/listの場合、http://
+		<!-- soy:id="domain*" /-->
+		<!-- soy:id="shop_id*" /--><strong><!-- soy:id="smartphone_prefix_text*" /--><!-- soy:id="prefix_text*" /--></strong>/item/listにリダイレクトします
 	</div>
 	<!-- /soy:id="display_mobile_check_config" -->
 
 	<div class="form-group">
-        <label><!-- soy:id="language_type*" /-->サイトで使用するカートID</label><br>
-        PC:<strong><!-- soy:id="user_cart_id" /--></strong>
-        <!-- soy:id="display_mobile_check_config*" -->&nbsp; スマホ:
-        <strong><!-- soy:id="user_sp_cart_id" /--></strong>
-        <!-- /soy:id="display_mobile_check_config*" -->
+		<label><!-- soy:id="language_type*" /-->サイトで使用するカートID</label><br>
+		PC:<strong><!-- soy:id="user_cart_id" /--></strong>
+		<!-- soy:id="display_mobile_check_config*" -->&nbsp; スマホ:
+		<strong><!-- soy:id="user_sp_cart_id" /--></strong>
+		<!-- /soy:id="display_mobile_check_config*" -->
 	</div>
 
 	<div class="form-group">
-    	<label><!-- soy:id="language_type" /-->サイトで使用するマイページID</label><br>
-        PC:<strong><!-- soy:id="user_mypage_id" /--></strong>
-        <!-- soy:id="display_mobile_check_config*" -->&nbsp; スマホ:
-        <strong><!-- soy:id="user_sp_mypage_id" /--></strong>
-        <!-- /soy:id="display_mobile_check_config*" -->
-    </div>
-    <!-- /soy:id="language_list" -->
+		<label><!-- soy:id="language_type" /-->サイトで使用するマイページID</label><br>
+		PC:<strong><!-- soy:id="user_mypage_id" /--></strong>
+		<!-- soy:id="display_mobile_check_config*" -->&nbsp; スマホ:
+		<strong><!-- soy:id="user_sp_mypage_id" /--></strong>
+		<!-- /soy:id="display_mobile_check_config*" -->
+	</div>
+	<!-- /soy:id="language_list" -->
 
 	<div class="form-group">
-    	<label>公開側の表示の際にブラウザの言語設定を確認する</label><br>
-        <input type="checkbox" soy:id="confirm_browser_language_config"><br> ※ブラウザの言語設置を確認しない場合は言語切替ボタンを使用します。
+		<label>公開側の表示の際にブラウザの言語設定を確認する</label><br>
+		<input type="checkbox" soy:id="confirm_browser_language_config"><br> ※ブラウザの言語設置を確認しない場合は言語切替ボタンを使用します。
 	</div>
 
 	<div class="form-group">
-    	<label>言語切替ボタン使用時の設定</label><br>
-        <input type="checkbox" soy:id="first_access_config">
+		<label>言語切替ボタン使用時の設定</label><br>
+		<input type="checkbox" soy:id="first_access_config">
 	</div>
 
-    <div class="text-center">
-        <input type="submit" class="btn btn-primary btn-lg" value="変更">
-    </div>
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="変更">
+	</div>
 </form>
 
 <br>

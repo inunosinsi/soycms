@@ -6,6 +6,7 @@ class UtilMultiLanguageUtil {
     const LANGUAGE_EN = "en";
     const LANGUAGE_ZH = "zh";
     const LANGUAGE_ZH_TW = "zh-tw";
+    const LANGUAGE_KO = "ko";
     const LANGUAGE_ES = "es";
 
     const MODE_PC = "pc";
@@ -34,6 +35,11 @@ class UtilMultiLanguageUtil {
                             "prefix" => "zh-tw",
                             "is_use" => self::NO_USE
                         ),
+            //韓国語
+            self::LANGUAGE_KO => array(
+                            "prefix" => "ko",
+                            "is_use" => self::NO_USE
+                        ),
             //スペイン語
             self::LANGUAGE_ES => array(
                             "prefix" => "es",
@@ -52,6 +58,7 @@ class UtilMultiLanguageUtil {
             self::LANGUAGE_EN,
             self::LANGUAGE_ZH,
             self::LANGUAGE_ZH_TW,
+			self::LANGUAGE_KO,
             self::LANGUAGE_ES
         );
 
@@ -65,6 +72,7 @@ class UtilMultiLanguageUtil {
             self::LANGUAGE_EN => "英語",
             self::LANGUAGE_ZH => "中国語(簡体字)",
             self::LANGUAGE_ZH_TW => "中国語(繁体字)",
+			self::LANGUAGE_KO => "韓国語",
             self::LANGUAGE_ES => "スペイン語"
         );
 
