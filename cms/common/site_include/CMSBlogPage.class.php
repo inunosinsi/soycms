@@ -803,19 +803,31 @@ class CMSBlogPage extends CMSPage{
 				$pageUrl .= $this->page->getUri() ."/";
 			}
 		}else{
-
 			//絶対パスの場合
 			if($isAbsoluteUrl){
 				$pageUrl = $this->siteUrl. $this->page->getUri();
 
 			}else{
-				if(strlen($this->page->getUri()) >0){
-					$pageUrl = CMSPageController::createRelativeLink($this->page->getUri(), false);
+				if(strlen($this->page->getUri()) > 0){
+					$uri = $this->page->getUri();
+
+					// $_SERVER["REDIRECT_URL"]は必ずあるので、この値を使用して$pageUrlを生成する
+					$_pos = strpos($_SERVER["REDIRECT_URL"], "/".soycms_get_site_id_by_frontcontroller()."/".$uri);
+					if(is_numeric($_pos) && $_pos === 0){
+						$pageUrl = "/".soycms_get_site_id_by_frontcontroller()."/".$uri;
+					}else{
+						$_pos = strpos($_SERVER["REDIRECT_URL"], "/".$uri);
+						if(is_numeric($_pos) && $_pos === 0){
+							$pageUrl = "/".$uri;
+						}else{	// 念の為、下記の処理を残しておく
+							$pageUrl = CMSPageController::createRelativeLink($uri, false);
+						}
+					}
 				}else{
 					$pageUrl = preg_replace('/\/\$/',"",CMSPageController::createRelativeLink(".", false));
 				}
 			}
-			if(strlen($pageUrl) ==0 OR $pageUrl[strlen($pageUrl)-1] != "/") $pageUrl .= "/";
+			if(strlen($pageUrl) == 0 || $pageUrl[strlen($pageUrl)-1] != "/") $pageUrl .= "/";
 		}
 		return $pageUrl;
 	}
