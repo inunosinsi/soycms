@@ -6725,7 +6725,7 @@ class SOY2Mail {
 	/**
 	 *
 	 */
-    public static function create($type, $options = array()){
+    public static function create(string $type, array $options=array()){
 		$mail = null;
     	switch($type){
     		case "imap":
@@ -6761,40 +6761,40 @@ class SOY2Mail {
     function getSubject() {
     	return $this->subject;
     }
-    function setSubject($subject) {
+    function setSubject(string $subject) {
     	$this->subject = $subject;
     	$this->encodedSubject = "";
     }
     function getEncodedSubject() {
-    	if(strlen($this->encodedSubject)<1){
+    	if(strlen($this->encodedSubject) < 1){
     		$this->encodedSubject = mb_encode_mimeheader($this->subject,
 				$this->getSubjectEncodingForConvert(),"B","\r\n",strlen("Subject: "));
     	}
     	return $this->encodedSubject;
     }
-    function setEncodedSubject($encodedSubject) {
+    function setEncodedSubject(string $encodedSubject) {
     	$this->encodedSubject = $encodedSubject;
     }
     function getText() {
     	return $this->text;
     }
-    function setText($text, $encoding = null) {
+    function setText(string $text, string $encoding="") {
     	$this->text = $text;
     	if(!$this->encodedText){
-    		if(!$encoding)$encoding = $this->getEncodingForConvert();
+    		if(!strlen($encoding)) $encoding = $this->getEncodingForConvert();
     		$this->encodedText = mb_convert_encoding($text, $encoding);
     	}
     }
     function getEncodedText() {
     	return $this->encodedText;
     }
-    function setEncodedText($encodedText) {
+    function setEncodedText(string $encodedText) {
     	$this->encodedText = $encodedText;
     }
     function getAttachments() {
     	return $this->attachments;
     }
-    function setAttachments($attachments) {
+    function setAttachments(array $attachments) {
     	$this->attachments = $attachments;
     }
     function getHeaders() {
@@ -6806,20 +6806,20 @@ class SOY2Mail {
     function getFrom() {
     	return $this->from;
     }
-    function setFrom($from, $label = null, $encoding = null) {
-		if(!$encoding)$encoding = $this->getEncoding();
+    function setFrom(string $from, string $label="", string $encoding="") {
+		if(!strlen($encoding)) $encoding = $this->getEncoding();
     	$this->from = new SOY2Mail_MailAddress($from, $label, $encoding);
     }
     function getRecipients() {
     	return $this->recipients;
     }
-    function setRecipients($recipients) {
+    function setRecipients(array $recipients) {
     	$this->recipients = $recipients;
     }
     function getEncodedRecipients() {
     	return $this->encodedRecipients;
     }
-    function setEncodedRecipients($encodedRecipients) {
+    function setEncodedRecipients(array $encodedRecipients) {
     	$this->encodedRecipients = $encodedRecipients;
     }
     /**
@@ -6829,13 +6829,13 @@ class SOY2Mail {
 	function getEncoding() {
 		return $this->encoding;
 	}
-	function setEncoding($encoding) {
+	function setEncoding(string $encoding) {
 		$this->encoding = $encoding;
 	}
 	function getBccRecipients() {
     	return $this->bccRecipients;
     }
-    function setBccRecipients($bccRecipients) {
+    function setBccRecipients(array $bccRecipients) {
     	$this->bccRecipients = $bccRecipients;
     }
     function getRawData(){
@@ -6861,8 +6861,8 @@ class SOY2Mail {
     /**
      * 受信者を追加する
      */
-    function addRecipient($address, $label = null, $encoding = null){
-    	if(!$encoding)$encoding = $this->getEncoding();
+    function addRecipient(string $address, string $label="", string $encoding=""){
+    	if(!strlen($encoding)) $encoding = $this->getEncoding();
     	$recipient = new SOY2Mail_MailAddress($address, $label, $encoding);
     	$this->recipients[$address] = $recipient;
     	return $this;
@@ -6870,7 +6870,7 @@ class SOY2Mail {
     /**
      * 受信者を削除する
      */
-    function removeRecipient($address){
+    function removeRecipient(string $address){
     	$this->recipients[$address] = null;
     	unset($this->recipients[$address]);
     }
@@ -6883,8 +6883,8 @@ class SOY2Mail {
     /**
      * BCC受信者を追加する
      */
-    function addBccRecipient($address, $label = null, $encoding = null){
-    	if(!$encoding)$encoding = $this->getEncoding();
+    function addBccRecipient(string $address, string $label="", string $encoding=""){
+    	if(!strlen($encoding)) $encoding = $this->getEncoding();
     	$recipient = new SOY2Mail_MailAddress($address, $label, $encoding);
     	$this->bccRecipients[$address] = $recipient;
     	return $this;
@@ -6892,7 +6892,7 @@ class SOY2Mail {
     /**
      * BCC受信者を削除する
      */
-    function removeBccRecipient($address){
+    function removeBccRecipient(string $address){
     	$this->bccRecipients[$address] = null;
     	unset($this->bccRecipients[$address]);
     }
@@ -6905,8 +6905,8 @@ class SOY2Mail {
     /**
      * headerを追加する
      */
-    function setHeader($key, $value){
-    	if(strlen($value)>0){
+    function setHeader(string $key, string $value){
+    	if(strlen($value) > 0){
 	    	$this->headers[$key] = $value;
     	}else{
     		if(array_key_exists($key, $this->headers)){
@@ -6918,7 +6918,7 @@ class SOY2Mail {
     /**
      * ヘッダーを設定する
      */
-    function getHeader($key){
+    function getHeader(string $key){
     	return (isset($this->headers[$key])) ? $this->headers[$key] : "";
     }
     /**
@@ -6930,7 +6930,7 @@ class SOY2Mail {
     /**
      * 添付ファイルを追加する
      */
-    function addAttachment($filename, $type, $contents){
+    function addAttachment(string $filename, string $type, string $contents){
     	$this->attachments[$filename] = array(
     		"filename" => $filename,
     		"mime-type" => $type,
@@ -6940,7 +6940,7 @@ class SOY2Mail {
     /**
      * 添付ファイルを削除する
      */
-    function removeAttachment($filename){
+    function removeAttachment(string $filename){
     	$this->attachments[$filename] = null;
     	unset($this->attachments[$filename]);
     }
@@ -6956,7 +6956,7 @@ class SOY2Mail {
     function getSubjectEncoding() {
     	return $this->subjectEncoding;
     }
-    function setSubjectEncoding($subjectEncoding) {
+    function setSubjectEncoding(string $subjectEncoding) {
     	$this->subjectEncoding = $subjectEncoding;
     }
     /**
@@ -6975,7 +6975,7 @@ class SOY2Mail {
      * 文字コード変換に使用する文字コードを返す
      * ヘッダーなどに記載する文字コードとは別の文字コードを変換に使用するために用意した
      */
-    public static function getPracticalEncoding($encoding){
+    public static function getPracticalEncoding(string $encoding){
     	switch(strtoupper($encoding)){
     		case "ISO-2022-JP":
     			/*
@@ -6999,7 +6999,7 @@ class SOY2Mail_MailAddress{
 	private $address;
 	private $label;
 	private $encoding;
-	function __construct($address, $label = "", $encoding = ""){
+	function __construct(string $address, string $label="", string $encoding=""){
 		$this->address = $address;
 		$this->label = $label;
 		$this->encoding = $encoding;
@@ -7013,19 +7013,19 @@ class SOY2Mail_MailAddress{
 			return $this->address;
 		}
 	}
-	function setAddress($address) {
+	function setAddress(string $address) {
 		$this->address = $address;
 	}
 	function getLabel() {
 		return $this->label;
 	}
-	function setLabel($label) {
+	function setLabel(string $label) {
 		$this->label = $label;
 	}
 	function getEncoding() {
 		return $this->encoding;
 	}
-	function setEncoding($encoding) {
+	function setEncoding(string $encoding) {
 		$this->encoding = $encoding;
 	}
     /**
@@ -7039,8 +7039,8 @@ class SOY2Mail_MailAddress{
      * ダブルクオートは使わない
      */
 	function getString(){
-		if(strlen($this->address)<1)return '';
-		if(strlen($this->label)<1)return '<' . $this->address . '>';
+		if(strlen($this->address) < 1)return '';
+		if(strlen($this->label) < 1)return '<' . $this->address . '>';
 		return mb_encode_mimeheader($this->label, $this->getEncodingForConvert()).' <'.$this->address.'>';
 	}
 	function __toString(){
@@ -7058,7 +7058,7 @@ class SOY2Mail_MailAddress{
 	 * 使える文字がRFC準拠。
 	 * ただしローカルパート部のドット「.」の連続や末尾のドットがあってもNGとはしない（docomoなどのRFC違反アドレスを許容する）。
 	 */
-	protected static function _validation($email, $lazy = false){
+	protected static function _validation(string $email, bool $lazy=false){
 		if($lazy){
 			$validEmail = "^.+\@[^.]+(?:\\.[^.]+)+\$";
 		}else{
@@ -7078,7 +7078,7 @@ class SOY2Mail_MailAddress{
 	 * @param string $email
 	 * @return boolean
 	 */
-	public static function simpleValidation($email){
+	public static function simpleValidation(string $email){
 		return self::_validation($email, true);
 	}
 	/**
@@ -7086,7 +7086,7 @@ class SOY2Mail_MailAddress{
 	 * @param string $email
 	 * @return boolean
 	 */
-	public static function validation($email){
+	public static function validation(string $email){
 		return self::_validation($email, false);
 	}
 }
@@ -7202,7 +7202,7 @@ class SOY2Mail_ServerConfig {
     /**
      * import config
      */
-    function import($str){
+    function import(string $str){
     	$obj = unserialize(stripslashes($str));
     	if($obj && $obj instanceof SOY2Mail_ServerConfig){
     		SOY2::cast($this,$obj);
@@ -7334,7 +7334,7 @@ class SOY2Mail_POPLogic extends SOY2Mail implements SOY2Mail_ReceiverInterface{
 	private $folder;
 	private $user;
 	private $pass;
-	function __construct($options){
+	function __construct(array $options){
 		if(!isset($options["pop.host"])){
 			throw new SOY2MailException("[pop.host] is necessary.");
 		}
@@ -7384,10 +7384,10 @@ class SOY2Mail_POPLogic extends SOY2Mail implements SOY2Mail_ReceiverInterface{
 			$buff = $this->getPopResponse();
 			if($buff == ".")break;
 			$array = explode(" ",$buff);
-			if(!is_numeric($array[0]))continue;
-			if(!$mailId)$mailId = $array[0];
+			if(!is_numeric($array[0])) continue;
+			if(is_null($mailId)) $mailId = $array[0];
 		}
-		if(!$mailId)return false;
+		if(is_null($mailId)) return false;
 		$res = $this->popCommand("RETR ".$mailId);
 		$flag = false;
 		$header = "";
@@ -7466,7 +7466,7 @@ class SOY2Mail_POPLogic extends SOY2Mail implements SOY2Mail_ReceiverInterface{
 		$mail->setEncoding($encoding);
 		return $mail;
 	}
-	function popCommand($string){
+	function popCommand(string $string){
 		fputs($this->con, $string."\r\n");
   		$buff = fgets($this->con);
 		if(strpos($buff,"+OK") == 0){
@@ -7483,7 +7483,7 @@ class SOY2Mail_POPLogic extends SOY2Mail implements SOY2Mail_ReceiverInterface{
 	/**
 	 * 受信メッセージのヘッダーを解析し配列にする
 	 */
-	function parseHeaders($header){
+	function parseHeaders(string $header){
 		$headers = array();
 		$header = preg_replace("/\r\n[ \t]+/", ' ', $header);
 		$raw_headers = explode("\r\n", $header);
@@ -7510,7 +7510,7 @@ class SOY2Mail_IMAPLogic extends SOY2Mail implements SOY2Mail_ReceiverInterface{
 	private $folder;
 	private $user;
 	private $pass;
-	function __construct($options) {
+	function __construct(array $options) {
 		if(!function_exists("imap_open")){//extension_loaded("imap")
 			throw new SOY2MailException("The extension 'imap' is necessary.");
 		}
@@ -7615,7 +7615,7 @@ class SOY2Mail_IMAPLogic extends SOY2Mail implements SOY2Mail_ReceiverInterface{
 	/**
 	 * imap_fetchstructureの返り値のオブジェクトのtypeとsubtypeからMIME-Typeをテキストで返す
 	 */
-	function getMimeType($type, $subType){
+	function getMimeType(string $type, string $subType){
 		$mimeType = "";
 		switch($type){
 			case 0:
@@ -7651,7 +7651,7 @@ class SOY2Mail_IMAPLogic extends SOY2Mail implements SOY2Mail_ReceiverInterface{
 	/**
 	 * imap_fetchstructureの返り値のオブジェクトのparametersから欲しいattributeの値を返す
 	 */
-	function getParameterValue($parameters, $attribute){
+	function getParameterValue(array $parameters, string $attribute){
 		$attribute = strtolower($attribute);
 		foreach($parameters as $param){
 			if(strtolower($param->attribute) == $attribute){
@@ -7699,8 +7699,7 @@ class SOY2Mail_IMAPLogic extends SOY2Mail implements SOY2Mail_ReceiverInterface{
 }
 
 class SOY2Mail_SendMailLogic extends SOY2Mail implements SOY2Mail_SenderInterface{
-    function __construct($options) {
-    }
+    function __construct(array $options) {}
     function open(){}
     function close(){}
     function send(){
@@ -7710,7 +7709,7 @@ class SOY2Mail_SendMailLogic extends SOY2Mail implements SOY2Mail_SenderInterfac
 			$this->sendMail($recipient, $bccRecipients);
 		}
     }
-    function sendMail($sendTo,$bccRecipients = array()){
+    function sendMail(SOY2Mail_MailAddress $sendTo, array $bccRecipients=array()){
 		$to = $sendTo->getString();
 		$from = $this->getFrom();
 		$title = $this->getEncodedSubject();
@@ -7843,7 +7842,7 @@ class SOY2Mail_SMTPLogic extends SOY2Mail implements SOY2Mail_SenderInterface{
 	private $debug = false;
 	private $esmtpOptions = array();
 	private $isSecure = false;
-	function __construct($options){
+	function __construct(array $options){
 		if(!isset($options["smtp.host"])){
 			throw new SOY2MailException("[smtp.host] is necessary.");
 		}
@@ -7987,7 +7986,7 @@ class SOY2Mail_SMTPLogic extends SOY2Mail implements SOY2Mail_SenderInterface{
 			$this->sendMail($recipient, $bccRecipients);
 		}
 	}
-	function sendMail(SOY2Mail_MailAddress $sendTo,$bccRecipients = array()){
+	function sendMail(SOY2Mail_MailAddress $sendTo, array $bccRecipients=array()){
 		$sent = false;
 		$try = $try_connect = 0;
 		while(!$sent){
@@ -8023,7 +8022,7 @@ class SOY2Mail_SMTPLogic extends SOY2Mail implements SOY2Mail_SenderInterface{
 			}
 		}
 	}
-	private function _sendMail(SOY2Mail_MailAddress $sendTo,$bccRecipients = array()){
+	private function _sendMail(SOY2Mail_MailAddress $sendTo, array $bccRecipients=array()){
 		$from = $this->getFrom();
 		$title = $this->getEncodedSubject();
 		$body = $this->getEncodedText();
@@ -8107,10 +8106,10 @@ class SOY2Mail_SMTPLogic extends SOY2Mail implements SOY2Mail_SenderInterface{
 		}
 		$this->con = null;
 	}
-	function data($string){
+	function data(string $string){
 		$this->smtpCommand($string);
 	}
-	function smtpCommand($string){
+	function smtpCommand(string $string){
 		if(!$this->con){
 			throw new SOY2MailException('SMTP is null');
  			return;
@@ -8179,12 +8178,12 @@ class SOY2Mail_SMTPLogic extends SOY2Mail implements SOY2Mail_SenderInterface{
 	}
 }
 class SOY2Mail_SMTPAuth_CramMD5{
-	static function getResponse($user, $pass, $challengeStr){
+	static function getResponse(string $user, string $pass, string $challengeStr){
 		return $user." ".hash_hmac("md5",$challengeStr,$pass);
 	}
 }
 class SOY2Mail_SMTPAuth_DigestMD5{
-	static function getResponse($user, $pass, $challengeStr, $hostname){
+	static function getResponse(string $user, string $pass, string $challengeStr, string $hostname){
 		$challenge = array();
 		if(preg_match_all('/([-a-z]+)=(?:"([^"]*)"|([^=,]*))(?:,|$)/u',$challengeStr,$matches,PREG_SET_ORDER)){
 			foreach($matches as $matche){
