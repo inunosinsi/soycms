@@ -66,11 +66,9 @@ class SerialNumberColumn extends SOYInquiry_ColumnBase{
 	/**
 	 * 確認画面で呼び出す
 	 */
-//	function getView(){
-//		//絵文字削除
-//		$value = $this->deleteEmoji($this->getValue());
-//		return htmlspecialchars((string)$value, ENT_QUOTES, "UTF-8");
-//	}
+	function getView(){
+		return "";
+	}
 
 	function getLinkagesSOYMailTo() {
 		return array(

@@ -171,9 +171,8 @@ class RadioColumn extends SOYInquiry_ColumnBase{
 
 	function validate(){
 		if(!$this->getIsRequire()) return true;
-		$value = (is_string($this->getValue())) ? trim($this->getValue()) : "";
 		
-		if(strlen($value)<1){
+		if(strlen($this->getValue()) < 1){
 			switch(SOYCMS_PUBLISH_LANGUAGE){
 				case "en":
 					$msg = "Please choose one from the ".$this->getLabel().".";

@@ -31,7 +31,7 @@ class DateWithoutDayColumn extends SOYInquiry_ColumnBase{
 
 		$values = $this->getValue();
 
-		if(!is_array($values)){
+		if(count($values) < 2){
 
 			$value = array();
 
@@ -173,7 +173,7 @@ class DateWithoutDayColumn extends SOYInquiry_ColumnBase{
 		$values = $this->getValue();
 
 		if(
-			empty($values)
+			count($values) < 2
 			|| !strlen(@$values["year"])
 			|| !strlen(@$values["month"])
 		){

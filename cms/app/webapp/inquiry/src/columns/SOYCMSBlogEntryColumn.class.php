@@ -163,6 +163,6 @@ class SOYCMSBlogEntryColumn extends SOYInquiry_ColumnBase{
 	}
 	
 	function getView(){
-		return htmlspecialchars((string)$this->getValue(), ENT_QUOTES, "UTF-8");
+		return htmlspecialchars($this->getValue(), ENT_QUOTES, "UTF-8");
 	}
 }

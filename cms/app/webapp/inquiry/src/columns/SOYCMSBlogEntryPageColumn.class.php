@@ -15,7 +15,7 @@ class SOYCMSBlogEntryPageColumn extends SOYInquiry_ColumnBase{
 	 */
 	function getForm(array $attrs=array()){
 		//エラーで入力画面に戻って来たときはすでに値が入っている
-		$value = (string)$this->getValue();
+		$value = $this->getValue();
 
 		//なければ取得
 		if(!strlen($value)){

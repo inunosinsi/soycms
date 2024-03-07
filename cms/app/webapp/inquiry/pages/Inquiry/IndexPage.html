@@ -10,6 +10,7 @@
 			<div class="panel-body">
 				<a class="btn btn-default active" soy:link="inquiry.Inquiry">一覧</a>
 				<a class="btn btn-default" soy:link="inquiry.Inquiry.Export">CSVエクスポート</a>
+				<a class="btn btn-default" soy:link="inquiry.Inquiry.Garbage">ゴミ箱</a>
 			</div>
 		</div>
 	</div>
@@ -29,6 +30,7 @@
 							<input type="text" soy:id="end" class="form-control date_picker_end">
 							<select soy:id="flag" class="form-control">状態</select>
 							<select soy:id="comment_flag" class="form-control">すべて</select>
+							<input type="number" soy:id="display_count" class="form-control" style="width:100px;">
 							<input type="submit" class="btn btn-primary" value="検索">&nbsp;&nbsp;
 							<a soy:link="inquiry.Inquiry">リセット</a>
 						</div>
@@ -60,9 +62,9 @@
 								</th>
 								<th soy:id="bulk_modify_buttons" colspan="5">
 									チェックを
-									<input type="submit" soy:id="bulk_delete"  value="削除する"/>
-									<input type="submit" soy:id="bulk_read"  value="既読にする"/>
-									<input type="submit" soy:id="bulk_new"  value="未読にする"/>
+									<input type="submit" soy:id="bulk_delete" class="btn btn-danger" value="削除する">
+									<input type="submit" soy:id="bulk_read" class="btn btn-primary" value="既読にする">
+									<input type="submit" soy:id="bulk_new" class="btn btn-info" value="未読にする">
 								</th>
 							</tr>
 						</tfoot>

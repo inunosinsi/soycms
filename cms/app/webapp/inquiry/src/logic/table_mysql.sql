@@ -25,6 +25,7 @@ CREATE TABLE soyinquiry_inquiry (
   data TEXT,
   flag TINYINT default 1,
   create_date INTEGER NOT NULL,
+  update_date INTEGER NOT NULL DEFAULT 0,
   form_url VARCHAR(255),
   UNIQUE(form_id, create_date)
 )ENGINE = InnoDB;

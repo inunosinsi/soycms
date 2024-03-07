@@ -78,19 +78,16 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 	 */
 	function getView(){
 		$values = self::getValues();
-		if(is_array($values) && count($values)){
-			$html = array();
-			foreach($values as $v){
-				if(isset($v["tmp_name"]) && strlen($v["tmp_name"])){
-					$html[] = htmlspecialchars($v["name"] . " (".(int)($v["size"] / self::KB_SIZE)."KB)", ENT_QUOTES, "UTF-8");
-				}else{	//エラー
-					//$html[] = "<span style=\"color:red;\">" . htmlspecialchars($v["name"], ENT_QUOTES, "UTF-8") . "のアップロードを失敗しました。</span>";
-				}
+		if(!count($values)) return "";
+		$html = array();
+		foreach($values as $v){
+			if(isset($v["tmp_name"]) && strlen($v["tmp_name"])){
+				$html[] = htmlspecialchars($v["name"] . " (".(int)($v["size"] / self::KB_SIZE)."KB)", ENT_QUOTES, "UTF-8");
+			}else{	//エラー
+				//$html[] = "<span style=\"color:red;\">" . htmlspecialchars($v["name"], ENT_QUOTES, "UTF-8") . "のアップロードを失敗しました。</span>";
 			}
-			return implode("<br>", $html);
 		}
-
-		return "";
+		return implode("<br>", $html);
 	}
 
 	/**
@@ -98,7 +95,7 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 	 */
 	function getContent(){
 		$values = self::getValues();
-		if(is_array($values) && count($values)){
+		if(count($values)){
 			$html = array();
 			foreach($values as $v){
 				if(isset($v["tmp_name"]) && strlen($v["tmp_name"])){
@@ -184,36 +181,36 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 
 				$values[] = $v;
 			}
-		}else{	//アップロードしていない
-			//$this->setValue(self::getValues());
-			//return;
-		}
 
-		//必須チェック
-		if($this->getIsRequire() && !count($values)){
-			switch(SOYCMS_PUBLISH_LANGUAGE){
-				case "en":
-					$msg = "Please enter the ".$this->getLabel().".";
-					break;
-				default:
-					$msg = $this->getLabel() . "を入力してください。";
-			}
-			
-	
-			$this->setErrorMessage($msg);
-			return false;
-		}
-
-		$this->setValue($values);
-		$_POST["data"][$this->getColumnId()] = base64_encode(serialize($this->getValue()));
-
-		// エラーがあった場合は処理を止める
-		if(count($values)){
-			foreach($values as $v){
-				if(!isset($v["error_messege"]) || !is_string($v["error_messege"]) || !strlen($v["error_messege"])) continue;
-				$this->setErrorMessage($v["error_messege"]);
+			//必須チェック
+			if($this->getIsRequire() && !count($values)){
+				switch(SOYCMS_PUBLISH_LANGUAGE){
+					case "en":
+						$msg = "Please enter the ".$this->getLabel().".";
+						break;
+					default:
+						$msg = $this->getLabel() . "を入力してください。";
+				}
+				
+		
+				$this->setErrorMessage($msg);
 				return false;
 			}
+
+			$this->setValue($values);
+			$_POST["data"][$this->getColumnId()] = base64_encode(serialize($this->getValue()));
+
+			// エラーがあった場合は処理を止める
+			if(count($values)){
+				foreach($values as $v){
+					if(!isset($v["error_messege"]) || !is_string($v["error_messege"]) || !strlen($v["error_messege"])) continue;
+					$this->setErrorMessage($v["error_messege"]);
+					return false;
+				}
+			}
+		}else{	//アップロードしていない
+			$values = self::getValues();
+			if(is_array($values) && count($values)) $this->setValue($values);
 		}
 
 		return true;

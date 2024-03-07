@@ -76,8 +76,7 @@ class EnqueteFreeColumn extends SOYInquiry_ColumnBase{
 	 * 確認画面での表示
 	 */
 	function getView(){
-		$html = htmlspecialchars((string)$this->getValue(), ENT_QUOTES, "UTF-8");
-		return nl2br($html);
+		return nl2br(htmlspecialchars((string)$this->getValue(), ENT_QUOTES, "UTF-8"));
 	}
 
 	function getContent(){

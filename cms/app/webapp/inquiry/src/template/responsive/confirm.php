@@ -17,21 +17,13 @@ foreach($columns as $column){
 	$label = $obj->getLabel();
 	$view = $obj->getView();
 
-	if(strlen($view) < 1) continue;
+	if(strlen((string)$view) < 1) continue;
 
 	//個人情報保護方針は表示しない
 	if(get_class($obj) == "PrivacyPolicyColumn" && (int)$view === 1) continue;
 
-	if(strlen($view) > 0){
-		if(strlen($label)){
-			echo "<dt>";
-			echo $label;
-			echo "</dt>";
-		}
-		echo "<dd>";
-	    echo $view;
-	    echo "</dd>";
-	}
+	if(strlen((string)$label)) echo "<dt>".$label."</dt>";
+	echo "<dd>".$view."</dd>";
 }
 ?>
 	</dl>

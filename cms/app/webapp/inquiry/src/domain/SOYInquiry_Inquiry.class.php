@@ -43,6 +43,11 @@ class SOYInquiry_Inquiry {
     private $createDate;
 
 	/**
+	 * @column update_date
+	 */
+	private $updateDate;
+
+	/**
 	 * @column form_url
 	 */
 	private $formUrl;
@@ -72,10 +77,16 @@ class SOYInquiry_Inquiry {
     	$this->content = $content;
     }
     function getCreateDate() {
-    	return $this->createDate;
+    	return (is_numeric($this->createDate)) ? $this->createDate : 0;
     }
     function setCreateDate($createDate) {
     	$this->createDate = $createDate;
+    }
+	function getUpdateDate() {
+    	return (is_numeric($this->updateDate)) ? $this->updateDate : 0;
+    }
+    function setUpdateDate($updateDate) {
+    	$this->updateDate = $updateDate;
     }
 
     function getData() {

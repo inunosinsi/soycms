@@ -42,8 +42,7 @@ class MultiTextColumn extends SOYInquiry_ColumnBase{
 		}
 
 		$value = $this->getValue();
-		if(!is_string($value)) $value = "";
-
+		
 		$html = array();
 		//<textarea>直後の改行は必須
 		$v = trim(htmlspecialchars($value, ENT_QUOTES, "UTF-8"));
@@ -80,12 +79,11 @@ class MultiTextColumn extends SOYInquiry_ColumnBase{
 	 * 確認画面での表示
 	 */
 	function getView(){
-		$html = htmlspecialchars((string)$this->getValue(), ENT_QUOTES, "UTF-8");
-		return nl2br($html);
+		return nl2br(htmlspecialchars($this->getValue(), ENT_QUOTES, "UTF-8"));
 	}
 
 	function getContent(){
-		return htmlspecialchars((string)$this->getValue(), ENT_QUOTES, "UTF-8");
+		return htmlspecialchars($this->getValue(), ENT_QUOTES, "UTF-8");
 	}
 
     /**

@@ -22,7 +22,7 @@ class QuestionColumn extends SOYInquiry_ColumnBase{
 		if(is_numeric($this->size)) $attributes[] = "size=\"".$this->size."\"";
 
 		foreach($attrs as $key => $value){
-			$attributes[] = htmlspecialchars($key,ENT_QUOTES,"UTF-8") . "=\"".htmlspecialchars($value,ENT_QUOTES,"UTF-8")."\"";
+			$attributes[] = htmlspecialchars($key,ENT_QUOTES,"UTF-8") . "=\"".htmlspecialchars($value, ENT_QUOTES, "UTF-8")."\"";
 		}
 
 		$html = array();
@@ -69,10 +69,8 @@ class QuestionColumn extends SOYInquiry_ColumnBase{
 	}
 
 	function validate(){
-		$value = (is_string($this->getValue())) ? trim($this->getValue()) : "";
+		$value = $this->getValue();
 		if(!strlen($value)) return parent::validate();
-
-		$answer = $this->answer;
 
 		if($value !== $this->answer){
 			switch(SOYCMS_PUBLISH_LANGUAGE){
@@ -80,9 +78,9 @@ class QuestionColumn extends SOYInquiry_ColumnBase{
 					$msg = "Wrong answer to ".$this->getLabel().".";
 					break;
 				default:
-				$msg = $this->getLabel()."への回答が間違っています。";
+					$msg = $this->getLabel()."への回答が間違っています。";
 			}
-			$this->setErrorMessage($res);
+			$this->setErrorMessage($msg);
 			return false;
 		}
 		

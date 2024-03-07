@@ -10,6 +10,9 @@ abstract class SOYInquiry_InquiryDAO extends SOY2DAO{
 	 */
     abstract function insert(SOYInquiry_Inquiry $bean);
 
+	/**
+	 * @trigger onUpdate
+	 */
     abstract function update(SOYInquiry_Inquiry $bean);
 
     /**
@@ -18,13 +21,13 @@ abstract class SOYInquiry_InquiryDAO extends SOY2DAO{
      * @final
      */
     function setReaded($id){
-    	$this->updateFlagById($id, SOYInquiry_Inquiry::FLAG_READ);
+    	$this->updateFlagById($id, SOYInquiry_Inquiry::FLAG_READ, time());
     }
 
     /**
-     * @columns id,flag
+     * @columns id,flag,update_date
      */
-    abstract function updateFlagById($id, $flag);
+    abstract function updateFlagById(int $id, int $flag, int $updateDate);
 
     abstract function get();
 
@@ -34,6 +37,12 @@ abstract class SOYInquiry_InquiryDAO extends SOY2DAO{
      * @return object
      */
     abstract function getByTrackingNumber($trackingNumber);
+
+	/**
+	 * @query update_date = :updateDate AND flag = :flag
+	 * @order by update_date ASC, create_date ASC
+	 */
+	abstract function getByUpdateDateAndFlag(int $updateDate, int $flag);
 
     /**
      * 検索を行う
@@ -113,6 +122,8 @@ abstract class SOYInquiry_InquiryDAO extends SOY2DAO{
      */
     abstract function getById($id);
 
+	abstract function getByFlag($flag);
+
     abstract function delete($id);
 
     abstract function deleteByFormId($formId);
@@ -141,7 +152,29 @@ abstract class SOYInquiry_InquiryDAO extends SOY2DAO{
 	/**
 	 * @final
 	 */
-	function onInsert($query, $binds){
+	function getSuggestionInquiryIdsForAutomaticPhysicalDeletion(){
+		try{
+			$res = $this->executeQuery(
+				"SELECT id FROM soyinquiry_inquiry ".
+				"WHERE flag = ".SOYInquiry_Inquiry::FLAG_DELETED." ".
+				"AND update_date < ".strtotime("-".SOYInquiryUtil::SOYINQUIRY_PHYSICAL_DELETE_DAYS."days")
+			);
+		}catch(Exception $e){
+			return array();
+		}
+		if(!count($res)) return array();
+
+		foreach($res as $v){
+			$ids[] = (int)$v["id"];
+		}
+
+		return $ids;
+	}
+
+	/**
+	 * @final
+	 */
+	function onInsert(SOY2DAO_Query $query, array $binds){
 		static $i;
 		if(is_null($i)) $i = 0;
 
@@ -156,7 +189,16 @@ abstract class SOYInquiry_InquiryDAO extends SOY2DAO{
 			if(!count($res)) break;
 		}
 		$binds[":createDate"] += $i;
+		$binds[":updateDate"] = 0;
 
+		return array($query, $binds);
+	}
+
+	/**
+	 * @final
+	 */
+	function onUpdate(SOY2DAO_Query $query, array $binds){
+		$binds[":updateDate"] = time();
 		return array($query, $binds);
 	}
 }

@@ -48,7 +48,7 @@ class NameTextColumn extends SOYInquiry_ColumnBase{
 		}
 
 		$values = $this->getValue();
-		if(is_null($values)) $values = array("", "");
+		if(count($values) < 2) $values = array("", "");
 
 		$html = array();
 
@@ -173,7 +173,7 @@ class NameTextColumn extends SOYInquiry_ColumnBase{
 	}
 	function validate(){
 		$values = $this->getValue();
-		if(!is_array($values)) return true;
+		if(!count($values)) return true;
 
 		$msg = "";
 		foreach($values as $value){
@@ -270,13 +270,13 @@ class NameTextColumn extends SOYInquiry_ColumnBase{
 	 */
 	function getView(){
 		$values = $this->getValue();
-		return htmlspecialchars($values[0]." ".$values[1], ENT_QUOTES, "UTF-8");
+		return (count($values) === 2) ? htmlspecialchars($values[0]." ".$values[1], ENT_QUOTES, "UTF-8") : "";
 	}
 
 	/**
 	 * 絵文字削除
 	 */
-	function deleteEmoji($value){
+	function deleteEmoji(string $value){
 		mb_substitute_character('none');
 		$value = mb_convert_encoding($value, 'UTF-8', 'UTF-8');
 
@@ -291,7 +291,7 @@ class NameTextColumn extends SOYInquiry_ColumnBase{
 
 	function getAttributeForInputMode(){
 		$attribute = "";
-		switch($this->type){
+		switch((string)$this->type){
 			case 1 ://半角英数字
 			case 2 ://メールアドレス
 			case 3 ://半角数字

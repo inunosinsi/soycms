@@ -428,8 +428,7 @@ class SOYInquiry_ColumnBase implements ISOYInquiry_Column{
 	 */
 	function validate(){
 		if(!$this->getIsRequire()) return true;
-		$value = (is_string($this->getValue())) ? trim($this->getValue()) : "";
-		if(strlen($value)) return true;
+		if(is_string($this->getValue()) && strlen($this->getValue())) return true;
 
 		switch(SOYCMS_PUBLISH_LANGUAGE){
 			case "en":
@@ -505,7 +504,25 @@ class SOYInquiry_ColumnBase implements ISOYInquiry_Column{
 		){
 			$this->value = $this->insertFromSOYShop();
 		}
-		return $this->value;
+		switch(get_class($this)){
+			case "AddressColumn":
+			case "AddressJsColumn":
+			case "CheckBoxColumn":
+			case "ConfirmMailAddressColumn":
+			case "CustomfieldAdvancedColumn":
+			case "DateColumn":
+			case "DateWithoutDayColumn":
+			case "MultiSingleTextColumn":
+			case "NameTextColumn":
+			case "SelectBoxColumn":
+			case "TelephoneColumn":
+				return (is_array($this->value)) ? $this->value : array();
+			case "FileColumn":
+			case "FilesColumn":
+				return $this->value;	//そのまま返す
+			default:
+				return (is_string($this->value)) ? trim($this->value) : "";
+		}
 	}
 	function setValue($value) {
 		$this->value = $value;

@@ -1,0 +1,114 @@
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header">ゴミ箱</h1>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<a class="btn btn-default" soy:link="inquiry.Inquiry">一覧</a>
+				<a class="btn btn-default" soy:link="inquiry.Inquiry.Export">CSVエクスポート</a>
+				<a class="btn btn-default active" soy:link="inquiry.Inquiry.Garbage">ゴミ箱</a>
+			</div>
+		</div>
+	</div>
+	<!-- /.col-lg-12 -->
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="alert alert-danger">
+			ゴミ箱内の問い合わせのデータは仮削除の<strong><!-- soy:id="physical_delete_days" /-->日後</strong>に完全に削除されます。<br>
+			<strong>論理削除</strong>：仮の削除の状態　データベースに問い合わせのレコードが残っています。<br>
+			<strong>物理削除</strong>：データベースから問い合わせのレコードを完全に削除します。
+		</div>
+
+		<div class="panel-body">
+			<form soy:id="bulk_modify_form">
+				<div class="table-responsive">
+					<table class="table table-striped" id="inquiry_list">
+						<thead>
+							<tr>
+								<th>
+									<input type="checkbox" id="toggle_checkbox_header" onclick="toggle_all_inquiry_check(this);show_bulk_modify_panel();" />
+								</th>
+								<th soy:id="form_name_th">フォーム</th>
+								<th>受付番号</th>
+								<th>内容</th>
+								<th style="width:10em;" nowrap>自動削除予定日</th>
+								<th>状態</th>
+							</tr>
+						</thead>
+						<tfoot>
+							<tr id="bulk_modify_panel" style="display:none;">
+								<th>
+									<input type="checkbox" id="toggle_checkbox_footer" onclick="toggle_all_inquiry_check(this);" />
+								</th>
+								<th soy:id="bulk_modify_buttons" colspan="5">
+									チェックを
+									<input type="submit" soy:id="logical_delete_cancel" class="btn btn-info" value="論理削除を取り消す">
+									<input type="submit" soy:id="physical_delete" class="btn btn-danger"  value="物理削除">
+								</th>
+							</tr>
+						</tfoot>
+						<tbody>
+							<!-- soy:id="inquiry_list" -->
+							<tr>
+							<td>
+								<input type="checkbox" name="inquiry[]" value="1" soy:id="inquiry_check" class="inquiry_check" onclick="show_bulk_modify_panel();" />
+							</td>
+							<td soy:id="form_name_td"><a href="#" soy:id="form_name">フォームA</a></td>
+							<td soy:id="traking_number_td"><a soy:id="traking_number">1</a></td>
+							<td soy:id="content">あああああああああああああ</td>
+							<td soy:id="create_date_td"><nobr><span soy:id="auto_delete_date"></span></nobr></td>
+							<td soy:id="flag_td"><a soy:id="flag" class="btn btn-info">状態</a></td>
+							</tr>
+							<!-- /soy:id="inquiry_list" -->
+
+							<!-- soy:display="no_inquiry" -->
+							<tr>
+							<td colspan="6" soy:id="no_inquiry_text">
+								削除予定の問い合わせはありません。
+							</td>
+							</tr>
+							<!-- /soy:display="no_inquiry" -->
+						</tbody>
+					</table>
+				</div>
+			</form>
+
+			<div class="pull-right">
+				<div class="pager_item">
+					<div class="pager_item">
+						<a soy:id="prev_pager">&lt;</a>
+						<!-- soy:id="pager_list" -->
+						<a soy:id="target_link">1</a>
+						<!-- /soy:id="pager_list" -->
+						<a soy:id="next_pager">&gt;</a>
+					</div>
+					<div class="pager_item">
+						<span soy:id="count_start">1</span> - <span soy:id="count_end">20</span> / <span soy:id="count_max">100000</span>
+					</div>
+					<div class="pager_item">
+						<select soy:id="pager_select"></select>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	function toggle_all_inquiry_check(checkbox){
+		$(".inquiry_check").each(function(){
+			$(this).prop("checked",!$(this).prop("checked"));
+		});
+		if($(checkbox).attr("id") != "toggle_checkbox_header") $("#toggle_checkbox_header").prop("checked",$(checkbox).prop("checked"));
+		if($(checkbox).attr("id") != "toggle_checkbox_footer") $("#toggle_checkbox_footer").prop("checked",$(checkbox).prop("checked"));
+	}
+	function show_bulk_modify_panel(){
+		$("#bulk_modify_panel").show();
+	}
+</script>

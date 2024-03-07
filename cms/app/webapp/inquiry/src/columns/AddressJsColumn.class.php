@@ -109,7 +109,7 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 		$html[] = '<td><select class="input-pref" name="data['.$this->getColumnId().'][prefecture]">';
 		$html[] = '<option value="">選択してください</option>';
 		foreach($this->prefecture as $id => $pref){
-			if(is_array($values) && $pref == $values["prefecture"]){
+			if(isset($values["prefecture"]) && $pref == $values["prefecture"]){
 				$html[] ="<option selected=\"selected\">".$pref."</option>";
 			}else{
 				$html[] ="<option>".$pref."</option>";

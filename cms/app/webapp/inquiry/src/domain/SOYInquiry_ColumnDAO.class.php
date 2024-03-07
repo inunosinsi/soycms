@@ -59,7 +59,5 @@ abstract class SOYInquiry_ColumnDAO extends SOY2DAO{
     		$this->updateColumnId($column->getId(),"column_" . $count);
     		$count++;
     	}
-    }
-    
+    }   
 }
-?>

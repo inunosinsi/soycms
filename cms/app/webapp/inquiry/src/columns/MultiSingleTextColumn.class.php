@@ -181,7 +181,7 @@ class MultiSingleTextColumn extends SOYInquiry_ColumnBase{
 	
 	function validate(){
 		$values = $this->getValue();
-		if(!is_array($values)) return true;
+		if(!count($values)) return true;
 
 		$msg = "";
 		foreach($values as $value){
@@ -277,12 +277,10 @@ class MultiSingleTextColumn extends SOYInquiry_ColumnBase{
 	 * 確認画面で呼び出す
 	 */
 	function getView(){
-		$value = $this->getValue();
-		if(empty($value)){
-			return "";
-		}
+		$values = $this->getValue();
+		if(!count($values)) return "";
 
-		$value = implode($this->separator, $value);
+		$value = implode($this->separator, $values);
 		$empty = str_repeat($this->separator, $this->count -1);
 
 		if($value != $empty){
@@ -295,7 +293,7 @@ class MultiSingleTextColumn extends SOYInquiry_ColumnBase{
 	/**
 	 * 絵文字削除
 	 */
-	function deleteEmoji($value){
+	function deleteEmoji(string $value){
 		mb_substitute_character('none');
 		$value = mb_convert_encoding($value, 'UTF-8', 'UTF-8');
 

@@ -41,12 +41,9 @@ class MailAddressColumn extends SOYInquiry_ColumnBase{
 		foreach($attrs as $key => $value){
 			$attributes[] = htmlspecialchars($key) . "=\"".htmlspecialchars($value)."\"";
 		}
-
-		$value = $this->getValue();
-		if(!is_string($value)) $value = "";
-
+		
 		$html = array();
-		$html[] = "<input type=\"email\" name=\"data[".$this->getColumnId()."]\" value=\"".htmlspecialchars($value, ENT_QUOTES, "UTF-8")."\" " . implode(" ",$attributes) . "" . $required . ">";
+		$html[] = "<input type=\"email\" name=\"data[".$this->getColumnId()."]\" value=\"".htmlspecialchars($this->getValue(), ENT_QUOTES, "UTF-8")."\" " . implode(" ",$attributes) . "" . $required . ">";
 
 		return implode("\n",$html);
 	}

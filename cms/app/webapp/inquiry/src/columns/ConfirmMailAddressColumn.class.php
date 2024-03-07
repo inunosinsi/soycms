@@ -43,13 +43,9 @@ class ConfirmMailAddressColumn extends SOYInquiry_ColumnBase{
 		}
 
 		$values = $this->getValue();
-		if(is_array($values)){
-			$mail = htmlspecialchars($values[0], ENT_QUOTES, "UTF-8");
-			$confirm = htmlspecialchars($values[1], ENT_QUOTES, "UTF-8");
-		}else{
-			$mail = "";
-			$confirm = "";
-		}
+		$mail = (isset($values[0])) ? htmlspecialchars($values[0], ENT_QUOTES, "UTF-8") : "";
+		$confirm = (isset($values[1])) ? htmlspecialchars($values[1], ENT_QUOTES, "UTF-8") : "";
+		
 
 		$html = array();
 		$html[] = "<input type=\"email\" name=\"data[".$this->getColumnId()."][0]\" value=\"".$mail."\" " . implode(" ",$attributes) . "" . $required ."><br />";
@@ -158,12 +154,12 @@ class ConfirmMailAddressColumn extends SOYInquiry_ColumnBase{
 	 */
 	function getView(){
 		$values = $this->getValue();
-		return (is_array($values)) ? htmlspecialchars(trim($values[0]), ENT_QUOTES, "UTF-8") : "";
+		return (isset($values[0])) ? htmlspecialchars(trim($values[0]), ENT_QUOTES, "UTF-8") : "";
 	}
 
 	function validate(){
 		$values = $this->getValue();
-		if(!is_array($values)) $values = array("", "");
+		if(count($values) < 2) $values = array("", "");
 
 		$msg = "";
 		if(trim($values[0]) !== trim($values[1])){

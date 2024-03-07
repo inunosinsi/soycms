@@ -19,7 +19,7 @@ class FileColumn extends SOYInquiry_ColumnBase{
 	function getForm(array $attrs=array()){
 
 		$values = $this->getValue();
-		if(!is_array($values)) $values = array("name" => "", "size" => "");
+		if(!is_array($values) || count($values) < 2) $values = array("name" => "", "size" => "");
 
 		$html = array();
 		$isUploaded = (is_numeric($values["size"]) && (int)$values["size"] > 0);
@@ -62,26 +62,8 @@ class FileColumn extends SOYInquiry_ColumnBase{
 	 */
 	function getView(){
 		$values = $this->getValue();
-
-		if(is_array($values) && isset($values["name"]) && isset($values["size"])){
-			$html = "";
-/**
-			if(strpos($values["type"], "image") !== false){
-				$imgPath = str_replace(SOY_INQUIRY_UPLOAD_DIR, "", $values["tmp_name"]);
-				$siteId = trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/");
-
-				//リサイズ
-				$resizeW = (is_numeric($this->resize_w) && $this->resize_w > 150) ? 150 : $this->resize_w;
-
-				$html .= "<img src=\"/" . $siteId . "/im.php?src=/" . $imgPath . "&width=" . $resizeW . "\"><br>";
-			}
-			**/
-
-			$html .= htmlspecialchars($values["name"] . " (".(int)($values["size"] / self::KB_SIZE)."KB)", ENT_QUOTES, "UTF-8");
-			return $html;
-		}
-
-		return "";
+		if(!isset($values["name"]) || !isset($values["size"])) return "";
+		return htmlspecialchars($values["name"] . " (".(int)($values["size"] / self::KB_SIZE)."KB)", ENT_QUOTES, "UTF-8");
 	}
 
 	/**
@@ -89,7 +71,7 @@ class FileColumn extends SOYInquiry_ColumnBase{
 	 */
 	function getContent(){
 		$values = $this->getValue();
-		if(is_array($values) && isset($values["name"]) && isset($values["size"]) && is_numeric($values["size"])){
+		if(isset($values["name"]) && isset($values["size"]) && is_numeric($values["size"])){
 			$html = array();
 			$html[] = $values["name"] . " (".(int)($values["size"] / self::KB_SIZE)."KB)";
 			return implode("\n",$html);
@@ -105,7 +87,7 @@ class FileColumn extends SOYInquiry_ColumnBase{
 
 		$values = $this->getValue();
 
-		if(is_array($values)){
+		if(count($values)){
 			$tmp_name = $values["tmp_name"];
 
 			$new_dir = SOY_INQUIRY_UPLOAD_DIR . "/" . $this->getFormId() . "/" . date("Ym") . "/";

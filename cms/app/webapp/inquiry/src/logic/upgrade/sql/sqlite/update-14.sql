@@ -1,0 +1,1 @@
+ALTER TABLE soyinquiry_inquiry ADD COLUMN update_date INTEGER NOT NULL DEFAULT 0;

@@ -188,15 +188,14 @@ class SingleTextColumn extends SOYInquiry_ColumnBase{
 
 	function validate(){
 		$value = $this->getValue();
-		$value = trim($value);
-
+		
 		$msg = "";
 
 		//var_dump(SOYCMS_PUBLISH_LANGUAGE);exit;
 
 		switch($this->type){
 			case 1: //英数字とハイフンとスペース
-				if(!preg_match('/^[a-zA-Z0-9\\- ]*$/',$value)){
+				if(!preg_match('/^[a-zA-Z0-9\\- ]*$/', $value)){
 					switch(SOYCMS_PUBLISH_LANGUAGE){
 						case "en":
 							$msg = "Please enter the ".$this->getLabel()." in half-width alphanumeric characters.";
@@ -270,16 +269,14 @@ class SingleTextColumn extends SOYInquiry_ColumnBase{
 	/**
 	 * 確認画面で呼び出す
 	 */
-//	function getView(){
-//		//絵文字削除
-//		$value = $this->deleteEmoji($this->getValue());
-//		return htmlspecialchars((string)$value, ENT_QUOTES, "UTF-8");
-//	}
+	function getView(){
+		return parent::getView();
+	}
 
 	/**
 	 * 絵文字削除
 	 */
-	function deleteEmoji($value){
+	function deleteEmoji(string $value){
 		mb_substitute_character('none');
 		$value = mb_convert_encoding($value, 'UTF-8', 'UTF-8');
 
@@ -383,11 +380,7 @@ class SingleTextColumn extends SOYInquiry_ColumnBase{
 	 */
 	function getContent(){
 		$content = parent::getContent();
-		if(strlen($content)){
-			return htmlspecialchars($this->prefix, ENT_QUOTES, "UTF-8").$content.htmlspecialchars($this->surfix, ENT_QUOTES, "UTF-8");
-		}else{
-			return "";
-		}
+		return (strlen($content)) ? htmlspecialchars($this->prefix, ENT_QUOTES, "UTF-8").$content.htmlspecialchars($this->surfix, ENT_QUOTES, "UTF-8") : "";
 	}
 
 

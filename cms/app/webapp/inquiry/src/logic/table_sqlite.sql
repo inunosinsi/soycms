@@ -25,6 +25,7 @@ CREATE TABLE soyinquiry_inquiry (
   data TEXT,
   flag INTEGER default 1,
   create_date INTEGER NOT NULL,
+  update_date INTEGER NOT NULL DEFAULT 0,
   form_url VARCHAR,
   UNIQUE(form_id, create_date)
 );

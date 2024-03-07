@@ -64,7 +64,7 @@ class IndexPage extends WebPage{
 		$commentFlag = (isset($_GET["comment_flag"]) && strlen($_GET["comment_flag"])) ? (int)$_GET["comment_flag"] : null;
 
 		//ページャー
-		$limit = 20;
+		$limit = (isset($_GET["display_count"]) && is_numeric($_GET["display_count"])) ? (int)$_GET["display_count"] : 20;
 		$page = (isset($args[0])) ? (int)$args[0] : 1;
 		if(array_key_exists("page", $_GET)) $page = $_GET["page"];
 		$offset = ($page - 1) * $limit;
@@ -79,10 +79,10 @@ class IndexPage extends WebPage{
 
 
     	//問い合わせ一覧
-    	$this->buildList($inquiries);
+    	self::_buildInquiryList($inquiries);
 
     	//簡易検索フォーム、削除フォーム
-    	$this->buildForm($start, $end, $trackId, $flag, $commentFlag);
+    	self::_buildForm($start, $end, $trackId, $flag, $limit, $commentFlag);
 
 
 
@@ -129,9 +129,9 @@ class IndexPage extends WebPage{
 		}
 	}
 
-    function buildList(array $inquiries){
+    private function _buildInquiryList(array $inquiries){
     	/* 問い合わせ */
-    	$this->createAdd("inquiry_list","InquiryList",array(
+    	$this->createAdd("inquiry_list", "_common.Inquiry.InquiryListComponent", array(
     		"forms" => $this->forms,
     		"formId" => $this->formId,
 			"list" => $inquiries
@@ -139,25 +139,25 @@ class IndexPage extends WebPage{
 
     	//問い合わせがないとき
 		DisplayPlugin::toggle("no_inquiry", !count($inquiries));
-    	$this->createAdd("no_inquiry_text","HTMLModel",array(
-    		"colspan" => ( is_null($this->formId) AND count($this->forms) >= 2 ) ? "6" : "5"
+    	$this->addModel("no_inquiry_text", array(
+    		"colspan" => ( is_null($this->formId) && count($this->forms) >= 2 ) ? "6" : "5"
     	));
 
     	//フォームが一つしかないときとフォームが指定されているときはフォーム名は表示しない
-    	$this->createAdd("form_name_th", "HTMLModel", array(
-    		"visible" => ( is_null($this->formId) AND count($this->forms) >= 2 ),
+    	$this->addModel("form_name_th", array(
+    		"visible" => ( is_null($this->formId) && count($this->forms) >= 2 ),
     	));
-    	$this->createAdd("bulk_modify_buttons", "HTMLModel", array(
-    		"colspan" => ( is_null($this->formId) AND count($this->forms) >= 2 ) ? "5" :"4"
+    	$this->addModel("bulk_modify_buttons", array(
+    		"colspan" => ( is_null($this->formId) && count($this->forms) >= 2 ) ? "5" :"4"
     	));
-    	$this->createAdd("pager_col","HTMLModel",array(
-    		"colspan" => ( is_null($this->formId) AND count($this->forms) >= 2 ) ? "6" :"5"
+    	$this->addModel("pager_col", array(
+    		"colspan" => ( is_null($this->formId) && count($this->forms) >= 2 ) ? "6" :"5"
 		));
     }
 
-    function buildForm(string $start, string $end, string $trackId, int $flag, $commentFlag = null){
+    private function _buildForm(string $start, string $end, string $trackId, int $flag, int $limit=20, $commentFlag = null){
     	/* 絞り込むフォームの作成 */
-    	$this->createAdd("search_form", "HTMLModel", array(
+    	$this->addModel("search_form", array(
     		"method" => "GET",
     		"action" => SOY2PageController::createLink("inquiry.Inquiry"),
     		"onsubmit" => "if(this.start.value == '投稿日時（始）'){this.start.value = '';}"
@@ -168,14 +168,14 @@ class IndexPage extends WebPage{
 		DisplayPlugin::toggle("multi_form", (count($this->forms) > 1));
 
     	//フォームが一つしかないときはフォーム名は表示しない
-    	$this->createAdd("forms","HTMLSelect",array(
+    	$this->addSelect("forms", array(
     		"name" => "formId",
 			"options" => $this->forms,
     		"property" => "name",
     		"selected" => $this->formId
     	));
 
-    	$this->createAdd("start", "HTMLInput",array(
+    	$this->addInput("start", array(
     		"name" => "start",
     		"value" => (strlen($start) >0) ? $start : "投稿日時（始）",
     		"style" => (strlen($start) >0) ? "" : "color: grey;width:120px;",
@@ -184,7 +184,7 @@ class IndexPage extends WebPage{
     		"readonly" => true
     	));
 
-    	$this->createAdd("end", "HTMLInput",array(
+    	$this->addInput("end", array(
     		"name" => "end",
     		"value" => (strlen($end) >0) ? $end : "投稿日時（終）",
     		"style" => (strlen($end) >0) ? "" : "color: grey;width:120px",
@@ -192,7 +192,7 @@ class IndexPage extends WebPage{
     		"onblur"  => "if(this.value.length == 0){ this.value='投稿日時（終）'; this.style.color = 'grey'}",
     		"readonly" => true
     	));
-    	$this->createAdd("trackId", "HTMLInput",array(
+    	$this->addInput("trackId", array(
     		"name"  => "trackId",
     		"value" => (strlen($trackId) >0) ? $trackId : "受付番号",
     		"style" => (strlen($trackId) >0) ? "" : "color: grey;",
@@ -204,10 +204,10 @@ class IndexPage extends WebPage{
     		"" => "全て",
     		SOYInquiry_Inquiry::FLAG_NEW => "未読のみ",
     		SOYInquiry_Inquiry::FLAG_READ => "既読のみ",
-    		SOYInquiry_Inquiry::FLAG_DELETED => "削除済"
+    		//SOYInquiry_Inquiry::FLAG_DELETED => "削除済"	//GarbagePageに移設
     	);
 
-    	$this->createAdd("flag","HTMLSelect",array(
+    	$this->addSelect("flag", array(
     		"name" => "flag",
     		"options" => $flags,
     		"indexOrder" => true,
@@ -227,22 +227,27 @@ class IndexPage extends WebPage{
     		"selected" => $commentFlag
     	));
 
+		$this->addInput("display_count", array(
+			"name" => "display_count",
+			"value" => $limit
+		));
+
     	/* 削除用フォーム */
-    	$this->createAdd("bulk_modify_form","HTMLForm",array(
+    	$this->addForm("bulk_modify_form", array(
     		"method" => "POST",
 			"action" => SOY2PageController::createLink(APPLICATION_ID . ".Inquiry")
     	));
-    	$this->createAdd("bulk_delete", "HTMLInput",array(
+    	$this->addInput("bulk_delete", array(
     		"name"  => ($flag == SOYInquiry_Inquiry::FLAG_DELETED) ? "bulk_modify[flag][delete_completely]" : "bulk_modify[flag][delete]",
     		"value" => ($flag == SOYInquiry_Inquiry::FLAG_DELETED) ? "完全に削除する" : "削除する",
     		"onclick" => ($flag == SOYInquiry_Inquiry::FLAG_DELETED) ? "confirm('チェックの付いた問い合わせを完全に削除する場合はOKを押してください。')" : "",
     	));
-    	$this->createAdd("bulk_read", "HTMLInput",array(
+    	$this->addInput("bulk_read", array(
     		"visible" => $flag != SOYInquiry_Inquiry::FLAG_READ,
     		"name"  => "bulk_modify[flag][read]",
     		"value" => "既読にする"
     	));
-    	$this->createAdd("bulk_new", "HTMLInput",array(
+    	$this->addInput("bulk_new", array(
     		"visible" => $flag != SOYInquiry_Inquiry::FLAG_NEW,
     		"name"  => "bulk_modify[flag][new]",
     		"value" => "未読にする"
@@ -252,105 +257,33 @@ class IndexPage extends WebPage{
 
 	function buildPager(PagerLogic $pager){
 
-		$this->createAdd("pager_row","HTMLModel",array(
+		$this->addModel("pager_row", array(
 			"visible" => $pager->getTotal() > $pager->getLimit()
 		));
 
 		//件数情報表示
-		$this->createAdd("count_start","HTMLLabel",array(
+		$this->addLabel("count_start", array(
 			"text" => $pager->getStart()
 		));
-		$this->createAdd("count_end","HTMLLabel",array(
+		$this->addLabel("count_end", array(
 			"text" => $pager->getEnd()
 		));
-		$this->createAdd("count_max","HTMLLabel",array(
+		$this->addLabel("count_max", array(
 			"text" => $pager->getTotal()
 		));
 
 		//ページへのリンク
-		$this->createAdd("next_pager","HTMLLink",$pager->getNextParam());
-		$this->createAdd("prev_pager","HTMLLink",$pager->getPrevParam());
+		$this->addLink("next_pager", $pager->getNextParam());
+		$this->addLink("prev_pager", $pager->getPrevParam());
 		$this->createAdd("pager_list","SimplePager",$pager->getPagerParam());
 
 		//ページへジャンプ
-		$this->createAdd("pager_select","HTMLSelect",array(
+		$this->addSelect("pager_select", array(
 			"name" => "page",
 			"options" => $pager->getSelectArray(),
 			"selected" => $pager->getPageURL()."/".$pager->getPage().$pager->getQueryString(),
 			"onchange" => "location.href=this.options[this.selectedIndex].value"
 		));
 
-	}
-}
-
-class InquiryList extends HTMLList{
-
-	private $forms;
-	private $formId;
-
-	protected function populateItem($entity){
-
-		$formId = (is_string($entity->getFormId()) || is_numeric($entity->getFormId())) ? $entity->getFormId() : "";
-		$detailLink = SOY2PageController::createLink(APPLICATION_ID . ".Inquiry.Detail." . $entity->getId());
-		$formLink = SOY2PageController::createLink(APPLICATION_ID . ".Inquiry?formId=" . $formId);
-
-		$this->addCheckBox("inquiry_check", array(
-			"type"=>"checkbox",
-			"name"=>"bulk_modify[inquiry][]",
-			"value"=>$entity->getId(),
-			//"label" => $entity->getId(),
-		));
-
-    	//フォームが一つしかないときとフォームが指定されているときはフォーム名は表示しない
-		$this->addModel("form_name_td", array(
-			"style"   => "cursor:pointer;". (($entity->getFlag() == SOYInquiry_Inquiry::FLAG_NEW) ? "color:black;font-weight: bold;" : ""),
-    		"visible" => (is_null($this->formId) && count($this->forms) >= 2),
-    		"onclick" => "location.href='{$detailLink}'"
-		));
-		$this->addLink("form_name", array(
-			"text" => ( (isset($this->forms[$formId])) ? $this->forms[$formId]->getName() : "" ),
-			//"link" => $formLink,
-			"title" => ( (isset($this->forms[$formId])) ? $this->forms[$formId]->getName() : "" ),
-		));
-
-		$this->addLink("traking_number", array(
-			"text" => $entity->getTrackingNumber(),
-			"link" => $detailLink,
-			"style" => ($entity->getFlag() == SOYInquiry_Inquiry::FLAG_NEW) ? "color:black;font-weight: bold;" : ""
-		));
-
-		//getContentの中身はhtmlspecialcharsがかかっている
-		$this->addLabel("content", array(
-			"html"  => (mb_strlen($entity->getContent()) >= 80) ? mb_substr($entity->getContent(), 0, 80) . "..." : $entity->getContent(),
-			"style" => "cursor:pointer;". ( ($entity->getFlag() == SOYInquiry_Inquiry::FLAG_NEW) ? "color:black;font-weight: bold;" : "" ),
-			"title" => $entity->getContent(),
-			"onclick" => "location.href='{$detailLink}'"
-		));
-
-		$this->addLabel("create_date", array(
-			"text" => (is_numeric($entity->getCreateDate())) ? date("Y-m-d H:i:s",$entity->getCreateDate()) : "",
-			"style" => "cursor:pointer;".( ($entity->getFlag() == SOYInquiry_Inquiry::FLAG_NEW) ? "color:black;font-weight: bold;" : "" ),
-			"onclick" => "location.href='{$detailLink}'"
-		));
-
-		$this->addLink("flag", array(
-			"text" => $entity->getFlagText(),
-			"link" => $detailLink,
-			"style" => ($entity->getFlag() == SOYInquiry_Inquiry::FLAG_NEW) ? "font-weight: bold;" : ""
-		));
-
-		$this->addModel("traking_number_td", array("onclick" => "location.href='{$detailLink}'","style" => "cursor:pointer;"));
-		$this->addModel("create_date_td", array("onclick" => "location.href='{$detailLink}'","style" => "cursor:pointer;"));
-		$this->addModel("flag_td", array("onclick" => "location.href='{$detailLink}'","style" => "cursor:pointer;"));
-	}
-
-	function getForms() {
-		return $this->forms;
-	}
-	function setForms($forms) {
-		$this->forms = $forms;
-	}
-	function setFormId($formId) {
-		$this->formId = $formId;
 	}
 }

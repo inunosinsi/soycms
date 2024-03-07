@@ -25,9 +25,8 @@ class CheckBoxColumn extends SOYInquiry_ColumnBase{
 	 */
 	function getForm(array $attrs=array()){
 		$items = explode("\n",$this->items);
-		$value = $this->getValue();
-		if(!is_array($value)) $value=array();
-
+		$values = $this->getValue();
+		
 		$attributes = $this->getAttributes();
 
 		$html = array();
@@ -39,12 +38,12 @@ class CheckBoxColumn extends SOYInquiry_ColumnBase{
 
 			if($item[0] == "*"){
 				$item = substr($item, 1);
-				if(empty($value)){
+				if(empty($values)){
 					$checked = 'checked="checked"';
 				}
 			}
 
-			if(in_array($item, $value)) $checked = 'checked="checked"';
+			if(in_array($item, $values)) $checked = 'checked="checked"';
 
 			$parsleyProp = ($key == 0 && SOYInquiryUtil::checkIsParsley()) ? "data-parsley-errors-container=\"#parsley-error-" . $this->getColumnId() . "\"" : "";
 			$html[] = "<label>";
@@ -86,9 +85,8 @@ class CheckBoxColumn extends SOYInquiry_ColumnBase{
 	 * 確認画面で呼び出す
 	 */
 	function getView(){
-		$value = $this->getValue();
-		if(!is_array($value))$value = array();
-		return htmlspecialchars(implode(", ",$value), ENT_QUOTES, "UTF-8");
+		$values = $this->getValue();
+		return htmlspecialchars(implode(", ",$values), ENT_QUOTES, "UTF-8");
 	}
 
 	/**
@@ -161,10 +159,9 @@ class CheckBoxColumn extends SOYInquiry_ColumnBase{
 	function validate(){
 		if(!$this->getIsRequire()) return true;
 
-		$value = $this->getValue();
-		if(is_array($value)) $value = implode(",",$value);
-
-		if(strlen($value)<1){
+		$value = implode(",", $this->getValue());
+		
+		if(strlen($value) < 1){
 			switch(SOYCMS_PUBLISH_LANGUAGE){
 				case "en":
 					$msg = "Please choose one from the ".$this->getLabel().".";
@@ -193,21 +190,13 @@ class CheckBoxColumn extends SOYInquiry_ColumnBase{
 	//データ投入用
 	function getContent(){
 		$content = parent::getContent();
-		if(is_array($content)){
-			return implode(",",$content);
-		}else{
-			return $content;
-		}
+		return (is_array($content)) ? implode(",",$content) : $content;
 	}
 
 	//メール文面
 	function getMailText(){
 		$content = parent::getContent();
-		if(is_array($content)){
-			return implode(",",$content);
-		}else{
-			return $content;
-		}
+		return (is_array($content)) ? implode(",",$content) : $content;
 	}
 
 	function factoryConverter() {

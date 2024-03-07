@@ -22,13 +22,13 @@ class TelephoneColumn extends SOYInquiry_ColumnBase{
 	 * @return string
 	 */
 	function getForm(array $attrs=array()){
-
-		$values = $this->getValue();
 		$required = $this->getRequiredProp();
 
 		$inputType = htmlspecialchars($this->inputType, ENT_QUOTES, "UTF-8");
 
-		if(!is_array($values)) $values = array("", "", "");
+		$values = $this->getValue();
+		if(count($values) < 3) $values = array("", "", "");
+
 		$tel1 = (isset($values[0])) ? $values[0] : "";
 		$tel2 = (isset($values[1])) ? $values[1] : "";
 		$tel3 = (isset($values[2])) ? $values[2] : "";

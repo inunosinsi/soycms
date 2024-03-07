@@ -5,6 +5,8 @@ class SOYInquiryUtil{
 	const SOYINQUIRY_SESSION_ID = "soyinquiry_";
 	const SOYINQUIRY_REPLACEMENT_KEY_PREFIX = "replace_";
 
+	const SOYINQUIRY_PHYSICAL_DELETE_DAYS = 30;
+
 	public static function switchConfig(){
 
 		$old["root"] = SOY2::RootDir();

@@ -424,12 +424,12 @@ class InquiryLogic extends SOY2LogicBase{
 	    	$dao->begin();
 	    	foreach($ids as $id){
 		    	if(!is_numeric($id)) continue;
-		    	$dao->updateFlagById((int)$id, $flag);
+				$dao->updateFlagById((int)$id, $flag, time());
 	    	}
 	    	$dao->commit();
 	    	return true;
     	}catch(Exception $e){
-    		$dao->rollback();
+			$dao->rollback();
     		return false;
     	}
 	}
@@ -448,9 +448,37 @@ class InquiryLogic extends SOY2LogicBase{
 	    	$dao->commit();
 	    	return true;
     	}catch(Exception $e){
-    		$dao->rollback();
+			$dao->rollback();
     		return false;
     	}
+	}
+
+	// updateDateがないレコードでupdateDateを補完する
+	function complementUpdateDate(){
+		try{
+			$inquiries = $this->getDAO()->getByUpdateDateAndFlag(0, SOYInquiry_Inquiry::FLAG_DELETED);
+		}catch(Exception $e){
+			$inquiries = array();
+		}
+		
+		if(!count($inquiries)) return;
+
+		foreach($inquiries as $inquiry){
+			try{
+				$this->getDAO()->update($inquiry);
+			}catch(Exception $e){
+				//
+			}
+		}
+	}
+
+	// 自動削除
+	function executeAutoPhysicalDelete(){
+		SOY2DAOFactory::importEntity("SOYInquiry_Inquiry");
+		self::complementUpdateDate();
+
+		$ids = $this->getDAO()->getSuggestionInquiryIdsForAutomaticPhysicalDeletion();
+		if(count($ids)) self::bulk_delete($ids);
 	}
 
     /**#@+

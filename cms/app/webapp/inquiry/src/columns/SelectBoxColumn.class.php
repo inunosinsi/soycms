@@ -30,9 +30,8 @@ class SelectBoxColumn extends SOYInquiry_ColumnBase{
 	function getForm($attrs=array()){
 
 		$items = explode("\n",$this->items);
-		$value = $this->getValue();
-		if(!is_array($value))$value=array();
-
+		$values = $this->getValue();
+		
 		$attributes = $this->getAttributes();
 		$required = $this->getRequiredProp();
 
@@ -53,15 +52,11 @@ class SelectBoxColumn extends SOYInquiry_ColumnBase{
 			$checked = "";
 
 			if($item[0] == "*"){
-				$item = substr($item,1);
-				if(empty($value)){
-					$checked = 'selected="selected"';
-				}
+				$item = substr($item, 1);
+				if(!count($values)) $checked = 'selected="selected"';
 			}
 
-			if(in_array($item,$value)){
-				$checked = 'selected="selected"';
-			}
+			if(is_numeric(array_search($item, $values))) $checked = 'selected="selected"';
 
 			$html[] = "<option ".$checked.">".$item."</option>";
 
@@ -158,15 +153,14 @@ class SelectBoxColumn extends SOYInquiry_ColumnBase{
 	 */
 	function getView(){
 		$value = $this->getValue();
-		if(!is_array($value))$value = array();
-		return htmlspecialchars(implode(", ",$value), ENT_QUOTES, "UTF-8");
+		return htmlspecialchars(implode(", ", $value), ENT_QUOTES, "UTF-8");
 	}
 
 	function validate(){
 		if(!$this->getIsRequire()) return true;
 
 		$values = $this->getValue();
-		if((is_array($values) && isset($values[0]) && strlen($values[0]) == 0)){
+		if((isset($values[0]) && strlen($values[0]) == 0)){
 			switch(SOYCMS_PUBLISH_LANGUAGE){
 				case "en":
 					$msg = "Please choose one from the ".$this->getLabel().".";

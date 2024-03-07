@@ -31,7 +31,7 @@ class DateColumn extends SOYInquiry_ColumnBase{
 
 		$values = $this->getValue();
 		
-		if(!is_array($values)){
+		if(count($values) < 3){
 			$values = array();
 			
 			//ディフォルトで今日を表示する
@@ -182,7 +182,7 @@ class DateColumn extends SOYInquiry_ColumnBase{
 		$values = $this->getValue();
 
 		if(
-			empty($values)
+			count($values) < 3
 			|| !strlen(@$values["year"])
 			|| !strlen(@$values["month"])
 			|| !strlen(@$values["day"])

@@ -46,7 +46,7 @@ class PrivacyPolicyColumn extends SOYInquiry_ColumnBase{
 		if(is_numeric($this->rows)) $attributes[] = "rows=\"".$this->rows."\"";
 
 		foreach($attrs as $key => $value){
-			$attributes[] = htmlspecialchars($key,ENT_QUOTES,"UTF-8") . "=\"".htmlspecialchars($value,ENT_QUOTES,"UTF-8")."\"";
+			$attributes[] = htmlspecialchars($key,ENT_QUOTES,"UTF-8") . "=\"".htmlspecialchars($value, ENT_QUOTES, "UTF-8")."\"";
 		}
 
 		$html = array();
@@ -131,7 +131,7 @@ class PrivacyPolicyColumn extends SOYInquiry_ColumnBase{
 	function validate(){
 		if(!$this->getIsRequire()) return true;
 
-		if($this->getValue() != 1){
+		if((int)$this->getValue() !== 1){
 			$this->setErrorMessage($this->noCheckMessage);
 			return false;
 		}

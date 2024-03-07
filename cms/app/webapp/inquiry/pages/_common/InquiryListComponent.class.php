@@ -43,7 +43,7 @@ class InquiryListComponent extends HTMLList{
 			"text" => (is_numeric($entity->getCreateDate())) ? date("Y-m-d", $entity->getCreateDate()) : ""
 		));
 
-		$this->createAdd("flag","HTMLLink",array(
+		$this->addLink("flag", array(
 			"text" => $entity->getFlagText(),
 			"link" => $detailLink,
 			"style" => (!$entity->getFlag()) ? "color:red" : ""

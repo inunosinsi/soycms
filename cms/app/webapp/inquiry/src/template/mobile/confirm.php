@@ -20,20 +20,18 @@ foreach($columns as $column){
     $label = $obj->getLabel();
     $view = $obj->getView();
 
-    if(strlen($view) < 1) continue;
+    if(strlen((string)$view) < 1) continue;
 
 	//個人情報保護方針は表示しない
 	if(get_class($obj) == "PrivacyPolicyColumn" && (int)$view === 1) continue;
 
     echo "<tr>";
 
-    if(strlen($label)>0 && strlen($view)>0){
-        echo "<th><b>";
-        echo $label;
-        echo "</b></th></tr>";
-        echo "<tr><td>";
-        echo $obj->getView();
-        echo "</td>";
+    if(strlen((string)$label) > 0){
+        echo "<th><strong>".$label."</strong></th>";
+        echo "</tr>";
+        echo "<tr>";
+        echo "<td>".$view."</td>";
     }
 
     echo "</tr>";

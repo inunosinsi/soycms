@@ -60,6 +60,9 @@ class SOYInquiryApplication{
 			}
 		}
 
+		// 自動物理削除
+		SOY2Logic::createInstance("logic.InquiryLogic")->executeAutoPhysicalDelete();
+
 		//SOY2HTMLの設定
 		SOY2HTMLPlugin::addPlugin("page","PagePlugin");
 		SOY2HTMLPlugin::addPlugin("link","LinkPlugin");
@@ -83,6 +86,13 @@ class SOYInquiryApplication{
 		// 	include(dirname(__FILE__) . "/src/bat/" . $_GET["bat"] . ".php");
 		// 	exit;
 		// }
+
+		// フォームをすべて追加 URLの末尾に?debug=all&formId=\dを追加
+		if(isset($_GET["debug"])){
+			if($_GET["debug"] === "all" && isset($_GET["formId"]) && is_numeric($_GET["formId"])){
+				SOY2Logic::createInstance("logic.DebugLogic")->addColumnAll($_GET["formId"]);
+			}
+		}
 
 		$arguments = CMSApplication::getArguments();
 
