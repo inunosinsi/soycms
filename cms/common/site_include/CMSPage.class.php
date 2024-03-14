@@ -423,12 +423,13 @@ class CMSPage extends WebPage{
      */
     function getSiteRootUrl(){
 		if($this->siteConfig->getConfigValue("url")){
+			$siteUrl = $this->siteConfig->getConfigValue("url");
 
 			// 同じドメインを指している場合はスラッシュから始まる絶対パスに変換する
 			if(soy2_strpos($siteUrl, "http://".$_SERVER["HTTP_HOST"]) === 0 || soy2_strpos($siteUrl, "https://".$_SERVER["HTTP_HOST"]) === 0){
 				$siteUrl = substr($siteUrl, strpos($siteUrl, $_SERVER["HTTP_HOST"])+strlen($_SERVER["HTTP_HOST"]));
 			}
-			return $this->siteConfig->getConfigValue("url");
+			return $siteUrl;
 		}else{
 			return $this->siteRoot;
 		}

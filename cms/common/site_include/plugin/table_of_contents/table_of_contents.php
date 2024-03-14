@@ -14,7 +14,7 @@ class TableOfContentsPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.8"
+			"version"=>"0.9"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
@@ -40,18 +40,28 @@ class TableOfContentsPlugin{
 		if(!is_numeric($blog->getId()) || is_bool(strpos($_SERVER["REQUEST_URI"], "/" . $blog->getEntryPageUri() . "/"))) return str_replace("##HEADING##", "", $html);
 
 		//ブログのエイリアスを取得
-		$alias = trim(substr($_SERVER["PATH_INFO"], strrpos($_SERVER["PATH_INFO"], "/")), "/");
+		$aliases = self::_getAliases();	
+		
 		$sql = "SELECT attr.entry_value FROM EntryAttribute attr ".
 				"INNER JOIN Entry ent ".
 				"ON attr.entry_id = ent.id ".
-				"WHERE ent.alias = :alias ".
-				"AND attr.entry_field_id = :fieldId";
+				"WHERE attr.entry_field_id = :fieldId ";
+		$binds = array(":fieldId" => self::PLUGIN_ID);
+
+		$subQ = array();
+		foreach($aliases as $idx => $alias){
+			$subQ[] = "(ent.alias = :alias".$idx." OR ent.id = :id".$idx.")";
+			$binds[":alias".$idx] = $alias;
+			$binds[":id".$idx] = $alias;
+		}
+		$sql .= "AND (".implode(" OR ", $subQ).")";
 		$dao = new SOY2DAO();
 		try{
-			$res = $dao->executeQuery($sql, array(":alias" => $alias, ":fieldId" => self::PLUGIN_ID));
+			$res = $dao->executeQuery($sql, $binds);
 		}catch(Exception $e){
 			$res = array();
 		}
+		
 		if(!count($res) || !isset($res[0]["entry_value"]) && !is_string($res[0]["entry_value"])) return str_replace("##HEADING##", "", $html);
 		
 		$arr = soy2_unserialize($res[0]["entry_value"]);
@@ -73,6 +83,22 @@ class TableOfContentsPlugin{
 		}
 		
 		return str_replace("##HEADING##", $heading, $html);
+	}
+
+	private function _getAliases(){
+		$_arr = array();
+		$_arr[] = trim(substr($_SERVER["PATH_INFO"], strrpos($_SERVER["PATH_INFO"], "/")), "/");
+
+		if(!CMSPlugin::activeCheck("soycms_entry_preview")) return $_arr;
+
+		// 記事プレビュープラグインを使用している時はaliasが変わっていることがある
+		$previewPlugin = CMSPlugin::loadPluginConfig("soycms_entry_preview");
+		if(!$previewPlugin instanceof EntryPreviewPlugin || !is_string($previewPlugin->getPostfix()) || !strlen($previewPlugin->getPostfix())) return $_arr;
+		
+		preg_match('/(.*)_'.$previewPlugin->getPostfix().'$/', $_arr[0], $tmp);
+		if(isset($tmp[1])) $_arr[] = $tmp[1];
+
+		return $_arr;
 	}
 
 	/**

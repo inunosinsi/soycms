@@ -23,3 +23,38 @@ function soycms_get_site_config_object(){
 	if(is_null($cnf)) $cnf = SOY2DAOFactory::create("cms.SiteConfigDAO")->get();
 	return $cnf;
 }
+
+/**
+ * @return array
+ */
+function soycms_get_site_list(){
+	$old = CMSUtil::switchDsn();
+
+	$dao = SOY2DAOFactory::create("admin.SiteDAO");
+	
+	/** @ToDo いずれはSOYShopの方でも分けられるようしたい */
+	try{
+		$sites = $dao->getBySiteType(Site::TYPE_SOY_CMS);
+	}catch(Exception $e){
+		$sites = array();
+	}
+	
+	CMSUtil::resetDsn($old);
+	
+	return $sites;
+}
+
+/**
+ * @return array
+ */
+function soycms_get_site_name_list(){
+	$sites = soycms_get_site_list();
+	if(!count($sites)) return array();
+
+	$list = array();
+	foreach($sites as $site){
+		$list[$site->getSiteId()] = $site->getSiteName();
+	}
+
+	return $list;
+}

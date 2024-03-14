@@ -29,7 +29,7 @@ class CMSAccessRestrictionsUtil {
 		$idx = ($mode == self::MODE_PERMANENT) ? self::LABEL_PERMANENT : self::LABEL_TEMPORARY;
 		
 		if(!strlen($ipAddrs)){
-			unlink(ACCESS_RESTRICTIONS_CONFIG_DIR.$idx);
+			if(file_exists(ACCESS_RESTRICTIONS_CONFIG_DIR.$idx)) unlink(ACCESS_RESTRICTIONS_CONFIG_DIR.$idx);
 			return;
 		}
 
