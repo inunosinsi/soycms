@@ -52,10 +52,10 @@ class CMSEntryEditorPageBase extends CMSUpdatePageBase{
 		//JavaScriptの位置によってメソッドを変える
 		if($placeJsInHead){
 			//従来の管理画面用（JavaScriptは<head>で読み込む）
-			$this->addScriptToHead($jsVarsAndPaths, $jsFiles);
+			self::_addScriptToHead($jsVarsAndPaths, $jsFiles);
 		}else{
 			//bootstrapを使った管理画面用（JavaScriptはファイル末尾で読み込む）
-			$this->createAddJavaScript($jsVarsAndPaths, $jsFiles);
+			self::_createAddJavaScript($jsVarsAndPaths, $jsFiles);
 		}
 
 
@@ -70,7 +70,7 @@ class CMSEntryEditorPageBase extends CMSUpdatePageBase{
 	/**
 	 * 記事編集に必要なJavaScriptを<head>に追加する
 	 */
-	private function addScriptToHead($jsVarsAndPaths, $scriptFiles){
+	private function _addScriptToHead(array $jsVarsAndPaths, array $scriptFiles){
 		$script = "";
 		foreach($jsVarsAndPaths as $var => $path){
 			$script .= 'var '.$var.' = "' . SOY2PageController::createLink($path) . '";'."\n";
@@ -95,7 +95,7 @@ class CMSEntryEditorPageBase extends CMSUpdatePageBase{
 	/**
 	 * 記事編集に必要なJavaScriptをcreateAddで追加する。soy:id=entry_editor_javascripts
 	 */
-	private function createAddJavaScript($jsVarsAndPaths, $scriptFiles){
+	private function _createAddJavaScript(array $jsVarsAndPaths, array $scriptFiles){
 		$script = array();
 		$script[] = '<script type="text/javascript">'."\n";
 		foreach($jsVarsAndPaths as $var => $path){
@@ -116,6 +116,19 @@ class CMSEntryEditorPageBase extends CMSUpdatePageBase{
 		$script[] = "});";
 		$script[] = '</script>'."\n";
 
+		$onLoads = CMSPlugin::getEvent('onEntryScript');
+		if(is_array($onLoads) && count($onLoads)){
+			foreach($onLoads as $plugin){
+				$func = $plugin[0];
+				$res = call_user_func($func);
+				if(!is_string($res)) continue;
+				$res = trim($res);
+				if(!strlen($res)) continue;
+				$script[] = $res;
+			}
+		}
+		
+
 		$this->addLabel("entry_editor_javascripts", array(
 			"html" => implode("\n", $script),
 		));
@@ -130,16 +143,10 @@ class CMSEntryEditorPageBase extends CMSUpdatePageBase{
 
 		switch($editor){
 			case "plain":
-				$class = "form-control";//bootstrap
-				break;
+				return "form-control";//bootstrap
 			case "tinyMCE":
 			default:
-				$class = "mceEditor";
-				break;
-
+				return "mceEditor";
 		}
-
-		return $class;
 	}
-
 }

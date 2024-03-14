@@ -47,6 +47,7 @@ class CMSPlugin {
 		"onSetupWYSIWYG"=>array(),		//WYSIWYGエディタをセットアップしている時 array(entryId, labelIds)
 		"onEntryListBeforeOutput"=>array(),	//エントリーリストが呼び出される直前 array(&entries)
 		"onEntryStateMessage"=>array(),	//エントリーの状態を出力する時		array(entryId)
+		"onEntryScript"=>array(),		//エントリー作成画面の<script>タグ関連
 
 		//記事のCSV
 		"onEntryCSVExImport"=>array(),			//インポート、エクスポート時に対象となるプラグインを探す array()
