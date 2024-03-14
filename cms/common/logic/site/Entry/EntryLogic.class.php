@@ -181,6 +181,7 @@ class EntryLogic extends SOY2LogicBase{
 	 * 2007/12/21 getByLabelIdsのエイリアスとして定義
 	 */
 	function getByLabelId(int $labelId){
+
 		return $this->getByLabelIds(array($labelId));
 	}
 
@@ -247,6 +248,7 @@ class EntryLogic extends SOY2LogicBase{
 	 */
 	function getByLabelIds(array $labelIds, bool $flag=true, int $start=Entry::PERIOD_START, int $end=Entry::PERIOD_END){
 		$dao = soycms_get_hash_table_dao("labeled_entry");
+		$dao->setBlockClass($this->blockClass);
 		$dao->setSort((int)$this->sort);
 
 		$array = $dao->getByLabelIdsOnlyId($labelIds, $this->reverse, $this->getLimit(), $this->getOffset());

@@ -299,6 +299,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 		switch((string)$this->blockClass){
 			//記事毎の表示順が使えるブロックはラベルブロックのみ
 			case "LabeledBlockComponent":
+			case "AdminPageComponent":
 				$labelId = (count($labelIds) >= 1) ? $labelIds[count($labelIds)-1] : 0;	// 設定に不備がないか？を念の為に確認しておく
 				if($labelId > 0){
 					return " Order By (SELECT display_order FROM EntryLabel WHERE label_id = " . $labelId . " AND entry_id = entry.id), entry.".$sort." " . $order . ", entry.id " . $order;

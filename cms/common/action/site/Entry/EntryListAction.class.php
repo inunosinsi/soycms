@@ -35,6 +35,7 @@ class EntryListAction extends SOY2Action{
 
     protected function execute(SOY2ActionRequest &$request,SOY2ActionForm &$form,SOY2ActionResponse &$response){
 		$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic", array("offset" => $this->offset, "limit" => $this->limit));
+		$logic->setBlockClass("AdminPageComponent");
 
 		try{
 			if(!is_null($this->id) && (is_string($this->id) || is_numeric($this->id))){
