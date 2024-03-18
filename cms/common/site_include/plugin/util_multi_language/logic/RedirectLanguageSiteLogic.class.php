@@ -262,4 +262,3 @@ class RedirectLanguageSiteLogic extends SOY2LogicBase{
 		
 	}
 }
-?>

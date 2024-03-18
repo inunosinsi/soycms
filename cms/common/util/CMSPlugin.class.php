@@ -25,6 +25,8 @@ class CMSPlugin {
 		"onPageOutput" => array(),		//ページが出力される前				array($pageObject)
 		"onPageEdit" => array(),		//ページの編集画面が呼び出される直前	array(page)
 		"onPageTitleFormat" => array(),	//タイトルフォーマットの変換 	array(format) @return string
+		"onPageOutputLabelRead" => array(),	//ページが表示される時にラベルを取得する直前 array(labelId)
+		"onPageOutputLabelListRead" => array(),	//ページが表示される時にラベルを取得する直前 array(labelIds)
 
 		//ブログページ関連
 		"onBlogPageLoad"=>array(),		//ブログページが読み込まれる直前	array(page, webPage)

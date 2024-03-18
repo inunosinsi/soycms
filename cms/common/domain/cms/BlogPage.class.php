@@ -124,6 +124,15 @@ class BlogPage extends Page{
 		$this->categoryLabelList = $list;
 	}
 	function getCategoryLabelList(){
+		$onLoads = CMSPlugin::getEvent("onPageOutputLabelListRead");
+		if(is_array($onLoads) && count($onLoads)){
+			foreach($onLoads as $plugin){
+				$res = call_user_func($plugin[0], array('labelIds' => $this->categoryLabelList));
+				if(is_array($res)){
+					$this->categoryLabelList = $res;
+				}
+			}
+		}
 		return $this->categoryLabelList;
 	}
 
@@ -435,9 +444,21 @@ class BlogPage extends Page{
 	}
 
 	function getBlogLabelId() {
+		if(is_numeric($this->blogLabelId)){
+			$onLoads = CMSPlugin::getEvent("onPageOutputLabelRead");
+			if(is_array($onLoads) && count($onLoads)){
+				foreach($onLoads as $plugin){
+					$res = call_user_func($plugin[0], array('labelId' => (int)$this->blogLabelId));
+					if(is_numeric($res) && $res !== (int)$this->blogLabelId){
+						$this->blogLabelId = $res;
+					}
+				}
+			}
+		}
 		return $this->blogLabelId;
 	}
 	function setBlogLabelId($blogLabelId) {
+		
 		$this->blogLabelId = $blogLabelId;
 	}
 

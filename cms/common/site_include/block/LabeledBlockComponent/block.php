@@ -165,6 +165,7 @@ class LabeledBlockComponent implements BlockComponent{
 
 
 	public function getLabelId() {
+		// @ToDo 多言語化プラグインの設定
 		return $this->labelId;
 	}
 	public function setLabelId($labelId) {

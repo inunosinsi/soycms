@@ -12,6 +12,13 @@ class UtilMultiLanguageConfigFormPage extends WebPage{
 			$this->pluginObj->setConfig($_POST["Config"]);
 			$check = (isset($_POST["check_browser_language"])) ? (int)$_POST["check_browser_language"] : 0;
 			$this->pluginObj->setCheckBrowserLanguage($check);
+			$on = (isset($_POST["same_uri_mode"]) && $_POST["same_uri_mode"] == 1);
+			$this->pluginObj->setSameUriMode($on);
+			
+			if($on){	// データベースに新しいテーブルを追加する
+				self::_createTable();
+			}
+
 			CMSPlugin::savePluginConfig($this->pluginObj->getId(),$this->pluginObj);
 		}
 		CMSPlugin::redirectConfigPage();
@@ -36,6 +43,13 @@ class UtilMultiLanguageConfigFormPage extends WebPage{
 			"selected" => $this->pluginObj->getCheckBrowserLanguage(),
 			"label" => "確認する"
 		));	
+
+		$this->addCheckBox("same_uri_mode", array(
+			"name" => "same_uri_mode",
+			"value" => 1,
+			"selected" => $this->pluginObj->getSameUriMode(),
+			"label" => "同一テンプレートを利用する"
+		));	
 	}
 	
 	private function getSmartPhonePrefix(){
@@ -56,9 +70,31 @@ class UtilMultiLanguageConfigFormPage extends WebPage{
 		
 		return $obj->smartPrefix;
 	}
+
+	private function _createTable(){
+		$dao = new SOY2DAO();
+
+		try{
+			$_exist = $dao->executeQuery("SELECT * FROM MultiLanguageLabelRelation", array());
+			return;//テーブル作成済み
+		}catch(Exception $e){
+			//
+		}
+
+		$file = file_get_contents(dirname(__DIR__) . "/sql/init_".SOYCMS_DB_TYPE.".sql");
+		$sqls = preg_split('/CREATE TABLE/', $file, -1, PREG_SPLIT_NO_EMPTY) ;
+		
+		foreach($sqls as $sql){
+			$sql = "create table " . trim($sql);
+			try{
+				$dao->executeQuery($sql);
+			}catch(Exception $e){
+				//
+			}
+		}
+	}
 	
 	function setPluginObj($pluginObj){
 		$this->pluginObj = $pluginObj;
 	}
 }
-?>

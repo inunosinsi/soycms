@@ -31,13 +31,13 @@ class CMSPathInfoBuilder extends SOY2_PathInfoPathBuilder{
 
 	/**
 	 * パスからページのURI部分とパラメータ部分を抽出する
-	 * @param string
+	 * @param string, bool
 	 * @return array(string, array)
 	 */
-	public static function parsePath(string $path=""){
+	public static function parsePath(string $path="", bool $doExtendEvent=true){
 		$uri = "";
 		$args = array();
-
+		
 		$_uri = explode("/", $path);
 		if(!count($_uri)) return array($uri, $args);
 
@@ -77,13 +77,15 @@ class CMSPathInfoBuilder extends SOY2_PathInfoPathBuilder{
 		}
 
 		//uriとargsを書き換える拡張ポイント
-		$onLoad = CMSPlugin::getEvent('onPathInfoBuilder');
-		foreach($onLoad as $plugin){
-			$func = $plugin[0];
-			$res = call_user_func($func, array('uri' => $uri, 'args' => $args));
+		if($doExtendEvent){
+			$onLoad = CMSPlugin::getEvent('onPathInfoBuilder');
+			foreach($onLoad as $plugin){
+				$func = $plugin[0];
+				$res = call_user_func($func, array('uri' => $uri, 'args' => $args));
 
-			if(isset($res["uri"])) $uri = $res["uri"];
-			if(isset($res["args"])) $args = $res["args"];
+				if(isset($res["uri"])) $uri = $res["uri"];
+				if(isset($res["args"])) $args = $res["args"];
+			}
 		}
 
 		return array($uri, $args);
