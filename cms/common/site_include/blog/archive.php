@@ -8,25 +8,25 @@
 1.2.4～
 
 <!-- b_block:id="current_category_or_archive" -->
-    <h2><a cms:id="archive_link"><!-- cms:id="archive_name" cms:format="Y年m月" -->年月またはカテゴリー名<!-- /cms:id="archive_name" --></a></h2>
+	<h2><a cms:id="archive_link"><!-- cms:id="archive_name" cms:format="Y年m月" -->年月またはカテゴリー名<!-- /cms:id="archive_name" --></a></h2>
 <!-- /b_block:id="current_category_or_archive" -->
 
 1.3.4～
 DateLabelで %Y:xxx%, %M:xxx%, %D:xxx% を使えるようになりました。
 cms:format="%Y:Y年%%M:n月%%D:j日%" とすると、URLに応じて2010年、2010年12月、2010年12月15日のように切り替わります。
 <!-- b_block:id="current_category_or_archive" -->
-    <h2><a cms:id="archive_link"><!-- cms:id="archive_name" cms:format="%Y:Y年%%M:-n%%D:-j%" /--></a></h2>
+	<h2><a cms:id="archive_link"><!-- cms:id="archive_name" cms:format="%Y:Y年%%M:-n%%D:-j%" /--></a></h2>
 <!-- /b_block:id="current_category_or_archive" -->
 
 
  */
 function soy_cms_blog_output_current_category_or_archive($page){
-    if(!class_exists("CurrentCategoryOrArchiveComponent")) SOY2::import("site_include.blog.component.CurrentCategoryOrArchiveComponent");
-    $page->createAdd("current_category_or_archive","CurrentCategoryOrArchiveComponent",array(
-        "soy2prefix"=>"b_block",
-        "entryCount" => (property_exists($page, "label") && $page->label instanceof Label) ? SOY2Logic::createInstance("logic.site.Entry.EntryLogic")->getOpenEntryCountListByLabelIds(array($page->label->getId())) : array(),	//記事数をまとめて数え上げる
-        "page"=>$page,
-    ));
+	if(!class_exists("CurrentCategoryOrArchiveComponent")) SOY2::import("site_include.blog.component.CurrentCategoryOrArchiveComponent");
+	$page->createAdd("current_category_or_archive","CurrentCategoryOrArchiveComponent",array(
+		"soy2prefix"=>"b_block",
+		"entryCount" => (property_exists($page, "label") && $page->label instanceof Label) ? SOY2Logic::createInstance("logic.site.Entry.EntryLogic")->getOpenEntryCountListByLabelIds(array($page->label->getId())) : array(),	//記事数をまとめて数え上げる
+		"page"=>$page,
+	));
 }
 
 /*
@@ -37,7 +37,7 @@ function soy_cms_blog_output_current_category_or_archive($page){
 また、月別アーカイブページと同一テンプレートですが、月別アーカイブページでは、このブロックは表示されません。
 
 <!-- b_block:id="current_category" -->
-    <h2><a cms:id="category_link"><!-- cms:id="category_name" -->カテゴリーのタイトル<!-- /cms:id="category_name"--></a></h2>
+	<h2><a cms:id="category_link"><!-- cms:id="category_name" -->カテゴリーのタイトル<!-- /cms:id="category_name"--></a></h2>
 <!-- /b_block:id="current_category" -->
 
 1.8.6～
@@ -47,21 +47,21 @@ function soy_cms_blog_output_current_category_or_archive($page){
  */
 function soy_cms_blog_output_current_category($page){
 
-    if(!class_exists("CategoryListComponent")) SOY2::import("site_include.blog.component.CategoryListComponent");
+	if(!class_exists("CategoryListComponent")) SOY2::import("site_include.blog.component.CategoryListComponent");
 
-    $isLabelObject = (property_exists($page, "label") && $page->label instanceof Label);
-    $page->createAdd("current_category","CategoryListComponent",array(
-        "soy2prefix"=>"b_block",
-        "list" => ($isLabelObject) ? array($page->label) : array(),
-        "entryCount" => ($isLabelObject) ? SOY2Logic::createInstance("logic.site.Entry.EntryLogic")->getOpenEntryCountListByLabelIds(array($page->label->getId())) : array(),	//記事数をまとめて数え上げる
+	$isLabelObject = (property_exists($page, "label") && $page->label instanceof Label);
+	$page->createAdd("current_category","CategoryListComponent",array(
+		"soy2prefix"=>"b_block",
+		"list" => ($isLabelObject) ? array($page->label) : array(),
+		"entryCount" => ($isLabelObject) ? SOY2Logic::createInstance("logic.site.Entry.EntryLogic")->getOpenEntryCountListByLabelIds(array($page->label->getId())) : array(),	//記事数をまとめて数え上げる
 		"categoryUrl" => $page->getCategoryPageURL(true),
-        "visible" => (SOYCMS_BLOG_PAGE_MODE==CMSBlogPage::MODE_CATEGORY_ARCHIVE)
-    ));
+		"visible" => (SOYCMS_BLOG_PAGE_MODE==CMSBlogPage::MODE_CATEGORY_ARCHIVE)
+	));
 
-    $page->addModel("is_category_page", array(
-        "soy2prefix"=>"b_block",
-        "visible"=>(SOYCMS_BLOG_PAGE_MODE==CMSBlogPage::MODE_CATEGORY_ARCHIVE)
-    ));
+	$page->addModel("is_category_page", array(
+		"soy2prefix"=>"b_block",
+		"visible"=>(SOYCMS_BLOG_PAGE_MODE==CMSBlogPage::MODE_CATEGORY_ARCHIVE)
+	));
 }
 
 
@@ -75,11 +75,11 @@ function soy_cms_blog_output_current_category($page){
 1.2.2～
 
 <!-- b_block:id="current_archive" -->
-    <h2><a cms:id="archive_link"><!-- cms:id="archive_month" cms:format="Y年m月" --><!-- /cms:id="archive_month" --></a></h2>
+	<h2><a cms:id="archive_link"><!-- cms:id="archive_month" cms:format="Y年m月" --><!-- /cms:id="archive_month" --></a></h2>
 <!-- /b_block:id="current_archive" -->
 
 <!-- b_block:id="current_archive_date" -->
-    <h2><a cms:id="archive_link"><!-- cms:id="archive_date" cms:format="Y年m月d日" --><!-- /cms:id="archive_date" --></a></h2>
+	<h2><a cms:id="archive_link"><!-- cms:id="archive_date" cms:format="Y年m月d日" --><!-- /cms:id="archive_date" --></a></h2>
 <!-- /b_block:id="current_archive_date" -->
 
 
@@ -88,7 +88,7 @@ current_archive_ymdが追加されました。current_archive_ymdはcurrent_arch
 DateLabelで %Y:xxx%, %M:xxx%, %D:xxx% を使えるようになりました。
 cms:format="%Y:Y年%%M:n月%%D:j日%" とすると、URLに応じて2010年、2010年12月、2010年12月15日のように切り替わります。
 <!-- b_block:id="current_archive_ymd" -->
-    <h2><a cms:id="archive_link"><!-- cms:id="archive_date" cms:format="%Y:Y年%%M:-n%%D:-j%" /--></a></h2>
+	<h2><a cms:id="archive_link"><!-- cms:id="archive_date" cms:format="%Y:Y年%%M:-n%%D:-j%" /--></a></h2>
 <!-- /b_block:id="current_archive_ymd" -->
 
 1.8.6～
@@ -98,33 +98,31 @@ cms:format="%Y:Y年%%M:n月%%D:j日%" とすると、URLに応じて2010年、20
  */
 function soy_cms_blog_output_current_archive($page){
 
-    if(!class_exists("CategoryListComponent")) SOY2::import("site_include.blog.component.CategoryListComponent");
+	if(!class_exists("CurrentArchiveComponent")) SOY2::import("site_include.blog.component.CurrentArchiveComponent");
 
-    if(!class_exists("Label")) SOY2::import("domain.cms.Label");
-    $label = (!is_null($page->label) && $page->label instanceof Label) ? $page->label : new Label();
 	$isArchive = (SOYCMS_BLOG_PAGE_MODE==CMSBlogPage::MODE_MONTH_ARCHIVE);
-    $page->createAdd("current_archive","CategoryListComponent",array(
-        "soy2prefix"=>"b_block",
-        "list"=> array($label),
+	$page->createAdd("current_archive","CurrentArchiveComponent",array(
+		"soy2prefix"=>"b_block",
+		"page"=> $page,
 		"visible"=>($isArchive && !$page->day)
-    ));
+	));
 
-    $page->createAdd("current_archive_date","CategoryListComponent",array(
-        "soy2prefix"=>"b_block",
-        "list"=> array($label),
-        "visible"=>($isArchive && $page->day)
-    ));
+	$page->createAdd("current_archive_date","CurrentArchiveComponent",array(
+		"soy2prefix"=>"b_block",
+		"page"=> $page,
+		"visible"=>($isArchive && $page->day)
+	));
 
-    $page->createAdd("current_archive_ymd","CategoryListComponent",array(
-        "soy2prefix"=>"b_block",
-        "list" => array($label),
-        "visible"=>$isArchive
-    ));
+	$page->createAdd("current_archive_ymd","CurrentArchiveComponent",array(
+		"soy2prefix"=>"b_block",
+		"page"=> $page,
+		"visible"=>$isArchive
+	));
 
-    $page->addModel("is_archive_page", array(
-        "soy2prefix" => "b_block",
-        "visible" => $isArchive
-    ));
+	$page->addModel("is_archive_page", array(
+		"soy2prefix" => "b_block",
+		"visible" => $isArchive
+	));
 }
 /*
 このブロックは、アーカイブページでご利用になれます。
@@ -135,95 +133,95 @@ function soy_cms_blog_output_current_archive($page){
 
 1.8.6～
 <div b_block:id="has_prev_or_next_month">
-    <div b_block:id="has_prev_month">
-        <a b_block:id="prev_month">前へ</a b_block:id="prev_month">
-    </div>
-    <div b_block:id="has_next_month">
-        <a b_block:id="next_month">前へ</a b_block:id="next_month">
-    </div>
+	<div b_block:id="has_prev_month">
+		<a b_block:id="prev_month">前へ</a b_block:id="prev_month">
+	</div>
+	<div b_block:id="has_next_month">
+		<a b_block:id="next_month">前へ</a b_block:id="next_month">
+	</div>
 </div>
 
  */
 function soy_cms_blog_output_prev_next_month($page){
 
-    $isMonthArchive = true;
-    $hasNext = false;
-    $hasPrev = false;
-    $url = $page->getMonthPageURL(true);
-    $nextMonthDate = $prevMonthDate = "";
+	$isMonthArchive = true;
+	$hasNext = false;
+	$hasPrev = false;
+	$url = $page->getMonthPageURL(true);
+	$nextMonthDate = $prevMonthDate = "";
 
-    //アーカイブページ(年月日)ではない
-    if(SOYCMS_BLOG_PAGE_MODE != CMSBlogPage::MODE_MONTH_ARCHIVE){
-        $isMonthArchive = false;
-    }
+	//アーカイブページ(年月日)ではない
+	if(SOYCMS_BLOG_PAGE_MODE != CMSBlogPage::MODE_MONTH_ARCHIVE){
+		$isMonthArchive = false;
+	}
 
-    //年月ではない
-    if(is_null($page->year) || is_null($page->month) || !is_null($page->day)){
-        $isMonthArchive = false;
-    }
+	//年月ではない
+	if(is_null($page->year) || is_null($page->month) || !is_null($page->day)){
+		$isMonthArchive = false;
+	}
 
-    if($isMonthArchive){
-        $logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
+	if($isMonthArchive){
+		$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
 
-        $thisMonth = date('Y-m-01', @mktime(0,0,0,$page->month,1,$page->year));
-        $nextMonthDate = date('Y/m', strtotime($thisMonth . '+1 month'));
-        $prevMonthDate = date('Y/m', strtotime($thisMonth . '-1 month'));
+		$thisMonth = date('Y-m-01', @mktime(0,0,0,$page->month,1,$page->year));
+		$nextMonthDate = date('Y/m', strtotime($thisMonth . '+1 month'));
+		$prevMonthDate = date('Y/m', strtotime($thisMonth . '-1 month'));
 
-        //翌月の記事の存在確認
-        try{
-            $month_list = $logic->getCountMonth(array($page->page->getBlogLabelId()));
-        }catch(Exception $e){
-            $month_list = array();
-        }
-        foreach($month_list as $time => $count){
-            if($count && date('Y/m', $time) == $nextMonthDate){
-                $hasNext = true;
-                break;
-            }
-        }
+		//翌月の記事の存在確認
+		try{
+			$month_list = $logic->getCountMonth(array($page->page->getBlogLabelId()));
+		}catch(Exception $e){
+			$month_list = array();
+		}
+		foreach($month_list as $time => $count){
+			if($count && date('Y/m', $time) == $nextMonthDate){
+				$hasNext = true;
+				break;
+			}
+		}
 
 
-        //前月の記事の存在確認
-        try{
-            $month_list = $logic->getCountMonth(array($page->page->getBlogLabelId()));
-        }catch(Exception $e){
-            $month_list = array();
-        }
-        foreach($month_list as $time => $count){
-            if($count && date('Y/m', $time) == $prevMonthDate){
-                $hasPrev = true;
-                break;
-            }
-        }
-    }
+		//前月の記事の存在確認
+		try{
+			$month_list = $logic->getCountMonth(array($page->page->getBlogLabelId()));
+		}catch(Exception $e){
+			$month_list = array();
+		}
+		foreach($month_list as $time => $count){
+			if($count && date('Y/m', $time) == $prevMonthDate){
+				$hasPrev = true;
+				break;
+			}
+		}
+	}
 
-    //翌月のページへ
-    $page->addLink("next_month", array(
-        "soy2prefix" => "b_block",
-        "visible" => $hasNext,
-        "link" => $url.$nextMonthDate
-    ));
-    //翌月のページがあれば表示
-    $page->addModel("has_next_month", array(
-        "soy2prefix" => "b_block",
-        "visible" => $hasNext,
-    ));
+	//翌月のページへ
+	$page->addLink("next_month", array(
+		"soy2prefix" => "b_block",
+		"visible" => $hasNext,
+		"link" => $url.$nextMonthDate
+	));
+	//翌月のページがあれば表示
+	$page->addModel("has_next_month", array(
+		"soy2prefix" => "b_block",
+		"visible" => $hasNext,
+	));
 
-    //前月のページへ
-    $page->addLink("prev_month", array(
-        "soy2prefix" => "b_block",
-        "visible" => $hasPrev,
-        "link" => $url.$prevMonthDate
-    ));
-    //前月のページがあれば表示
-    $page->addModel("has_prev_month", array(
-        "soy2prefix" => "b_block",
-        "visible" => $hasPrev,
-    ));
+	//前月のページへ
+	$page->addLink("prev_month", array(
+		"soy2prefix" => "b_block",
+		"visible" => $hasPrev,
+		"link" => $url.$prevMonthDate
+	));
+	//前月のページがあれば表示
+	$page->addModel("has_prev_month", array(
+		"soy2prefix" => "b_block",
+		"visible" => $hasPrev,
+	));
 
-    //翌月または前月のページがあれば表示
-    $page->addModel("has_prev_or_next_month", array(
-        "soy2prefix" => "b_block",
-        "visible" => ($hasPrev || $hasNext),
-    ));
+	//翌月または前月のページがあれば表示
+	$page->addModel("has_prev_or_next_month", array(
+		"soy2prefix" => "b_block",
+		"visible" => ($hasPrev || $hasNext),
+	));
 }
