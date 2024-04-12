@@ -25,7 +25,7 @@ class IndexPage extends WebPage{
 
 	private function buildTemplate(){
 
-		$dao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
+		$dao = soyshop_get_hash_table_dao("page");
 
 		$this->createAdd("template_carrier_list", "_common.Site.TemplateCarrierListComponent", array(
 			"list" => $this->templateLogic->getTemplateList($this->types),
