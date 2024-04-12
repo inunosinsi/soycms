@@ -12,6 +12,8 @@ class SOYShop_ShopConfig {
 	private $shopName;
 	private $siteUrl;
 
+	private $invoiceNumber;
+
 	private $adminUrl;
 
 	private $appName = "SOY Shop";
@@ -437,8 +439,18 @@ class SOYShop_ShopConfig {
 	}
 
 	function getShopName() {
-		if(strlen($this->shopName) < 1) return "新しいショップ";
-		return $this->shopName;
+		// 公開側では、他言語のサイト名があるか？を調べる
+		if(!defined("SOYSHOP_ADMIN_PAGE") || !SOYSHOP_ADMIN_PAGE){
+			if(!defined("SOYSHOP_PUBLISH_LANGUAGE")) define("SOYSHOP_PUBLISH_LANGUAGE", "jp");
+			if(!defined("SOYSHOP_MAIL_LANGUAGE")) define("SOYSHOP_MAIL_LANGUAGE", SOYSHOP_PUBLISH_LANGUAGE);
+			
+			if(SOYSHOP_MAIL_LANGUAGE != "jp"){
+				$shopName = SOYShop_DataSets::get("config.shop.name.".SOYSHOP_MAIL_LANGUAGE, null);
+				if(is_string($shopName) && strlen($shopName)) return $shopName;
+			}
+		}
+
+		return (strlen($this->shopName) > 0) ? $this->shopName : "新しいショップ";
 	}
 	function setShopName($shopName) {
 		$this->shopName = $shopName;
@@ -453,6 +465,13 @@ class SOYShop_ShopConfig {
 
 	function setSiteUrl($siteUrl){
 		$this->siteUrl = $siteUrl;
+	}
+
+	function getInvoiceNumber(){
+		return $this->invoiceNumber;
+	}
+	function setInvoiceNumber($invoiceNumber){
+		$this->invoiceNumber = $invoiceNumber;
 	}
 
 	function getCompanyInformation() {

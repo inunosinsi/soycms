@@ -1,0 +1,70 @@
+<div class="alert alert-success" soy:display="removed">削除しました</div>
+<div class="alert alert-warning" soy:display="annotation">当プラグインは変更の権限を持つアカウントのみ使用可能です</div>
+
+<form soy:id="form">
+	<!-- soy:id="page_type_list" -->
+	<div class="table-responsive">
+		<table class="table table-striped">
+		<caption>ページ一覧<!-- soy:id="prefix" /--></caption>
+			<tr>
+				<th>&nbsp;</th>
+				<th>名前</th>
+				<th>URL</th>
+				<th>種類</th>
+			</tr>
+			<!-- soy:id="page_list" -->
+			<tr>
+				<td class="col-x1-1 text-center">
+					<!-- soy:display="app_limit_function" -->
+					<input type="checkbox" soy:id="item_check">
+					<!-- /soy:display="app_limit_function" -->
+				</td>
+				<td>
+					<span soy:id="name">あああああ</span>
+				</td>
+				<td>
+					<a soy:id="uri">あああああ</a>
+				</td>
+				<td>
+					<span soy:id="type_text">トップページ</span>
+				</td>
+			</tr>
+			<!-- /soy:id="page_list" -->
+		</table>
+	</div>
+	<!-- /soy:id="page_type_list" -->
+
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="削除">
+	</div>
+
+	<!-- soy:display="template_list" -->
+	<br>
+
+	<div class="table-responsive">
+		<table class="table table-striped">
+			<caption>使用していないテンプレート一覧</caption>
+			<tr>
+				<th>&nbsp;</th>
+				<th>名前</th>
+				<th>種類</th>	
+			</tr>
+			<!-- soy:id="template_list" -->
+			<tr>
+				<td class="col-x1-1 text-center">
+					<!-- soy:display="app_limit_function_rv" -->
+					<input type="checkbox" soy:id="item_check">
+					<!-- /soy:display="app_limit_function_rv" -->
+				</td>
+				<td soy:id="name">あああああ</td>
+				<td class="column3" soy:id="type">トップページ</td>
+			</tr>
+			<!-- /soy:id="template_list" -->
+		</table>
+	</div>
+
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="削除">
+	</div>
+	<!-- /soy:display="template_list" -->
+</form>
