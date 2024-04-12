@@ -4,6 +4,12 @@ class PageListComponent extends HTMLList{
 
 	protected function populateItem($entity){
 
+		$this->addCheckBox("item_check", array(
+			"name" => "pages[]",
+            "value" => $entity->getId(),
+            "visible" => AUTH_OPERATE
+		));
+
 		$this->addLabel("update_date", array(
 			"text" => print_update_date($entity->getUpdateDate())
 		));

@@ -4,6 +4,12 @@ class TemplateListComponent extends HTMLList{
 
 	protected function populateItem($entity){
 		$path = (isset($entity["path"]) && is_string($entity["path"])) ? $entity["path"] : "";
+		
+		$this->addCheckBox("item_check", array(
+			"name" => "templates[]",
+            "value" => $path,
+            "visible" => AUTH_OPERATE
+		));
 
 		$this->addLabel("name", array(
 			"text" => $entity["name"]
