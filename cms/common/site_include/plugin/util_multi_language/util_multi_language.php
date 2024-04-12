@@ -21,7 +21,7 @@ class UtilMultiLanguagePlugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.0"
+			"version"=>"1.0.1"
 		));
 
 		//二回目以降の動作
