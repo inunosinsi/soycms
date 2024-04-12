@@ -26,7 +26,7 @@ class PageCreateLogic extends PageLogic{
 		}
 
 		//unique check
-		if(true == SOY2DAOFactory::create("site.SOYShop_PageDAO")->checkUri($obj->getUri())){
+		if(soyshop_get_hash_table_dao("page")->checkUri($obj->getUri())){
 			$errors["uri"] = MessageManager::get("ERROR_INVALID");
 		}
 
@@ -41,7 +41,7 @@ class PageCreateLogic extends PageLogic{
 		$cnf["canonical_format"] = "%PERMALINK%";
 		$obj->setConfig($cnf);
 
-		$id = SOY2DAOFactory::create("site.SOYShop_PageDAO")->insert($obj);
+		$id = soyshop_get_hash_table_dao("page")->insert($obj);
 
 		$obj->setId($id);
 		$this->onUpdate($obj);
@@ -70,7 +70,7 @@ class PageCreateLogic extends PageLogic{
 		array_shift($lines);
 
 		//ページはなければ追加形式
-		$dao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
+		$dao = soyshop_get_hash_table_dao("page");
 		foreach($lines as $line){
 			//0.ページ名, 1.URL, 2.タイプ, 3.テンプレート, 4.カテゴリ(商品一覧のみ), 5.コンテンツ(フリーのみ), 6.モジュール(検索のみ)
 			$values = $logic->explodeLine($line);
