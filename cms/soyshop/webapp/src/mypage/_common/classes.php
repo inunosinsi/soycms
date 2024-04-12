@@ -45,7 +45,11 @@ class MainMyPagePageBase extends WebPage{
     	if(defined("SOYSHOP_MYPAGE_PATH")){
     		$html = SOYSHOP_MAIN_MYPAGE_TEMPLATE_DIR . self::createDirectory(SOYSHOP_MYPAGE_PATH) . ".html";
     	}else{
-    		$html = SOYSHOP_MAIN_MYPAGE_TEMPLATE_DIR . get_class($this) . ".html";
+			if(file_exists(SOYSHOP_MAIN_MYPAGE_TEMPLATE_DIR . "_" . get_class($this) . ".html")){
+				$html = SOYSHOP_MAIN_MYPAGE_TEMPLATE_DIR . "_" . get_class($this) . ".html";
+			}else{
+				$html = SOYSHOP_MAIN_MYPAGE_TEMPLATE_DIR . get_class($this) . ".html";
+			}
     	}
 
 		if(file_exists($html)) return $html;
@@ -54,6 +58,9 @@ class MainMyPagePageBase extends WebPage{
 			echo "<p>Custom Template Not Found: " . $html . "</p>";
 		}
 
+		if(file_exists(SOYSHOP_DEFAULT_MYPAGE_TEMPLATE_DIR . "_" . get_class($this) . ".html")){
+			return SOYSHOP_DEFAULT_MYPAGE_TEMPLATE_DIR . "_" . get_class($this) . ".html";
+		}
 		return SOYSHOP_DEFAULT_MYPAGE_TEMPLATE_DIR . get_class($this) . ".html";
     }
 

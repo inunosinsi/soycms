@@ -48,6 +48,9 @@ class MainCartPageBase extends WebPage{
      * @override HTMLPage::getTemplateFilePath()
      */
     function getTemplateFilePath(){
+		if(file_exists(SOYSHOP_MAIN_CART_TEMPLATE_DIR . "_" . get_class($this) . ".html")){
+			return SOYSHOP_MAIN_CART_TEMPLATE_DIR . "_" . get_class($this) . ".html";
+		}
 		if(file_exists(SOYSHOP_MAIN_CART_TEMPLATE_DIR . get_class($this) . ".html")){
 			return SOYSHOP_MAIN_CART_TEMPLATE_DIR . get_class($this) . ".html";
 		}
@@ -56,6 +59,9 @@ class MainCartPageBase extends WebPage{
 			echo "<p>Custom Template Not Found: " . SOYSHOP_MAIN_CART_TEMPLATE_DIR . get_class($this) . ".html</p>";
 		}
 
+		if(file_exists(SOYSHOP_DEFAULT_CART_TEMPLATE_DIR . "_" . get_class($this) . ".html")){
+			return SOYSHOP_DEFAULT_CART_TEMPLATE_DIR . "_" . get_class($this) . ".html";
+		}
 		return SOYSHOP_DEFAULT_CART_TEMPLATE_DIR . get_class($this) . ".html";
     }
 
