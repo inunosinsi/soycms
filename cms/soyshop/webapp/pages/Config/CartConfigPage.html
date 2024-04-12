@@ -29,47 +29,74 @@
 						<div class="alert alert-warning">カートのURLのドメインが通常ページと異なる時のみ設定が必要</div>
 					</div>
 
-					<div class="form-group">
-						<label for="">カート設定<!-- soy:display="is_enabled_util_mobile_check" -->（PC用）<!-- /soy:display="is_enabled_util_mobile_check" --></label>
-						<div>カートページのURI</div>
-						<input type="text" soy:id="cart_url" />
+					<br>
 
-						<div>カートの種類の選択</div>
-						<select soy:id="cart_application"></select><br>
+					<div class="alert alert-info">カート設定<!-- soy:display="is_enabled_util_mobile_check" -->（PC用）<!-- /soy:display="is_enabled_util_mobile_check" --></div>
+					<div class="form-group">
+						<label>カートページのURI</label>
+						<div class="form-inline">
+							<input type="text" soy:id="cart_url" class="form-control">
+						</div>
+						
+
+						<label>カートの種類の選択</label>
+						<div class="form-inline">
+							<select soy:id="cart_application" class="form-control"></select>
+						</div>
 						※カート機能を封じる場合は<strong>none</strong>を選択してください。
 
-						<div>文字コード</div>
-						<select soy:id="cart_charset"></select>
+						<br>
+
+						<label>文字コード</label>
+						<div class="form-inline">
+							<select soy:id="cart_charset" class="form-control"></select>
+						</div>
 					</div>
 
 					<!-- soy:display="is_enabled_util_mobile_check_1" -->
+					<br>
+
+					<div class="alert alert-info">カート設定（モバイル用）</div>
 					<div class="form-group">
-						<label for="">カート設定（mobile用）</label>
-						<dd>
-							<h4>カートページのURI</h4>
-							<input type="text" soy:id="mobile_cart_url" />
+							
+						<label>カートページのURI</label>
+						<div class="form-inline">
+							<input type="text" soy:id="mobile_cart_url" class="form-control">
+						</div>
 
-							<h4>カートの種類の選択</h4>
-							<select soy:id="mobile_cart_application"></select><br>
-							※カート機能を封じる場合は<strong>none</strong>を選択してください。
+						<label>カートの種類の選択</label>
+						<div class="form-inline">
+							<select soy:id="mobile_cart_application" class="form-control"></select>
+						</div>
+						※カート機能を封じる場合は<strong>none</strong>を選択してください。
 
-							<h4>文字コード</h4>
-							<select soy:id="mobile_cart_charset"></select>
-						</dd>
+						<label>文字コード</label>
+						<div class="form-inline">
+							<select soy:id="mobile_cart_charset" class="form-control"></select>
+						</div>
 					</div>
 
-					<div class="form-group">
-						<label for="">カート設定(スマートフォン用)</label>
-						<dd>
-							<h4>カートページのURI</h4>
-							<input type="text" soy:id="smartphone_cart_url" />
+					<br>
 
-							<h4>カートの種類の選択</h4>
-							<select soy:id="smartphone_cart_application"></select><br>
+					<div class="alert alert-info">カート設定(スマートフォン用)</div>
+					<div class="form-group">
+							<label>カートページのURI</label>
+							<div class="form-inline">
+								<input type="text" soy:id="smartphone_cart_url" class="form-control">
+							</div>
+
+							<label>カートの種類の選択</label>
+							<div class="form-inline">
+								<select soy:id="smartphone_cart_application" class="form-control"></select>
+							</div>
 							※カート機能を封じる場合は<strong>none</strong>を選択してください。
 
-							<h4>文字コード</h4>
-							<select soy:id="smartphone_cart_charset"></select>
+							<br>
+
+							<label>文字コード</label>
+							<div class="form-inline">
+								<select soy:id="smartphone_cart_charset" class="form-control"></select>
+							</div>
 						</dd>
 					</div>
 					<!-- /soy:display="is_enabled_util_mobile_check_1" -->

@@ -15,45 +15,49 @@ class UtilMultiLanguageConfigFormPage extends WebPage{
 			UtilMultiLanguageUtil::saveConfig($_POST["Config"]);
 
 			//英語用のテンプレートが無ければここでテンプレートを生成する
-			self::makeTemplate();
+			self::_makeTemplate();
 
 			//スマホ版の英語用のテンプレートを作成
 			if(SOYShopPluginUtil::checkIsActive("util_mobile_check")){
-				self::makeTemplate(UtilMultiLanguageUtil::MODE_SMARTPHONE);
+				self::_makeTemplate(UtilMultiLanguageUtil::MODE_SMARTPHONE);
 			}
 			$this->config->redirect("updated");
 		}
 	}
 
-	private function makeTemplate($mode = UtilMultiLanguageUtil::MODE_PC){
+	private function _makeTemplate(string $mode=UtilMultiLanguageUtil::MODE_PC){
 		foreach(UtilMultiLanguageUtil::getConfig() as $key => $values){
 			if(isset($values["is_use"]) && $values["is_use"] == UtilMultiLanguageUtil::IS_USE){
 				if(isset($values["prefix"]) && strlen($values["prefix"]) > 0){
-					self::copyCartTemplate($values["prefix"], $mode);
-					self::copyMypageTemplate($values["prefix"], $mode);
+					self::_copyCartTemplate($values["prefix"], $mode);
+					self::_copyMypageTemplate($values["prefix"], $mode);
 				}
 			}
 		}
 	}
 
-	private function copyCartTemplate($language, $mode){
+	private function _copyCartTemplate(string $language, string $mode){
 		$cartId = ($mode == UtilMultiLanguageUtil::MODE_PC) ? SOYShop_DataSets::get("config.cart.cart_id", "bryon") : SOYShop_DataSets::get("config.cart.smartphone_cart_id", "smart");
-		self::copyApplicationTemplate($language, $cartId, "cart");
+		if($cartId === "none") return;	// カートIDがnoneの場合は何もしない
+		
+		self::_copyApplicationTemplate($language, $cartId, "cart");
 
 		/** システム側のテンプレートも用意 */
-		self::copyPageDir($language, $cartId, "cart");
+		self::_copyPageDir($language, $cartId, "cart");
 	}
 
-	private function copyMypageTemplate($language, $mode){
+	private function _copyMypageTemplate(string $language, string $mode){
 		$mypageId = ($mode == UtilMultiLanguageUtil::MODE_PC) ? SOYShop_DataSets::get("config.mypage.id", "bryon") : SOYShop_DataSets::get("config.mypage.smartphone.id", "smart");
-		self::copyApplicationTemplate($language, $mypageId, "mypage");
+		if($mypageId === "none") return;	// マイページIDがnoneの場合は何しない
+
+		self::_copyApplicationTemplate($language, $mypageId, "mypage");
 
 		/** システム側のテンプレートも用意 */
-		self::copyPageDir($language, $mypageId, "mypage");
+		self::_copyPageDir($language, $mypageId, "mypage");
 
 	}
 
-	private function copyApplicationTemplate($language, $appId, $mode = "cart"){
+	private function _copyApplicationTemplate(string $language, string $appId, string $mode="cart"){
 		$dir = SOYSHOP_SITE_DIRECTORY . ".template/" . $mode . "/";
 
 		if(!file_exists($dir . $appId . "_" . $language . ".ini")){
@@ -66,28 +70,31 @@ class UtilMultiLanguageConfigFormPage extends WebPage{
 		}
 	}
 
-	private function copyPageDir($language, $appId, $mode){
+	private function _copyPageDir(string $language, string $appId, string $mode){
 		$dir = SOY2::RootDir() . $mode . "/";
-		if(file_exists($dir . $appId) && !file_exists($dir . $appId . "_" . $language)){
-			mkdir($dir . $appId . "_" . $language);
+		$tmpDir = SOYSHOP_SITE_DIRECTORY . ".template/" . $mode . "/";
+		if(file_exists($dir . $appId) && !file_exists($tmpDir . $appId . "_" . $language)){
+			mkdir($tmpDir . $appId . "_" . $language);
 			$oldDir = $dir . $appId . "/";
-			$newDir = $dir . $appId . "_" . $language . "/";
-			self::copyFileRecursive($oldDir, $newDir);
+			$newDir = $tmpDir . $appId . "_" . $language . "/";
+			self::_copyFileRecursive($oldDir, $newDir);
 		}
 	}
 
-	private function copyFileRecursive($oldDir, $newDir){
+	private function _copyFileRecursive(string $oldDir, string $newDir){
 		if(is_dir($oldDir) && is_readable($oldDir)){
 			$files = scandir($oldDir);
 			foreach($files as $file){
 				if($file[0] == ".") continue;
-
-				if(strpos($file, ".php") || strpos($file, ".html")){
-					copy($oldDir . $file, $newDir . $file);
+				if(soy2_strpos($file, ".php") > 0) continue;
+				
+				if(strpos($file, ".html")){
+					$tmpDir = substr($newDir, 0, strrpos($newDir, "pages/"));
+					copy($oldDir . $file, $tmpDir . $file);
                     //ディレクトリの場合
 				}elseif(is_dir($oldDir . $file)){
 					mkdir($newDir . $file);
-					self::copyFileRecursive($oldDir . $file . "/", $newDir . $file . "/");
+					self::_copyFileRecursive($oldDir . $file . "/", $newDir . $file . "/");
 				}
 			}
 		}
@@ -99,8 +106,7 @@ class UtilMultiLanguageConfigFormPage extends WebPage{
 
 		//ページの追加ボタン
 		if(isset($_GET["create"])){
-			$pageLogic = SOY2Logic::createInstance("module.plugins.util_multi_language.logic.CreatePageLogic");
-			$pageLogic->create();
+			SOY2Logic::createInstance("module.plugins.util_multi_language.logic.CreatePageLogic")->create();
 			$this->config->redirect("created");
 		}
 
@@ -108,6 +114,7 @@ class UtilMultiLanguageConfigFormPage extends WebPage{
 
 		DisplayPlugin::toggle("update", (isset($_GET["updated"])));
 		DisplayPlugin::toggle("created", (isset($_GET["created"])));
+		DisplayPlugin::toggle("annotation", !SOYShopPluginUtil::checkIsActive("bulk_page_remove_plugin"));
 
 		$this->addForm("form");
 

@@ -58,6 +58,11 @@ class DetailPage extends CMSWebPageBase{
 			"name" => "title"
 		));
 
+		// SOY2HTML(soy:id="customfield")で出力
+		$this->addLabel("multi_language", array(
+			"html" => CMSPlugin::callCustomFieldFunctions("Page.Title")
+		));
+
 		$this->addInput("uri", array(
 			"value" => $page->getUri(),
 			"name" => "uri"

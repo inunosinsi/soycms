@@ -33,10 +33,19 @@ class IndexPage extends CMSWebPageBase{
 		$this->addInput("name", array(
 			"value" => $entity->getName()
 		));
+
+		// SOY2HTML(soy:id="customfield")で出力
+		$this->addLabel("multi_language_site_name", array(
+			"html" => CMSPlugin::callCustomFieldFunctions("Site.Name")
+		));
 		
 		$this->addTextArea("description", array(
 			"text" => $entity->getDescription(),
 			"name" => "description"
+		));
+
+		$this->addLabel("multi_language_site_description", array(
+			"html" => CMSPlugin::callCustomFieldFunctions("Site.Description")
 		));
 		
 		$this->addSelect("charset", array(

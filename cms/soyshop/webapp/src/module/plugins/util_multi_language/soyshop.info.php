@@ -10,6 +10,5 @@ class UtilMultiLanguageInfo extends SOYShopInfoPageBase{
 			return "";
 		}
 	}
-
 }
 SOYShopPlugin::extension("soyshop.info","util_multi_language","UtilMultiLanguageInfo");

@@ -69,6 +69,11 @@ class ConfigPage extends CMSWebPageBase{
 			"text" => $page->getTitle()
 		));
 
+		// SOY2HTML(soy:id="customfield")で出力
+		$this->addLabel("multi_language", array(
+			"html" => CMSPlugin::callCustomFieldFunctions("Page.Title")
+		));
+
 		$labels = $this->getLabels();
 
 		//ラベルが無いときのメッセージ

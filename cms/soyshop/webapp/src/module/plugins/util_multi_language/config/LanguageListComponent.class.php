@@ -8,15 +8,25 @@ class LanguageListComponent extends HTMLList{
 		if(is_null($lng)) $lng = "jp";
 		$lngUri = (is_string($lng)) ? self::getLanguageUri($lng) : "";
 
-		$this->addLink("create_pc_page_link", array(
-			"link" => (isset($this->config[$lng]["prefix"])) ? SOY2PageController::createLink("Config.Detail?plugin=util_multi_language&create=" . $this->config[$lng]["prefix"] . "&carrier=pc") : null,
-			"visible" => (is_string($lng) && self::_displayCreatePageLink($lng))
-		));
+		foreach(array("pc", "i") as $idx){
+			switch($idx){
+				case "pc":
+					$isShow = (is_string($lng) && self::_displayCreatePageLink($lng));
+					break;
+				case "i": 
+					$isShow = (is_string($lng) && self::_displayCreatePageLink($lng) && SOYShopPluginUtil::checkIsActive("util_mobile_check"));
+			}
+			$this->addLink("create_".$idx."_page_link", array(
+				"link" => (isset($this->config[$lng]["prefix"])) ? SOY2PageController::createLink("Config.Detail?plugin=util_multi_language&create=" . $this->config[$lng]["prefix"] . "&carrier=".$idx) : null,
+				"visible" => $isShow
+			));
 
-		$this->addLink("create_i_page_link", array(
-			"link" => (isset($this->config[$lng]["prefix"])) ? SOY2PageController::createLink("Config.Detail?plugin=util_multi_language&create=" . $this->config[$lng]["prefix"] . "&carrier=i") : null,
-			"visible" => (is_string($lng) && self::_displayCreatePageLink($lng) && SOYShopPluginUtil::checkIsActive("util_mobile_check"))
-		));
+			$this->addLink("create_".$idx."_page_link_with_template", array(
+				"link" => (isset($this->config[$lng]["prefix"])) ? SOY2PageController::createLink("Config.Detail?plugin=util_multi_language&create=" . $this->config[$lng]["prefix"] . "&carrier=".$idx."&template") : null,
+				"visible" => $isShow
+			));
+		}
+		
 
 
 		$this->addModel("display_mobile_check_config", array(
@@ -33,10 +43,12 @@ class LanguageListComponent extends HTMLList{
 			"value" => UtilMultiLanguageUtil::NO_USE
 		));
 
+		$on = (is_string($lng) && self::_checkIsUse($lng));
+
 		$this->addCheckBox("is_use_checkbox", array(
 			"name" => "Config[" . $lng . "][is_use]",
 			"value" => UtilMultiLanguageUtil::IS_USE,
-			"selected" => (is_string($lng) && self::_checkIsUse($lng)),
+			"selected" => $on,
 			"label" => " " . $entity . "サイトを表示する"
 		));
 
@@ -46,7 +58,7 @@ class LanguageListComponent extends HTMLList{
 		));
 
 		$this->addLabel("prefix_text", array(
-			"text" => (strlen($lngUri)) ? "/" . $lngUri : ""
+			"text" => (strlen($lngUri)) ? $lngUri : ""
 		));
 
 		$iPrefix = (string)$this->getSmartPhonePrefix();
@@ -54,8 +66,16 @@ class LanguageListComponent extends HTMLList{
 			"text" => (strlen($iPrefix)) ? "/" . $iPrefix : ""
 		));
 
+		$this->addModel("is_cart", array(
+			"visible" => ($this->getPcCartId() != "none")
+		));
+
 		$this->addLabel("user_cart_id", array(
 			"text" => (strlen($lngUri)) ? $this->getPcCartId() . "_" . $lngUri : $this->getPcCartId()
+		));
+
+		$this->addModel("is_mypage", array(
+			"visible" => ($this->getPcMypageId() != "none")
 		));
 
 		$this->addLabel("user_mypage_id", array(
@@ -70,12 +90,14 @@ class LanguageListComponent extends HTMLList{
 			"text" => (strlen($lngUri)) ? $this->getSpMypageId() . "_" . $lngUri : $this->getSpMypageId()
 		));
 
-		$this->addLabel("domain", array(
-			"text" => $_SERVER["HTTP_HOST"]
+		$this->addModel("show_redirect_url_example", array(
+			"visible" => ($on && $lng != "jp")
 		));
 
-		$this->addLabel("shop_id", array(
-			"text" => (SOYSHOP_IS_ROOT) ? "" : "/" . SOYSHOP_ID
+		$http = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") ? "https" : "http";
+		$siteId = (SOYSHOP_IS_ROOT) ? "" : "/".SOYSHOP_ID;
+		$this->addLabel("site_url", array(
+			"text" => $http."://".$_SERVER["HTTP_HOST"].$siteId."/"
 		));
 	}
 

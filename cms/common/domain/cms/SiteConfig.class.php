@@ -32,12 +32,30 @@ class SiteConfig {
     	$this->charset = $charset;
     }
     function getName() {
+		if(!defined("SOYCMS_PUBLISH_LANGUAGE")) define("SOYCMS_PUBLISH_LANGUAGE", "jp");
+
+		if(SOYCMS_PUBLISH_LANGUAGE != "jp"){
+			SOY2::import("site_include.plugin.util_multi_language.util.SOYCMSUtilMultiLanguageUtil");
+			SOY2DAOFactory::importEntity("cms.DataSets");
+			$name = (string)DataSets::get(SOYCMSUtilMultiLanguageUtil::LANGUAGE_SITE_NAME_KEY.SOYCMS_PUBLISH_LANGUAGE, "");
+			if(strlen($name)) return $name;
+		}
+
     	return $this->name;
     }
     function setName($name){
     	$this->name = $name;
     }
     function getDescription() {
+		if(!defined("SOYCMS_PUBLISH_LANGUAGE")) define("SOYCMS_PUBLISH_LANGUAGE", "jp");
+
+		if(SOYCMS_PUBLISH_LANGUAGE != "jp"){
+			SOY2::import("site_include.plugin.util_multi_language.util.SOYCMSUtilMultiLanguageUtil");
+			SOY2DAOFactory::importEntity("cms.DataSets");
+			$description = (string)DataSets::get(SOYCMSUtilMultiLanguageUtil::LANGUAGE_SITE_DESCRIPTION_KEY.SOYCMS_PUBLISH_LANGUAGE, "");
+			if(strlen($description)) return $description;
+		}
+
     	return $this->description;
     }
     function setDescription($description) {

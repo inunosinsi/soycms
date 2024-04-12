@@ -28,12 +28,11 @@ class UtilMultiLanguageConfig extends SOYShopConfigPageBase{
 	 */
 	function getConfigPageTitle(){
 		if(isset($_GET["language"]) && isset($_GET["item_id"])){
-			$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 			SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
-			try{
-				$item = $itemDao->getById($_GET["item_id"]);
-				return $item->getName() . " - "  . UtilMultiLanguageUtil::getLanguageText($_GET["language"]);
-			}catch(Exception $e){
+			$name = soyshop_get_item_object((int)$_GET["item_id"])->getName();
+			if(is_string($name)){
+				return $name  . " - "  . UtilMultiLanguageUtil::getLanguageText($_GET["language"]);
+			}else{
 				return null;
 			}
 		}else{
@@ -42,4 +41,3 @@ class UtilMultiLanguageConfig extends SOYShopConfigPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.config", "util_multi_language", "UtilMultiLanguageConfig");
-?>

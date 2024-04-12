@@ -3,6 +3,8 @@
 class SOYCMSUtilMultiLanguageUtil{
 	
 	const LANGUAGE_FIELD_KEY = "multi_language_";	// ラベル名の多言語化等で使用
+	const LANGUAGE_SITE_NAME_KEY = self::LANGUAGE_FIELD_KEY."site_name_";
+	const LANGUAGE_SITE_DESCRIPTION_KEY = self::LANGUAGE_FIELD_KEY."site_description_";
 
 	const LANGUAGE_JP = "jp";
 	const LANGUAGE_EN = "en";
@@ -59,6 +61,19 @@ class SOYCMSUtilMultiLanguageUtil{
 		return $idx;
 	}
 
+	public static function getLanguageConst(int $idx){
+		$_arr = array(
+			self::LANGUAGE_JP,
+			self::LANGUAGE_EN,
+			self::LANGUAGE_ZH,
+			self::LANGUAGE_ZH_TW,
+			self::LANGUAGE_KO,
+            self::LANGUAGE_ES
+		);
+
+		return (isset($_arr[$idx])) ? $_arr[$idx] : self::LANGUAGE_JP;
+	}
+
 	/**
 	 * @paran UtilMultiLanguagePlugin
 	 * @return array
@@ -73,5 +88,46 @@ class SOYCMSUtilMultiLanguageUtil{
 			$_arr[] = $lang;
 		}
 		return $_arr;
+	}
+
+	/**
+	 * @paran UtilMultiLanguagePlugin
+	 * @return array
+	 */
+	public static function getLanguagePrefixList(UtilMultiLanguagePlugin $pluginObj){
+		$cnfs = $pluginObj->getConfig();
+		if(!is_array($cnfs) || !count($cnfs)) return array();
+
+		$_arr = array();
+		foreach($cnfs as $lang => $cnf){
+			if(!isset($cnf["is_use"]) || (int)$cnf["is_use"] !== 1) continue;
+			$_arr[$lang] = $cnf["prefix"];
+		}
+		return $_arr;
+	}
+
+	/**
+	 * @return array
+	 */
+	public static function getLanguagePrefixListWithoutPluginObj(){
+		$langPlugin = CMSPlugin::loadPluginConfig("UtilMultiLanguagePlugin");
+		if(!$langPlugin instanceof UtilMultiLanguagePlugin) return array();
+
+		return self::getLanguagePrefixList($langPlugin);
+	}
+
+	public static function getLanguagePrefix(string $lang){
+		$langPlugin = CMSPlugin::loadPluginConfig("UtilMultiLanguagePlugin");
+		if(!$langPlugin instanceof UtilMultiLanguagePlugin) return "";
+
+		$cnfs = $langPlugin->getConfig();
+		if(!is_array($cnfs) || !count($cnfs)) return "";
+
+		foreach($cnfs as $_lang => $cnf){
+			if($_lang != $lang || !isset($cnf["is_use"]) || (int)$cnf["is_use"] !== 1) continue;
+			return $cnf["prefix"];
+		}
+
+		return "";
 	}
 }

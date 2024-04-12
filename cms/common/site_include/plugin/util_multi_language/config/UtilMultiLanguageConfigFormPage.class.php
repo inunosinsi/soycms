@@ -34,7 +34,7 @@ class UtilMultiLanguageConfigFormPage extends WebPage{
 		$this->createAdd("language_list", "LanguageListComponent", array(
 			"list" => SOYCMSUtilMultiLanguageUtil::allowLanguages(),
 			"config" => $config,
-			"smartPrefix" => self::getSmartPhonePrefix()
+			"smartPrefix" => self::_getSmartPhonePrefix()
 		));
 		
 		$this->addCheckBox("confirm_browser_language", array(
@@ -52,44 +52,60 @@ class UtilMultiLanguageConfigFormPage extends WebPage{
 		));	
 	}
 	
-	private function getSmartPhonePrefix(){
+	private function _getSmartPhonePrefix(){
 		//携帯振り分けプラグインがアクティブかどうか
-		$pluginDao = SOY2DAOFactory::create("PluginDAO");
-		try{
-			$plugin = $pluginDao->getById("UtilMobileCheckPlugin");
-		}catch(Exception $e){
-			$plugin = new Plugin();
-		}
-		
-		if(!$plugin->getIsActive()) return null;
+		if(!CMSPlugin::activeCheck("util_mobile_check")) return null;
 		
 		$obj = CMSPlugin::loadPluginConfig("UtilMobileCheckPlugin");
-		if(is_null($obj)){
-			$obj = new UtilMobileCheckPlugin;
-		}
-		
+		if(is_null($obj)) $obj = new UtilMobileCheckPlugin;
 		return $obj->smartPrefix;
 	}
 
 	private function _createTable(){
 		$dao = new SOY2DAO();
 
+		$isInit = true;
 		try{
-			$_exist = $dao->executeQuery("SELECT * FROM MultiLanguageLabelRelation", array());
-			return;//テーブル作成済み
+			$_exist = $dao->executeQuery("SELECT * FROM MultiLanguageEntryRelation", array());
+			$isInit = false;
 		}catch(Exception $e){
 			//
 		}
 
-		$file = file_get_contents(dirname(__DIR__) . "/sql/init_".SOYCMS_DB_TYPE.".sql");
-		$sqls = preg_split('/CREATE TABLE/', $file, -1, PREG_SPLIT_NO_EMPTY) ;
-		
-		foreach($sqls as $sql){
-			$sql = "create table " . trim($sql);
-			try{
-				$dao->executeQuery($sql);
-			}catch(Exception $e){
-				//
+		if($isInit){
+			$file = file_get_contents(dirname(__DIR__) . "/sql/init_".SOYCMS_DB_TYPE.".sql");
+			$sqls = preg_split('/CREATE TABLE/', $file, -1, PREG_SPLIT_NO_EMPTY) ;
+			
+			foreach($sqls as $sql){
+				$sql = "create table " . trim($sql);
+				try{
+					$dao->executeQuery($sql);
+				}catch(Exception $e){
+					//
+				}
+			}
+		}
+
+		// ページカスタムフィールド
+		$isInit = true;
+		try{
+			$exist = $dao->executeQuery("SELECT * FROM PageAttribute", array());
+			$isInit = false;
+		}catch(Exception $e){
+			//
+		}
+
+		if($isInit){
+			$file = file_get_contents(dirname(dirname(dirname(__FILE__))) . "/PageCustomField/sql/init_".SOYCMS_DB_TYPE.".sql");
+			$sqls = preg_split('/create/', $file, -1, PREG_SPLIT_NO_EMPTY) ;
+
+			foreach($sqls as $sql){
+				$sql = trim("create" . $sql);
+				try{
+					$dao->executeUpdateQuery($sql, array());
+				}catch(Exception $e){
+					//
+				}
 			}
 		}
 	}

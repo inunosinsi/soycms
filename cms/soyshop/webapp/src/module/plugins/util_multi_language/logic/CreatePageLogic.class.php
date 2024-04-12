@@ -2,7 +2,6 @@
 
 class CreatePageLogic extends SOY2LogicBase{
 
-	private $pageDao;
 	private $templateDir;
 	private $templateTypes;
 	private $pageConfDir;
@@ -10,24 +9,24 @@ class CreatePageLogic extends SOY2LogicBase{
 	private $configs;
 
 	function __construct(){
-		$this->pageDao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
+		soyshop_get_hash_table_dao("page");
 		$this->templateDir = SOYSHOP_SITE_DIRECTORY . ".template/";
 		$this->templateTypes = SOYShop_Page::getTypeTexts();
 		$this->pageConfDir = SOYSHOP_SITE_DIRECTORY . ".page/";
 		$this->pageLogic = SOY2Logic::createInstance("logic.site.page.PageCreateLogic");
-		$this->configs = self::getPrefixConfig();
+		$this->configs = self::_getPrefixConfig();
 	}
 
 	function create(){
 
 		//全テンプレートを確認して、テンプレートが存在しない場合はテンプレートを作成する
-		self::copyTemplates();
+		if(isset($_GET["template"])) self::_copyTemplates();
 
 		//全ページを確認して、ページが存在しない場合はページを作成する
-		self::copyPages();
+		self::_copyPages();
 	}
 
-	private function copyTemplates(){
+	private function _copyTemplates(){
 
 		foreach($this->templateTypes as $tempType => $title){
 			$dir = $this->templateDir . $tempType . "/";
@@ -117,11 +116,11 @@ class CreatePageLogic extends SOY2LogicBase{
 		}
 	}
 
-	private function copyPages(){
+	private function _copyPages(){
 
 		//PC用のページを確認する
 		foreach($this->templateTypes as $tempType => $title){
-			$pages = self::getPages($tempType);
+			$pages = self::_getPages($tempType);
 
 			//PC用のページのみ取得する
 			foreach($pages as $int => $page){
@@ -204,39 +203,36 @@ class CreatePageLogic extends SOY2LogicBase{
 					$newPage->setType($page->getType());
 
 					//念の為に新しいテンプレートが存在しているか確認する
-					if($_GET["carrier"] == "pc"){
-						$newTemplate = $_GET["create"] . "_" . $page->getTemplate();
-					}else{
-						$newTemplate = str_replace($this->configs["i"] . "_", $this->configs["i"] . "_" . $_GET["create"] . "_", $page->getTemplate());
-					}
-
-					if(!file_exists($this->templateDir . $page->getType() . "/" . $newTemplate)){
-						$newTemplate = $page->getTemplate();
-					}
-
-					$newPage->setTemplate($newTemplate);
+					$newPage->setTemplate(self::_getNewTemplateFileName($page));
 					$newPage->setConfig($page->getConfig());
 					$newPage->setObject($page->getObject());
 
 					$this->pageLogic->create($newPage);
 
 					//実行した後、クラスファイルのconfをコピーする
-					$confFileName = self::convertClassFileName($page->getUri());
+					$confFileName = self::_convertClassFileName($page->getUri());
 					if(file_exists($this->pageConfDir . $confFileName . ".conf")){
-						$newConfFileName = self::convertClassFileName($newPage->getUri());
+						$newConfFileName = self::_convertClassFileName($newPage->getUri());
 						copy($this->pageConfDir . $confFileName . ".conf", $this->pageConfDir . $newConfFileName . ".conf");
 					}
+
+				// @ToDo すでにページがある場合はテンプレートのみを変更する
+				}else if(isset($_GET["template"])){
+					$newPage = soyshop_get_page_object_by_uri($newUri);
+					if(!is_numeric($newPage->getId()) || (int)$newPage->getId() <= 0) continue;
+					$newPage->setTemplate(self::_getNewTemplateFileName($page));
+					$this->pageLogic->update($newPage);
 				}
 			}
 		}
 	}
 
-	private function convertClassFileName($uri){
+	private function _convertClassFileName(string $uri){
 		$file = str_replace(".", "_", $uri);
 		return str_replace("/", "_", $file) . "_page";
 	}
 
-	private function getPrefixConfig(){
+	private function _getPrefixConfig(){
 		//テンプレートのタイプによって振り分け
 		$configs = array();
 
@@ -279,9 +275,23 @@ class CreatePageLogic extends SOY2LogicBase{
 		return $configs;
 	}
 
-	private function getPages($pageType){
+	private function _getNewTemplateFileName(SOYShop_Page $page){
+		if($_GET["carrier"] == "pc"){
+			$template = $_GET["create"] . "_" . $page->getTemplate();
+		}else{
+			$template = str_replace($this->configs["i"] . "_", $this->configs["i"] . "_" . $_GET["create"] . "_", $page->getTemplate());
+		}
+		
+		if(!file_exists($this->templateDir . $page->getType() . "/" . $template)){
+			$template = $page->getTemplate();
+		}
+
+		return $template;
+	}
+
+	private function _getPages($pageType){
 		try{
-			return $this->pageDao->getByType($pageType);
+			return soyshop_get_hash_table_dao("page")->getByType($pageType);
 		}catch(Exception $e){
 			return array();
 		}

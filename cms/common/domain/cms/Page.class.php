@@ -161,6 +161,13 @@ class Page {
     	}
     }
     function getTitle(){
+		if(!defined("SOYCMS_PUBLISH_LANGUAGE")) define("SOYCMS_PUBLISH_LANGUAGE", "jp");
+
+		if(SOYCMS_PUBLISH_LANGUAGE != "jp"){
+			SOY2::import("site_include.plugin.util_multi_language.util.SOYCMSUtilMultiLanguageUtil");
+			$title = trim((string)soycms_get_page_attribute_object($_SERVER["SOYCMS_PAGE_ID"], SOYCMSUtilMultiLanguageUtil::LANGUAGE_FIELD_KEY.SOYCMS_PUBLISH_LANGUAGE)->getValue());
+			if(strlen($title)) return $title;
+		}
     	return $this->title;
     }
     function setTitle($title){

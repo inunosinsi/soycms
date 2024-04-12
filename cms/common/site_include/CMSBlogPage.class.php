@@ -183,7 +183,7 @@ class CMSBlogPage extends CMSPage{
 					"UTF-8",
 					"UTF-8,ASCII,JIS,Shift_JIS,EUC-JP,SJIS,SJIS-win"
 				));
-
+				
 				list($this->entry,$this->nextEntry,$this->prevEntry) = self::_entry($alias);
 				if(!is_numeric($this->entry->getId())){
 					$this->error = new Exception("EntryPageは表示できません");
@@ -980,10 +980,22 @@ class CMSBlogPage extends CMSPage{
 	private function _label(string $alias){
 		//0から始まる場合は文字列とみなす
 		if($alias[0] != "0" && is_numeric($alias)){
-			return soycms_get_label_object($alias);
+			$label = soycms_get_label_object($alias);
 		}else{
-			return soycms_get_label_object_by_alias($alias);
+			$label = soycms_get_label_object_by_alias($alias);
 		}
+
+		$onLoads = CMSPlugin::getEvent("onPageOutputLabelRead");
+		if(!is_array($onLoads) || !count($onLoads)) return $label;
+		
+		foreach($onLoads as $plugin){
+			$res = call_user_func($plugin[0], array('labelId' => (int)$label->getId()));
+			if(is_numeric($res) && $res > 0 && $res !== (int)$label->getId()){
+				$label = soycms_get_label_object((int)$res);
+			}
+		}
+		
+		return $label;
 	}
 
 	/**

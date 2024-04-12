@@ -15,6 +15,9 @@ class UpdateAction extends SOY2Action{
     		$site->setSiteName($siteConfig->getName());
     		UserInfoUtil::updateSite($site);
 
+			//CMS:PLUGIN callEventFunction
+			CMSPlugin::callEventFunc('onSiteConfigUpdate',array());
+
 
     	}catch(Exception $e){
     		return SOY2Action::FAILED;

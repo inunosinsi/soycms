@@ -1,35 +1,32 @@
-<p>置換文字列を登録します。</p>
-<div>
-	<form soy:id="form">
-		置換文字列 : <input type="text" name="symbol" required="required">&nbsp;
-		変換する文字列 : <input type="text" name="string" required="required">&nbsp;
-		<input type="submit" name="add" value="登録">
-	</form>
-</div>
+<div class="alert alert-info">置換文字列を登録します。</div>
+<form soy:id="form">
+	<div class="form-group">
+		<div class="form-inline">
+			<label>置換文字列</label> : <input type="text" class="form-control" name="symbol" required="required">&nbsp;
+			<label>変換する文字列</label> : <input type="text" class="form-control" name="string" required="required">&nbsp;
+			<input type="submit" name="add" class="btn btn-primary" value="登録">
+		</div>
+	</div>
+</form>
 
 <!-- soy:display="has_symbol_list" -->
+<br>
+
+<div class="alert alert-info">登録済み置換文字列</div>
 <form soy:id="change_form">
-<h4>登録済み置換文字列</h4>
-	<table>
-		<thead>
-			<tr>
-				<th>置換文字列</th>
-				<th>変換する文字列</th>
-				<th>&nbsp;</th>
-			</tr>
-		</thead>
-		<tbody>
-			<!-- soy:id="string_list" -->
-			<tr>
-				<td soy:id="symbol"></td>
-				<td>
-					<input type="text" soy:id="string_input">&nbsp;
-					<input type="submit" name="change" value="変更">
-				</td>
-				<td style="text-align:center;"><a soy:id="remove_link">削除する</a></td>
-			</tr>
-			<!-- /soy:id="string_list" -->
-		</tbody>
-	</table>
+	<!-- soy:id="string_list" -->
+	<div class="form-group">
+		<div class="form-inline">
+			<label><!-- soy:id="symbol" /--></label>
+			<!-- soy:id="jp_label" /--><input type="text" class="form-control" soy:id="string_input">&nbsp;
+			<!-- soy:id="multi_language_list" -->
+			<label soy:id="language_label"></label>:
+			<input type="text" class="form-control" soy:id="language_string_input">&nbsp;
+			<!-- /soy:id="multi_language_list" -->
+			<input type="submit" name="change" class="btn btn-primary" value="変更">&nbsp;
+			<a soy:id="remove_link" class="btn btn-danger">削除する</a>
+		</div>
+	</div>
+	<!-- /soy:id="string_list" -->
 </form>
 <!-- /soy:display="has_symbol_list" -->

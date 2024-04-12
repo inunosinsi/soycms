@@ -68,7 +68,11 @@ class ShopConfigPage extends WebPage{
 		//お届け先住所が空の場合の対策
 		if(!isset($_POST["Config"]["sendAddressDisplayFormConfig"])) $config->setSendAddressDisplayFormConfig(array());
 		if(!isset($_POST["Config"]["sendAddressInformationConfig"])) $config->setSendAddressInformationConfig(array());
+
 		SOYShop_ShopConfig::save($config);
+
+		SOYShopPlugin::load("soyshop.shop.name");
+		SOYShopPlugin::invoke("soyshop.shop.name");
 
 		SOY2PageController::jump("Config.ShopConfig?updated");
 	}
@@ -99,9 +103,22 @@ class ShopConfigPage extends WebPage{
 			"value" => $config->getShopName()
 		));
 
+		// 多言語化
+		SOYShopPlugin::load("soyshop.shop.name");
+		$this->addLabel("extension_shop_name_input", array(
+			"html" => SOYShopPlugin::display("soyshop.shop.name")
+		));
+
 		$this->addInput("site_url", array(
 			"name" => "Config[siteUrl]",
 			"value" => $config->getSiteUrl()
+		));
+
+		$this->addInput("invoice_number", array(
+			"name" => "Config[invoiceNumber]",
+			"value" => $config->getInvoiceNumber(),
+			"placeholder" => "1234567890123",
+			"pattern" => "\d{13}"
 		));
 
 		$company = $config->getCompanyInformation();

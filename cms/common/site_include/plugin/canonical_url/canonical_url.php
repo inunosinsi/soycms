@@ -21,7 +21,7 @@ class CanonicalUrlPlugin{
 			"author"=>"齋藤 毅",
 			"url"=>"https://saitodev.co/",
 			"mail"=>"info@saitodev.co",
-			"version"=>"1.1"
+			"version"=>"1.2"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
@@ -55,17 +55,49 @@ class CanonicalUrlPlugin{
 		$pageLogic = SOY2Logic::createInstance("logic.site.Page.PageLogic");
 		$canonicalUrl = self::_decorateUrl($pageLogic->buildCanonicalUrl());
 
-		$tag = "<link rel=\"canonical\" href=\"" . $canonicalUrl . "\">";
+		$tags = array();
+		$tags[] = "<link rel=\"canonical\" href=\"" . $canonicalUrl . "\">";
 
 		//shortlinkがあれば
 		if($this->isShortLink){
 			$shortLink = self::_decorateUrl($pageLogic->buildShortLinkUrl());
 			if(strlen($shortLink) && $shortLink != $canonicalUrl){
-				$tag .= "\n<link rel=\"shortlink\" href=\"" . $shortLink . "\">";
+				$tags[] = "<link rel=\"shortlink\" href=\"" . $shortLink . "\">";
 			}
 		}
+
+		// 多言語化
+		if(CMSPlugin::activeCheck("util_multi_language") && defined("SOYCMS_PUBLISH_LANGUAGE")){
+			self::_dicLogic()->buildDictionary(SOYCMS_PUBLISH_LANGUAGE);
+			$multiUri = str_replace(soycms_get_site_url_by_frontcontroller(true), "", $canonicalUrl);
+
+			
+			SOY2::import("site_include.plugin.util_multi_language.util.SOYCMSUtilMultiLanguageUtil");
+			$langConfs = SOYCMSUtilMultiLanguageUtil::getLanguagePrefixListWithoutPluginObj();
+			if(count($langConfs)){
+				// 言語毎のprefixを用いてURLを生成する
+				foreach($langConfs as $_lang => $prefix){
+					if(SOYCMS_PUBLISH_LANGUAGE == $_lang && strlen($prefix) && preg_match('/^'.$prefix.'\//', $multiUri)){
+						$multiUri = substr($multiUri, strlen($prefix."/"));
+					}
+				}
+				
+				foreach($langConfs as $_lang => $prefix){
+					$old = trim(substr($multiUri, strrpos(rtrim($multiUri, "/"), "/")), "/");
+					$new = self::_dicLogic()->get($old, $_lang);
+					$multiUriNew = $multiUri;
+					if(strlen($new)) $multiUriNew = str_replace($old, $new, $multiUriNew);
+
+					$siteUrl = soycms_get_site_url_by_frontcontroller(true);
+					if(strlen($prefix)) $siteUrl .= $prefix."/";
+
+					$tags[] = "<link rel=\"alternate\" href=\"".$siteUrl.$multiUriNew."\" hreflang=\"".$_lang."\">";
+				}
+			}
+			
+		}
 		
-		return str_ireplace('</head>', $tag."\n".'</head>', $html);
+		return str_ireplace('</head>', implode("\n", $tags)."\n".'</head>', $html);
 	}
 
 	/**
@@ -90,6 +122,12 @@ class CanonicalUrlPlugin{
 			}
 		}
 		return $url;
+	}
+
+	private function _dicLogic(){
+		static $l;
+		if(is_null($l)) $l = SOY2Logic::createInstance("site_include.plugin.util_multi_language.logic.MultiLanguageDictionaryLogic");
+		return $l;
 	}
 
 	function config_page($message){
@@ -123,9 +161,7 @@ class CanonicalUrlPlugin{
 
 	public static function register(){
 		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
-		if(is_null($obj)){
-			$obj = new CanonicalUrlPlugin();
-		}
+		if(is_null($obj)) $obj = new CanonicalUrlPlugin();
 		CMSPlugin::addPlugin(self::PLUGIN_ID,array($obj,"init"));
 	}
 }

@@ -364,6 +364,15 @@ class PageLogic extends SOY2LogicBase{
 			}
 		}
 
+		// 多言語化
+		if(defined("SOYCMS_PUBLISH_LANGUAGE") && SOYCMS_PUBLISH_LANGUAGE != "jp"){
+			SOY2::import("site_include.plugin.util_multi_language.util.SOYCMSUtilMultiLanguageUtil");
+			$prefix = SOYCMSUtilMultiLanguageUtil::getLanguagePrefix(SOYCMS_PUBLISH_LANGUAGE);
+			if(strlen($prefix) && !preg_match('/\/'.$prefix.'$/', $url)){
+				$url .= "/".$prefix;
+			}
+		}
+
 		if(strlen($this->page->getUri())){
 			$url .= "/" . $this->page->getUri();
 		}

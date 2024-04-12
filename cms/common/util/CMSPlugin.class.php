@@ -71,6 +71,7 @@ class CMSPlugin {
 		//サイト関連
 		"onSiteCreate"=>array(),		//*サイトが作成される直前
 		"onSiteRemove"=>array(),		//*サイトが削除される直前
+		"onSiteConfigUpdate"=>array(),	//サイトの設定を更新する直前 array()
 
 		//ファイルマネージャ関連
 		"onFileUpload"=>array(),		//*ファイルがアップロードされる直前(filename)

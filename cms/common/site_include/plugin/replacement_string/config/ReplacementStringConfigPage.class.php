@@ -36,6 +36,20 @@ class ReplacementStringConfigPage extends WebPage{
 
 				$this->pluginObj->setStringList($list);
 
+				if(isset($_POST["language"])){
+					$_arr = array();
+					foreach($_POST["language"] as $symbol => $langs){
+						foreach($langs as $lang => $str){
+							$str = trim($str);
+							if(!strlen($str)) continue;
+							if(!isset($_arr[$symbol])) $_arr[$symbol] = array();
+							$_arr[$symbol][$lang] = $str;
+						}
+					}
+
+					$this->pluginObj->setLanguageStringList($_arr);
+				}
+
 				CMSPlugin::savePluginConfig($this->pluginObj->getId(), $this->pluginObj);
 				CMSPlugin::redirectConfigPage();
 			}
@@ -48,12 +62,8 @@ class ReplacementStringConfigPage extends WebPage{
 			self::remove();
 		}
 
-		if(method_exists("WebPage", "WebPage")){
-			WebPage::WebPage();
-		}else{
-			parent::__construct();
-		}
-
+		parent::__construct();
+		
 		$this->addForm("form");
 
 		$list = $this->pluginObj->getStringList();
@@ -62,9 +72,34 @@ class ReplacementStringConfigPage extends WebPage{
 		$this->addForm("change_form");
 
 		SOY2::import("site_include.plugin.replacement_string.component.ReplacementStringListComponent");
+		SOY2::import("site_include.plugin.replacement_string.component.MultiLanguageReplacementListComponent");
 		$this->createAdd("string_list", "ReplacementStringListComponent", array(
-			"list" => $list
+			"list" => $list,
+			"multiLangs" => self::_getMultiLanguageList(),
+			"multiLangConf" => $this->pluginObj->getLanguageStringList()
 		));
+	}
+
+	private function _getMultiLanguageList(){
+		if(!CMSPlugin::activeCheck("util_multi_language")) return array();
+
+		$langPlugin = CMSPlugin::loadPluginConfig("UtilMultiLanguagePlugin");
+		if(!$langPlugin){
+			SOY2::import("site_include.plugin.util_multi_language.util_multi_language", ".php");
+			$langPlugin = new UtilMultiLanguagePlugin();
+		}
+		
+		$config = $langPlugin->getConfig();
+		if(!is_array($config) || !count($config)) return $config;
+
+		$_arr = array();
+		foreach($config as $lang => $cnf){
+			if($lang == "jp") continue;
+			if(!isset($cnf["is_use"]) || (int)$cnf["is_use"] !== 1) continue;
+			$_arr[] = $lang;
+		}
+
+		return $_arr;
 	}
 
 	private function remove(){

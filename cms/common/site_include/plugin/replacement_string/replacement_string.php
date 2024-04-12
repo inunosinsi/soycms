@@ -6,6 +6,7 @@ class ReplacementStringPlugin{
 	const PLUGIN_ID = "replacement_string"; 
 	
 	private $stringList = array();
+	private $languageStringList = array();
 	
 	function getId(){
 		return self::PLUGIN_ID;	
@@ -19,14 +20,17 @@ class ReplacementStringPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.2"
+			"version"=>"0.7"
 		));
-		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
-			$this,"config_page"	
-		));
-		
-		if(CMSPlugin::activeCheck(self::PLUGIN_ID) && defined("_SITE_ROOT_")){
-			CMSPlugin::setEvent('onOutput',self::PLUGIN_ID, array($this, "onOutput"));
+
+		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
+			CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
+				$this,"config_page"	
+			));
+
+			if(defined("_SITE_ROOT_")){
+				CMSPlugin::setEvent('onOutput',self::PLUGIN_ID, array($this, "onOutput"));
+			}
 		}
 	}
 
@@ -34,9 +38,18 @@ class ReplacementStringPlugin{
 		$html = &$arg["html"];
 		
 		if(!count($this->stringList)) return $html;
+
+		if(!defined("SOYCMS_PUBLISH_LANGUAGE")) define("SOYCMS_PUBLISH_LANGUAGE", "jp");
 		
 		foreach($this->stringList as $v){
-			$html = str_replace($v["symbol"], $v["string"], $html);
+			$replaceString = "";
+			if(SOYCMS_PUBLISH_LANGUAGE != "jp" && is_array($this->languageStringList) && count($this->languageStringList)){
+				if(isset($this->languageStringList[$v["symbol"]][SOYCMS_PUBLISH_LANGUAGE])){
+					$replaceString = $this->languageStringList[$v["symbol"]][SOYCMS_PUBLISH_LANGUAGE];
+				}
+			}
+			if(!strlen($replaceString)) $replaceString = $v["string"];
+			$html = str_replace($v["symbol"], $replaceString, $html);
 		}
 		
 		return $html;
@@ -56,15 +69,17 @@ class ReplacementStringPlugin{
 	function setStringList($stringList){
 		$this->stringList = $stringList;
 	}
+
+	function getLanguageStringList(){
+		return $this->languageStringList;
+	}
+	function setLanguageStringList($languageStringList){
+		$this->languageStringList = $languageStringList;
+	}
 	
 	public static function register(){
-		
 		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
-		if(!$obj){
-			$obj = new ReplacementStringPlugin();
-		}
-			
+		if(!$obj) $obj = new ReplacementStringPlugin();
 		CMSPlugin::addPlugin(self::PLUGIN_ID, array($obj, "init"));
 	}
 }
-?>

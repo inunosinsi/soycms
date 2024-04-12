@@ -1,60 +1,60 @@
 <div class="alert alert-success" soy:display="updated">変更しました</div>
 <div class="alert alert-success" soy:display="created">実行しました</div>
+
+<div class="alert alert-warning" soy:display="annotation">
+	当プラグインで自動生成されたページやテンプレートで不要なものがあれば、<strong>ページとテンプレート一括削除プラグイン</strong>で整理することができます。
+</div>
+
 <form soy:id="form">
 
 	<!-- soy:id="language_list" -->
-	<h2 class="alert-info"><!-- soy:id="language_type*" /-->サイトのプリフィックスの設定</h2>
-	<div class="form-group">
-		<div class="form-inline">
-			<input type="hidden" soy:id="no_use_hidden">
-			<input type="checkbox" soy:id="is_use_checkbox">
-			<input type="text" soy:id="prefix_input" />&nbsp;&nbsp;
-			<a soy:id="create_pc_page_link" class="btn btn-default">PC版ページの追加</a>&nbsp;&nbsp;
-			<a soy:id="create_i_page_link" class="btn btn-default">スマホ版ページの追加</a>
+	<div class="panel panel-default">
+		<div class="panel-heading"><!-- soy:id="language_type*" /-->サイトのプリフィックスの設定</div>
+		<div class="panel-body">
+			<div class="form-group">
+				<div class="form-inline">
+					<input type="hidden" soy:id="no_use_hidden">
+					<input type="checkbox" soy:id="is_use_checkbox">
+					<input type="text" soy:id="prefix_input" class="form-control" />&nbsp;&nbsp;
+					<a soy:id="create_pc_page_link" class="btn btn-default">PC版ページのみ追加</a>&nbsp;&nbsp;
+					<a soy:id="create_pc_page_link_with_template" class="btn btn-default">PC版ページとテンプレートを追加</a>&nbsp;&nbsp;
+					<a soy:id="create_i_page_link" class="btn btn-default">スマホ版ページのみ追加</a>
+					<a soy:id="create_i_page_link_with_template" class="btn btn-default">スマホ版ページとテンプレートを追加</a>
+				</div>
+			</div>
+
+			<!-- soy:id="show_redirect_url_example" -->
+			<h4>▶&nbsp;PC</h4>
+			<div class="alert alert-warning">
+				※<!-- soy:id="site_url" /-->の場合、<!-- soy:id="site_url*" /--><strong><!-- soy:id="prefix_text" /--></strong>/にリダイレクトします<br />
+				※<!-- soy:id="site_url*" /-->item/list/の場合、<!-- soy:id="site_url*" /--><strong><!-- soy:id="prefix_text*" /--></strong>/item/list/にリダイレクトします
+			</div>
+
+			<!-- soy:id="display_mobile_check_config" -->
+			<h4>▶&nbsp;スマホ</h4>
+			<div class="alert alert-warning">
+				※<!-- soy:id="site_url*" /-->の場合、<!-- soy:id="site_url*" /--><strong><!-- soy:id="smartphone_prefix_text" /--><!-- soy:id="prefix_text" /--></strong>/にリダイレクトします<br />
+				※<!-- soy:id="site_url*" /-->item/list/の場合、<!-- soy:id="site_url*" /--><strong><!-- soy:id="smartphone_prefix_text*" /--><!-- soy:id="prefix_text*" /--></strong>/item/list/にリダイレクトします
+			</div>
+			<!-- /soy:id="display_mobile_check_config" -->
+			<!-- /soy:id="show_redirect_url_example" -->
+
+			<!-- soy:id="is_cart" -->
+			<div class="form-group">
+				<label><!-- soy:id="language_type*" /-->サイトで使用するカートID</label><br>
+				PC:<strong><!-- soy:id="user_cart_id" /--></strong><!-- soy:id="display_mobile_check_config*" -->&nbsp;&nbsp;
+				スマホ:<strong><!-- soy:id="user_sp_cart_id" /--></strong><!-- /soy:id="display_mobile_check_config*" -->
+			</div>
+			<!-- /soy:id="is_cart" -->
+
+			<!-- soy:id="is_mypage" -->
+			<div class="form-group">
+				<label><!-- soy:id="language_type" /-->サイトで使用するマイページID</label><br>
+				PC:<strong><!-- soy:id="user_mypage_id" /--></strong><!-- soy:id="display_mobile_check_config*" -->&nbsp;&nbsp;
+				スマホ:<strong><!-- soy:id="user_sp_mypage_id" /--></strong><!-- /soy:id="display_mobile_check_config*" -->
+			</div>
+			<!-- /soy:id="is_mypage" -->
 		</div>
-	</div>
-	<h4>▶&nbsp;PC</h4>
-	<div class="alert alert-warning">
-		※http://
-		<!-- soy:id="domain" /-->
-		<!-- soy:id="shop_id" /-->の場合、http://
-		<!-- soy:id="domain*" /-->
-		<!-- soy:id="shop_id*" /--><strong><!-- soy:id="prefix_text" /--></strong>にリダイレクトします<br /> ※http://
-		<!-- soy:id="domain*" /-->
-		<!-- soy:id="shop_id*" /-->/item/listの場合、http://
-		<!-- soy:id="domain*" /-->
-		<!-- soy:id="shop_id*" /--><strong><!-- soy:id="prefix_text*" /--></strong>/item/listにリダイレクトします
-	</div>
-
-	<!-- soy:id="display_mobile_check_config" -->
-	<h4>▶&nbsp;スマホ</h4>
-	<div class="alert alert-warning">
-		※http://
-		<!-- soy:id="domain" /-->
-		<!-- soy:id="shop_id" /-->の場合、http://
-		<!-- soy:id="domain*" /-->
-		<!-- soy:id="shop_id*" /--><strong><!-- soy:id="smartphone_prefix_text" /--><!-- soy:id="prefix_text" /--></strong>にリダイレクトします<br /> ※http://
-		<!-- soy:id="domain*" /-->
-		<!-- soy:id="shop_id*" /-->/item/listの場合、http://
-		<!-- soy:id="domain*" /-->
-		<!-- soy:id="shop_id*" /--><strong><!-- soy:id="smartphone_prefix_text*" /--><!-- soy:id="prefix_text*" /--></strong>/item/listにリダイレクトします
-	</div>
-	<!-- /soy:id="display_mobile_check_config" -->
-
-	<div class="form-group">
-		<label><!-- soy:id="language_type*" /-->サイトで使用するカートID</label><br>
-		PC:<strong><!-- soy:id="user_cart_id" /--></strong>
-		<!-- soy:id="display_mobile_check_config*" -->&nbsp; スマホ:
-		<strong><!-- soy:id="user_sp_cart_id" /--></strong>
-		<!-- /soy:id="display_mobile_check_config*" -->
-	</div>
-
-	<div class="form-group">
-		<label><!-- soy:id="language_type" /-->サイトで使用するマイページID</label><br>
-		PC:<strong><!-- soy:id="user_mypage_id" /--></strong>
-		<!-- soy:id="display_mobile_check_config*" -->&nbsp; スマホ:
-		<strong><!-- soy:id="user_sp_mypage_id" /--></strong>
-		<!-- /soy:id="display_mobile_check_config*" -->
 	</div>
 	<!-- /soy:id="language_list" -->
 
@@ -73,12 +73,16 @@
 	</div>
 </form>
 
+<div class="alert alert-warning">
+	同一テンプレートを用いた場合、PHPモジュールで翻訳表示の機能を設けることでテンプレートの管理コストを下げることができます。<br>
+	<a href="https://saitodev.co/soycms/soyshop/tutorial/228" target="_blank" rel="noopener">PHPモジュールで多言語用の共通パーツを作成する - SOY Shopを使ってみよう</a>
+</div>
+
+
 <br>
 
 <div class="alert alert-info">テンプレートへの記述例</div>
-<pre>
-&lt;a cms:id="language_jp_link"&gt;日本語サイト&lt;/a&gt;
+<pre>&lt;a cms:id="language_jp_link"&gt;日本語サイト&lt;/a&gt;
 &lt;a cms:id="language_en_link"&gt;英語サイト&lt;/a&gt;
 &lt;a cms:id="language_zh_link"&gt;中国語サイト&lt;/a&gt;
-&lt;a cms:id="language_es_link"&gt;スペイン語サイト&lt;/a&gt;
-</pre>
+&lt;a cms:id="language_es_link"&gt;スペイン語サイト&lt;/a&gt;</pre>

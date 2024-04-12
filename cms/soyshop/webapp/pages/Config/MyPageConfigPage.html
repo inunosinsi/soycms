@@ -28,7 +28,7 @@
 						<input type="checkbox" soy:id="mypage_is_ssl" onclick="$('#mypage_use_ssl').toggle(this.checked);" />
 
 						<div id="mypage_use_ssl" soy:id="mypage_ssl_url_input">
-							<h4>[SSL]サイトのURL</h4>
+							<label>[SSL]サイトのURL</label>
 							<input type="text" soy:id="mypage_ssl_url" class="title" />
 						</div>
 						<div class="alert alert-warning">マイページのURLのドメインが通常ページと異なる時のみ設定が必要</div>
@@ -47,50 +47,86 @@
 						幅&nbsp;<input type="input" soy:id="mypage_profile_resize_width" size="4" style="text-align:right;ime-mode:inactive;" />&nbsp;px
 					</div>
 
-					<div class="form-group">
-						<label for="">マイページ設定<!-- soy:display="is_enabled_util_mobile_check" -->(PC用)<!-- /soy:display="is_enabled_util_mobile_check" --></label>
-						<h4>マイページのURI</h4>
-						<input type="text" soy:id="mypage_url" />
+					<br>
 
-						<h4>マイページの種類の選択</h4>
-						<select soy:id="mypage_application"></select><br>
+					<div class="alert alert-info">マイページ設定<!-- soy:display="is_enabled_util_mobile_check" -->(PC用)<!-- /soy:display="is_enabled_util_mobile_check" --></div>
+					<div class="form-group">
+						<label>マイページのURI</label>
+						<div class="form-inline">
+							<input type="text" soy:id="mypage_url" class="form-control">
+						</div>
+
+						<label>マイページの種類の選択</label>
+						<div class="form-inline">
+							<select soy:id="mypage_application" class="form-control"></select>
+						</div>
 						※マイページ機能を封じる場合は<strong>none</strong>を選択してください。
 
-						<h4>ログイン後のトップページのURL</h4>
-						<input type="text" soy:id="mypage_top" />
+						<br>
 
-						<h4>文字コード</h4>
-						<select soy:id="mypage_charset"></select>
+						<label>ログイン後のトップページのURL</label>
+						<div class="form-inline">
+							<input type="text" soy:id="mypage_top" class="form-control">
+						</div>
+
+						<label>文字コード</label>
+						<div class="form-inline">
+							<select soy:id="mypage_charset" class="form-control"></select>
+						</div>
 
 					<!-- soy:display="is_enabled_util_mobile_check_1" -->
+					<br>
+
+					<div class="alert alert-info">マイページ設定(モバイル用)</div>
 					<div class="form-group">
-						<label for="">マイページ設定(mobile用)</label>
-						<h4>マイページページのURI</h4>
-						<input type="text" soy:id="mobile_mypage_url" />
+						<label>マイページページのURI</label>
+						<div class="form-inline">
+							<input type="text" soy:id="mobile_mypage_url" class="form-control">
+						</div>
 
-						<h4>マイページの種類の選択</h4>
-						<select soy:id="mobile_mypage_application"></select><br>
+						<label>マイページの種類の選択</label>
+						<div class="form-inline">
+							<select soy:id="mobile_mypage_application" class="form-control"></select>
+						</div>
 						※マイページ機能を封じる場合は<strong>none</strong>を選択してください。
 
-						<h4>ログイン後のトップページのURL</h4>
-						<input type="text" soy:id="mobile_mypage_top" />
+						<br>
 
-						<h4>文字コード</h4>
-						<select soy:id="mobile_mypage_charset"></select>
+						<label>ログイン後のトップページのURL</label>
+						<div class="form-inline">
+							<input type="text" soy:id="mobile_mypage_top" class="form-control">
+						</div>
 
-						<label for="">マイページ設定(スマートフォン用)</label>
-						<h4>マイページページのURI</h4>
-						<input type="text" soy:id="smartphone_mypage_url" />
+						<label>文字コード</label>
+						<div class="form-inline">
+							<select soy:id="mobile_mypage_charset" class="form-control"></select>
+						</div>
+					</div>
 
-						<h4>マイページの種類の選択</h4>
-						<select soy:id="smartphone_mypage_application"></select><br>
+					<br>
+
+					<div class="alert alert-info">マイページ設定(スマートフォン用)</div>
+					<div class="form-group">
+						<label>マイページページのURI</label>
+						<div class="form-inline">
+							<input type="text" soy:id="smartphone_mypage_url" class="form-control">
+						</div>
+
+						<label>マイページの種類の選択</label>
+						<div class="form-inline">
+							<select soy:id="smartphone_mypage_application" class="form-control"></select>
+						</div>
 						※マイページ機能を封じる場合は<strong>none</strong>を選択してください。
 
-						<h4>ログイン後のトップページのURL</h4>
-						<input type="text" soy:id="smartphone_mypage_top" />
+						<label>ログイン後のトップページのURL</label>
+						<div class="form-inline">
+							<input type="text" soy:id="smartphone_mypage_top" class="form-control">
+						</div>
 
-						<h4>文字コード</h4>
-						<select soy:id="smartphone_mypage_charset"></select>
+						<label>文字コード</label>
+						<div class="form-inline">
+							<select soy:id="smartphone_mypage_charset" class="form-control"></select>
+						</div>
 					</div>
 					<!-- /soy:display="is_enabled_util_mobile_check_1" -->
 

@@ -28,15 +28,25 @@
 
 		<tr>
 			<th>公開側の表示の際にブラウザの言語設定を確認する</th>
-			<td>
+			<td colspan="2">
 				<input type="checkbox" soy:id="confirm_browser_language"><br>
 				※ブラウザの言語設置を確認しない場合は言語切替ボタンを使用します。
 			</td>
 		</tr>
 		<tr>
 			<th>同じページのテンプレートを利用する</th>
-			<td>
+			<td colspan="2">
 				<input type="checkbox" soy:id="same_uri_mode">
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3">
+				<div class="alert alert-warning">
+					同じテンプレートを利用するにチェックを入れると、他言語用のURLでアクセスした時に日本語用のページのテンプレートを利用します。<br>
+					日本語ページのURLが<strong>http://example.com/blog/</strong>で、英語ページのURLが<strong>http://example.com/en/blog/</strong>がある場合、英語ページにアクセスした時に日本語ページのテンプレートを利用します。<br><br>
+					同一テンプレートを用いた場合、PHPモジュールで翻訳表示の機能を設けることでテンプレートの管理コストを下げることができます。<br>
+					<a href="https://saitodev.co/soycms/soycms/tutorial/164" target="_blank" rel="noopener">PHPモジュールで多言語用の共通パーツを作成する - SOY CMSを使ってみよう</a>
+				</div>
 			</td>
 		</tr>
 	</table>

@@ -11,6 +11,13 @@ SitemapPlugin::register();
 class SitemapPlugin{
 
 	const PLUGIN_ID = "sitemap";
+	const PAGE_TYPE_NORMAL = 0;
+	const PAGE_TYPE_BLOG_TOP = 1;
+	const PAGE_TYPE_BLOG_CATEGORY = 2;
+	const PAGE_TYPE_BLOG_ARCHIVE = 3;
+	const PAGE_TYPE_BLOG_ENTRY = 4;
+	const PAGE_TYPE_APPLICATION = 5;
+	const PAGE_TYPE_OTHER = 6;
 
 	//挿入しないページ
 	//Array<ページID => 0 | 1> 挿入しないページが1
@@ -24,6 +31,12 @@ class SitemapPlugin{
 
 	var $urls = array();
 
+	// 多言語化の有無
+	private $multiLanguageConfs = array();
+	
+	// サイトID
+	private $siteId = "";
+
 	function getId(){
 		return self::PLUGIN_ID;
 	}
@@ -36,7 +49,7 @@ class SitemapPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.6"
+			"version"=>"1.7"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
@@ -61,13 +74,22 @@ class SitemapPlugin{
 
 		//サイトマップの時のみ
 		if(soy2_strpos($obj->page->getUri(), "sitemap.xml") >= 0){
+			
+			//多言語プラグイン関連の設定
+			self::_setMultiLanguageConfig();
+
 			header("Content-Type: text/xml");
 
 			//全ページ取得
 			$pageDao = soycms_get_hash_table_dao("page");
-			$sql = "SELECT id, uri, page_type, page_config, udate FROM Page WHERE isPublished != 0 AND openPeriodStart < " . time() . " AND openPeriodEnd > " . time();
 			try{
-				$res = $pageDao->executeQuery($sql, array());
+				$res = $pageDao->executeQuery(
+					"SELECT id, uri, page_type, page_config, udate FROM Page ".
+					"WHERE isPublished != 0 ".
+					"AND openPeriodStart < :start ".
+					"AND openPeriodEnd > :end", 
+					array(":start" => time(), ":end" => time())
+				);
 			}catch(Exception $e){
 				$res = array();
 			}
@@ -91,13 +113,21 @@ class SitemapPlugin{
 				CMSUtil::resetDsn($old);
 
 				//ルート設定ではない場合は$hostにsiteIdを追加する
-				if(!$site->getIsDomainRoot()) $host .= "/" . $siteId;
+				if(!$site->getIsDomainRoot()) {
+					$this->siteId = $siteId; 
+					$host .= "/" . $this->siteId;
+				}
 				$site = null;
 
 				$dao = new SOY2DAO();
 
 				$xml[] = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-				$xml[] = "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">";
+				if(count($this->multiLanguageConfs)){
+					$xml[] = "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" xmlns:xhtml=\"http://www.w3.org/1999/xhtml\">";
+				}else{
+					$xml[] = "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">";
+				}
+				
 
 				foreach($pages as $page){
 					switch($page->getPageType()){
@@ -114,7 +144,7 @@ class SitemapPlugin{
 								if(isset($configs["_top_"]) && $configs["_top_"] && $configObj->generateTopFlag){
 
 									$http = (isset($ssls["_top_"]) && $ssls["_top_"]) ? "https" : "http";
-									$xml[] =  self::buildColumn($http . "://" . $host . "/" . $uri . $configObj->topPageUri, 1, $page->getUdate());
+									$xml[] =  self::_buildColumn(self::PAGE_TYPE_BLOG_TOP, $http . "://" . $host . "/" . $uri . $configObj->topPageUri, 1, $page->getUdate());
 								}
 
 								//月別アーカイブ
@@ -125,7 +155,7 @@ class SitemapPlugin{
 									if(strlen($configObj->monthPageUri)) $url .= $configObj->monthPageUri . "/";
 
 									//最初の記事と最後の記事を取得
-									list($first, $last) = self::getEntrySpan($configObj->blogLabelId);
+									list($first, $last) = self::_getEntrySpan($configObj->blogLabelId);
 
 									$fY = (int)date("Y", $first);
 									$lY = (int)date("Y", $last);
@@ -138,7 +168,7 @@ class SitemapPlugin{
 											$fM = (int)date("n", $first);
 											for($j = $fM; $j <= 12; $j++){
 												$m = (strlen($j) === 1) ? "0" . $j : $j;
-												$xml[] =  self::buildColumn($url . $fY . "/" . $m . "/", 0.5, $page->getUdate());
+												$xml[] =  self::_buildColumn(self::PAGE_TYPE_BLOG_ARCHIVE, $url . $fY . "/" . $m . "/", 0.5, $page->getUdate());
 											}
 										}
 
@@ -147,7 +177,7 @@ class SitemapPlugin{
 											$lM = (int)date("n", $last);
 											for($j = 1; $j <= $lM; $j++){
 												$m = (strlen($j) === 1) ? "0" . $j : $j;
-												$xml[] =  self::buildColumn($url . $lY . "/" . $m . "/", 0.5, $page->getUdate());
+												$xml[] =  self::_buildColumn(self::PAGE_TYPE_BLOG_ARCHIVE, $url . $lY . "/" . $m . "/", 0.5, $page->getUdate());
 											}
 										}
 
@@ -158,7 +188,7 @@ class SitemapPlugin{
 
 											for($j = $fM; $j <= $lM; $j++){
 												$m = (strlen($j) === 1) ? "0" . $j : $j;
-												$xml[] =  self::buildColumn($url . $fY . "/" . $m . "/", 0.5, $page->getUdate());
+												$xml[] =  self::_buildColumn(self::PAGE_TYPE_BLOG_ARCHIVE, $url . $fY . "/" . $m . "/", 0.5, $page->getUdate());
 											}
 										}
 
@@ -167,7 +197,7 @@ class SitemapPlugin{
 											$tY = $fY + $i;
 											for($j = 1; $j <= 12; $j++){
 												$m = (strlen($j) === 1) ? "0" . $j : $j;
-												$xml[] =  self::buildColumn($url . $tY . "/" . $m . "/", 0.5, $page->getUdate());
+												$xml[] =  self::_buildColumn(self::PAGE_TYPE_BLOG_ARCHIVE, $url . $tY . "/" . $m . "/", 0.5, $page->getUdate());
 											}
 										}
 									}
@@ -183,7 +213,10 @@ class SitemapPlugin{
 
 									if(isset($configObj->categoryLabelList)) {
 										try{
-											$res = $dao->executeQuery("SELECT alias FROM Label WHERE id IN (" . implode(",", $configObj->categoryLabelList) . ")", array());
+											$res = $dao->executeQuery(
+												"SELECT alias FROM Label WHERE id IN (" . implode(",", $configObj->categoryLabelList) . ")", 
+												array()
+											);
 										}catch(Exception $e){
 											$res = array();
 										}
@@ -192,7 +225,7 @@ class SitemapPlugin{
 											if(isset($v["alias"])){
 												$alias = rawurlencode($v["alias"]);
 												if(is_numeric(strpos($alias, "%2F"))) $alias = str_replace("%2F", "/", $alias);
-												$xml[] =  self::buildColumn($url . $alias, 0.5, $page->getUdate());
+												$xml[] =  self::_buildColumn(self::PAGE_TYPE_BLOG_CATEGORY, $url . $alias, 0.5, $page->getUdate());
 											}
 										}
 									}
@@ -205,16 +238,18 @@ class SitemapPlugin{
 									$url = $http . "://" . $host . "/" . $uri;
 									if(strlen($configObj->entryPageUri)) $url .= $configObj->entryPageUri . "/";
 
-									$sql = "SELECT ent.alias, ent.cdate FROM Entry ent ".
+									try{
+										$res = $dao->executeQuery(
+											"SELECT ent.alias, ent.cdate FROM Entry ent ".
 											"INNER JOIN EntryLabel lab ".
 											"ON ent.id = lab.entry_id ".
 											"WHERE lab.label_id = :labelId ".
 											"AND ent.isPublished = 1 ".
-											"AND ent.openPeriodStart < " . time() . " ".
-											"AND ent.openPeriodEnd > " . time() . " ".
-											"ORDER BY ent.cdate ASC";
-									try{
-										$res = $dao->executeQuery($sql, array(":labelId" => $configObj->blogLabelId));
+											"AND ent.openPeriodStart < :start ".
+											"AND ent.openPeriodEnd > :end ".
+											"ORDER BY ent.cdate ASC", 
+											array(":labelId" => $configObj->blogLabelId, ":start" => time(), ":end" => time())
+										);
 									}catch(Exception $e){
 										$res = array();
 									}
@@ -223,7 +258,7 @@ class SitemapPlugin{
 										foreach($res as $v){
 											if(isset($v["alias"])){
 												$alias = rawurlencode($v["alias"]);
-												$xml[] =  self::buildColumn($url . $alias, 0.8, $v["cdate"]);
+												$xml[] =  self::_buildColumn(self::PAGE_TYPE_BLOG_ENTRY, $url . $alias, 0.8, $v["cdate"]);
 											}
 										}
 									}
@@ -241,7 +276,13 @@ class SitemapPlugin{
 								$http = ($this->ssl_per_page[$page->getId()]) ? "https" : "http";
 								$url = $http . "://" . $host . "/" . $page->getUri();
 								$priority = (strlen($page->getUri()) === 0) ? 1 : 0.8;
-								$xml[] =  self::buildColumn($url, $priority, $page->getUdate());
+								switch($page->getPageType()){
+									case Page::PAGE_TYPE_APPLICATION:
+										$xml[] =  self::_buildColumn(self::PAGE_TYPE_APPLICATION, $url, $priority, $page->getUdate());
+										break;
+									default:
+										$xml[] =  self::_buildColumn(self::PAGE_TYPE_NORMAL, $url, $priority, $page->getUdate());
+								}
 							}
 
 							break;
@@ -251,7 +292,7 @@ class SitemapPlugin{
 				//手動
 				if(count($this->urls)){
 					foreach($this->urls as $url){
-						$xml[] =  self::buildColumn($url["url"], 0.5, $url["lastmod"]);
+						$xml[] =  self::_buildColumn(self::PAGE_TYPE_OTHER, $url["url"], 0.5, $url["lastmod"]);
 					}
 				}
 
@@ -265,32 +306,34 @@ class SitemapPlugin{
 		));
 	}
 
-	private function getEntrySpan(int $labelId){
+	private function _getEntrySpan(int $labelId){
 		$dao = new SOY2DAO();
 
 		//最初の記事
-		$sql = "SELECT ent.cdate FROM Entry ent ".
+		$baseSql = "SELECT ent.cdate FROM Entry ent ".
 				"INNER JOIN EntryLabel lab ".
 				"ON ent.id = lab.entry_id ".
 				"WHERE lab.label_id = :labelId ".
 				"AND ent.isPublished = 1 ".
-				"AND ent.openPeriodStart < " . time() . " ".
-				"AND ent.openPeriodEnd > " . time() . " ";
-
-		$addSql = $sql . "ORDER BY ent.cdate ASC LIMIT 1";
+				"AND ent.openPeriodStart < :start ".
+				"AND ent.openPeriodEnd > :end ";
 
 		try{
-			$res = $dao->executeQuery($addSql, array(":labelId" => $labelId));
+			$res = $dao->executeQuery(
+				$baseSql."ORDER BY ent.cdate ASC LIMIT 1", 
+				array(":labelId" => $labelId, ":start" => time(), ":end" => time())
+			);
 		}catch(Exception $e){
 			$res = array();
 		}
 
 		$first = (isset($res[0])) ? (int)$res[0]["cdate"] : 0; 
 
-		$addSql = $sql . "ORDER BY ent.cdate DESC LIMIT 1";
-
 		try{
-			$res = $dao->executeQuery($addSql, array(":labelId" => $labelId));
+			$res = $dao->executeQuery(
+				$baseSql."ORDER BY ent.cdate DESC LIMIT 1", 
+				array(":labelId" => $labelId, ":start" => time(), ":end" => time())
+			);
 		}catch(Exception $e){
 			$res = array();
 		}
@@ -300,7 +343,24 @@ class SitemapPlugin{
 		return array($first, $last);
 	}
 
-	private function buildColumn($url, $priority = 0.5, $lastmod = 0){
+	private function _setMultiLanguageConfig(){
+		if(!CMSPlugin::activeCheck("util_multi_language")) return;
+		
+		$langPlugin = CMSPlugin::loadPluginConfig("UtilMultiLanguagePlugin");
+		if(!$langPlugin instanceof UtilMultiLanguagePlugin || !$langPlugin->getSameUriMode()) return;
+
+		$this->multiLanguageConfs = SOYCMSUtilMultiLanguageUtil::getLanguagePrefixList($langPlugin);
+		if(!count($this->multiLanguageConfs)) return;
+		
+		// ラベルと記事で多言語のひも付き状況をすべて取得
+		self::_dicLogic()->buildDictionary();
+	}
+
+	/**
+	 * @param int, string, float, int
+	 * @return string
+	 */
+	private function _buildColumn(int $pageType, string $url, float $priority=0.5, int $lastmod=0){
 		if(is_null($lastmod)) $lastmod = time();
 		// カノニカルURLプラグインと合わせる
 		$url = rtrim($url, "/");
@@ -311,6 +371,40 @@ class SitemapPlugin{
 		$cols = array();
 		$cols[] = "<url>";
 		$cols[] = "	<loc>" . $url . "</loc>";
+
+		// 多言語化
+		if($pageType < self::PAGE_TYPE_OTHER && is_array($this->multiLanguageConfs) && count($this->multiLanguageConfs)){
+			foreach($this->multiLanguageConfs as $lang => $prefix){
+				$multiUrl = $url;
+				if(strlen($prefix)){
+					$domain = self::_extractDomain($url);
+					if(strlen($this->siteId)) $domain .= "/".$this->siteId;
+					$domain .= "/";
+					$multiUrl = str_replace($domain, $domain.$prefix."/", $multiUrl);
+				}
+
+				// @ToDo ラベルと記事の場合は紐付いたオブジェクトのエイリアスに切り替える
+				if($lang != SOYCMSUtilMultiLanguageUtil::LANGUAGE_JP){
+					switch($pageType){
+						case self::PAGE_TYPE_BLOG_CATEGORY:
+						case self::PAGE_TYPE_BLOG_ENTRY:
+							$old = trim(substr($multiUrl, strrpos(rtrim($multiUrl, "/"), "/")), "/");
+							$new = self::_dicLogic()->get($old, $lang);
+							if(strlen($new)){
+								$multiUrl = str_replace($old, rawurlencode($new), $multiUrl);
+							}else{
+								$multiUrl = "";
+							}
+							break;
+					}
+				}
+
+				if(!strlen($multiUrl)) continue;
+
+				$cols[] = "	<xhtml:link rel=\"alternate\" hreflang=\"".$lang."\" href=\"".$multiUrl."\" />";
+			}
+		}
+
 		$cols[] = "	<priority>" . $priority . "</priority>";
 		$cols[] = "	<lastmod>" . date("Y-m-d", $lastmod) . "T" . date("H:i:s", $lastmod) . "+09:00</lastmod>";
 		$cols[] = "</url>";
@@ -331,6 +425,22 @@ class SitemapPlugin{
 		}
 
 		return $is;
+	}
+
+	/**
+	 * @param string
+	 * @return string
+	 */
+	private function _extractDomain(string $url){
+		$domain = substr($url, strpos($url, "://")+3);
+		if(is_numeric(strpos($domain, "/"))) $domain = substr($domain, 0, strpos($domain, "/"));
+		return $domain;
+	}
+
+	private function _dicLogic(){
+		static $l;
+		if(is_null($l)) $l = SOY2Logic::createInstance("site_include.plugin.util_multi_language.logic.MultiLanguageDictionaryLogic");
+		return $l;
 	}
 
 	public static function register(){
