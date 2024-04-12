@@ -57,10 +57,11 @@ class OrderInvoiceCommon{
 
 	public static function calcReducedTaxRateTargetItemTotal($itemOrders){
 		if(!count($itemOrders)) return 0;
+		$taxLogic = SOY2Logic::createInstance("module.plugins.common_consumption_tax.logic.CalculateTaxLogic");
 
 		$total = 0;
 		foreach($itemOrders as $itemOrder){
-			if(is_null($itemOrder->getItemId()) || !ConsumptionTaxUtil::isReducedTaxRateItem($itemOrder->getItemId())) continue;
+			if(is_null($itemOrder->getItemId()) || !$taxLogic->isReducedTaxRateItem($itemOrder->getItemId())) continue;
 			$total += (int)$itemOrder->getTotalPrice();
 		}
 		return $total;

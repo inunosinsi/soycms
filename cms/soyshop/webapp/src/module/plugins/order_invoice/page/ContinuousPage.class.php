@@ -14,6 +14,9 @@ class ContinuousPage extends HTMLTemplatePage{
 		SOY2::imports("module.plugins.order_invoice.component.*");
 		SOY2::import("module.plugins.common_consumption_tax.util.ConsumptionTaxUtil");	//軽減税率用
 
+		//インボイス 適格請求書発行事業者登録モード
+		if(!defined("INVOICE_NUMBER_MODE")) define("INVOICE_NUMBER_MODE", false);
+
 		$this->createAdd("continuous_print", "InvoiceListComponent", array(
 			"list" => $this->orders,
 			"config" => OrderInvoiceCommon::getConfig()

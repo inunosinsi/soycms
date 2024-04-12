@@ -13,6 +13,9 @@ class InvoicePage extends HTMLTemplatePage{
 		SOY2::imports("module.plugins.order_invoice.component.*");
 		SOY2::import("module.plugins.common_consumption_tax.util.ConsumptionTaxUtil");	//軽減税率用
 
+		//インボイス 適格請求書発行事業者登録モード
+		if(!defined("INVOICE_NUMBER_MODE")) define("INVOICE_NUMBER_MODE", false);
+
 		$order = soyshop_get_order_object($this->id);
 
 		/*** 注文情報 ***/

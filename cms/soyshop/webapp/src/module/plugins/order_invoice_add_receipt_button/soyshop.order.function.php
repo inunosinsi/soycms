@@ -16,6 +16,9 @@ class OrderInvoiceAddReceiptButtonFunction extends SOYShopOrderFunction{
 		if(!defined("ORDER_DOCUMENT_MODE")) define("ORDER_DOCUMENT_MODE", "receipt");
 		if(!defined("ORDER_DOCUMENT_LABEL")) define("ORDER_DOCUMENT_LABEL", "領収書");
 
+		//インボイス 適格請求書発行事業者登録モード
+		if(!defined("INVOICE_NUMBER_MODE")) define("INVOICE_NUMBER_MODE", (strlen((string)(string)SOYShop_ShopConfig::load()->getInvoiceNumber()) === 13));
+		
 		SOY2::import("module.plugins.order_invoice.common.OrderInvoiceCommon");
 
 		if(!defined("ORDER_TEMPLATE")) define("ORDER_TEMPLATE", OrderInvoiceCommon::getTemplateName());

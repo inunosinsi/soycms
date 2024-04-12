@@ -19,6 +19,10 @@ class InvoiceListComponent extends HTMLList{
 		//軽減税率モードの場合は区分の項目を追加する
 		$this->addModel("reduced_tax_rate_division", array("visible" => $reducedTaxRateMode));
 
+		//領収書のインボイスモードでは表示しない箇所がある
+		$this->addModel("reduced_tax_rate_division_without_invoice", array("visible" => ($reducedTaxRateMode && !INVOICE_NUMBER_MODE)));
+		
+
 		/*** 注文概要 ***/
 		self::buildOrderArea($order);
 
@@ -271,6 +275,14 @@ class InvoiceListComponent extends HTMLList{
 			"text" => soyshop_get_site_url(true)
 		));
 
+		$this->addModel("invoice_number_mode_on", array(
+			"visible" => (defined("INVOICE_NUMBER_MODE") && INVOICE_NUMBER_MODE)
+		));
+
+		$this->addLabel("invoice_number", array(
+			"text" => "T".$config->getInvoiceNumber()
+		));
+
 		$this->addLabel("company_name", array(
 			"text" => (isset($company["name"])) ? $company["name"] : ""
 		));
@@ -385,7 +397,11 @@ class InvoiceListComponent extends HTMLList{
 			}
 		}
 
-		$maxLimit = ($reducedTaxRateMode) ? 5 : 10;
+		if($reducedTaxRateMode){
+			$maxLimit = (INVOICE_NUMBER_MODE) ? 8 : 5;
+		}else{
+			$maxLimit = 10;	
+		}
 		if(ORDER_TEMPLATE !== "jungle" && count($itemOrders) < $maxLimit){
 			for($i = count($itemOrders) + 1; $i <= $maxLimit; $i++){
 				$itemOrders[] = new SOYShop_ItemOrder();

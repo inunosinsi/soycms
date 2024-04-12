@@ -24,9 +24,10 @@ class InvoiceItemListComponent extends HTMLList {
 			"html" => $itemName
 		));
 
+		
 		//軽減税率の区分
 		$this->addLabel("reduced_tax_rate_item", array(
-			"text" => ($this->reducedTaxRateMode && ConsumptionTaxUtil::isReducedTaxRateItem($itemId)) ? "*" : ""
+			"text" => ($this->reducedTaxRateMode && self::_taxLogic()->isReducedTaxRateItem($itemId)) ? "*" : ""
 		));
 
 		$this->addLabel("item_option", array(
@@ -47,6 +48,12 @@ class InvoiceItemListComponent extends HTMLList {
 		$this->addLabel("item_total_price", array(
 			"text" => soy2_number_format($itemOrder->getTotalPrice())
 		));
+	}
+
+	private function _taxLogic(){
+		static $l;
+		if(is_null($l)) $l = SOY2Logic::createInstance("module.plugins.common_consumption_tax.logic.CalculateTaxLogic");
+		return $l;
 	}
 
 	function setReducedTaxRateMode($reducedTaxRateMode){
