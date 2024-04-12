@@ -2,7 +2,6 @@
 
 class CreatePageLogic extends SOY2LogicBase{
 
-	private $pageDao;
 	private $templateDir;
 	private $templateTypes;
 	private $pageConfDir;
@@ -10,7 +9,7 @@ class CreatePageLogic extends SOY2LogicBase{
 	private $configs;
 
 	function __construct(){
-		$this->pageDao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
+		soyshop_get_hash_table_dao("page");
 		$this->templateDir = SOYSHOP_SITE_DIRECTORY . ".template/";
 		$this->templateTypes = SOYShop_Page::getTypeTexts();
 		$this->pageConfDir = SOYSHOP_SITE_DIRECTORY . ".page/";
@@ -200,7 +199,7 @@ class CreatePageLogic extends SOY2LogicBase{
 
 	private function getPages($pageType){
 		try{
-			return $this->pageDao->getByType($pageType);
+			return soyshop_get_hash_table_dao("page")->getByType($pageType);
 		}catch(Exception $e){
 			return array();
 		}

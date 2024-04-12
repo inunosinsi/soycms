@@ -5,7 +5,7 @@
 	<div class="form-group">
 		<label>プリフィックスの設定</label>
 		<div class="form-inline">
-			<input type="text" soy:id="prefix" />&nbsp;&nbsp;
+			<input type="text" soy:id="prefix" class="form-control">&nbsp;&nbsp;
 			<a soy:id="create_m_page_link" class="btn btn-default">ページの追加</a>
 		</div>
 		<div class="alert alert-warning">
@@ -17,7 +17,7 @@
 	<div class="form-group">
 		<label>スマートフォン用プリフィックスの設定</label>
 		<div class="form-inline">
-			<input type="text" soy:id="prefix_i" />&nbsp;&nbsp;
+			<input type="text" soy:id="prefix_i" class="form-control">&nbsp;&nbsp;
 			<a soy:id="create_i_page_link" class="btn btn-default">ページの追加</a>
 		</div>
 		<div class="alert alert-warning">
@@ -38,7 +38,7 @@
 	<!-- soy:id="is_docomo_css" -->
 	<div class="form-group">
 		<label>3キャリア対応Content-Type</label><br>
-		&lt;meta cms:id="mobile_http_equiv" /&gt;
+		<pre>&lt;meta cms:id="mobile_http_equiv" /&gt;</pre>
 	</div>
 	<!-- /soy:id="is_docomo_css" -->
 
@@ -53,14 +53,14 @@
 	<div class="form-group">
 		<label>セッション保持時間の設定</label>
 		<div class="form-inline">
-			<input type="text" soy:id="session" size="3" style="text-align:right;ime-mode:inactive;"/>&nbsp;分
+			<input type="number" soy:id="session" size="5" class="form-control">&nbsp;分
 		</div>
 	</div>
 
 	<div class="form-group">
 		<label>カート内のお買物に戻るリンクのURL設定</label>
 		<div class="form-inline">
-			<input type="text" soy:id="url" size="60" />
+			<input type="text" soy:id="url" size="60" class="form-control">
 		</div>
 	</div>
 
