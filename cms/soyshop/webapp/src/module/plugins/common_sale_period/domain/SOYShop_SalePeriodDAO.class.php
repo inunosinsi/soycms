@@ -135,4 +135,3 @@ abstract class SOYShop_SalePeriodDAO extends SOY2DAO{
 		return (isset($res[0]["item_count"])) ? (int)$res[0]["item_count"] : 0;
 	}
 }
-?>

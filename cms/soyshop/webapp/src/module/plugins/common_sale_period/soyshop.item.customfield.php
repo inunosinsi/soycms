@@ -9,7 +9,9 @@ class SalePeriodCustomField extends SOYShopItemCustomFieldBase{
 	 */
 	function onOutput($htmlObj, SOYShop_Item $item){
 
-		if(!is_null($item->getId())){
+		$itemId = (is_numeric($item->getId())) ? (int)$item->getId(): 0;
+
+		if($itemId > 0){
 			$onSale = self::getPriceLogic()->checkOnSale($item);
 			$price = self::getPriceLogic()->getDisplayPrice($item);
 		}else{
@@ -34,13 +36,13 @@ class SalePeriodCustomField extends SOYShopItemCustomFieldBase{
 
 		$htmlObj->createAdd("sale_start_date", "DateLabel", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"text" => self::getPriceLogic()->getSaleDate($item->getId(), "start"),
+			"text" => self::getPriceLogic()->getSaleDate($itemId, "start"),
 			"defaultFormat"=>"Y-m-d"
 		));
 
 		$htmlObj->createAdd("sale_end_date", "DateLabel", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"text" => self::getPriceLogic()->getSaleDate($item->getId(), "end"),
+			"text" => self::getPriceLogic()->getSaleDate($itemId, "end"),
 			"defaultFormat"=>"Y-m-d"
 		));
 	}

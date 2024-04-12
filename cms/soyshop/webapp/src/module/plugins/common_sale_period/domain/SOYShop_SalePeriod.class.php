@@ -40,4 +40,3 @@ class SOYShop_SalePeriod{
 		$this->salePeriodEnd = $salePeriodEnd;
 	}
 }
-?>

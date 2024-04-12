@@ -37,7 +37,7 @@ class SalePeriodOptionConfigFormPage extends WebPage{
 		$this->addInput("sale_end_date", array(
 			"name" => "Config[end]",
 			"value" => (int)$config["end"],
-			"style" => "width: 50px;text-align:right;"
+			"style" => "width: 80px;"
 		));
 		
 		$this->addLabel("job_path", array(

@@ -2,30 +2,32 @@
 
 <form soy:id="form">
 
-<dl>
-	<dt>セール終了前通知設定</dt>
-	<dd>
-		<input type="number" soy:id="sale_end_date" value="">日前にメールを送信する。
-		<a href="javascript:void(0);" onclick="$('.config_example').toggle();">設定方法を確認する</a><br>
-		<div class="config_example" style="border:1px solid #000000; padding:5px; margin:5px 0;display:none;">
+<div class="form-group">
+	<label>セール終了前通知設定</label>
+	<div class="form-inline">
+		<input type="number" soy:id="sale_end_date" class="form-control">日前にメールを送信する。
+		<a href="javascript:void(0);" onclick="$('.config_example').toggle();" class="btn btn-info">設定方法を確認する</a><br>
+		<div class="config_example">
 			<h4>&nbsp;jobの実行</h4>
-			php.exe <!-- soy:id="job_path" /--><br>
-			※exe.phpと<!-- soy:id="site_id" /-->の間には半角スペースが必要です
+<pre>php.exe <!-- soy:id="job_path" /-->
+※exe.phpと<!-- soy:id="site_id" /-->の間には半角スペースが必要です</pre>
 		</div>
-	</dd>
+	</div>
+</div>
 
-	<dt>セール終了前通知メール件名</dt>
-	<dd>
-		<input soy:id="mail_end_title" class="title"><br>
-		※#ITEM_NAME#と#SHOP_NAME#が使用できます。
-	</dd>
-</dl>
+<div class="form-group">
+	<label>セール終了前通知メール件名</label>
+	<div>
+		<input soy:id="mail_end_title" class="form-control">
+		<div class="alert alert-warning">※#ITEM_NAME#と#SHOP_NAME#が使用できます。</div>
+	</div>
+</div>
 
 <table class="table table-striped" style="table-layout:auto;">
 	<caption>セール終了前通知メール本文</caption>
 	<tr class="last_row">
 		<td>
-			<textarea id="mail_content" soy:id="mail_end_content" class="editor" style="height:400px;"></textarea>
+			<textarea id="mail_content" soy:id="mail_end_content" class="editor form-control" style="height:400px;"></textarea>
 		</td>
 		<td class="mail_replace_word_panel">
 			<a href="javascript:void(0);" class="btn btn-default" onclick="$(this).parent().addClass('actived');$(this).hide();">&lt;&lt;</a>
@@ -60,7 +62,9 @@
 
 </form>
 
-<h3>block&#58;id="item"内で使用できるcms&#58;id</h3>
+<br>
+
+<div class="alert alert-info">block&#58;id="item"内で使用できるcms&#58;id</div>
 <table class="table table-striped">
 	<thead>
 		<tr>
@@ -109,6 +113,6 @@
 }
 .actived .word_list{
 	display:block;
-	width:100px;
+	width:180px;
 }
 </style>

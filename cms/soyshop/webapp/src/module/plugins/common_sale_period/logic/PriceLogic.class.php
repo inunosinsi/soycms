@@ -43,14 +43,36 @@ class PriceLogic extends SOY2LogicBase{
 		return ($this->checkOnSale($item)) ? (int)$item->getSalePrice() : (int)$item->getPrice();
 	}
 	
-	function getSaleDate($itemId, $mode = "start"){
+	/**
+	 * @param int, string
+	 * @return int
+	 */
+	function getSaleDate(int $itemId, string $mode="start"){
+		static $_arr;
+		if(!is_array($_arr)) $_arr = array();
+		if(!isset($_arr[$itemId])) $_arr[$itemId] = array();
+
+		if(isset($_arr[$itemId][$mode])) return $_arr[$itemId][$mode];
+
 		try{
 			$obj = $this->saleDao->getByItemId($itemId);
 		}catch(Exception $e){
 			$obj = new SOYShop_SalePeriod();
 		}
-		
-		return ($mode === "start") ? $obj->getSalePeriodStart() : $obj->getSalePeriodEnd();
+
+		$v = "";
+		switch($mode){
+			case "start":
+				$v = $obj->getSalePeriodStart();
+				break;
+			case "end":
+			default:
+				$v = $obj->getSalePeriodEnd();
+				break;
+		}
+
+		$_arr[$itemId][$mode] = $v;
+		return $_arr[$itemId][$mode];
 	}
 	
 	//セール期間であるか調べる
@@ -68,4 +90,3 @@ class PriceLogic extends SOY2LogicBase{
 		}
 	}
 }
-?>
