@@ -84,7 +84,12 @@ if(!isset($_SERVER["PATH_INFO"])){
 	// 公開側
 	if(defined("_SITE_ROOT_") || (defined("DISPLAY_SOYSHOP_SITE") && DISPLAY_SOYSHOP_SITE)){
 		if($_SERVER["SCRIPT_NAME"] === "/index.php"){
-			$_SERVER["PATH_INFO"] = $_SERVER["REDIRECT_URL"];
+			// ロリポップサーバ対応
+			if(isset($_SERVER["REQUEST_URI"]) && is_numeric(strpos($_SERVER["REDIRECT_URL"], "index.php")) && is_bool(strpos($_SERVER["REQUEST_URI"], "index.php"))){
+				$_SERVER["PATH_INFO"] = str_replace("index.php", "", $_SERVER["REDIRECT_URL"]);
+			}else{
+				$_SERVER["PATH_INFO"] = $_SERVER["REDIRECT_URL"];
+			}
 		}else{
 			$_SERVER["PATH_INFO"] = "/".ltrim(str_replace(trim(str_replace("index.php", "", $_SERVER["SCRIPT_NAME"])), "", $_SERVER["REDIRECT_URL"]), "/");
 		}
@@ -98,4 +103,31 @@ if(!isset($_SERVER["PATH_INFO"])){
 
 	// $_SERVER["PATH_INFO"]が / のみの場合は削除
 	if(isset($_SERVER["PATH_INFO"]) && strlen($_SERVER["PATH_INFO"]) <= 1) unset($_SERVER["PATH_INFO"]);
+}
+
+// エックスサーバ対策
+if(isset($_SERVER["QUERY_STRING"]) && strlen($_SERVER["QUERY_STRING"]) && isset($_SERVER["REQUEST_URI"])){
+	(function (){
+		if(is_numeric(strpos($_SERVER["REQUEST_URI"], "?"))){
+			$param = substr($_SERVER["REQUEST_URI"], strpos($_SERVER["REQUEST_URI"], "?")+1);
+			if(is_bool(strpos($_SERVER["QUERY_STRING"], $param))){
+				$_GET = array();
+				$params = explode("%", $param);
+				foreach($params as $_param){
+					$_paramArr = explode("=", $_param);	
+					$_GET[$_paramArr[0]] = (isset($_paramArr[1])) ? $_paramArr[1] : "";
+				}
+				
+				$_SERVER["QUERY_STRING"] = "";
+				foreach($_GET as $key => $value){
+					$_SERVER["QUERY_STRING"] .= $key."=".$value."&";
+				}
+				$_SERVER["QUERY_STRING"] = rtrim($_SERVER["QUERY_STRING"], "&");
+			}
+		}else{
+			// @ ToDo 下記の処理は丁寧に検討する必要がある
+			//$_GET = array();
+			//$_SERVER["QUERY_STRING"] = "";
+		}
+	})();
 }
