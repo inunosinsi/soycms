@@ -21,6 +21,9 @@ class LoginAction extends SOY2Action{
     private function normalLogin($auth, $redirect){
     	$logic = SOY2Logic::createInstance("logic.admin.Administrator.AdministratorLogic");
 
+		if(!isset($auth["name"])) $auth["name"] = "";
+		if(!isset($auth["password"])) $auth["password"] = "";
+		
     	if($logic->login($auth['name'],$auth['password'])){
 
     		//ログイン状態をセッションに保存：$logicはloginに成功したらAdministratorが入っている
