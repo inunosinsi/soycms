@@ -10,6 +10,20 @@ class CategoryListComponent extends HTMLList{
 
 	protected function populateItem($entry){
 		$id = (is_numeric($entry->getId())) ? (int)$entry->getId() : 0;
+
+		if($id > 0){
+			$onLoads = CMSPlugin::getEvent("onPageOutputLabelRead");
+			if(is_array($onLoads) && count($onLoads)) {
+				foreach($onLoads as $plugin){
+					$res = call_user_func($plugin[0], array('labelId' => $id));
+					if(is_numeric($res) && $res > 0 && $res !== $id){
+						$id = (int)$res;
+						$entry = soycms_get_label_object($id);
+					}
+				}
+			}
+		}
+
 		$encodeAlias = (is_string($entry->getAlias())) ? rawurlencode($entry->getAlias()) : "";
 
 		$this->addLink("category_link", array(
@@ -22,8 +36,9 @@ class CategoryListComponent extends HTMLList{
 			"soy2prefix"=>"cms"
 		));
 
+		if(!defined("SOYCMS_PUBLISH_LANGUAGE")) define("SOYCMS_PUBLISH_LANGUAGE", "jp");
 		$this->createAdd("category_name","CMSLabel",array(
-			"text"=>$entry->getBranchName(),
+			"text"=>(SOYCMS_PUBLISH_LANGUAGE == "jp") ? $entry->getBranchName() : $entry->getOpenLabelCaption(),
 			"soy2prefix"=>"cms"
 		));
 
