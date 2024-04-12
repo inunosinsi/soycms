@@ -32,8 +32,118 @@ class PageLogic extends SOY2LogicBase{
 		return (empty($errors));
     }
 
+	/**
+	 * @return int
+	 */
+	function countPage(){
+		return count(self::_getAllPages());
+	}
+
+	/**
+	 * @return array
+	 */
+	function getPageListByType(){
+		$all = self::_getAllPages();
+
+		$configs = array();
+		$list = array();
+
+		//多言語化サイトプラグインがアクティブの時
+		if(SOYShopPluginUtil::checkIsActive("util_multi_language")){
+			SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
+			if(class_exists("UtilMultiLanguageUtil")){
+				$multiLangConfig = UtilMultiLanguageUtil::getConfig();
+
+				foreach($multiLangConfig as $key => $values){
+					if(
+						(isset($values["prefix"]) && strlen($values["prefix"])) &&
+						(isset($values["is_use"]) && $values["is_use"] == UtilMultiLanguageUtil::IS_USE)
+					){
+						$configs[$key] = $values["prefix"];
+					}
+				}
+			}
+		}
+
+		//携帯自動振り分けプラグインがアクティブの時
+		if(SOYShopPluginUtil::checkIsActive("util_mobile_check")){
+			SOY2::import("module.plugins.util_mobile_check.util.UtilMobileCheckUtil");
+			if(class_exists("UtilMobileCheckUtil")){
+				$mobileCheckConfig = UtilMobileCheckUtil::getConfig();
+
+				if(isset($mobileCheckConfig["prefix"]) && strlen($mobileCheckConfig["prefix"])){
+					$configs["m"] = $mobileCheckConfig["prefix"];
+				}
+
+				if(isset($mobileCheckConfig["prefix_i"]) && strlen($mobileCheckConfig["prefix_i"])){
+					$configs["i"] = $mobileCheckConfig["prefix_i"];
+				}
+
+				//多言語化サイトと併用
+				if(SOYShopPluginUtil::checkIsActive("util_multi_language") && class_exists("UtilMultiLanguageUtil")){
+					foreach($multiLangConfig as $key => $values){
+						if(
+							(isset($values["prefix"]) && strlen($values["prefix"])) &&
+							(isset($values["is_use"]) && $values["is_use"] == UtilMultiLanguageUtil::IS_USE)
+						){
+							$configs[$configs["i"] . "/" . $key] = $configs["i"] . "/" . $values["prefix"];
+						}
+					}
+				}
+			}
+		}
+
+		krsort($configs);
+
+		foreach($configs as $key => $prefix){
+			foreach($all as $page){
+				if(strpos($prefix, "/") === false){
+					if($page->getUri() == $prefix || preg_match('/^' . $prefix . '\//', $page->getUri())){
+						$list[$prefix][$page->getUri()] = $page;
+						unset($all[$page->getUri()]);
+					}
+				}else{
+					if($page->getUri() == $prefix || strpos($page->getUri(), $prefix . "/") === 0){
+						$list[$prefix][$page->getUri()] = $page;
+						unset($all[$page->getUri()]);
+					}
+				}
+			}
+		}
+
+		ksort($list);
+
+		//最後に並べ替え
+		$pageList["jp"] = $all;
+		foreach($list as $key => $values){
+			$pageList[$key] = $values;
+		}
+
+		return $pageList;
+	}
+
+	/**
+	 * @return array
+	 */
+	private function _getAllPages(){
+		static $_arr;
+		if(is_array($_arr)) return $_arr;
+
+		$_arr = array();
+
+		$pages = soyshop_get_hash_table_dao("page")->get();
+		if(!count($pages)) return array();
+
+		foreach($pages as $page){
+			$_arr[$page->getUri()] = $page;
+		}
+
+		ksort($_arr);
+		return $_arr;
+	}
+
     function update(SOYShop_Page $obj){
-		SOY2DAOFactory::create("site.SOYShop_PageDAO")->update($obj);
+		soyshop_get_hash_table_dao("page")->update($obj);
 		self::onUpdate($obj);
     }
 
@@ -112,7 +222,7 @@ class PageLogic extends SOY2LogicBase{
 	}
 
 	private function _updatePageMapping(){
-		$pages = SOY2DAOFactory::create("site.SOYShop_PageDAO")->get();
+		$pages = soyshop_get_hash_table_dao("page")->get();
 
 		$mapping = array();
 		foreach($pages as $id => $page){
@@ -128,7 +238,7 @@ class PageLogic extends SOY2LogicBase{
 	//一番IDの小さい詳細ページを取得する
 	function getOldestDetailPageId(){
 		static $id;
-		if(!is_numeric($id)) $id = SOY2DAOFactory::create("site.SOYShop_PageDAO")->getOldestDetailPageId();
+		if(!is_numeric($id)) $id = soyshop_get_hash_table_dao("page")->getOldestDetailPageId();
 		return $id;
 	}
 }
