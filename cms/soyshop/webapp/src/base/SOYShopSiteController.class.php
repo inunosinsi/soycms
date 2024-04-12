@@ -103,7 +103,7 @@ class SOYShopSiteController extends SOY2PageController{
 		// 404ページを取得し直す
 		if(!function_exists("output_page")) include_once("controller/output.php");
 		$webPage = common_process_before_output(soyshop_get_page_object_by_uri(SOYSHOP_404_PAGE_MARKER), array());
-		if(!is_null(webPage)) output_page($webPage);
+		if(!is_null($webPage)) output_page($webPage);
 		exit;
 	}
 }
