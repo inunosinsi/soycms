@@ -6608,13 +6608,13 @@ class HTMLLabel extends SOY2HTML{
 	private $isHtml = false;
 	private $suffix = "...";
 	function setText($text){
-		$this->text = (string)$text;
+		$this->text = (!is_array($text) && !is_object($text)) ? (string)$text : "";
 	}
 	function getText(){
 		return (string)$this->text;
 	}
 	function setHtml($html){
-		$this->text = (is_string($html)) ? (string)$html : "";
+		$this->text = (!is_array($html) && !is_object($html)) ? (string)$html : "";
 		$this->isHtml = true;
 	}
 	function getObject(){

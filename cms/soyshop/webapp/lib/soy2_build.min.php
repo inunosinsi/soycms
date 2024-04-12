@@ -1,7 +1,5 @@
 <?php
-/**
- * https://github.com/inunosinsi/SOY2
- */
+
 class SOY2{
 	private $_rootDir = "webapp/";
 	/**
@@ -167,6 +165,7 @@ class SOY2{
 		}
 	}
 }
+
 /**
  * @package SOY2.controller
  */
@@ -186,6 +185,7 @@ interface SOY2_PathBuilder{
 	function getPath();
 	function getArguments();
 }
+
 /**
  * @package SOY2.controller
  *
@@ -216,6 +216,7 @@ class SOY2ActionController implements SOY2_Controller{
 	private $path;
 	private $arguments = array();
 }
+
 /**
  * @package SOY2.controller
  */
@@ -477,6 +478,821 @@ class SOY2_PathInfoPathBuilder implements SOY2_PathBuilder{
 class SOY2_DefaultClassPathBuilder implements SOY2_ClassPathBuilder{
 	function getClassPath(string $path){
 		return $path;
+	}
+}
+
+/**
+ * @package SOY2.SOY2Action
+ */
+class SOY2Action extends SOY2ActionBase{
+	const SUCCESS = "_success_";
+	const FAILED = "_failed_";
+
+	private $_result;
+
+	/**
+	 * Action実行前準備
+	 */
+	protected function prepareImpl(SOY2ActionRequest	&$request,
+							   SOY2ActionResponse	$response){
+		return (method_exists($this,"prepare")) ? $this->prepare($request,$response) : null;
+	}
+	/**
+	 * Action実行
+	 */
+	protected function executeImpl(SOY2ActionRequest	&$request,
+							   SOY2ActionForm		&$form,
+							   SOY2ActionResponse	&$response){
+		return (method_exists($this,"execute")) ? $this->execute($request,$form,$response) : null;
+	}
+	/**
+	 * Action実行。
+	 * Get時に実行される。
+	 */
+	protected function doGetImpl(SOY2ActionRequest	&$request,
+							   SOY2ActionForm		&$form,
+							   SOY2ActionResponse	&$response){
+		return (method_exists($this,"doGet")) ? $this->doGet($request,$form,$response) : null;
+	}
+	/**
+	 * Action実行
+	 * Post時に実行される。
+	 */
+	protected function doPostImpl(SOY2ActionRequest	&$request,
+							   SOY2ActionForm		&$form,
+							   SOY2ActionResponse	&$response){
+		return (method_exists($this,"doPost")) ? $this->doPost($request,$form,$response) : null;
+	}
+	/**
+	 * Action実行後処理
+	 */
+	protected function clearanceImpl(SOY2ActionResponse	&$response){
+		if(method_exists($this,"clearance"))$this->clearance($response);
+		$response = null;
+	}
+	/**
+	 * Action実行処理
+	 * @final
+	 */
+	final function run(){
+		$request =& SOY2ActionRequest::getInstance();
+		$response =& SOY2ActionResponse::getInstance();
+		$this->_result = new SOY2ActionResult();
+		$this->prepareImpl($request,$response);
+		$formName = $this->getActionFormName();
+		$form = SOY2ActionForm::createForm($formName,$request);
+		if($request->getMethod() == 'POST'){
+			$result = $this->doPostImpl($request,$form,$response);
+			if($result)$this->_result->setResult($result);
+		}else if($request->getMethod() == 'GET'){
+			$result = $this->doGetImpl($request,$form,$response);
+			if($result)$this->_result->setResult($result);
+		}
+		$result = $this->executeImpl($request,$form,$response);
+		if($result)$this->_result->setResult($result);
+		$this->clearanceImpl($response);
+		return $this->_result;
+	}
+	/**
+	 * メッセージをリザルトオブジェクトに設定
+	 *
+	 * @param キー
+	 * @param 値
+	 */
+	function setMessage($key,$value){
+		$this->_result->setMessage($key,$value);
+	}
+	/**
+	 * リザルトオブジェクトからメッセージを取得
+	 *
+	 * @param　キー（省略可。省略時は全て）
+	 */
+	function getMessage($key = null){
+		return $this->_result->getMessage($key);
+	}
+	/**
+	 * エラーメッセージをリザルトオブジェクトに設定
+	 *
+	 * @param キー
+	 * @param 値
+	 */
+	function setErrorMessage($key,$value){
+		$this->_result->setErrorMessage($key,$value);
+	}
+	/**
+	 * リザルトオブジェクトからエラーメッセージを取得
+	 *
+	 * @param キー (省略可。省略時は全て)
+	 */
+	function getErrorMessage($key = null){
+		return $this->_result->getErrorMessage($key);
+	}
+	/**
+	 * リザルトオブジェクトに属性を設定
+	 *
+	 * @param キー
+	 * @param 値
+	 */
+	function setAttribute($key,$obj){
+		$this->_result->setAttribute($key,$obj);
+	}
+	/**
+	 * リザルトオブジェクトから属性を取得
+	 *
+	 * @param キー
+	 */
+	function getAttribute($key){
+		return $this->_result->getAttribute($key);
+	}
+	/**
+	 * ActionFormのクラス名を取得
+	 * ディフォルトはクラス名+Form
+	 *
+	 * オーバーライドすることでActionFormのクラスを変更することが可能
+	 */
+	function getActionFormName(){
+		return get_class($this). "Form";
+	}
+	/**
+	 * ユーザーセッションを呼び出す
+	 *
+	 * @return SOY2UserSession
+	 */
+	function getUserSession(){
+		return SOY2ActionSession::getUserSession();
+	}
+	/**
+	 * Flashセッションを呼び出す
+	 *
+	 * @return SOY2FlashSession
+	 */
+	function getFlashSession(){
+		return SOY2ActionSession::getFlashSession();
+	}
+}
+/**
+ * @package SOY2.SOY2Action
+ */
+class SOY2ActionResult{
+	private $_result;
+	private $_message;
+	private $_errorMessage;
+	private $_attributes;
+	function setResult($result){
+		switch($result){
+			case SOY2Action::SUCCESS:
+			case SOY2Action::FAILED:
+				$this->_result = $result;
+				break;
+			default:
+				throw new Exception("SOY2Action must return SOY2Action::SUCCESS or SOY2Action::FAILED.");
+		}
+	}
+	function __toString(){
+		return $this->_result;
+	}
+	function setMessage($key,$value){
+		$this->_message[$key] = $value;
+	}
+	function getMessage($key = null){
+		if(is_null($key)){
+			return $this->_message;
+		}
+		return (isset($this->_message[$key])) ? $this->_message[$key] : null;
+	}
+	function setErrorMessage($key,$value){
+		$this->_errorMessage[$key] = $value;
+	}
+	function getErrorMessage($key = null){
+		if(is_null($key)){
+			return $this->_errorMessage;
+		}
+		return (isset($this->_errorMessage[$key])) ? $this->_errorMessage[$key] : null;
+	}
+	function setAttribute($key,$obj){
+		$this->attributes[$key] = $obj;
+	}
+	function getAttribute($key){
+		if(is_null($key)){
+			return $this->attributes;
+		}
+		return (isset($this->attributes[$key])) ? $this->attributes[$key] : null;
+	}
+	/**
+	 * booleanを返します。
+	 *
+	 * PHP 5.2.0 以前では__toStringが使えないのでこちらを使用してください。
+	 *
+	 * @return boolean 成功か、失敗か
+	 */
+	function success(){
+		return ($this->_result == SOY2Action::SUCCESS) ? true : false;
+	}
+}
+/**
+ * @package SOY2.SOY2Action
+ */
+class SOY2ActionConfig{
+	private function __construct(){}
+	private $actionPath = "actions/";
+	private static function &getInstance(){
+		static $_static;
+		if(!$_static){
+			$_static = new SOY2ActionConfig();
+		}
+		return $_static;
+	}
+	public static function ActionDir($dir = null){
+		$config = self::getInstance();
+		if($dir){
+			if(substr($dir,strlen($dir)-1) != '/'){
+				throw new Exception("[SOY2Action]ActionDir must end by '/'.");
+			}
+			$config->actionPath = str_replace("\\", "/", $dir);
+		}
+		return $config->actionPath;
+	}
+}
+/**
+ * @package SOY2.SOY2Action
+ * SOY2ActionFactory
+ * SOY2Actionオブジェクトを作成します。
+ */
+class SOY2ActionFactory extends SOY2ActionBase{
+	static function &createInstance($path,$attributes = array()){
+		$obj = null;
+		if(class_exists($path)){
+			$obj = new $path();
+		}else{
+			$tmp = array();
+			if(preg_match('/\.?([a-zA-Z0-9]+$)/',$path,$tmp)){
+				$className = $tmp[1];
+			}
+			if(!class_exists($className)){
+				$fullPath = SOY2ActionConfig::ActionDir(). str_replace(".","/",$path).".class.php";
+				if(defined("SOY2ACTION_AUTO_GENERATE") && SOY2ACTION_AUTO_GENERATE == true && !file_exists($fullPath)){
+					SOY2ActionFactory::generateAction($className,$fullPath,$attributes);
+				}
+				include($fullPath);
+			}
+			$obj = new $className();
+		}
+		foreach($attributes as $key => $value){
+			if(method_exists($obj,"set".ucwords($key))){
+				$func = "set".ucwords($key);
+				$obj->$func($value);
+				continue;
+			}
+		}
+		return $obj;
+	}
+	private static function generateAction($className,$fullPath,$attributes){
+		$dirpath = dirname($fullPath);
+		while(realpath($dirpath) == false){
+			if(!mkdir($dirpath))return;
+			$dirpath = dirname($dirpath);
+		}
+		$docComment = array();
+		$docComment[] = "/**";
+		$docComment[] = " * @class $className";
+		$docComment[] = " * @date ".date("c");
+		$docComment[] = " * @author SOY2ActionFactory";
+		$docComment[] = " */ ";
+		$class = array();
+		$class[] = "class ".$className." extends SOY2Action{";
+		if(!empty($attributes)){
+			$class[] = "	";
+			$setter = array();
+			foreach($attributes as $key => $value){
+			$class[] = '	private $'.$key.';';
+			$setter[] = '	';
+			$setter[] = '	function set'.ucwords($key).'($'.$key.'){';
+			$setter[] = '		$this->'.$key.' = $'.$key.';';
+			$setter[] = '	}';
+			$setter[] = '	';
+			}
+			$class[] = implode("\n",$setter);
+		}
+		$class[] = "	";
+		$class[] = "	/**";
+		$class[] = "	 * Actionの実行を行います。";
+		$class[] = "	 */";
+		$class[] = '	protected function execute(SOY2ActionRequest &$request,SOY2ActionForm &$form, SOY2ActionResponse &$response){';
+		$class[] = "		";
+		$class[] = "		//フォームにエラーが発生していた場合";
+		$class[] = '		if($form->hasError()){';
+		$class[] = '			foreach($form->getErrors() as $key => $value){';
+		$class[] = '				$this->setErrorMessage($key,$form->getErrorString($key));';
+		$class[] = '			}';
+		$class[] = '			return SOY2Action::FAILED;';
+		$class[] = '		}';
+		$class[] = "		";
+		$class[] = "		";
+		$class[] = "		return SOY2Action::SUCCESS;";
+		$class[] = "	}";
+		$class[] = "}";
+		if(!empty($_POST)){
+			$class[] = "";
+			$class[] = "class ".$className."Form extends SOY2ActionForm{";
+			$setter = array();
+			foreach($_POST as $key => $value){
+			$class[] = '	var $'.$key.';';
+			$setter[] = '	';
+			$setter[] = '	/**';
+			$setter[] = '	 * @validator string {}';
+			$setter[] = '	 */';
+			$setter[] = '	function set'.ucwords($key).'($'.$key.'){';
+			$setter[] = '		$this->'.$key.' = $'.$key.';';
+			$setter[] = '	}';
+			$setter[] = '	';
+			}
+			$class[] = implode("\n",$setter);
+			$class[] = "}";
+		}
+		file_put_contents($fullPath,"<?php \n".implode("\n",$docComment) ."\n". implode("\n",$class)."\n?>");
+	}
+}
+
+/**
+ * @package SOY2.SOY2Action
+ *
+ * ヴァリデート
+ *
+ * 使い方
+ * setterのコメントに
+ * @validator ＜形式＞ ＜オプション＞
+ *
+ * オプションは省略化
+ * ヴァリデーターによって設定出来るオプションはさまざま
+ *
+ */
+abstract class SOY2ActionFormValidator{
+	var $_isRequire;
+	var $_message;
+	/**
+	 * @access public
+	 * 対応するバリデータを取得。
+	 * 無かったらnullを返す。
+	 *
+	 * @return SOY2ActionFormValidator
+	 */
+	public static function getValidator($param,ReflectionProperty &$property,ReflectionMethod &$reflectionMethod){
+		$comment = $reflectionMethod->getDocComment();
+		$comment = preg_replace('/^\s*\*|^\/\*\*|\/$|\n/m','',$comment);
+		$tmp = array();
+		if(!preg_match('/@validator\s+([^\s]*)(?:\s+(\{.*\}))?/m',$comment,$tmp))return null;
+		$type = $tmp[1];
+		$json = @$tmp[2];
+		$class = "SOY2ActionFormValidator_".ucwords($type)."Validator";
+		if(!class_exists($class)){
+			throw new Exception("[SOY2ActionFormValidator]".$class." is not defined.");
+		}
+		$obj = json_decode($json);
+		$validator = new $class($obj,$param);
+		$validator->_isRequire = (isset($obj->require)) ? $obj->require : false;
+		if(!empty($obj->message)){
+			$validator->_message = (array)$obj->message;
+		}
+		return $validator;
+	}
+	function getMessage($error){
+		return (isset($this->_message[$error])) ? $this->_message[$error] : null;
+	}
+	abstract function validate(SOY2ActionForm &$form,$propName,$value,$isRequire);
+}
+
+/**
+ * @package SOY2.SOY2Action
+ */
+class SOY2ActionRequest{
+	private $_hash;
+	private $_method;
+	public static function &getInstance(){
+		static  $_static;
+		if(!$_static){
+			$_static = new SOY2ActionRequest();
+			$_static->_hash = array_merge($_POST,$_GET);
+			$_static->_method = $_SERVER['REQUEST_METHOD'];
+		}
+		return $_static;
+	}
+	function getCookies(){
+	}
+	function getHeader($name){
+	}
+	function getMethod(){
+		return $this->_method;
+	}
+	function setMethod($method){
+		$this->_method = $method;
+	}
+	function getParameter($name){
+		return (isset($this->_hash[$name])) ? $this->_hash[$name] : null;
+	}
+	function getParameterNames(){
+		return array_keys($this->_hash);
+	}
+	function &getParameters(){
+		return $this->_hash;
+	}
+	function setParameter($key,$value){
+		$this->_hash[$key] = $value;
+	}
+	function addParameter($key,$value){
+		if(!isset($this->_hash[$key])){
+			$this->_hash[$key] = array($value);
+			return;
+		}
+		if(is_array($this->_hash[$key])){
+			$this->_hash[$key][] = $value;
+		}else{
+			$this->_hash[$key] = array($this->_hash[$key],$value);
+		}
+	}
+}
+
+/**
+ * @package SOY2.SOY2Action
+ */
+class SOY2ActionResponse{
+	private $_header = array();
+	public static function &getInstance(){
+		static  $_static;
+		if(!$_static){
+			$_static = new SOY2ActionResponse();
+		}
+		return $_static;
+	}
+	/**
+	 * @todo デストラクタでヘッダー送信はスマートじゃないかも。でも壊されない限り呼ばれないしな
+	 */
+	function __destruct(){
+		foreach($this->_header as $key => $value){
+			header($key.": ".$value);
+		}
+	}
+	function addHeader($key,$value){
+		if(!is_array(@$this->_header[$key])){
+			$this->_header[$key] = array(@$this->header[$key]);
+		}
+		$this->_header[$key] = $value;
+	}
+	function sendRedirect($url){
+		header("Location: ".$url);
+	}
+	function setHeader($key,$value){
+		$this->_header[$key] = $value;
+	}
+}
+
+/**
+ * @package SOY2.SOY2Action
+ */
+class SOY2ActionSession {
+    const session_user_key = "_SOY2_USER_";
+    const session_flash_key = "_SOY2_FLASH_";
+    /**
+     * @return SOY2UserSession
+     */
+    public static function &getUserSession(){
+    	if(session_status() == PHP_SESSION_NONE) session_start();
+    	if(!isset($_SESSION[self::session_user_key])){
+    		$_SESSION[self::session_user_key] = new SOY2UserSession();
+    	}
+    	return $_SESSION[self::session_user_key];
+    }
+    /**
+     * @return SOY2FlashSession
+     */
+    public static function &getFlashSession(){
+		static $_request;
+		if(session_status() == PHP_SESSION_NONE) session_start();
+    	if(is_null($_request)){
+    		$_request = true;
+    	}
+    	if(!isset($_SESSION[self::session_flash_key])){
+    		$_SESSION[self::session_flash_key] = new SOY2FlashSession();
+    	}
+    	if($_request == true){
+    		$_SESSION[self::session_flash_key]->checkFlash();
+    		$_request = false;
+    	}
+    	return $_SESSION[self::session_flash_key];
+    }
+    public static function regenerateSessionId(){
+		if(session_status() == PHP_SESSION_NONE){
+			session_start();
+			session_regenerate_id(true);
+		}
+    }
+}
+/**
+ * @package SOY2.SOY2Action
+ */
+class SOY2ActionSessionBase{
+	private $_hash = array();
+	function setAttribute($key,$value){
+		$this->_hash[$key] = soy2_serialize($value);
+		if(is_null($value)){
+			unset($this->_hash[$key]);
+		}
+	}
+	function getAttribute($key){
+		return (isset($this->_hash[$key]) && is_string($this->_hash[$key])) ? soy2_unserialize($this->_hash[$key]) : null;
+	}
+	function clearAttributes(){
+		$this->_hash = array();
+	}
+	function getAttributeKeys(){
+		return array_keys($this->_hash);
+	}
+}
+/**
+ * @package SOY2.SOY2Action
+ */
+class SOY2UserSession extends SOY2ActionSessionBase{
+	private $isAuthenticated = array();
+	private $credentials = array();
+	function setAuthenticated($key,$flag = null){
+		if(is_null($flag) && is_bool($key)){
+			$flag = $key;
+			$key = "default";
+		}
+		/**
+		 * 以前のハッシュでない$isAuthenticatedがセッションに残っていた時のため
+		 * 旧バージョンでのログイン中にファイルを入れ替えるとsetAuthenticatedをしても値が変わらなかった
+		 */
+		if(!is_array($this->isAuthenticated)){
+			$this->isAuthenticated = array();
+		}
+		$this->isAuthenticated[$key] = $flag;
+	}
+	function getAuthenticated($key = null){
+		if(is_null($key))$key = "default";
+		return (isset($this->isAuthenticated[$key])) ? $this->isAuthenticated[$key] : false;
+	}
+	function addCredential(){
+		$args = func_get_args();
+		foreach($args as $key => $value){
+			$this->credentials[$key] = $args[$key];
+		}
+	}
+	function hasCredential($key){
+		return (in_array($key,$this->credentials)) ? true : false;
+	}
+	function removeCredential($key){
+		if(!isset($this->credentials[$key]))return;
+		$this->credentials[$key] = null;
+		unset($this->credentials[$key]);
+	}
+	function clearCredentials(){
+		$this->credentials = array();
+	}
+}
+/**
+ * @package SOY2.SOY2Action
+ */
+class SOY2FlashSession extends SOY2ActionSessionBase{
+	private $isFlash = 0;
+	function checkFlash(){
+		$this->isFlash++;
+		if($this->isFlash >= 2){
+			$this->clearAttributes();
+			$this->resetFlashCounter();
+		}
+	}
+	function resetFlashCounter(){
+		$this->isFlash = 0;
+	}
+	/**
+	 * reset all flash session
+	 */
+	function reset($array = null){
+		$this->clearAttributes();
+    	$this->resetFlashCounter();
+    	if(is_array($array)){
+	    	foreach($array as $key => $value){
+	    		$this->setAttribute($key,$value);
+	    	}
+    	}
+	}
+}
+
+/**
+ * @package SOY2.SOY2Action
+ */
+class SOY2ActionFormValidator_NumberValidator extends SOY2ActionFormValidator{
+	var $max;
+	var $min;
+	function __construct($obj){
+		$this->max = @$obj->max;
+		$this->min = @$obj->min;
+	}
+	function validate(SOY2ActionForm &$form,$propName,$value,$require){
+		if($require && is_null($value)){
+			$form->setError($propName,new ActionFormError(get_class($form),$propName,get_class($this),"require",$this->getMessage("require")));
+		}
+		if(!$require && is_null($value)){
+			return null;
+		}
+		if(!is_numeric($value)){
+			$form->setError($propName,new ActionFormError(get_class($form),$propName,get_class($this),"type",$this->getMessage("type")));
+		}
+		if(isset($this->max) && (int)$this->max < (int)$value){
+			$form->setError($propName,new ActionFormError(get_class($form),$propName,get_class($this),"max",$this->getMessage("max")));
+		}
+		if(isset($this->min) && (int)$this->min > (int)$value){
+			$form->setError($propName,new ActionFormError(get_class($form),$propName,get_class($this),"min",$this->getMessage("min")));
+		}
+		return $value;
+	}
+}
+/**
+ * @package SOY2.SOY2Action
+ */
+class SOY2ActionFormValidator_StringValidator extends SOY2ActionFormValidator{
+	var $max;
+	var $min;
+	var $regex;
+	function __construct($obj){
+		$this->max = @$obj->max;
+		$this->min = @$obj->min;
+		$this->regex = @$obj->regex;
+	}
+	function validate(SOY2ActionForm &$form,$propName,$value,$require){
+		if($require && strlen($value) < 1){
+			$form->setError($propName,new ActionFormError(get_class($form),$propName,get_class($this),"require",$this->getMessage("require")));
+		}
+		if(!$require && strlen($value) < 1){
+			return null;
+		}
+		if(isset($this->max) && $this->max < strlen($value)){
+			$form->setError($propName,new ActionFormError(get_class($form),$propName,get_class($this),"max",$this->getMessage("max")));
+		}
+		if(isset($this->min) && $this->min > strlen($value)){
+			$form->setError($propName,new ActionFormError(get_class($form),$propName,get_class($this),"min",$this->getMessage("min")));
+		}
+		if(isset($this->regex) && !preg_match("/".$this->regex."/",$value)){
+			$form->setError($propName,new ActionFormError(get_class($form),$propName,get_class($this),"regex",$this->getMessage("regex")));
+		}
+		return $value;
+	}
+}
+
+/**
+ * @package SOY2.SOY2Action
+ */
+class SOY2ActionForm{
+	var $_errors = array();
+	function getParamName(){}
+	/**
+	 * プロパティ名を指定してエラー表示
+	 * @return boolean
+	 */
+	function isError($propName){
+		return (isset($this->_errors[$propName]) && is_a($this->_errors[$propName],'ActionFormError')) ? true : false;
+	}
+	/**
+	 * バリデートのエラーが存在するかどうか
+	 * @return boolean
+	 */
+	function hasError(){
+		return (count($this->_errors) > 0 ) ? true : false;
+	}
+	/**
+	 * プロパティ名を指定してエラーメッセージを取得
+	 * @return string エラーメッセージ
+	 */
+	function getErrorString($propName){
+		$error = @$this->_errors[$propName];
+		return ($error) ? $error->format() : null;
+	}
+	/**
+	 * プロパティ名を指定してエラーオブジェクトを取得
+	 * @return ActionFormError
+	 */
+	function getError($propName){
+		$error = @$this->_errors[$propName];
+		return $error;
+	}
+	/**
+	 * エラーを設定
+	 */
+	function setError($propName,ActionFormError $error){
+		$this->_errors[$propName] = $error;
+	}
+	/**
+	 * エラーを全て取得
+	 */
+	function getErrors(){
+		return $this->_errors;
+	}
+	/**
+	 * @access public static
+	 * フォームを作成
+	 *
+	 * @param フォーム名
+	 * @param SOY2ActionRequest
+	 */
+	public static function createForm($formName,&$request){
+		if(!class_exists($formName)){
+			return new SOY2ActionForm();
+		}
+		$form = new $formName();
+		$reflection = new ReflectionClass($formName);
+		if($form->getParamName()){
+			$param = $request->getParameter($form->getParamName());
+		}else{
+			$param = $request->getParameters();
+		}
+		if(!is_array($param)){
+			return $form;
+		}
+		foreach($param as $key => $value){
+			$param[strtolower($key)] = $value;
+		}
+		$reflectionProperties = $reflection->getProperties();
+		foreach($reflectionProperties as $property){
+			$funcName = "set".ucwords($property->getName());
+			try{
+				$method = $reflection->getMethod($funcName);
+				if($method->isInternal()){
+					continue;
+				}
+			}catch(Exception $e){
+				continue;
+			}
+			$value = @$param[strtolower($property->getName())];
+			$validator = SOY2ActionFormValidator::getValidator($param,$property,$method);
+			if($validator){
+				$value = $validator->validate($form,$property->getName(),$value,$validator->_isRequire);
+			}
+			$form->$funcName($value);
+		}
+		return $form;
+	}
+	function __toString(){
+		$values = array();
+		foreach($this as $key => $value){
+			if($key == "_errors")continue;
+			$values[$key] = $value;
+		}
+		return (string)http_build_query($values);
+	}
+}
+/**
+ * フォームバリデートのエラー保持クラス
+ */
+class ActionFormError{
+	var $className;
+	var $prop;
+	var $validator;
+	var $error;
+	var $message;
+	/**
+	 * @param string $class ActionFormクラス名
+	 * @param string $prop プロパティ名
+	 * @param string $validator Validator名
+	 * @param string $error エラー種別
+	 */
+	function __construct($class,$prop,$validator,$error,$message = null){
+		$this->className = $class;
+		$this->prop = $prop;
+		$this->validator = $validator;
+		$this->error = $error;
+		$this->message = $message;
+	}
+	function getFormat(){
+		return '$class->$propは$validatorの$error に違反しています';
+	}
+	function format(){
+		if($this->message){
+			return $this->message;
+		}
+		$format = $this->getFormat();
+		$format = str_replace('$class',$this->className,$format);
+		$format = str_replace('$prop',$this->prop,$format);
+		$format = str_replace('$validator',$this->validator,$format);
+		$format = str_replace('$error',$this->error,$format);
+		return $format;
+	}
+	function __toString(){
+		return $this->format();
+	}
+}
+
+/**
+ * @package SOY2.SOY2Action
+ */
+class SOY2ActionBase{
+	private $_classPath;
+	protected function getClassPath(){
+		if(is_null($this->_soy2_classPath)){
+			$reflection = new ReflectionClass(get_class($this));
+			$classFilePath = $reflection->getFileName();
+			$this->_soy2_classPath = str_replace("\\", "/", $classFilePath);
+		}
+		return $this->_classPath;
 	}
 }
 /**
@@ -1194,6 +2010,7 @@ class SOY2DAOException extends Exception{
 		$this->query = $query;
 	}
 }
+
 /**
  * 保存・削除などを自動化するメソッドを自動で追加
  */
@@ -1269,6 +2086,7 @@ class SOY2DAO_EntityBase {
     	$this->_dao = null;
     }
 }
+
 /**
  * SOY2DAO Entity Class
  *
@@ -1328,6 +2146,7 @@ class SOY2DAO_Entity{
 		}
 	}
 }
+
 /**
  * SOY2DAO_InsertQueryBuilder
  * insert文のQueryオブジェクトを作る
@@ -1378,6 +2197,7 @@ class SOY2DAO_InsertQueryBuilder extends SOY2DAO_QueryBuilder{
 		return $query;
 	}
 }
+
 /**
  * SOY2DAO_UpdateQueryBuiler
  * Update文のQueryオブジェクトを作る
@@ -1420,6 +2240,7 @@ class SOY2DAO_UpdateQueryBuilder extends SOY2DAO_QueryBuilder{
 		return $query;
 	}
 }
+
 /**
  * SOY2DAO_DeleteQueryBuilder
  * delete文のQueryオブジェクトを作る
@@ -1458,6 +2279,7 @@ class SOY2DAO_DeleteQueryBuilder extends SOY2DAO_QueryBuilder{
 		return $query;
 	}
 }
+
 /**
  * SOY2DAO_Query
  *
@@ -1687,6 +2509,7 @@ class SOY2DAO_Query{
 		$this->binds = $binds;
 	}
 }
+
 /**
  * @package SOY2.SOY2DAO
  */
@@ -1716,6 +2539,7 @@ class SOY2DAOContainer{
 		return $dao;
     }
 }
+
 /**
  * SOY2DAOFactory
  * クラス名からDAOImplを生成する
@@ -2199,6 +3023,7 @@ class SOY2DAOFactoryImpl extends SOY2DAOFactory {
 		return $entityInfo;
 	}
 }
+
 /**
  * SOY2DAO_EntityColumn
  *
@@ -2250,6 +3075,7 @@ class SOY2DAO_EntityColumn{
 		$this->sequence = $sequence;
 	}
 }
+
 /**
  * SOY2DAO_QueryBuilder
  *
@@ -2287,6 +3113,7 @@ class SOY2DAO_QueryBuilder{
 		return new SOY2DAO_Query();
 	}
 }
+
 /**
  * SOY2DAO_SelectQueryBuilder
  * Select文のQueryオブジェクトを作る
@@ -2323,6 +3150,7 @@ class SOY2DAO_SelectQueryBuilder extends SOY2DAO_QueryBuilder{
 		return $query;
 	}
 }
+
 /**
  * SOY2HTMLの基底クラス
  * @package SOY2.SOY2HTML
@@ -2364,6 +3192,7 @@ class SOY2HTMLBase{
 		}
 		return eval($variant.$code.";");
 	}
+
 	/**
 	 * 関数を追加登録します
 	 *
@@ -3189,6 +4018,7 @@ class SOY2HTMLFactory extends SOY2HTMLBase{
 				$class->setAttribute($key, (string)$value);
 			}
 		}
+
 		return $class;
 	}
 	/**
@@ -3375,6 +4205,7 @@ class SOY2HTMLFactory extends SOY2HTMLBase{
  * SOY2HTMLが出力するSOY2HTMLException
  */
 class SOY2HTMLException extends Exception{}
+
 /**
  * @package SOY2.SOY2HTML
  */
@@ -3387,13 +4218,13 @@ class HTMLLabel extends SOY2HTML{
 	private $isHtml = false;
 	private $suffix = "...";
 	function setText($text){
-		$this->text = (string)$text;
+		$this->text = (!is_array($text) && !is_object($text)) ? (string)$text : "";
 	}
 	function getText(){
 		return (string)$this->text;
 	}
 	function setHtml($html){
-		$this->text = (is_string($html)) ? (string)$html : "";
+		$this->text = (!is_array($html) && !is_object($html)) ? (string)$html : "";
 		$this->isHtml = true;
 	}
 	function getObject(){
@@ -3444,6 +4275,7 @@ class HTMLLabel extends SOY2HTML{
 		$this->suffix = $suffix;
 	}
 }
+
 function soy2html_layout_include(string $file){
 	$layoutDir = SOY2HTMLConfig::LayoutDir();
 	@include($layoutDir . $file);
@@ -3460,6 +4292,7 @@ function soy2html_layout_get(string $file){
 		throw $e;
 	}
 }
+
 /**
  * @package SOY2.SOY2HTML
  */
@@ -3490,6 +4323,7 @@ class HTMLLink extends HTMLLabel{
 		}
 		$suffix = $this->getAttribute($this->_soy2_prefix . ":suffix");
 		if($suffix) $this->link .= $suffix;
+
 		$this->setAttribute("href",(string)$this->link);
 		if(is_string($this->target) && strlen($this->target)){
 			$this->setAttribute("target",$this->target);
@@ -3525,6 +4359,7 @@ class HTMLActionLink extends HTMLLink{
 		$this->setAttribute("href",$link);
 	}
 }
+
 /**
  * @package SOY2.SOY2HTML
  * HTMLHeadコンポーネント
@@ -3671,6 +4506,7 @@ class HTMLHead extends SOY2HTML{
 		return ((!empty($linkArray)) ? "\n" : "") . implode("\n",$linkArray);
     }
 }
+
 /**
  * 各ページの設定をするクラスの基底となるクラス
  *
@@ -3682,11 +4518,13 @@ class HTMLPage extends SOYBodyComponentBase{
 	protected $_soy2_page;
 	private $_soy2_body_element;
 	private $_soy2_head_element;
+
 	/**
 	 * キャッシュファイルの生成に失敗しているか判定する為の文字数
 	 * キャッシュファイルの生成に失敗すると白紙ページになってしまい、一定期間キャッシュが残ってしまう
 	 */
 	const CACHE_CONTENTS_LENGTH_MIN = 81;
+
 	function __construct(){
 		$this->prepare();
 	}
@@ -3900,6 +4738,7 @@ class HTMLPage extends SOYBodyComponentBase{
 		}else{
 			$html = "";
 		}
+
 		$layoutDir = SOY2HTMLConfig::LayoutDir();
 		$layout = $this->getLayout();
 		if($layoutDir && is_file($layoutDir . $layout)){
@@ -3970,6 +4809,7 @@ class HTMLPage extends SOYBodyComponentBase{
 		if(file_exists($hidden_mode_html)){
 			return $hidden_mode_html;
 		}
+
 		return $dir . get_class($this) . ".html";
 	}
 	/**
@@ -4340,6 +5180,7 @@ class HTMLPage_HeadElement extends HTMLPage_ChildElement{
 		return $html;
 	}
 }
+
 /**
  * ページャーコンポーネント
  */
@@ -4530,6 +5371,7 @@ class SOY2HTMLPager_List extends HTMLList{
 		$this->current = $cuttent;
 	}
 }
+
 /**
  * @package SOY2.SOY2HTML
  */
@@ -4558,6 +5400,7 @@ class WebPage extends HTMLPage{
 		return "default.php";
 	}
 }
+
 /**
  * @package SOY2.SOY2HTML
  */
@@ -4618,6 +5461,7 @@ class SOYBodyComponentBase extends SOY2HTML{
 	function isMerge(){
 		return true;
 	}
+
 	/** PHP7.4対応 __call()の廃止 **/
 	function addForm(string $id, array $array=array()){self::createAdd($id, "HTMLForm", $array);}
 	function addUploadForm(string $id, array $array=array()){self::createAdd($id, "HTMLUploadForm", $array);}
@@ -4762,6 +5606,7 @@ class HTMLModel extends SOY2HTML{
 		return "";
 	}
 }
+
 /**
  * @package SOY2.SOY2HTML
  */
@@ -4779,6 +5624,7 @@ class HTMLCSSLink extends SOY2HTML{
 		return $this->link;
 	}
 }
+
 /**
  * @package SOY2.SOY2HTML
  */
@@ -4808,6 +5654,7 @@ class HTMLScript extends SOY2HTML{
     	}
     }
 }
+
 /**
  * @package SOY2.SOY2HTML
  */
@@ -4928,6 +5775,7 @@ class HTMLList_LoopModel extends HTMLModel{
 		return $this->counter;
 	}
 }
+
 /**
  * @package SOY2.SOY2HTML
  */
@@ -4983,7 +5831,9 @@ class HTMLForm extends SOYBodyComponentBase{
  * @package SOY2.SOY2HTML
  */
 class HTMLUploadForm extends HTMLForm{
+
 	private $accept;
+
 	function execute(){
 		parent::execute();
 		$this->setAttribute("enctype","multipart/form-data");
@@ -5336,6 +6186,7 @@ class HTMLCheckBox extends HTMLInput {
 		return (boolean)$this->isBoolean;
 	}
 }
+
 /**
  * @package SOY2.SOY2HTML
  */
@@ -5358,6 +6209,7 @@ class HTMLImage extends SOY2HTML{
     	$this->setAttribute("alt", (string)$alt);
     }
 }
+
 class HTMLTreeComponent_Child extends HTMLModel{
 	private $func = "";
 	function getStartTag(){
@@ -5517,6 +6369,7 @@ class HTMLCSS extends SOY2HTML{
 		return $this->text;//htmlspecialchars((string)$this->text,ENT_QUOTES,SOY2HTML::ENCODING)
 	}
 }
+
 /**
  * @package SOY2.SOY2HTML
  */
@@ -5782,6 +6635,7 @@ class SOY2HTML_ControllPlugin extends PluginBase{
 		return  parent::getEndTag() . "<?php } ?>";
 	}
 }
+
 /**
  * @package SOY2.SOY2Logic
  */
@@ -5866,6 +6720,7 @@ class SOY2LogicContainer {
 		return $obj;
     }
 }
+
 class SOY2Mail {
 	/**
 	 *
@@ -6246,6 +7101,7 @@ interface SOY2Mail_ReceiverInterface{
 	function close();
 }
 class SOY2MailException extends Exception{}
+
 /**
  * SOY2Mail 標準サーバ設定クラス
  *
@@ -6469,6 +7325,7 @@ class SOY2Mail_ServerConfig {
     	$this->encoding = $encoding;
     }
 }
+
 class SOY2Mail_POPLogic extends SOY2Mail implements SOY2Mail_ReceiverInterface{
 	private $con;
 	private $host;
@@ -6644,6 +7501,7 @@ class SOY2Mail_POPLogic extends SOY2Mail implements SOY2Mail_ReceiverInterface{
 		return $headers;
 	}
 }
+
 class SOY2Mail_IMAPLogic extends SOY2Mail implements SOY2Mail_ReceiverInterface{
 	private $con;
 	private $host;
@@ -6839,6 +7697,7 @@ class SOY2Mail_IMAPLogic extends SOY2Mail implements SOY2Mail_ReceiverInterface{
 		$this->pass = $pass;
 	}
 }
+
 class SOY2Mail_SendMailLogic extends SOY2Mail implements SOY2Mail_SenderInterface{
     function __construct(array $options) {}
     function open(){}
@@ -6970,6 +7829,7 @@ class SOY2Mail_SendMailLogic extends SOY2Mail implements SOY2Mail_SenderInterfac
 		}
     }
 }
+
 class SOY2Mail_SMTPLogic extends SOY2Mail implements SOY2Mail_SenderInterface{
 	private $con;
 	private $host;
@@ -7381,6 +8241,7 @@ class SOY2Mail_SMTPAuth_DigestMD5{
 		return $resonseStr;
 	}
 }
+
 /**
  * @package SOY2.SOY2Plugin
  */
@@ -7543,6 +8404,7 @@ class SOY2Plugin{
 		$this->objects = $objects;
 	}
 }
+
 class SOY2Session{
 	const _KEY_ = "_soy2_session_";
 	private static $_deleted_class = null;
@@ -7663,6 +8525,7 @@ class SOY2SessionValue{
 		$this->classObject = SOY2::cast($this->className,(object)$obj);
 	}
 }
+
 /**
  * serializeしたあとにaddslashesを行う
  *
@@ -7679,6 +8542,7 @@ function soy2_serialize($var){
 function soy2_unserialize(string $string){
 	return (strlen($string)) ? unserialize(stripslashes($string)) : array();
 }
+
 /**
  * soy2_scanfiles
  * 特定のディレクトリの下にあるファイルを全て列挙
@@ -7697,6 +8561,7 @@ function soy2_scanfiles(string $dir, int $depth=-1){
 	}
 	return $res;
 }
+
 /**
  * realpath 末尾が必ず「/」で返値
  */
@@ -7717,6 +8582,7 @@ function soy2_realurl(string $url){
 	if(preg_match('/\.html$|\.htm$|\.xml$|\.css$|\.js$|\.json$|\.php$/i', $arg)) return $url;
 	return $url . "/";
 }
+
 /**
  * include file(replace require(*))
  * @param path
@@ -7728,6 +8594,7 @@ function soy2_require(string $file, bool $isThrowException=false){
 	if($isThrowException && !$res)throw new Exception("File Not Found:" . $file);
 	return $res;
 }
+
 /**
  * 「.」から始まるディレクトリを取り除いたscandir
  *
@@ -7749,11 +8616,13 @@ function soy2_setcookie(string $key, string $value="", array $opts=array()){
 	if(!count($opts)) $opts = session_get_cookie_params();	//optsが空の場合はセッションの設定を用いる
 	if(!strlen($value))	$opts["expires"] = time()-1;	//valueが空文字の場合はクッキーを削除する
 	if(isset($opts["lifetime"])) unset($opts["lifetime"]);	//lifetimeがある場合は削除
+
 	if(!isset($opts["path"]) || !is_string($opts["path"]) || !strlen($opts["path"])) $opts["path"] = "/";
 	if(!isset($opts["domain"]) || !is_string($opts["domain"]) || !strlen($opts["domain"])) $opts["domain"] = null;
 	if(!isset($opts["expires"]) || !is_numeric($opts["expires"])) $opts["expires"] = 0;
 	if(!isset($opts["httponly"]) || !is_bool($opts["httponly"])) $opts["httponly"] = true;
 	if(!isset($opts["secure"]) || !is_bool($opts["secure"])) $opts["secure"] = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on");
+
 	$vArr = explode(".", phpversion());
 	if(($vArr[0] >= 8 || ($vArr[0] >= 7 && $vArr[1] >= 3))){	//php 7.3以降 samesiteの指定が出来る
 		if(!isset($opts["samesite"])) {	// SameSiteの値はセッションの設定から取得する
@@ -7766,6 +8635,7 @@ function soy2_setcookie(string $key, string $value="", array $opts=array()){
 		setcookie($key, $value , $opts["expires"], $opts["path"], $opts["domain"], $opts["secure"], $opts["httponly"]);
 	}
 }
+
 /*
  * number_formatの第一引数が数字ではなかった場合
  */
@@ -7773,6 +8643,7 @@ function soy2_number_format($int){
 	if(!is_numeric($int)) return 0;
 	return number_format($int);
 }
+
 /*
  * tokenを発行など
  */
@@ -7923,6 +8794,7 @@ function soy2_image_resizeimage_gd(string $filepath, string $savepath, int $widt
 			break;
 	}
 }
+
 /**
  * PathをURLに変換
  */
@@ -7932,11 +8804,14 @@ function soy2_path2url(string $path){
 	$url = str_replace($root,"/",$path);
 	return $url;
 }
+
 function soy2_check_referer(){
 	$referer = parse_url($_SERVER['HTTP_REFERER']);
 	$port = (isset($referer["port"]) && ($referer["port"] != 80 || $referer["port"] != 443)) ? ":" . $referer["port"] : "";
 	if($referer['host'] . $port !== $_SERVER['HTTP_HOST']) return false;
+
 	$_path = $referer["path"];
+
 	//pathinfoがある時は削除する
 	$queryString = $_SERVER['QUERY_STRING'];
 	if(is_numeric(strpos($queryString, "pathinfo"))){
@@ -7947,6 +8822,7 @@ function soy2_check_referer(){
 			if($v[0] == "pathinfo" || !isset($v[1])) continue;
 			$params[$v[0]] = $v[1];
 		}
+
 		$queryString = "";
 		if(count($params)){
 			foreach($params as $key => $v){
@@ -7955,6 +8831,7 @@ function soy2_check_referer(){
 			}
 		}
 	}
+
 	if(isset($queryString) && strlen($queryString)) $_path .= "?" . $queryString;
 	return ($_path == $_SERVER['REQUEST_URI']);
 }
@@ -7965,6 +8842,7 @@ function soy2_strpos(string $haystack, string $needle, int $offset = 0){
 	$res = strpos($haystack, $needle, $offset);
 	return (is_numeric($res)) ? $res : -1;
 }
+
 /**
  * 文字列中に、ある部分文字列が最後に現れる場所を探す ヒットしない場合は-1を返す
  */
@@ -7972,14 +8850,17 @@ function soy2_strrpos(string $haystack, string $needle, int $offset = 0){
 	$res = strrpos($haystack, $needle, $offset);
 	return (is_numeric($res)) ? $res : -1;
 }
+
 function soy2_stripos(string $haystack, string $needle, int $offset = 0){
 	$res = stripos($haystack, $needle, $offset);
 	return (is_numeric($res)) ? $res : -1;
 }
+
 function soy2_strripos(string $haystack, string $needle, int $offset = 0){
 	$res = strripos($haystack, $needle, $offset);
 	return (is_numeric($res)) ? $res : -1;
 }
+
 /*
  * soy2_image_info
  * @param String filepath
@@ -8025,6 +8906,7 @@ function soy2_image_info(string $filepath){
 	}
 	return null;
 }
+
 function soy2_cancel_magic_quotes_gpc(){
 	if(get_magic_quotes_gpc()){
 		$_POST = soy2_stripslashes($_POST);
