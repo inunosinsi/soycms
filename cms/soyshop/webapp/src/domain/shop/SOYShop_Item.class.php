@@ -497,10 +497,17 @@ class SOYShop_Item {
 	}
 	function getSellingPrice() {
 		if($this->isOnSale()){
+			// セール期間プラグインが有効である場合は該当する商品がセール期間中であるか？を調べる 
+			if(!SOYShopPluginUtil::checkIsActive("common_sale_period")) return $this->getSalePrice();
+
+			$logic = SOY2Logic::createInstance("module.plugins.common_sale_period.logic.PriceLogic");
+			if($logic->getSaleDate($this->id, "start") > time()) return $this->getPrice();
+
+			if($logic->getSaleDate($this->id, "end") < time()) return $this->getPrice();
+
 			return $this->getSalePrice();
-		}else{
-			return $this->getPrice();
 		}
+		return $this->getPrice();
 	}
 	function setSellingPrice($sellingPrice) {
 		$this->sellingPrice = $sellingPrice;
