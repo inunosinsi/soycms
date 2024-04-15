@@ -31,8 +31,23 @@ class EntryBlockComponent implements BlockComponent{
 
 	private function _getEntries(array $entryIds){
 		$return = array();
+		
+		$onLoads = CMSPlugin::getEvent('onEntryGet');
 		foreach($entryIds as $entryId){
 			$entry = soycms_get_entry_object((int)$entryId);
+			
+			if(is_array($onLoads) && count($onLoads)){
+				foreach($onLoads as $plugin){
+					$func = $plugin[0];
+					$res = call_user_func($func, array('blogLabelId' => 0, 'alias' => $entry->getAlias()));
+					if($res instanceof Entry && is_numeric($res->getId()) && $res->getId() > 0){
+						$entry = $res;
+						unset($res);
+						break;
+					}
+				}
+			}
+
 			//Check opening status
 			if($entry->isActive() == Entry::ENTRY_ACTIVE){
 			 	$return[] = $entry;
@@ -41,7 +56,6 @@ class EntryBlockComponent implements BlockComponent{
 			}
 		}
 		return $return;
-
 	}
 
 	/**

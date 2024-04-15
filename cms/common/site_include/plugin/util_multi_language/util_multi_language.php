@@ -21,7 +21,7 @@ class UtilMultiLanguagePlugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.0.1"
+			"version"=>"1.0.3"
 		));
 
 		//二回目以降の動作
@@ -178,7 +178,7 @@ class UtilMultiLanguagePlugin{
 	}
 
 	function onEntryGet($args){
-		$blogLabelId = &$args["blogLabelId"];
+		//$blogLabelId = &$args["blogLabelId"];
 		$alias = &$args["alias"];
 		$entryId = soycms_get_entry_object_by_alias($alias)->getId();
 		if(!is_numeric($entryId)) return null;

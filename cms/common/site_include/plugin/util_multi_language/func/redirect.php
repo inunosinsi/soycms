@@ -68,7 +68,13 @@ function multi_language_redirect(CMSPageController $controller, array $cnf, int 
 				exit;
 			}
 
-			// GETパラメータでpathinfoがある時にリダイレクトを行うとリダイレクトループにハマる
+			/** GETパラメータでpathinfoがある時にリダイレクトを行うとリダイレクトループにハマる **/
+			
+			// 日本語設定以外の時はリダイレクトをしても良い
+			if(SOYCMS_PUBLISH_LANGUAGE != SOYCMSUtilMultiLanguageUtil::LANGUAGE_JP){
+				SOY2PageController::redirect($redirectPath);
+				exit;
+			}
 
 		}else{
 			CMSPageController::redirect($redirectPath);
