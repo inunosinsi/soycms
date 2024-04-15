@@ -10,8 +10,14 @@ Entry.Render = function(){
 	Entry.allLength = 0;
 
 	$.each(Entries, function(id, entry){
-		if(Entry.currentLabel == null || (!isNaN(Entry.currentLabel) && entry.label.includes(parseInt(Entry.currentLabel)))){
+		if(Entry.currentLabel == null){
 			entry.buildTable($("#all_entry_list"));
+		}else if(!isNaN(Entry.currentLabel)) {
+			if(entry.label.includes(parseInt(Entry.currentLabel))){	// Array.includes(int版)
+				entry.buildTable($("#all_entry_list"));
+			}else if(entry.label.includes(Entry.currentLabel)){	// Array.includes(string版)
+				entry.buildTable($("#all_entry_list"));
+			}
 		}
 	});
 	
