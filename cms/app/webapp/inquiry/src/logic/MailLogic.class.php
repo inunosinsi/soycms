@@ -4,6 +4,7 @@ class MailLogic extends SOY2LogicBase{
 
 	private $serverConfig;
 	private $formConfig;
+	private $templateDir;
 	private $send;
 	private $receive;
 	private $replyTo;
@@ -164,6 +165,15 @@ class MailLogic extends SOY2LogicBase{
 				}
 			}
 
+			//テンプレート毎の拡張機能
+			if(is_readable($this->templateDir . "add.mailaddress.php")){
+				ob_start();
+				include_once($this->templateDir . "add.mailaddress.php");
+				$_dust = ob_get_contents();
+				ob_end_clean();
+				unset($_dust);
+			}
+			
 			if(count($sendTo)){
 				//送信前にfromとタイトルの値が存在しているかチェック。登録されていなければ、フォーム別の値を取得する
 				if(strlen($this->send->getFrom()->getAddress()) === 0){
@@ -175,6 +185,9 @@ class MailLogic extends SOY2LogicBase{
 
 				$content = htmlspecialchars_decode($mailBody[0], ENT_QUOTES);
 				foreach($sendTo as $email){
+					$email = trim($email);
+					if(!strlen($email) || is_bool(strpos($email, "@"))) continue;
+
 					try{
 						$this->sendMail(
 							$email,
@@ -273,6 +286,12 @@ class MailLogic extends SOY2LogicBase{
 	}
 	function setFormConfig($formConfig) {
 		$this->formConfig = $formConfig;
+	}
+	function getTemplateDir(){
+		return $this->templateDir;
+	}
+	function setTemplateDir($templateDir){
+		$this->templateDir = $templateDir;
 	}
 	function getSend() {
 		return $this->send;

@@ -56,13 +56,16 @@ class SOYInquiryUtil{
 		$old["pass"] = SOY2DAOConfig::pass();
 
 		if(!strlen($shopId)) $shopId = "shop";
-		$soyshopWebapp = dirname(CMS_COMMON) . "/soyshop/webapp/";
+
+		if(!defined("SOYSHOP_ROOT")) define("SOYSHOP_ROOT", dirname(CMS_COMMON)."/soyshop/");
+		if(!defined("SOYSHOP_WEBAPP")) define("SOYSHOP_WEBAPP", SOYSHOP_ROOT."webapp/");
+
 		if(!defined("SOYSHOP_SITE_DIRECTORY")) {
-			if(file_exists($soyshopWebapp."conf/shop/" . $shopId . ".conf.php")){
-				include_once($soyshopWebapp."conf/shop/" . $shopId . ".conf.php");
+			if(file_exists(SOYSHOP_WEBAPP."conf/shop/" . $shopId . ".conf.php")){
+				include_once(SOYSHOP_WEBAPP."conf/shop/" . $shopId . ".conf.php");
 			}else{
 				//なんでも良いからconf.phpファイルを探す
-				$cnfDir = $soyshopWebapp."conf/shop/";
+				$cnfDir = SOYSHOP_WEBAPP."conf/shop/";
 				if(is_dir($cnfDir)){
 					if($dh = opendir($cnfDir)){
 						while(($file = readdir($dh)) !== false && strpos($file, ".conf.php") && !strpos($file, ".admin.")) {
@@ -75,9 +78,10 @@ class SOYInquiryUtil{
 			}
 		}
 
-		$entityDir = $soyshopWebapp . "src/domain/";
 
-		SOY2::RootDir($soyshopWebapp . "/src/");
+		$entityDir = SOYSHOP_WEBAPP . "src/domain/";
+
+		SOY2::RootDir(SOYSHOP_WEBAPP . "/src/");
 		SOY2DAOConfig::DaoDir($entityDir);
 		SOY2DAOConfig::EntityDir($entityDir);
 		SOY2DAOConfig::Dsn(SOYSHOP_SITE_DSN);
@@ -124,24 +128,6 @@ class SOYInquiryUtil{
 	 */
 	public static function checkSOYShopInstall(){
 		return (file_exists(dirname(CMS_COMMON) . "/soyshop/"));
-	}
-
-	public static function getSOYShopSiteId(){
-		if(!defined("SOYSHOP_SITE_ID")){
-			$old = self::switchConfig();
-
-			$siteDao = SOY2DAOFactory::create("SOYShop_SiteDAO");
-			try{
-				$site = $siteDao->getById(SOYINQUERY_SOYSHOP_CONNECT_SITE_ID);
-			}catch(Exception $e){
-				$site = new SOYShop_Site();
-			}
-			define("SOYSHOP_SITE_ID", $site->getSiteId());
-
-			self::resetConfig($old);
-		}
-
-		return SOYSHOP_SITE_ID;
 	}
 
 	/** tr_propertyが使用可能なフォームを選択しているか？ **/
@@ -466,6 +452,6 @@ class SOYInquiryUtil{
 	}
 
 	private static function _getParameterKeys(){
-		return array("site_id", "page_id", "entry_id");
+		return array("site_id", "page_id", "entry_id", "item_id");
 	}
 }

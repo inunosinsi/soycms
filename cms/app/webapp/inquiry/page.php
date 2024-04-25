@@ -487,7 +487,8 @@ class SOYInquiry_PageApplication{
 		//メール送信用のロジック作成
 		$mailLogic = SOY2Logic::createInstance("logic.MailLogic", array(
 			"serverConfig" => $this->serverConfig,
-			"formConfig" => $this->form->getConfigObject()
+			"formConfig" => $this->form->getConfigObject(),
+			"templateDir" => $this->templateDir
 		));
 
 		//ユーザへの通知メールを検索する

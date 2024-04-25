@@ -241,19 +241,11 @@ class InquiryLogic extends SOY2LogicBase{
 		if(!strlen($sql)) return;
 
 		if(defined("SOYINQUERY_SOYSHOP_CONNECT_SITE_ID") && strlen(SOYINQUERY_SOYSHOP_CONNECT_SITE_ID)){
-			$old = SOYInquiryUtil::switchConfig();
-			$siteDao = SOY2DAOFactory::create("SOYShop_SiteDAO");
-			try{
-				$site = $siteDao->getById(SOYINQUERY_SOYSHOP_CONNECT_SITE_ID);
-			}catch(Exception $e){
-				$site = new SOYShop_Site();
-			}
-			if(!defined("SOYSHOP_SITE_ID")) define("SOYSHOP_SITE_ID", (string)$site->getSiteId());
-			SOYInquiryUtil::resetConfig($old);
+			SOY2Logic::createInstance("logic.SOYShopConnectLogic")->setSOYShopSiteIdConstant();
 
 			//ここからSOY Shopの顧客名簿に値を放り込む作業
 			$old = SOYInquiryUtil::switchSOYShopConfig(SOYSHOP_SITE_ID);
-
+			
 			try{
 	    		$dao = new SOY2DAO();
 	    		$dao->executeUpdateQuery($sql, $binds);
@@ -375,8 +367,19 @@ class InquiryLogic extends SOY2LogicBase{
 		$alias[] = ":now";
 		$binds[":now"] = time();
 
+		switch($mode){
+			case self::MODE_MAIL:
+				$tableName = "soymail_user";
+				break;
+			case self::MODE_SHOP:
+			default:
+				$tableName = "soyshop_user";
+				break;
+
+		}
+
 		//SQLを組み立てる
-		$sql  = "insert into soy" . $mode . "_user(" . implode(",", $keys) . ") ";
+		$sql  = "insert into ".$tableName."(" . implode(",", $keys) . ") ";
 		$sql .= "values(". implode(",", $alias) . ")";
 		return array($sql, $binds);
 	}

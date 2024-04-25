@@ -6,10 +6,11 @@ class SOYShopConnectLogic extends SOY2LogicBase{
 
 	function getSOYShopSiteList(){
 		if(!$this->checkVersion) $this->checkVersion = $this->checkVersion();
-
+		
 		$sites = array();
 		if($this->checkVersion){
 			$old = SOYInquiryUtil::switchConfig();
+			// SOYShop_SiteDAOがある場合
 			if(file_exists(SOY2::RootDir() . "domain/SOYShop_SiteDAO.class.php")){
 				try{
 					//SOY Shopがインストールされていない可能性がある
@@ -18,6 +19,18 @@ class SOYShopConnectLogic extends SOY2LogicBase{
 					//
 				}
 			}
+
+			if(!count($sites)){
+				// SOYShop_SiteDAO廃止用のコード
+				CMSApplication::switchRoot();
+				CMSApplication::switchDomain();
+				try{
+					$sites = SOY2DAOFactory::create("admin.SiteDAO")->getBySiteType(Site::TYPE_SOY_SHOP);
+				}catch(Exception $e){
+					//
+				}
+			}
+
 			SOYInquiryUtil::resetConfig($old);
 		}
 
@@ -25,7 +38,7 @@ class SOYShopConnectLogic extends SOY2LogicBase{
 
 		$list = array();
 		foreach($sites as $site){
-			$list[$site->getId()] = $site->getName();
+			$list[$site->getId()] = (method_exists($site, "getSiteName")) ? $site->getSiteName() : $site->getName();
 		}
 
 		return $list;
@@ -67,7 +80,7 @@ class SOYShopConnectLogic extends SOY2LogicBase{
 	function getSOYShopUser(){
 		static $user;
 		if(is_null($user)){
-			$shopId = SOYInquiryUtil::getSOYShopSiteId();
+			$shopId = self::_getSOYShopSiteId();
 			if(!is_string($shopId)) $shopId = "";
 			$old = SOYInquiryUtil::switchSOYShopConfig($shopId);
 
@@ -88,5 +101,60 @@ class SOYShopConnectLogic extends SOY2LogicBase{
 			SOYInquiryUtil::resetConfig($old);
 		}
 		return $user;
+	}
+
+	/**
+	 * @param int
+	 * @return string
+	 */
+	function getItemNameByItemId(int $itemId){
+		if($itemId <= 0) return 0;
+
+		$old = SOYInquiryUtil::switchSOYShopConfig(self::_getSOYShopSiteId());
+		$name = "";
+
+		try{
+			$item = SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getById($itemId);
+			if($item->isPublished()) $name = trim($item->getOpenItemName());
+		}catch(Exception $e){
+			//
+		}
+		SOYInquiryUtil::resetConfig($old);
+		return htmlspecialchars($name, ENT_QUOTES, "UTF-8");
+	}
+
+	function setSOYShopSiteIdConstant(){
+		$itemId = (self::_getSOYShopSiteId() > 0) ? (int)SOYInquiryUtil::getParameter("item_id") : 0;
+		if(!defined("SOYSHOP_ITEM_ID")) define("SOYSHOP_ITEM_ID", $itemId);
+	}
+
+	/**
+	 * @return string
+	 */
+	private function _getSOYShopSiteId(){
+		if(!defined("SOYSHOP_SITE_ID") && defined("SOYINQUERY_SOYSHOP_CONNECT_SITE_ID")){
+			$old = SOYInquiryUtil::switchConfig();
+
+			try{
+				$siteId = (string)SOY2DAOFactory::create("SOYShop_SiteDAO")->getById(SOYINQUERY_SOYSHOP_CONNECT_SITE_ID)->getSiteId();
+			}catch(Exception $e){
+				$siteId = "";
+			}
+			if(!strlen($siteId)){
+				// SOYShop_SiteDAO廃止用のコード
+				CMSApplication::switchRoot();
+				CMSApplication::switchDomain();
+				try{
+					$siteId = (string)SOY2DAOFactory::create("admin.SiteDAO")->getById(SOYINQUERY_SOYSHOP_CONNECT_SITE_ID)->getSiteId();
+				}catch(Exception $e){
+					//
+				}
+			}
+			define("SOYSHOP_SITE_ID", $siteId);
+
+			SOYInquiryUtil::resetConfig($old);
+		}
+
+		return SOYSHOP_SITE_ID;
 	}
 }
