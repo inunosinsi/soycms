@@ -35,32 +35,25 @@ class CommonCustomerVoice extends SOYShopItemCustomFieldBase{
 
 		$html = array();
 
-		$html[] = "<h1>お客様の声</h1>";
+		$html[] = "<br><div class=\"alert alert-info\">お客様の声</div>";
 
 		$counter = 1;
 		if(count($values)){
 			for($i = 0; $i < count($values); $i++){
 
-				$html[] = "<dt>お客様の声" . $counter . "</dt>";
-				$html[] = "<dd>";
-
+				$html[] = "<div class=\"form-group\">";
+				$html[] = "<label>お客様の声" . $counter . "</label>";
 				$html[] = $class->buildNameArea($values[$i]["name"]);
 				$html[] = $class->buildTextArea($values[$i]["value"]);
-
-				$html[] = "</dd>";
-
+				$html[] = "</div>";
 				$counter++;
 			}
 		}
 
-		$html[] = "<dt>お客様の声" . $counter . "</dt>";
-		$html[] = "<dd>";
-
+		$html[] = "<div class=\"form-group\">";
+		$html[] = "<label>お客様の声" . $counter . "</label>";
 		$html[] = $class->buildNameArea();
 		$html[] = $class->buildTextArea();
-
-		$html[] = "</dd>";
-
 		return implode("\n", $html);
 	}
 
