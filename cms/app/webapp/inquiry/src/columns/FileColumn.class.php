@@ -87,7 +87,7 @@ class FileColumn extends SOYInquiry_ColumnBase{
 
 		$values = $this->getValue();
 
-		if(count($values)){
+		if(is_array($values) && count($values)){
 			$tmp_name = $values["tmp_name"];
 
 			$new_dir = SOY_INQUIRY_UPLOAD_DIR . "/" . $this->getFormId() . "/" . date("Ym") . "/";
