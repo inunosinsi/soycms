@@ -11,6 +11,11 @@ abstract class SOYMall_ItemRelationDAO extends SOY2DAO {
 
 	/**
 	 * @return object
+	 */
+	abstract function getByItemId($itemId);
+
+	/**
+	 * @return object
 	 * @query item_id = :itemId AND admin_id = :adminId
 	 */
 	abstract function get($itemId, $adminId);
