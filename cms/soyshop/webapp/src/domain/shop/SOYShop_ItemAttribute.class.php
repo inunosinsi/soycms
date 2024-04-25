@@ -411,7 +411,7 @@ class SOYShop_ItemAttributeConfig{
 				$value = (is_null($value)) ? $this->getDefaultValue() : $value;
 				if(!is_string($value)) $value = "";
 				$h_value = htmlspecialchars($value, ENT_QUOTES, "UTF-8");
-				$body = '<textarea class="custom_field_textarea" style="width:100%;"'
+				$body = '<textarea class="custom_field_textarea form-control"'
 				        .' id="'.$h_formID.'"'
 				        .' name="'.$h_formName.'"';
 				if($readOnly){
@@ -424,7 +424,7 @@ class SOYShop_ItemAttributeConfig{
 				$value = (is_null($value)) ? $this->getDefaultValue() : $value;
 				if(!is_string($value)) $value = "";
 				$h_value = htmlspecialchars($value, ENT_QUOTES, "UTF-8");
-				$body = '<textarea class="custom_field_textarea mceEditor" style="width:100%;"'
+				$body = '<textarea class="custom_field_textarea mceEditor form-control"'
 				        .' id="'.$h_formID.'"'
 				        .' name="'.$h_formName.'"'
 				        .'>'
@@ -503,7 +503,7 @@ class SOYShop_ItemAttributeConfig{
 				$value = (is_null($value)) ? $this->getDefaultValue() : $value;
 				if(!is_string($value)) $value = "";
 				$h_value = htmlspecialchars($value, ENT_QUOTES, "UTF-8");
-				$body = '<input type="text" class="custom_field_input" style="width:70%"'
+				$body = '<input type="text" class="custom_field_input form-control" style="width:70%"'
 				       .' id="'.$h_formID.'"'
 				       .' name="'.$h_formName.'"'
 				       .' value="'.$h_value.'"';
@@ -520,7 +520,7 @@ class SOYShop_ItemAttributeConfig{
 				$value = (is_null($value)) ? $this->getDefaultValue() : $value;
 				if(!is_string($value)) $value = "";
 				$h_value = htmlspecialchars($value, ENT_QUOTES, "UTF-8");
-				$body = '<input type="text" class="custom_field_input" style="width:100%"'
+				$body = '<input type="text" class="custom_field_input form-control"'
 				       .' id="'.$h_formID.'"'
 				       .' name="'.$h_formName.'"'
 				       .' value="'.$h_value.'"';
