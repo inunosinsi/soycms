@@ -470,13 +470,14 @@ class CalendarLogic extends SOY2LogicBase{
 		if(count($schedules)){
 			$html[] = "<span class=\"schedule\">\n";
 
+			if(!class_exists("CalendarAppUtil")) SOY2::import("util.CalendarAppUtil");
+			$titles = CalendarAppUtil::getTitleList();
+
 			foreach($schedules as $key => $schedule){
 				if(!is_numeric($schedule->getTitleId())) continue;
 				
 				//まずはタイトルを取得
 				if($key > 0) $html[] = "<br />";
-
-				$titles = CalendarAppUtil::getTitleList();
 				
 				if($this->isManagerMode) $html[] = "<a href=\"".$_SERVER["SCRIPT_NAME"]."/calendar/Schedule/Detail/".$schedule->getId()."\">";
 
@@ -556,7 +557,7 @@ class CalendarLogic extends SOY2LogicBase{
 		foreach($schedules as $schedule){
 			if(!is_numeric($schedule->getTitleId())) continue;
 			
-			$attrV = $this->titles[$schedule->getTitleId()]->getAttribute();
+			$attrV = (isset($this->titles[$schedule->getTitleId()])) ? $this->titles[$schedule->getTitleId()]->getAttribute() : "";
 			if($counter > 0){
 				if(!preg_match("/".$attrV."/",$attr)){
 					$attr .= " ".$attrV;

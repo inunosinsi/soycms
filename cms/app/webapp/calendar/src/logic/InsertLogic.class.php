@@ -5,11 +5,12 @@ class InsertLogic extends SOY2LogicBase{
 	/**
 	 * @param array, int<timestamp>, int, array<曜日の配列>
 	 */
-	function insertSchedules(array $item, int $endDate, int $cnt, array $ws){
+	function insertSchedules(array $items, int $endDate, int $cnt, array $ws){
 		
+		$_arr = array();
 	 	for($i = 0; $i < $cnt; $i++){
-	 		$month = $item["month"] + $i;
-	 		$year = $item["year"];
+	 		$month = $items["month"] + $i;
+	 		$year = $items["year"];
 	 		if($month > 12){
 	 			$month = $month-12;
 	 			$year++;
@@ -18,10 +19,10 @@ class InsertLogic extends SOY2LogicBase{
 	 		$lastDate = soycalendar_get_last_date_timestamp($year, $month);
 				 		
 	 		//開始日の最終日と終了日を比較する。最終日よりも終了日が大きい場合はその月の最後までインサートする。
-	 		$lastDay = ($endDate > $lastDate) ? $item["day"] : date("j", $endDate);
+	 		$lastDay = ($endDate > $lastDate) ? $items["day"] : date("j", $endDate);
 						
 			//2週目以降のループは0からスタートする。
-			$day = ($i == 0) ? $item["day"] : 1;
+			$day = ($i == 0) ? $items["day"] : 1;
 						
 			for($j = $day; $j <= $lastDay; $j++){
 				$schedule = soycalendar_get_schedule($year, $month, $j);	
@@ -30,16 +31,64 @@ class InsertLogic extends SOY2LogicBase{
 				//曜日のチェック
 				if(is_bool(array_search(date("D", $schedule), $ws))) continue;
 
-				self::_insertComplete($item, $schedule);
+				$values = $items;
+				$values["scheduleDate"] = $schedule;
+
+				$_arr[] = $values;
 			}
 	 	}
+
+		// 一括で登録する
+		if(count($_arr)){
+			$ids = array();
+
+			$pdo = new PDO(SOY2DAOConfig::dsn(), SOY2DAOConfig::user(), SOY2DAOConfig::pass());
+			
+			$pdo->beginTransaction();
+			$stmt = $pdo->prepare("INSERT INTO soycalendar_item(schedule_date, title_id, start, end, create_date, update_date) VALUES(:schedule_date, :title_id, :start, :end, :create_date, :update_date)");
+			foreach($_arr as $_v){
+				try{
+					$stmt->execute(array(
+						":schedule_date" => $_v["scheduleDate"], 
+						":title_id" => (int)$_v["titleId"], 
+						":start" => $_v["start"],
+						":end" => $_v["end"],
+						":create_date" => time(),
+						":update_date" => time()
+					));
+					$ids[] = $pdo->lastInsertId();
+				}catch(Exception $e){
+					//
+				}
+			}
+			$pdo->commit();
+
+			if(count($ids) && isset($_POST["Custom"]) && is_array($_POST["Custom"]) && count($_POST["Custom"])){
+				$pdo->beginTransaction();
+				$stmt = $pdo->prepare("INSERT INTO soycalendar_custom_item_checked(item_id, custom_id) VALUES(:item_id, :custom_id)");
+				foreach($ids as $id){
+					foreach($_POST["Custom"] as $cusId){
+						try{
+							$stmt->execute(array(
+								":item_id" => $id, 
+								":custom_id" => $cusId
+							));
+						}catch(Exception $e){
+							//
+						}
+					}
+				}
+				$pdo->commit();
+			}
+		}
+		
 	}
 
 	/**
 	 * @param array, int<timestamp>
 	 */
-	function insertComplete(array $item, int $schedule){
-		self::_insertComplete($item, $schedule);
+	function insertComplete(array $items, int $schedule){
+		self::_insertComplete($items, $schedule);
 	}
 
 	/**
@@ -82,7 +131,7 @@ class InsertLogic extends SOY2LogicBase{
 				$itemId = self::_dao()->insert($item);
 				$item->setId($itemId);
 			}catch(Exception $e){
-				
+				//
 			}
 		}
 
