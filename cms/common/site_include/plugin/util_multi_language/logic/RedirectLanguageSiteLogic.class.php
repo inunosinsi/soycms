@@ -91,6 +91,12 @@ class RedirectLanguageSiteLogic extends SOY2LogicBase{
 		
 		$path = self::_formatPath($path);
 		$requestUri = self::_formatPath($_SERVER["REQUEST_URI"]);
+
+		if($path !== $requestUri) return true;
+		
+		/** ロリポップ対策 **/
+		if(soy2_strpos($path, "/?") === 0) $path = substr($path, 1);
+		if(soy2_strpos($requestUri, "/?") === 0) $requestUri = substr($requestUri, 1);
 		
 		return ($path !== $requestUri);
 	}

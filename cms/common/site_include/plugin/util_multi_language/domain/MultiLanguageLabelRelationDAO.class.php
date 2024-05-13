@@ -71,7 +71,7 @@ abstract class MultiLanguageLabelRelationDAO extends SOY2DAO {
 		}catch(Exception $e){
 			$res = array();
 		}
-		if(!count($res)) return nulls;
+		if(!count($res)) return null;
 		
 		$_arr[$parentId] = (isset($res[0]["child_label_id"]) && (int)$res[0]["child_label_id"] > 0) ? (int)$res[0]["child_label_id"] : null;
 		return $_arr[$parentId];

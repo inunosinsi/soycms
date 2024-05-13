@@ -98,7 +98,7 @@ class UtilMultiLanguageConfigFormPage extends WebPage{
 		if($isInit){
 			$file = file_get_contents(dirname(dirname(dirname(__FILE__))) . "/PageCustomField/sql/init_".SOYCMS_DB_TYPE.".sql");
 			$sqls = preg_split('/create/', $file, -1, PREG_SPLIT_NO_EMPTY) ;
-
+	
 			foreach($sqls as $sql){
 				$sql = trim("create" . $sql);
 				try{
