@@ -158,6 +158,11 @@ class Label {
 			if(!class_exists("UserInfoUtil")) SOY2::import("util.UserInfoUtil");
 			$useLabelCategory = UserInfoUtil::getSiteConfig("useLabelCategory");
 		}
+		
+		if(is_numeric($this->id) && defined("SOYCMS_PUBLISH_LANGUAGE") && SOYCMS_PUBLISH_LANGUAGE != "jp") {
+			$this->caption = self::getOpenLabelCaption();
+		}
+		
 		if( is_string($this->caption) && $useLabelCategory && ( $pos = strpos($this->caption,"/") ) > 0 ){
 			return substr($this->caption, $pos+1);
 		}else{
