@@ -18,7 +18,9 @@ class SOYInquiryUtil{
 
 		//SQLite
 		if(SOYCMS_DB_TYPE == "sqlite"){
-			$dsn = "sqlite:" . CMS_COMMON . "db/shop.db";
+			// shop.dbから参照することを廃止
+			//$dsn = "sqlite:" . CMS_COMMON . "db/shop.db";
+			$dsn = "sqlite:" . CMS_COMMON . "db/cms.db";
 		//MySQL版
 		}else{
 			//サイト側にSOY Inquiryのデータベースを持つ場合
