@@ -34,6 +34,16 @@ class LabeledBlockComponent implements BlockComponent{
 	 * 表示用コンポーネント
 	 */
 	public function getViewPage($page){
+		$onLoads = CMSPlugin::getEvent("onPageOutputLabelRead");
+		if(is_array($onLoads) && count($onLoads)) {
+			foreach($onLoads as $plugin){
+				$res = call_user_func($plugin[0], array('labelId' => (int)$this->labelId));
+				if(is_numeric($res) && $res > 0 && $res !== (int)$this->labelId){
+					$this->labelId = (int)$res;
+				}
+			}
+		}
+
 		$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
 		$logic->setBlockClass(get_class($this));
 
