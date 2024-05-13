@@ -133,6 +133,16 @@
 						"mime"=>'Content-Type: image/gif',
 					);
 			break;
+		case "webp":
+			$data = array(
+						"mime"=>'Content-Type: image/webp',
+			);
+			break;
+		case "avif":
+			$data = array(
+						"mime"=>'Content-Type: image/avif',
+			);
+			break;
 		default://対応していない画像は何もしない
 			_redirect();
 	}
