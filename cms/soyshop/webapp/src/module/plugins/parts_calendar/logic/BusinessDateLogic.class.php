@@ -5,6 +5,15 @@ class BusinessDateLogic extends SOY2LogicBase{
 	function __construct(){
 		SOY2::import("util.SOYShopPluginUtil");
 		SOY2::import("module.plugins.parts_calendar.common.PartsCalendarCommon");
+
+		// SOYCalendar連携
+		$soyCalCnf = PartsCalendarCommon::getSOYCalendarConnectConfig();
+		if(
+			(isset($soyCalCnf["holiday"]) && is_numeric($soyCalCnf["holiday"])) || 
+			(isset($soyCalCnf["business"]) && is_numeric($soyCalCnf["business"]))
+		){
+			SOY2Logic::createInstance("module.plugins.parts_calendar.logic.SOYCalendarConnectLogic")->insertSchedule();
+		}
 	}
 
 	/**
@@ -39,9 +48,12 @@ class BusinessDateLogic extends SOY2LogicBase{
 	 * @param int timestamp
 	 * @return bool
 	 */
-	function checkRegularHoliday(int $timestamp){
+	function checkRegularHoliday(int $timestamp=0){
 		//プラグインが有効でない場合はfalseを返して処理を停止する
 		if(!SOYShopPluginUtil::checkIsActive("parts_calendar")) return false;
+
+		// 現在の時刻を代入する 本日が定休日であるか？を調べる事が出来る
+		if($timestamp === 0) $timestamp = time();
 		
 		$w = date("w", $timestamp);
 		$dateArray = explode("-", date("Y-n-j", $timestamp));

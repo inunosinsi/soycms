@@ -90,6 +90,13 @@ class PartsCalendarCommon{
 		return self::_commonConfig($base, "other_day", $isText);
 	}
 
+	/**
+	 * SOY Calendar連携
+	 */
+	public static function getSOYCalendarConnectConfig(){
+		return self::_commonConfig("", "soycalendar_connect", false);
+	}
+
 	private static function _commonConfig(string $base="", string $key="", bool $isText=false){
 		if(!strlen($base)) $base = "calendar.config";
 		$cnf = SOYShop_DataSets::get($base . "." . $key, array());
@@ -102,10 +109,10 @@ class PartsCalendarCommon{
 	 * @return string
 	 */
 	public static function ymd(string $date){
-		$array = explode("\n", $date);
+		$_arr = explode("\n", $date);
 
 		$val = array();
-		foreach($array as $line){
+		foreach($_arr as $line){
 			$line = mb_convert_kana(trim($line), "a");
 			if(preg_match("|^\d{4}\/\d{2}\/\d{2}$|", $line) || preg_match("|^\d{4}-\d{2}-\d{2}$|", $line)){
 				$line = str_replace("-", "/", $line);

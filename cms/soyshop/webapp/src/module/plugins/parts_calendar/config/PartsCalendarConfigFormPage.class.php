@@ -32,6 +32,9 @@ class PartsCalendarConfigFormPage extends WebPage{
 		PartsCalendarCommon::saveConfig("business_day", PartsCalendarCommon::ymd($_POST["business_day"]));	//営業日
 		PartsCalendarCommon::saveConfig("other_day", PartsCalendarCommon::ymd($_POST["other_day"]));	//その他
 
+		$soyCalConf = (isset($_POST["soycalendar"])) ? $_POST["soycalendar"] : array();
+		PartsCalendarCommon::saveConfig("soycalendar_connect", $soyCalConf);	// SOY Calendar連携
+
 		//キャッシュファイルの削除
 		SOYShopCacheUtil::clearCache();
 
@@ -80,7 +83,40 @@ class PartsCalendarConfigFormPage extends WebPage{
 			"name" => "other_day"
 		));
 
-		//カレンダー
+		// SOY Calendarと連携する
+		self::_buildSOYCalendarConfigForm();
+
+		// 設定例
+		self::_buildConfigExampleArea();
+	}
+
+	private function _buildSOYCalendarConfigForm(){
+		$isSoyCalendar = SOYAppUtil::checkInstalledApp("calendar");
+		DisplayPlugin::toggle("soycalendar_connect", $isSoyCalendar);
+
+		$titleList = ($isSoyCalendar) ? SOY2Logic::createInstance("module.plugins.parts_calendar.logic.SOYCalendarConnectLogic")->getTitleList() : array();
+
+		$cnf = PartsCalendarCommon::getSOYCalendarConnectConfig();
+		
+		$this->addSelect("holiday_connect", array(
+			"name" => "soycalendar[holiday]",
+			"options" => $titleList,
+			"selected" => (isset($cnf["holiday"]) && is_numeric($cnf["holiday"])) ? (int)$cnf["holiday"] : ""
+		));
+
+		$this->addSelect("business_day_connect", array(
+			"name" => "soycalendar[business]",
+			"options" => $titleList,
+			"selected" => (isset($cnf["business"]) && is_numeric($cnf["business"])) ? (int)$cnf["business"] : ""
+		));
+
+		$this->addInput("auto_delete_month", array(
+			"name" => "soycalendar[auto_delete]",
+			"value" => (isset($cnf["auto_delete"])) ? (int)$cnf["auto_delete"] : 0
+		));
+	}
+
+	private function _buildConfigExampleArea(){
 		$displayLogic = SOY2Logic::createInstance("module.plugins.parts_calendar.logic.DisplayLogic");
 
 		$this->addLabel("current_calendar", array(

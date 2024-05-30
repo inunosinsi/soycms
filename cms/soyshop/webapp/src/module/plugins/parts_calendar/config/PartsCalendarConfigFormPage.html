@@ -48,6 +48,25 @@
 		<textarea soy:id="other_day" class="minieditor form-control"></textarea>
 	</div>
 
+	<!-- soy:display="soycalendar_connect" -->
+	<div class="form-group">
+		<label>SOY Calendarと連携する</label>
+		<div class="alert alert-info">SOY Calendar側のタイトルと紐付ける事で、定休日等の設定を自動で変更します。</div>
+		<div class="form-inline">
+			定休日：<select soy:id="holiday_connect" class="form-control"><option></option></select>
+		</div>
+		<div class="form-inline" style="margin-top:5px;">
+			営業日：<select soy:id="business_day_connect" class="form-control"><option></option></select>
+		</div>
+		<div class="form-inline" style="margin-top:5px;">
+			<input type="number" soy:id="auto_delete_month" class="form-control" size="5">&nbsp;月より前のデータを自動削除
+		</div>
+		<div class="alert alert-warning">
+			※0ヶ月前に設定した場合は自動削除を行いません
+		</div>
+	</div>
+	<!-- /soy:display="soycalendar_connect" -->
+
 	<div class="text-center">
 		<input type="submit" class="btn btn-primary btn-lg" id="update_btn" value="変更">
 	</div>
