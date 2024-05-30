@@ -797,7 +797,11 @@ function soyshop_build_item_option_html_on_item_order(SOYShop_ItemOrder $itemOrd
  * @return integer
  */
 function soyshop_convert_timestamp(string $str, string $mode="start"){
-	$array = explode("-", $str);
+	if(soy2_strpos($str, "/") > 0){
+		$array = explode("/", $str);
+	}else{
+		$array = explode("-", $str);
+	}
 
 	if(
 		(!isset($array[0]) || !isset($array[1]) || !isset($array[2])) ||
