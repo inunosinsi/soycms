@@ -11,7 +11,7 @@ class ShippingDateLogic extends SOY2LogicBase{
 	}
 	
 	/**
-	 * @return businessDate, arrivalDate, description
+	 * @return shippingDate, arrivalDate, description
 	 */
 	function get(){
 		//現在の時間によって表示を出し分ける
@@ -19,7 +19,7 @@ class ShippingDateLogic extends SOY2LogicBase{
 		$shippingDate = time();
 		
 		//定休日フラグ
-		$isRegularHoliday = $this->dateLogic->checkRegularHoliday($businessDate);
+		$isRegularHoliday = $this->dateLogic->checkRegularHoliday();
 		
 		//営業時間外フラグ 開業時間前は昨日の終業時間とみなす
 		//開業時間前フラグ
