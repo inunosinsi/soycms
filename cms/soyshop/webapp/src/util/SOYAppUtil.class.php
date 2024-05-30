@@ -2,7 +2,11 @@
 
 class SOYAppUtil {
 
-	public static function checkAppAuth($appId="inquiry"){
+	/**
+	 * @param string
+	 * @return bool
+	 */
+	public static function checkAppAuth(string $appId="inquiry"){
 
 		$auth = false;
 		$useSiteDb = false;
@@ -39,6 +43,27 @@ class SOYAppUtil {
 		}
 
 		return $auth;
+	}
+
+	/**
+	 * @param string
+	 * @return bool
+	 */
+	public static function checkInstalledApp(string $appId="inquiry"){
+		// 任意のSOY Appのディレクトリがあるか？
+		$appDir = dirname(dirname(SOYSHOP_WEBAPP))."/app/webapp/".$appId."/";
+		if(!file_exists($appDir) || !is_dir($appDir)) return false;
+
+		$isDb = true;
+
+		/** SQLite版の時はファイルが存在するか？を調べたい **/
+
+		// データベースがあるか？
+		//$old = self::switchAppMode($appId);
+		//$dsn = SOY2DAOConfig::dsn();
+		//self::resetAppMode($old);
+
+		return $isDb;
 	}
 
 	public static function createAppLink(){
@@ -105,7 +130,7 @@ class SOYAppUtil {
 		SOY2DAOConfig::pass($old["pass"]);
 	}
 
-	public static function switchAppMode($appId){
+	public static function switchAppMode(string $appId){
 		$old = array();
 
 		$old["root"] = SOY2::RootDir();
@@ -156,7 +181,7 @@ class SOYAppUtil {
 	}
 
 	//名前が紛らわしいので、名前だけ別のメソッドを用意。resetAdminModeと同じことを行う。
-	public static function resetAppMode($old){
+	public static function resetAppMode(array $old){
 		self::resetAdminMode($old);
 	}
 
