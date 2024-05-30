@@ -11,7 +11,7 @@ class SOYInquiryConnectorConfigPage extends WebPage {
 	function doPost(){
 		if(soy2_check_token() && isset($_POST["Config"])){
 			SOYInquiryConnectorUtil::saveConfig($_POST["Config"]);
-			$this->config->redirect("updated");
+			$this->configObj->redirect("updated");
 		}
 	}
 
