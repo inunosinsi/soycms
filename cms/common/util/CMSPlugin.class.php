@@ -163,8 +163,8 @@ class CMSPlugin {
 	function loadPlugins(){
 		//プラグインのページではすべてのプラグインのファイルを読み込む	!defined("_SITE_ROOT_")で管理画面側であることを調べている
 		$isAll = (!defined("_SITE_ROOT_") && is_numeric(strpos($_SERVER["REQUEST_URI"], "Plugin")));
-
-		$dir = CMS_PAGE_PLUGIN;
+	
+		$dir = (defined("CMS_PAGE_PLUGIN") && file_exists(CMS_PAGE_PLUGIN)) ? CMS_PAGE_PLUGIN : dirname(dirname(__FILE__))."/site_include/plugin/";
 		$files = scandir($dir);
 		
 		foreach($files as $file){
