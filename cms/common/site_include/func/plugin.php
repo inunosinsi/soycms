@@ -5,8 +5,8 @@
  */
 function soycms_get_plugin_ids(bool $isReserve=false){
     $list = array();
-		
-    $dir = CMS_PAGE_PLUGIN;
+	
+    $dir = (defined("CMS_PAGE_PLUGIN") && file_exists(CMS_PAGE_PLUGIN)) ? CMS_PAGE_PLUGIN : dirname(dirname(__FILE__))."/plugin/";
     $files = scandir($dir);
     foreach($files as $pluginFileName){
         $pluginId = soycms_get_plugin_id_by_plugin_file_name($pluginFileName);
@@ -24,6 +24,7 @@ function soycms_get_plugin_ids(bool $isReserve=false){
  * @return array
  */
 function soycms_get_plugin_id_by_plugin_file_name(string $pluginFileName){
+    if(!defined("CMS_PAGE_PLUGIN")) define("CMS_PAGE_PLUGIN", dirname(dirname(__FILE__))."/plugin/");
     if($pluginFileName[0] == "." || !is_dir(CMS_PAGE_PLUGIN . $pluginFileName) || !is_readable(CMS_PAGE_PLUGIN . $pluginFileName ."/".$pluginFileName.".php")) return "";
 
     $lines = explode("\n", file_get_contents(CMS_PAGE_PLUGIN . $pluginFileName ."/".$pluginFileName.".php"));

@@ -26,6 +26,7 @@ class SyncTemplatePlugin{
 	var $useExtPhpIfPhpAllowed = false;
 	//出力ファイル名の先頭のIDの0埋め
 	var $zeroPaddingWidth = 0;
+	private $blogPageDAO;
 
 	const TARGET_DIR = "export";
 	const EXT_HTML = ".html";
@@ -44,7 +45,7 @@ class SyncTemplatePlugin{
 			"modifier"=>"Jun Okada",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.5"
+			"version"=>"1.5.1"
 		));
 
 		CMSPlugin::addPluginConfigPage($this->getId(),array(
