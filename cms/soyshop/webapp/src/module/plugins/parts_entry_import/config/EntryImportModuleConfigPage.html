@@ -1,9 +1,8 @@
 <div class="alert alert-success" soy:display="updated">変更しました</div>
 <div class="alert alert-danger" soy:display="error">表示件数は半角数字で入力してください</div>
 
-<div class="alert alert-danger">
-	当プラグインのメンテナンスは終了しています。<br>
-	引き続き使用する場合は、<strong>モジュール版ブログ記事表示プラグイン</strong>をご利用ください。
+<div class="alert alert-danger" soy:display="installed_blog_import_plugin">
+	当プラグインを使用する場合は<strong>ブログ記事表示プラグイン</strong>をアンインストールしてください。
 </div>
 
 <div class="alert alert-info">取得するサイトIDの設定</div>
@@ -66,12 +65,14 @@
 <br>
 <div><a href="javascript:void(0);" onclick="$('.template_example').toggle();" class="btn btn-default">記述例を表示する</a></div>
 <pre class="template_example">
+<strong>&lt;!-- shop:module="common.entry_list_import" --&gt;</strong>
 &lt;!-- block:id="entry_list" --&gt;
 &lt;h2 cms:id="title"&gt;タイトルを表示します&lt;/h2&gt;
 &lt;div cms:id="content"&gt;本文を表示します&lt;/div&gt;
 &lt;div cms:id="more"&gt;追記を表示します&lt;/div&gt;
 &lt;div cms:id="create_date" cms:format="Y-m-d"&gt;日付を表示します&lt;/div&gt;
 &lt;!-- /block:id="entry_list" --&gt;
+<strong>&lt;!-- /shop:module="common.entry_list_import" --&gt;</strong>
 </pre>
 <!-- /soy:display="example" -->
 

@@ -15,7 +15,7 @@ class SOYShop_SOYCMSPageModulePlugin extends PluginBase{
 
 	public static function prepare($isFirst = false){
 
-    $config = self::configure();
+		$config = self::configure();
 
 		$siteId = $config["siteId"];
 
@@ -32,19 +32,19 @@ class SOYShop_SOYCMSPageModulePlugin extends PluginBase{
 		$config["old_rootdir"] = SOY2::RootDir();
 		SOY2::RootDir($config["rootDir"]);
 
-    $dbFilePath = SOY2::RootDir() . "config/db/mysql.php";
+		$dbFilePath = SOY2::RootDir() . "config/db/mysql.php";
 
-    //MySQL版
+		//MySQL版
 		if(file_exists($dbFilePath)){
 			include_once($dbFilePath);
-			$user = (defined("ADMIN_DB_USER"))? ADMIN_DB_USER : null;
-			$pass = (defined("ADMIN_DB_PASS"))? ADMIN_DB_PASS : null;
+			$user = (defined("ADMIN_DB_USER"))? ADMIN_DB_USER : "";
+			$pass = (defined("ADMIN_DB_PASS"))? ADMIN_DB_PASS : "";
 
 		//SQLite版
 		}else{
 			include_once(SOY2::RootDir() . "config/db/sqlite.php");
-			$user = null;
-			$pass = null;
+			$user = "";
+			$pass = "";
 		}
 
 		SOY2DAOConfig::Dsn(ADMIN_DB_DSN);
@@ -52,10 +52,10 @@ class SOYShop_SOYCMSPageModulePlugin extends PluginBase{
 		SOY2DAOConfig::pass($pass);
 
 		try{
-      $site = SOY2DAOFactory::create("admin.SiteDAO")->getBySiteId($siteId);
-    }catch(Exception $e){
-      $site = new Site();
-    }
+			$site = SOY2DAOFactory::create("admin.SiteDAO")->getBySiteId($siteId);
+		}catch(Exception $e){
+			$site = new Site();
+		}
 
 		SOY2DAOConfig::Dsn($site->getDataSourceName());
 
@@ -67,7 +67,15 @@ class SOYShop_SOYCMSPageModulePlugin extends PluginBase{
 			"pass" => $old_pass
 		);
 
-		if(!defined("_SITE_ROOT_")) define("_SITE_ROOT_", $site->getPath());
+		//if(!defined("_SITE_ROOT_")) define("_SITE_ROOT_", $site->getPath());
+
+		// 連携したショップの_SITE_ROOT_を定義しておく
+		if(!defined("_SITE_ROOT_") && strlen($siteId)){
+			$shopSiteRoot = dirname(SOYSHOP_SITE_DIRECTORY)."/".$siteId;
+			if(file_exists($shopSiteRoot."/index.php")){
+				define("_SITE_ROOT_", $shopSiteRoot);
+			}
+		}
 
 		//必須クラスはここで読み込む
 		if($isFirst){

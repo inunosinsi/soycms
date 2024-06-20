@@ -42,6 +42,8 @@ class EntryImportConfigPage extends WebPage{
 		
 		DisplayPlugin::toggle("error", isset($_GET["error"]));
 
+		DisplayPlugin::toggle("installed_blog_import_plugin", SOYShopPluginUtil::checkIsActive("parts_entry_import"));
+
 		$old = SOYAppUtil::switchAdminDsn();
 
 		//SOY CMS サイト一覧
@@ -49,7 +51,7 @@ class EntryImportConfigPage extends WebPage{
 
 		$siteCnfId = (isset($config["siteId"])) ? (string)$config["siteId"] : "";
 		$this->addLabel("site", array(
-			"html" => self::getSiteForm(self::getSiteList(), $config["siteId"])
+			"html" => self::getSiteForm(self::getSiteList(), $siteCnfId)
 		));
 
 		/** ここから、記事インポートの詳細設定を記述する **/
@@ -57,12 +59,12 @@ class EntryImportConfigPage extends WebPage{
 
 		//サイトIDを設定した後に表示する
 		$this->addModel("config", array(
-			"visible" => isset($config["siteId"])
+			"visible" => (strlen($siteCnfId) > 0)
 		));
 
 		//SOY CMSサイトDBに切り替える
-		if(isset($config["siteId"])){
-			$site = EntryImportUtil::getSite($config["siteId"]);
+		if(strlen($siteCnfId)){
+			$site = EntryImportUtil::getSite($siteCnfId);
 			$dsn = $site->getDataSourceName();
 			SOY2DAOConfig::Dsn($dsn);
 			$blogs = self::getBlogList();
@@ -75,7 +77,7 @@ class EntryImportConfigPage extends WebPage{
 
 		$this->addInput("site_id", array(
 			"name" => "site[siteId]",
-			"value" => (isset($config["siteId"])) ? $config["siteId"] : ""
+			"value" => $siteCnfId
 		));
 
 		$blogId = (isset($config["blogId"])) ? (int)$config["blogId"] : 0;
@@ -174,6 +176,13 @@ class EntryImportConfigPage extends WebPage{
 		return implode("<br />\n", $html);
 	}
 
+	function getTemplateFilePath(){
+		if(isset($_GET["plugin"]) && $_GET["plugin"] === "parts_entry_import_module"){
+			return dirname(__FILE__)."/EntryImportModuleConfigPage.html";
+		}
+		return dirname(__FILE__)."/EntryImportConfigPage.html";
+	}
+
 /**
 	private function getCustomfieldConfig($siteId){
 		$fname = $_SERVER["DOCUMENT_ROOT"] . $siteId . '/.plugin/CustomFieldAdvanced.config';
@@ -188,4 +197,3 @@ class EntryImportConfigPage extends WebPage{
 	}
 **/
 }
-?>

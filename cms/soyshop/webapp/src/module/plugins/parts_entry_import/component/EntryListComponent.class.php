@@ -101,7 +101,7 @@ class EntryListComponent extends HTMLList{
 
 				$this->addModel($fieldId . "_visible", array(
 					"soy2prefix" => SOYSHOP_SITE_PREFIX,
-					"visible" => (strlen($value) > 0)
+					"visible" => (is_string($value) && strlen($value) > 0)
 				));
 
 				$attr["soy2prefix"] = SOYSHOP_SITE_PREFIX;
@@ -133,6 +133,8 @@ class EntryListComponent extends HTMLList{
 		//サムネイルプラグイン
 		if(!is_null($this->thumbnailConfig)){
 			$objects = (is_numeric($entity->getId())) ? self::_getThumbnailValues($entity->getId()) : array();
+			if(!class_exists("EntryAttribute")) SOY2::import("domain.cms.EntryAttribute");
+
 			foreach(array("upload", "trimming", "resize") as $label){
 				$key = "soycms_thumbnail_plugin_" . $label;
 				$obj = (isset($objects[$key])) ? $objects[$key] : new EntryAttribute();

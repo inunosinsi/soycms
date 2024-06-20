@@ -2,7 +2,7 @@
 /**
  * プラグイン インストール画面の表示
  */
-class EntryImportModuleInfo extends SOYShopInfoPageBase{
+class EntryImportInfo extends SOYShopInfoPageBase{
 
 	function getPage(bool $active=false){
 		if($active){
@@ -11,7 +11,5 @@ class EntryImportModuleInfo extends SOYShopInfoPageBase{
 			return "";
 		}
 	}
-
 }
-SOYShopPlugin::extension("soyshop.info","parts_entry_import","EntryImportModuleInfo");
-?>
+SOYShopPlugin::extension("soyshop.info","parts_entry_import","EntryImportInfo");

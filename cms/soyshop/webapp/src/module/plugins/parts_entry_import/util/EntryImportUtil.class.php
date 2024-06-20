@@ -14,7 +14,7 @@ class EntryImportUtil{
 		));
 	}
 
-	public static function switchSiteDsn($dsn){
+	public static function switchSiteDsn(string $dsn){
 		$old = array();
 
 		$old["root"] = SOY2::RootDir();
@@ -44,13 +44,13 @@ class EntryImportUtil{
 		//MySQL版
 		if($isMySQL){
 			include_once($dbFilePath);
-			$user = (defined("ADMIN_DB_USER"))? ADMIN_DB_USER : null;
-			$pass = (defined("ADMIN_DB_PASS"))? ADMIN_DB_PASS : null;
+			$user = (defined("ADMIN_DB_USER"))? ADMIN_DB_USER : "";
+			$pass = (defined("ADMIN_DB_PASS"))? ADMIN_DB_PASS : "";
 
 		//SQLite版
 		}else{
-			$user = null;
-			$pass = null;
+			$user = "";
+			$pass = "";
 		}
 
 		SOY2DAOConfig::Dsn($dsn);
@@ -131,18 +131,17 @@ class EntryImportUtil{
 		return $entries;
 	}
 
-	public static function getBlogUrl($blogId, $siteUrl){
-
-		if(!isset($blogId)) return null;
+	public static function getBlogUrl(int $blogId, string $siteUrl){
+		
+		if($blogId <= 0) return null;
 
 		//ブログの取得
-		$blogDao = SOY2DAOFactory::create("cms.BlogPageDAO");
 		try{
-			$blog = $blogDao->getById($blogId);
+			$blog = SOY2DAOFactory::create("cms.BlogPageDAO")->getById($blogId);
 		}catch(Exception $e){
 			return null;
 		}
-
+		
 		//ブログ記事のURL
 		$blogUri = $blog->getUri();
 		if(!strlen($blogUri) > 0){
@@ -155,8 +154,9 @@ class EntryImportUtil{
 	public static function getCustomfieldConfig(string $siteId){
 		$fname = $_SERVER["DOCUMENT_ROOT"] . $siteId . '/.plugin/CustomFieldAdvanced.config';
 		if(file_exists($fname)){
-			include_once(dirname(dirname(__FILE__)) . "/class/CustomFieldPluginAdvanced.class.php");
-			include_once(dirname(dirname(__FILE__)) . "/class/CustomField.class.php");
+			foreach(array("CustomFieldPluginAdvanced", "CustomField") as $className){
+				if(!class_exists($className)) include_once(dirname(dirname(__FILE__)) . "/class/".$className.".class.php");
+			}
 			$obj = @unserialize(file_get_contents($fname));	//Creation of dynamic property CustomField〜
 			return $obj->customFields;
 		}else{
@@ -164,7 +164,7 @@ class EntryImportUtil{
 		}
 	}
 
-	public static function getSOYCMSThisIsNewConfig($siteId){
+	public static function getSOYCMSThisIsNewConfig(string $siteId){
 		$fname = $_SERVER["DOCUMENT_ROOT"] . $siteId . '/.plugin/SOYCMS_ThisIsNew.config';
 		if(file_exists($fname)){
 			preg_match('/"daysToBeNew";s:[0-9]:"(.*?)";/', file_get_contents($fname), $tmp);
@@ -176,12 +176,12 @@ class EntryImportUtil{
 	}
 
 	//サムネイルプラグインが有効であるか？
-	public static function getThumbnailPluginConfig($siteId){
+	public static function getThumbnailPluginConfig(string $siteId){
 		$fname = $_SERVER["DOCUMENT_ROOT"] . $siteId . '/.plugin/soycms_thumbnail.active';
 		if(file_exists($fname)){
 			$cnffile = $_SERVER["DOCUMENT_ROOT"] . $siteId . '/.plugin/soycms_thumbnail.config';
 			if(file_exists($cnffile)){
-				include_once(dirname(dirname(__FILE__)) . "/class/SOYCMSThumbnailPlugin.class.php");
+				if(!class_exists("SOYCMSThumbnailPlugin")) include_once(dirname(dirname(__FILE__)) . "/class/.class.php");
 				$cnf = soy2_unserialize(file_get_contents($cnffile));
 				return $cnf->getNoThumbnailPath();
 			}else{
