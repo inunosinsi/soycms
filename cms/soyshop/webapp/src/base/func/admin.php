@@ -1,32 +1,21 @@
 <?php
 /**
  * ログイン権限があるか
+ * @return bool
  */
 function soyshop_admin_login(){
-	$session = SOY2ActionSession::getUserSession();
-
 	//root user
-	$root = $session->getAttribute("isdefault");
-	if($root)return true;
+	if(SOY2ActionSession::getUserSession()->getAttribute("isdefault")) return true;
 
 	//auth level
-	$level = soyshop_admin_auth_level();
-
-	return ($level > 0);
+	return (soyshop_admin_auth_level() > 0);
 }
 
 /**
  * SOY Shopの権限レベルを取得
  */
 function soyshop_admin_auth_level(){
-	$session = SOY2ActionSession::getUserSession();
-	$level = $session->getAttribute("app_shop_auth_level");
-
-	if(is_null($level)){
-		return 0;
-	}else{
-		return true;
-	}
+	return (!is_null(SOY2ActionSession::getUserSession()->getAttribute("app_shop_auth_level"))) ? 1 : 0;
 }
 
 function print_update_date($time){
