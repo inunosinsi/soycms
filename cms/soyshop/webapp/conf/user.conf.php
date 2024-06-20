@@ -34,10 +34,10 @@ if(!defined("DEBUG_MODE")){
 }
 
 //include SOY2
-if(DEBUG_MODE && file_exists(dirname(SOYSHOP_ROOT) . "/common/lib/soy2_build.php")){
-	include(dirname(SOYSHOP_ROOT) . "/common/lib/soy2_build.php");
+if(DEBUG_MODE && file_exists(dirname(SOYSHOP_ROOT) . "/common/lib/soy2_build.min.php")){
+	include(dirname(SOYSHOP_ROOT) . "/common/lib/soy2_build.min.php");
 }else{
-	include(SOYSHOP_WEBAPP . "lib/soy2_build.php");
+	include(SOYSHOP_WEBAPP . "lib/soy2_build.min.php");
 }
 include_once(SOYSHOP_WEBAPP . "lib/magic_quote_gpc.php");
 
