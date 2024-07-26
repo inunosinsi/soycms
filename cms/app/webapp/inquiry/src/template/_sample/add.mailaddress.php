@@ -15,12 +15,19 @@
 
 /**
  * SOY Shopの簡易ショッピングモールプラグインと連携するためのコード
+if(!defined("SOYSHOP_ITEM_ID")){
+	// 定数SOYSHOP_ITEM_IDの定義を行う
+	SOY2Logic::createInstance("logic.SOYShopConnectLogic")->setSOYShopSiteIdConstant();
+}
 if(SOYSHOP_ITEM_ID > 0){
+	// SOY Shopのデータベースを使用するための手続き
 	SOY2::import("util.SOYInquiryUtil");
 	$old = SOYInquiryUtil::switchSOYShopConfig(SOYSHOP_SITE_ID);
 
+	// 商品IDに紐付いたメールアドレスを取得
 	$mailaddress = SOY2Logic::createInstance("module.plugins.shopping_mall.logic.MallRelationLogic")->getAdminMailByItemId(SOYSHOP_ITEM_ID);
 
+	// SOY Inquiryのデータベースの使用に戻す
 	SOYInquiryUtil::resetConfig($old);
 
 	if(strlen($mailaddress)) $sendTo[] = $mailaddress;
