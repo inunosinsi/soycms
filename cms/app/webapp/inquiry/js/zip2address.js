@@ -104,8 +104,8 @@ window.zip2address = zip2address;
 			zip2address(zip, function(address) {
 				if (address) {
 					document.querySelector(".input-pref").value = prefs[address.pref - 1];
-					document.querySelector(".input-city").value = address.city;
-					document.querySelector(".input-town").value = address.town;
+					document.querySelector(".input-city").value = address.city + address.town;
+					document.querySelector(".input-town").value = "";
 				} else {
 					alert('正しい郵便番号を入力して下さい。');
 				}
@@ -158,8 +158,8 @@ function inquiry_zip2address(zip){
 	zip2address(zip, function(address) {
 		if (address) {
 			document.querySelector(".input-pref").value = prefs[address.pref - 1];
-			document.querySelector(".input-city").value = address.city;
-			document.querySelector(".input-town").value = address.town;
+			document.querySelector(".input-city").value = address.city + address.town;
+			//document.querySelector(".input-town").value = "";
 		}
 	});
 }
@@ -167,7 +167,7 @@ function inquiry_zip2address(zip){
 function inquiry_insert_empty_values(){
 	document.querySelector(".input-pref").value = "";
 	document.querySelector(".input-city").value = "";
-	zdocument.querySelector(".input-town").value = "";
+	document.querySelector(".input-town").value = "";
 }
 
 function inquiry_convert_zipcode(zip){
