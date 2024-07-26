@@ -62,7 +62,7 @@ class SOYInquiryUtil{
 		if(!defined("SOYSHOP_ROOT")) define("SOYSHOP_ROOT", dirname(CMS_COMMON)."/soyshop/");
 		if(!defined("SOYSHOP_WEBAPP")) define("SOYSHOP_WEBAPP", SOYSHOP_ROOT."webapp/");
 
-		if(!defined("SOYSHOP_SITE_DIRECTORY")) {
+		if(!defined("SOYSHOP_SITE_DIRECTORY") || !defined("SOYSHOP_SITE_DSN")) {
 			if(file_exists(SOYSHOP_WEBAPP."conf/shop/" . $shopId . ".conf.php")){
 				include_once(SOYSHOP_WEBAPP."conf/shop/" . $shopId . ".conf.php");
 			}else{

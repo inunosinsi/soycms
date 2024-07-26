@@ -59,7 +59,7 @@ abstract class SOYInquiry_InquiryDAO extends SOY2DAO{
     		$where[] = "form_id = :formId";
     		$binds[":formId"] = $formId;
 		}
-    	
+
 		if($start > 0){
 			$where[] = "create_date >= :start";
 	    	$binds[":start"] = $start;
