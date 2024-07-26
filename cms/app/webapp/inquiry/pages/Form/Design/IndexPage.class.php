@@ -26,18 +26,18 @@ class IndexPage extends FormPageBase{
     	$this->id = $args[0];
 
     	parent::__construct();
-
+		
     	try{
     		$this->form = $this->dao->getById($this->id);
     	}catch(Exception $e){
     		CMSApplication::jump("Form");
     	}
 
-    	$this->createAdd("form_name","HTMLLabel",array(
+    	$this->addLabel("form_name", array(
     		"text" => $this->form->getName()
     	));
 
-    	$this->createAdd("config_link","HTMLLink",array(
+    	$this->addLink("config_link", array(
     		"link" => SOY2PageController::createLink(APPLICATION_ID . ".Form.Config.".$this->id)
     	));
 
@@ -50,22 +50,22 @@ class IndexPage extends FormPageBase{
 			"html" => $this->buildModal($this->id, self::MODE_PREVIEW)
 		));
 
-    	$this->createAdd("template_link","HTMLLink",array(
+    	$this->addLink("template_link", array(
     		"link" => SOY2PageController::createLink(APPLICATION_ID . ".Form.Template.".$this->id),
     	));
 
-    	$this->createAdd("column_fr","HTMLModel",array(
+    	$this->addModel("column_fr", array(
     		"src" => SOY2PageController::createLink(APPLICATION_ID . ".Form.Design.Column.".$this->id)
     	));
 
-    	$this->createAdd("add_column_link","HTMLLink",array(
+    	$this->addLink("add_column_link", array(
     		"link" => SOY2PageController::createLink(APPLICATION_ID . ".Form.Design.AddColumn.".$this->id)
     	));
 		$this->addLabel("add_modal", array(
 			"html" => $this->buildModal($this->id, self::MODE_ADD)
 		));
 
-    	$this->createAdd("change_order_link","HTMLLink",array(
+    	$this->addLink("change_order_link", array(
     		"link" => SOY2PageController::createLink(APPLICATION_ID . ".Form.Design.ChangeOrder.".$this->id)
     	));
 		$this->addLabel("change_modal", array(

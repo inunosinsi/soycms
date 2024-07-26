@@ -20,21 +20,25 @@ class ColumnPage extends WebPage{
 	function __construct($args) {
 		if(count($args) < 1) CMSApplication::jump("Form");
 		$this->id = (int)$args[0];
-
+		
 		//レイヤーモードで
 		CMSApplication::setMode("layer");
 
 		parent::__construct();
 
 		$this->createAdd("column_list", "_common.Form.Design.ColumnListComponent", array(
-			"list" => self::getColumns($this->id),
+			"list" => self::_columns($this->id),
 			"isLinkageSOYMail" => true,
-			"isLinkageSOYShop" => self::checkSOYShopConnect($this->id),
-			"formDesign" => self::getFormDesignById($this->id)	//何のテンプレートを使用しているか？
+			"isLinkageSOYShop" => self::_checkSOYShopConnect($this->id),
+			"formDesign" => self::_getFormDesignById($this->id)	//何のテンプレートを使用しているか？
 		));
 	}
 
-	private function getColumns($formId){
+	/**
+	 * @param int
+	 * @return array
+	 */
+	private function _columns(int $formId){
 		try{
 			return $this->dao->getOrderedColumnsByFormId($formId);
 		}catch(Exception $e){
@@ -42,25 +46,37 @@ class ColumnPage extends WebPage{
 		}
 	}
 
-	private function checkSOYShopConnect($formId){
-		$connectConfig = self::getFormConfigById($formId)->getConnect();
+	/**
+	 * @param int
+	 * @return bool
+	 */
+	private function _checkSOYShopConnect(int $formId){
+		$connectConfig = self::_getFormConfigById($formId)->getConnect();
 		return ($connectConfig["siteId"] > 0);
 	}
 
-	private function getFormDesignById($formId){
-		$designConfig = self::getFormConfigById($formId)->getDesign();
+	/**
+	 * @param int
+	 * @return string
+	 */
+	private function _getFormDesignById(int $formId){
+		$designConfig = self::_getFormConfigById($formId)->getDesign();
 		return (isset($designConfig["theme"])) ? $designConfig["theme"] : "default";
 	}
 
-	private function getFormConfigById($formId){
-		static $config;
-		if(is_null($config)){
+	/**
+	 * @param int
+	 * @return array
+	 */
+	private function _getFormConfigById(int $formId){
+		static $cnf;
+		if(is_null($cnf)){
 			try{
-				$config = $this->formDao->getById($formId)->getConfigObject();
+				$cnf = $this->formDao->getById($formId)->getConfigObject();
 			}catch(Exception $e){
-				$config = array();
+				$cnf = array();
 			}
 		}
-		return $config;
+		return $cnf;
 	}
 }

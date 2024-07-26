@@ -66,11 +66,11 @@ class ConfigPage extends FormPageBase{
     		CMSApplication::jump("Form");
     	}
 
-    	$this->createAdd("form_name","HTMLLabel",array(
+    	$this->addLabel("form_name", array(
     		"text" => $this->form->getName()
     	));
 
-    	$this->createAdd("design_link","HTMLLink",array(
+    	$this->addLink("design_link", array(
     		"link" => SOY2PageController::createLink(APPLICATION_ID . ".Form.Design.".$this->id)
     	));
 
@@ -358,8 +358,8 @@ class ConfigPage extends FormPageBase{
 
     	$config = $_POST["Mail"];
     	$configObj = $this->form->getConfigObject();
-    	SOY2::cast($configObj,(object)$config);
-
+		SOY2::cast($configObj,(object)$config);
+		
     	$this->form->setConfigObject($configObj);
 
     	$this->dao->update($this->form);
@@ -388,7 +388,7 @@ class ConfigPage extends FormPageBase{
      * メッセージ設定
      */
     function outputMessageForm(){
-    	$this->createAdd("message_form","HTMLForm",array(
+    	$this->addForm("message_form", array(
     		"action" => SOY2PageController::createLink(APPLICATION_ID . ".Form.Config." . $this->form->getId() . "#message_form")
     	));
 

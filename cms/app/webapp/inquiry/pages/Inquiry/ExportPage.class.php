@@ -7,8 +7,9 @@ class ExportPage extends WebPage{
 		if(isset($_POST["output"])){
 
 			$formId = (isset($_POST["formId"])) ? $_POST["formId"] : null;
-			$start = (isset($_POST["start"]) && $_POST["start"] != "投稿日時（始）") ? $_POST["start"] : null;
-			$end = (isset($_POST["end"]) && $_POST["end"] != "投稿日時（終）") ? $_POST["end"] : null;
+			$start = (isset($_POST["start"]) && $_POST["start"] != "投稿日時（始）") ? $_POST["start"] : "";
+			$end = (isset($_POST["end"]) && $_POST["end"] != "投稿日時（終）") ? $_POST["end"] : "";
+			if(strlen($end) && strtotime($end) === strtotime(date("Y-m-d", strtotime($end)))) $end = date("Y-m-d", strtotime($end));
 			$flag = (isset($_POST["flag"])) ? (int)$_POST["flag"] : -1;
 			$charset = (isset($_POST["charset"])) ? $_POST["charset"] : "UTF-8";
 			$this->setCharset($charset);
@@ -82,8 +83,9 @@ class ExportPage extends WebPage{
     	parent::__construct();
 
 		$formId = (isset($_GET["formId"]) && strlen($_GET["formId"])>0) ? $_GET["formId"] : null;
-		$start = (isset($_GET["start"]) && $_GET["start"] != "投稿日時（始）") ? $_GET["start"] : null;
-		$end = (isset($_GET["end"]) && $_GET["end"] != "投稿日時（終）") ? $_GET["end"] : null;
+		$start = (isset($_GET["start"]) && $_GET["start"] != "投稿日時（始）") ? $_GET["start"] : "";
+		$end = (isset($_GET["end"]) && $_GET["end"] != "投稿日時（終）") ? $_GET["end"] : "";
+		if(strlen($end) && strtotime($end) === strtotime(date("Y-m-d", strtotime($end)))) $end = date("Y-m-d", strtotime($end));
 		$flag = (isset($_GET["flag"])) ? $_GET["flag"] : null;
 
     	$this->addForm("export_form", array(

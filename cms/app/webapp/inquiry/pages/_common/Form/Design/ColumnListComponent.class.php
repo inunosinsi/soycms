@@ -7,43 +7,42 @@ class ColumnListComponent extends HTMLList{
 
 	protected function populateItem($entity){
 
-		$this->createAdd("column_hash","HTMLLabel",array(
+		$this->addLabel("column_hash", array(
 			"name" => "column_" . $entity->getId(),
 			"text" => $entity->getColumnId()
 		));
 
-		$this->createAdd("label","HTMLInput",array(
+		$this->addInput("label", array(
 			"name" => "Column[label]",
 			"value" => $entity->getLabel()
 		));
 
-		$this->createAdd("column_type","HTMLLabel",array(
+		$this->addLabel("column_type", array(
 			"text" => $entity->getTypeText()
 		));
 
-		$this->createAdd("configure_link","HTMLLink",array(
+		$this->addLink("configure_link", array(
 			"onclick" => '$(\'#configure_wrapper_' . $entity->getId() . '\').toggle();',
 			"link" => "javascript:void(0);"
 		));
 
-		$this->createAdd("configure_wrapper","HTMLModel",array(
+		$this->addModel("configure_wrapper", array(
 			"id" => "configure_wrapper_" . $entity->getId()
 		));
 
-
-		$this->createAdd("require_cell","HTMLModel",array(
+		$this->addModel("require_cell", array(
 			"onclick" => 'changeColor(this,$(\''."#column_require_" . $entity->getId().'\'));changeRepalce($(\''."#column_replace_" . $entity->getId().'\'),$(\''."#column_require_" . $entity->getId().'\'));',
 			"style" => ($entity->getRequire()) ? "background-color:#FF8888;" : "",
 			"checkColor" => "#FF8888"
 		));
 
-		$this->createAdd("not_require","HTMLInput",array(
+		$this->addInput("not_require", array(
 			"type" => "hidden",
 			"name" => "Column[require]",
 			"value" => 0,
 		));
 
-		$this->createAdd("require","HTMLCheckbox",array(
+		$this->addCheckBox("require", array(
 			"elementId" => "column_require_" . $entity->getId(),
 			"name" => "Column[require]",
 			"selected" => $entity->getRequire(),
@@ -52,39 +51,39 @@ class ColumnListComponent extends HTMLList{
 		));
 
 		$column = $entity->getColumn(new SOYInquiry_Form());
-		$this->createAdd("configure","HTMLLabel",array(
+		$this->addLabel("configure", array(
 			"html" => $column->getConfigForm()
 		));
 
-		$this->createAdd("column_form","HTMLForm",array(
+		$this->addForm("column_form", array(
 			"action" => SOY2PageController::createLink(APPLICATION_ID . ".Form.Design.UpdateColumn." . $entity->getId())
 		));
 
-		$this->createAdd("linkage_soymail","HTMLSelect",array(
+		$this->addSelect("linkage_soymail", array(
 			"name" => "Column[config][SOYMailTo]",
 			"options" => (is_array($column->getLinkagesSOYMailTo())) ? $column->getLinkagesSOYMailTo() : array(),
 			"selected" => $column->getSOYMailTo(),
 			"visible" => $this->isLinkageSOYMail && count($column->getLinkagesSOYMailTo())>1
 		));
 
-		$this->createAdd("linkage_soyshop","HTMLSelect",array(
+		$this->addSelect("linkage_soyshop", array(
 			"name" => "Column[config][SOYShopFrom]",
 			"options" => (is_array($column->getLinkagesSOYShopFrom())) ? $column->getLinkagesSOYShopFrom() : array(),
 			"selected" => $column->getSOYShopFrom(),
 			"visible" => $this->isLinkageSOYShop && count($column->getLinkagesSOYShopFrom())>1
 		));
 
-		$this->createAdd("replace","HTMLInput",array(
+		$this->addInput("replace", array(
 			"value" => $column->getReplacement(),
 			"name" => "Column[config][replacement]",
 		));
 
-		$this->createAdd("replace_wrapper","HTMLModel",array(
+		$this->addModel("replace_wrapper", array(
 			"id" => "column_replace_".$entity->getId(),
 			"style" => ($column->getIsRequire()) ? "" : "visibility:hidden"
 		));
 
-		$this->createAdd("annotation","HTMLInput",array(
+		$this->addInput("annotation", array(
 			"value" => $column->getAnnotation(),
 			"name" => "Column[config][annotation]"
 		));

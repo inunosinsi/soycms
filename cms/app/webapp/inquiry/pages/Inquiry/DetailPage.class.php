@@ -41,7 +41,7 @@ class DetailPage extends WebPage{
 				));
 				$mailLogic->prepareSend();
 				if(isset($cc)) $mailLogic->getSend()->addRecipient($cc);
-				$mailLogic->getSend()->setFrom($from, null);	//fromの入れ替え
+				$mailLogic->getSend()->setFrom($from, "");	//fromの入れ替え
 
 				$mailLogic->sendMail($to, $subject, $content);
 
