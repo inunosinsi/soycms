@@ -106,15 +106,20 @@ class SOYInquiry_Column{
 	 * #factory
 	 */
 	function getColumn(SOYInquiry_Form $form){
-		if($this->type) SOY2::import("columns." . $this->type . "Column");
-		$className = $this->type . "Column";
+		$className = "DummyColumn";
+		if(strlen(((string)$this->type))){
+			$className = $this->type . "Column";
+			SOY2::import("columns." . $className);
+			// 再度暮らすの読み込みを試す
+			if(!class_exists($className)) SOY2::import("columns.custom." . $className);
+		}		
 
-		if(!class_exists($className)){
-			$column = new SOYInquiry_ColumnBase();
-		}else{
+		if(class_exists($className)){
 			$column = new $className();
 			if(!is_array($this->config)) $this->config = array();
 			$column->setConfigure($this->config);
+		}else{
+			$column = new SOYInquiry_ColumnBase();
 		}
 
 		$column->setId($this->id);
@@ -521,7 +526,12 @@ class SOYInquiry_ColumnBase implements ISOYInquiry_Column{
 			case "FilesColumn":
 				return $this->value;	//そのまま返す
 			default:
-				return (is_string($this->value)) ? trim($this->value) : "";
+				if(is_string($this->value)) {
+					return trim($this->value);
+				}else if(is_array($this->value)){
+					return $this->value;
+				}
+				return "";
 		}
 	}
 	function setValue($value) {
