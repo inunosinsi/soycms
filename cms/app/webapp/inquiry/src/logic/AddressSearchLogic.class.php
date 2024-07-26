@@ -30,8 +30,8 @@ class AddressSearchLogic extends SOY2LogicBase{
     		
     		$res = array(
     			"prefecture" => $prefecture,
-    			"address1" => $address1,
-    			"address2" => $address2
+    			"address1" => $address1.$address2,
+    			"address2" => "" 
     		);
     		
     		break;
