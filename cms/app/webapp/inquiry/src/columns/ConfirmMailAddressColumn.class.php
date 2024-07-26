@@ -184,19 +184,21 @@ class ConfirmMailAddressColumn extends SOYInquiry_ColumnBase{
 						}
 					}
 				}else{
-					$ascii  = '[a-zA-Z0-9!#$%&\'*+\-\/=?^_`{|}~.]';//'[\x01-\x7F]';
-					$domain = '(?:[-a-z0-9]+\.)+[a-z]{2,10}';//'([-a-z0-9]+\.)*[a-z]+';
-					$d3     = '\d{1,3}';
-					$ip     = $d3.'\.'.$d3.'\.'.$d3.'\.'.$d3;
-					$validEmail = "^$ascii+\@(?:$domain|\\[$ip\\])$";
-		
-					if(! preg_match('/'.$validEmail.'/i', $email) ) {
-						switch(SOYCMS_PUBLISH_LANGUAGE){
-							case "en":
-								$msg = $this->getLabel() . " format is incorrect.";
-								break;
-							default:
-								$msg = $this->getLabel() . "の書式が正しくありません。";
+					if($this->getIsRequire()){
+						$ascii  = '[a-zA-Z0-9!#$%&\'*+\-\/=?^_`{|}~.]';//'[\x01-\x7F]';
+						$domain = '(?:[-a-z0-9]+\.)+[a-z]{2,10}';//'([-a-z0-9]+\.)*[a-z]+';
+						$d3     = '\d{1,3}';
+						$ip     = $d3.'\.'.$d3.'\.'.$d3.'\.'.$d3;
+						$validEmail = "^$ascii+\@(?:$domain|\\[$ip\\])$";
+			
+						if(! preg_match('/'.$validEmail.'/i', $email) ) {
+							switch(SOYCMS_PUBLISH_LANGUAGE){
+								case "en":
+									$msg = $this->getLabel() . " format is incorrect.";
+									break;
+								default:
+									$msg = $this->getLabel() . "の書式が正しくありません。";
+							}
 						}
 					}
 				}

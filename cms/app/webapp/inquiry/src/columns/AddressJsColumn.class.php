@@ -65,6 +65,9 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 	//出力する項目	詳細は_getItemsConfig()に記載
 	private $items;
 
+	//出力する項目	詳細は_getRequiredItemsConfig()に記載
+	private $requiredItems;
+
 	/**
 	 * ユーザに表示するようのフォーム
 	 * @param array
@@ -189,7 +192,11 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 		}
 
 		$items = self::_getItemsConfig();
+		$requiredItems = self::_getRequiredItemsConfig();
 		for($i = 1; $i <= 2; $i++){
+			//必須のチェック
+			if(!isset($requiredItems["address".$i]) || !$requiredItems["address".$i]) continue;
+
 			if(isset($items["address".$i]) && $items["address".$i]){
 				if(!strlen(trim($values["address".$i]))){
 					switch(SOYCMS_PUBLISH_LANGUAGE){
@@ -288,9 +295,9 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 		$html[] = "<br>";
 
 		if($this->requiredProp){
-			$html[] = '<label><input type="checkbox" name="Column[config][requiredProp]" value="1" checked="checked">required属性を利用する</label>';
+			$html[] = '<label><input type="checkbox" name="Column[config][requiredProp]" value="1" checked="checked">required属性を利用する(郵便番号の項目のみ付与)</label>';
 		}else{
-			$html[] = '<label><input type="checkbox" name="Column[config][requiredProp]" value="1">required属性を利用する</label>';
+			$html[] = '<label><input type="checkbox" name="Column[config][requiredProp]" value="1">required属性を利用する(郵便番号の項目のみ付与)</label>';
 		}
 		$html[] = "<br>";
 
@@ -304,6 +311,7 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 		//表示する項目
 		$html[] = "<br><br>項目の表示設定<br>";
 		$items = self::_getItemsConfig();
+		$requiredItems = self::_getRequiredItemsConfig();
 		foreach($items as $key => $b){
 			switch($key){
 				case "address1":
@@ -317,9 +325,15 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 					break;
 			}
 			if($b){
-				$html[] = '<label><input type="checkbox" name="Column[config][items]['.$key.'] value="1" checked="checked">'.$lab.'</label><br>';
+				$html[] = '<label><input type="checkbox" name="Column[config][items]['.$key.'] value="1" checked="checked">'.$lab.'</label>';
 			}else{
-				$html[] = '<label><input type="checkbox" name="Column[config][items]['.$key.'] value="1">'.$lab.'</label><br>';
+				$html[] = '<label><input type="checkbox" name="Column[config][items]['.$key.'] value="1">'.$lab.'</label>';
+			}
+
+			if($requiredItems[$key]){
+				$html[] = '<label><input type="checkbox" name="Column[config][requiredItems]['.$key.'] value="1" checked="checked">必須</label><br>';
+			}else{
+				$html[] = '<label><input type="checkbox" name="Column[config][requiredItems]['.$key.'] value="1">必須</label><br>';
 			}
 		}
 
@@ -335,6 +349,7 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 		$this->autoSearchMode = (isset($config["autoSearchMode"])) ? $config["autoSearchMode"] : 0;
 		$this->zipDivide = (isset($config["zipDivide"]) && $config["zipDivide"]);
 		$this->items = (isset($config["items"]) && is_array($config["items"])) ? $config["items"] : array();
+		$this->requiredItems = (isset($config["requiredItems"]) && is_array($config["requiredItems"])) ? $config["requiredItems"] : array();
 	}
 
 	function getConfigure(){
@@ -343,6 +358,7 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 		$config["autoSearchMode"] = $this->autoSearchMode;
 		$config["zipDivide"] = $this->zipDivide;
 		$config["items"] = $this->items;
+		$config["requiredItems"] = $this->requiredItems;
 		return $config;
 	}
 
@@ -359,6 +375,20 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 		}
 
 		return $this->items;
+	}
+
+	private function _getRequiredItemsConfig(){
+		if(!is_array($this->requiredItems)) return array(
+			"address1" => true,	//市区町村
+			"address2" => true,	//番地
+			"address3" => true	//建物名・部屋番号
+		);
+
+		for($i = 1; $i <= 3; $i++){
+			$this->requiredItems["address" . $i] = (isset($this->requiredItems["address" . $i]));
+		}
+
+		return $this->requiredItems;
 	}
 
 	function factoryConnector(){

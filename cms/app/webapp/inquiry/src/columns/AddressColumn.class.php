@@ -62,6 +62,9 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 	//出力する項目	詳細は_getItemsConfig()に記載
 	private $items;
 
+	//出力する項目	詳細は_getRequiredItemsConfig()に記載
+	private $requiredItems;
+
 	/**
 	 * ユーザに表示するようのフォーム
 	 * @param array
@@ -111,21 +114,30 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 		}
 		$html[] = '</select></td></tr>';
 
-		$addr1 = (isset($values["address1"])) ? htmlspecialchars($values["address1"], ENT_QUOTES, "UTF-8") : "";
-		$addr2 = (isset($values["address2"])) ? htmlspecialchars($values["address2"], ENT_QUOTES, "UTF-8") : "";
-		$addr3 = (isset($values["address3"])) ? htmlspecialchars($values["address3"], ENT_QUOTES, "UTF-8") : "";
-		$html[] = '<tr>
-					<td>市区町村：</td>
-					<td><input class="soyinquiry_address_input1" type="text" size="37" name="data['.$this->getColumnId().'][address1]" value="'.$addr1.'"></td>
-				</tr>';
-		$html[] = '<tr>
-					<td>番地：</td>
-					<td><input class="soyinquiry_address_input2" type="text" size="37" name="data['.$this->getColumnId().'][address2]" value="'.$addr2.'"></td>
-				</tr>';
-		$html[] = '<tr>
-					<td colspan="2">建物名・部屋番号：
-					<input class="soyinquiry_address_input3" type="text" size="37" name="data['.$this->getColumnId().'][address3]" value="'.$addr3.'" /></td>
-				</tr>';
+		$items = self::_getItemsConfig();
+		if(isset($items["address1"]) && is_bool($items["address1"]) && $items["address1"]){
+			$addr1 = (isset($values["address1"])) ? htmlspecialchars($values["address1"], ENT_QUOTES, "UTF-8") : "";
+			$html[] = '<tr>
+						<td>市区町村</td>
+						<td><input class="input-city" type="text" size="37" name="data['.$this->getColumnId().'][address1]" value="'.$addr1.'"></td>
+					</tr>';
+		}
+		
+		if(isset($items["address2"]) && is_bool($items["address2"]) && $items["address2"]){
+			$addr2 = (isset($values["address2"])) ? htmlspecialchars($values["address2"], ENT_QUOTES, "UTF-8") : "";
+			$html[] = '<tr>
+						<td>番地</td>
+						<td><input class="input-town" type="text" size="37" name="data['.$this->getColumnId().'][address2]" value="'.$addr2.'"></td>
+					</tr>';
+		}
+		
+		if(isset($items["address3"]) && is_bool($items["address3"]) && $items["address3"]){
+			$addr3 = (isset($values["address3"])) ? htmlspecialchars($values["address3"], ENT_QUOTES, "UTF-8") : "";
+			$html[] = '<tr>
+						<td colspan="2">建物名・部屋番号
+						<input type="text" size="37" name="data['.$this->getColumnId().'][address3]" value="'.$addr3.'" /></td>
+					</tr>';
+		}
 		$html[] = '</tbody></table>';
 
 		return implode("\n",$html);
@@ -180,7 +192,11 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 		}
 
 		$items = self::_getItemsConfig();
+		$requiredItems = self::_getRequiredItemsConfig();
 		for($i = 1; $i <= 2; $i++){
+			//必須のチェック
+			if(!isset($requiredItems["address".$i]) || !$requiredItems["address".$i]) continue;
+
 			if(isset($items["address".$i]) && $items["address".$i]){
 				if(!strlen(trim($values["address".$i]))){
 					switch(SOYCMS_PUBLISH_LANGUAGE){
@@ -244,7 +260,7 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 		}
 		$address = $values["zip1"]  ."-" . $values["zip2"] . "\n" .
 		           $values["prefecture"] . $values["address1"] . $values["address2"];
-		if(strlen($values["address3"])) $address.= "\n" . $values["address3"];
+		if(isset($values["address3"]) && strlen($values["address3"])) $address.= "\n" . $values["address3"];
 
 		$address = htmlspecialchars($address, ENT_QUOTES, "UTF-8");
 		if($html) $address = nl2br($address);
@@ -263,17 +279,51 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 	 * 設定画面で表示する用のフォーム
 	 */
 	function getConfigForm(){
-		$html = '<label><input type="checkbox" name="Column[config][zipDivide]" value="1"';
+		$html = array();
 		if($this->zipDivide){
-			$html .= ' checked';
+			$html[] = '<label><input type="checkbox" name="Column[config][zipDivide]" value="1" checked="checked">郵便番号フォームを分割する</label>';
+		}else{
+			$html[] = '<label><input type="checkbox" name="Column[config][zipDivide]" value="1">郵便番号フォームを分割する</label>';
 		}
-		$html .= '>郵便番号フォームを分割する</label><br>';
-		$html .= '<label><input type="checkbox" name="Column[config][requiredProp]" value="1"';
+		$html[] = "<br>";
+
 		if($this->requiredProp){
-			$html .= ' checked';
+			$html[] = '<label><input type="checkbox" name="Column[config][requiredProp]" value="1" checked="checked">required属性を利用する(郵便番号の項目のみ付与)</label>';
+		}else{
+			$html[] = '<label><input type="checkbox" name="Column[config][requiredProp]" value="1">required属性を利用する(郵便番号の項目のみ付与)</label>';
 		}
-		$html .= '>required属性を利用する</label>';
-		return $html;
+		$html[] = "<br>";
+
+		//表示する項目
+		$html[] = "<br><br>項目の表示設定<br>";
+		$items = self::_getItemsConfig();
+		$requiredItems = self::_getRequiredItemsConfig();
+		foreach($items as $key => $b){
+			switch($key){
+				case "address1":
+					$lab = "市区町村";
+					break;
+				case "address2":
+					$lab = "番地";
+					break;
+				case "address3":
+					$lab = "建物名・部屋番号";
+					break;
+			}
+			if($b){
+				$html[] = '<label><input type="checkbox" name="Column[config][items]['.$key.'] value="1" checked="checked">'.$lab.'</label>';
+			}else{
+				$html[] = '<label><input type="checkbox" name="Column[config][items]['.$key.'] value="1">'.$lab.'</label>';
+			}
+
+			if($requiredItems[$key]){
+				$html[] = '<label><input type="checkbox" name="Column[config][requiredItems]['.$key.'] value="1" checked="checked">必須</label><br>';
+			}else{
+				$html[] = '<label><input type="checkbox" name="Column[config][requiredItems]['.$key.'] value="1">必須</label><br>';
+			}
+		}
+
+		return implode("\n", $html);
 	}
 
 	/**
@@ -283,12 +333,16 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 		SOYInquiry_ColumnBase::setConfigure($config);
 		$this->requiredProp = (isset($config["requiredProp"]) && $config["requiredProp"]);
 		$this->zipDivide = (isset($config["zipDivide"]) && $config["zipDivide"]);
+		$this->items = (isset($config["items"]) && is_array($config["items"])) ? $config["items"] : array();
+		$this->requiredItems = (isset($config["requiredItems"]) && is_array($config["requiredItems"])) ? $config["requiredItems"] : array();
 	}
 
 	function getConfigure(){
 		$config = parent::getConfigure();
 		$config["requiredProp"] = $this->requiredProp;
 		$config["zipDivide"] = $this->zipDivide;
+		$config["items"] = $this->items;
+		$config["requiredItems"] = $this->requiredItems;
 		return $config;
 	}
 
@@ -304,6 +358,20 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 		}
 
 		return $this->items;
+	}
+
+	private function _getRequiredItemsConfig(){
+		if(!is_array($this->requiredItems)) return array(
+			"address1" => true,	//市区町村
+			"address2" => true,	//番地
+			"address3" => true	//建物名・部屋番号
+		);
+
+		for($i = 1; $i <= 3; $i++){
+			$this->requiredItems["address" . $i] = (isset($this->requiredItems["address" . $i]));
+		}
+
+		return $this->requiredItems;
 	}
 
 	function factoryConnector(){
