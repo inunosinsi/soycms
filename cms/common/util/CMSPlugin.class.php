@@ -16,6 +16,7 @@ class CMSPlugin {
 		"onPathInfoBuilder"=>array(),	//PathInfoBuilder内				array(uri, args) @return array("uri" => "", args => array())
 
 		//ページ関連
+		"onAfterGettingPageObject"=>array(),	//ページオブジェクトを取得後 array(pageId)
 		"onPageLoad"=>array(),			//ページが読み込まれる直前			array(page,webPage)
 		"onPageCreate"=>array(),		//ページが作成される直前			array(page)
 		"onPageUpdate"=>array(),		//ページが更新される直前			array(new_page,old_page)

@@ -1,0 +1,50 @@
+<form soy:id="form">
+	<h4 class="mt-5">404NotFoundページ設定</h4>
+	<div class="alert alert-warning">チェックを入れたページではURIに誤りがあっても404NotFoundページを出力しません</div>
+	<ul>
+		<li soy:id="page_list" style="list-style:none">
+			<input type="checkbox" soy:id="page_item">
+		</li soy:id="page_list">
+	</ul>
+	<input type="submit" class="btn btn-primary" value="保存">
+</form>
+
+<script type="text/javascript">
+	function update_blog_pages(selfId){
+		if($("#"+selfId).prop("checked")){
+			$("#"+selfId+"-top").attr("disabled",false);
+			$("#"+selfId+"-month").attr("disabled",false);
+			$("#"+selfId+"-category").attr("disabled",false);
+			$("#"+selfId+"-entry").attr("disabled",false);
+		}else{
+			$("#"+selfId+"-top").attr("disabled",true);
+			$("#"+selfId+"-month").attr("disabled",true);
+			$("#"+selfId+"-category").attr("disabled",true);
+			$("#"+selfId+"-entry").attr("disabled",true);
+		}
+	}
+
+	function toggleResizeConfig(){
+		$('input[name="mode"]').each(function(){
+			if($(this).prop("checked")){
+				if($(this).val() == 1){
+					$("#resize_config").css("display", "block");
+				}else{
+					$("#resize_config").css("display", "none");
+				}
+			}
+		});
+
+	}
+
+	window.onload = function(){
+		$.each($(".blog"), function(){
+			update_blog_pages(this.id);
+		});
+
+		var $cnfArea = $("#resize_config");
+		$cnfArea.css("display", "none");
+
+		toggleResizeConfig();
+	};
+</script>
