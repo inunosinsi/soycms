@@ -57,6 +57,7 @@ SOY2HTMLPlugin::addPlugin("custom", "CustomPlugin");
 
 //プラグインのディレクトリ
 define("CMS_BLOCK_DIRECTORY",	dirname(__FILE__) . "/site_include/block/");
+define("CMS_BLOG_BLOCK_DIRECTORY",	dirname(__FILE__) . "/site_include/blog/");
 define("CMS_PAGE_DIRECTORY",	dirname(__FILE__) . "/site_include/page/");
 define("CMS_PAGE_PLUGIN",		dirname(__FILE__) . "/site_include/plugin/");
 define("CMS_PAGE_PLUGIN_ADMIN_MODE", true);
