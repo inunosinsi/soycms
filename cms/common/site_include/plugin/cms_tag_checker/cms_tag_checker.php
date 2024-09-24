@@ -36,6 +36,8 @@ class CmsTagChecker{
 		));
 
 		if(!defined("_SITE_ROOT_")){
+			if(!function_exists("checker_fn_get_template")) SOY2::import("site_include.plugin.cms_tag_checker.func.fn", ".php");
+
 			CMSPlugin::setEvent('onPageUpdate', self::PLUGIN_ID, array($this, "onPageUpdate"));
 			CMSPlugin::setEvent('onBlogPageUpdate', self::PLUGIN_ID, array($this, "onPageUpdate"));
 
@@ -45,33 +47,16 @@ class CmsTagChecker{
 	}
 
 	function onPageUpdate($args){
-		$template = null;
-		$mode = "";
-		$page = &$args["new_page"];		
-		if($page instanceof BlogPage){
-			$mode = self::_blogTemplateMode();
-			switch($mode){
-				case "top":
-					$template = $page->getTopTemplate();
-					break;
-				case "archive":
-					$template = $page->getArchiveTemplate();
-					break;
-				case "entry":
-					$template = $page->getEntryTemplate();
-					break;
-			}
-		}else if($page instanceof Page){
-			$template = $page->getTemplate();
-		}
+		$page = &$args["new_page"];
+		$template = checker_fn_get_template($page);
 
 		// キャッシュの削除
-		$cacheFilePath = self::_buildCacheFilePath((int)$page->getId(), $mode);
+		$cacheFilePath = checker_fn_build_cache_file_path((int)$page->getId(), self::DIRECTORY_NAME);
 		if(file_exists($cacheFilePath)) unlink($cacheFilePath);
 
 		if(is_null($template)) return;
 
-		$template = self::_shapeTemplate($template);
+		$template = checker_fn_shape_template($template);
 		if(!strlen($template)) return;
 
 		
@@ -147,60 +132,6 @@ class CmsTagChecker{
 	}
 
 	/**
-	 * @return string
-	 */
-	private function _blogTemplateMode(){
-		$args = SOY2PageController::getArguments();
-		return  (isset($args[1])) ? $args[1] : "top";
-	}
-
-	/**
-	 * コメントのある行のみを集める
-	 * @param string
-	 * @return string
-	 */
-	private function _shapeTemplate(string $temp){
-		$h = array();
-		$lines = explode("\n", $temp);
-		$n = count($lines);
-		for($i = 0; $i < $n; $i++){
-			$line = $lines[$i];
-			preg_match('/<!--.*?/', $line, $tmp);
-			if(!count($tmp)) continue;
-			
-			// 閉じコメントがない場合は次の行を連結する
-			if(is_bool(strpos($line, "-->"))){
-				for(;;){
-					if($i > $n) return "";	// 最後の行までコメントの閉じがない場合は強制終了
-					$i++;
-					$line .= " ".$lines[$i];
-					if(is_numeric(strpos($line, "-->"))) break;
-				}
-			}
-
-			//コメントが複数行あるかもしれないので、その対応
-			$line = str_replace("<!--", "\n<!--", $line);
-			$arr = explode("\n", $line);
-			foreach($arr as $v){
-				$v = trim($v);
-				if(!strlen($v)) continue;
-				$h[] = $v;
-			}
-		}
-		$c = count($h);
-		if($c === 0) return "";
-
-		// cms:ignoreをcms:ignore="dummy"に変換して、cms:ignoreも調査対象にする
-		for($i = 0; $i < $c; $i++){
-			if(is_numeric(strpos($h[$i], "cms:ignore")) && is_bool(strpos($h[$i], "cms:ignore=\"dummy\""))){
-				$h[$i] = str_replace("cms:ignore", "cms:ignore=\"dummy\"", $h[$i]);
-			}
-		}
-
-		return implode("\n", $h);
-	}
-
-	/**
 	 * 1行中に<!-- cms:id="create_date" -->hoge<!-- /cms:id="create_date" -->のような書き方があるので分割する
 	 * @param string, string, array
 	 * @return array
@@ -221,19 +152,6 @@ class CmsTagChecker{
 	}
 
 	/**
-	 * @param int, string
-	 * @return string
-	 */
-	private function _buildCacheFilePath(int $pageId, string $mode=""){
-		$dir = UserInfoUtil::getSiteDirectory() . ".cache/".self::DIRECTORY_NAME."/";
-		if(!file_exists($dir)) mkdir($dir);
-
-		$path = $dir.(string)$pageId;
-		if(strlen($mode)) $path .= "_".$mode;
-		return $path.".txt";
-	}
-
-	/**
 	 * @param string, string, string
 	 * @return string
 	 */
@@ -250,7 +168,7 @@ class CmsTagChecker{
 		$args = SOY2PageController::getArguments();
 		if(!isset($args[0]) || !is_numeric($args[0])) return "";
 		
-		$cacheFilePath = self::_buildCacheFilePath((int)$args[0]);
+		$cacheFilePath = checker_fn_build_cache_file_path((int)$args[0], self::DIRECTORY_NAME);
 		if(!file_exists($cacheFilePath)) return "";
 
 		return self::_buildNotice($cacheFilePath);
@@ -261,7 +179,7 @@ class CmsTagChecker{
 		if(!isset($args[0]) || !is_numeric($args[0])) return "";
 		if(!isset($args[1]) || !is_string($args[1])) return "";
 		
-		$cacheFilePath = self::_buildCacheFilePath((int)$args[0], $args[1]);
+		$cacheFilePath = checker_fn_build_cache_file_path((int)$args[0], self::DIRECTORY_NAME);
 		if(!file_exists($cacheFilePath)) return "";
 
 		return self::_buildNotice($cacheFilePath);
@@ -291,20 +209,14 @@ class CmsTagChecker{
 	 * debug
 	 */
 	private function d(array $a){
-		$arr = array();
-		if(count($a)){
-			foreach($a as $t){
-				$arr[] = htmlspecialchars($t, ENT_QUOTES, "UTF-8");
-			}
-		}
-		var_dump($arr);
+		checker_fn_debug_dump_array($a);
 	}
 
 	/**
 	 * debug
 	 */
 	private function h(string $str){
-		var_dump(htmlspecialchars($str, ENT_QUOTES, "UTF-8"));
+		checker_fn_debug_dump_string($str);
 	}
 
 	/**
