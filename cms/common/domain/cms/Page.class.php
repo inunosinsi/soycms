@@ -111,7 +111,7 @@ class Page {
     		$this->_pageConfig = $pageConfig;
     	}else{
     		$this->pageConfig = $pageConfig;
-    		if( strlen($pageConfig) && strpos($pageConfig, 'O:8:"stdClass"') === 0){
+    		if( is_string($pageConfig) && strlen($pageConfig) && strpos($pageConfig, 'O:8:"stdClass"') === 0){
     			$this->_pageConfig = unserialize($pageConfig);
     		}
     	}
