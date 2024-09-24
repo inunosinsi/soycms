@@ -7,6 +7,15 @@ function soycms_check_is_image_path(string $path){
 	// 拡張子がない場合は調べない
 	if(is_bool(strpos($path, ".")) || !strlen(trim(substr($path, strrpos($path, "."))))) return false;
 	
+	// httpから始まる場合はドメインまでを除いておく
+	if(soy2_strpos($path, "http") === 0){
+		preg_match('/^https?:\/\//', $path, $tmp);
+		if(isset($tmp[0])){
+			$path = str_replace($tmp[0], "", $path);
+			$path = substr($path, strpos($path, "/"));
+		}
+	}
+
 	//シンプルにDOCUMENT_ROOT + pathでファイルが存在しているか？
 	if(file_exists($_SERVER["DOCUMENT_ROOT"] . $path)) return true;
 
