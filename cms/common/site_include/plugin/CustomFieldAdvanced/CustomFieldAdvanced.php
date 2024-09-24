@@ -40,7 +40,7 @@ class CustomFieldPluginAdvanced{
 			"author" => "日本情報化農業研究所",
 			"url" => "http://www.n-i-agroinformatics.com/",
 			"mail" => "soycms@soycms.net",
-			"version"=>"1.20.4"
+			"version"=>"1.20.8"
 		));
 
 		//プラグイン アクティブ
@@ -247,7 +247,8 @@ class CustomFieldPluginAdvanced{
 						if(!class_exists("ListFieldListComponent")) SOY2::import("site_include.plugin.CustomFieldAdvanced.component.ListFieldListComponent");
 						$htmlObj->createAdd($fieldId . "_list", "ListFieldListComponent", array(
 							"soy2prefix" => "cms",
-							"list" => ($master->getType() == "list" && is_string($attr["html"])) ? soy2_unserialize($attr["html"]) : array()
+							"list" => ($master->getType() == "list" && is_string($attr["html"])) ? soy2_unserialize($attr["html"]) : array(),
+							"extraValues" => (is_array($fieldExtraValues)) ? $fieldExtraValues : array()
 						));
 					}
 
@@ -448,6 +449,7 @@ class CustomFieldPluginAdvanced{
 				}
 				$value = (count($values)) ? soy2_serialize($values) : null;
 			}
+
 			//定義型リストフィールド
 			if($field->getType() == "dllist" && is_array($value)){
 				//空の値を除く
@@ -515,6 +517,7 @@ class CustomFieldPluginAdvanced{
 	 * プラグイン管理画面 カスタムフィールドの削除
 	 */
 	function deleteField($id){
+		$id = soycms_customfield_fn_return_cms_id_string($id);
 		if(isset($this->customFields[$id])){
 			unset($this->customFields[$id]);
 			CMSPlugin::savePluginConfig(CustomFieldPluginAdvanced::PLUGIN_ID,$this);

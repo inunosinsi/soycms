@@ -9,6 +9,7 @@ var CustomFieldListField = {
 		$ipt = $("<input>");
 		$ipt.prop("type", "text");
 		$ipt.prop("name", "custom_field[" + fieldId + "][]");
+		$ipt.prop("style", " width:45%;");
 		if(isUploadMode) $ipt.prop("placeholder", "直接入力可");
 		$ipt.prop("class", "form-control");
 
@@ -46,5 +47,19 @@ function list_field_move_up(formId, idx){
 		var tmp = $("." + formId + "_" + up).val();
 		$("." + formId + "_" + up).val($("." + formId + "_" + idx).val());
 		$("." + formId + "_" + idx).val(tmp);
+
+		// extraValueの値の並べ替え
+		["alt", "url", "target"].forEach(function(ele){
+			tmp = $("." + formId + "_"+ele+"_" + up).val();
+			if(tmp != undefined){
+				$("." + formId + "_"+ele+"_" + up).val($("." + formId + "_"+ele+"_" + idx).val());
+				$("." + formId + "_"+ele+"_" + idx).val(tmp);
+			}
+		});
 	}
+}
+
+function list_field_delete(formId, idx){
+	$("." + formId + "_" + idx).val("");
+	$("." + formId + "_" + idx + "_div").hide();
 }

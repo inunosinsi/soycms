@@ -412,18 +412,28 @@ class CustomField{
 				$values = (is_string($fieldValue)) ? soy2_unserialize($fieldValue) : array();
 				if(!is_array($values)) $values = array($fieldValue);	//何かのフィールド種別からリストに変更した場合の対策
 
+				
 				$isUploadMode = (int)$this->getIsImageUploadForm();
 				$placeholderProp = ($isUploadMode) ? " placeholder=\"直接入力可\"" : "";
 
 				$cnt = 0;	//フォームの出力個数をカウントする
 				$idProp = "customfield_" . $h_formID . "_listfield_";
-
+				
 				$html = array();
 				if(is_array($values) && count($values)){
+					$h_formNameExtra = str_replace("custom_field[", "custom_field_extra[", $h_formName);
 					foreach($values as $idx => $v){
 						$html[] = "<div class=\"form-inline\">";
 						$html[] = "	<input type=\"text\" name=\"" . $h_formName . "[]\" class=\"form-control " . $h_formID . "_" . $idx . "\" value=\"" . htmlspecialchars($v, ENT_QUOTES, "UTF-8") . "\" id=\"" . $idProp . $cnt++ . "\"".$placeholderProp.">";
-						if($isUploadMode) $html[] = "	<input type=\"button\" onclick=\"open_listfield_filemanager('".$idProp . ($cnt-1)."');\" class=\"btn\" value=\"ファイルを指定する\">";
+						if($isUploadMode) {
+							$altV = (isset($extraValues["alt"][$idx])) ? $extraValues["alt"][$idx] : "";
+							$urlV = (isset($extraValues["url"][$idx])) ? $extraValues["url"][$idx] : "";
+							$tarV = (isset($extraValues["target"][$idx])) ? $extraValues["target"][$idx] : "";
+							$html[] = "	<input type=\"text\" name=\"" . $h_formNameExtra . "[alt][]\" class=\"form-control ".$h_formID."_alt_".$idx."\" value=\"".$altV."\" placeholder=\"alt\" style=\"width:100px;\">";
+							$html[] = "	<input type=\"text\" name=\"" . $h_formNameExtra . "[url][]\" class=\"form-control ".$h_formID."_url_".$idx."\" value=\"".$urlV."\" placeholder=\"url\" style=\"width:150px;\">";
+							$html[] = "	<input type=\"text\" name=\"" . $h_formNameExtra . "[target][]\" class=\"form-control ".$h_formID."_target_".$idx."\" value=\"".$tarV."\" placeholder=\"_target\" style=\"width:80px;\">";
+							$html[] = "	<input type=\"button\" onclick=\"open_listfield_filemanager('".$idProp . ($cnt-1)."');\" class=\"btn\" value=\"ファイルを指定する\">";
+						}
 						if(strlen($v) && soycms_check_is_image_path($v)){
 							$html[] = "<a href=\"#\" class=\"btn btn-warning btn-sm\" onclick=\"return preview_customfield($('#".$idProp . ($cnt-1)."'));\">Preview</a>";
 						}

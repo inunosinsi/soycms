@@ -70,17 +70,19 @@ class CustomFieldListComponent extends HTMLList {
 
 
 		/* 削除用 */
+		$fieldIdForDeletion = soycms_customfield_fn_convert_cms_id_string($entity->getId());
+
 		$this->addInput("delete_submit", array(
 			"name" => "delete_submit",
-			"value" => $entity->getId(),
-			"id" => "delete_submit_".$entity->getId()
+			"value" => $fieldIdForDeletion,
+			"id" => "delete_submit_".$fieldIdForDeletion
 		));
 
 		$this->addLink("delete", array(
 			"text"=>"削除",
 			"link"=>"javascript:void(0);",
-			"onclick"=>'if(confirm("delete \"'.$entity->getLabel().'\"?")){$(\'#delete_submit_'.$entity->getId().'\').click();}return false;',
-			"attr:id" => "delete_btn_" . $entity->getId()
+			"onclick"=>'if(confirm("delete \"'.$entity->getLabel().'\"?")){$(\'#delete_submit_'.$fieldIdForDeletion.'\').click();}return false;',
+			"attr:id" => "delete_btn_".$fieldIdForDeletion
 		));
 
 		/* 高度な設定 */

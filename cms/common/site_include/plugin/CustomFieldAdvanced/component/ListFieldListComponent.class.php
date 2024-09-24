@@ -2,6 +2,8 @@
 
 class ListFieldListComponent extends HTMLList {
 
+	private $extraValues;
+
 	function populateItem($entity, $i){
 		$v = (is_string($entity)) ? $entity : "";
 
@@ -35,17 +37,28 @@ class ListFieldListComponent extends HTMLList {
 
 		$this->addImage("image", array(
 			"soy2prefix" => "cms",
-			"src" => ($isImageFile) ? $v : ""
+			"src" => ($isImageFile) ? $v : "",
+			"attr:alt" => (is_numeric($i) && isset($this->extraValues["alt"][$i])) ? $this->extraValues["alt"][$i] : $v
+		));
+
+		$this->addLink("target_link", array(
+			"soy2prefix" => "cms",
+			"link" => ($isImageFile && is_numeric($i) && isset($this->extraValues["url"][$i])) ? $this->extraValues["url"][$i] : "",
+			"target" => ($isImageFile && is_numeric($i) && isset($this->extraValues["target"][$i])) ? $this->extraValues["target"][$i] : "_self"
 		));
 
 		$this->addLink("image_link", array(
 			"soy2prefix" => "cms",
-			"link" => ($isImageFile) ? $v : ""
+			"link" => ($isImageFile) ? $v : "",
 		));
 
 		$this->addLabel("image_text", array(
 			"soy2prefix" => "cms",
 			"text" => ($isImageFile) ? $v : ""
 		));
+	}
+
+	function setExtraValues(array $extraValues){
+		$this->extraValues = $extraValues;
 	}
 }

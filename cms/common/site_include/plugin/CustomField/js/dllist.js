@@ -6,6 +6,7 @@ var CustomFieldDlListField = {
 		$ipt = $("<input>");
 		$ipt.prop("type", "text");
 		$ipt.prop("name", "custom_field[" + fieldId + "][label][]");
+		$ipt.prop("style", " width:30%;");
 		if(isUploadMode) $ipt.prop("placeholder", "直接入力可");
 		$ipt.prop("class", "form-control");
 
@@ -14,6 +15,7 @@ var CustomFieldDlListField = {
         $ipt = $("<input>");
 		$ipt.prop("type", "text");
 		$ipt.prop("name", "custom_field[" + fieldId + "][value][]");
+		$ipt.prop("style", " width:30%;");
 		if(isUploadMode) $ipt.prop("placeholder", "直接入力可");
 		$ipt.prop("class", "form-control");
 
@@ -49,4 +51,12 @@ function dllist_field_move_up(formId, idx){
 			$("." + formId + "_" + idx + "_" + l).val(tmp);
 		}
 	}
+}
+
+function dllist_field_delete(formId, idx){
+	var types = ["label", "value"];
+	for(var i = 0; i <= types.length; i++){
+		$("." + formId + "_" + idx + "_" + types[i]).val("");
+	}
+	$("." + formId + "_" + idx).hide();
 }

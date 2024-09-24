@@ -34,3 +34,31 @@ function soycms_get_field_id_list(array $fields){
 	}
 	return $fieldIds;
 }
+
+/**
+ * フィールドIDにcms:idの文字列を入れてしまった時の対処
+ * @param string
+ * @return string
+ */
+function soycms_customfield_fn_convert_cms_id_string(string $fieldId){
+	preg_match('/cms:id=\"(.*)?\"/', $fieldId, $tmp);
+	if(!isset($tmp[1])) return $fieldId;
+	
+	$fieldId = "cmsideq".trim($tmp[1]);
+
+	return $fieldId;
+}
+
+/**
+ * フィールドIDにcms:idの文字列を入れてしまった時の対処
+ * @param string
+ * @return string
+ */
+function soycms_customfield_fn_return_cms_id_string(string $fieldId){
+	preg_match('/^cmsideq(.*)?/', $fieldId, $tmp);
+	if(!isset($tmp[1])) return $fieldId;
+	
+	$fieldId = "cms:id=\"".trim($tmp[1])."\"";
+
+	return $fieldId;
+}
