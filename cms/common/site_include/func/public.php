@@ -87,3 +87,29 @@ function soycms_jump_notfound_page(){
 	header("Location:".soycms_get_site_publish_url_by_frontcontroller()."_notfound");
 	exit;
 }
+
+/**
+ * $_SERVER["REQUEST_URI"]から記事のエイリアスを取得する
+ * @return string
+ */
+function soycms_get_alias_by_request_uri(){
+	if(!isset($_SERVER["REQUEST_URI"])) return "";
+	
+	$siteId = soycms_get_site_id_by_frontcontroller();
+	$reqUri = $_SERVER["REQUEST_URI"]; 
+	if(preg_match('/^\/'.$siteId.'\//', $reqUri) === 1){
+		$reqUri = substr($reqUri, strlen($siteId)+1);
+	}
+
+	if(preg_match('/^\/'.$_SERVER["SOYCMS_PAGE_URI"].'\//', $reqUri) === 1){
+		$reqUri = substr($reqUri, strlen($_SERVER["SOYCMS_PAGE_URI"])+1);
+	}
+	
+	$reqUri = trim($reqUri, "/");
+	foreach(array("/", "#", "?") as $char){
+		if(soy2_strpos($reqUri, $char) < 0) continue;
+		$reqUri = substr($reqUri, 0, soy2_strpos($reqUri, $char));
+	}
+	
+	return $reqUri;
+}
