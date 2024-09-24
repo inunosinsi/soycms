@@ -21,7 +21,7 @@ class ConvertImageAvifPlugin {
 			"author"=> "齋藤毅",
 			"url"=> "https://saitodev.co/article/4919",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.3"
+			"version"=>"1.4"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -37,9 +37,10 @@ class ConvertImageAvifPlugin {
 	}
 
 	function onOutput($arg){
+		$html = &$arg["html"];
+
 		if(!function_exists("imageavif")) return $html;
 
-		$html = &$arg["html"];
 		$page = &$arg["page"];
 
 		//404ページの場合は調べない
