@@ -69,6 +69,10 @@ class CMSPageController extends SOY2PageController{
 				$this->onNotFound();
 			}
 		}
+		
+		// ページオブジェクト取得後
+		CMSPlugin::callEventFunc('onAfterGettingPageObject', array("pageId" => $_SERVER["SOYCMS_PAGE_ID"]));
+
 		$this->pageType = $page->getPageType();
 		
 		switch($page->getPageType()){
@@ -253,6 +257,8 @@ class CMSPageController extends SOY2PageController{
 	}
 
 	function onNotFound(string $path="", array $args=array(), string $classPath=""){
+		if(defined("INVALID_404_NOT_FOUND") && INVALID_404_NOT_FOUND) return;	//何もしない
+
 		if(!isset($_SERVER["SOYCMS_PAGE_URI"])) $_SERVER["SOYCMS_PAGE_URI"] = "";
 		if(!isset($_SERVER["SOYCMS_PAGE_ID"])) $_SERVER["SOYCMS_PAGE_ID"] = 0;
 

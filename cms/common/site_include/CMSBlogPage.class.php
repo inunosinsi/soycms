@@ -129,9 +129,9 @@ class CMSBlogPage extends CMSPage{
 		$this->id = $args[0];
 		$this->arguments = $args[1];
 		$this->siteConfig = $args[2];
-
+		
 		$this->page = soycms_get_blog_page_object((int)$this->id);
-
+		
 		//サイトのURL
 		$this->siteUrl = $this->getSiteUrl();
 
@@ -200,7 +200,7 @@ class CMSBlogPage extends CMSPage{
 				if(
 				    !isset($_GET["comment"]) && !isset($_GET["trackback"])
 				    && $alias == $this->entry->getId()
-				    && $alias != $this->entry->getAlias()
+				    && (strlen($this->entry->getAlias()) && $alias != $this->entry->getAlias())
 				){
 					header("Location: ".$this->currentAbsoluteURL);
 				}
