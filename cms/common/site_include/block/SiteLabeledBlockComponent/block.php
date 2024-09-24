@@ -157,7 +157,7 @@ class SiteLabeledBlockComponent implements BlockComponent{
 			$dao = SOY2DAOFactory::create("cms.LabelDAO");
 			$label = $dao->getById($this->labelId);
 			$res = $site->getSiteName() . ": ".$label->getCaption();
-			$res .= (strlen($this->displayCountFrom) OR strlen($this->displayCountTo)) ? " ". $this->displayCountFrom."-".$this->displayCountTo : "" ;
+			$res .= (strlen((string)$this->displayCountFrom) || strlen((string)$this->displayCountTo)) ? " ". $this->displayCountFrom."-".$this->displayCountTo : "" ;
 
 		}catch(Exception $e){
 			$res = CMSMessageManager::get("SOYCMS_NO_SETTING");
