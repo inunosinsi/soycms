@@ -1,9 +1,13 @@
-<p>プラグインブロックで検索結果を表示できるブロックを使用できます</p>
+<div class="alert alert-info">プラグインブロックで検索結果を表示できるブロックを使用できます</div>
 
-<h4>設定方法</h4>
+<br>
+
+<div class="alert alert-success">設定方法</div>
 <p>テンプレートのブロック設定でプラグインブロックを選び、プラグインのセレクトボックスで<strong>soycms_search_block</strong>を選びます。</p>
 
-<h4>タグの記述例</h4>
+<br>
+
+<div class="alert alert-success">タグの記述例</div>
 <p>
 	他のブロックの時と同じですが、block:id="***"の記述の時に、ラベルIDと表示件数を指定することができます。<br>
 	※ブロックの外側でcms:id="search_keyword"で検索のキーワードを出力します。
@@ -14,21 +18,25 @@
 &lt;!-- block:id="***" cms:label="1" cms:count="10" --&gt;
 表示したい内容のcms:idを追加
 &lt;!-- /block:id="***" --&gt;</pre>
-<p>
-    ***の箇所は任意の値です。<br>
-    cms:labelでどのラベルが設定されている記事一覧を取得するかを決めることができます。<br>
-    ※cms:labelの指定がないと動きません<br>
-    cms:countで検索結果を何件表示するか決めることができます。<br>
-    ※cms:countの指定がなくても動作します。
-</p>
+<div class="alert alert-warning">
+	***の箇所は任意の値です。<br>
+	cms:labelでどのラベルが設定されている記事一覧を取得するかを決めることができます。<br>
+	※cms:labelの指定がないと動きません<br>
+	cms:countで検索結果を何件表示するか決めることができます。<br>
+	※cms:countの指定がなくても動作します。
+</div>
 
-<h4>他ページに設置する検索フォームの記述例</h4>
+<br>
+
+<div class="alert alert-success">他ページに設置する検索フォームの記述例</div>
 <pre>&lt;form method="GET" action="<strong>{検索結果ページのURL}</strong>"&gt;
 &lt;input type="search" name="<strong>q</strong>"&gt;
 &lt;input type="submit" value="検索"&gt;
 &lt;/form&gt;</pre>
 
-<h4>ページャの設置</h4>
+<br>
+
+<div class="alert alert-success">ページャの設置</div>
 <p>下記のコードをプラグインブロックの外に記述します。</p>
 <pre>&lt;a p_block:id="s_first_page"&gt;最初のページへ&lt;/a&gt;
 
@@ -39,3 +47,31 @@
 &lt;a p_block:id="s_last_page"&gt;最後のページへ&lt;/a&gt;
 
 &lt;!-- p_block:id="s_pages" /--&gt;ページ中&lt;!-- p_block:id="s_current_page" /--&gt;ページ目</pre>
+
+<br>
+
+<div class="alert alert-info">Gemini APIで類似キーワードを取得</div>
+
+<form soy:id="form">
+	<div class="form-group">
+		<div class="form-inline">
+			<label>Gemini APIキー</label>
+			<input type="text" class="form-control" soy:id="gemini_api_key">
+		</div>
+		<div class="alert alert-warning">
+			Gemini APIキーは<a href="https://ai.google.dev/gemini-api" target="_blank" rel="noopener">Google AI Gemini API |Google AI Studio |Google for Developers &nbsp;|&nbsp; Google AI for Developers</a>で生成してください。
+		</div>
+		<div class="form-inline">
+			<label>プロンプト</label>
+			<input type="text" class="form-control" soy:id="gemini_api_prompt_format">
+		</div>
+		<div class="alert alert-warning">
+			<strong>##QUERY##</strong>は検索時に入力したキーワードに置換されます。<br>
+			プロンプト例：<strong soy:id="gemini_api_prompt_format_example"></strong>
+		</div>
+	</div>
+
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="保存">
+	</div>
+</form>

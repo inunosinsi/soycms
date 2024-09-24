@@ -1,0 +1,54 @@
+<form soy:id="form">
+	<div class="form-group">
+		<div class="form-inline">
+			<label>Gemini APIキー</label>
+			<input type="text" class="form-control" soy:id="gemini_api_key">
+		</div>
+		<div class="alert alert-warning">
+			Gemini APIキーは<a href="https://ai.google.dev/gemini-api" target="_blank" rel="noopener">Google AI Gemini API |Google AI Studio |Google for Developers &nbsp;|&nbsp; Google AI for Developers</a>で生成してください。
+		</div>
+	</div>
+
+	<div class="form-group">
+		<div class="form-inline">
+			<label>自動生成する文字数</label>
+			<input type="number" class="form-control" soy:id="gemini_count_chars">文字
+		</div>
+		<div class="alert alert-warning">文字数は目安で、自動生成された概要の文字列は前後します。</div>
+	</div>
+
+	<!-- soy:id="enabled_blog_pages_checkboxes" /-->
+
+
+	<div class="form-group">
+		<label>概要の前に追加する文字列</label>
+		<input type="text" class="form-control" soy:id="gemini_prefix">
+	</div>
+
+	<div class="form-group">
+		<label>概要の後に追加する文字列</label>
+		<input type="text" class="form-control" soy:id="gemini_postfix">
+	</div>
+
+	<div class="form-group">
+		<label>概要の自動更新</label><br>
+		<label><input type="checkbox" soy:id="gemini_abstract_update"> 古い概要から順次更新する</label>
+	</div>
+
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="保存">
+	</div>
+</form>
+
+<br>
+
+<div class="alert alert-info">概要の時限実行の設定</div>
+<p>crontabに下記のコマンドを登録します。</p>
+<pre>php <!-- soy:id="job_path" /--></pre>
+
+<br>
+
+<div class="alert alert-info">使用例</div>
+<pre>&lt;!-- b_block:id="entry" --&gt;
+&lt;div <strong>cms:id="<!-- soy:id="soy_id" /-->"</strong>&gt;自動生成された概要を出力する&lt;/div&gt;
+&lt;!-- /b_block:id="entry" --&gt;</pre>

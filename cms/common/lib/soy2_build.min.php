@@ -955,7 +955,7 @@ class SOY2ActionSession {
      * @return SOY2UserSession
      */
     public static function &getUserSession(){
-    	if(session_status() == PHP_SESSION_NONE) session_start();
+		if(session_status() == PHP_SESSION_NONE) session_start();
     	if(!isset($_SESSION[self::session_user_key])){
     		$_SESSION[self::session_user_key] = new SOY2UserSession();
     	}

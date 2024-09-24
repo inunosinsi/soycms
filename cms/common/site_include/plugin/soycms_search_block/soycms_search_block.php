@@ -21,7 +21,7 @@ class SOYCMS_Search_Block_Plugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.7"
+			"version"=>"1.8"
 		));
 
 		if(CMSPlugin::activeCheck($this->getId())){
@@ -60,9 +60,11 @@ class SOYCMS_Search_Block_Plugin{
 
 		$query = (isset($_GET["q"]) && strlen(trim($_GET["q"]))) ? htmlspecialchars(trim($_GET["q"]), ENT_QUOTES, "UTF-8") : "";
 
+		$geminilogic = SOY2Logic::createInstance("logic.ai.GeminiApiLogic");
+
 		$obj->addLabel("search_keyword", array(
 			"soy2prefix" => "cms",
-			"text" => $query
+			"text" => (strlen($query) && strlen($geminilogic->getApiKey())) ? implode(",", $logic->getRelativeQueries($query)) : $query
 		));
 
 		$args = $logic->getArgs();
