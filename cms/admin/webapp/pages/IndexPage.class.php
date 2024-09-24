@@ -67,7 +67,7 @@ class IndexPage extends CMSWebPageBase{
 		));
 
 		$this->addLink("addAdministrator", array(
-			"link"=>SOY2PageController::createLink("Administrator.Create")
+			"link"=>SOY2PageController::createLink("Admin.Create")
 		));
 
 		//アプリケーション ログイン可能なアプリケーションを読み込む
