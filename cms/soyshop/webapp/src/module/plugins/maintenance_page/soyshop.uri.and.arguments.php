@@ -5,7 +5,7 @@ class MaintenancePageUriAndArguments extends SOYShopUriAndArgumentsBase{
 	/**
 	 * @return string $uri, array $args
 	 */
-	function execute($uri, $args){
+	function execute(string $uri, array $args){
 		// 表示設定のパターンを増やしたい → checkActive内で制御
 		SOY2::import("module.plugins.maintenance_page.util.MaintenancePageUtil");
 		if(!MaintenancePageUtil::checkActive()) return array(null, null);

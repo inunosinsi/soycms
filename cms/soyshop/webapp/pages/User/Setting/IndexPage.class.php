@@ -104,6 +104,13 @@ class IndexPage extends WebPage{
 
 		$this->addForm("form");
 
+		//属性のラベルの変更
+		for($i = 1; $i <= 3; $i++){
+			$this->addLabel("user_attribute_label_".$i, array(
+				"text" => constant("USER_ATTRIBUTE_LABEL_".$i)
+			));
+		}
+
 		//ユーザ一覧
 		DisplayPlugin::toggle("no_user", (count($users) < 1));
 		$this->createAdd("user_list", "_common.User.UserListComponent", array(
@@ -149,7 +156,7 @@ class IndexPage extends WebPage{
 				"name" => "search[no][attribute" . $key . "]",
 				"value" => 1,
 				"selected" => (isset($search["no"]["attribute" . $key])),
-				"label" => "属性" . $key
+				"label" => constant("USER_ATTRIBUTE_LABEL_".$key)
 			));
 		}
 
@@ -178,7 +185,7 @@ class IndexPage extends WebPage{
 			$this->addCheckBox("remove_attribute" . $key, array(
 				"name" => "remove[attribute" . $key . "]",
 				"value" => 1,
-				"label" => "属性" . $key
+				"label" => constant("USER_ATTRIBUTE_LABEL_".$key)
 			));
 		}
 	}

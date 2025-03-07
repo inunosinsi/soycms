@@ -13,6 +13,9 @@ class CompletePage extends MainMyPagePageBase{
 			$loginUrl .= "?r=" . $r;
 		}
 
+		// ConfirmPageで登録した顧客情報をメールアドレスから辿る
+		$mailAddress = ($mypage->getUserInfo() instanceof SOYShop_User) ? $mypage->getUserInfo()->getMailAddress() : "";
+
 		$mypage->clearUserInfo();
 		$mypage->clearErrorMessage();
 		$mypage->save();
@@ -22,5 +25,11 @@ class CompletePage extends MainMyPagePageBase{
 		$this->addLink("login_link", array(
 			"link" => $loginUrl
 		));
+
+		SOYShopPlugin::load("soyshop.mypage");
+		SOYShopPlugin::invoke("soyshop.mypage", array(
+			"mode" => "register_complete",
+			"userId" => (strlen($mailAddress)) ? (int)soyshop_get_user_object_by_mailaddress($mailAddress)->getId() : 0
+		));	
 	}
 }

@@ -19,6 +19,13 @@ class UserGroupCountPage extends WebPage{
 			"text" => self::getGroupNameById($_GET["group_id"])
 		));
 
+		//属性のラベルの変更
+		for($i = 1; $i <= 3; $i++){
+			$this->addLabel("user_attribute_label_".$i, array(
+				"text" => constant("USER_ATTRIBUTE_LABEL_".$i)
+			));
+		}
+
 		$this->createAdd("user_list", "_common.User.UserListComponent", array(
 			"list" => $users
 		));

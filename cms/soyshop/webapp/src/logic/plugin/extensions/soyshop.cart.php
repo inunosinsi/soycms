@@ -1,23 +1,19 @@
 <?php
 class SOYShopCartBase implements SOY2PluginAction{
 
-	function doOperation(){
-
-	}
+	function doOperation(){}
 
 	/**
 	 * @param CartLogic
 	 */
-	function afterOperation(CartLogic $cart){
-
-	}
+	function afterOperation(CartLogic $cart){}
 
 	/**
 	 * @param CartLogic
 	 * @return html
 	 */
 	function isUpdate(CartLogic $cart){
-
+		return "";
 	}
 
 	/**
@@ -25,7 +21,7 @@ class SOYShopCartBase implements SOY2PluginAction{
 	 * @return html
 	 */
 	function displayPage01(CartLogic $cart){
-
+		return "";
 	}
 
 	/**
@@ -33,22 +29,20 @@ class SOYShopCartBase implements SOY2PluginAction{
 	 * @return html
 	 */
 	function displayUpperParts02(CartLogic $cart){
-
+		return "";
 	}
 
 	/**
 	 * @param CartLogic
 	 */
-	function doPost02(CartLogic $cart){
-
-	}
+	function doPost02(CartLogic $cart){}
 
 	/**
 	 * @param CartLogic
 	 * @return html
 	 */
 	function displayPage02(CartLogic $cart){
-
+		return "";
 	}
 
 	/**
@@ -56,7 +50,7 @@ class SOYShopCartBase implements SOY2PluginAction{
 	 * @return html
 	 */
 	function displayPage03(CartLogic $cart){
-
+		return "";
 	}
 
 	/**
@@ -64,7 +58,7 @@ class SOYShopCartBase implements SOY2PluginAction{
 	 * @return html
 	 */
 	function displayPage04(CartLogic $cart){
-
+		return "";
 	}
 
 	/**
@@ -72,7 +66,7 @@ class SOYShopCartBase implements SOY2PluginAction{
 	 * @return html
 	 */
 	function displayPage05(CartLogic $cart){
-
+		return "";
 	}
 
 	/**
@@ -80,7 +74,7 @@ class SOYShopCartBase implements SOY2PluginAction{
 	 * @return html
 	 */
 	function displayCompletePage(CartLogic $cart){
-
+		return "";
 	}
 }
 class SOYShopCartDeletageAction implements SOY2PluginDelegateAction{

@@ -2189,13 +2189,13 @@ class SOY2ActionResult{
 		return (isset($this->_errorMessage[$key])) ? $this->_errorMessage[$key] : null;
 	}
 	function setAttribute($key,$obj){
-		$this->attributes[$key] = $obj;
+		$this->_attributes[$key] = $obj;
 	}
 	function getAttribute($key){
 		if(is_null($key)){
-			return $this->attributes;
+			return $this->_attributes;
 		}
-		return (isset($this->attributes[$key])) ? $this->attributes[$key] : null;
+		return (isset($this->_attributes[$key])) ? $this->_attributes[$key] : null;
 	}
 	/**
 	 * booleanを返します。

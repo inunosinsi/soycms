@@ -7,6 +7,8 @@ class GenerateBarcodeLogic extends SOY2LogicBase {
 	}
 
 	function generate(int $orderId){
+		if(!function_exists("imagejpeg")) return;
+		
 		$trackingNumber = (string)soyshop_get_order_object($orderId)->getTrackingNumber();
 		$jpgFile = GenerateBarcodeUtil::getBarcodeDirectory() . $trackingNumber . ".jpg";
 

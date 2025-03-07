@@ -151,6 +151,10 @@ class EntryImportUtil{
 		}
 	}
 
+	/**
+	 * @param string
+	 * @return array
+	 */
 	public static function getCustomfieldConfig(string $siteId){
 		$fname = $_SERVER["DOCUMENT_ROOT"] . $siteId . '/.plugin/CustomFieldAdvanced.config';
 		if(file_exists($fname)){
@@ -164,6 +168,10 @@ class EntryImportUtil{
 		}
 	}
 
+	/**
+	 * @param string
+	 * @return int
+	 */
 	public static function getSOYCMSThisIsNewConfig(string $siteId){
 		$fname = $_SERVER["DOCUMENT_ROOT"] . $siteId . '/.plugin/SOYCMS_ThisIsNew.config';
 		if(file_exists($fname)){
@@ -175,20 +183,20 @@ class EntryImportUtil{
 		return 0;
 	}
 
-	//サムネイルプラグインが有効であるか？
+	/**
+	 * サムネイルプラグインが有効であるか？
+	 * @param string
+	 * @return string
+	 */
 	public static function getThumbnailPluginConfig(string $siteId){
 		$fname = $_SERVER["DOCUMENT_ROOT"] . $siteId . '/.plugin/soycms_thumbnail.active';
-		if(file_exists($fname)){
-			$cnffile = $_SERVER["DOCUMENT_ROOT"] . $siteId . '/.plugin/soycms_thumbnail.config';
-			if(file_exists($cnffile)){
-				if(!class_exists("SOYCMSThumbnailPlugin")) include_once(dirname(dirname(__FILE__)) . "/class/.class.php");
-				$cnf = soy2_unserialize(file_get_contents($cnffile));
-				return $cnf->getNoThumbnailPath();
-			}else{
-				return "";
-			}
-		}else{
-			return null;
-		}
+		
+		if(!file_exists($fname)) return "";
+		$cnffile = $_SERVER["DOCUMENT_ROOT"] . $siteId . '/.plugin/soycms_thumbnail.config';
+		if(!file_exists($cnffile)) return "";
+
+		if(!class_exists("SOYCMSThumbnailPlugin")) include_once(dirname(dirname(__FILE__)) . "/class/SOYCMSThumbnailPlugin.class.php");
+		$cnf = soy2_unserialize(file_get_contents($cnffile));
+		return $cnf->getNoThumbnailPath();
 	}
 }

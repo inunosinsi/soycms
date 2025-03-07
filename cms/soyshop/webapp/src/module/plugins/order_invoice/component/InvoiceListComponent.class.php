@@ -57,6 +57,8 @@ class InvoiceListComponent extends HTMLList{
 		/*** 振り込み情報 ***/
 		self::buildPaymentArea($order);
 
+		/** モジュールから値を引っ張る **/
+
 		/*** その他メッセージ ***/
 		self::buildMessageArea();
 	}
@@ -343,6 +345,29 @@ class InvoiceListComponent extends HTMLList{
 
 		$this->addLabel("payment", array(
 			"html" => nl2br($account)
+		));
+
+		// 支払い方法
+		$paymentMethod = "";
+		$attrList = $order->getAttributeList();
+		if(is_string($paymentId) && isset($attrList[$paymentId])){
+			$paymentMethod = $attrList[$paymentId]["value"];
+		}
+
+
+		/**
+		 * 支払い方法の出力
+		 * <!-- soy:id="display_payment_method" -->
+		 * 支払い方法 : <!-- soy:id="payment_method" /-->
+		 * <!-- /soy:id="display_payment_method" -->
+		 *
+		 */
+		$this->addModel("display_payment_method", array(
+			"visible" => (strlen($paymentMethod))	
+		));
+
+		$this->addLabel("payment_method", array(
+			"text" => $paymentMethod	
 		));
 	}
 

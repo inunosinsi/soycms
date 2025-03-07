@@ -75,7 +75,7 @@ class ButtonSocialCommon {
         }
 
         return implode("\n", $html);
-    }
+	}
 
     function getFbButton(){
 

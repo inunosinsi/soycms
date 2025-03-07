@@ -1,6 +1,8 @@
 <?php
 class CompletePage extends MainMyPagePageBase{
 
+	private $userId;
+
 	function __construct(){
 
 		$register = false;
@@ -33,9 +35,15 @@ class CompletePage extends MainMyPagePageBase{
 		$this->addLink("register_link", array(
 			"link" => soyshop_get_mypage_url() . "/register"
 		));
+
+		SOYShopPlugin::load("soyshop.mypage");
+		SOYShopPlugin::invoke("soyshop.mypage", array(
+			"mode" => "register_complete",
+			"userId" => (int)$this->userId
+		));	
 	}
 
-	private function _executeRegister($query){
+	private function _executeRegister(string $query){
 		$tokenDAO = SOY2DAOFactory::create("user.SOYShop_UserTokenDAO");
 		$tokenDAO->deleteOldObjects();
 
@@ -57,6 +65,7 @@ class CompletePage extends MainMyPagePageBase{
 			$user->setRealRegisterDate(time());
 
 			SOY2DAOFactory::create("user.SOYShop_UserDAO")->update($user);
+			$this->userId = (int)$user->getId();
 			self::_sendRegisterMail($user);
 
 			$tokenDAO->deleteByUserId($user->getId());

@@ -2,37 +2,26 @@
 
 class DownloadCommonLogic extends SOY2LogicBase{
 
-	private $attrDao;
-
 	//登録可能な拡張子
 	private $allowExtensions = array(
-								".zip" => "application/zip",
-								".epub" => "application/epub+zip",
-								".pdf" => "application/pdf",
-								".mp3" => "audio/mpeg",
-								".mp4" => "application/mp4"
-							);
+		".zip" => "application/zip",
+		".epub" => "application/epub+zip",
+		".pdf" => "application/pdf",
+		".mp3" => "audio/mpeg",
+		".mp4" => "application/mp4"
+	);
 
-	function __construct(){
-		if(!$this->attrDao) $this->attrDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-	}
+	function __construct(){}
 
 	//商品のタイプを調べる。商品のタイプが小商品の場合は親商品のタイプを調べる
 	function checkItemType(SOYShop_Item $item){
 
-		$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-		if($item->getType() == SOYShop_Item::TYPE_DOWNLOAD){
-			return true;
-		}else{
-			if(is_numeric($item->getType())){
-				try{
-					$parent = $itemDao->getById($item->getType());
-					if($parent->getType() == SOYShop_Item::TYPE_DOWNLOAD_GROUP) return true;
-				}catch(Exception $e){
-					//
-				}
-			}
-		}
+		$itemDao = soyshop_get_hash_table_dao("item");
+		if($item->getType() == SOYShop_Item::TYPE_DOWNLOAD) return true;
+		if(!is_numeric($item->getType())) return false;
+
+		// parent item object
+		if(soyshop_get_item_object((int)$item->getType()) == SOYShop_Item::TYPE_DOWNLOAD_GROUP) return true;
 
 		return false;
 	}
@@ -40,18 +29,15 @@ class DownloadCommonLogic extends SOY2LogicBase{
 	/**
 	 * 登録するファイルの拡張子をチェック
 	 * @param string
-	 * @return boolean
+	 * @return bool
 	 */
-	function checkFileType($file){
-
-		$flag = false;
+	function checkFileType(string $file){
 		foreach($this->allowExtensions as $key => $value){
 			if(preg_match('/' . $key . '$/', $file)){
-				$flag = true;
-				break;
+				return true;
 			}
 		}
-		return $flag;
+		return false;
 	}
 
 	/**
@@ -59,7 +45,7 @@ class DownloadCommonLogic extends SOY2LogicBase{
 	 * @param string filename
 	 * @return string extenstion
 	 */
-	function getContentType($fileName){
+	function getContentType(string $fileName){
 		$extension = strtolower(substr($fileName, strrpos($fileName, ".")));
 		return (isset($this->allowExtensions[$extension])) ? $this->allowExtensions[$extension] : "application/octet-stream";
 	}
@@ -69,9 +55,9 @@ class DownloadCommonLogic extends SOY2LogicBase{
 	 * 他のファイル形式でも可能
 	 * @return int size
 	 */
-	function getFileSize($size){
+	function getFileSize(int $size){
 		$sizes = array('Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB');
-		  $ext = $sizes[0];
+		$ext = $sizes[0];
 
     	for ($i=1; (($i <count($sizes)) && ($size>= 1024)); $i++) {
     	   	$size = $size / 1024;
@@ -91,24 +77,46 @@ class DownloadCommonLogic extends SOY2LogicBase{
 		return implode(",&nbsp;", $text);
 	}
 
-	function getDownloadFieldConfig($itemId){
-		try{
-			$attrs = $this->attrDao->getByItemId($itemId);
-		}catch(Exception $e){
-			echo $e->getPDOExceptionMessage();
-		}
-		$timeAttr = (isset($attrs["download_assistant_time"])) ? $attrs["download_assistant_time"] : new SOYShop_ItemAttribute();
-		$cntAttr = (isset($attrs["download_assistant_count"])) ? $attrs["download_assistant_count"] : new SOYShop_ItemAttribute();
+	/**
+	 * @param int, bool
+	 * @return array
+	 */
+	function getDownloadFieldConfig(int $itemId, bool $isAdmin=false){
+		$attrs = soyshop_get_item_attribute_objects($itemId, array("download_assistant_time", "download_assistant_count"));
+		$time = $attrs["download_assistant_time"]->getValue();
+		$count = $attrs["download_assistant_count"]->getValue();
 
-		return array("timeLimit" => $timeAttr->getValue(), "count" => $cntAttr->getValue());
+		// 商品情報の初回登録
+		if($isAdmin && is_null($time) && is_null($count)){			
+			SOY2::import("module.plugins.download_assistant.common.DownloadAssistantCommon");
+			$config = DownloadAssistantCommon::getConfig();
+			$time = (isset($config["timeLimit"])) ? $config["timeLimit"] : null;
+			$count = (isset($config["count"]))? $config["count"] : null;
+		}
+
+		if($time == 0) $time = null;
+		if($count == 0) $count = null;
+
+		return array(
+			"timeLimit" => (is_numeric($time)) ? (int)$time : null, 
+			"count" => (is_numeric($count)) ? (int)$count : null
+		);
 	}
 
+	/**
+	 * @param int|null
+	 * @return int|null
+	 */
 	function getLimitDate($timeLimit){
 		if(is_null($timeLimit) || !strlen($timeLimit) || (int)$timeLimit === 0) return null;
 		return self::convertDate(time() + $timeLimit * 60 * 60 * 24);
 	}
 
-	private function convertDate($time){
+	/**
+	 * @param int
+	 * @return int
+	 */
+	private function convertDate(int $time){
 		return mktime(0, 0, 0, date("m", $time), date("d", $time), date("Y", $time)) + 24 * 60 * 59;
 	}
 }

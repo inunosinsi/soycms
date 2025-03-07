@@ -68,6 +68,13 @@ class SettingPage extends WebPage{
 			"html" => self::buildForm($field)
 		));
 
+		//属性のラベルの変更
+		for($i = 1; $i <= 3; $i++){
+			$this->addLabel("user_attribute_label_".$i, array(
+				"text" => constant("USER_ATTRIBUTE_LABEL_".$i)
+			));
+		}
+
 		SOY2::import("domain.config.SOYShop_ShopConfig");
 		$this->createAdd("user_list", "_common.User.UserListComponent", array(
 			"list" => self::getUsers(),

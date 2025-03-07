@@ -52,6 +52,9 @@ class SOYShop_ShopConfig {
 	private $allowMailAddressLogin = 1;
 	private $allowLoginIdLogin = 0;
 	private $accountIdItemName = "ログインID";
+	private $userAttributeLabel1 = "属性１";
+	private $userAttributeLabel2 = "属性２";
+	private $userAttributeLabel3 = "属性３";
 	private $passwordCount = 8;		//パスワードの最低文字数
 	private $displayUsableTagList = 0;
 	private $useUserCode = 0;			//顧客コード
@@ -85,6 +88,11 @@ class SOYShop_ShopConfig {
 	private $displayItemKeywords = 1;
 	private $displayItemDescription = 1;
 	private $displayItemImage = 1;
+
+	/** 下記のパラメータは古いバージョンからのアップロード時に必要になることがあるらしい */
+	private $orderItemLabels = array();
+	private $isChildItemOnAdminOrder = 0;
+	private $customerFormLabels;
 
 	private $companyInformation = array(
 		"name" => "",
@@ -735,6 +743,27 @@ class SOYShop_ShopConfig {
 	}
 	function setAccountIdItemName($accountIdItemName){
 		$this->accountIdItemName = $accountIdItemName;
+	}
+
+	function getUserAttributeLabel1(){
+		return $this->userAttributeLabel1;
+	}
+	function setUserAttributeLabel1($userAttributeLabel1){
+		$this->userAttributeLabel1 = $userAttributeLabel1;
+	}
+
+	function getUserAttributeLabel2(){
+		return $this->userAttributeLabel2;
+	}
+	function setUserAttributeLabel2($userAttributeLabel2){
+		$this->userAttributeLabel2 = $userAttributeLabel2;
+	}
+
+	function getUserAttributeLabel3(){
+		return $this->userAttributeLabel3;
+	}
+	function setUserAttributeLabel3($userAttributeLabel3){
+		$this->userAttributeLabel3 = $userAttributeLabel3;
 	}
 
 	function getPasswordCount(){

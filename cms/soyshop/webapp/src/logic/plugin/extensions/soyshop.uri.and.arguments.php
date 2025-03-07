@@ -1,7 +1,7 @@
 <?php
 class SOYShopUriAndArgumentsBase implements SOY2PluginAction{
 
-	function execute($uri, $args){
+	function execute(string $uri, array $args){
 		return array($uri, $args);
 	}
 }
@@ -13,17 +13,16 @@ class SOYShopUriAndArgumentsDeletageAction implements SOY2PluginDelegateAction{
 	private $_uri;
 	private $_args;
 
-
     function run($extensionId,$moduleId,SOY2PluginAction $action){
-		$v = $action->execute($this->uri, $this->args);
+    	$v = $action->execute($this->uri, $this->args);
 		if(is_array($v) && isset($v[0])) $this->_uri = $v[0];
 		if(is_array($v) && isset($v[1])) $this->_args = $v[1];
     }
 
-    function setUri($uri){
+    function setUri(string $uri){
 		$this->uri = $uri;
 	}
-	function setArgs($args){
+	function setArgs(array $args){
 		$this->args = $args;
 	}
 

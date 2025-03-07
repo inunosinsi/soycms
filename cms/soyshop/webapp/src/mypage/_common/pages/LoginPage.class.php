@@ -56,10 +56,21 @@ class LoginPage extends MainMyPagePageBase{
 		}
 	}
 
-	function __construct(){
+	function __construct($args){
 		parent::__construct();
 
 		$mypage = $this->getMyPage();
+		
+		// ハッシュログイン等の拡張ポイント
+		if(isset($args[1]) && strlen($args[1])){
+			SOYShopPlugin::load("soyshop.mypage.login");
+			SOYShopPlugin::invoke("soyshop.mypage.login", array(
+				"mode" => "extended_login",
+				"arg" => $args[1]
+			));
+		}
+		
+
 		//ログインチェック
 		if($mypage->getIsLoggedin()){
 			$this->jumpToTop();

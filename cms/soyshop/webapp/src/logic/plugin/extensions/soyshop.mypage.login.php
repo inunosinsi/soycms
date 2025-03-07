@@ -10,6 +10,13 @@ class SOYShopMypageLoginBase implements SOY2PluginAction{
 	}
 
 	/**
+	 * ハッシュログイン等のログインを許可する
+	 */
+	function extendedLogin(string $arg){
+		return true;
+	}
+
+	/**
 	 *
 	 */
 	function logout(){
@@ -36,6 +43,7 @@ class SOYShopMypageLoginBase implements SOY2PluginAction{
 class SOYShopMypageLoginDeletageAction implements SOY2PluginDelegateAction{
 
 	private $mode;	//postがある
+	private $arg;
 	private $_result;
 	private $_userId;
 
@@ -44,6 +52,9 @@ class SOYShopMypageLoginDeletageAction implements SOY2PluginDelegateAction{
 			case "login":
 				$res = $action->login();
 				if(is_bool($res)) $this->_result = $res;
+				break;
+			case "extended_login":
+				$action->extendedLogin($this->arg);
 				break;
 			case "logout":
 				$action->logout();
@@ -61,6 +72,10 @@ class SOYShopMypageLoginDeletageAction implements SOY2PluginDelegateAction{
 
 	function setMode($mode){
 		$this->mode = $mode;
+	}
+
+	function setArg(string $arg){
+		$this->arg = $arg;
 	}
 
 	function getResult(){

@@ -50,6 +50,13 @@ class ImportPage extends WebPage{
 			"text" => $config->getAccountIdItemName()
 		));
 
+		//属性のラベルの変更
+		for($i = 1; $i <= 3; $i++){
+			$this->addLabel("user_attribute_label_".$i, array(
+				"text" => constant("USER_ATTRIBUTE_LABEL_".$i)
+			));
+		}
+
 		//項目の非表示用タグ
 		foreach($config->getCustomerAdminConfig() as $key => $bool){
 			DisplayPlugin::toggle($key, $bool);

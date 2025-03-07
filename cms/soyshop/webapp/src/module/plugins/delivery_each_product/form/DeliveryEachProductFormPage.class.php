@@ -14,6 +14,12 @@ class DeliveryEachProductFormPage extends WebPage{
     function execute(){
         parent::__construct();
 
+        $this->addCheckBox("is_doubling", array(
+        	"name" => "EachProduct[".DeliveryEachProductUtil::MODE_DOUBLING."]"	,
+        	"value" => 1,
+        	"selected" => ((int)DeliveryEachProductUtil::get($this->itemId, DeliveryEachProductUtil::MODE_DOUBLING) === 1)
+        ));
+
         $this->createAdd("prices", "DeliveryEachProductPriceListComponent", array(
             "list"   => SOYShop_Area::getAreas(),
             "prices" => self::getPrices()

@@ -61,7 +61,11 @@ abstract class SOYShopReserveCalendar_ScheduleDAO extends SOY2DAO{
         return $list;
     }
 
-	function getScheduleUnseatCountByItemId($itemId){
+	/**
+	 * @param int
+	 * @return int
+	 */
+	function getScheduleUnseatCountByItemId(int $itemId){
 
 		//計算前に検索用のデータを必ず最新の状態にしておく schedule_dateを利用する
 		SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Search.CustomSearchLogic")->prepare();
@@ -81,10 +85,10 @@ abstract class SOYShopReserveCalendar_ScheduleDAO extends SOY2DAO{
         try{
             $res = $this->executeQuery($sql, $binds);
         }catch(Exception $e){
-			return array();
+			return 0;
         }
 
-		if(!count($res)) return array();
+		if(!count($res)) return 0;
 
 		return (isset($res[0]["TOTAL"])) ? (int)$res[0]["TOTAL"] : 0;
     }

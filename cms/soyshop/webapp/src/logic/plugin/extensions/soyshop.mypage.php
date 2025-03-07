@@ -9,6 +9,13 @@ class SOYShopMypageBase implements SOY2PluginAction{
 	function getCanonicalUrl(){
 		return null;
 	}
+
+	/**
+	 * @param int
+	 */
+	function displayRegisterCompletePage(int $userId){
+		//
+	}
 }
 
 class SOYShopMypageDeletageAction implements SOY2PluginDelegateAction{
@@ -16,6 +23,7 @@ class SOYShopMypageDeletageAction implements SOY2PluginDelegateAction{
 	private $mode;	//postがある
 	private $_format;
 	private $_canonical;
+	private $userId;
 
 	function run($extetensionId, $moduleId, SOY2PluginAction $action){
 		switch($this->mode){
@@ -24,6 +32,9 @@ class SOYShopMypageDeletageAction implements SOY2PluginDelegateAction{
 				break;
 			case "canonical":
 				$this->_canonical = $action->getCanonicalUrl();
+				break;
+			case "register_complete":
+				$action->displayRegisterCompletePage($this->userId);
 				break;
 		}
 	}
@@ -37,6 +48,9 @@ class SOYShopMypageDeletageAction implements SOY2PluginDelegateAction{
 	}
 	function getCanonicalUrl(){
 		return $this->_canonical;
+	}
+	function setUserId(int $userId){
+		$this->userId = $userId;
 	}
 }
 SOYShopPlugin::registerExtension("soyshop.mypage", "SOYShopMypageDeletageAction");

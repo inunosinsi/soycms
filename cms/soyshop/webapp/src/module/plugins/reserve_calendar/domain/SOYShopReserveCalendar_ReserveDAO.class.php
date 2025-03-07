@@ -84,7 +84,7 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
     }
 
 	//isTmpで仮登録の予約を検索　isConfirmSeat = trueで仮登録も含め残席数を調べる
-    function getReservedListByScheduleId($scheduleId, $isTmp = false, $isConfirmSeat = false){
+    function getReservedListByScheduleId(int $scheduleId, bool $isTmp=false, bool $isConfirmSeat=false){
         SOY2::import("domain.order.SOYShop_Order");
 
         $sql = "SELECT res.id, res.reserve_date, res.seat, u.id AS user_id, u.name AS user_name, u.mail_address, u.telephone_number, o.id FROM soyshop_reserve_calendar_reserve res ".
@@ -121,7 +121,7 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
     }
 
 	//isTmpで仮登録の予約を検索　isConfirmSeat = trueで仮登録も含め残席数を調べる
-	function getReservedCountByScheduleId($scheduleId, $isTmp = false, $isConfirmSeat = false){
+	function getReservedCountByScheduleId(int $scheduleId, bool $isTmp=false, bool $isConfirmSeat=false){
         SOY2::import("domain.order.SOYShop_Order");
 
         $sql = "SELECT SUM(res.seat) AS SEAT FROM soyshop_reserve_calendar_reserve res ".
@@ -155,7 +155,7 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
 		return (isset($res[0]["SEAT"])) ? (int)$res[0]["SEAT"] : 0;
     }
 
-	function getReservedCountByItemId($itemId, $isTmp = false){	//isTmpで仮登録の予約を検索
+	function getReservedCountByItemId(int $itemId, bool $isTmp=false){	//isTmpで仮登録の予約を検索
 
 		//計算前に検索用のデータを必ず最新の状態にしておく schedule_dateを利用する
 		SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Search.CustomSearchLogic")->prepare();

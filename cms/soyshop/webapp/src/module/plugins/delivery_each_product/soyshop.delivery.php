@@ -69,7 +69,12 @@ class DeliveryEachProductModule extends SOYShopDelivery{
 			if(!isset($address["area"])) continue;
 			$prices = soy2_unserialize((string)DeliveryEachProductUtil::get($itemOrder->getItemId(), DeliveryEachProductUtil::MODE_FEE));
 			if(!isset($prices[$address["area"]])) continue;
-			$price += (int)$prices[$address["area"]];
+
+			if(DeliveryEachProductUtil::get($itemOrder->getItemId(), DeliveryEachProductUtil::MODE_DOUBLING) === 1){
+				$price += ((int)$prices[$address["area"]]*$itemOrder->getItemCount());
+			}else{
+				$price += (int)$prices[$address["area"]];
+			}
 		}
 
 		return $price;

@@ -125,7 +125,8 @@ class SOYShopDeliveryDeletageAction implements SOY2PluginDelegateAction{
 				break;
 			case "select":
 				//念の為、ここでも再度調べる
-				if($_POST["delivery_module"] === $moduleId){
+				$selectedmoduleId = (isset($_POST["delivery_module"])) ? $_POST["delivery_module"] : $this->getCart()->getAttribute("delivery_module");
+				if($selectedmoduleId === $moduleId){
 					$action->onSelect($this->getCart());
 				}
 				break;

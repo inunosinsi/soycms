@@ -191,20 +191,22 @@ function soyshop_get_page_list(){
 function soyshop_get_item_detail_link(SOYShop_Item $item){
 	static $results, $urls;
 	if(is_null($item->getAlias())) return null;
-	
-	$url = (isset($results[$item->getDetailPageId()])) ? $results[$item->getDetailPageId()] : null;
+
+	$detailPageId = (int)$item->getDetailPageId();
+	$url = (isset($results[$detailPageId])) ? $results[$detailPageId] : null;
 	
 	if(is_null($url)){
 		if(is_null($urls)) $urls = SOYShop_DataSets::get("site.url_mapping", array());
 
-		if(isset($urls[$item->getDetailPageId()])){
-			$url = $urls[$item->getDetailPageId()]["uri"];
-			$results[$item->getDetailPageId()] = $url;
+		if(isset($urls[$detailPageId])){
+			$url = $urls[$detailPageId]["uri"];
+			$results[$detailPageId] = $url;
 		}else{
+			SOY2::import("domain.site.SOYShop_Page");
 			foreach($urls as $array){
-				if($array["type"] == "detail"){
+				if($array["type"] == SOYShop_Page::TYPE_DETAIL){
 					$url = $array["uri"];
-					$results[$item->getDetailPageId()] = $url;
+					$results[$detailPageId] = $url;
 					break;
 				}
 			}

@@ -31,7 +31,7 @@ class OrderInvoiceConfigFormPage extends WebPage{
 			}
 
 			//画像の削除
-			if(count($_POST["Delete"])){
+			if(isset($_POST["Delete"]) && is_array($_POST["Delete"]) &&  count($_POST["Delete"])){
 				foreach($_POST["Delete"] as $key => $v){
 					if($v == 1){
 						$configs[$key] = null;

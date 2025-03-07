@@ -7,7 +7,13 @@ class SOYCalendarConnectLogic extends SOY2LogicBase {
 	function insertSchedule(){
 		//定休日の方のJSONを取得
 		foreach(array("holiday", "business") as $key){
-			$_arr = json_decode(file_get_contents(soyshop_get_page_url("soycalendar_".$key.".json")), true);
+			$json = soyshop_get_page_url("soycalendar_".$key.".json");
+			if(!file_exists($json)) continue;
+
+			$resp = @file_get_contents($json);
+			if(is_null($resp)) continue;
+			
+			$_arr = json_decode($resp, true);
 			if(is_array($_arr) && count($_arr)){
 				SOY2::import("module.plugins.parts_calendar.common.PartsCalendarCommon");
 				switch($key){

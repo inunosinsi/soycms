@@ -83,6 +83,13 @@ class SOYShop_SOYCMSPageModulePlugin extends PluginBase{
 			SOY2::import("site_include.CMSLabel");
 			SOY2::import("site_include.CMSPageLinkPlugin");
 			SOY2::import("util.UserInfoUtil");
+
+			$cmsPluginDir = _SITE_ROOT_."/.plugin/";
+			if(file_exists($cmsPluginDir."soycms_thumbnail.active")){
+				// Deprecated: Creation of dynamic property SOYCMSThumbnailPlugin::$entryAttributeDao is deprecated in 〜対策
+				SOY2::import("util.CMSPlugin");
+				SOY2::import("site_include.plugin.soycms_thumbnail.soycms_thumbnail", ".php");
+			}
 		}
 
 		self::configure($config);

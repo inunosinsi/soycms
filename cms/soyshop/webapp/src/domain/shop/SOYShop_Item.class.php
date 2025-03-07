@@ -206,8 +206,12 @@ class SOYShop_Item {
 	function setPurchasePrice($purchasePrice){
 		$this->purchasePrice = $purchasePrice;
 	}
+
+	/**
+	 * @return int
+	 */
 	function getStock() {
-		if(!SOYShopPluginUtil::checkIsActive("reserve_calendar")) return (int)$this->stock;
+		if(!is_numeric($this->getId()) || !SOYShopPluginUtil::checkIsActive("reserve_calendar")) return (int)$this->stock;
 
 		//予約カレンダーモード
 		$unseat = (soyshop_get_hash_table_dao("schedule_calendar")->getScheduleUnseatCountByItemId($this->getId()) - $this->getOrderCount());

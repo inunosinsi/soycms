@@ -114,6 +114,14 @@ class UserComponent {
 			"text" => $this->config->getAccountIdItemName()
 		));
 
+		//属性のラベルの変更
+		for($i = 1; $i <= 3; $i++){
+			if(!defined("USER_ATTRIBUTE_LABEL_".$i)) define("USER_ATTRIBUTE_LABEL_".$i, "属性".mb_convert_kana((string)$i, "N"));
+			$page->addLabel("user_attribute_label_".$i, array(
+				"text" => constant("USER_ATTRIBUTE_LABEL_".$i)
+			));
+		}
+
 		$page->addInput("account_id", array(
 			"name" => "Customer[accountId]",
 			"value" => $user->getAccountId(),

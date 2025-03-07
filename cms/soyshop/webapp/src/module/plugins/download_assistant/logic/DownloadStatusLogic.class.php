@@ -9,28 +9,31 @@ class DownloadStatusLogic extends SOY2LogicBase{
 	function __construct(){
 		SOY2::imports("module.plugins.download_assistant.domain.*");
 		if(!$this->dao) $this->dao = SOY2DAOFactory::create("SOYShop_DownloadDAO");
-
 		if(!$this->commonLogic) $this->commonLogic = SOY2Logic::createInstance("module.plugins.download_assistant.logic.DownloadCommonLogic");
 
 	}
 
-	function receivedStatus($orderId){
+	function receivedStatus(int $orderId){
 		foreach(self::getDownloadFile($orderId) as $file){
 			self::updateDownloadFile($file);
 		}
 	}
 
-	function cancel($orderId){
+	function cancel(int $orderId){
 		self::cancelStatus($orderId);
 	}
 
-	private function cancelStatus($orderId){
+	private function cancelStatus(int $orderId){
 		foreach(self::getDownloadFile($orderId) as $file){
 			self::cancelDownloadFile($file);
 		}
 	}
 
-	private function getDownloadFile($orderId){
+	/**
+	 * @param int
+	 * @return array
+	 */
+	private function getDownloadFile(int $orderId){
 
 		try{
 			return $this->dao->getByOrderId($orderId);

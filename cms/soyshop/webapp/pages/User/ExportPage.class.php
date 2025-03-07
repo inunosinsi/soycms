@@ -33,6 +33,13 @@ class ExportPage extends WebPage{
 			"text" => SOYShop_ShopConfig::load()->getAccountIdItemName()
 		));
 
+		//属性のラベルの変更
+		for($i = 1; $i <= 3; $i++){
+			$this->addLabel("user_attribute_label_".$i, array(
+				"text" => constant("USER_ATTRIBUTE_LABEL_".$i)
+			));
+		}
+
 		DisplayPlugin::toggle("user_custom_search_field", SOYShopPluginUtil::checkIsActive("user_custom_search_field"));
 		DisplayPlugin::toggle("point", SOYShopPluginUtil::checkIsActive("common_point_base"));
 
@@ -91,9 +98,9 @@ class ExportPage extends WebPage{
 
 			"jobTelephoneNumber" => "勤務先電話番号",
 			"jobFaxNumber" => "勤務先FAX番号",
-			"attribute1" => "属性１",
-			"attribute2" => "属性２",
-			"attribute3" => "属性３",
+			"attribute1" => USER_ATTRIBUTE_LABEL_1,
+			"attribute2" => USER_ATTRIBUTE_LABEL_2,
+			"attribute3" => USER_ATTRIBUTE_LABEL_3,
 			"memo" => "備考",
 		);
 

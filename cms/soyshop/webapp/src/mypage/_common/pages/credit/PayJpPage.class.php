@@ -30,7 +30,7 @@ class PayJpPage extends MainMyPagePageBase{
 				$customer["card"]["name"] = PayJpUtil::get("name");
 				$customer["email"] = $this->getUser()->getMailAddress();
 
-				list($res, $err) = $this->payJpLogic->registCustomer($customer);
+				list($res, $err) = $this->payJpLogic->registerCustomer($customer);
 				$token = (!is_null($res)) ? $res->id : null;
 				if(isset($token)){
 					$this->payJpLogic->saveCustomerTokenByUserId($token, $this->getUser()->getId());

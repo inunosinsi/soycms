@@ -104,7 +104,7 @@ class UpdateDBLogic extends SOY2LogicBase{
 	 * バージョン番号を保存する
 	 * @param string version
 	 */
-	function registerVersion($version){
+	function registerVersion(string $version){
 		try{
 			SOYShop_DataSets::put(self::VERSION_KEY, $version);
 		}catch(Exception $e){
@@ -120,7 +120,8 @@ class UpdateDBLogic extends SOY2LogicBase{
 
 	/** ここから、includeするPHPファイル内で使用される関数 **/
 
-	function copyDirectory($from, $to){
+	function copyDirectory(string $from, string $to){
+		if(!file_exists($from)) return;
 
 		$files = scandir($from);
 

@@ -3,14 +3,12 @@
 class DownloadAssistantLogic extends SOY2LogicBase{
 
 	private $dao;
-	private $itemDao;
 
 	function __construct(){
 		SOY2::imports("module.plugins.download_assistant.logic.*");
 		SOY2::imports("module.plugins.download_assistant.domain.*");
 
 		if(!$this->dao)	$this->dao = SOY2DAOFactory::create("SOYShop_DownloadDAO");
-		if(!$this->itemDao) $this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 	}
 
 	/**
@@ -18,7 +16,7 @@ class DownloadAssistantLogic extends SOY2LogicBase{
 	 * @param int orderId, int itemId
 	 * @return object SOYShop_Download
 	 */
-	function getDownloadFiles($orderId, $itemId){
+	function getDownloadFiles(int $orderId, int $itemId){
 		try{
 			return $this->dao->getByOrderIdAndItemId($orderId, $itemId);
 		}catch(Exception $e){
@@ -39,7 +37,7 @@ class DownloadAssistantLogic extends SOY2LogicBase{
 		return soyshop_get_mypage_url(true) . "?soyshop_download=download_assistant&token=";
 	}
 
-	function getItemIds($orderId){
+	function getItemIds(int $orderId){
 		try{
 			return $this->dao->getItemIdByOrderId($orderId);
 		}catch(Exception $e){
@@ -52,13 +50,9 @@ class DownloadAssistantLogic extends SOY2LogicBase{
 	 * @param object SOYShop_Download
 	 * @return string path
 	 */
-	private function getFileDirectoryPath($file){
-		try{
-			$item = $this->itemDao->getById($file->getItemId());
-		}catch(Exception $e){
-			return null;
-		}
-
+	private function getFileDirectoryPath(SOYShop_Download $file){
+		$item = soyshop_get_item_object((int)$file->getItemId());
+		if(!is_numeric($item->getId())) return null;
 		return SOYSHOP_SITE_DIRECTORY . "download/" . $item->getCode() . "/" . $file->getFileName();
 	}
 
@@ -96,7 +90,7 @@ class DownloadAssistantLogic extends SOY2LogicBase{
 	 * ファイルをダウンロードする
 	 * @param object SOYShop_Download file, string filepath
 	 */
-	private function outputFile(SOYShop_Download $file, $filePath){
+	private function outputFile(SOYShop_Download $file, string $filePath){
 		//ダウンロード前にファイル名のチェック
 		if(preg_match("/^[0-9A-Za-z%&+\-\^_`{|}~.]+$/", $file->getFileName())){
 			$commonLogic = SOY2Logic::createInstance("module.plugins.download_assistant.logic.DownloadCommonLogic");
@@ -122,13 +116,13 @@ class DownloadAssistantLogic extends SOY2LogicBase{
 		}
 	}
 
-	//itemIdからitemを取得する
-	function getItem($itemId){
-		try{
-			return $this->itemDao->getById($itemId);
-		}catch(Exception $e){
-			return new SOYShop_Item();
-		}
+	/**
+	 * itemIdからitemを取得する
+	 * @param int
+	 * @return SOYShop?Item
+	 */
+	function getItem(int $itemId){
+		return soyshop_get_item_object($itemId);
 	}
 
 	/**
@@ -136,7 +130,7 @@ class DownloadAssistantLogic extends SOY2LogicBase{
 	 * @param string token
 	 * @return object SOYShop_Download
 	 */
-	function getFileByToken($token){
+	function getFileByToken(string $token){
 		try{
 			return $this->dao->getByToken($token);
 		}catch(Exception $e){

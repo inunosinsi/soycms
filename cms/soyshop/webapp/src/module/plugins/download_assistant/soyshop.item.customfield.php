@@ -39,54 +39,21 @@ class DownloadAssistantCustomField extends SOYShopItemCustomFieldBase{
 			}
 		}
 
-		$attrDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 		if(isset($_POST["download_assistant_time"])){
 
 			//ダウンロード期限の値を設定する
-			try{
-				$attr = $attrDao->get($item->getId(), "download_assistant_time");
-			}catch(Exception $e){
-				$attr = new SOYShop_ItemAttribute();
-				$attr->setItemId($item->getId());
-				$attr->setFieldId("download_assistant_time");
-			}
-
+			$attr = soyshop_get_item_attribute_object((int)$item->getId(), "download_assistant_time");
 			$time = mb_convert_kana($_POST["download_assistant_time"], "a");
-			$time = (strlen($time) > 0 && is_numeric($time))? (int)$time : null;
+			$time = (strlen($time) > 0 && is_numeric($time))? (int)$time : 0;
 			$attr->setValue($time);
-
-			try{
-				$attrDao->insert($attr);
-			}catch(Exception $e){
-				try{
-					$attrDao->update($attr);
-				}catch(Exception $e){
-					//
-				}
-			}
+			soyshop_save_item_attribute_object($attr);
 
 			//ダウンロード回数を設定する
-			try{
-				$attr = $attrDao->get($item->getId(), "download_assistant_count");
-			}catch(Exception $e){
-				$attr = new SOYShop_ItemAttribute();
-				$attr->setItemId($item->getId());
-				$attr->setFieldId("download_assistant_count");
-			}
-
+			$attr = soyshop_get_item_attribute_object((int)$item->getId(), "download_assistant_count");
 			$count = mb_convert_kana($_POST["download_assistant_count"], "a");
-			$count = (strlen($count) > 0 && is_numeric($count)) ? (int)$count : null;
+			$count = (strlen($count) > 0 && is_numeric($count)) ? (int)$count : 0;
 			$attr->setValue($count);
-
-			try{
-				$attrDao->insert($attr);
-			}catch(Exception $e){
-				try{
-					$attrDao->update($attr);
-				}catch(Exception $e){
-					//
-				}
-			}
+			soyshop_save_item_attribute_object($attr);
 		}
 	}
 
@@ -96,27 +63,14 @@ class DownloadAssistantCustomField extends SOYShopItemCustomFieldBase{
 		$commonLogic = SOY2Logic::createInstance("module.plugins.download_assistant.logic.DownloadCommonLogic");
 		if($commonLogic->checkItemType($item)){
 
-			$attrDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-			try{
-				$array = $attrDao->getByItemId($item->getId());
-			}catch(Exception $e){
-				echo $e->getPDOExceptionMessage();
-				$array = array();
-			}
-
-			if(isset($array["download_assistant_time"])){
-				$time = $array["download_assistant_time"]->getValue();
-				$count = $array["download_assistant_count"]->getValue();
-			}else{
-				$config = DownloadAssistantCommon::getConfig();
-				$time = (isset($config["timeLimit"])) ? $config["timeLimit"] : null;
-				$count = (isset($config["count"]))? $config["count"] : null;
-			}
+			$_arr = $commonLogic->getDownloadFieldConfig((int)$item->getId(), true);
+			$time = $_arr["timeLimit"];
+			$count = $_arr["count"];
 
 			$dir = SOYSHOP_SITE_DIRECTORY . "download/" . $item->getCode() . "/";
 			if(!file_exists($dir)) mkdir($dir);
 
-			$style = "style=\"text-align:right;ime-mode:inactive;\" size=\"4\"";
+			$style = "style=\"text-align:right;width:60px;\"";
 
 			$html = array();
 
@@ -135,16 +89,14 @@ class DownloadAssistantCustomField extends SOYShopItemCustomFieldBase{
 			//ダウンロード用のファイルがあるか確認する
 			$files = opendir($dir);
 			while($file = readdir($files)){
-				if($commonLogic->checkFileType($file) === true && preg_match("/^[0-9A-Za-z%&+\-\^_`{|}~.]+$/", $file)){
-					if($deleteFlag == false){
+				if($commonLogic->checkFileType($file) && preg_match("/^[0-9A-Za-z%&+\-\^_`{|}~.]+$/", $file)){
+					if(!$deleteFlag){
 						$html[] = "<div class=\"alert alert-success\">登録されているファイル</div>";
 					}
 					$html[] = "<input type=\"checkbox\" name=\"download_assistant_delete[]\" value=\"" . $file . "\" id=\"download_assistant_" . $file."\" />";
 					$html[] = "<label for=\"download_assistant_" . $file . "\">" . $file . "&nbsp;" . $commonLogic->getFileSize(filesize($dir . $file)) . "</label>";
 					$html[] = "<br />";
-					if($deleteFlag == false){
-						$deleteFlag = true;
-					}
+					if(!$deleteFlag) $deleteFlag = true;
 				}
 			}
 			if($deleteFlag){
@@ -154,11 +106,11 @@ class DownloadAssistantCustomField extends SOYShopItemCustomFieldBase{
 			$html[] = "</div>";
 
 			$html[] = "<label for=\"download_field\">ダウンロード期間日数</label><br>";
-			$html[] = "<input type=\"text\" name=\"download_assistant_time\" value=\"" . $time."\" " . $style." />&nbsp;日";
+			$html[] = "<input type=\"number\" name=\"download_assistant_time\" value=\"" . $time."\" " . $style." />&nbsp;日";
 			$html[] = "<p>※値がない場合は無期限</p>";
 
 			$html[] = "<label for=\"download_field\">ダウンロード回数</label><br>";
-			$html[] = "<input type=\"text\" name=\"download_assistant_count\" value=\"" . $count."\" " . $style." />&nbsp;回";
+			$html[] = "<input type=\"number\" name=\"download_assistant_count\" value=\"" . $count."\" " . $style." />&nbsp;回";
 			$html[] = "<p>※値がない場合は無制限</p>";
 
 			$html[] = "<div class=\"alert alert-info\">ダウンロード販売用設定ここまで</div>";
@@ -173,7 +125,7 @@ class DownloadAssistantCustomField extends SOYShopItemCustomFieldBase{
 	function onOutput($htmlObj, SOYShop_Item $item){}
 
 	function onDelete(int $itemId){
-		SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO")->deleteByItemId($itemId);
+		soyshop_get_hash_table_dao("item_attribute")->deleteByItemId($itemId);
 	}
 }
 

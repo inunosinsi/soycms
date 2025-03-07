@@ -2,8 +2,6 @@
 
 class DownloadAssitantOrderStatusUpdate extends SOYShopOrderStatusUpdate{
 
-	private $dao;
-
 	function execute(SOYShop_Order $order){
 
 		$statusLogic = SOY2Logic::createInstance("module.plugins.download_assistant.logic.DownloadStatusLogic");

@@ -81,12 +81,13 @@ define("SOYSHOP_IS_ROOT",$isRoot);
 //管理画面側
 if(!defined("SOYSHOP_ADMIN_PAGE")) define("SOYSHOP_ADMIN_PAGE", true);
 
+SOY2::import("domain.config.SOYShop_ShopConfig");
+$shopCnf = SOYShop_ShopConfig::load();
+
 //税金の設定
 if(!defined("SOYSHOP_CONSUMPTION_TAX_MODE")){
-	SOY2::import("domain.config.SOYShop_ShopConfig");
-	$config = SOYShop_ShopConfig::load();
-	define("SOYSHOP_CONSUMPTION_TAX_MODE", ($config->getConsumptionTax() == SOYShop_ShopConfig::CONSUMPTION_TAX_MODE_ON));
-	define("SOYSHOP_CONSUMPTION_TAX_INCLUSIVE_PRICING_MODE", ($config->getConsumptionTaxInclusivePricing() == SOYShop_ShopConfig::CONSUMPTION_TAX_MODE_ON));
+	define("SOYSHOP_CONSUMPTION_TAX_MODE", ($shopCnf->getConsumptionTax() == SOYShop_ShopConfig::CONSUMPTION_TAX_MODE_ON));
+	define("SOYSHOP_CONSUMPTION_TAX_INCLUSIVE_PRICING_MODE", ($shopCnf->getConsumptionTaxInclusivePricing() == SOYShop_ShopConfig::CONSUMPTION_TAX_MODE_ON));
 }
 
 //libディレクトリ内のcomposerのautoload
@@ -99,3 +100,8 @@ if(!defined("DUMMY_MAIL_ADDRESS_DOMAIN")) define("DUMMY_MAIL_ADDRESS_DOMAIN", "d
 //define("SOYSHOP_USE_CART_TABLE_MODE", false && extension_loaded("sqlite3") && extension_loaded("pdo_sqlite"));
 define("SOYSHOP_USE_CART_TABLE_MODE", false);
 if(SOYSHOP_USE_CART_TABLE_MODE) SOY2::import("base.cart.db", ".php");
+
+//属性値のラベルについて
+if(!defined("USER_ATTRIBUTE_LABEL_1")) define("USER_ATTRIBUTE_LABEL_1", $shopCnf->getUserAttributeLabel1());
+if(!defined("USER_ATTRIBUTE_LABEL_2")) define("USER_ATTRIBUTE_LABEL_2", $shopCnf->getUserAttributeLabel2());
+if(!defined("USER_ATTRIBUTE_LABEL_3")) define("USER_ATTRIBUTE_LABEL_3", $shopCnf->getUserAttributeLabel3());

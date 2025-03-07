@@ -147,8 +147,8 @@ class CustomSearchFieldBeforeOutput extends SOYShopSiteBeforeOutputAction{
 			}
 
 			foreach($configs as $config){
-				$value = (isset($array[$config->getFieldId()])) ? $array[$config->getFieldId()]->getValue() : null;
-				$value2 = (isset($array[$config->getFieldId()])) ? $array[$config->getFieldId()]->getValue2() : null;
+				$value = (isset($array[$config->getFieldId()])) ? $array[$config->getFieldId()]->getValue() : "";
+				$value2 = (isset($array[$config->getFieldId()])) ? $array[$config->getFieldId()]->getValue2() : "";
 
 				//空の時の挙動
 				if(!is_null($config->getConfig()) && (is_null($value) || !strlen($value))){

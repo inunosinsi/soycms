@@ -40,14 +40,24 @@ class MaintenancePageConfigPage extends WebPage {
 			"label" => "時限設定を利用する"
 		));
 
-		$this->addInput("maintenance_timming_date", array(
-			"name" => "Config[timming][date]",
-			"value" => (isset($timeCnf["date"])) ? $timeCnf["date"] : ""
+		$this->addInput("maintenance_timming_start_date", array(
+			"name" => "Config[timming][date][start]",
+			"value" => (isset($timeCnf["date"]["start"])) ? $timeCnf["date"]["start"] : ""
 		));
 
-		$this->addInput("maintenance_timming_time", array(
-			"name" => "Config[timming][time]",
-			"value" => (isset($timeCnf["time"])) ? $timeCnf["time"] : ""
+		$this->addInput("maintenance_timming_start_time", array(
+			"name" => "Config[timming][time][start]",
+			"value" => (isset($timeCnf["time"]["start"])) ? $timeCnf["time"]["start"] : ""
+		));
+
+		$this->addInput("maintenance_timming_end_date", array(
+			"name" => "Config[timming][date][end]",
+			"value" => (isset($timeCnf["date"]["end"])) ? $timeCnf["date"]["end"] : ""
+		));
+		
+		$this->addInput("maintenance_timming_end_time", array(
+			"name" => "Config[timming][time][end]",
+			"value" => (isset($timeCnf["time"]["end"])) ? $timeCnf["time"]["end"] : ""
 		));
 	}
 

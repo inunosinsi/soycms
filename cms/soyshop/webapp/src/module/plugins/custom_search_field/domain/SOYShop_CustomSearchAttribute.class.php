@@ -194,37 +194,37 @@ class SOYShop_CustomSearchAttributeConfig{
     /* config method */
 
     function getOutput() {
-        return (isset($this->config["output"])) ? $this->config["output"] : null;
+        return (isset($this->config["output"])) ? $this->config["output"] : "";
     }
     function setOutput($output) {
         $this->config["output"] = $output;
     }
     function getDescription(){
-        return (isset($this->config["description"])) ? $this->config["description"] : null;
+        return (isset($this->config["description"])) ? $this->config["description"] : "";
     }
     function setDescription($description){
         $this->config["description"] = $description;
     }
     function getDefaultValue() {
-        return (isset($this->config["defaultValue"])) ? $this->config["defaultValue"] : null;
+        return (isset($this->config["defaultValue"])) ? $this->config["defaultValue"] : "";
     }
     function setDefaultValue($defaultValue) {
         $this->config["defaultValue"] = $defaultValue;
     }
     function getEmptyValue() {
-        return (isset($this->config["emptyValue"])) ? $this->config["emptyValue"] : null;
+        return (isset($this->config["emptyValue"])) ? $this->config["emptyValue"] : "";
     }
     function setEmptyValue($emptyValue) {
         $this->config["emptyValue"] = $emptyValue;
     }
     function getHideIfEmpty() {
-        return (isset($this->config["hideIfEmpty"])) ? $this->config["hideIfEmpty"] : null;
+        return (isset($this->config["hideIfEmpty"])) ? $this->config["hideIfEmpty"] : "";
     }
     function setHideIfEmpty($hideIfEmpty) {
         $this->config["hideIfEmpty"] = $hideIfEmpty;
     }
     function getOption() {
-		return (isset($this->config["option"])) ? $this->config["option"] : null;
+		return (isset($this->config["option"])) ? (string)$this->config["option"] : "";
     }
     function setOption($option) {
         $this->config["option"] = $option;

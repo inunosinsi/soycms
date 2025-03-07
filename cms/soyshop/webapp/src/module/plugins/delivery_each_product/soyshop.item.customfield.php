@@ -8,6 +8,8 @@ class DeliveryEachProductCustomField extends SOYShopItemCustomFieldBase{
         SOY2::import("module.plugins.delivery_each_product.util.DeliveryEachProductUtil");
         $attrDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 
+		if(!isset($_POST["EachProduct"][DeliveryEachProductUtil::MODE_DOUBLING])) $_POST["EachProduct"][DeliveryEachProductUtil::MODE_DOUBLING] = "";
+
         foreach($_POST["EachProduct"] as $mode => $v){
             try{
                 $attr = $attrDao->get($item->getId(), DeliveryEachProductUtil::PLUGIN_ID . "_" . $mode);

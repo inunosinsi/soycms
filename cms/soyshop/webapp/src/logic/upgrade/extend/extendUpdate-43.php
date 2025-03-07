@@ -4,7 +4,11 @@ $dao = new SOY2DAO();
 $try = 0;
 for(;;){
 	if($try++ > 2) break;	//トライ回数は2回まで
-	$res = $dao->executeQuery("SELECT order_id, order_date FROM soyshop_order_state_history GROUP BY order_id, order_date HAVING count(*) > 1 LIMIT 1000");
+	try{
+		$res = $dao->executeQuery("SELECT order_id, order_date FROM soyshop_order_state_history GROUP BY order_id, order_date HAVING count(*) > 1 LIMIT 1000");	
+	}catch(Exception $e){
+		$res = array();
+	}	
 	if(!count($res)) break;
 
 	foreach($res as $v){

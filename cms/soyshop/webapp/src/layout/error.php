@@ -89,18 +89,18 @@ foreach($scripts as $script){
 			</ul>
 
 			<ul id="top_menu" class="nav navbar-top-links navbar-right">
-				<?php if(AUTH_OPERATE){?>
+				<?php if(defined("AUTH_OPERATE") && AUTH_OPERATE){?>
 					<li><a href="<?php echo $_SERVER["REQUEST_URI"]; ?>?clear_cache"><i class="fa fa-refresh fa-fw"></i>キャッシュ削除</a></li>
 				<?php }?>
-				<?php if(AUTH_SOYAPP){?>
-				<?php if(USE_INQUIRY_SITE_DB){?><li>
+				<?php if(defined("AUTH_SOYAPP") && AUTH_SOYAPP){?>
+				<?php if(defined("USE_INQUIRY_SITE_DB") && USE_INQUIRY_SITE_DB){?><li>
 					<a href="<?php echo SOYAPP_LINK; ?>/inquiry">お問い合わせフォーム</a>
 				</li><?php }?>
-				<?php if(USE_MAIL_SITE_DB){?><li>
+				<?php if(defined("USE_MAIL_SITE_DB") && USE_MAIL_SITE_DB){?><li>
 					<a href="<?php echo SOYAPP_LINK; ?>/mail">メールマガジン</a>
 				</li><?php }?>
 				<?php }?>
-				<?php if(AUTH_SITE){?>
+				<?php if(defined("AUTH_SITE") && AUTH_SITE){?>
 				<li class="shop">
 					<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Navigation"><?php echo SHOP_MANAGER_LABEL;?>管理</a>
 				</li>
@@ -129,44 +129,44 @@ foreach($scripts as $script){
 
 				<div class="sidebar-nav navbar-collapse">
 					<ul class="nav" id="side-menu">
-						<?php if(AUTH_HOME){?>
+						<?php if(defined("AUTH_HOME") && AUTH_HOME){?>
 						<li class="news">
 							<a href="<?php echo SOYSHOP_ADMIN_URL; ?>"><i class="fa fa-home fa-fw"></i><span>新着</span></a>
 						</li>
 						<?php }?>
-						<?php if(AUTH_EXTENSION && count($extConts)) {
+						<?php if(defined("AUTH_EXTENSION") && AUTH_EXTENSION && count($extConts)) {
 							foreach($extConts as $plgId => $cont){
 								echo "<li class=\"extention\">";
 								echo "<a href=\"" . SOYSHOP_ADMIN_URL . "/Extension/" . $plgId . "\">" . $cont["tab"] . "</a>";
 								echo "</li>";
 							}
 						}?>
-						<?php if(AUTH_ORDER){?>
+						<?php if(defined("AUTH_ORDER") && AUTH_ORDER){?>
 						<li class="order">
 							<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Order">注文</a>
 						</li>
 						<?php }?>
-						<?php if(AUTH_USER){?>
+						<?php if(defined("AUTH_USER") && AUTH_USER){?>
 						<li class="user">
 							<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/User">顧客</a>
 						</li>
 						<?php }?>
-						<?php if(AUTH_ITEM){?>
+						<?php if(defined("AUTH_ITEM") && AUTH_ITEM){?>
 						<li class="item">
 							<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Item">商品</a>
 						</li>
 						<?php }?>
-						<?php if(AUTH_REVIEW){?>
+						<?php if(defined("AUTH_REVIEW") && AUTH_REVIEW){?>
 						<li class="review">
 							<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Review">レビュー</a>
 						</li>
 						<?php }?>
-						<?php if(AUTH_CONFIG){ ?>
+						<?php if(defined("AUTH_CONFIG") && AUTH_CONFIG){ ?>
 						<li class="config">
 							<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Config"><i class="fa fa-gear fa-fw"></i><span>設定</span></a>
 						</li>
 						<?php } ?>
-						<?php if(AUTH_PLUGIN){ ?>
+						<?php if(defined("AUTH_PLUGIN") && AUTH_PLUGIN){ ?>
 						<li class="plugin">
 							<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Plugin"><i class="fa fa-puzzle-piece fa-fw"></i><span>プラグイン</span></a>
 						</li>

@@ -157,7 +157,7 @@ foreach($scripts as $script){
 						<?php } ?>
 						<?php if(AUTH_PLUGIN){ ?>
 						<li class="plugin">
-							<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Plugin"><i class="fa fa-puzzle-piece fa-fw"></i><span>プラグイン</span></a>
+							<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Plugin" id="plugin_link"><i class="fa fa-puzzle-piece fa-fw"></i><span>プラグイン</span></a>
 						</li>
 						<?php } ?>
 						<?php if(AUTH_SOYAPP){?>

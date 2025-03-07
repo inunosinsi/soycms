@@ -281,6 +281,14 @@ class ShopConfigPage extends WebPage{
 			"style" => "width:60px;"
 		));
 
+		//属性のラベルの変更
+		for($i = 1; $i <= 3; $i++){
+			$this->addInput("userAttributeLabel".$i, array(
+				"name" => "Config[userAttributeLabel".$i."]",
+				"value" => constant("USER_ATTRIBUTE_LABEL_".$i)
+			));
+		}
+
 		//在庫無視モード
 		$this->addCheckBox("ignoreStock", array(
 			"selected" => $config->getIgnoreStock(),
