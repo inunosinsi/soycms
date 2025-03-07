@@ -29,6 +29,13 @@ $session = SOY2ActionSession::getUserSession();
 //if(USE_SESSION_REGENERATE_ID_MODE) SOY2ActionSession::regenerateSessionId();
 
 /* 表示するページ */
+# 下記の拡張ポイントのrun中でリダイレクト有り (slip_cart_page専用)
+SOYShopPlugin::load("soyshop.cart.skip");
+SOYShopPlugin::invoke("soyshop.cart.skip", array("cart" => $cart));
+
+$pageId = $cart->getAttribute("page");	
+if(is_null($pageId)) $pageId = "Cart01";
+
 //進捗の時間切れ判定
 $timeLimit = $config->getCartPageTimeLimit() * 60;//秒に変換（同時に数値に変換される）
 if($timeLimit > 0 && $cart->getAttribute("last_access") + $timeLimit < SOY2_NOW){
@@ -45,18 +52,11 @@ if($config->getIsShowOnlyAdministrator() && !$session->getAuthenticated()){
 	$pageId = "Maintenance";
 }
 
-$pageId = $cart->getAttribute("page");
-if(is_null($pageId)) $pageId = "Cart01";
-
-
 //税金の表記があるか？を調べる
 define("SOYSHOP_CART_IS_TAX_MODULE", $cart->checkTaxModule());
 
-
 //Pluginの読み込み
 SOYShopPlugin::load("soyshop.order.*");
-
-
 
 //アクセス時刻を更新
 $cart->setAttribute("last_access", SOY2_NOW);
@@ -68,6 +68,7 @@ try{
 	$page->buildModules();
 	$page->display();
 }catch(Exception $e){
+	var_dump($e);
 	//管理者にカートでエラーが表示された旨を伝える
 	$cart->sendNoticeCartErrorMail($e);
 

@@ -24,8 +24,6 @@ class Cart03Page extends MainCartPageBase{
 				//まずはエラーチェックのみ
 				self::checkError($cart);
 
-				$moduleDAO = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
-
 				/**
 				 * 古いのをクリア
 				 * ポイントとカスタムフィールドの値はプラグイン内で削除
@@ -55,41 +53,16 @@ class Cart03Page extends MainCartPageBase{
 					"cart" => $cart,
 				));
 
-				//支払
+				SOY2::import("cart._common.fn", ".php");
+
 				if(isset($_POST["payment_module"]) && !$cart->hasError("payment")){
 					//選択を保存
-					$moduleId = $_POST["payment_module"];
-					$cart->setAttribute("payment_module", $moduleId);
-
-					//選択されたプラグインのみを読み込む：plugins/$moduleId/soyshop.payment.php
-					$paymentModule = $moduleDAO->getByPluginId($moduleId);
-					SOYShopPlugin::load("soyshop.payment", $paymentModule);
-
-					//実行
-					$delegate = SOYShopPlugin::invoke("soyshop.payment", array(
-						"mode" => "select",
-						"cart" => $cart
-					));
-
-					//Cart05が必要かどうか引き継がれない時は再度調べる
-					if(is_null($cart->getAttribute("has_option"))){
-						$cart->setAttribute("has_option", $delegate->getHasOption());
-					}
+					soyshop_cart_register_payment_module($cart, $_POST["payment_module"]);
 				}
 
-				//配送
 				if(isset($_POST["delivery_module"]) && !$cart->hasError("delivery")){
-					$moduleId = $_POST["delivery_module"];
-					$cart->setAttribute("delivery_module", $moduleId);
-
-					//選択されたプラグインのみを読み込む
-					$deliveryModule = $moduleDAO->getByPluginId($moduleId);
-					SOYShopPlugin::load("soyshop.delivery", $deliveryModule);
-
-					SOYShopPlugin::invoke("soyshop.delivery", array(
-						"mode" => "select",
-						"cart" => $cart
-					));
+					//選択を保存
+					soyshop_cart_register_delivery_module($cart, $_POST["delivery_module"]);
 				}
 
 				//割引

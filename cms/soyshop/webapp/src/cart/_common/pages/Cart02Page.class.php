@@ -50,6 +50,23 @@ class Cart02Page extends MainCartPageBase{
 					$cart->setOrderAttribute("memo", MessageManager::get("NOTE"), $_POST["Attributes"]["memo"]);
 				}
 
+				$moduleDAO = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
+
+				
+				foreach(array("payment", "delivery") as $mode){
+					$oldModId = $cart->getAttribute($mode."_module");
+					if(isset($oldModId)) $cart->removeModule($oldModId);
+					$cart->clearAttribute($mode."_module");
+				}
+				
+				if(isset($_POST["peyment_module"]) && !$cart->hasError("payment")){
+					soyshop_cart_register_payment_module($cart, $_POST["payment_module"]);
+				}
+
+				if(isset($_POST["delivery_module"]) && !$cart->hasError("delivery")){
+					soyshop_cart_register_delivery_module($cart, $_POST["delivery_module"]);
+				}
+
 				//割引 Cart02でもクーポンを使用できるようにする　Cart02でクーポンを使用したい場合はCart03でhiddenで渡す
 				if(!$cart->hasError("discount") && isset($_POST["discount_module"])){
 
@@ -61,6 +78,7 @@ class Cart02Page extends MainCartPageBase{
 						"param" => $_POST["discount_module"]
 					));
 				}
+
 
 				//エラーがなければ次へ
 				if($validAddress && self::_checkError($cart)){
@@ -137,6 +155,7 @@ class Cart02Page extends MainCartPageBase{
 	}
 
 	function __construct(){
+		SOY2::import("src.cart._common.fn", ".php");
 		SOYShopPlugin::load("soyshop.cart");
 
 		$this->backward = new BackwardUserComponent();

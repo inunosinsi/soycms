@@ -274,7 +274,7 @@ class Cart01Page extends MainCartPageBase{
 	/**
 	 * 表示用拡張ポイント
 	 */
-	function addExtensions($cart){
+	function addExtensions(CartLogic $cart){
 		/* カート soyshop.cart */
 		$delegate = SOYShopPlugin::invoke("soyshop.cart", array(
 			"mode" => "page01",
