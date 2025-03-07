@@ -31,7 +31,7 @@ class RecurringLogic extends SOY2LogicBase {
 		return $c;
 	}
 
-	function registCustomer($customer){
+	function registerCustomer($customer){
 		$res = null;
 		$err = null;
 		try{
@@ -55,7 +55,7 @@ class RecurringLogic extends SOY2LogicBase {
 		return array($res, $err);
 	}
 
-	function registPlan($plan){
+	private function _registerPlan(array $plan){
 		$res = null;
 		$err = null;
 		try{
@@ -342,10 +342,15 @@ class RecurringLogic extends SOY2LogicBase {
 
 	function createPlanTokenByItemId(int $itemId){
 		$item = soyshop_get_item_object($itemId);
-		$plan = array("amount" => $item->getSellingPrice(), "currency" => "jpy", "interval" => "month", "name" => $item->getName());
+		$plan = array(
+			"amount" => $item->getSellingPrice(), 
+			"currency" => "jpy", 
+			"interval" => "month", 
+			"name" => $item->getName()
+		);
 
 		/** @ToDo いずれは諸々の設定も使えるようにしたい **/
-		list($res, $err) = self::registPlan($plan);
+		list($res, $err) = self::_registerPlan($plan);
 
 		//商品属性に登録
 		if(isset($res)){

@@ -33,6 +33,33 @@
 		<input type="checkbox" soy:id="capture">
 	</div>
 
+	<div class="form-group">
+		<label>3Dセキュア</label><br>
+		<input type="checkbox" soy:id="3d_secure">
+	</div>
+
+	<div class="form-group">
+		<label>3Dセキュアの種類</label><br>
+		<input type="radio" soy:id="3d_secure_type_subwindow">&nbsp;
+		<input type="radio" soy:id="3d_secure_type_redirect">
+	</div>
+
+	<div class="alert alert-info" id="3d_secure_subwindow">
+		3Dセキュアの<strong>サブウィンドウ型</strong>を利用する場合はPAY.JPの管理画面のAPI設定で<strong>トークン3Dセキュア</strong>を有効にします。
+	</div>
+
+	<div class="alert alert-info" id="3d_secure_redirect">
+		3Dセキュアの<strong>リダイレクト型</strong>を利用する場合はPAY.JPの管理画面のAPI設定で<strong>リダイレクトURL</strong>を下記のように設定します。<br>
+		識別子：<strong>SOYShop</strong><br>
+		URL：<strong soy:id="redirect_url"></strong>
+	</div>
+
+	<div class="form-group">
+		<label>アテンプト取引(3Dセキュア)</label><br>
+		<input type="checkbox" soy:id="3d_secure_attempt"><br>
+		アテンプト取引について：<a href="https://help.pay.jp/ja/articles/5366011" target="_blank" rel="noopener">アテンプトとはなんですか？ | PAY.JP ヘルプ</a>
+	</div>
+
 		<!--dt>二回目の購入</dt>
 
 			<input type="checkbox" soy:id="repeat">
@@ -63,3 +90,5 @@
 <pre soy:id="Integrate_html_path"></pre>
 のファイルの内容を変更用HTMLに貼り付けしてください。<br>
 詳細は<a href="https://pay.jp/docs/payjs-guidance" target="_blank" rel="noopener">payjp.js v2 ガイド | PAY.JP</a>をご覧ください。
+
+<script soy:id="3d_config_js"></script>

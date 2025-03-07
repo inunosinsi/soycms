@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "payjp/payjp-php",
-            "version": "1.2.1",
+            "version": "1.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/payjp/payjp-php.git",
-                "reference": "41f149620e403a1c6e70b174d6652145b3e3a8d9"
+                "reference": "5091fed5d2b3b8296d88bd222e630c95ae9f2310"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/payjp/payjp-php/zipball/41f149620e403a1c6e70b174d6652145b3e3a8d9",
-                "reference": "41f149620e403a1c6e70b174d6652145b3e3a8d9",
+                "url": "https://api.github.com/repos/payjp/payjp-php/zipball/5091fed5d2b3b8296d88bd222e630c95ae9f2310",
+                "reference": "5091fed5d2b3b8296d88bd222e630c95ae9f2310",
                 "shasum": ""
             },
             "require": {
@@ -60,9 +60,9 @@
             ],
             "support": {
                 "issues": "https://github.com/payjp/payjp-php/issues",
-                "source": "https://github.com/payjp/payjp-php/tree/1.2.1"
+                "source": "https://github.com/payjp/payjp-php/tree/1.6.1"
             },
-            "time": "2021-10-08T06:40:12+00:00"
+            "time": "2024-05-14T01:52:27+00:00"
         }
     ],
     "packages-dev": [],
@@ -73,5 +73,5 @@
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.3.0"
 }

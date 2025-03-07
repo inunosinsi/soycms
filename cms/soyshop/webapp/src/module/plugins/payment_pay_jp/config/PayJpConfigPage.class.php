@@ -45,6 +45,44 @@ class PayJpConfigPage extends WebPage {
 			"label" => "支払い時に売上として扱う(チェックがない場合は仮売上：支払状況が支払待ちで登録されます)"
 		));
 
+		$this->addCheckBox("3d_secure", array(
+			"name" => "Config[secure]",
+			"value" => 1,
+			"selected" => (isset($config["secure"]) && $config["secure"] == 1),
+			"label" => "3Dセキュアを利用する"
+		));
+
+		$this->addCheckBox("3d_secure_type_redirect", array(
+			"name" => "Config[secure_type]",
+			"value" => PayJpUtil::SECURE_TYPE_REDIRECT,
+			"selected" => (isset($config["secure_type"]) && $config["secure_type"] == PayJpUtil::SECURE_TYPE_REDIRECT),
+			"label" => "リダイレクト型",
+			"attr:onclick" => "select_3d_secure_type(0)"
+		));
+
+		$this->addCheckBox("3d_secure_type_subwindow", array(
+			"name" => "Config[secure_type]",
+			"value" => PayJpUtil::SECURE_TYPE_SUBWINDOW,
+			"selected" => (!isset($config["secure_type"]) || $config["secure_type"] == PayJpUtil::SECURE_TYPE_SUBWINDOW),
+			"label" => "サブウィンドウ型",
+			"attr:onclick" => "select_3d_secure_type(1)"
+		));
+
+		$this->addCheckBox("3d_secure_attempt", array(
+			"name" => "Config[attempt]",
+			"value" => 1,	
+			"selected" => (isset($config["attempt"]) && $config["attempt"] == 1),
+			"label" => "3Dセキュアでアテンプト取引を有効にする"
+		));
+
+		$this->addLabel("redirect_url", array(
+			"text" => soyshop_get_cart_url(false, true) . "?soyshop_notification=payment_pay_jp"	
+		));
+
+		$this->addLabel("3d_config_js", array(
+			"html" => file_get_contents(dirname(__DIR__)."/js/3d_config.js")
+		));
+
 		$this->addCheckBox("repeat", array(
 			"name" => "Config[repeat]",
 			"value" => 1,

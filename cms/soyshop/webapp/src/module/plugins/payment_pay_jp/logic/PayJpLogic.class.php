@@ -78,7 +78,31 @@ class PayJpLogic extends SOY2LogicBase {
 		return array($res, $err);
 	}
 
-	function registCustomer($customer){
+	function retrieve(string $token){
+		$res = null;
+		$err = null;
+		try{
+			$res = \Payjp\Charge::retrieve($token);
+		} catch (\Payjp\Error\Card $e) {
+			$err = $e->getJsonBody();
+		} catch (\Payjp\Error\InvalidRequest $e) {
+			$err = $e->getJsonBody();
+		} catch (\Payjp\Error\Authentication $e) {
+			$err = $e->getJsonBody();
+		} catch (\Payjp\Error\Api $e) {
+			$err = $e->getJsonBody();
+		} catch (\Payjp\Error\Base $e) {
+			$err = $e->getJsonBody();
+		} catch (Exception $e) {
+			$err = $e->getJsonBody();
+		} finally {
+			//何もしない
+		}
+
+		return array($res, $err);
+	}
+
+	function registerCustomer($customer){
 		$res = null;
 		$err = null;
 		try{
@@ -102,7 +126,7 @@ class PayJpLogic extends SOY2LogicBase {
 		return array($res, $err);
 	}
 
-	function retrieveCustomer($token){
+	function retrieveCustomer(string $token){
 		if(is_null($token)) return array(null, null);
 		$res = null;
 		$err = null;

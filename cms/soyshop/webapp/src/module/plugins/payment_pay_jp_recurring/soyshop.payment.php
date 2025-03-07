@@ -120,40 +120,10 @@ class PayJpRecurringPayment extends SOYShopPayment{
 
 		if(soy2_check_token()){
 			self::prepare();
-/**
-			$card = "";
-			foreach($_POST["card"] as $c){
-				$card .= $c;
-			}
 
-			$myCard = array(
-				"number" => $card,
-				"cvc" => $_POST["cvc"],
-				"exp_month" => $_POST["month"],
-				"exp_year" => (20 . $_POST["year"])
-			);
-
-			//セッションに入れる
-			PayJpRecurringUtil::save("myCard", $myCard);
-			PayJpRecurringUtil::save("name", $_POST["name"]);
-
-			//期限切れの場合 APIへの接続回数を減らすために事前にチェック
-			$expYear = $myCard["exp_year"];
-			$expMonth = $myCard["exp_month"] + 1;
-			if($expMonth > 12){
-				$expYear += 1;
-				$expMonth = 1;
-			}
-			$expire = mktime(0, 0, 0, $expMonth, 1, $expYear);
-			if($expire < time()){
-				PayJpRecurringUtil::save("errorCode", "expired_card");
-				soyshop_redirect_cart("error");
-				exit;
-			}
-**/
 			//会員情報を登録 顧客IDを取得
 			$cart = $this->getCart();
-			$customerToken = self::registCustomerByUserId($cart->getCustomerInformation());
+			$customerToken = self::registerCustomerByUserId($cart->getCustomerInformation());
 
 			$items = $cart->getItems();
 			$itemOrder = array_shift($items);
@@ -170,11 +140,11 @@ class PayJpRecurringPayment extends SOYShopPayment{
 		}
 	}
 
-	private function registCustomerByUserId(SOYShop_User $user){
+	private function registerCustomerByUserId(SOYShop_User $user){
 		$customer["card"] = $_POST["token"];
 		$customer["email"] = $user->getMailAddress();
 
-		list($res, $err) = $this->recurringLogic->registCustomer($customer);
+		list($res, $err) = $this->recurringLogic->registerCustomer($customer);
 		unset($err);
 		$token = (!is_null($res)) ? $res->id : null;
 

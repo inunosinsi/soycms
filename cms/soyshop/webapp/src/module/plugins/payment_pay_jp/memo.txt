@@ -1,0 +1,74 @@
+object(Payjp\Charge)#105 (5) {
+	["_opts":protected]=> object(Payjp\Util\RequestOptions)#106 (2) {
+		["headers"]=> array(0) { }
+		["apiKey"]=> string(32) "sk_test_6584d524c7ba276cf05dbd9f"
+	}
+	["_values":protected]=> array(23) {
+		["id"]=> string(32) "ch_c21e59683c695c6b95a214cfd6890"
+		["amount"]=> int(2750)
+		["amount_refunded"]=> int(0)
+		["captured"]=> bool(false)
+		["captured_at"]=> NULL
+		["card"]=> object(Payjp\Card)#100 (5) {
+			["_opts":protected]=> object(Payjp\Util\RequestOptions)#106 (2) {
+				["headers"]=> array(0) { }
+				["apiKey"]=> string(32) "sk_test_6584d524c7ba276cf05dbd9f"
+			}
+			["_values":protected]=> array(23) {
+				["id"]=> string(32) "car_557f09971c2421e48f2565b11e3f"
+				["address_city"]=> NULL
+				["address_line1"]=> NULL
+				["address_line2"]=> NULL
+				["address_state"]=> NULL
+				["address_zip"]=> NULL
+				["address_zip_check"]=> string(9) "unchecked"
+				["brand"]=> string(4) "Visa"
+				["country"]=> NULL
+				["created"]=> int(1729751922)
+				["customer"]=> NULL
+				["cvc_check"]=> string(6) "passed"
+				["email"]=> NULL
+				["exp_month"]=> int(12)
+				["exp_year"]=> int(2025)
+				["fingerprint"]=> string(32) "e1d8225886e3a7211127df751c86787f"
+				["last4"]=> string(4) "4242"
+				["livemode"]=> bool(false)
+				["metadata"]=> array(0) { }
+				["name"]=> NULL
+				["object"]=> string(4) "card"
+				["phone"]=> NULL
+				["three_d_secure_status"]=> NULL
+			}
+			["_unsavedValues":protected]=> object(Payjp\Util\Set)#98 (1) {
+				["_elts":"Payjp\Util\Set":private]=> array(0) { }
+			}
+			["_transientValues":protected]=> object(Payjp\Util\Set)#97 (1) {
+				["_elts":"Payjp\Util\Set":private]=> array(0) { }
+			}
+			["_retrieveOptions":protected]=> array(0) { } }
+			["created"]=> int(1729751923)
+			["currency"]=> string(3) "jpy"
+			["customer"]=> NULL
+			["description"]=> string(27) "payment via soyshop's cart."
+			["expired_at"]=> NULL
+			["failure_code"]=> NULL
+			["failure_message"]=> NULL
+			["fee_rate"]=> NULL
+			["livemode"]=> bool(false)
+			["metadata"]=> array(0) { }
+			["object"]=> string(6) "charge"
+			["paid"]=> bool(false)
+			["refund_reason"]=> NULL
+			["refunded"]=> bool(false)
+			["subscription"]=> NULL
+			["term_id"]=> NULL
+			["three_d_secure_status"]=> string(8) "verified"
+		}
+		["_unsavedValues":protected]=> object(Payjp\Util\Set)#104 (1) {
+			["_elts":"Payjp\Util\Set":private]=> array(0) { }
+		}
+		["_transientValues":protected]=> object(Payjp\Util\Set)#103 (1) {
+			["_elts":"Payjp\Util\Set":private]=> array(0) { }
+		}
+		["_retrieveOptions":protected]=> array(0) { } 
+	} 

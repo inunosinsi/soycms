@@ -8,18 +8,22 @@ abstract class Util
 {
     // todo wanna use 'private const' (only PHP >= v7.1.0)
     private static $types = array(
-        'application_url' => 'Payjp\\ApplicationUrl',
-        'card' => 'Payjp\\Card',
-        'charge' => 'Payjp\\Charge',
-        'customer' => 'Payjp\\Customer',
-        'event' => 'Payjp\\Event',
-        'list' => 'Payjp\\Collection',
-        'plan' => 'Payjp\\Plan',
-        'subscription' => 'Payjp\\Subscription',
-        'tenant' => 'Payjp\\Tenant',
-        'token' => 'Payjp\\Token',
-        'tenant_transfer' => 'Payjp\\TenantTransfer',
-        'transfer' => 'Payjp\\Transfer',
+        'application_url' => \Payjp\ApplicationUrl::class,
+        'balance' => \Payjp\Balance::class,
+        'card' => \Payjp\Card::class,
+        'charge' => \Payjp\Charge::class,
+        'customer' => \Payjp\Customer::class,
+        'event' => \Payjp\Event::class,
+        'list' => \Payjp\Collection::class,
+        'plan' => \Payjp\Plan::class,
+        'statement' => \Payjp\Statement::class,
+        'statement_url' => \Payjp\StatementUrl::class,
+        'subscription' => \Payjp\Subscription::class,
+        'tenant' => \Payjp\Tenant::class,
+        'token' => \Payjp\Token::class,
+        'tenant_transfer' => \Payjp\TenantTransfer::class,
+        'term' => \Payjp\Term::class,
+        'transfer' => \Payjp\Transfer::class,
     );
 
     /**
@@ -104,7 +108,11 @@ abstract class Util
     public static function utf8($value)
     {
         if (is_string($value) && mb_detect_encoding($value, "UTF-8", true) != "UTF-8") {
-            return utf8_encode($value);
+            if (\PHP_VERSION_ID >= 80200) {
+                return mb_convert_encoding($value, 'UTF-8', 'ISO-8859-1');
+            } else {
+                return utf8_encode($value);
+            }
         } else {
             return $value;
         }

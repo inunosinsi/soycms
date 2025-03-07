@@ -11,12 +11,12 @@ class PayJpAdminTop extends SOYShopAdminTopBase{
 	}
 
 	function getTitle(){
-		return (self::_isTestMode()) ? "PAY.JPクレジットカード支払いモジュール" : "";
+		return (self::_isTestMode()) ? "PAY.JPクレジットカード決済モジュール" : "";
 	}
 
 	function getContent(){
 		if(self::_isTestMode()){
-			return "<div class=\"alert alert-danger\">PAY.JPクレジット支払いモジュールはテストモードです。</div>";
+			return "<div class=\"alert alert-danger\">PAY.JPクレジットカード決済モジュールはテストモードです。</div>";
 		}
 	}
 
@@ -24,10 +24,8 @@ class PayJpAdminTop extends SOYShopAdminTopBase{
 		static $on;
 		if(is_null($on)){
 			SOY2::import("module.plugins.payment_pay_jp.util.PayJpUtil");
-			$cnf = PayJpUtil::getConfig();
-			$on = (isset($cnf["sandbox"]) && (int)$cnf["sandbox"] === 1);
+			$on = PayJpUtil::isTestMode();
 		}
-
 		return $on;
 	}
 

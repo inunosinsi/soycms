@@ -2,6 +2,9 @@
 
 class PayJpUtil {
 
+	const SECURE_TYPE_REDIRECT = 0;	 // 3Dセキュア リダイレクト側
+	const SECURE_TYPE_SUBWINDOW = 1; // 3Dセキュア サブウィンドウ型
+
 	private static function _errorMessageList(){
 		return array(
 			"incorrect_card_data" => "カード番号が正しくありません",	//新設されたエラー
@@ -112,13 +115,14 @@ class PayJpUtil {
 			"sandbox" => 1,
 			"capture" => 1,
 			"repeat" => 0,
+			"secure" => 0,
 			"test" => array(),
 			"public" => array()
 		));
 	}
 
 	public static function saveConfig($values){
-		foreach(array("sandbox", "capture", "repeat", "select") as $t){
+		foreach(array("sandbox", "capture", "repeat", "select", "secure") as $t){
 			$values[$t] = (isset($values[$t]) && $values[$t] == 1) ? 1 : 0;
 		}
 		SOYShop_DataSets::put("payment_pay_jp.config", $values);
@@ -144,5 +148,27 @@ class PayJpUtil {
 	public static function isCapture(){
 		$config = self::_getConfig();
 		return (isset($config["capture"]) && $config["capture"] == 1);
+	}
+
+	public static function is3DSecure(){
+		$config = self::_getConfig();
+		return (isset($config["secure"]) && $config["secure"] == 1);
+	}
+
+	public static function is3DSecureRedirectType(){
+		$config = self::_getConfig();
+		if(!isset($config["secure"]) || $config["secure"] != 1) return false;
+		return (isset($config["secure_type"]) && $config["secure_type"] == self::SECURE_TYPE_REDIRECT);
+	}
+
+	public static function is3DSecureSubWindowType(){
+		$config = self::_getConfig();
+		if(!isset($config["secure"]) || $config["secure"] != 1) return false;
+		return (isset($config["secure_type"]) && $config["secure_type"] == self::SECURE_TYPE_SUBWINDOW);
+	}
+
+	public static function isAttempt(){
+		$config = self::_getConfig();
+		return (isset($config["attempt"]) && $config["attempt"] == 1);
 	}
 }

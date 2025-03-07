@@ -28,6 +28,33 @@
 		<input type="text" class="form-control" soy:id="production_public_key" />
 	</div>
 
+	<div class="form-group">
+		<label>3Dセキュア</label><br>
+		<input type="checkbox" soy:id="3d_secure">
+	</div>
+
+	<div class="form-group">
+		<label>3Dセキュアの種類</label><br>
+		<input type="radio" soy:id="3d_secure_type_subwindow">&nbsp;
+		<input type="radio" soy:id="3d_secure_type_redirect">
+	</div>
+
+	<div class="alert alert-info" id="3d_secure_subwindow">
+		3Dセキュアの<strong>サブウィンドウ型</strong>を利用する場合はPAY.JPの管理画面のAPI設定で<strong>トークン3Dセキュア</strong>を有効にします。
+	</div>
+
+	<div class="alert alert-info" id="3d_secure_redirect">
+		3Dセキュアの<strong>リダイレクト型</strong>を利用する場合はPAY.JPの管理画面のAPI設定で<strong>リダイレクトURL</strong>を下記のように設定します。<br>
+		識別子：<strong>SOYShopRecurring</strong><br>
+		URL：<strong soy:id="redirect_url"></strong>
+	</div>
+
+	<div class="form-group">
+		<label>アテンプト取引(3Dセキュア)</label><br>
+		<input type="checkbox" soy:id="3d_secure_attempt"><br>
+		アテンプト取引について：<a href="https://help.pay.jp/ja/articles/5366011" target="_blank" rel="noopener">アテンプトとはなんですか？ | PAY.JP ヘルプ</a>
+	</div>
+
 	<div class="text-center">
 		<input type="submit" class="btn btn-primary btn-lg" value="変更">
 	</div>
@@ -51,3 +78,5 @@
 注) <strong>HTMLを変更する時は必ずテストモードにしてください。</strong><br>
 ※<a href="https://saitodev.co/article/3196" target="_blank" rel="noopener">SOY2HTMLで軽微なカスタマイズを加える為の機能を追加しました - saitodev.co</a><br>
 ※<a href="https://saitodev.co/article/1981" target="_blank" rel="noopener">SOY Shopでクレジットマスターの対策を強化しました - saitodev.co</a>
+
+<script soy:id="3d_config_js"></script>

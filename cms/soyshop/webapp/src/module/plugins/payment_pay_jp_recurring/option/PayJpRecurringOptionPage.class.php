@@ -86,7 +86,7 @@ class PayJpRecurringOptionPage extends WebPage {
 		));
 
 		$this->addLabel("token_js", array(
-			"html" => file_get_contents(dirname(dirname(dirname(__FILE__))) . "/payment_pay_jp/js/token.js")
+			"html" => self::_getTokenScript()
 		));
 
 		$this->addLabel("button_label", array(
@@ -107,6 +107,26 @@ class PayJpRecurringOptionPage extends WebPage {
 			$array[$i] = $i;
 		}
 		return $array;
+	}
+
+	private function _getTokenScript(){
+		if(PayJpRecurringUtil::is3DSecure() && PayJpRecurringUtil::isAttempt()){
+			$script = "var is_three_d_secure = true;\n";
+		}else{
+			$script = "var is_three_d_secure = false;\n";
+		}
+	
+		$jsScriptDir = dirname(dirname(dirname(__FILE__)))."/payment_pay_jp/js/";
+
+		$filename = "subwindow";
+		if(PayJpRecurringUtil::is3DSecureRedirectType()){
+			$script .= "var payjp = Payjp(document.getElementById(\"payjp_public_key\").value, {threeDSecureWorkflow: 'redirect'});";
+			//$filename = "redirect";
+		}else{
+			$script .= "var payjp = Payjp(document.getElementById(\"payjp_public_key\").value);";
+		}
+		
+		return $script.file_get_contents($jsScriptDir.$filename.".js");
 	}
 
 	function setConfigObj($configObj){
