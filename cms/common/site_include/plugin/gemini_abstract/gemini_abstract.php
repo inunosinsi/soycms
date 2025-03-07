@@ -20,7 +20,7 @@ class GeminiAbstractPlugin {
 			"author"=> "齋藤毅",
 			"url"=> "https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.7"
+			"version"=>"0.8"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -42,9 +42,9 @@ class GeminiAbstractPlugin {
 
 				CMSPlugin::addCustomFieldFunction(self::PLUGIN_ID, "Entry.Detail", array($this, "onCallCustomField"));
 				CMSPlugin::addCustomFieldFunction(self::PLUGIN_ID, "Blog.Entry", array($this, "onCallCustomField_inBlog"));
-
-				CMSPlugin::setEvent('onActive', self::PLUGIN_ID, array($this, "createTable"));
 			}
+		}else{
+			CMSPlugin::setEvent('onActive', self::PLUGIN_ID, array($this, "createTable"));
 		}
 	}
 
@@ -65,8 +65,7 @@ class GeminiAbstractPlugin {
 		$entryId = (int)$arg["entryId"];
 		$htmlObj = $arg["SOY2HTMLObject"];
 		
-		$fieldValues = GeminiAbstractUtil::getValuesByEntryId($entryId);
-		$abstract = (isset($fieldValues["value"])) ? $fieldValues["value"] : "";
+		$abstract = GeminiAbstractUtil::getAbstractByEntryId($entryId);
 
 		if(strlen($abstract)){
 			$abstract = GeminiAbstractUtil::getPrefix().$abstract.GeminiAbstractUtil::getPostfix();
@@ -140,7 +139,7 @@ class GeminiAbstractPlugin {
 	 * @return string
 	 */
 	private function _buildFormOnEntryPage(int $entryId){
-		$abstract = soycms_get_entry_attribute_value($entryId, GeminiAbstractUtil::FIELD_ID, "string");
+		$abstract = GeminiAbstractUtil::getAbstractByEntryId($entryId);
 		if(!strlen($abstract)) return "<input type=\"hidden\" name=\"gemini_abstract_aute_create\" value=\"1\">";
 
 		$html = array();

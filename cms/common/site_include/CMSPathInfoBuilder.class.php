@@ -97,6 +97,8 @@ class CMSPathInfoBuilder extends SOY2_PathInfoPathBuilder{
 	 * @return array
 	 */
 	private static function _getCandidatePageList(string $uri){
+		if(!defined("CMS_PREVIEW_MODE")) define("CMS_PREVIEW_MODE", false);
+
 		$dao = new SOY2DAO();
 
 		//トップページの場合
@@ -104,36 +106,33 @@ class CMSPathInfoBuilder extends SOY2_PathInfoPathBuilder{
 		if(!strlen($uri) || is_numeric($pos)){
 			// _index***の可能性を加味する	高速化の為に条件によってbindを分ける
 			$bind = ($pos > 0) ? "%index%" : "index%";
-			$res = $dao->executeQuery(
-				"SELECT uri FROM Page ".
-				"WHERE (uri = '' OR uri LIKE :uri) ".
-				"AND isPublished >= 1 ".
-				"AND openPeriodStart < :start ".
-				"AND openPeriodEnd > :end", 
-				array(":uri" => $bind, ":start" => time(), ":end" => time())
-			);
+			$sql = "SELECT uri FROM Page ".
+					"WHERE (uri = '' OR uri LIKE :uri) ".
+					"AND openPeriodStart < :start ".
+					"AND openPeriodEnd > :end ";
+			$binds = array(":uri" => $bind, ":start" => time(), ":end" => time());
 		}else{
 			//uriが空のページは常に取得しておく
-			$res = $dao->executeQuery(
-				"SELECT uri FROM Page ".
-				"WHERE (uri = '' OR uri LIKE :uri) ".
-				"AND isPublished >= 1 ".
-				"AND openPeriodStart < :start ".
-				"AND openPeriodEnd > :end",
-				array(":uri" => $uri."%", ":start" => time(), ":end" => time())
-			);
+			$sql = "SELECT uri FROM Page ".
+					"WHERE (uri = '' OR uri LIKE :uri) ".
+					"AND openPeriodStart < :start ".
+					"AND openPeriodEnd > :end ";
+			$binds = array(":uri" => $uri."%", ":start" => time(), ":end" => time());
 		}
+
+		if(!CMS_PREVIEW_MODE) $sql .= "AND isPublished >= 1 ";
+		$res = $dao->executeQuery($sql, $binds);
 
 		//候補ページを全て取得(indexから始まるページ以外)
 		if(!count($res)) {
-			$res = $dao->executeQuery(
-				"SELECT uri FROM Page ".
-				"WHERE uri NOT LIKE :uri ".
-				"AND isPublished >= 1 ".
-				"AND openPeriodStart < :start ".
-				"AND openPeriodEnd > :end", 
-				array(":uri" => "index%", ":start" => time(), ":end" => time())
-			);
+			$sql = "SELECT uri FROM Page ".
+					"WHERE uri NOT LIKE :uri ".
+					"AND openPeriodStart < :start ".
+					"AND openPeriodEnd > :end ";
+			$binds = array(":uri" => "index%", ":start" => time(), ":end" => time());		
+
+			if(!CMS_PREVIEW_MODE) $sql .= "AND isPublished >= 1 ";
+			$res = $dao->executeQuery($sql, $binds);
 		}
 
 		if(!count($res)) return array();

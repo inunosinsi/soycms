@@ -18,7 +18,7 @@ class SOYCMS_ThisIsNew_Plugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.3.2"
+			"version"=>"1.3.3"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -48,6 +48,7 @@ class SOYCMS_ThisIsNew_Plugin{
 	 */
 	function onEntryListBeforeOutput($arg){
 		$entries = &$arg["entries"];
+		SOY2::import("site_include.func.public", ".php");
 		$entryIds = soycms_get_entry_id_by_entries($entries);
 		if(!count($entryIds)) return;
 		

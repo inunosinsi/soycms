@@ -108,7 +108,9 @@ class CMSMessageManager {
      * @return string メッセージです
      * @description メッセージの取得を行います。一番初めに呼ばれた段階でメッセージファイルをパースし、それ以降はメッセージファイルが追加されてもパースはしません。
      */
-    static function get($key,$replace = array()){
+    static function get(string $key, array $replace=array()){
+		if(!defined("SOYCMS_LANGUAGE")) define("SOYCMS_LANGUAGE", "jp");
+    
     	$instance = &self::getInstance();
 
     	if(is_null($instance->messageArray)){
@@ -123,7 +125,7 @@ class CMSMessageManager {
     		return $tmpMsg;
     	}else{
     		//throw new Exception($key."に対応するメッセージがありません");
-    		if(defined("SOYCMS_LANGUAGE")||SOYCMS_LANGUAGE=="ja"){
+    		if(defined("SOYCMS_LANGUAGE") || SOYCMS_LANGUAGE == "ja"){
     			return '[ERROR] "'.$key.'"  に対応するメッセージがありません';
     		}else{
     			return '[ERROR] Message for "'.$key.'" is not found';
@@ -160,4 +162,3 @@ class CMSMessageManager {
     	return $result;
     }
 }
-?>

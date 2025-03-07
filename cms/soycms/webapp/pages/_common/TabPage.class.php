@@ -105,9 +105,16 @@ class TabPage extends CMSHTMLPageBase {
 			"class" => $this->getMenuStatus("simple_blog")
 		));
 
+		// シンプルモードの場合は、IDの一番小さいブログページを探す　なければリンクを表示しない
+		$id = self::_getFirstBlogPageId();
+
+		$this->addModel("simple_preview_show", array(
+			"visible" => ($id > 0)	
+		));
+
 		$this->addLink("simple_preview",array(
-			"link" => SOY2PageController::createLink("Page.Preview"),
-			"class" => $this->getMenuStatus("simple_preview")
+			"link" => ($id > 0) ? SOY2PageController::createLink("Page.Preview.".$id) : "",
+			"class" => $this->getMenuStatus("simple_preview"),
 		));
 
 		/* タブの切り替えを行う */
@@ -155,14 +162,22 @@ class TabPage extends CMSHTMLPageBase {
 
 
 		//AppのDBをサイト内に置く場合のメニュー
-		$this->displayAppLink();
+		self::_displayAppLink();
+	}
 
+	/**
+	 * @return int
+	 */
+	private function _getFirstBlogPageId(){
+		if(!$this->isSimpleMode) return 0;
+		$ids = array_keys(soycms_get_hash_table_dao("blog_page")->getBlogPageUriList());
+		return (count($ids)) ? $ids[0] : 0;
 	}
 
 	/**
 	 * AppのDBをサイト内に置く場合のメニュー
 	 */
-	private function displayAppLink(){
+	private function _displayAppLink(){
 		//SOY InquiryかSOY Mailのデータベースがサイト側に存在している場合、リンクを表示する
 
 		$inquiryUseSiteDb = SOYAppUtil::checkAppAuth("inquiry");

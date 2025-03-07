@@ -5,9 +5,10 @@ class LabelListsComponent extends HTMLList{
 	private $pageId;
 
 	function populateItem($entity, $key){
+		if(is_null($key)) $key = "";
 		$this->addLabel("category_name", array(
 			"text" => $key,
-			"visible" => !is_int($key) && strlen($key),
+			"visible" => (!is_int($key) && strlen($key)),
 		));
 		$this->createAdd("list","_component.Blog.CategoryListComponent",array(
 			"list" => $entity,

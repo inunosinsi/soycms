@@ -18,7 +18,7 @@ class SOYCMS_SwitchEditor{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"2.2.1"
+			"version"=>"2.2.2"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -115,7 +115,7 @@ class SOYCMS_SwitchEditor{
 	 */
 	public static function registerPlugin(){
 		//管理側のみ
-		if(defined("_SITE_ROOT_") || defined("CMS_PREVIEW_MODE")) return;
+		if(defined("_SITE_ROOT_") || (defined("CMS_PREVIEW_MODE") && CMS_PREVIEW_MODE)) return;
 
 		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
 		if(is_null($obj)) $obj = new SOYCMS_SwitchEditor();

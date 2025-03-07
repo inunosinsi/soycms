@@ -60,7 +60,7 @@ class DetailPage extends CMSWebPageBase {
 		//Block ID will be required in some cases.
 		if(method_exists($component,"setBlockId")){
 			$component->setBlockId($this->id);
-		}else{
+		}else if(property_exists($component, "blockId")){
 			$component->blockId = $this->id;
 		}
 		$this->add("block_form",$component->getFormPage());

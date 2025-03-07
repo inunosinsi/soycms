@@ -193,7 +193,7 @@ class RedirectLanguageSiteLogic extends SOY2LogicBase{
 	 */
 	private function _formatPath(string $path){
 		if(soy2_strpos($path, "/") > 0) $path = "/" . $path;
-		if(soy2_strpos($path, "/?") > 0) $path = str_replace("/?", "?", $path);
+		if(soy2_strpos($path, "/?") >= 0) $path = str_replace("/?", "?", $path);
 
 		// GETパラメータがuriと同一の場合はGETパラメータを外しておく
 		if(soy2_strpos($path, "?") > 0){

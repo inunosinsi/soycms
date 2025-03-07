@@ -32,7 +32,7 @@ class CmsTagChecker{
 			"author"=> "齋藤毅",
 			"url" => "https://saitodev.co/article/5056",
 			"mail" => "tsuyoshi@saitodev.co",
-			"version"=>"0.2"
+			"version"=>"0.5"
 		));
 
 		if(!defined("_SITE_ROOT_")){
@@ -54,13 +54,19 @@ class CmsTagChecker{
 		$cacheFilePath = checker_fn_build_cache_file_path((int)$page->getId(), self::DIRECTORY_NAME);
 		if(file_exists($cacheFilePath)) unlink($cacheFilePath);
 
+		$notUsedCachePath = checker_fn_build_not_used_cache_file_path((int)$page->getId(), self::DIRECTORY_NAME);
+		if(file_exists($notUsedCachePath)) unlink($notUsedCachePath);
+
 		if(is_null($template)) return;
 
 		$template = checker_fn_shape_template($template);
 		if(!strlen($template)) return;
 
-		
+		if(!function_exists("checker_fn_update_normal_tag_list")) SOY2::import("site_include.plugin.CustomFieldChecker.func.fn", ".php");
+		$cmsIdTags = checker_fn_get_tag_list();
+
 		$errs = array();
+		$notUsed = array();	//定義されていないカスタムフィールドの_visible等
 
 		foreach($this->tags as $tagType){
 			preg_match_all('/<!--.*'.$tagType.'=\"(.*?)\".*-->/', $template, $tmps);
@@ -120,6 +126,19 @@ class CmsTagChecker{
 					// 開始タグ + 終了タグ以外のタグはすべて省略タグでなければならない
 					if(($tagCnt - $pairCnt*2) !== $shortTagCnt) self::_buildErrorMsg($tagType, $tagName, "タグの個数に誤りがあります");
 
+					// 未定義のタグであるか？
+					if($tagType == "cms:id"){
+						foreach(array("_visible", "_empty", "_is_empty") as $pat){
+							if(preg_match('/'.$pat.'$/', $tagName)) {
+								$_tagName = str_replace($pat, "", $tagName);
+								if(is_bool(array_search($_tagName, $cmsIdTags))){
+									$notUsed[] = $tagType."=\"".$_tagName."\"";
+								}
+							}
+						}
+					}
+					
+
 					// チェックが終わったら、チェックしたタグを消しておく b_block:idの後にblock:idをチェックする為
 					foreach($tagArr as $tt){
 						$template = trim(str_replace($tt, "", $template));
@@ -129,6 +148,7 @@ class CmsTagChecker{
 		}
 		
 		if(count($errs)) file_put_contents($cacheFilePath, implode("\n", $errs));
+		if(count($notUsed)) file_put_contents($notUsedCachePath, implode("\n", $notUsed));
 	}
 
 	/**
@@ -169,9 +189,10 @@ class CmsTagChecker{
 		if(!isset($args[0]) || !is_numeric($args[0])) return "";
 		
 		$cacheFilePath = checker_fn_build_cache_file_path((int)$args[0], self::DIRECTORY_NAME);
-		if(!file_exists($cacheFilePath)) return "";
+		$notUsedCachePath = checker_fn_build_not_used_cache_file_path((int)$args[0], self::DIRECTORY_NAME);
+		if(!file_exists($cacheFilePath) && !file_exists($notUsedCachePath)) return "";
 
-		return self::_buildNotice($cacheFilePath);
+		return self::_buildNotice($cacheFilePath, $notUsedCachePath);
 	}
 
 	function onBlogNotice(){
@@ -180,28 +201,45 @@ class CmsTagChecker{
 		if(!isset($args[1]) || !is_string($args[1])) return "";
 		
 		$cacheFilePath = checker_fn_build_cache_file_path((int)$args[0], self::DIRECTORY_NAME);
-		if(!file_exists($cacheFilePath)) return "";
+		$notUsedCachePath = checker_fn_build_not_used_cache_file_path((int)$args[0], self::DIRECTORY_NAME);
+		if(!file_exists($cacheFilePath) && !file_exists($notUsedCachePath)) return "";
 
-		return self::_buildNotice($cacheFilePath);
+		return self::_buildNotice($cacheFilePath, $notUsedCachePath);
 	}
 
 	/**
 	 * @param string
 	 * @return string
 	 */
-	private function _buildNotice(string $path){
+	private function _buildNotice(string $path, string $notUsedPath){
 		$h = array();
-		$h[] = "<div class=\"alert alert-danger\">";
-		$h[] = "<p>CMSタグの記述に誤りがあります</p>";
+		if(file_exists($path)){
+			$h[] = "<div class=\"alert alert-danger\">";
+			$h[] = "<p>CMSタグの記述に誤りがあります</p>";
 
-		$errs = explode("\n", file_get_contents($path));
-		$h[] = "<ul>";
-		foreach($errs as $err){
-			$h[] = "<li>".$err."</li>";
+			$errs = explode("\n", file_get_contents($path));
+			$h[] = "<ul>";
+			foreach($errs as $err){
+				$h[] = "<li>".$err."</li>";
+			}
+			$h[] = "</ul>";
+			
+			$h[] = "</div>";
 		}
-		$h[] = "</ul>";
 
-		$h[] = "</div>";
+		if(file_exists($notUsedPath)){
+			$h[] = "<div class=\"alert alert-danger\">";
+			$h[] = "<p>未定義のカスタムフィールドを使用している可能性があります。</p>";
+			
+			$notUsedList = explode("\n", file_get_contents($notUsedPath));
+			$h[] = "<ul>";
+			foreach($notUsedList as $notUsed){
+				$h[] = "<li>".$notUsed."</li>";
+			}
+			$h[] = "</ul>";
+
+			$h[] = "</div>";
+		}
 		return implode("\n", $h);
 	}
 

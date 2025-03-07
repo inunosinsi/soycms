@@ -19,6 +19,8 @@ class LabelCustomFieldPlugin{
 
 	private $displayLogic;
 
+	// どこで使用しているか？は不明だが、エラーが出るので加えておく
+	private $dao;
 
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID, array(
@@ -28,7 +30,7 @@ class LabelCustomFieldPlugin{
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co/article/3532",
 			"mail" => "info@saitodev.co",
-			"version"=>"0.9.1"
+			"version"=>"0.9.2"
 		));
 
 		//プラグイン アクティブ

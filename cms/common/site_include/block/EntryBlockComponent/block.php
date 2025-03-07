@@ -5,6 +5,12 @@
 class EntryBlockComponent implements BlockComponent{
 
 	private $entryId = array();
+	private $displayCountFrom;
+	private $displayCountTo;
+	private $entry;
+
+	// Warning: Undefined property: EntryBlockComponent::$blockId in 〜対策
+	public $blockId;
 
 	/**
 	 * @return SOY2HTML
@@ -236,7 +242,7 @@ class EntryBlockComponent_ViewPage extends HTMLList{
 	protected $entry;
 
 	public function getStartTag(){
-		if(defined("CMS_PREVIEW_MODE")){
+		if(defined("CMS_PREVIEW_MODE") && CMS_PREVIEW_MODE){
 			return parent::getStartTag() . CMSUtil::getEntryHiddenInputHTML('<?php echo $'.$this->getId().'["entry_id"]; ?>','<?php echo strip_tags($'.$this->getId().'["title"]); ?>');
 		}else{
 			return parent::getStartTag();

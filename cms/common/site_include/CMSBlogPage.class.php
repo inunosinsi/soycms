@@ -569,7 +569,7 @@ class CMSBlogPage extends CMSPage{
 		//ここに来ることがない
 		//「/」終わりじゃない時は「/」付きでリダイレクト
 		if(defined("CMS_DEBUG_MODE")){
-		}elseif(!defined("CMS_PREVIEW_MODE") || CMS_PREVIEW_MODE != true){
+		}elseif(!defined("CMS_PREVIEW_MODE") || !CMS_PREVIEW_MODE){
 			$tmpURL = (strpos($_SERVER["REQUEST_URI"],"?") !== false) ? substr($_SERVER["REQUEST_URI"],0,strpos($_SERVER["REQUEST_URI"],"?")) : $_SERVER["REQUEST_URI"];
 			if($tmpURL[strlen($tmpURL)-1] != "/"){
 				header("Location: " . $this->getTopPageURL(true));
@@ -797,7 +797,7 @@ class CMSBlogPage extends CMSPage{
 	 * 末尾に必ずスラッシュを付ける
 	 */
 	private function _getPageUrl(bool $isAbsoluteUrl=false){
-		if(defined("CMS_PREVIEW_MODE") && CMS_PREVIEW_MODE == true){
+		if(defined("CMS_PREVIEW_MODE") && CMS_PREVIEW_MODE){
 			$pageUrl = SOY2PageController::createLink("Page.Preview")."?uri=";
 			if(strlen($this->page->getUri()) >0){
 				$pageUrl .= $this->page->getUri() ."/";

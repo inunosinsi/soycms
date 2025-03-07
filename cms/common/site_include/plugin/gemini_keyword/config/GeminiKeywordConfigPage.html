@@ -1,0 +1,61 @@
+<div class="alert alert-info">プラグインブロックで検索結果を表示できるブロックを使用できます</div>
+
+<form soy:id="form">
+	<div class="form-group">
+		<div class="form-inline">
+			<label>Gemini APIキー</label>
+			<input type="text" class="form-control" soy:id="gemini_api_key">
+		</div>
+		<div class="alert alert-warning">
+			Gemini APIキーは<a href="https://ai.google.dev/gemini-api" target="_blank" rel="noopener">Google AI Gemini API |Google AI Studio |Google for Developers &nbsp;|&nbsp; Google AI for Developers</a>で生成してください。
+		</div>
+	</div>
+
+	<!-- soy:id="enabled_blog_pages_checkboxes" /-->
+
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="保存">
+	</div>
+</form>
+
+<br>
+
+<div class="alert alert-info">キーワード自動抽出の時限実行の設定</div>
+<p>crontabに下記のコマンドを登録します。</p>
+<pre>php <!-- soy:id="job_path" /--></pre>
+
+<br>
+
+<div class="alert alert-success">公開側の検索フォームの設定</div>
+<p>テンプレートのブロック設定でプラグインブロックを選び、プラグインのセレクトボックスで<strong soy:id="plugin_id"></strong>を選びます。</p>
+
+<br>
+
+<div class="alert alert-success">タグの記述例</div>
+<p>
+	他のブロックの時と同じですが、block:id="***"の記述の時に、ラベルIDと表示件数を指定することができます。<br>
+	※ブロックの外側でcms:id="search_keyword"で検索のキーワードを出力します。
+</p>
+
+<pre>「&lt;!-- cms:id="search_keyword" --&gt;タグ名&lt;!-- /cms:id="search_keyword" --&gt;」の検索結果
+
+&lt;!-- block:id="***" cms:label="1" cms:count="10" --&gt;
+表示したい内容のcms:idを追加
+&lt;!-- /block:id="***" --&gt;</pre>
+<div class="alert alert-warning">
+	***の箇所は任意の値です。<br>
+	cms:labelでどのラベルが設定されている記事一覧を取得するかを決めることができます。<br>
+	※cms:labelの指定がないと動きません<br>
+	cms:countで検索結果を何件表示するか決めることができます。<br>
+	※cms:countの指定がなくても動作します。
+</div>
+
+<div class="alert alert-success">他ページに設置する検索フォームの記述例</div>
+<pre>&lt;!-- cms:module="common.gemini_keyword" --&gt;
+&lt;form method="GET" action="{検索結果ページのURL}"&gt;
+	&lt;input type="search" name="q" id="gemini_keyword" list="gemini_keyword_list"&gt;
+	&lt;input type="submit" value="検索"&gt;
+	&lt;input type="hidden" id="gemini_keyword_site_id" value="<!-- soy:id="site_id" /-->"&gt;
+	&lt;datalist id="gemini_keyword_list"&gt;&lt;/datalist&gt;
+&lt;/form&gt;
+&lt;!-- /cms:module="common.gemini_keyword" --&gt;</pre>

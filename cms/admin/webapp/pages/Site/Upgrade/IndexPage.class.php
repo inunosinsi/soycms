@@ -56,7 +56,7 @@ class SiteList extends HTMLList{
 
 		$array = parse_url($url);
 
-		$host = $array["host"];
+		$host = (isset($array["host"])) ? (string)$array["host"] : "";
 		if(isset($array["port"])) $host .=   ":" . $array["port"];
 
 		if(strlen($host) > 30){

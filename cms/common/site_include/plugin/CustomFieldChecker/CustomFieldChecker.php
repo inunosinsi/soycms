@@ -27,7 +27,7 @@ class CustomFieldCheckerPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/",
 			"mail"=>"saito@saitodev.co",
-			"version"=>"1.4.2"
+			"version"=>"1.4.7"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -55,6 +55,10 @@ class CustomFieldCheckerPlugin{
 		$cacheFilePath = checker_fn_build_cache_file_path((int)$page->getId(), self::DIRECTORY_NAME);
 		if(file_exists($cacheFilePath)) unlink($cacheFilePath);
 
+		// 登録していないタグ用のキャッシュ
+		$notUsedCachePath = checker_fn_build_not_used_cache_file_path((int)$page->getId(), self::DIRECTORY_NAME);
+		if(file_exists($notUsedCachePath)) unlink($notUsedCachePath);
+
 		if(is_null($template)) return;
 
 		// @ToDo いずれはカスタムサーチフィールド等の分も用意する
@@ -62,6 +66,7 @@ class CustomFieldCheckerPlugin{
 		$tags = checker_fn_get_tag_list();
 		
 		$errs = array();
+		$notUsed = array();
 
 		foreach($this->tags as $tagType){
 			preg_match_all('/'.$tagType.'=\"(.*?)\"/', $template, $tmps);
@@ -70,8 +75,18 @@ class CustomFieldCheckerPlugin{
 				$tmps[1] = array_unique($tmps[1]);
 
 				foreach($tmps[1] as $tagName){
+					$tagName = rtrim($tagName, "*");
 					if(!strlen($tagName)) continue;
 					if(is_numeric(array_search($tagName, $tags))) continue;
+
+					foreach(array("_visible", "_empty", "_is_empty") as $pat){
+						if(preg_match('/'.$pat.'$/', $tagName)) {
+							$_tagName = str_replace($pat, "", $tagName);
+							if(is_bool(array_search($_tagName, $tags))){
+								$notUsed[] = $tagType."=\"".$_tagName."\"";
+							}
+						}
+					}
 
 					$errs[] = $tagType."=\"".$tagName."\"";
 				}
@@ -79,6 +94,7 @@ class CustomFieldCheckerPlugin{
 		}
 		
 		if(count($errs)) file_put_contents($cacheFilePath, implode("\n", $errs));
+		if(count($notUsed)) file_put_contents($notUsedCachePath, implode("\n", $notUsed));
 	}
 
 	function onPageNotice(){
@@ -86,9 +102,10 @@ class CustomFieldCheckerPlugin{
 		if(!isset($args[0]) || !is_numeric($args[0])) return "";
 		
 		$cacheFilePath = checker_fn_build_cache_file_path((int)$args[0], self::DIRECTORY_NAME);
-		if(!file_exists($cacheFilePath)) return "";
+		$notUsedCachePath = checker_fn_build_not_used_cache_file_path((int)$args[0], self::DIRECTORY_NAME);
+		if(!file_exists($cacheFilePath) && !file_exists($notUsedCachePath)) return "";
 
-		return self::_buildNotice($cacheFilePath);
+		return self::_buildNotice($cacheFilePath, $notUsedCachePath);
 	}
 
 	function onBlogNotice(){
@@ -97,28 +114,47 @@ class CustomFieldCheckerPlugin{
 		if(!isset($args[1]) || !is_string($args[1])) return "";
 		
 		$cacheFilePath = checker_fn_build_cache_file_path((int)$args[0], self::DIRECTORY_NAME);
-		if(!file_exists($cacheFilePath)) return "";
+		$notUsedCachePath = checker_fn_build_not_used_cache_file_path((int)$args[0], self::DIRECTORY_NAME);
+		if(!file_exists($cacheFilePath) && !file_exists($notUsedCachePath)) return "";
 
-		return self::_buildNotice($cacheFilePath);
+		return self::_buildNotice($cacheFilePath, $notUsedCachePath);
 	}
 
 	/**
-	 * @param string
+	 * @param string, string
 	 * @return string
 	 */
-	private function _buildNotice(string $path){
+	private function _buildNotice(string $path, string $notUsedPath){
 		$h = array();
-		$h[] = "<div class=\"alert alert-danger\">";
-		$h[] = "<p>未定義のcms:idが使用されています。</p>";
+		if(file_exists($path)){
+			$h[] = "<div class=\"alert alert-danger\">";
+			$h[] = "<p>未定義のcms:idが使用されています。</p>";
 
-		$errs = explode("\n", file_get_contents($path));
-		$h[] = "<ul>";
-		foreach($errs as $err){
-			$h[] = "<li>".$err."</li>";
+			$errs = explode("\n", file_get_contents($path));
+			$h[] = "<ul>";
+			foreach($errs as $err){
+				$h[] = "<li>".$err."</li>";
+			}
+			$h[] = "</ul>";
+
+			$h[] = "</div>";
 		}
-		$h[] = "</ul>";
 
-		$h[] = "</div>";
+		//if(file_exists($notUsedPath)){
+		// 下記の出力はCMSタグチェッカーの方に移設
+		if(false){
+			$h[] = "<div class=\"alert alert-danger\">";
+			$h[] = "<p>未定義のcms:idの_visibleタグ等があります。</p>";
+
+			$notUsedList = explode("\n", file_get_contents($notUsedPath));
+			$h[] = "<ul>";
+			foreach($notUsedList as $notUsed){
+				$h[] = "<li>".$notUsed."</li>";
+			}
+			$h[] = "</ul>";
+
+			$h[] = "</div>";
+		}
 		return implode("\n", $h);
 	}
 

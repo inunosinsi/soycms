@@ -88,6 +88,15 @@ class Page {
     	$this->uri = $uri;
     }
     function getTemplate() {
+    	$onLoads = CMSPlugin::getEvent('onReadTemplateFile');
+		if(count($onLoads)){
+			foreach($onLoads as $plugin){
+				$func = $plugin[0];
+				$res = call_user_func($func, array("pageId" => $this->id, "blogPageType" => null));
+				if(is_string($res)) $this->template = $res;
+			}
+		}
+    	
     	return $this->template;
     }
     function setTemplate($template) {

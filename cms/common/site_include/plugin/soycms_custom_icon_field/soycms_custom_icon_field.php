@@ -21,7 +21,7 @@ class CustomIconFieldPlugin{
 			"author" => "株式会社Brassica",
 			"url" => "https://brassica.jp/",
 			"mail" => "soycms@soycms.net",
-			"version" => "1.6"
+			"version" => "1.7.1"
 		));
 		CMSPlugin::addPluginConfigPage($this->getId(), array(
 			$this, "config_page"
@@ -57,9 +57,11 @@ class CustomIconFieldPlugin{
 		$icons = array();
 		if(isset($result[0]["custom_icon_field"])){
 			$icons_array = explode(",", $result[0]["custom_icon_field"]);
+			if(count($icons_array)) $icons_array = array_unique($icons_array);
 
-			foreach($icons_array as $str){
-				if(strlen($str)){
+			if(count($icons_array)){
+				foreach($icons_array as $str){
+					if(!strlen($str)) continue;
 					$icons[] = '<img src="' . htmlspecialchars(substr($str, 0), ENT_QUOTES, 'UTF-8') . '" >';
 				}
 			}

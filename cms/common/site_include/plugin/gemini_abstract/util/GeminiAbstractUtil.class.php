@@ -135,6 +135,30 @@ class GeminiAbstractUtil {
 		return (isset($GLOBALS[self::GLOBAL_INDEX][$entryId])) ? $GLOBALS[self::GLOBAL_INDEX][$entryId] : array(); 
 	}
 
+	/**
+	 * @param int
+	 * @return string
+	 */
+	public static function getAbstractByEntryId(int $entryId){
+		$_arr = self::getValuesByEntryId($entryId);
+		if(isset($fieldValues["value"])) {
+			$abstract = $fieldValues["value"];
+		}else{
+			$abstract = soycms_get_entry_attribute_value($entryId, self::FIELD_ID, "string");
+		}
+
+		preg_match_all('/<.*?>/', $abstract, $tmp);
+		if(isset($tmp[0]) && is_array($tmp[0]) && count($tmp[0])){
+			foreach($tmp[0] as $tag){
+				$_tag = str_replace("<", "&lt;", $tag);
+				$_tag = str_replace(">", "&gt;", $_tag);
+				$abstract = str_replace($tag, $_tag, $abstract);
+			}
+		}
+
+		return $abstract;
+	}
+
 	public static function getCount(){
 		SOY2::import("domain.cms.DataSets");
 		return DataSets::get(self::DATA_SET_KEY.".count", self::COUNT_OF_CHARS);

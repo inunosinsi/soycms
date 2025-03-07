@@ -183,7 +183,7 @@ class EntryListComponent extends HTMLList{
 
 	function getStartTag(){
 
-		if(defined("CMS_PREVIEW_MODE")){
+		if(defined("CMS_PREVIEW_MODE") && CMS_PREVIEW_MODE){
 			return parent::getStartTag() . CMSUtil::getEntryHiddenInputHTML('<?php echo $'.$this->_soy2_id.'["entry_id"]; ?>','<?php echo strip_tags($'.$this->_soy2_id.'["title"]); ?>');
 		}else{
 			return parent::getStartTag();

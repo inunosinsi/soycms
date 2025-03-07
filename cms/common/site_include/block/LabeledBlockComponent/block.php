@@ -18,6 +18,9 @@ class LabeledBlockComponent implements BlockComponent{
 	private $order = self::ORDER_DESC;//記事の並び順
 	private $isCallEventFunc = self::ON;	//公開側でHTMLの表示の際にカスタムフィールドの拡張ポイントを読み込むか？
 
+	// Deprecated: Creation of dynamic property LabeledBlockComponent::$blockId is deprecated in 〜対策
+	public $blockId;
+
 	/**
 	 * @return SOY2HTML
 	 * 設定画面用のHTMLPageComponent
@@ -98,14 +101,15 @@ class LabeledBlockComponent implements BlockComponent{
 		}
 
 		//エントリー管理者が変更できるかどうか
-		$editable = (defined("CMS_PREVIEW_MODE") && !UserInfoUtil::hasSiteAdminRole()) ? soycms_get_label_object((int)$this->labelId)->isEditableByNormalUser() : true;
+		SOY2::import("util.UserInfoUtil");
+		$editable = (defined("CMS_PREVIEW_MODE") && CMS_PREVIEW_MODE && !UserInfoUtil::hasSiteAdminRole()) ? soycms_get_label_object((int)$this->labelId)->isEditableByNormalUser() : true;
 
 		$articlePageUrl = "";
 		$categoryPageUrl = "";
 		if($this->isStickUrl){
 			$blogPage = soycms_get_blog_page_object((int)$this->blogPageId);	
 			if(is_numeric($blogPage->getId())){
-				if(defined("CMS_PREVIEW_MODE")){
+				if(defined("CMS_PREVIEW_MODE") && CMS_PREVIEW_MODE){
 					$articlePageUrl = SOY2PageController::createLink("Page.Preview") ."/". $blogPage->getId() . "?uri=". $blogPage->getEntryPageURL();
 				}else{
 					$articlePageUrl = $page->getSiteRootUrl() . $blogPage->getEntryPageURL();

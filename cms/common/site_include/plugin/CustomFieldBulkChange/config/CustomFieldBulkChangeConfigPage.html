@@ -1,0 +1,40 @@
+<form soy:id="form">
+	<div class="form-group">
+		<div class="form-inline">
+			フィールド名：<select soy:id="field" class="form-control"></select>&nbsp;
+			<input type="text" soy:id="change_value_field" class="form-control">
+		</div>
+		<div class="alert alert-warning">
+			@ToDo 記事、ペア、リストと定義型リストは未対応
+		</div>
+	</div>
+
+	<div class="form-group form-inline">
+		ラベルで絞り込み：<select soy:id="label" class="form-control"></select>
+		<input type="hidden" soy:id="first_label_id_hidden">
+		<input type="hidden" soy:id="site_id_hidden">
+	</div>
+	<div class="form-group form-inline">
+		カスタムフィールドの値の有無：<select class="form-control" id="customfield_value_mode">
+			<option value="0">すべて</option>
+			<option value="1">値のあるもの</option>
+			<option value="2">値のないもの</option>
+		</select>&nbsp;
+		記事の公開状態：<select class="form-control" id="entry_published_mode">
+			<option value="0">すべて</option>
+			<option value="1">公開</option>
+			<option value="2">非公開</option>
+		</select>&nbsp;
+		<input type="number" id="entry_limit" class="form-control" value="100" style="width:80px;">件
+	</div>
+
+	<div class="table-responsive" id="entry_list_table">
+		
+	</div>
+
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="更新">
+	</div>
+</form>
+
+<script soy:id="table_js_script"></script>

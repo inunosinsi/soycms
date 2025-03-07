@@ -21,10 +21,43 @@ var add_custom_icon_field = function(src){
 		image.attr("src",src);
 		var tempId = hiddenValue.substring(hiddenValue.lastIndexOf("/")+1).replace(".","_");
 		image.attr("id","custom_icon_field_hidden_" + tempId);
+		image.attr("onclick","remove_custom_icon_field('"+tempId+"')");
 		$("#custom_icon_field_current").append(image);
 	}
 	$("#custom_icon_field_hidden").val(values.join(","));
 };
+
+// tempIdの最後の_のみ.に変換したい
+var return_filename = function(tempId){
+	var arr = tempId.split("_");
+	// 拡張子の前の.が_に変換されているので、lastは必ず1以上
+	var last = arr.length;
+	if(last <= 0) return "";
+	
+	var ext = arr.slice(-1)[0];
+	arr = arr.slice(0, last-1);
+	return arr.join("_")+"."+ext;
+}
+
+var remove_custom_icon_field = function(tempId){
+	if($("#custom_icon_field_hidden_" + tempId)){
+		$("#custom_icon_field_hidden_" + tempId).remove();
+	}
+
+	var filename = return_filename(tempId);
+	var regexp = new RegExp('/'+filename+'$');
+
+	var values = $("#custom_icon_field_hidden").val().split(",");
+	//データの整理
+	var tmps = [];
+	for(var i = 0; i < values.length; i++){
+		var v = values[i].trim();
+		if(v.length === 0 || v.match(regexp)) continue;
+		
+		tmps.push(v);
+	}
+	$("#custom_icon_field_hidden").val(tmps.join(","));
+}
 
 if(iconfield_labels.length > 0){
 	$('input[id^="label_"]').each(function(){

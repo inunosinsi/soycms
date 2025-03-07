@@ -12,6 +12,8 @@ class CalendarPlugin{
 	const PLUGIN_ID = "calendar";
 	var $format = "Y年m月";
 
+	var $_page_arguments;
+
 	function setCms_format($format){
 		$this->format = $format;
 	}
@@ -28,7 +30,7 @@ class CalendarPlugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.6"
+			"version"=>"1.6.1"
 		));
 
 		if(CMSPlugin::activeCheck($this->getId())){

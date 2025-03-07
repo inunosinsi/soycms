@@ -4,6 +4,9 @@ class HeaderPage extends CMSWebPageBase{
 
 	var $title = "";
 
+	var $messages;
+	var $errorMessages;
+
 	function __construct(){
 		parent::__construct();
 

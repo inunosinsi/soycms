@@ -20,7 +20,16 @@ class CMSPage extends WebPage{
 	const SOYCMS_COMMENT_PHRASE = "cms:ignore";
 
 	function __construct($args){
-		$id = $args[0];
+		$id = (isset($args[0]) && is_numeric($args[0])) ? (int)$args[0] : 0;
+		if($id <= 0){
+			if(defined("CMS_PREVIEW_MODE") && CMS_PREVIEW_MODE && isset($_GET["uri"])){
+				// $_GET["uri"]からpage_idを取得
+				$blogUri = substr($_GET["uri"], 0, strpos($_GET["uri"], "/"));
+				$_tmp = (int)soycms_get_hash_table_dao("blog_page")->getByUri($blogUri)->getId();
+				if($_tmp > 0) $id = $_tmp;
+			}
+		}	
+		
 		$this->arguments = $args[1];
 		$this->siteConfig = $args[2];
 
@@ -76,7 +85,7 @@ class CMSPage extends WebPage{
 
 		$pageFormat = $this->page->getPageTitleFormat();
 		if(strlen($pageFormat) == 0) $pageFormat = '%PAGE%'; //空っぽだったらデフォルト追加
-			
+		
 		$pageFormat = preg_replace('/%SITE%/',$this->siteConfig->getName(),$pageFormat);
 		$pageFormat = preg_replace('/%PAGE%/',$this->page->getTitle(),$pageFormat);
 		$onLoads = CMSPlugin::getEvent('onPageTitleFormat');
@@ -304,7 +313,7 @@ class CMSPage extends WebPage{
 	/**
 	 * テンプレートを読み込む前に、置換のためのプラグインを実行します
 	 */
-	function onLoadPageTemplate($html){
+	function onLoadPageTemplate(string $html){
 		$onLoad = CMSPlugin::getEvent('onLoadPageTemplate');
 		foreach($onLoad as $plugin){
 			$func = $plugin[0];

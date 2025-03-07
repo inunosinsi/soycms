@@ -52,7 +52,7 @@ class BlockEntryListComponent extends HTMLList{
 
 	public function getStartTag(){
 
-		if(defined("CMS_PREVIEW_MODE") && $this->editable){
+		if(defined("CMS_PREVIEW_MODE") && CMS_PREVIEW_MODE && $this->editable){
 			return parent::getStartTag() . CMSUtil::getEntryHiddenInputHTML('<?php echo $'.$this->getId().'["entry_id"]; ?>','<?php echo strip_tags($'.$this->getId().'["title"]); ?>');
 		}else{
 			return parent::getStartTag();
@@ -61,7 +61,7 @@ class BlockEntryListComponent extends HTMLList{
 
 	public function getEndTag(){
 
-		if(defined("CMS_PREVIEW_MODE") && $this->editable){
+		if(defined("CMS_PREVIEW_MODE") && CMS_PREVIEW_MODE && $this->editable){
 			return parent::getEndTag().'<?php echo "<button type=\"button\" class=\"cms_hidden_entry_id\" blocklabelid=\"'.$this->labelId.'\" style=\"display:none;\">ここに記事を追加する</button>"; ?>';
 		}else{
 			return parent::getEndTag();

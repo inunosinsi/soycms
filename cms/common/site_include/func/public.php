@@ -18,13 +18,20 @@ function soycms_get_entry_id_by_entries(array $entries){
  * @return string
  */
 function soycms_get_site_id_by_frontcontroller(){
-	$xamppRoot = str_replace("\\", "/", _SITE_ROOT_);
-	if(_SITE_ROOT_ != $xamppRoot){	// xampp
+	// 管理画面側でも動作する為の処理
+	if(!defined("_SITE_ROOT_") && class_exists("UserInfoUtil")){
+		$siteRoot = UserInfoUtil::getSite()->getPath();
+	}else{
+		$siteRoot = _SITE_ROOT_;
+	}
+
+	$xamppRoot = str_replace("\\", "/", $siteRoot);
+	if($siteRoot != $xamppRoot){	// xampp
 		return ltrim(str_replace($_SERVER["DOCUMENT_ROOT"], "", $xamppRoot), "/");
 	}else{
-		$siteId = ltrim(str_replace($_SERVER["DOCUMENT_ROOT"], "", _SITE_ROOT_), "/");
+		$siteId = ltrim(str_replace($_SERVER["DOCUMENT_ROOT"], "", $siteRoot), "/");
 		if(!strlen($siteId) || $siteId == "//"){
-			$siteRoot = rtrim(_SITE_ROOT_, "/");
+			$siteRoot = rtrim($siteRoot, "/");
 			$siteId = trim(trim(substr($siteRoot, strrpos($siteRoot, "/"))), "/");
 		}
 		return $siteId;

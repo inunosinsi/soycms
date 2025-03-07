@@ -26,6 +26,14 @@ class BlogPageDAO{
 		}
 		return $this->cast($obj);
 	}
+	
+	function getByUri(string $uri){
+		$obj = self::_dao()->getByUri($uri);
+		if($obj->getPageType() != Page::PAGE_TYPE_BLOG){
+			throw new Exception("This Page is not Blog Page.");
+		}
+		return $this->cast($obj);
+	}
 
 	function cast($page){
 		$blogPage = SOY2::cast("BlogPage",$page);
@@ -94,6 +102,46 @@ class BlogPageDAO{
 
 	function update(BlogPage $page){
 		self::_dao()->update($page);
+	}
+
+	/**
+	 * @final
+	 * @return array(page_id => array("title" => "", "uri" => "")...)
+	 */
+	function getBlogPageList(){
+		$dao = self::_dao();
+		try{
+			$res = $dao->executeQuery("SELECT id, title, uri FROM Page WHERE page_type = " . Page::PAGE_TYPE_BLOG);
+		}catch(Exception $e){
+			$res = array();
+		}
+		if(!count($res)) return array();
+		
+		$list = array();
+		foreach($res as $v){
+			$list[(int)$v["id"]] = array("title" => $v["title"], "uri" => $v["uri"]);
+		}
+		return $list;
+	}
+
+	/**
+	 * @final
+	 * @return array(page_id => uri...)
+	 */
+	function getBlogPageUriList(){
+		$dao = self::_dao();
+		try{
+			$res = $dao->executeQuery("SELECT id, uri FROM Page WHERE page_type = " . Page::PAGE_TYPE_BLOG);
+		}catch(Exception $e){
+			$res = array();
+		}
+		if(!count($res)) return array();
+		
+		$list = array();
+		foreach($res as $v){
+			$list[(int)$v["id"]] = $v["uri"];
+		}
+		return $list;
 	}
 
 	/**

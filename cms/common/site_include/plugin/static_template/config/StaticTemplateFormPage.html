@@ -1,0 +1,35 @@
+<div class="alert alert-info">
+	<!-- soy:id="template_dir" /-->&nbsp;以下にテンプレート用のHTMLファイルを設置します。<br>
+	<strong>例</strong><br>
+	<ul>
+		<li>top.html</li>
+		<li>top.ini
+<pre style="width:200px;">name="トップページ用"
+type="normal"</pre>
+		※ typeにはnormal:標準ページ用、blog:ブログページ用の指定を行う
+		</li>
+	</ul>
+</div>
+
+<!-- soy:display="files" -->
+<div class="table-responsive">
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>ファイル名</th>
+			<th>タイプ</th>
+			<th>ファイルパス</th>
+		</tr>
+	</thead>
+	<tbody>
+		<!-- soy:id="file_list" -->
+		<tr>
+			<td soy:id="name"></td>
+			<td soy:id="type"></td>
+			<td soy:id="filepath"></td>
+		</tr>
+		<!-- /soy:id="file_list" -->
+	</tbody>
+</table>
+</div>
+<!-- /soy:display="files" -->

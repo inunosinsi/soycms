@@ -19,6 +19,7 @@ _This library is not developed or endorsed by Google._
 - [Installation](#installation)
 - [How to use](#how-to-use)
   - [Basic text generation](#basic-text-generation)
+  - [Text generation with system instruction](#text-generation-with-system-instruction)
   - [Multimodal input](#multimodal-input)
   - [Chat Session (Multi-Turn Conversations)](#chat-session-multi-turn-conversations)
   - [Chat Session with history](#chat-session-with-history)
@@ -27,6 +28,7 @@ _This library is not developed or endorsed by Google._
   - [Tokens counting](#tokens-counting)
   - [Listing models](#listing-models)
   - [Advanced Usages](#advanced-usages)
+    - [Using Beta version](#using-beta-version)
     - [Safety Settings and Generation Configuration](#safety-settings-and-generation-configuration)
     - [Using your own HTTP client](#using-your-own-http-client)
     - [Using your own HTTP client for streaming responses](#using-your-own-http-client-for-streaming-responses)
@@ -52,16 +54,38 @@ you need to allow `php-http/discovery` composer plugin or install a PSR-18 compa
 
 ```php
 use GeminiAPI\Client;
+use GeminiAPI\Resources\ModelName;
 use GeminiAPI\Resources\Parts\TextPart;
 
 $client = new Client('GEMINI_API_KEY');
-$response = $client->geminiPro()->generateContent(
+$response = $client->generativeModel(ModelName::GEMINI_PRO)->generateContent(
     new TextPart('PHP in less than 100 chars'),
 );
 
 print $response->text();
 // PHP: A server-side scripting language used to create dynamic web applications.
 // Easy to learn, widely used, and open-source.
+```
+
+### Text generation with system instruction
+
+> System instruction is currently supported only in beta version
+
+```php
+use GeminiAPI\Client;
+use GeminiAPI\Resources\ModelName;
+use GeminiAPI\Resources\Parts\TextPart;
+
+$client = new Client('GEMINI_API_KEY');
+$response = $client->withV1BetaVersion()
+    ->generativeModel(ModelName::GEMINI_1_5_FLASH)
+    ->withSystemInstruction('You are a cat. Your name is Neko.')
+    ->generateContent(
+        new TextPart('PHP in less than 100 chars'),
+    );
+
+print $response->text();
+// Meow?  <?php echo 'Hello, world!'; ?>  Purrfectly concise, wouldn't you say?  *Stretches luxuriously*
 ```
 
 ### Multimodal input
@@ -71,11 +95,12 @@ print $response->text();
 ```php
 use GeminiAPI\Client;
 use GeminiAPI\Enums\MimeType;
+use GeminiAPI\Resources\ModelName;
 use GeminiAPI\Resources\Parts\ImagePart;
 use GeminiAPI\Resources\Parts\TextPart;
 
 $client = new Client('GEMINI_API_KEY');
-$response = $client->geminiProVision()->generateContent(
+$response = $client->generativeModel(ModelName::GEMINI_PRO)->generateContent(
     new TextPart('Explain what is in the image'),
     new ImagePart(
         MimeType::IMAGE_JPEG,
@@ -94,10 +119,11 @@ print $response->text();
 
 ```php
 use GeminiAPI\Client;
+use GeminiAPI\Resources\ModelName;
 use GeminiAPI\Resources\Parts\TextPart;
 
 $client = new Client('GEMINI_API_KEY');
-$chat = $client->geminiPro()->startChat();
+$chat = $client->generativeModel(ModelName::GEMINI_PRO)->startChat();
 
 $response = $chat->sendMessage(new TextPart('Hello World in PHP'));
 print $response->text();
@@ -132,6 +158,7 @@ This code will print "Hello World!" to the standard output.
 use GeminiAPI\Client;
 use GeminiAPI\Enums\Role;
 use GeminiAPI\Resources\Content;
+use GeminiAPI\Resources\ModelName;
 use GeminiAPI\Resources\Parts\TextPart;
 
 $history = [
@@ -149,7 +176,7 @@ $history = [
 ];
 
 $client = new Client('GEMINI_API_KEY');
-$chat = $client->geminiPro()
+$chat = $client->generativeModel(ModelName::GEMINI_PRO)
     ->startChat()
     ->withHistory($history);
 
@@ -179,6 +206,7 @@ Long responses may be broken into separate responses, and you can start receivin
 
 ```php
 use GeminiAPI\Client;
+use GeminiAPI\Resources\ModelName;
 use GeminiAPI\Resources\Parts\TextPart;
 use GeminiAPI\Responses\GenerateContentResponse;
 
@@ -191,7 +219,7 @@ $callback = function (GenerateContentResponse $response): void {
 };
 
 $client = new Client('GEMINI_API_KEY');
-$client->geminiPro()->generateContentStream(
+$client->generativeModel(ModelName::GEMINI_PRO)->generateContentStream(
     $callback,
     [new TextPart('PHP in less than 100 chars')],
 );
@@ -209,6 +237,7 @@ $client->geminiPro()->generateContentStream(
 use GeminiAPI\Client;
 use GeminiAPI\Enums\Role;
 use GeminiAPI\Resources\Content;
+use GeminiAPI\Resources\ModelName;
 use GeminiAPI\Resources\Parts\TextPart;
 use GeminiAPI\Responses\GenerateContentResponse;
 
@@ -235,7 +264,7 @@ $callback = function (GenerateContentResponse $response): void {
 };
 
 $client = new Client('GEMINI_API_KEY');
-$chat = $client->geminiPro()
+$chat = $client->generativeModel(ModelName::GEMINI_PRO)
     ->startChat()
     ->withHistory($history);
 
@@ -261,11 +290,11 @@ This code will print "Hello World!" to the standard output.
 
 ```php
 use GeminiAPI\Client;
-use GeminiAPI\Enums\ModelName;
+use GeminiAPI\Resources\ModelName;
 use GeminiAPI\Resources\Parts\TextPart;
 
 $client = new Client('GEMINI_API_KEY');
-$response = $client->embeddingModel(ModelName::Embedding)
+$response = $client->embeddingModel(ModelName::EMBEDDING_001)
     ->embedContent(
         new TextPart('PHP in less than 100 chars'),
     );
@@ -282,10 +311,11 @@ print_r($response->embedding->values);
 
 ```php
 use GeminiAPI\Client;
+use GeminiAPI\Resources\ModelName;
 use GeminiAPI\Resources\Parts\TextPart;
 
 $client = new Client('GEMINI_API_KEY');
-$response = $client->geminiPro()->countTokens(
+$response = $client->generativeModel(ModelName::GEMINI_PRO)->countTokens(
     new TextPart('PHP in less than 100 chars'),
 );
 
@@ -322,6 +352,23 @@ print_r($response->models);
 
 ### Advanced Usages
 
+#### Using Beta version
+
+```php
+use GeminiAPI\Client;
+use GeminiAPI\Resources\ModelName;
+use GeminiAPI\Resources\Parts\TextPart;
+
+$client = (new Client('GEMINI_API_KEY'))
+    ->withV1BetaVersion();
+$response = $client->generativeModel(ModelName::GEMINI_PRO)->countTokens(
+    new TextPart('PHP in less than 100 chars'),
+);
+
+print $response->totalTokens;
+// 10
+```
+
 #### Safety Settings and Generation Configuration
 
 ```php
@@ -329,6 +376,7 @@ use GeminiAPI\Client;
 use GeminiAPI\Enums\HarmCategory;
 use GeminiAPI\Enums\HarmBlockThreshold;
 use GeminiAPI\GenerationConfig;
+use GeminiAPI\Resources\ModelName;
 use GeminiAPI\Resources\Parts\TextPart;
 use GeminiAPI\SafetySetting;
 
@@ -345,7 +393,7 @@ $generationConfig = (new GenerationConfig())
     ->withStopSequences(['STOP']);
 
 $client = new Client('GEMINI_API_KEY');
-$response = $client->geminiPro()
+$response = $client->generativeModel(ModelName::GEMINI_PRO)
     ->withAddedSafetySetting($safetySetting)
     ->withGenerationConfig($generationConfig)
     ->generateContent(
@@ -357,6 +405,7 @@ $response = $client->geminiPro()
 
 ```php
 use GeminiAPI\Client as GeminiClient;
+use GeminiAPI\Resources\ModelName;
 use GeminiAPI\Resources\Parts\TextPart;
 use GuzzleHttp\Client as GuzzleClient;
 
@@ -365,7 +414,7 @@ $guzzle = new GuzzleClient([
 ]);
 
 $client = new GeminiClient('GEMINI_API_KEY', $guzzle);
-$response = $client->geminiPro()->generateContent(
+$response = $client->generativeModel(ModelName::GEMINI_PRO)->generateContent(
     new TextPart('PHP in less than 100 chars')
 );
 ```
@@ -388,6 +437,7 @@ You can also pass the headers you want to be used in the requests.
 
 ```php
 use GeminiAPI\Client;
+use GeminiAPI\Resources\ModelName;
 use GeminiAPI\Resources\Parts\TextPart;
 use GeminiAPI\Responses\GenerateContentResponse;
 
@@ -402,7 +452,7 @@ $client = new Client('GEMINI_API_KEY');
 $client->withRequestHeaders([
         'User-Agent' => 'My Gemini-backed app'
     ])
-    ->geminiPro()
+    ->generativeModel(ModelName::GEMINI_PRO)
     ->generateContentStream(
         $callback,
         [new TextPart('PHP in less than 100 chars')],

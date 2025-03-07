@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * https://github.com/inunosinsi/SOY2
+ */
 class SOY2{
 	private $_rootDir = "webapp/";
 	/**
@@ -165,7 +167,6 @@ class SOY2{
 		}
 	}
 }
-
 /**
  * @package SOY2.controller
  */
@@ -185,7 +186,6 @@ interface SOY2_PathBuilder{
 	function getPath();
 	function getArguments();
 }
-
 /**
  * @package SOY2.controller
  *
@@ -216,7 +216,6 @@ class SOY2ActionController implements SOY2_Controller{
 	private $path;
 	private $arguments = array();
 }
-
 /**
  * @package SOY2.controller
  */
@@ -480,16 +479,14 @@ class SOY2_DefaultClassPathBuilder implements SOY2_ClassPathBuilder{
 		return $path;
 	}
 }
-
 /**
  * @package SOY2.SOY2Action
  */
 class SOY2Action extends SOY2ActionBase{
 	const SUCCESS = "_success_";
 	const FAILED = "_failed_";
-
 	private $_result;
-
+	
 	/**
 	 * Action実行前準備
 	 */
@@ -670,13 +667,13 @@ class SOY2ActionResult{
 		return (isset($this->_errorMessage[$key])) ? $this->_errorMessage[$key] : null;
 	}
 	function setAttribute($key,$obj){
-		$this->attributes[$key] = $obj;
+		$this->_attributes[$key] = $obj;
 	}
 	function getAttribute($key){
 		if(is_null($key)){
-			return $this->attributes;
+			return $this->_attributes;
 		}
-		return (isset($this->attributes[$key])) ? $this->attributes[$key] : null;
+		return (isset($this->_attributes[$key])) ? $this->_attributes[$key] : null;
 	}
 	/**
 	 * booleanを返します。
@@ -812,7 +809,6 @@ class SOY2ActionFactory extends SOY2ActionBase{
 		file_put_contents($fullPath,"<?php \n".implode("\n",$docComment) ."\n". implode("\n",$class)."\n?>");
 	}
 }
-
 /**
  * @package SOY2.SOY2Action
  *
@@ -860,7 +856,6 @@ abstract class SOY2ActionFormValidator{
 	}
 	abstract function validate(SOY2ActionForm &$form,$propName,$value,$isRequire);
 }
-
 /**
  * @package SOY2.SOY2Action
  */
@@ -910,7 +905,6 @@ class SOY2ActionRequest{
 		}
 	}
 }
-
 /**
  * @package SOY2.SOY2Action
  */
@@ -944,7 +938,6 @@ class SOY2ActionResponse{
 		$this->_header[$key] = $value;
 	}
 }
-
 /**
  * @package SOY2.SOY2Action
  */
@@ -955,7 +948,7 @@ class SOY2ActionSession {
      * @return SOY2UserSession
      */
     public static function &getUserSession(){
-		if(session_status() == PHP_SESSION_NONE) session_start();
+    	if(session_status() == PHP_SESSION_NONE) session_start();
     	if(!isset($_SESSION[self::session_user_key])){
     		$_SESSION[self::session_user_key] = new SOY2UserSession();
     	}
@@ -1077,7 +1070,6 @@ class SOY2FlashSession extends SOY2ActionSessionBase{
     	}
 	}
 }
-
 /**
  * @package SOY2.SOY2Action
  */
@@ -1138,7 +1130,6 @@ class SOY2ActionFormValidator_StringValidator extends SOY2ActionFormValidator{
 		return $value;
 	}
 }
-
 /**
  * @package SOY2.SOY2Action
  */
@@ -1280,7 +1271,6 @@ class ActionFormError{
 		return $this->format();
 	}
 }
-
 /**
  * @package SOY2.SOY2Action
  */
@@ -2010,7 +2000,6 @@ class SOY2DAOException extends Exception{
 		$this->query = $query;
 	}
 }
-
 /**
  * 保存・削除などを自動化するメソッドを自動で追加
  */
@@ -2086,7 +2075,6 @@ class SOY2DAO_EntityBase {
     	$this->_dao = null;
     }
 }
-
 /**
  * SOY2DAO Entity Class
  *
@@ -2146,7 +2134,6 @@ class SOY2DAO_Entity{
 		}
 	}
 }
-
 /**
  * SOY2DAO_InsertQueryBuilder
  * insert文のQueryオブジェクトを作る
@@ -2197,7 +2184,6 @@ class SOY2DAO_InsertQueryBuilder extends SOY2DAO_QueryBuilder{
 		return $query;
 	}
 }
-
 /**
  * SOY2DAO_UpdateQueryBuiler
  * Update文のQueryオブジェクトを作る
@@ -2240,7 +2226,6 @@ class SOY2DAO_UpdateQueryBuilder extends SOY2DAO_QueryBuilder{
 		return $query;
 	}
 }
-
 /**
  * SOY2DAO_DeleteQueryBuilder
  * delete文のQueryオブジェクトを作る
@@ -2279,7 +2264,6 @@ class SOY2DAO_DeleteQueryBuilder extends SOY2DAO_QueryBuilder{
 		return $query;
 	}
 }
-
 /**
  * SOY2DAO_Query
  *
@@ -2509,7 +2493,6 @@ class SOY2DAO_Query{
 		$this->binds = $binds;
 	}
 }
-
 /**
  * @package SOY2.SOY2DAO
  */
@@ -2539,7 +2522,6 @@ class SOY2DAOContainer{
 		return $dao;
     }
 }
-
 /**
  * SOY2DAOFactory
  * クラス名からDAOImplを生成する
@@ -2773,10 +2755,10 @@ class SOY2DAOFactoryImpl extends SOY2DAOFactory {
 			$str .= '$'.$param->getName();
 			if($param->isDefaultValueAvailable()){
 				$defValue = $param->getDefaultValue();
-				if(is_null($defValue)){
+				if(is_null($defValue) || is_array($defValue)){
 					$defValue = 'null';
 				}else if(!is_numeric($defValue)){
-					$defValue = '"'.$defValue.'"';
+					$defValue = '"'.(string)$defValue.'"';
 				}
 				$str .= " = " . $defValue;
 			}
@@ -3023,7 +3005,6 @@ class SOY2DAOFactoryImpl extends SOY2DAOFactory {
 		return $entityInfo;
 	}
 }
-
 /**
  * SOY2DAO_EntityColumn
  *
@@ -3075,7 +3056,6 @@ class SOY2DAO_EntityColumn{
 		$this->sequence = $sequence;
 	}
 }
-
 /**
  * SOY2DAO_QueryBuilder
  *
@@ -3113,7 +3093,6 @@ class SOY2DAO_QueryBuilder{
 		return new SOY2DAO_Query();
 	}
 }
-
 /**
  * SOY2DAO_SelectQueryBuilder
  * Select文のQueryオブジェクトを作る
@@ -3150,7 +3129,51 @@ class SOY2DAO_SelectQueryBuilder extends SOY2DAO_QueryBuilder{
 		return $query;
 	}
 }
-
+/**
+ * @package SOY2.SOY2Debug
+ */
+class SOY2Debug {
+	/**
+	 * デバッグWindowに文字を出力
+	 */
+	public static function trace(){
+		$args = func_get_args();
+		$socket = @fsockopen(self::host(),self::port(), $errno, $errstr,1);
+		if(!$socket){
+			return;
+		}
+		foreach($args as $var){
+			fwrite($socket,var_export($var,true));
+		}
+		fclose($socket);
+	}
+	/**
+	 * SOY2Debugのポートを設定。ディフォルトは9999
+	 */
+	public static function port($port = null){
+		static $_port;
+		if(is_null($_port)){
+			$_port = 9999;
+		}
+		if($port){
+			$_port = (int)$port;
+		}
+		return $_port;
+	}
+	/**
+	 * SOY2Debugのホストを設定。ディフォルトはlocalhost
+	 */
+	public static function host($host = null){
+		static $_host;
+		if(is_null($_host)){
+			$_host = "127.0.0.1";
+		}
+		if($host){
+			$_host = $host;
+		}
+		return $_host;
+	}
+}
 /**
  * SOY2HTMLの基底クラス
  * @package SOY2.SOY2HTML
@@ -3192,7 +3215,6 @@ class SOY2HTMLBase{
 		}
 		return eval($variant.$code.";");
 	}
-
 	/**
 	 * 関数を追加登録します
 	 *
@@ -4018,7 +4040,6 @@ class SOY2HTMLFactory extends SOY2HTMLBase{
 				$class->setAttribute($key, (string)$value);
 			}
 		}
-
 		return $class;
 	}
 	/**
@@ -4205,7 +4226,6 @@ class SOY2HTMLFactory extends SOY2HTMLBase{
  * SOY2HTMLが出力するSOY2HTMLException
  */
 class SOY2HTMLException extends Exception{}
-
 /**
  * @package SOY2.SOY2HTML
  */
@@ -4218,13 +4238,13 @@ class HTMLLabel extends SOY2HTML{
 	private $isHtml = false;
 	private $suffix = "...";
 	function setText($text){
-		$this->text = (!is_array($text) && !is_object($text)) ? (string)$text : "";
+		$this->text = (!is_array($text)) ? (string)$text : "";
 	}
 	function getText(){
 		return (string)$this->text;
 	}
 	function setHtml($html){
-		$this->text = (!is_array($html) && !is_object($html)) ? (string)$html : "";
+		$this->text = (!is_array($html)) ? (string)$html : "";
 		$this->isHtml = true;
 	}
 	function getObject(){
@@ -4275,7 +4295,6 @@ class HTMLLabel extends SOY2HTML{
 		$this->suffix = $suffix;
 	}
 }
-
 function soy2html_layout_include(string $file){
 	$layoutDir = SOY2HTMLConfig::LayoutDir();
 	@include($layoutDir . $file);
@@ -4292,7 +4311,6 @@ function soy2html_layout_get(string $file){
 		throw $e;
 	}
 }
-
 /**
  * @package SOY2.SOY2HTML
  */
@@ -4323,7 +4341,6 @@ class HTMLLink extends HTMLLabel{
 		}
 		$suffix = $this->getAttribute($this->_soy2_prefix . ":suffix");
 		if($suffix) $this->link .= $suffix;
-
 		$this->setAttribute("href",(string)$this->link);
 		if(is_string($this->target) && strlen($this->target)){
 			$this->setAttribute("target",$this->target);
@@ -4359,7 +4376,6 @@ class HTMLActionLink extends HTMLLink{
 		$this->setAttribute("href",$link);
 	}
 }
-
 /**
  * @package SOY2.SOY2HTML
  * HTMLHeadコンポーネント
@@ -4506,7 +4522,6 @@ class HTMLHead extends SOY2HTML{
 		return ((!empty($linkArray)) ? "\n" : "") . implode("\n",$linkArray);
     }
 }
-
 /**
  * 各ページの設定をするクラスの基底となるクラス
  *
@@ -4518,13 +4533,11 @@ class HTMLPage extends SOYBodyComponentBase{
 	protected $_soy2_page;
 	private $_soy2_body_element;
 	private $_soy2_head_element;
-
 	/**
 	 * キャッシュファイルの生成に失敗しているか判定する為の文字数
 	 * キャッシュファイルの生成に失敗すると白紙ページになってしまい、一定期間キャッシュが残ってしまう
 	 */
 	const CACHE_CONTENTS_LENGTH_MIN = 81;
-
 	function __construct(){
 		$this->prepare();
 	}
@@ -4738,7 +4751,6 @@ class HTMLPage extends SOYBodyComponentBase{
 		}else{
 			$html = "";
 		}
-
 		$layoutDir = SOY2HTMLConfig::LayoutDir();
 		$layout = $this->getLayout();
 		if($layoutDir && is_file($layoutDir . $layout)){
@@ -4809,7 +4821,6 @@ class HTMLPage extends SOYBodyComponentBase{
 		if(file_exists($hidden_mode_html)){
 			return $hidden_mode_html;
 		}
-
 		return $dir . get_class($this) . ".html";
 	}
 	/**
@@ -5180,7 +5191,6 @@ class HTMLPage_HeadElement extends HTMLPage_ChildElement{
 		return $html;
 	}
 }
-
 /**
  * ページャーコンポーネント
  */
@@ -5371,7 +5381,6 @@ class SOY2HTMLPager_List extends HTMLList{
 		$this->current = $cuttent;
 	}
 }
-
 /**
  * @package SOY2.SOY2HTML
  */
@@ -5400,7 +5409,6 @@ class WebPage extends HTMLPage{
 		return "default.php";
 	}
 }
-
 /**
  * @package SOY2.SOY2HTML
  */
@@ -5461,7 +5469,6 @@ class SOYBodyComponentBase extends SOY2HTML{
 	function isMerge(){
 		return true;
 	}
-
 	/** PHP7.4対応 __call()の廃止 **/
 	function addForm(string $id, array $array=array()){self::createAdd($id, "HTMLForm", $array);}
 	function addUploadForm(string $id, array $array=array()){self::createAdd($id, "HTMLUploadForm", $array);}
@@ -5606,7 +5613,6 @@ class HTMLModel extends SOY2HTML{
 		return "";
 	}
 }
-
 /**
  * @package SOY2.SOY2HTML
  */
@@ -5624,7 +5630,6 @@ class HTMLCSSLink extends SOY2HTML{
 		return $this->link;
 	}
 }
-
 /**
  * @package SOY2.SOY2HTML
  */
@@ -5654,7 +5659,6 @@ class HTMLScript extends SOY2HTML{
     	}
     }
 }
-
 /**
  * @package SOY2.SOY2HTML
  */
@@ -5775,7 +5779,6 @@ class HTMLList_LoopModel extends HTMLModel{
 		return $this->counter;
 	}
 }
-
 /**
  * @package SOY2.SOY2HTML
  */
@@ -5831,9 +5834,7 @@ class HTMLForm extends SOYBodyComponentBase{
  * @package SOY2.SOY2HTML
  */
 class HTMLUploadForm extends HTMLForm{
-
 	private $accept;
-
 	function execute(){
 		parent::execute();
 		$this->setAttribute("enctype","multipart/form-data");
@@ -6186,7 +6187,6 @@ class HTMLCheckBox extends HTMLInput {
 		return (boolean)$this->isBoolean;
 	}
 }
-
 /**
  * @package SOY2.SOY2HTML
  */
@@ -6209,7 +6209,6 @@ class HTMLImage extends SOY2HTML{
     	$this->setAttribute("alt", (string)$alt);
     }
 }
-
 class HTMLTreeComponent_Child extends HTMLModel{
 	private $func = "";
 	function getStartTag(){
@@ -6369,7 +6368,6 @@ class HTMLCSS extends SOY2HTML{
 		return $this->text;//htmlspecialchars((string)$this->text,ENT_QUOTES,SOY2HTML::ENCODING)
 	}
 }
-
 /**
  * @package SOY2.SOY2HTML
  */
@@ -6635,7 +6633,6 @@ class SOY2HTML_ControllPlugin extends PluginBase{
 		return  parent::getEndTag() . "<?php } ?>";
 	}
 }
-
 /**
  * @package SOY2.SOY2Logic
  */
@@ -6720,7 +6717,6 @@ class SOY2LogicContainer {
 		return $obj;
     }
 }
-
 class SOY2Mail {
 	/**
 	 *
@@ -7101,7 +7097,6 @@ interface SOY2Mail_ReceiverInterface{
 	function close();
 }
 class SOY2MailException extends Exception{}
-
 /**
  * SOY2Mail 標準サーバ設定クラス
  *
@@ -7325,7 +7320,6 @@ class SOY2Mail_ServerConfig {
     	$this->encoding = $encoding;
     }
 }
-
 class SOY2Mail_POPLogic extends SOY2Mail implements SOY2Mail_ReceiverInterface{
 	private $con;
 	private $host;
@@ -7501,7 +7495,6 @@ class SOY2Mail_POPLogic extends SOY2Mail implements SOY2Mail_ReceiverInterface{
 		return $headers;
 	}
 }
-
 class SOY2Mail_IMAPLogic extends SOY2Mail implements SOY2Mail_ReceiverInterface{
 	private $con;
 	private $host;
@@ -7697,7 +7690,6 @@ class SOY2Mail_IMAPLogic extends SOY2Mail implements SOY2Mail_ReceiverInterface{
 		$this->pass = $pass;
 	}
 }
-
 class SOY2Mail_SendMailLogic extends SOY2Mail implements SOY2Mail_SenderInterface{
     function __construct(array $options) {}
     function open(){}
@@ -7829,7 +7821,6 @@ class SOY2Mail_SendMailLogic extends SOY2Mail implements SOY2Mail_SenderInterfac
 		}
     }
 }
-
 class SOY2Mail_SMTPLogic extends SOY2Mail implements SOY2Mail_SenderInterface{
 	private $con;
 	private $host;
@@ -8241,7 +8232,6 @@ class SOY2Mail_SMTPAuth_DigestMD5{
 		return $resonseStr;
 	}
 }
-
 /**
  * @package SOY2.SOY2Plugin
  */
@@ -8404,7 +8394,6 @@ class SOY2Plugin{
 		$this->objects = $objects;
 	}
 }
-
 class SOY2Session{
 	const _KEY_ = "_soy2_session_";
 	private static $_deleted_class = null;
@@ -8525,7 +8514,6 @@ class SOY2SessionValue{
 		$this->classObject = SOY2::cast($this->className,(object)$obj);
 	}
 }
-
 /**
  * serializeしたあとにaddslashesを行う
  *
@@ -8542,7 +8530,6 @@ function soy2_serialize($var){
 function soy2_unserialize(string $string){
 	return (strlen($string)) ? unserialize(stripslashes($string)) : array();
 }
-
 /**
  * soy2_scanfiles
  * 特定のディレクトリの下にあるファイルを全て列挙
@@ -8561,7 +8548,6 @@ function soy2_scanfiles(string $dir, int $depth=-1){
 	}
 	return $res;
 }
-
 /**
  * realpath 末尾が必ず「/」で返値
  */
@@ -8582,7 +8568,6 @@ function soy2_realurl(string $url){
 	if(preg_match('/\.html$|\.htm$|\.xml$|\.css$|\.js$|\.json$|\.php$/i', $arg)) return $url;
 	return $url . "/";
 }
-
 /**
  * include file(replace require(*))
  * @param path
@@ -8594,7 +8579,6 @@ function soy2_require(string $file, bool $isThrowException=false){
 	if($isThrowException && !$res)throw new Exception("File Not Found:" . $file);
 	return $res;
 }
-
 /**
  * 「.」から始まるディレクトリを取り除いたscandir
  *
@@ -8616,13 +8600,11 @@ function soy2_setcookie(string $key, string $value="", array $opts=array()){
 	if(!count($opts)) $opts = session_get_cookie_params();	//optsが空の場合はセッションの設定を用いる
 	if(!strlen($value))	$opts["expires"] = time()-1;	//valueが空文字の場合はクッキーを削除する
 	if(isset($opts["lifetime"])) unset($opts["lifetime"]);	//lifetimeがある場合は削除
-
 	if(!isset($opts["path"]) || !is_string($opts["path"]) || !strlen($opts["path"])) $opts["path"] = "/";
 	if(!isset($opts["domain"]) || !is_string($opts["domain"]) || !strlen($opts["domain"])) $opts["domain"] = null;
 	if(!isset($opts["expires"]) || !is_numeric($opts["expires"])) $opts["expires"] = 0;
 	if(!isset($opts["httponly"]) || !is_bool($opts["httponly"])) $opts["httponly"] = true;
 	if(!isset($opts["secure"]) || !is_bool($opts["secure"])) $opts["secure"] = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on");
-
 	$vArr = explode(".", phpversion());
 	if(($vArr[0] >= 8 || ($vArr[0] >= 7 && $vArr[1] >= 3))){	//php 7.3以降 samesiteの指定が出来る
 		if(!isset($opts["samesite"])) {	// SameSiteの値はセッションの設定から取得する
@@ -8635,7 +8617,6 @@ function soy2_setcookie(string $key, string $value="", array $opts=array()){
 		setcookie($key, $value , $opts["expires"], $opts["path"], $opts["domain"], $opts["secure"], $opts["httponly"]);
 	}
 }
-
 /*
  * number_formatの第一引数が数字ではなかった場合
  */
@@ -8643,7 +8624,6 @@ function soy2_number_format($int){
 	if(!is_numeric($int)) return 0;
 	return number_format($int);
 }
-
 /*
  * tokenを発行など
  */
@@ -8794,7 +8774,6 @@ function soy2_image_resizeimage_gd(string $filepath, string $savepath, int $widt
 			break;
 	}
 }
-
 /**
  * PathをURLに変換
  */
@@ -8804,14 +8783,11 @@ function soy2_path2url(string $path){
 	$url = str_replace($root,"/",$path);
 	return $url;
 }
-
 function soy2_check_referer(){
 	$referer = parse_url($_SERVER['HTTP_REFERER']);
 	$port = (isset($referer["port"]) && ($referer["port"] != 80 || $referer["port"] != 443)) ? ":" . $referer["port"] : "";
 	if($referer['host'] . $port !== $_SERVER['HTTP_HOST']) return false;
-
 	$_path = $referer["path"];
-
 	//pathinfoがある時は削除する
 	$queryString = $_SERVER['QUERY_STRING'];
 	if(is_numeric(strpos($queryString, "pathinfo"))){
@@ -8822,7 +8798,6 @@ function soy2_check_referer(){
 			if($v[0] == "pathinfo" || !isset($v[1])) continue;
 			$params[$v[0]] = $v[1];
 		}
-
 		$queryString = "";
 		if(count($params)){
 			foreach($params as $key => $v){
@@ -8831,7 +8806,6 @@ function soy2_check_referer(){
 			}
 		}
 	}
-
 	if(isset($queryString) && strlen($queryString)) $_path .= "?" . $queryString;
 	return ($_path == $_SERVER['REQUEST_URI']);
 }
@@ -8842,7 +8816,6 @@ function soy2_strpos(string $haystack, string $needle, int $offset = 0){
 	$res = strpos($haystack, $needle, $offset);
 	return (is_numeric($res)) ? $res : -1;
 }
-
 /**
  * 文字列中に、ある部分文字列が最後に現れる場所を探す ヒットしない場合は-1を返す
  */
@@ -8850,17 +8823,14 @@ function soy2_strrpos(string $haystack, string $needle, int $offset = 0){
 	$res = strrpos($haystack, $needle, $offset);
 	return (is_numeric($res)) ? $res : -1;
 }
-
 function soy2_stripos(string $haystack, string $needle, int $offset = 0){
 	$res = stripos($haystack, $needle, $offset);
 	return (is_numeric($res)) ? $res : -1;
 }
-
 function soy2_strripos(string $haystack, string $needle, int $offset = 0){
 	$res = strripos($haystack, $needle, $offset);
 	return (is_numeric($res)) ? $res : -1;
 }
-
 /*
  * soy2_image_info
  * @param String filepath
@@ -8906,7 +8876,6 @@ function soy2_image_info(string $filepath){
 	}
 	return null;
 }
-
 function soy2_cancel_magic_quotes_gpc(){
 	if(get_magic_quotes_gpc()){
 		$_POST = soy2_stripslashes($_POST);

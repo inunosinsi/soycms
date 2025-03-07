@@ -2,6 +2,9 @@
 
 class MessagePanel extends CMSWebPageBase{
 
+	var $messages;
+	var $errorMessages;
+
 	function execute(){
 
 		/**

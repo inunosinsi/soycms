@@ -14,6 +14,7 @@ class SOYCMSThumbnailPlugin{
 	private $no_thumbnail_path;
 
 	private $label_thumbail_paths = array();
+	private $entryAttributeDao;
 
 	function getId(){
 		return self::PLUGIN_ID;
@@ -27,7 +28,7 @@ class SOYCMSThumbnailPlugin{
 			"author"=>"日本情報化農業研究所",
 			"url"=>"http://www.n-i-agroinformatics.com/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.6.1"
+			"version"=>"1.6.2"
 		));
 
 		if(CMSPlugin::activeCheck($this->getId())){
@@ -50,6 +51,7 @@ class SOYCMSThumbnailPlugin{
 			}else{
 				CMSPlugin::setEvent('onEntryListBeforeOutput', $this->getId(), array($this, "onEntryListBeforeOutput"));
 				CMSPlugin::setEvent('onEntryOutput', $this->getId(), array($this, "onEntryOutput"));
+				CMSPlugin::setEvent('onPageOutput', $this->getId(), array($this,"onPageOutput"));
 			}
 		}
 	}
@@ -105,6 +107,26 @@ class SOYCMSThumbnailPlugin{
 		}
 	}
 
+	function onPageOutput($obj){
+		$entryId = (get_class($obj) == "CMSBlogPage" && isset($obj->entry)) ? $obj->entry->getId() : 0;
+		$filepath = ($entryId > 0) ? soycms_get_entry_attribute_value($entryId, ThumbnailPluginUtil::TRIMMING_IMAGE, "string") : "";
+		if($entryId > 0 && !strlen($filepath)) $filepath = soycms_get_entry_attribute_value($entryId, ThumbnailPluginUtil::UPLOAD_IMAGE, "string");
+
+		if(strlen($filepath)){
+			$http = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") ? "https" : "http";
+			$filepath = $http . "://" . str_replace("//", "/", $_SERVER["HTTP_HOST"]. "/" . $filepath);
+		}
+
+		$obj->addLabel("thumbnail_og_image", array(
+			"soy2prefix" => "p_block",
+			"html" => (strlen($filepath)) ? "<meta property=\"og:image\" content=\"".$filepath."\">" : ""
+		));
+
+		$obj->addLabel("thumbnail_twitter_image", array(
+			"soy2prefix" => "p_block",
+			"html" => (strlen($filepath)) ? "<meta property=\"twitter:image\" content=\"".$filepath."\">" : ""
+		));
+	}
 	/**
 	 * 記事作成時、記事更新時
 	 */
@@ -189,11 +211,11 @@ class SOYCMSThumbnailPlugin{
 
 		//記事毎のリサイズ設定を配列に格納しておく
 		$cnf = array(
-					"ratio_w" => (int)$_POST["jcrop_ratio_w"],
-					"ratio_h" => (int)$_POST["jcrop_ratio_h"],
-					"resize_w" => (int)$_POST["jcrop_resize_w"],
-					"resize_h" => (int)$_POST["jcrop_resize_h"]
-					);
+			"ratio_w" => (int)$_POST["jcrop_ratio_w"],
+			"ratio_h" => (int)$_POST["jcrop_ratio_h"],
+			"resize_w" => (int)$_POST["jcrop_resize_w"],
+			"resize_h" => (int)$_POST["jcrop_resize_h"]
+		);
 
 		$attr = soycms_get_entry_attribute_object($entryId, ThumbnailPluginUtil::THUMBNAIL_CONFIG);
 		$attr->setValue(soy2_serialize($cnf));

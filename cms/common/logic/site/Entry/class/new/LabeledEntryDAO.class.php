@@ -296,7 +296,23 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 		}
 		$order = ($orderReverse) ? "ASC" : "DESC";
 
-		switch((string)$this->blockClass){
+		$blockClass = $this->blockClass;
+		if(is_null($blockClass) && defined("SOYCMS_BLOG_PAGE_MODE") && SOYCMS_BLOG_PAGE_MODE == "_category_"){
+			$blockClass = "BlogCategoryComponent";
+		}
+
+		switch((string)$blockClass){
+			case "BlogCategoryComponent":
+				// ブログページで設定されているカテゴリを除く
+				$blogLabelId = (int)soycms_get_blog_page_object($_SERVER["SOYCMS_PAGE_ID"])->getPageConfigObject()->blogLabelId;
+				$categoryLabelId = 0;
+				foreach($labelIds as $labelId){
+					if($labelId == $blogLabelId) continue;
+					$categoryLabelId = $labelId;
+					break;
+				}
+			
+				return " Order By (SELECT display_order FROM EntryLabel WHERE label_id = " . $categoryLabelId . " AND entry_id = entry.id), entry.".$sort." " . $order . ", entry.id " . $order;
 			//記事毎の表示順が使えるブロックはラベルブロックのみ
 			case "LabeledBlockComponent":
 			case "AdminPageComponent":

@@ -16,7 +16,7 @@ class CustomIconFieldConfigPage extends WebPage {
 			//ラベルの設定
 			$labels = (isset($_POST["labels"])) ? $_POST["labels"] : array();
 			$this->pluginObj->setLabels($labels);
-			CMSPlugin::savePluginConfig(SOYCMS_CUSTOM_ICON_FIELD_PLUGIN, $this->pluginObj);
+			CMSPlugin::savePluginConfig(CustomIconFieldPlugin::PLUGIN_ID, $this->pluginObj);
 
 			//アップロードを押したとき
 			if($_SERVER["REQUEST_METHOD"] == "POST"){
@@ -36,7 +36,7 @@ class CustomIconFieldConfigPage extends WebPage {
 					//ファイルの移動が失敗していないかどうかをチェック
 					if(@move_uploaded_file($_FILES["file"]["tmp_name"], $dest_name) === false) CMSPlugin::redirectConfigPage("ファイルの移動に失敗しました。");
 
-					CMSPlugin::redirectConfigPage("ファイルのアップロードに成功しました。");
+					CMSPlugin::redirectConfigPage();
 
 				}else{
 					//

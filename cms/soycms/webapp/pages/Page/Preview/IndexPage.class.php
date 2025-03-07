@@ -10,15 +10,18 @@ class IndexPage extends CMSWebPageBase {
 	var $showAllEntry;
 
     function __construct($arg) {
+		if(!function_exists("soycms_get_site_id_by_frontcontroller")) {
+			SOY2::import("site_include.func.public", ".php");
+		}
 
-    	$this->showAllEntry = (!isset($_GET["show_all"]) or $_GET["show_all"] == 1);
+    	$this->showAllEntry = (!isset($_GET["show_all"]) || $_GET["show_all"] == 1);
 
     	$result = $this->run("Page.Preview.PreviewAction",array(
 			"arg"     => $arg,
 			"showAll" => $this->showAllEntry
 		));
 
-    	$this->currentPageId = $result->getAttribute("page_id");
+		$this->currentPageId = $result->getAttribute("page_id");
 
     	if($result->success()){
     		$this->siteConfig = soycms_get_site_config_object();
@@ -202,13 +205,17 @@ class IndexPage extends CMSWebPageBase {
 
 		$pages = $result->getAttribute("PageArray");
 
-		$blogDao = SOY2DAOFactory::create("cms.BlogPageDAO");
+		$blogDao = soycms_get_hash_table_dao("blog_page");
+		$blogIds = array_keys($blogDao->getBlogPageUriList());
+		
 		$options = "";
 		foreach($result->getAttribute("PageTree") as $key => $value){
 
-			//記事管理者はブロックのあるページのみを表示する
+			//記事管理者はブロックのあるページのみを表示する → ブログページも有効
 			if(!UserInfoUtil::hasSiteAdminRole() && !isset($pageWithBlock[$key])){
-				continue;
+				if(!is_numeric(array_search($key, $blogIds))){
+					continue;					
+				}
 			}
 
 			//ブログページでトップページが非表示なら選択肢から除外する

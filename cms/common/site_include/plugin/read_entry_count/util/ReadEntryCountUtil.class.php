@@ -86,6 +86,30 @@ class ReadEntryCountUtil {
 		}
 		return $list;
 	}
+	/**
+	 * @param int
+	 * @return array
+	 */
+	public static function getBlogPageListByPageId(int $selectedPageId=0){
+		$list = array();
+		try{
+			$page = soycms_get_hash_table_dao("blog_page")->getById($selectedPageId);
+		}catch(Exception $e){
+			return array();
+		}
+
+		$url = "/";
+		if(!soycms_check_is_root_site_by_frontcontroller()) $url .= soycms_get_site_id_by_frontcontroller() . "/";
+
+		if(strlen($page->getUri())){
+			$list[$page->getBlogLabelId()] = $url . $page->getUri() . "/" . $page->getEntryPageUri() . "/";
+		//ページのURLが空文字の場合
+		}else{
+			$list[$page->getBlogLabelId()] = $url . $page->getEntryPageUri() . "/";
+		}
+		
+		return $list;
+	}
 
 	private static function _dao(){
 		static $dao;

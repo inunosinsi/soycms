@@ -267,9 +267,15 @@ class PageLogic extends SOY2LogicBase{
 							if(isset($this->params["year"]) && strlen($this->params["year"]) === 4){
 								$url .= "/" . $this->params["year"];
 								if(isset($this->params["month"]) && strlen($this->params["month"]) > 0){
-									$url .= "/" . sprintf("%02d", $this->params["month"]);
-									if(isset($this->params["day"]) && strlen($this->params["day"]) > 0){
-										$url .= "/" . sprintf("%02d", $this->params["day"]);
+									$_v = sprintf("%02d", $this->params["month"]);
+									if($_v != "00"){
+										$url .= "/" . $_v;
+										if(isset($this->params["day"]) && strlen($this->params["day"]) > 0){
+											$_v = sprintf("%02d", $this->params["day"]);
+											if($_v != "00"){
+												$url .= "/" . $_v;
+											}
+										}
 									}
 								}
 							}

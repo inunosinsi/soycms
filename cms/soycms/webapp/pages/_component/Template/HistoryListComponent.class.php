@@ -13,8 +13,8 @@ class HistoryListComponent extends HTMLList{
 	}
 
 	public function populateItem($entity){
-		$contents = unserialize($entity->getContents());
-		$contents = (string)$contents[$this->mode];
+		$contents = (preg_match('/a:[\d]/', (string)$entity->getContents())) ? unserialize($entity->getContents()) : array();
+		$contents = (isset($contents[$this->mode])) ? (string)$contents[$this->mode] : "";
 		
 		$this->addLink("date", array(
 			"link" => SOY2PageController::createLink("Blog.TemplateHistoryDetail.{$this->pageId}.{$entity->getId()}.{$this->mode}"),

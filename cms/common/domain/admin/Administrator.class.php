@@ -39,6 +39,11 @@ class Administrator {
 	 */
 	private $tokenIssuedDate;
 
+	/**
+	 * @no_persistent
+	 */
+	public $sites;
+
 	public function setId($id){
 		$this->id = $id;
 	}

@@ -95,11 +95,18 @@ class BuildMetaLogic extends SOY2LogicBase {
 	 */
 	public static function _getImagePathByEntryId(int $entryId=0){
 		if($entryId === 0) return "";
-		$attr = ButtonSocialUtil::getAttr($entryId);
-		if(strlen((string)$attr->getValue())){
-			$http = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") ? "https" : "http";
-			return $http . "://" . str_replace("//", "/", $_SERVER["HTTP_HOST"]. "/" . $attr->getValue());
+		$filepath = soycms_get_entry_attribute_value($entryId, ButtonSocialUtil::PLUGIN_ID, "string");
+
+		// サムネイルプラグインから拾ってくる
+		if(!strlen($filepath) && CMSPlugin::activeCheck("soycms_thumbnail")){
+			SOY2::import("site_include.plugin.soycms_thumbnail.util.ThumbnailPluginUtil");
+			$filepath = ($entryId > 0) ? soycms_get_entry_attribute_value($entryId, ThumbnailPluginUtil::TRIMMING_IMAGE, "string") : "";
+			if($entryId > 0 && !strlen($filepath)) $filepath = soycms_get_entry_attribute_value($entryId, ThumbnailPluginUtil::UPLOAD_IMAGE, "string");
 		}
-		return "";
+		
+		if(strlen($filepath)){
+			$http = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") ? "https" : "http";
+			return $http . "://" . str_replace("//", "/", $_SERVER["HTTP_HOST"]. "/" . $filepath);
+		}
 	}
 }

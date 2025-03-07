@@ -12,6 +12,9 @@ class PluginBlockComponent implements BlockComponent{
 	private $blogPageId;
 	private $isCallEventFunc = self::ON;	//公開側でHTMLの表示の際にカスタムフィールドの拡張ポイントを読み込むか？
 
+	private $displayCountTo;
+	private $displayCountFrom;
+
 	/**
 	 * @return SOY2HTML
 	 * 設定画面用のHTMLPageComponent
@@ -73,7 +76,7 @@ class PluginBlockComponent implements BlockComponent{
 		if($this->isStickUrl){
 			$blogPage = soycms_get_blog_page_object((int)$this->blogPageId);
 			if(is_numeric($blogPage->getId())){
-				if(defined("CMS_PREVIEW_MODE")){
+				if(defined("CMS_PREVIEW_MODE") && CMS_PREVIEW_MODE){
 					$articlePageUrl = SOY2PageController::createLink("Page.Preview") ."/". $blogPage->getId() . "?uri=". $blogPage->getEntryPageURL();
 				}else{
 					$articlePageUrl = $page->getSiteRootUrl() . $blogPage->getEntryPageURL();

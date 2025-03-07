@@ -28,7 +28,7 @@ function checker_fn_get_template(Page $page){
 }
 
 /**
- * @param int
+ * @param int, string
  * @return string
  */
 function checker_fn_build_cache_file_path(int $pageId, string $dirName){
@@ -42,10 +42,18 @@ function checker_fn_build_cache_file_path(int $pageId, string $dirName){
 }
 
 /**
-	 * コメントのある行のみを集める
-	 * @param string
-	 * @return string
-	 */
+ * @param int, string
+ * @return string
+ */
+function checker_fn_build_not_used_cache_file_path(int $pageId, string $dirName){
+	return str_replace(".txt", "_not_used.txt", checker_fn_build_cache_file_path($pageId, $dirName));
+}
+
+/**
+ * コメントのある行のみを集める
+ * @param string
+ * @return string
+ */
 function checker_fn_shape_template(string $temp){
 	$h = array();
 	$lines = explode("\n", $temp);

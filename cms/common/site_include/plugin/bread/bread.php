@@ -10,6 +10,8 @@ class BreadPlugin{
 
 	var $separetor = "&gt;";
 
+	var $_page_arguments = array();
+
 	function setCms_separetor($separetor){
 		$this->separetor = $separetor;
 	}
@@ -109,7 +111,7 @@ class BreadPlugin{
 			if(!count($buff)){
 				$buff[] = $page->getTitle();
 			}else{
-				if(defined("CMS_PREVIEW_MODE")){
+				if(defined("CMS_PREVIEW_MODE") && CMS_PREVIEW_MODE){
 					$link = SOY2PageController::createLink("Page.Preview") ."/". $page->getId();
 				}else{
 					$link = SOY2PageController::createLink("") . $page->getUri();

@@ -31,11 +31,13 @@ function soycms_read_entry_count_by_blog_page_id($html, $page){
 		}
 	}
 
+	$_pages = ($blogPageId > 0) ? ReadEntryCountUtil::getBlogPageListByPageId($blogPageId) : array();
+	if(!count($_pages)) $_pages = ReadEntryCountUtil::getBlogPageList();
 	SOY2::imports("site_include.plugin.read_entry_count.component.*");
 	$obj->createAdd("entry_ranking_list_blog_id_version", "ReadEntryRankingListComponent", array(
 		"soy2prefix" => "p_block",
 		"list" => $arr,
-		"blogs" => ($blogPageId > 0) ? ReadEntryCountUtil::getBlogPageList() : array()
+		"blogs" => $_pages
 	));
 
 	$obj->display();

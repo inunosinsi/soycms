@@ -6,9 +6,10 @@ namespace GeminiAPI\Requests;
 
 use GeminiAPI\Enums\ModelName;
 use GeminiAPI\GenerationConfig;
+use GeminiAPI\Resources\Content;
 use GeminiAPI\SafetySetting;
 use GeminiAPI\Traits\ArrayTypeValidator;
-use GeminiAPI\Resources\Content;
+use GeminiAPI\Traits\ModelNameToString;
 use JsonSerializable;
 
 use function json_encode;
@@ -16,18 +17,21 @@ use function json_encode;
 class GenerateContentStreamRequest implements JsonSerializable, RequestInterface
 {
     use ArrayTypeValidator;
+    use ModelNameToString;
 
     /**
-     * @param ModelName $modelName
+     * @param ModelName|string $modelName
      * @param Content[] $contents
      * @param SafetySetting[] $safetySettings
      * @param GenerationConfig|null $generationConfig
+     * @param ?Content $systemInstruction
      */
     public function __construct(
-        public readonly ModelName $modelName,
+        public readonly ModelName|string $modelName,
         public readonly array $contents,
         public readonly array $safetySettings = [],
         public readonly ?GenerationConfig $generationConfig = null,
+        public readonly ?Content $systemInstruction = null,
     ) {
         $this->ensureArrayOfType($this->contents, Content::class);
         $this->ensureArrayOfType($this->safetySettings, SafetySetting::class);
@@ -35,7 +39,7 @@ class GenerateContentStreamRequest implements JsonSerializable, RequestInterface
 
     public function getOperation(): string
     {
-        return "{$this->modelName->value}:streamGenerateContent";
+        return "{$this->modelNameToString($this->modelName)}:streamGenerateContent";
     }
 
     public function getHttpMethod(): string
@@ -54,12 +58,13 @@ class GenerateContentStreamRequest implements JsonSerializable, RequestInterface
      *     contents: Content[],
      *     safetySettings?: SafetySetting[],
      *     generationConfig?: GenerationConfig,
+     *     systemInstruction?: Content,
      * }
      */
     public function jsonSerialize(): array
     {
         $arr = [
-            'model' => $this->modelName->value,
+            'model' => $this->modelNameToString($this->modelName),
             'contents' => $this->contents,
         ];
 
@@ -69,6 +74,10 @@ class GenerateContentStreamRequest implements JsonSerializable, RequestInterface
 
         if ($this->generationConfig) {
             $arr['generationConfig'] = $this->generationConfig;
+        }
+
+        if ($this->systemInstruction) {
+            $arr['systemInstruction'] = $this->systemInstruction;
         }
 
         return $arr;

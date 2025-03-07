@@ -10,7 +10,7 @@ class CMSHTMLPageBase extends WebPage{
     	return $flashSession;
     }
 
-    function jump($path,$array = array()){
+    function jump(string $path,array $array=array()){
     	$flashSession = $this->getFlashSession();
     	$flashSession->clearAttributes();
     	$flashSession->resetFlashCounter();
@@ -24,7 +24,7 @@ class CMSHTMLPageBase extends WebPage{
     	SOY2PageController::jump($path);
     }
 
-    function reload($array = array()){
+    function reload(array $array=array()){
     	$flashSession = $this->getFlashSession();
     	$flashSession->clearAttributes();
     	$flashSession->resetFlashCounter();
@@ -43,14 +43,14 @@ class CMSHTMLPageBase extends WebPage{
      *
      * @return SOY2ActionResult
      */
-    function run($actionName,$array = array()){
+    function run(string $actionName, array $array=array()){
     	return SOY2ActionFactory::createInstance($actionName,$array)->run();
     }
 
     /**
      * メッセージの追加のエイリアス
      */
-    function addMessage($key,$replace = array()){
+    function addMessage(string $key, array $replace=array()){
     	return CMSMessageManager::addMessage(
     		CMSMessageManager::get($key,$replace)
     	);
@@ -59,7 +59,7 @@ class CMSHTMLPageBase extends WebPage{
     /**
      * エラーメッセージ追加のエイリアス
      */
-    function addErrorMessage($key,$replace = array()){
+    function addErrorMessage(string $key,array $replace=array()){
     	return CMSMessageManager::addErrorMessage(
     		CMSMessageManager::get($key,$replace)
     	);
@@ -68,7 +68,7 @@ class CMSHTMLPageBase extends WebPage{
     /**
      * メッセージ取得
      */
-    function getMessage($key, $replace = array()){
+    function getMessage(string $key, array $replace=array()){
     	return CMSMessageManager::get($key,$replace);
     }
 
@@ -106,6 +106,12 @@ class CMSHTMLPageBase extends WebPage{
 		//If language is specified and its SOY2HTML html template exists, return the template.
 		if(strlen($lang)>0 && file_exists($lang_html)){
 			return $lang_html;
+		}
+
+		//隠しモード：同名のHTMLファイルのファイル名の頭に_(アンダースコア)を付与すると優先的に読み込む
+		$hidden_mode_html = $dir . "_" . get_class($this) . ".html";
+		if(file_exists($hidden_mode_html)){
+			return $hidden_mode_html;
 		}
 
 		return $default_html;
@@ -153,7 +159,10 @@ class CMSWebPageBase extends CMSHTMLPageBase{
 				$method = "set".strtoupper($key);
 				$this->$method($flashSession->getAttribute($key));
 			}else{
-				$this->$key = $flashSession->getAttribute($key);
+				if(property_exists($this, $key)){
+					$this->$key = $flashSession->getAttribute($key);	
+				}
+				
 			}
 		}
 

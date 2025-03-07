@@ -2,6 +2,8 @@
 
 class ConfigPage extends CMSWebPageBase{
 
+	private $id;
+
 	function __construct() {
 		$array = array_keys($_GET);
 		$this->id = array_shift($array);

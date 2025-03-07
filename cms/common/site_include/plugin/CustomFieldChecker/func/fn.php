@@ -72,6 +72,10 @@ function checker_fn_update_cms_tag_list(){
 	}
 
 	// 手動で加える
+	// common/site_include/CMSPage.class.phpより
+	$tags[] = "page_link";
+	$tags[] = "page_uri";
+	
 	// common/site_include/blog/component/MonthArciveListComponent.class.phpより
 	$tags[] = "no_first";
 	$tags[] = "not_first";
@@ -102,11 +106,19 @@ function checker_fn_update_cms_tag_list(){
 			$tags[] = $_fieldObj->getId()."_is_not_empty";
 			$tags[] = "is_".$_fieldObj->getId();
 			$tags[] = "no_".$_fieldObj->getId();
-			if($_fieldObj->getType() == "pair"){
-				for($i = 0; $i <= 10; $i++){
-					$tags[] = $_fieldObj->getId()."_pair_".$i;
-				}
+			switch($_fieldObj->getType()){
+				case "textarea":
+					$tags[] = $_fieldObj->getId()."_br_mode";
+					break;
+				case "pair":
+					for($i = 0; $i <= 10; $i++){
+						$tags[] = $_fieldObj->getId()."_pair_".$i;
+						$tags[] = $_fieldObj->getId()."_pair_".$i."_visible";
+					}
+					break;
 			}
+			$tags[] = $_fieldObj->getId()."_list";
+			$tags[] = $_fieldObj->getId()."_dllist";
 		}
 	}
 
@@ -121,16 +133,58 @@ function checker_fn_update_cms_tag_list(){
 			$tags[] = $_fieldObj->getId()."_is_not_empty";
 			$tags[] = "is_".$_fieldObj->getId();
 			$tags[] = "no_".$_fieldObj->getId();
-			if($_fieldObj->getType() == "pair"){
-				for($i = 0; $i <= 10; $i++){
-					$tags[] = $_fieldObj->getId()."_pair_".$i;
-				}
+			switch($_fieldObj->getType()){
+				case "textarea":
+					$tags[] = $_fieldObj->getId()."_br_mode";
+					break;
+				case "pair":
+					for($i = 0; $i <= 10; $i++){
+						$tags[] = $_fieldObj->getId()."_pair_".$i;
+						$tags[] = $_fieldObj->getId()."_pair_".$i."_visible";
+					}
+					break;
+				case "list":
+					$tags[] = $_fieldObj->getId()."_list";
+					foreach(array(
+						"li",
+						"li_raw",
+						"value",
+						"image", 
+						"is_image", 
+						"no_image",
+						"target_link",
+						"image_link", 
+						"image_text"
+					) as $soytag){
+						if(is_bool(array_search($soytag, $tags))) $tags[] = $soytag;
+					}					
+					break;
+				case "dllist":
+					$tags[] = $_fieldObj->getId()."_dllist";
+					foreach(array(
+						"label",
+						"dt",
+						"dt_raw",
+						"value",
+						"dd",
+						"dd_raw",
+						"image", 
+						"is_image", 
+						"no_image", 
+						"image_text"
+					) as $soytag){
+						if(is_bool(array_search($soytag, $tags))) $tags[] = $soytag;
+					}
+					break;
 			}
 		}
 	}
 
 	// 記事概要自動生成プラグイン(Gemini)
 	$tags[] = "gemini_abstract";
+
+	// read_entry_count/component/ReadEntryRankingListComponent.class.php
+	$tags[] = "count";
 
 	// cms:id="apps"
 	$tags[] = "apps";

@@ -49,7 +49,7 @@ class SitemapPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.7"
+			"version"=>"1.8"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
@@ -240,14 +240,14 @@ class SitemapPlugin{
 
 									try{
 										$res = $dao->executeQuery(
-											"SELECT ent.alias, ent.cdate FROM Entry ent ".
+											"SELECT ent.alias, ent.udate FROM Entry ent ".
 											"INNER JOIN EntryLabel lab ".
 											"ON ent.id = lab.entry_id ".
 											"WHERE lab.label_id = :labelId ".
 											"AND ent.isPublished = 1 ".
 											"AND ent.openPeriodStart < :start ".
 											"AND ent.openPeriodEnd > :end ".
-											"ORDER BY ent.cdate ASC", 
+											"ORDER BY ent.udate ASC", 
 											array(":labelId" => $configObj->blogLabelId, ":start" => time(), ":end" => time())
 										);
 									}catch(Exception $e){
@@ -258,7 +258,7 @@ class SitemapPlugin{
 										foreach($res as $v){
 											if(isset($v["alias"])){
 												$alias = rawurlencode($v["alias"]);
-												$xml[] =  self::_buildColumn(self::PAGE_TYPE_BLOG_ENTRY, $url . $alias, 0.8, $v["cdate"]);
+												$xml[] =  self::_buildColumn(self::PAGE_TYPE_BLOG_ENTRY, $url . $alias, 0.8, $v["udate"]);
 											}
 										}
 									}

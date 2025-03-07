@@ -251,7 +251,8 @@ class BlogPage extends Page{
 	}
 
 	function _getTemplate(){
-		$tmp = (is_string($this->getTemplate())) ? $this->getTemplate() : "";
+		// 文字列はa:3から始まる
+		$tmp = (is_string($this->getTemplate()) && preg_match('/a:[\d]/', $this->getTemplate()) === 1) ? $this->getTemplate() : "";
 		$array = (strlen($tmp)) ? unserialize($tmp) : array();
 		if(is_array($array) && count($array)) return $array;
 
@@ -263,10 +264,26 @@ class BlogPage extends Page{
 		);
 	}
 
+	function _getTemplateByPlugin(string $pageType="top"){
+		$onLoads = CMSPlugin::getEvent('onReadTemplateFile');
+		if(!count($onLoads)) return null;
+
+		foreach($onLoads as $plugin){
+			$func = $plugin[0];
+			$res = call_user_func($func, array("pageId" => parent::getId(), "blogPageType" => $pageType));
+			if(is_string($res)) return $res;
+		}
+
+		return null;
+	}
+
 	/**
 	* アーカイブテンプレート
 	*/
 	function getArchiveTemplate(){
+		$temp = self::_getTemplateByPlugin("archive");
+		if(is_string($temp)) return $temp;
+		
 		$template = $this->_getTemplate();
 		return $template[BlogPage::TEMPLATE_ARCHIVE];
 	}
@@ -275,6 +292,9 @@ class BlogPage extends Page{
 	* ブログトップページ
 	*/
 	function getTopTemplate(){
+		$temp = self::_getTemplateByPlugin("top");
+		if(is_string($temp)) return $temp;
+				
 		$template = $this->_getTemplate();
 		return $template[BlogPage::TEMPLATE_TOP];
 	}
@@ -283,6 +303,9 @@ class BlogPage extends Page{
 	* エントリーテンプレート
 	*/
 	function getEntryTemplate(){
+		$temp = self::_getTemplateByPlugin("entry");
+		if(is_string($temp)) return $temp;
+
 		$template = $this->_getTemplate();
 		return $template[BlogPage::TEMPLATE_ENTRY];
 	}

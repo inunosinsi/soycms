@@ -54,17 +54,17 @@ abstract class PageDAO extends SOY2DAO{
 
 	/**
 	 * @index id
-	 * @query ##pageType## = :pageType
+	 * @query page_type = :pageType
 	 * @order id
 	 */
-	abstract function getByPageType($pageType);
+	abstract function getByPageType(int $pageType);
 
 	/**
 	 * @return column_page_count
 	 * @columns count(id) as page_count
-	 * @query ##pageType## = :pageType
+	 * @query page_type = :pageType
 	 */
-	abstract function countByPageType($pageType);
+	abstract function countByPageType(int $pageType);
 
 	/**
 	 * @return object
@@ -74,9 +74,9 @@ abstract class PageDAO extends SOY2DAO{
 
 	/**
 	 * @return object
-	 * @query ##pageType## = :pageType
+	 * @query page_type = :pageType
 	 */
-	abstract function getErrorPage($pageType = Page::PAGE_TYPE_ERROR);
+	abstract function getErrorPage(int $pageType=Page::PAGE_TYPE_ERROR);
 
 	/**
 	 * @column id,uri
@@ -137,7 +137,12 @@ abstract class PageDAO extends SOY2DAO{
 			$history->setPageId($binds[':id']);
 			$history->setContents($page->getTemplate());
 			$history->setUpdateDate(time());
-			$historyDAO->insert($history);
+			try{
+				$historyDAO->insert($history);	
+			}catch(Exception $e){
+				// throw
+			}
+			
 
 			//テンプレート履歴を削除せずに残しておく
 			//$historyDAO->deletePastHistory($history->getPageId());

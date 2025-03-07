@@ -32,6 +32,9 @@ class CustomFieldPluginAdvanced{
 	//フィールド種別事に設定されている属性
 	private $properties = array();
 
+	// Deprecated: Creation of dynamic property CustomFieldPluginAdvanced::$dao is deprecated in ~ 対策
+	private $dao;
+
 	function init(){
 		CMSPlugin::addPluginMenu(CustomFieldPluginAdvanced::PLUGIN_ID, array(
 			"name" => "カスタムフィールド アドバンスド",
@@ -40,7 +43,7 @@ class CustomFieldPluginAdvanced{
 			"author" => "日本情報化農業研究所",
 			"url" => "http://www.n-i-agroinformatics.com/",
 			"mail" => "soycms@soycms.net",
-			"version"=>"1.20.8"
+			"version"=>"1.20.9"
 		));
 
 		//プラグイン アクティブ

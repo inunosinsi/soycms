@@ -107,6 +107,7 @@ class CMSUtil {
 	 * @return string
 	 */
 	public static function getEntryHiddenInputHTML($entryId, string $title){
+		if(!class_exists("CMSMessageManager")) SOY2::import("util.CMSMessageManager");
 		$str = CMSMessageManager::get("SOYCMS_PREVIEW_EDIT_BUTTON");
 		$str = str_replace("%TITLE%", "[".$title."]", $str);
 		return "<button type=\"button\" class=\"cms_hidden_entry_id\" entryid=\"$entryId\" style=\"display:none;\">".$str."</button>";

@@ -105,6 +105,7 @@ class CMSPlugin {
 		"beforeOutput"=>array(),		//出力される直前
 		"afterOutput"=>array(),			//出力された直後
 		"onOutput"=>array(),			//出力されるHTMLに対して最後に呼ばれるイベント（最終的に出力されるHTML）	array(html,page,webPage),
+		'onReadTemplateFile'=>array(),	//データベースもしくはファイルからテンプレートのHTMLを読み込む時 array(pageId, blogPageType)
 
 		//キャッシュの削除
 		"onClearCache"=>array(),			//キャッシュの削除の際
