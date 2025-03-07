@@ -1,0 +1,36 @@
+<div class="alert alert-success" soy:display="updated">更新しました。</div>
+
+<form soy:id="form">
+	<div class="form-group">
+		<label>ページのスキップの設定</label>
+		<div class="form-inline">
+			<input type="checkbox" soy:id="skip_1"><br>
+			<input type="checkbox" soy:id="skip_2"><br>
+			<input type="checkbox" soy:id="skip_3">
+		</div>
+	</div>
+
+	<div class="alert alert-info">
+		Cart0XPageに関しては
+		<a href="https://saitodev.co/soycms/soyshop/tutorial/87" target="_blank" rel="noopener" style="text-decoration:underline;">カートページのフォームの出力部分をカスタマイズする - SOY CMSを使ってみよう</a>
+		をご覧ください。
+	</div>
+
+	<div class="form-group">
+		<label>支払いモジュールの設定</label>
+		<div class="form-inline">
+			<select soy:id="payment_module" class="form-control"><option></option></select>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label>配送モジュールの設定</label>
+		<div class="form-inline">
+			<select soy:id="delivery_module" class="form-control"><option></option></select>
+		</div>
+	</div>
+
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="変更">
+	</div>
+</form>
