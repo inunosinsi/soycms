@@ -196,7 +196,7 @@ function soyshop_get_item_detail_link(SOYShop_Item $item){
 	$url = (isset($results[$detailPageId])) ? $results[$detailPageId] : null;
 	
 	if(is_null($url)){
-		if(is_null($urls)) $urls = SOYShop_DataSets::get("site.url_mapping", array());
+		if(is_null($urls)) $urls = SOYShop_DataSets::get("site.url_mapping", array());;
 
 		if(isset($urls[$detailPageId])){
 			$url = $urls[$detailPageId]["uri"];

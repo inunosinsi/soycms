@@ -329,7 +329,10 @@ class SOYShop_Item {
 	}
 
 	function getDetailPageId() {
-		if(defined("_SITE_ROOT_")) return "";	// SOY CMSから当メソッドにアクセスしている場合は空文字を返す @ToDo いずれは修正したい
+		if(!defined("SOYSHOP_PAGE_ID")) {
+			// SOY CMSから当メソッドにアクセスしている場合は空文字を返す @ToDo いずれは修正したい
+			return "";	
+		}
 		return (is_numeric($this->detailPageId)) ? (int)$this->detailPageId : SOY2Logic::createInstance("logic.site.page.PageLogic")->getOldestDetailPageId();
 	}
 	function setDetailPageId($detailPageId) {
