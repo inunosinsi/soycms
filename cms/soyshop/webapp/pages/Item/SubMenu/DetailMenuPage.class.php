@@ -16,7 +16,7 @@ class DetailMenuPage extends HTMLPage{
 
 		$item = soyshop_get_item_object($this->id);
 
-		$page = soyshop_get_page_object($item->getDetailPageId());
+		$page = soyshop_get_page_object((int)$item->getDetailPageId());
 		$url = (is_numeric($page->getId())) ? soyshop_get_page_url($page->getUri(), $item->getAlias()) : "";
 
 		$isOrderable = ($item->isPublished() && $item->isOrderable());
