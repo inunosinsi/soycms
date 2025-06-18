@@ -95,6 +95,6 @@ abstract class SOYShop_PageDAO extends SOY2DAO{
 		}catch(Exception $e){
 			$res = array();
 		}
-		return (isset($res[0]["id"])) ? $res[0]["id"] : 0;
+		return (isset($res[0]["id"])) ? (int)$res[0]["id"] : 0;
 	}
 }

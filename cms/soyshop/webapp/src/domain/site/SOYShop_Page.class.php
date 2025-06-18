@@ -377,9 +377,36 @@ class SOYShop_Page {
 		$res = array();
 		if(!is_dir($templateDir)) return array();
 
+		// 多言語絞り込み設定
+		$pattern = "";
+		$isNarrowDown = (SOYShopPluginUtil::checkIsActive("util_multi_language") && isset($_GET["narrow"]));
+		if($isNarrowDown){
+			$_arr = explode("/", $this->getUri());
+			if(SOYShopPluginUtil::checkIsActive("util_mobile_check")){
+				SOY2::import("module.plugins.util_mobile_check.util.UtilMobileCheckUtil");
+				$prefixs = UtilMobileCheckUtil::getPrefixList();
+				foreach($prefixs as $prefix){
+					if(!strlen($prefix)) continue;
+					if($_arr[0] == $prefix){
+						$pattern = $prefix."_";
+						$_dust = array_shift($_arr);
+					}
+				}
+			}
+		
+			SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
+			$uris = UtilMultiLanguageUtil::getUriList();
+			foreach($uris as $uri){
+				if($_arr[0] == $uri){
+					$pattern .= $uri."_";
+				}
+			}
+		}
+
 		$files = @scandir($templateDir);
 		foreach($files as $file){
 			if($file[0] == ".")continue;
+			if(strlen($pattern) && preg_match('/^'.$pattern.'/', $file) === 0) continue;
 			if(preg_match('/(.*)\.html$/', $file, $tmp)){
 
 				if(file_exists($templateDir . $tmp[1] . ".ini")){
