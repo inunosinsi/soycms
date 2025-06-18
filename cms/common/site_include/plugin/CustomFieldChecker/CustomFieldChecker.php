@@ -27,7 +27,7 @@ class CustomFieldCheckerPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/",
 			"mail"=>"saito@saitodev.co",
-			"version"=>"1.4.7"
+			"version"=>"1.4.8"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){

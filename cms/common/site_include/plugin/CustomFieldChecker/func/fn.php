@@ -160,7 +160,9 @@ function checker_fn_update_cms_tag_list(){
 					}					
 					break;
 				case "dllist":
+				case "dllisttext":
 					$tags[] = $_fieldObj->getId()."_dllist";
+					$tags[] = $_fieldObj->getId()."_dl_list";
 					foreach(array(
 						"label",
 						"dt",
