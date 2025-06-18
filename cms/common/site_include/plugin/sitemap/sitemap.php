@@ -49,7 +49,7 @@ class SitemapPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.8"
+			"version"=>"1.9"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
@@ -69,6 +69,8 @@ class SitemapPlugin{
 	}
 
 	function onPageOutput($obj){
+		SOY2::import("site_include.plugin.tag_cloud.util.TagCloudUtil");
+		SOY2::import("site_include.plugin.gemini_keyword.util.GeminiKeywordUtil");
 
 		$xml = array();
 
@@ -281,7 +283,25 @@ class SitemapPlugin{
 										$xml[] =  self::_buildColumn(self::PAGE_TYPE_APPLICATION, $url, $priority, $page->getUdate());
 										break;
 									default:
-										$xml[] =  self::_buildColumn(self::PAGE_TYPE_NORMAL, $url, $priority, $page->getUdate());
+										if(CMSPlugin::activeCheck("TagCloud") && TagCloudUtil::getPageIdSettedTagCloudBlock() === (int)$page->getId()){
+											SOY2::import("site_include.plugin.tag_cloud.domain.TagCloudDictionaryDAO");
+											$tags = SOY2DAOFactory::create("TagCloudDictionaryDAO")->getTagList();
+											if(count($tags)){
+												foreach($tags as $tag){
+													$xml[] =  self::_buildColumn(self::PAGE_TYPE_NORMAL, rtrim($url,"/")."/".rawurlencode($tag), 0.1, $page->getUdate());	
+												}
+											}
+										}elseif(CMSPlugin::activeCheck("gemini_keyword") && GeminiKeywordUtil::getPageIdSettedGeminiKeywordBlock() === (int)$page->getId()){
+											SOY2::import("site_include.plugin.gemini_keyword.domain.GeminiKeywordDictionaryDAO");
+											$keywords = SOY2DAOFactory::create("GeminiKeywordDictionaryDAO")->getKeywords();
+											if(count($keywords)){
+												foreach($keywords as $keyword){
+													$xml[] =  self::_buildColumn(self::PAGE_TYPE_NORMAL, rtrim($url,"/")."/".rawurlencode($keyword), 0.1, $page->getUdate());	
+												}
+											}	
+										}else{
+											$xml[] =  self::_buildColumn(self::PAGE_TYPE_NORMAL, $url, $priority, $page->getUdate());	
+										}										
 								}
 							}
 

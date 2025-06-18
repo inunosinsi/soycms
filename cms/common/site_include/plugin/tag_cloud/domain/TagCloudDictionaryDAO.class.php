@@ -78,6 +78,25 @@ abstract class TagCloudDictionaryDAO extends SOY2DAO{
 	/**
 	 * @final
 	 */
+	function getTagList(){
+		try{
+			$res = $this->executeQuery("SELECT word, hash FROM TagCloudDictionary");
+		}catch(Exception $e){
+			return array();
+		}
+		if(!count($res)) return array();
+
+		$_arr = array();
+		foreach($res as $v){
+			if(strlen((string)$v["word"])) $_arr[] = $v["word"];
+			if(strlen((string)$v["hash"])) $_arr[] = $v["hash"];
+		}
+		return $_arr;
+	}
+
+	/**
+	 * @final
+	 */
 	function onUpdate($query, $binds){
 		if(is_null($binds[":hash"])){
 			SOY2::import("site_include.plugin.tag_cloud.util.TagCloudUtil");

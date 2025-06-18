@@ -288,7 +288,32 @@ class PageLogic extends SOY2LogicBase{
 					break;
 				}
 			default:
-				//何もしない
+				if(!isset($_SERVER["SOYCMS_PAGE_ID"])) $_SERVER["SOYCMS_PAGE_ID"] = 0;
+				$uri = trim((string)soycms_get_page_object((int)$_SERVER["SOYCMS_PAGE_ID"])->getUri());
+				if(!strlen($uri)) return $url;
+
+				$pos = soy2_strpos($_SERVER["REQUEST_URI"], "/".$uri."/");
+				if($pos < 0) return $url;
+				$keyword = substr($_SERVER["REQUEST_URI"], $pos+strlen($uri)+2);
+				$pos = soy2_strpos($keyword, "/");
+				if($pos > 0) $keyword = substr($keyword, 0, $pos);
+				
+				$keyword = rawurldecode($keyword);
+				if(!strlen($keyword)) return $url;
+				
+				if(CMSPlugin::activeCheck("TagCloud")){
+					SOY2::import("site_include.plugin.tag_cloud.util.TagCloudUtil");
+					if(TagCloudUtil::getPageIdSettedTagCloudBlock() === (int)$_SERVER["SOYCMS_PAGE_ID"] && TagCloudUtil::checkIsTagExists($keyword)){
+						$url =  rtrim($url,"/")."/".rawurlencode($keyword);
+					}	
+				}
+			
+				if(CMSPlugin::activeCheck("gemini_keyword")){
+					SOY2::import("site_include.plugin.gemini_keyword.util.GeminiKeywordUtil");
+					if(GeminiKeywordUtil::getPageIdSettedGeminiKeywordBlock() === (int)$_SERVER["SOYCMS_PAGE_ID"] && GeminiKeywordUtil::checkIsKeywordExists($keyword)){
+						$url = rtrim($url,"/")."/".rawurlencode($keyword);
+					}
+				}
 		}
 		
 		return $url;
