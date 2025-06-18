@@ -96,9 +96,9 @@ class CustomCategoryConfigFormPage extends WebPage{
 
 		$this->addForm("form");
 
-		DisplayPlugin::toggle("customfield", count($this->fieldTable));
+		DisplayPlugin::toggle("customfield", count($this->fieldTable) >= 0);
 		$this->addLabel("customfield", array(
-			"html" => (count($this->fieldTable)) ? self::buildForm() : ""
+			"html" => self::buildForm()
 		));
 
 		DisplayPlugin::toggle("customsearch", false);

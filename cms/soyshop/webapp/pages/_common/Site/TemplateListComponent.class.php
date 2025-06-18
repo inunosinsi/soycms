@@ -19,6 +19,10 @@ class TemplateListComponent extends HTMLList{
 			"text" => $entity["type"]
 		));
 
+		$this->addLabel("configured_count", array(
+			"text" => (strlen($path)) ? self::_logic()->getConfiguredTemplateCount($path) : 0
+		));
+
 		$this->addLabel("url", array(
 			"text" => (isset($entity["url"])) ? $entity["url"] : ""
 		));
@@ -51,5 +55,11 @@ class TemplateListComponent extends HTMLList{
 		}
 
 		return $this->detailLink;
+	}
+
+	private function _logic(){
+		static $l;
+		if(is_null($l)) $l = SOY2Logic::createInstance("logic.site.template.TemplateLogic");
+		return $l;
 	}
 }

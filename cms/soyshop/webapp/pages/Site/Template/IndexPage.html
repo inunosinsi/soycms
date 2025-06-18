@@ -15,7 +15,8 @@
 					<caption><!-- soy:id="template_type" /-->テンプレート一覧</caption>
 						<tr>
 							<th class="col-lg-6">名前</th>
-							<th class="col-lg-4">種類</th>
+							<th class="col-lg-3">種類</th>
+							<th class="col-lg-1">設定数</th>
 							<th class="col-lg-2">
 								操作&nbsp;
 								<a class="btn btn-default btn-sm" href="javascript:void(0);" onclick="$(this).hide();$('.delete_btn').css('visibility','visible');">削除</a>
@@ -25,6 +26,7 @@
 						<tr>
 							<td soy:id="name">あああああ</td>
 							<td class="column3" soy:id="type">トップページ</td>
+							<td class="column3 text-center" soy:id="configured_count"></td>
 							<td class="column3">
 								<a href="#" soy:id="edit_link" class="btn btn-primary">編集</a>
 

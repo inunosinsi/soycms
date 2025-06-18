@@ -32,7 +32,11 @@ class DetailPage extends WebPage{
 
                 SOYShopCacheUtil::clearCache();
 
-                SOY2PageController::jump("Site.Pages.Detail." . $this->id . "?updated");
+				if(isset($_POST["narrow"])){
+					SOY2PageController::jump("Site.Pages.Detail." . $this->id . "?narrow");
+				}else{
+ 	            	SOY2PageController::jump("Site.Pages.Detail." . $this->id . "?updated");
+				}
             }
 
             $this->page = $page;
@@ -130,6 +134,8 @@ class DetailPage extends WebPage{
         $this->addLink("btn_template_custom", array(
             "link" => SOY2PageController::createLink("Site.Pages.Template.Action." . $obj->getId() . "?generate"),
         ));
+
+        DisplayPlugin::toggle("narrow_down_btn", (SOYShopPluginUtil::checkIsActive("util_multi_language") && !isset($_GET["narrow"])));
 
         $this->addLink("btn_template_restore", array(
             "link" => SOY2PageController::createLink("Site.Pages.Template.Action." . $obj->getId() . "?restore"),

@@ -16,6 +16,7 @@ class IndexPage extends WebPage{
 		parent::__construct();
 
 		$this->templateLogic = SOY2Logic::createInstance("logic.site.template.TemplateLogic");
+		$this->templateLogic->setAggregatedTemplateConfigCount();
 		$this->types = SOYShop_Page::getTypeTexts();
 
 		self::buildTemplate();
@@ -26,7 +27,7 @@ class IndexPage extends WebPage{
 	private function buildTemplate(){
 
 		$dao = soyshop_get_hash_table_dao("page");
-
+		
 		$this->createAdd("template_carrier_list", "_common.Site.TemplateCarrierListComponent", array(
 			"list" => $this->templateLogic->getTemplateList($this->types),
 			"typeTexts" => $this->types
@@ -51,7 +52,7 @@ class IndexPage extends WebPage{
 		DisplayPlugin::toggle("custom_template_list_empty", empty($custom));
 		DisplayPlugin::toggle("custom_template_list_exists", !empty($custom));
 	}
-
+	
 	private function buildModule(){
 
 		//PHPモジュールの使用が許可されているか？

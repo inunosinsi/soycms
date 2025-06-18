@@ -63,7 +63,7 @@ class LanguageListComponent extends HTMLList{
 
 		$iPrefix = (string)$this->getSmartPhonePrefix();
 		$this->addLabel("smartphone_prefix_text", array(
-			"text" => (strlen($iPrefix)) ? "/" . $iPrefix : ""
+			"text" => (strlen($iPrefix)) ? $iPrefix."/" : ""
 		));
 
 		$this->addModel("is_cart", array(

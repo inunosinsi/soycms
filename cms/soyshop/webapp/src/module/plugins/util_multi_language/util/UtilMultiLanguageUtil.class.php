@@ -98,6 +98,22 @@ class UtilMultiLanguageUtil {
         return (isset($langList[$lang])) ? $langList[$lang] : null;
     }
 
+    /**
+   	 * @param bool
+   	 * @return array
+   	 */
+       public static function getUriList($isJp=false){
+       	$_arr = array();
+       	$confs = self::getConfig();
+       	foreach($confs as $lang => $conf){
+       		if(!$isJp && $lang == "jp") continue;
+       		if(!isset($conf["is_use"]) || !isset($conf["prefix"])) continue;
+       		if((int)$conf["is_use"] !== 1) continue;
+       		$_arr[$lang] = $conf["prefix"];
+       	}
+       	return $_arr;
+       }
+
     public static function saveConfig($values){
         if(!isset($values["check_browser_language_config"])) $values["check_browser_language_config"] = 0;
         if(!isset($values["check_first_access_config"])) $values["check_first_access_config"] = 0;
