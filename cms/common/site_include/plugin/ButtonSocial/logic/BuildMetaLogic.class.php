@@ -9,7 +9,7 @@ class BuildMetaLogic extends SOY2LogicBase {
 	function buildOgMeta($obj, string $description="", string $image="", int $entryId=0){
 
 		if($entryId > 0){
-			$attrImagePath = self::_getImagePathByEntryId($entryId);
+			$attrImagePath = (string)self::_getImagePathByEntryId($entryId);
 			if(strlen($attrImagePath)) $image = $attrImagePath;
 		}
 
@@ -108,5 +108,7 @@ class BuildMetaLogic extends SOY2LogicBase {
 			$http = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") ? "https" : "http";
 			return $http . "://" . str_replace("//", "/", $_SERVER["HTTP_HOST"]. "/" . $filepath);
 		}
+		
+		return "";
 	}
 }
