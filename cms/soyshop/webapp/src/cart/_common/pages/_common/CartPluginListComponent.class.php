@@ -2,14 +2,22 @@
 class CartPluginListComponent extends HTMLList{
 
 	protected function populateItem($entity){
+		$html = (isset($entity["html"]) && strlen((string)$entity["html"]) > 0) ? $entity["html"] : "";
+		$err = (isset($entity["error"]) && strlen((string)$entity["error"]) > 0) ? $entity["error"] : "";
 
+		$this->addModel("is_content", array(
+			"visible" => (strlen($html))	
+		));
+	
 		$this->addLabel("content", array(
-			"html" => (isset($entity["html"]) && strlen($entity["html"]) > 0) ? $entity["html"] : ""
+			"html" => $html
 		));
 
 		$this->addLabel("error", array(
-			"html" => (isset($entity["error"]) && strlen($entity["error"]) > 0) ? $entity["error"] : "",
-			"visible" => (isset($entity["error"]) && strlen($entity["error"]) > 0)
+			"html" => $err,
+			"visible" => (strlen($err) > 0)
 		));
+
+		if(!strlen($html) && !strlen($err)) return false;
 	}
 }

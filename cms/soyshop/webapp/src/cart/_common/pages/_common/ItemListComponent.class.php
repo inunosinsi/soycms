@@ -13,12 +13,9 @@ class ItemListComponent extends HTMLList{
 
 		$itemId = (is_numeric($entity->getItemId())) ? (int)$entity->getItemId() : 0;
 		$item = soyshop_get_item_object($itemId);
-		if(is_numeric($item->getDetailPageId())){
-			$url = soyshop_get_page_url(soyshop_get_page_object($item->getDetailPageId())->getUri(), $item->getAlias());
-		}else{
-			$url = (is_numeric($item->getId())) ? soyshop_get_item_detail_link($item) : null;
-		}
-		$url .= "?index=" . $key;	//末尾にindexを付けておく
+
+		//末尾にindexを付けておく
+		$url = soyshop_get_item_detail_link($item)."?index=".$key;
 
 		$this->addLink("item_link", array(
 			"link" => $url

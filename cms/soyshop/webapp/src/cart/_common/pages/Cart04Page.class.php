@@ -10,9 +10,7 @@ class Cart04Page extends MainCartPageBase{
 	public $backward;
 
 	function doPost(){
-
 		if(soy2_check_token() && soy2_check_referer()){
-
 			$cart = CartLogic::getCart();
 			$cart->removeErrorMessage("order_confirm_error");
 
@@ -346,10 +344,19 @@ class Cart04Page extends MainCartPageBase{
 		));
 
 		$displayHtmls = $delegate->getHtml();
+		$isHtml = false;
+		if(count($displayHtmls)){
+			foreach($displayHtmls as $_arr){
+				foreach($_arr as $_html){
+					if(strlen((string)$_html) > 0) $isHtml = true;
+				}
+			}
+		}
+		
 
 		//入力内容確認のチェックボックス
 		$this->addModel("no_confirm_plugin", array(
-			"visible" => (count($displayHtmls) === 0)
+			"visible" => (!$isHtml)
 		));
 
 		$this->createAdd("confirm_plugin_list", "_common.CartPluginListComponent", array(
