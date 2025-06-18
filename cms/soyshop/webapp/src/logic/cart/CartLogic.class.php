@@ -590,7 +590,12 @@ class CartLogic extends SOY2LogicBase{
 	function getAddress(bool $isComplement=false){
 		$key = $this->getAttribute("address_key");
 		if(is_null($key)) $key = -1;
-		$addrs = $this->customerInformation->getAddress($key);
+		
+		$addrs = null;
+		if($this->customerInformation instanceof SOYShop_User){
+			$addrs = $this->customerInformation->getAddress($key);	
+		}
+		
 		if(!is_array($addrs)) $addrs = array();
 		
 		// 自動補完は名前と電話番号のみ
