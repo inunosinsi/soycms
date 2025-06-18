@@ -126,6 +126,10 @@ class CMSPageController extends SOY2PageController{
 			if(CMSPlugin::activeCheck("TagCloud")){
 				SOY2::import("site_include.plugin.tag_cloud.util.TagCloudUtil");
 				if(TagCloudUtil::getPageIdSettedTagCloudBlock() != $_SERVER["SOYCMS_PAGE_ID"] || !TagCloudUtil::checkIsTagExists($args[0])) $this->onNotFound();
+			// キーワード自動抽出プラグイン(Geminiの場合)
+			}else if(CMSPlugin::activeCheck("gemini_keyword")){
+				SOY2::import("site_include.plugin.gemini_keyword.util.GeminiKeywordUtil");
+				if(GeminiKeywordUtil::getPageIdSettedGeminiKeywordBlock() != $_SERVER["SOYCMS_PAGE_ID"] || !GeminiKeywordUtil::checkIsKeywordExists($args[0])) $this->onNotFound();
 			// ページャの場合
 			}else{
 				preg_match('/^page-\d+/', $args[0], $tmp);

@@ -252,4 +252,40 @@ class GeminiKeywordUtil {
 		$v = DataSets::get(self::DATA_SET_KEY.".enabled", "");
 		return (strlen($v)) ? soy2_unserialize($v) : array();
 	}
+
+	public static function getPageIdSettedGeminiKeywordBlock(){
+		return self::_getPageIdSettedGeminiKeywordBlock();
+	}
+
+	private static function _getPageIdSettedGeminiKeywordBlock(){
+		$sql = "SELECT page_id, object FROM Block WHERE class = :blk";
+
+		$dao = new SOY2DAO();
+		try{
+			$res = $dao->executeQuery($sql, array(":blk" => "PluginBlockComponent"));
+		}catch(Exception $e){
+			$res = array();
+		}
+
+		if(!count($res)) return null;
+
+		$pageId = null;
+		foreach($res as $v){
+			if(strpos($v["object"], "gemini_keyword")){
+				$pageId = (int)$v["page_id"];
+				break;
+			}
+		}
+		return $pageId;
+	}
+
+	/**
+	 * @param string
+	 * @return bool
+	 */
+	public static function checkIsKeywordExists(string $v){
+		if(!strlen($v)) return false;
+		SOY2::import("site_include.plugin.gemini_keyword.domain.GeminiKeywordDictionaryDAO");
+		return SOY2DAOFactory::create("GeminiKeywordDictionaryDAO")->checkIsKeywordExists($v);
+	}
 }

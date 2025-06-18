@@ -41,4 +41,32 @@ abstract class GeminiKeywordDictionaryDAO extends SOY2DAO {
 		
 		return $_dic;
 	}
+
+	function getKeywords(){
+		try{
+			$res = $this->executeQuery("SELECT keyword FROM GeminiKeywordDictionary");
+		}catch(Exception $e){
+			return array();
+		}
+
+		if(!count($res)) return array();
+
+		$_arr = array();
+		foreach($res as $v){
+			$_arr[] = $v["keyword"];
+		}
+		return $_arr;
+	}
+
+	/**
+	 * @final
+	 */
+	function checkIsKeywordExists(string $v){
+		try{
+			$res = $this->executeQuery("SELECT id FROM GeminiKeywordDictionary WHERE keyword = :k", array(":k" => $v));
+		}catch(Exception $e){
+			return false;
+		}
+		return (isset($res[0]["id"]) && is_numeric($res[0]["id"]));
+	}	
 }
