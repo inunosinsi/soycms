@@ -21,7 +21,6 @@ setTimeout(function(){
 		 				reCapIpt.value = token;
 		 				form.appendChild(reCapIpt);
 					}
-
 	            });
 			}catch(e){
 				//ここにエラー処理を記載（メッセージを表示し送信ボタンの押下制御を戻す）
