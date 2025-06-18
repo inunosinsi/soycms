@@ -27,7 +27,8 @@ class ItemReviewBeforeOutput extends SOYShopSiteBeforeOutputAction{
 			if(isset($config["captcha_img"]) && $config["captcha_img"] == 1){
 
 				//画像の削除:念の為
-				@unlink(SOY2HTMLConfig::CacheDir() . $_POST["soy2_token"] . ".jpg");
+				$cacheDir = SOY2HTMLConfig::CacheDir().ItemReviewUtil::CACHE_DIR."/".$_POST["soy2_token"].".jpg";
+				if(file_exists($cacheDir)) @unlink($cacheDir);
 
 				$captcha_value = SOY2ActionSession::getUserSession()->getAttribute("review_" . SOYSHOP_ID);
 				SOY2ActionSession::getUserSession()->setAttribute("review_" . SOYSHOP_ID, null);
@@ -201,21 +202,24 @@ class ItemReviewBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		));
 
 		//CAPTCHAの生成
+		$captcha_filename = "";
 		if((isset($config["captcha_img"])) && $config["captcha_img"] == 1){
 			$captcha_filename = str_replace(array(".", "/", "\\"), "", soy2_get_token());
 			$captcha_value = ItemReviewUtil::getRandomString(5);
-			ItemReviewUtil::generateCaptchaImage($captcha_value, $captcha_filename);
+			$captcha_filename = ItemReviewUtil::generateCaptchaImage($captcha_value, $captcha_filename);
+		}
 
+		if(strlen($captcha_filename)){
 			//captchaをセッションに入れておく
 			SOY2ActionSession::getUserSession()->setAttribute("review_" . SOYSHOP_ID, $captcha_value);
 		}else{
-			$captcha_filename = null;
+			$captcha_filename = "";
 		}
 
 		//画像ファイル生成
 		$page->addImage("captcha_img_url", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"src" => "/" . SOYSHOP_ID . "?captcha=" . $captcha_filename
+			"src" => (strlen($captcha_filename)) ? "/".SOYSHOP_ID."?captcha=".$captcha_filename : ""
 		));
 	}
 

@@ -2,6 +2,8 @@
 
 class ItemReviewUtil{
 
+	const CACHE_DIR = "captcha";
+
 	public static function getConfig(){
 		return self::_getConfig();
     }
@@ -47,8 +49,10 @@ class ItemReviewUtil{
 	/**
 	 * Captcha用の画像を生成してファイルに保存する
 	 * 要GD（imagejpeg）
+	 * @param string, string
+	 * @return string
 	 */
-	public static function generateCaptchaImage($captcha_value, $captcha_filename){
+	public static function generateCaptchaImage(string $captcha_value, string $captcha_filename){
 		SOY2::import("module.plugins.item_review.logic.SimpleCaptchaGenerator");
 		$gen = SimpleCaptchaGenerator::getInstance();
 		if(DIRECTORY_SEPARATOR == '\\'){
@@ -62,13 +66,17 @@ class ItemReviewUtil{
 		$gen->setFgRange(0, 0);
 		$gen->setBorderRange(0, 0);
 		$gen->setMaxLineWidth(1);
-		imagejpeg($gen->generate($captcha_value), SOY2HTMLConfig::CacheDir() . $captcha_filename . ".jpg");
+		
+		$filepath = self::cacheDir().$captcha_filename.".jpg";
+		
+		$res = imagejpeg($gen->generate($captcha_value), $filepath);
+		return ($res && file_exists($filepath)) ? $captcha_filename : "";
 	}
 
 	/**
 	 * ランダムな文字列を取得
 	 */
-	public static function getRandomString($length){
+	public static function getRandomString(int $length){
 		$alpha = range(ord('A'), ord('Z'));
 
 		$res = "";
@@ -77,6 +85,12 @@ class ItemReviewUtil{
 		}
 
 		return $res;
+	}
+
+	public static function cacheDir(){
+		$dir = SOY2HTMLConfig::CacheDir().self::CACHE_DIR."/";
+		if(!file_exists($dir)) mkdir($dir);
+		return $dir;
 	}
 
 	private static function _getConfig(){
