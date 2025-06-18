@@ -159,4 +159,17 @@ class UtilMobileCheckUtil{
 
 		return false;
 	}
+
+	/**
+	 * @return array
+	 */
+	public static function getPrefixList(){
+		$_arr = array("");
+		$conf = self::getConfig();
+		$_arr[] = $conf["prefix"];
+		if(is_bool(array_search($conf["prefix_i"], $_arr))){
+			$_arr[] = $conf["prefix_i"];
+		}
+		return $_arr;
+	}
 }

@@ -253,7 +253,7 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 						if($field["type"] == UserCustomSearchFieldUtil::TYPE_DATE){
 							$pageObj->addLabel($key . "_wareki", array(
 								"soy2prefix" => UserCustomSearchFieldUtil::PLUGIN_PREFIX,
-								"html" => (isset($usfValue)) ? date("Y年m月d日", $usfValue) : null
+								"html" => (isset($usfValue) && is_numeric($usfValue)) ? date("Y年m月d日", $usfValue) : null
 							));
 						}
 	            }

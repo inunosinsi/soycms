@@ -1,5 +1,5 @@
 <?php
-function soyshop_parts_mypage_login2($html,$page){
+function soyshop_parts_mypage_login2(string $html, HTMLPage $page){
 
 	$obj = $page->create("soyshop_parts_mypage_login2", "HTMLTemplatePage", array(
 		"arguments" => array("soyshop_mypage_login2", $html)

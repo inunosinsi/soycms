@@ -60,11 +60,13 @@ class DeliveryEachProductModule extends SOYShopDelivery{
 	function getPrice(){
 		$price = 0;
 
-		SOY2::import("module.plugins.delivery_each_product.util.DeliveryEachProductUtil");
-
-		$address = $this->getCart()->getAddress();
-
-		$itemOrders = $this->getCart()->getItems();
+		if($this->getCart() instanceof CartLogic){
+			$address = $this->getCart()->getAddress();
+			$itemOrders = $this->getCart()->getItems(); 
+		}else{
+			return $price;
+		}
+		
 		foreach($itemOrders as $itemOrder){
 			if(!isset($address["area"])) continue;
 			$prices = soy2_unserialize((string)DeliveryEachProductUtil::get($itemOrder->getItemId(), DeliveryEachProductUtil::MODE_FEE));

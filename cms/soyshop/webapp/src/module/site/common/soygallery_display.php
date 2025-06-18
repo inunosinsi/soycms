@@ -1,6 +1,6 @@
 <?php
 SOY2::import("util.SOYAppUtil");
-function soyshop_soygallery_display($html, $page){
+function soyshop_soygallery_display(string $html, HTMLPage $page){
 
 	//ギャラリIDを取得
 	preg_match('/(<[^>]*[^\/]app:gallery="(.+?)"[^>]*>)/', $html, $tmp);

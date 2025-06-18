@@ -1,5 +1,5 @@
 <?php
-function soyshop_mypage_application($html, $htmlObj){
+function soyshop_mypage_application(string $html, SOYShop_UserPage $htmlObj){
 	if(!defined("SOYSHOP_PUBLISH_LANGUAGE")) define("SOYSHOP_PUBLISH_LANGUAGE", "jp");
 	
 	$mypageId = $htmlObj->getMyPageId();

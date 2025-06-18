@@ -85,7 +85,18 @@ class CommonItemOptionCustomField extends SOYShopItemCustomFieldBase{
 
 		$opts = ItemOptionUtil::getOptions();
 		if(count($opts)){
+			if(!defined("SOYSHOP_PUBLISH_LANGUAGE")) define("SOYSHOP_PUBLISH_LANGUAGE", "jp");
 			foreach($opts as $key => $conf){
+				$label = (isset($conf["name"])) ? $conf["name"] : "";
+				if(SOYSHOP_PUBLISH_LANGUAGE != "jp" && isset($conf["name_".SOYSHOP_PUBLISH_LANGUAGE])){
+					$label = $conf["name_".SOYSHOP_PUBLISH_LANGUAGE];
+				}
+
+				$htmlObj->addLabel($key."_label", array(
+					"soy2prefix" => SOYSHOP_SITE_PREFIX,
+					"text" => $label
+				));
+			
 				$html = ItemOptionUtil::buildOptions($key, $conf, $itemId, $this->prefix);
 
 				$htmlObj->addModel($key . "_visible", array(

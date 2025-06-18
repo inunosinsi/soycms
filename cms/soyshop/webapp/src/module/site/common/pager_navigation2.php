@@ -1,6 +1,6 @@
 <?php
 
-function soyshop_pager_navigation2($html,$page){
+function soyshop_pager_navigation2(string $html, HTMLPage $page){
 	$obj = $page->create("soyshop_pager_list_navigation2","HTMLTemplatePage", array(
 		"arguments" => array("soyshop_pager_list_navigation2",$html)
 	));

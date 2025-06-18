@@ -3,7 +3,7 @@
  * 20091126 新規作成
  *
  */
-function soyshop_item_tree_navigation(){
+function soyshop_item_tree_navigation(string $html, HTMLPage $htmlObj){
 
 	$logic = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil", array());
 	$tree = array();

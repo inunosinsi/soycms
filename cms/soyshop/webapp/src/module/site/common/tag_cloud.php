@@ -1,5 +1,5 @@
 <?php
-function soyshop_tag_cloud($html, $page){
+function soyshop_tag_cloud(string $html, HTMLPage $page){
 
 	$obj = $page->create("tag_cloud", "HTMLTemplatePage", array(
 		"arguments" => array("tag_cloud", $html)

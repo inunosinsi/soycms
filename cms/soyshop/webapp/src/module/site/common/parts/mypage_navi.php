@@ -1,5 +1,5 @@
 <?php
-function soyshop_parts_mypage_navi($html, $page){
+function soyshop_parts_mypage_navi(string $html, HTMLPage $page){
 
 	$obj = $page->create("soyshop_parts_mypage_navi", "HTMLTemplatePage", array(
 		"arguments" => array("soyshop_mypage_navi", $html)

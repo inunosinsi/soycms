@@ -94,6 +94,18 @@ class ItemOptionUtil {
 		if(!strlen($selected)) $selected = null;
 		//if(is_null($selected) && $editMode) $type = "text";	//管理画面で編集の場合は選択がnullの場合はテキストフォームを出力する
 
+		// 多言語化、もしくはブラウザの自動翻訳によりオプション値が異なる場合のの対応
+		if($editMode && isset($selected) && count($opts)){
+			// optsの整形
+			foreach($opts as $idx => $opt){
+				$opts[$idx] = trim($opt);
+			}
+			
+			if(is_bool(array_search($selected, $opts))){
+				$type = self::OPTION_TYPE_TEXT;
+			}
+		}
+
 		//選択したタイプによって、HTMLの出力を変える
 		switch($type){
 			case self::OPTION_TYPE_TEXT:
@@ -175,6 +187,8 @@ class ItemOptionUtil {
 				return "请选择";
 			case "zh-tw":
 				return "請選擇";
+			case "ko":
+				return "선택해 주세요";
 			case "en":
 			default:
 				return "Please select";

@@ -1,5 +1,5 @@
 <?php
-function soyshop_parts_cart($html, $page){
+function soyshop_parts_cart(string $html, HTMLPage $page){
 
 	$obj = $page->create("soyshop_parts_cart", "HTMLTemplatePage", array(
 		"arguments" => array("soyshop_cart", $html)

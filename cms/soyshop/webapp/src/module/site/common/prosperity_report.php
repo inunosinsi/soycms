@@ -1,6 +1,6 @@
 <?php
 
-function soyshop_prosperity_report($html, $htmlObj){
+function soyshop_prosperity_report(string $html, HTMLPage $htmlObj){
 
 
 	$obj = $htmlObj->create("soyshop_prosperity_report", "HTMLTemplatePage", array(

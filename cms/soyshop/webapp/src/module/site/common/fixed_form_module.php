@@ -1,5 +1,5 @@
 <?php
-function soyshop_fixed_form_module($html,$page){
+function soyshop_fixed_form_module(string $html, HTMLPage $page){
 
 	$obj = $page->create("fixed_form_module", "HTMLTemplatePage", array(
 		"arguments" => array("fixed_form_module", $html)

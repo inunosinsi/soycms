@@ -1,5 +1,5 @@
 <?php
-function soyshop_relative_items($html, $htmlObj){
+function soyshop_relative_items(string $html, HTMLPage $htmlObj){
 	$obj = $htmlObj->create("soyshop_relative_items", "HTMLTemplatePage", array(
 		"arguments" => array("soyshop_relative_items", $html)
 	));

@@ -1,6 +1,6 @@
 <?php
 SOY2::import("util.SOYShopPluginUtil");
-function soyshop_calendar_display($html, $page){
+function soyshop_calendar_display(string $html, HTMLPage $page){
 
 	$obj = $page->create("calendar_display", "HTMLTemplatePage", array(
 		"arguments" => array("calendar_display", $html)

@@ -1,7 +1,7 @@
 <?php
 
 SOY2::import("util.SOYShopPluginUtil");
-function soyshop_shipping_schedule_notice_each_items($html, $page){
+function soyshop_shipping_schedule_notice_each_items(string $html, HTMLPage $page){
 	$obj = $page->create("soyshop_shipping_schedule_notice_each_items", "HTMLTemplatePage", array(
 		"arguments" => array("soyshop_shipping_schedule_notice_each_items", $html)
 	));

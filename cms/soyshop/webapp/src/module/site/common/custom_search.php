@@ -1,6 +1,6 @@
 <?php
 SOY2::import("util.SOYShopPluginUtil");
-function soyshop_custom_search($html, $htmlObj){
+function soyshop_custom_search(string $html, HTMLPage $htmlObj){
 	$obj = $htmlObj->create("soyshop_custom_search", "HTMLTemplatePage", array(
 		"arguments" => array("soyshop_custom_search", $html)
 	));

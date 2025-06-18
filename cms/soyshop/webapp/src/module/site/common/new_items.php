@@ -1,6 +1,6 @@
 <?php
 SOY2::import("util.SOYShopPluginUtil");
-function soyshop_new_items($html, $htmlObj){
+function soyshop_new_items(string $html, HTMLPage $htmlObj){
 
 	$obj = $htmlObj->create("soyshop_new_items", "HTMLTemplatePage", array(
 		"arguments" => array("soyshop_new_items", $html)

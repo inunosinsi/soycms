@@ -1,6 +1,6 @@
 <?php
 
-function soyshop_review_page($html, $htmlObj){
+function soyshop_review_page(string $html, HTMLPage $htmlObj){
 	$obj = $htmlObj->create("soyshop_review_page", "HTMLTemplatePage", array(
 		"arguments" => array("soyshop_review_page", $html)
 	));

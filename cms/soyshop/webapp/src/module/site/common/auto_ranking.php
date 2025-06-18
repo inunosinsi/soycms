@@ -1,5 +1,5 @@
 <?php
-function soyshop_auto_ranking($html, $page){
+function soyshop_auto_ranking(string $html, HTMLPage $page){
 		
 	$obj = $page->create("soyshop_auto_ranking", "HTMLTemplatePage", array(
 		"arguments" => array("soyshop_auto_ranking", $html)

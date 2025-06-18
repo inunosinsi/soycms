@@ -1,5 +1,5 @@
 <?php
-function soyshop_recommend_items($html, $htmlObj){
+function soyshop_recommend_items(string $html, HTMLPage $htmlObj){
 
 	$obj = $htmlObj->create("soyshop_recommend_items", "HTMLTemplatePage", array(
 		"arguments" => array("soyshop_recommend_items", $html)

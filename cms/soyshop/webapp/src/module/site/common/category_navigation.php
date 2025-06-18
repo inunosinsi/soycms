@@ -3,7 +3,7 @@
  * 20091126 新規作成
  *
  */
-function soyshop_category_navigation(){
+function soyshop_category_navigation(string $html, HTMLPage $htmlObj){
 	try{
 		$categories = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->getByIsOpen(SOYShop_Category::IS_OPEN);
 	}catch(Exception $e){

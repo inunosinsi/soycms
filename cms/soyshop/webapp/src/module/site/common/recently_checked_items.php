@@ -1,5 +1,5 @@
 <?php
-function soyshop_recently_checked_items($html,$htmlObj){
+function soyshop_recently_checked_items(string $html, HTMLPage $htmlObj){
 
 	//表示しているページが商品詳細ページかどうか
 	$isDetailPage = get_class($htmlObj->getPageObject()->getPageObject()) == "SOYShop_DetailPage";

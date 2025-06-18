@@ -1,5 +1,5 @@
 <?php
-function soyshop_parts_mypage_login($html, $page){
+function soyshop_parts_mypage_login(string $html, HTMLPage $page){
 
 	SOY2::import("util.SOYShopPluginUtil");
 

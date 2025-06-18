@@ -1,6 +1,6 @@
 <?php
 
-function soyshop_search_field($html, $htmlObj){
+function soyshop_search_field(string $html, HTMLPage $htmlObj){
     $obj = $htmlObj->create("soyshop_search_field", "HTMLTemplatePage", array(
             "arguments" => array("soyshop_search_field", $html)
     ));

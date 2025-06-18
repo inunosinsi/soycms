@@ -49,6 +49,12 @@ function geocodeAddress(geocoder, resultsMap) {
 			address += areaSelectBox[area].text;
 		}
 		address += document.querySelector("#address1").value;
+		if(document.querySelector("#address2")){
+			address += document.querySelector("#address2").value;
+		}
+		if(document.querySelector("#address3")){
+			address += document.querySelector("#address3").value;
+		}
 	}
 	
     geocoder.geocode({

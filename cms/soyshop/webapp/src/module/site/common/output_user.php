@@ -95,6 +95,12 @@ function soyshop_output_user($htmlObj, SOYShop_User $user, $obj=null){
 		"text" =>  $user->getAddress2(),
 	));
 
+	//住所入力2
+	$htmlObj->addLabel("address3", array(
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"text" =>  $user->getAddress3(),
+	));
+
 	//電話番号
 	$htmlObj->addLabel("telephone_number", array(
 		"soy2prefix" => SOYSHOP_SITE_PREFIX,
