@@ -15,7 +15,8 @@ class CustomField{
 		//"label" => "ラベル",
 		"pair" => "ペア",
 		"list" => "リスト",
-		"dllist" => "定義型リスト"
+		"dllist" => "定義型リスト",
+		"dllisttext" => "定義型リスト(複数行)"
 	);
 
 	private $id;
@@ -37,6 +38,8 @@ class CustomField{
 	//ラベルIDとの関連付け
 	private $labelId;
 	private $labelIds;
+
+	private $entryIds;
 
 	//どの属性値に出力するかの設定
 	private $output;
@@ -146,6 +149,15 @@ class CustomField{
 			$labelIds = soy2_serialize($labelIds);
 		}
 		$this->labelIds = $labelIds;
+	}
+	function getEntryIdsText(){
+		return $this->entryIds;
+	}
+	function getEntryIds(){
+		return $this->entryIds;
+	}
+	function setEntryIds(string $entryIds){
+		$this->entryIds = $entryIds;
 	}
 	/** /関連するラベル複数 **/
 	function getOutput() {

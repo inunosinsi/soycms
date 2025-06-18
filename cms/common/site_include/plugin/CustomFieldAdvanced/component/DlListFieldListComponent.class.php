@@ -3,7 +3,7 @@
 class DlListFieldListComponent extends HTMLList {
 
 	function populateItem($entity, $i){
-		$label = (is_array($entity) && isset($entity["label"])) ? $entity["label"] : "";
+		$label = (is_array($entity) && isset($entity["label"])) ? nl2br($entity["label"]) : "";
 		$this->addLabel("label", array(
 			"soy2prefix" => "cms",
 			"text" => $label
@@ -19,7 +19,7 @@ class DlListFieldListComponent extends HTMLList {
 			"html" => $label
 		));
 
-		$v = (is_array($entity) && isset($entity["value"])) ? $entity["value"] : "";
+		$v = (is_array($entity) && isset($entity["value"])) ? nl2br($entity["value"]) : "";
 
 		$this->addLabel("value", array(
 			"soy2prefix" => "cms",

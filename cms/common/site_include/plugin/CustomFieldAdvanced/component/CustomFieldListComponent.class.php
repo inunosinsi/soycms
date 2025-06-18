@@ -90,7 +90,7 @@ class CustomFieldListComponent extends HTMLList {
 			"link" => "javascript:void(0)",
 			"text" => "高度な設定",
 			"onclick" => '$(\'#field_config_'.$entity->getId().'\').toggle();',
-			"class" => (!$entity->getShowInput() || is_numeric($entity->getLabelId()) || count($entity->getLabelIds())|| $entity->getDefaultValue() || $entity->getEmptyValue() || $entity->getDescription() || $entity->getFixedLabelId() || strlen($entity->getOption()) || $entity->getAddTagOutsideBlock() || $entity->getIsImageUploadForm()) ? "btn btn-warning" : "btn btn-info",
+			"class" => (!$entity->getShowInput() || is_numeric($entity->getLabelId()) || strlen($entity->getEntryIds()) ||count($entity->getLabelIds())|| $entity->getDefaultValue() || $entity->getEmptyValue() || $entity->getDescription() || $entity->getFixedLabelId() || strlen($entity->getOption()) || $entity->getAddTagOutsideBlock() || $entity->getIsImageUploadForm()) ? "btn btn-warning" : "btn btn-info",
 			"attr:id" => "toggle_config_" . $entity->getId()
 		));
 
@@ -135,6 +135,14 @@ class CustomFieldListComponent extends HTMLList {
 		$this->addLabel("label_ids", array(
 			"html" => (is_array($entity->getLabelIds()) && count($this->labels)) ? self::_buildLabelSelectBoxes($entity->getLabelIds()) : "<select><option>----</option></select>"
 		));
+
+		//記事ID
+		$this->addLabel("entry_ids", array(
+			"name" => "config[entryIds]",
+			"value" => $entity->getEntryIdsText(),
+			"placeholder" => "記事IDをカンマ区切りで指定"	
+		));
+		
 
 		$this->addInput("default_value", array(
 			"name" => "config[defaultValue]",
@@ -257,6 +265,16 @@ class CustomFieldListComponent extends HTMLList {
 			"text" => ($entity->getType() == "dllist") ? DlListFieldSampleCodeComponent::build($entity->getId(), (int)$entity->getIsImageUploadForm() === 1) : ""
 		));
 		/** 定義型リストフィールド用 **/
+
+		/** 定義型リスト(複数行)フィールド用 **/
+		$this->addModel("is_dllisttext_field", array(
+			"visible" => ($entity->getType() == "dllisttext")
+		));
+		if(!class_exists("DlListTextFieldSampleCodeComponent")) SOY2::import("site_include.plugin.CustomFieldAdvanced.component.DlListTextFieldSampleCodeComponent");
+		$this->addLabel("dllisttext_field_sample_code", array(
+			"text" => ($entity->getType() == "dllisttext") ? DlListTextFieldSampleCodeComponent::build($entity->getId()) : ""
+		));
+		/** 定義型リスト(複数行)フィールド用 **/
 
 		$this->addModel("is_list_or_dllist_field", array(
 			"visible" => ($entity->getType() == "list" || $entity->getType() == "dllist")
