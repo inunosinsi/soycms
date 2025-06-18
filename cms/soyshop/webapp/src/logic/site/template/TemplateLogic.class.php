@@ -6,13 +6,15 @@ class TemplateLogic extends SOY2LogicBase{
 	private $files;
 	private $mode;
 
+	const GLOBALS_KEY = "aggreated_template_config_count";
+
 	function __construct(){
 		SOY2::import("domain.site.SOYShop_Page");
 		$this->dir = SOYSHOP_SITE_DIRECTORY . ".template/";
 	}
 
 	/** テンプレート一覧周り **/
-	function getTemplateList($types){
+	function getTemplateList(array $types){
 
 		$res = array();
 		foreach($types as $key => $name){
@@ -89,7 +91,32 @@ class TemplateLogic extends SOY2LogicBase{
 		return $results;
 	}
 
-	function getApplicationTemplateList($mode = "cart"){
+	function setAggregatedTemplateConfigCount(){
+		$GLOBALS[self::GLOBALS_KEY] = array();
+		try{
+			$res = soyshop_get_hash_table_dao("page")->executeQuery("SELECT type, template FROM soyshop_page");
+		}catch(Exception $e){
+			$res = array();
+		}
+
+		if(count($res)){
+			foreach($res as $v){
+				$t = $v["type"]."/".$v["template"];
+				if(!isset($GLOBALS[self::GLOBALS_KEY][$t])) $GLOBALS[self::GLOBALS_KEY][$t] = 0;
+				$GLOBALS[self::GLOBALS_KEY][$t]++;
+			}
+		}
+	}
+
+	/**
+	 * @param string
+	 * @return int
+	 */
+	function getConfiguredTemplateCount(string $path){
+		return (isset($GLOBALS[self::GLOBALS_KEY][$path])) ? $GLOBALS[self::GLOBALS_KEY][$path] : 0;
+	}
+
+	function getApplicationTemplateList(string $mode="cart"){
 		$templateDir = $this->dir . $mode . "/";
 		if(!file_exists($templateDir)) return array();
 

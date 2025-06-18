@@ -9,6 +9,15 @@ class SOYShopOrderConfirmBase implements SOY2PluginAction{
 	function hasError(int $param){
 		return true;
 	}
+
+	/**
+	 * @param string
+	 * @return bool
+	 */
+	function checkError(string $param){
+		return true;
+	}
+	
 	
 	/**
 	 * @return string html
@@ -40,8 +49,13 @@ class SOYShopOrderConfirmDeletageAction implements SOY2PluginDelegateAction{
 		switch($this->mode){
 			//ページのdoPost内で
 			case "checkError":
-				if(isset($this->param[$moduleId]) && $action->hasError($this->param[$moduleId])){
-					$this->hasError = true;
+				if(isset($this->param[$moduleId])){
+					if(is_numeric($this->param[$moduleId]) && $action->hasError($this->param[$moduleId])){
+						$this->hasError = true;
+					}else if(is_string($this->param[$moduleId]) && $action->checkError($this->param[$moduleId])){
+						$this->hasError = true;	
+					}
+					
 				}else{
 					//do nothing
 				}

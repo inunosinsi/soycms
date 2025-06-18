@@ -358,7 +358,7 @@ class DetailPage extends WebPage{
 		$editable = false;
 		$url = "";
 
-		if(count($detailPages)){
+		if(count($detailPages) && is_numeric($item->getDetailPageId())){
 			$page = soyshop_get_page_object($item->getDetailPageId());
 			if(is_numeric($page->getId())){
 				$url = soyshop_get_page_url($page->getUri(), $item->getAlias());

@@ -329,11 +329,11 @@ class SOYShop_Item {
 	}
 
 	function getDetailPageId() {
-		if(!defined("SOYSHOP_PAGE_ID")) {
+		if(!defined("SOYSHOP_PAGE_ID") && !defined("SOYSHOP_APPLICATION_MODE") && !defined("SOYSHOP_ADMIN_MODE")) {
 			// SOY CMSから当メソッドにアクセスしている場合は空文字を返す @ToDo いずれは修正したい
-			return "";	
+			return -1;
 		}
-		return (is_numeric($this->detailPageId)) ? (int)$this->detailPageId : SOY2Logic::createInstance("logic.site.page.PageLogic")->getOldestDetailPageId();
+		return (is_numeric($this->detailPageId)) ? (int)$this->detailPageId : (int)SOY2Logic::createInstance("logic.site.page.PageLogic")->getOldestDetailPageId();
 	}
 	function setDetailPageId($detailPageId) {
 		$this->detailPageId = $detailPageId;

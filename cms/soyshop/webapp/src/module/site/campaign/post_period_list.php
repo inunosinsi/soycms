@@ -1,5 +1,5 @@
 <?php
-function soyshop_post_period_list($html, $htmlObj){
+function soyshop_post_period_list(string $html, HTMLPage $htmlObj){
 
 	$obj = $htmlObj->create("soyshop_post_period_list", "HTMLTemplatePage", array(
 		"arguments" => array("soyshop_post_period_list", $html)

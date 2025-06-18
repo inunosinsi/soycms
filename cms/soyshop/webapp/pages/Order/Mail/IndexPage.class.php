@@ -179,20 +179,20 @@ class IndexPage extends WebPage{
 			$configs = AddMailTypeUtil::getConfig();
 
 			if(isset($configs[$type])) return $configs[$type]["title"];
+		}
+
 		//メール送信種類追加プラグイン以外
-		}else{
-			SOYShopPlugin::load("soyshop.order.detail.mail");
-			$mailConfList = SOYShopPlugin::invoke("soyshop.order.detail.mail")->getList();
-			if(count($mailConfList)){
-				foreach($mailConfList as $mailConf){
-					foreach($mailConf as $mailType => $conf){
-						if($mailType == $type) return $conf["title"];
-					}
+		SOYShopPlugin::load("soyshop.order.detail.mail");
+		$mailConfList = SOYShopPlugin::invoke("soyshop.order.detail.mail")->getList();
+		if(count($mailConfList)){
+			foreach($mailConfList as $mailConf){
+				foreach($mailConf as $mailType => $conf){
+					if($mailType == $type) return $conf["title"];
 				}
 			}
 		}
 
-		return $array["order"];
+		return $array["other"];
 	}
 
 	private function _getMailContent($type, SOYShop_Order $order, $array, SOYShop_User $user){
