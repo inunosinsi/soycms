@@ -43,7 +43,7 @@ class CustomFieldPluginAdvanced{
 			"author" => "日本情報化農業研究所",
 			"url" => "http://www.n-i-agroinformatics.com/",
 			"mail" => "soycms@soycms.net",
-			"version"=>"1.20.9"
+			"version"=>"1.21"
 		));
 
 		//プラグイン アクティブ
@@ -260,7 +260,7 @@ class CustomFieldPluginAdvanced{
 						if(!class_exists("DlListFieldListComponent")) SOY2::import("site_include.plugin.CustomFieldAdvanced.component.DlListFieldListComponent");
 						$htmlObj->createAdd($fieldId . "_dl_list", "DlListFieldListComponent", array(
 							"soy2prefix" => "cms",
-							"list" => ($master->getType() == "dllist" && is_string($attr["html"])) ? soy2_unserialize($attr["html"]) : array()
+							"list" => (($master->getType() == "dllist" || $master->getType() == "dllisttext") && is_string($attr["html"])) ? soy2_unserialize($attr["html"]) : array()
 						));
 					}
 
@@ -454,7 +454,10 @@ class CustomFieldPluginAdvanced{
 			}
 
 			//定義型リストフィールド
-			if($field->getType() == "dllist" && is_array($value)){
+			if(
+				($field->getType() == "dllist" && is_array($value)) || 
+				($field->getType() == "dllisttext" && is_array($value))
+			){
 				//空の値を除く
 				$values = array();
 				if(isset($value["label"]) && isset($value["value"])){	//array("label" => array(), "value" => array())の形の値がくる
@@ -639,12 +642,26 @@ class CustomFieldPluginAdvanced{
 		$isEntryField = false;	//記事フィールドがあるか？
 		$isListField = false;	//リストフィールドがあるか？
 		$isDlListField = false;	//定義型リストフィールドがあるか？
+		$isDlListMultiField = false;	//定義型リスト(複数行)フィールドがあるか？
 		
 		if(count($this->customFields)){
 			foreach($this->customFields as $fieldId => $fieldObj){
+				// 記事IDで表示の有無
+				$entryIdsText = trim((string)$fieldObj->getEntryIds());
+				if(strlen($entryIdsText)){
+					$entryIds = explode(",", $entryIdsText);
+					if(count($entryIds)){
+						for($i = 0; $i < count($entryIds); $i++){
+							$entryIds[$i] = (int)trim($entryIds[$i]);
+						}
+					}
+					if(is_bool(array_search($entryId, $entryIds))) continue;
+				}
+				
 				if(!$isEntryField && $fieldObj->getType() == "entry") $isEntryField = true;
 				if(!$isListField && $fieldObj->getType() == "list") $isListField = true;
 				if(!$isDlListField && $fieldObj->getType() == "dllist") $isDlListField = true;
+				if(!$isDlListMultiField && $fieldObj->getType() == "dllisttext") $isDlListMultiField = true;
 				$v = (isset($db_values[$fieldId])) ? $db_values[$fieldId] : null;
 				$extra = (isset($db_extra_values[$fieldId])) ? $db_extra_values[$fieldId] : null;
 				$html .= $fieldObj->getForm($this, $v, $extra);
@@ -665,6 +682,15 @@ class CustomFieldPluginAdvanced{
 			$html .= "\nfunction open_dllistfield_filemanager(id){\n";
 			$html .= "	common_to_layer(\"" . SOY2PageController::createLink("Page.Editor.FileUpload") . "?\"+id);\n";
 			$html .= "}\n";
+			$html .= "\n</script>\n";
+		}
+		if($isDlListMultiField) {
+			$html .= "<script>\n" . file_get_contents(SOY2::RootDir() . "site_include/plugin/CustomField/js/dllistmulti.js");
+			/**
+			$html .= "\nfunction open_dllistmultifield_filemanager(id){\n";
+			$html .= "	common_to_layer(\"" . SOY2PageController::createLink("Page.Editor.FileUpload") . "?\"+id);\n";
+			$html .= "}\n";
+			**/
 			$html .= "\n</script>\n";
 		}
 

@@ -16,7 +16,8 @@ class CustomField{
 		//"label" => "ラベル",
 		"pair" => "ペア",
 		"list" => "リスト",
-		"dllist" => "定義型リスト"
+		"dllist" => "定義型リスト",
+		"dllisttext" => "定義型リスト(複数行)"
 	);
 
 	private $id;
@@ -38,6 +39,8 @@ class CustomField{
 	//ラベルIDとの関連付け
 	private $labelId;
 	private $labelIds;
+
+	private $entryIds;
 
 	//どの属性値に出力するかの設定
 	private $output;
@@ -147,6 +150,15 @@ class CustomField{
 			$labelIds = soy2_serialize($labelIds);
 		}
 		$this->labelIds = $labelIds;
+	}
+	function getEntryIdsText(){
+		return $this->entryIds;
+	}
+	function getEntryIds(){
+		return $this->entryIds;
+	}
+	function setEntryIds(string $entryIds){
+		$this->entryIds = $entryIds;
 	}
 	/** /関連するラベル複数 **/
 	function getOutput() {
@@ -456,13 +468,19 @@ class CustomField{
 
 				$cnt = 0;	//フォームの出力個数をカウントする
 				$idProp = "customfield_" . $h_formID . "_dllistfield_";
+
+				$isTextArea = true;
 				
 				$html = array();
 				if(is_array($values) && count($values)){
 					foreach($values as $idx => $arr){
 						$html[] = "<div class=\"form-inline\" id=\"form-control " . $h_formID . "\">";
 						foreach(array("label", "value") as $l){
-							$html[] = "	<input type=\"text\" name=\"" . $h_formName . "[" . $l . "][]\" class=\"form-control " . $h_formID . "_" . $idx . "_" . $l. "\" value=\"" . htmlspecialchars($arr[$l], ENT_QUOTES, "UTF-8") . "\" id=\"" . $idProp . $cnt++ . "\"".$placeholderProp.">";
+							if($isTextArea){
+								$html[] = "	<textarea name=\"" . $h_formName . "[" . $l . "][]\" class=\"form-control " . $h_formID . "_" . $idx . "_" . $l. "\" id=\"" . $idProp . $cnt++ . "\">".$arr[$l]."</textarea>";
+							}else{
+								$html[] = "	<input type=\"text\" name=\"" . $h_formName . "[" . $l . "][]\" class=\"form-control " . $h_formID . "_" . $idx . "_" . $l. "\" value=\"" . htmlspecialchars($arr[$l], ENT_QUOTES, "UTF-8") . "\" id=\"" . $idProp . $cnt++ . "\"".$placeholderProp.">";
+							}
 						}
 						if($isUploadMode) $html[] = "	<input type=\"button\" onclick=\"open_dllistfield_filemanager('".$idProp . ($cnt-1)."');\" class=\"btn\" value=\"ファイルを指定する\">";
 						if(strlen($arr["value"]) && soycms_check_is_image_path($arr["value"])){
@@ -479,6 +497,35 @@ class CustomField{
 				}
 				if($isUploadMode) $html[] = "	<input type=\"button\" onclick=\"open_dllistfield_filemanager('".$idProp . ($cnt-1)."');\" class=\"btn\" value=\"ファイルを指定する\">";
 				$html[] = "	<a href=\"javascript:void(0);\" class=\"btn btn-info btn-sm\" onclick=\"CustomFieldDlListField.add('" . str_replace("custom_field_", "", $h_formID) . "',".$isUploadMode.")\">追加</a>";
+				$html[] = "</div>";
+				$body = implode("\n", $html);
+				break;
+			case "dllisttext":
+				$values = (is_string($fieldValue)) ? soy2_unserialize($fieldValue) : array();
+				if(!is_array($values)) $values = array();
+				$width = 35;
+				
+				$cnt = 0;	//フォームの出力個数をカウントする
+				$idProp = "customfield_" . $h_formID . "_dllisttextfield_";
+
+				$html = array();
+				if(count($values)){
+					foreach($values as $idx => $arr){
+						$html[] = "<div class=\"form-inline " . $h_formID . "_".$idx."\">";
+						$html[] = "	<textarea name=\"" . $h_formName . "[label][]\" class=\"form-control " . $h_formID . "_" . $idx . "_label\" style=\"width:".$width."%;\">".htmlspecialchars($arr["label"], ENT_QUOTES, "UTF-8")."</textarea>";
+						$html[] = "	<textarea name=\"" . $h_formName . "[value][]\" class=\"form-control " . $h_formID . "_" . $idx . "_value\" id=\"" . $idProp . $cnt++ . "\" style=\"width:".$width."%;\">".htmlspecialchars($arr["value"], ENT_QUOTES, "UTF-8")."</textarea>";
+						if($idx > 0) {
+							$html[] = "	<a href=\"javascript:void(0);\" class=\"btn btn-default\" onclick=\"dllist_multi_field_move_up('" . $h_formID . "', " . $idx . ");\">△</a>";
+							$html[] = "	<a href=\"javascript:void(0);\" class=\"btn btn-danger\" onclick=\"dllist_multi_field_delete('" . $h_formID . "', " . $idx . ");\");\">削除</a>";
+						}
+						$html[] = "</div>";
+					}
+				}
+
+				$html[] = "<div class=\"form-inline " . $h_formID . "\">";
+				$html[] = "	<textarea name=\"" . $h_formName . "[label][]\" class=\"form-control\" style=\"width:".$width."%;\"></textarea>";
+				$html[] = "	<textarea name=\"" . $h_formName . "[value][]\" class=\"form-control\" id=\"" . $idProp . $cnt++ . "\" style=\"width:".$width."%;\"></textarea>";
+				$html[] = "	<a href=\"javascript:void(0);\" class=\"btn btn-info btn-sm\" onclick=\"CustomFieldDlListMultiField.add('" . str_replace("custom_field_", "", $h_formID) . "')\">追加</a>";
 				$html[] = "</div>";
 				$body = implode("\n", $html);
 				break;

@@ -23,7 +23,7 @@ class CustomfieldAdvancedUtil {
 	}
 
 	public static function checkIsDlListField(array $fields){
-		return soycms_customfield_check_is_field($fields, "dllist");
+		return (soycms_customfield_check_is_field($fields, "dllist") || soycms_customfield_check_is_field($fields, "dllisttext"));
 	}
 
 	/**
