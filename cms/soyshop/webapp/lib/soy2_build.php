@@ -7089,7 +7089,7 @@ class HTMLPage extends SOYBodyComponentBase{
 		if($layoutDir && is_file($layoutDir . $layout)){
 			include($layoutDir . $layout);
 		}else{
-			echo $html;
+			echo trim($html);
 		}
 		self::popPageStack();
 	}
