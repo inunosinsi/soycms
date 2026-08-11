@@ -355,7 +355,7 @@ class InquiryLogic extends SOY2LogicBase{
 		$keys[] = "is_disabled";
 		$alias[] = "0";
 
-		if($mode == "shop"){
+		if($mode == "shop" || $mode == self::MODE_SHOP){
 			$keys[] = "user_type";
 			$alias[] = 1;
 		}
@@ -533,5 +533,43 @@ class InquiryLogic extends SOY2LogicBase{
 
 	function checkBanIpAddress(){
 		return SOY2DAOFactory::create("SOYInquiry_BanIpAddressDAO")->checkBanByIpAddressAndUpdate($_SERVER['REMOTE_ADDR']);
+	}
+
+	/**
+	 * @param string
+	 * @return bool
+	 */
+	function isSpamMailAddress(string $mailAddress){
+		// 基本的なメールアドレスのバリデーション
+		if(!filter_var($mailAddress, FILTER_VALIDATE_EMAIL)) return true;
+
+		if(is_numeric(strpos($mailAddress, "example"))){
+			// testing@example.comはスパム扱い
+			if(is_numeric(strpos($mailAddress, "testing"))) return true;
+		}
+	
+		// ユーザー名とドメインに分解
+		list($username, $domain) = explode('@', $mailAddress);
+	
+	    // --- パターン1: 子音の異常な連続（ランダム文字列の特徴） ---
+	    // 英語で4つ以上、連続して子音（bcdfghjklmnpqrstvwxyz）が並んでいるか
+		// ※ 提示された「OKPTWW」「jhzozttl」「bjhhzk」などはすべてこれに引っかかる
+		$consonants_pattern = '/[bcdfghjklmnpqrstvwxyz]{4,}/i';
+	    if(preg_match($consonants_pattern, $username) || preg_match($consonants_pattern, $domain)) return true; 
+	
+	    // --- パターン2: ドメインの階層が異常に深い、または細切れ ---
+		// サブドメインが多すぎる（例: t.u.x.y.z.com のようにドットが5つ以上ある）
+		if(substr_count($domain, '.') >= 5) return true;
+
+		// --- パターン3: ドメインの各セクションが短すぎる or 長すぎるランダム ---
+		// 例: jhzozttl.id.bjhhzk.com の「id」のような怪しい2文字など、
+		// 極端に短いセクションと長いランダムセクションの組み合わせを警戒
+		$domain_parts = explode('.', $domain);
+	    foreach($domain_parts as $part) {
+	        // 4文字以上で、かつ母音（aeiou）が1つも含まれないセクションがあればスパム扱い
+	        if(strlen($part) >= 4 && !preg_match('/[aeiou]/i', $part)) return true;
+	    }
+	
+	    return false;
 	}
 }

@@ -6,6 +6,9 @@ class SerialNumberColumn extends SOYInquiry_ColumnBase{
 	private $prefix;		//接頭語
 	private $digits = 0;	//桁数
 
+	public $isLinkageSOYMail;
+	public $isLinkageSOYShop;
+
     /**
 	 * ユーザに表示するようのフォーム
 	 * @param array

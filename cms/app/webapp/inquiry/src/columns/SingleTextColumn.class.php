@@ -33,6 +33,9 @@ class SingleTextColumn extends SOYInquiry_ColumnBase{
 	//HTML5のrequired属性を利用するか？
 	private $requiredProp = false;
 
+	public $isLinkageSOYMail;
+	public $isLinkageSOYShop;
+
     /**
 	 * ユーザに表示するようのフォーム
 	 * @param array

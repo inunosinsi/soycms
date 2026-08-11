@@ -18,6 +18,9 @@ class CheckBoxColumn extends SOYInquiry_ColumnBase{
 	private $isThumbnail = false;
 	private $thumbWidth = SOYInquiry_ColumnBase::THUMBNAIL_WIDTH;
 
+	public $isLinkageSOYMail;
+	public $isLinkageSOYShop;
+
     /**
 	 * ユーザに表示するようのフォーム
 	 * @param array

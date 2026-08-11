@@ -7,6 +7,9 @@ class SOYInquiryUtil{
 
 	const SOYINQUIRY_PHYSICAL_DELETE_DAYS = 30;
 
+	const SOYINQUIRY_GMAIL_API_OAUTH_CLIENT_SECRET_FILEPATH = CMS_COMMON."config/api/client_secret.json";
+	const SOYINQUIRY_GMAIL_API_OAUTH_TOKEN_FILEPATH = CMS_COMMON."config/api/gmail_oauth.json";
+
 	public static function switchConfig(){
 
 		$old["root"] = SOY2::RootDir();

@@ -16,6 +16,9 @@ class TelephoneColumn extends SOYInquiry_ColumnBase{
 	//<input type="***">
 	private $inputType = "text";
 
+	public $isLinkageSOYMail;
+	public $isLinkageSOYShop;
+
 	/**
 	 * ユーザに表示するようのフォーム
 	 * @param array

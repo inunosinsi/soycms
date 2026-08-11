@@ -65,6 +65,10 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 	//出力する項目	詳細は_getRequiredItemsConfig()に記載
 	private $requiredItems;
 
+	public $isLinkageSOYMail;
+	public $isLinkageSOYShop;
+	
+
 	/**
 	 * ユーザに表示するようのフォーム
 	 * @param array
@@ -259,8 +263,15 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 			$values["zip2"] = $zip2;
 		}
 		$address = $values["zip1"]  ."-" . $values["zip2"] . "\n" .
-		           $values["prefecture"] . $values["address1"] . $values["address2"];
-		if(isset($values["address3"]) && strlen($values["address3"])) $address.= "\n" . $values["address3"];
+		           $values["prefecture"];
+		for($i = 1; $i <= 3; $i++){
+			if(isset($values["address".$i]) && strlen($values["address".$i])){
+				if($i === 3){
+					$address .= "\n";
+				}
+				$address .= $values["address".$i];
+			}
+		}
 
 		$address = htmlspecialchars($address, ENT_QUOTES, "UTF-8");
 		if($html) $address = nl2br($address);

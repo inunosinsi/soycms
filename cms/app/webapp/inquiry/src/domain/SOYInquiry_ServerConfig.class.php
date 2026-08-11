@@ -12,6 +12,7 @@ class SOYInquiry_ServerConfig {
     private $sendServerType = SOYInquiry_ServerConfig::SERVER_TYPE_SENDMAIL;
     private $isUseSMTPAuth = true;
     private $isUsePopBeforeSMTP = false;
+    private $isUseGmailApiAuth = false;
     private $sendServerAddress = "localhost";
     private $sendServerPort = 25;
     private $sendServerUser = "";
@@ -118,6 +119,12 @@ class SOYInquiry_ServerConfig {
     }
     function setIsUsePopBeforeSMTP($isUsePopBeforeSMTP) {
     	$this->isUsePopBeforeSMTP = $isUsePopBeforeSMTP;
+    }
+    function getIsUseGmailApiAuth(){
+    	return $this->isUseGmailApiAuth;
+    }
+    function setIsUseGmailApiAuth($isUseGmailApiAuth){
+    	$this->isUseGmailApiAuth = $isUseGmailApiAuth;
     }
     function getIsUseSSLReceiveServer() {
     	return $this->isUseSSLReceiveServer;

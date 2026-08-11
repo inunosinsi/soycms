@@ -10,6 +10,9 @@ class QuestionColumn extends SOYInquiry_ColumnBase{
 	private $size;
 	protected $noPersistent = true;
 
+	public $isLinkageSOYMail;
+	public $isLinkageSOYShop;
+
     /**
 	 * ユーザに表示するようのフォーム
 	 * @param array

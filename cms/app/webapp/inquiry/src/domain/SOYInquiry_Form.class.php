@@ -245,7 +245,7 @@ class SOYInquiry_FormConfig{
 	 * styleを出力するかどうか
 	 */
 	function isOutputDesign(){
-		return (boolean)$this->design["isOutputStylesheet"];
+		return (bool)$this->design["isOutputStylesheet"];
 	}
 
 	/**

@@ -83,20 +83,33 @@ class MailLogic extends SOY2LogicBase{
 	 * @param Boolean replyToOnly 返信先をユーザのメールアドレスのみにする
 	 */
 	function sendMail(string $sendTo, string $title, string $body, string $sendToName="", array $replyTo=array(), bool $replyToOnly=false){
+		$serverConfig = $this->serverConfig;
 
 		//リセット
 		$this->reset();
 
-		$replyToArray = array();
-		if(count($replyTo)) $replyToArray = $replyTo;
+		$replyToArray = (count($replyTo)) ? $replyTo : array();
 		if(!$replyToOnly && $this->replyTo) $replyToArray[] = $this->replyTo->getString();
-	
-		$this->send->setHeader("Reply-To", implode(",", $replyToArray));
 
-		$this->send->setSubject($title);
-		$this->send->setText($body);
-		$this->send->addRecipient($sendTo, $sendToName);
-		$this->send->send();
+		// Gmail API(OAuth2.0認証)による送信
+		if((int)$serverConfig->getIsUseGmailApiAuth() === 1){
+			SOY2Logic::createInstance("logic.GMailLogic")->sendMail(
+				$sendTo, 
+				$title, 
+				$body, 
+				$sendToName, 
+				$serverConfig->getAdministratorMailAddress(),
+				$serverConfig->getAdministratorName(),
+				$replyToArray
+			);
+		}else{
+			$this->send->setHeader("Reply-To", implode(",", $replyToArray));
+
+			$this->send->setSubject($title);
+			$this->send->setText($body);
+			$this->send->addRecipient($sendTo, $sendToName);
+			$this->send->send();
+		}
 		sleep(1);
 	}
 

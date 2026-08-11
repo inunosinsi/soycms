@@ -5,6 +5,9 @@ class PlainTextColumn extends SOYInquiry_ColumnBase{
 	//値の保存（出力）をするかどうか
 	protected $noPersistent = false;//falseは「する」
 
+	public $isLinkageSOYMail;
+	public $isLinkageSOYShop;
+
 	/**
 	 * フォームでの項目名は空にする：デフォルトテンプレートでcolspan=2になる
 	 */

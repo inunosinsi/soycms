@@ -14,6 +14,9 @@ class MultiTextColumn extends SOYInquiry_ColumnBase{
 	//HTML5のrequired属性を利用するか？
 	private $requiredProp = false;
 
+	public $isLinkageSOYMail;
+	public $isLinkageSOYShop;
+
     function getCols(){
     	return $this->cols;
     }

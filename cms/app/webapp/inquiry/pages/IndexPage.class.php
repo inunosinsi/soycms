@@ -2,7 +2,7 @@
 
 class IndexPage extends WebPage{
 
-	private $fomrs;
+	private $forms;
 
 	function doPost(){
 		if(isset($_POST['trackId'])){

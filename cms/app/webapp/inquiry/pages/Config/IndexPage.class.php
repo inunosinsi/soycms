@@ -15,9 +15,14 @@ class IndexPage extends WebPage{
 				}
 				CMSApplication::jump("Config?success_test");
 			}else{
+				$dao = SOY2DAOFactory::create("SOYInquiry_ServerConfigDAO");
+				$serverConfig = SOY2::cast("SOYInquiry_ServerConfig",(object)$_POST);
+
+				// GMail API OAuth2.0認証を利用する場合は文字コードを強制的にUTF-8にする
+				if((int)$serverConfig->getIsUseGmailApiAuth() === 1){
+					$serverConfig->setEncoding("UTF-8");
+				}
 				try{
-					$dao = SOY2DAOFactory::create("SOYInquiry_ServerConfigDAO");
-					$serverConfig = SOY2::cast("SOYInquiry_ServerConfig",(object)$_POST);
 					$dao->update($serverConfig);
 
 					CMSApplication::jump("Config?success_update");
@@ -49,18 +54,18 @@ class IndexPage extends WebPage{
 
     private function buildForm(){
 
-    	$this->createAdd("form","HTMLForm");
+    	$this->addForm("form");
 
     	$serverConfig = SOY2DAOFactory::create("SOYInquiry_ServerConfigDAO")->get();
 
-    	$this->createAdd("send_server_type_sendmail","HTMLCheckBox",array(
+    	$this->addCheckBox("send_server_type_sendmail", array(
     		"elementId" => "send_server_type_sendmail",
     		"name" => "sendServerType",
     		"value" => SOYInquiry_ServerConfig::SERVER_TYPE_SENDMAIL,
     		"selected" => ($serverConfig->getSendServerType() == SOYInquiry_ServerConfig::SERVER_TYPE_SENDMAIL),
     		"onclick" => 'toggleSMTP()'
     	));
-    	$this->createAdd("send_server_type_smtp","HTMLCheckBox",array(
+    	$this->addCheckBox("send_server_type_smtp", array(
     		"elementId" => "send_server_type_smtp",
     		"name" => "sendServerType",
     		"value" => SOYInquiry_ServerConfig::SERVER_TYPE_SMTP,
@@ -69,7 +74,7 @@ class IndexPage extends WebPage{
     	));
 
 
-    	$this->createAdd("is_use_pop_before_smtp","HTMLCheckBox",array(
+    	$this->addCheckBox("is_use_pop_before_smtp", array(
 			"elementId" => "is_use_pop_before_smtp",
 			"name" => "isUsePopBeforeSMTP",
     		"value" => 1,
@@ -78,7 +83,20 @@ class IndexPage extends WebPage{
     		"onclick" => 'togglePOPIMAPSetting();'
     	));
 
-    	$this->createAdd("is_use_smtp_auth","HTMLCheckBox",array(
+    	$this->addCheckBox("is_use_gmail_api_auth", array(
+			"elementId" => "is_use_gmail_api_auth",
+			"name" => "isUseGmailApiAuth",
+	    	"value" => 1,
+	    	"selected" => $serverConfig->getIsUseGmailApiAuth(),
+	    	"disabled" => ($serverConfig->getSendServerType() != SOYInquiry_ServerConfig::SERVER_TYPE_SMTP),
+	    	"onclick" => 'toggleGmailApiAuthSetting();'
+	    ));
+
+		$isAuthenticatedOAuth = file_exists(SOYInquiryUtil::SOYINQUIRY_GMAIL_API_OAUTH_TOKEN_FILEPATH);
+		$this->addModel("is_authenticated_oauth", array("visible" => $isAuthenticatedOAuth));
+		$this->addModel("no_authenticated_oauth", array("visible" => !$isAuthenticatedOAuth));
+
+    	$this->addCheckBox("is_use_smtp_auth", array(
 			"elementId" => "is_use_smtp_auth",
 			"name" => "isUseSMTPAuth",
     		"value" => 1,
@@ -87,13 +105,13 @@ class IndexPage extends WebPage{
     		"onclick" => 'toggleSMTPAUTHSetting();'
     	));
 
-    	$this->createAdd("send_server_address","HTMLInput",array(
+    	$this->addInput("send_server_address", array(
 			"id" => "send_server_address",
 			"name" => "sendServerAddress",
     		"value" => $serverConfig->getSendServerAddress(),
     		"disabled" => ($serverConfig->getSendServerType() != SOYInquiry_ServerConfig::SERVER_TYPE_SMTP),
     	));
-    	$this->createAdd("send_server_port","HTMLInput",array(
+    	$this->addInput("send_server_port", array(
 			"id" => "send_server_port",
 			"name" => "sendServerPort",
     		"value" => $serverConfig->getSendServerPort(),
@@ -101,13 +119,13 @@ class IndexPage extends WebPage{
     	));
 
 
-    	$this->createAdd("send_server_user","HTMLInput",array(
+    	$this->addInput("send_server_user", array(
 			"id" => "send_server_user",
 			"name" => "sendServerUser",
     		"value" => $serverConfig->getSendServerUser(),
     		"disabled" => ($serverConfig->getSendServerType() != SOYInquiry_ServerConfig::SERVER_TYPE_SMTP) OR !$serverConfig->getIsUseSMTPAuth(),
     	));
-    	$this->createAdd("send_server_password","HTMLInput",array(
+    	$this->addInput("send_server_password", array(
 			"id" => "send_server_password",
 			"name" => "sendServerPassword",
     		"value" => $serverConfig->getSendServerPassword(),
@@ -115,7 +133,7 @@ class IndexPage extends WebPage{
     		"attr:autocomplete" => "off",
     	));
 
-    	$this->createAdd("is_use_ssl_send_server","HTMLCheckBox",array(
+    	$this->addCheckBox("is_use_ssl_send_server", array(
     		"elementId" => "is_use_ssl_send_server",
 			"name" => "isUseSSLSendServer",
     		"value" => 1,
@@ -125,7 +143,7 @@ class IndexPage extends WebPage{
     	));
 
     	/* 受信設定 */
-    	$this->createAdd("receive_server_type_pop","HTMLCheckBox",array(
+    	$this->addCheckBox("receive_server_type_pop", array(
     		"elementId" => "receive_server_type_pop",
 			"name" => "receiveServerType",
     		"value" => SOYInquiry_ServerConfig::RECEIVE_SERVER_TYPE_POP,
@@ -134,7 +152,7 @@ class IndexPage extends WebPage{
     		"onclick" => 'changeReceivePort();'
     	));
 
-    	$this->createAdd("receive_server_type_imap","HTMLCheckBox",array(
+    	$this->addCheckBox("receive_server_type_imap", array(
     		"elementId" => "receive_server_type_imap",
     		"name" => "receiveServerType",
     		"value" => SOYInquiry_ServerConfig::RECEIVE_SERVER_TYPE_IMAP,
@@ -143,21 +161,21 @@ class IndexPage extends WebPage{
     		"onclick" => 'changeReceivePort();'
     	));
 
-    	$this->createAdd("receive_server_address","HTMLInput",array(
+    	$this->addInput("receive_server_address", array(
 			"id" => "receive_server_address",
 			"name" => "receiveServerAddress",
     		"value" => $serverConfig->getReceiveServerAddress(),
     		"disabled" => ($serverConfig->getSendServerType() != SOYInquiry_ServerConfig::SERVER_TYPE_SMTP) OR !$serverConfig->getIsUsePopBeforeSMTP(),
     	));
 
-    	$this->createAdd("receive_server_user","HTMLInput",array(
+    	$this->addInput("receive_server_user", array(
 			"id" => "receive_server_user",
 			"name" => "receiveServerUser",
     		"value" => $serverConfig->getReceiveServerUser(),
     		"disabled" => ($serverConfig->getSendServerType() != SOYInquiry_ServerConfig::SERVER_TYPE_SMTP) OR !$serverConfig->getIsUsePopBeforeSMTP(),
     	));
 
-    	$this->createAdd("receive_server_password","HTMLInput",array(
+    	$this->addInput("receive_server_password", array(
 			"id" => "receive_server_password",
 			"name" => "receiveServerPassword",
     		"value" => $serverConfig->getReceiveServerPassword(),
@@ -165,14 +183,14 @@ class IndexPage extends WebPage{
     		"attr:autocomplete" => "off",
     	));
 
-    	$this->createAdd("receive_server_port","HTMLInput",array(
+    	$this->addInput("receive_server_port", array(
 			"id" => "receive_server_port",
 			"name" => "receiveServerPort",
     		"value" => $serverConfig->getReceiveServerPort(),
     		"disabled" => ($serverConfig->getSendServerType() != SOYInquiry_ServerConfig::SERVER_TYPE_SMTP) OR !$serverConfig->getIsUsePopBeforeSMTP(),
     	));
 
-    	$this->createAdd("is_use_ssl_receive_server","HTMLCheckBox",array(
+    	$this->addCheckBox("is_use_ssl_receive_server", array(
 			"elementId" => "is_use_ssl_receive_server",
 			"name" => "isUseSSLReceiveServer",
     		"value" => 1,
@@ -182,44 +200,44 @@ class IndexPage extends WebPage{
     	));
 
     	/* SSL */
-    	$this->createAdd("is_ssl_enabled", "HTMLHidden", array(
+    	$this->addHidden("is_ssl_enabled", array(
     		"id"    => "is_ssl_enabled",
     		"value" => (int) $this->isSSLEnabled()
     	));
-    	$this->createAdd("ssl_disabled", "HTMLModel", array(
+    	$this->addModel("ssl_disabled", array(
     		"visible" => !$this->isSSLEnabled()
     	));
     	/* IMAP */
-    	$this->createAdd("is_imap_enabled", "HTMLHidden", array(
+    	$this->addHidden("is_imap_enabled", array(
     		"id"    => "is_imap_enabled",
     		"value" => (int) $this->isIMAPEnabled()
     	));
-    	$this->createAdd("imap_disabled", "HTMLModel", array(
+    	$this->addModel("imap_disabled", array(
     		"visible" => !$this->isIMAPEnabled()
     	));
 
     	/* メール設定 */
-    	$this->createAdd("administrator_address","HTMLInput",array(
+    	$this->addInput("administrator_address", array(
 			"name" => "administratorMailAddress",
     		"value" => $serverConfig->getAdministratorMailAddress()
     	));
-    	$this->createAdd("administrator_name","HTMLInput",array(
+    	$this->addInput("administrator_name", array(
 			"name" => "administratorName",
     		"value" => $serverConfig->getAdministratorName()
     	));
-    	$this->createAdd("return_address","HTMLInput",array(
+    	$this->addInput("return_address", array(
 			"name" => "returnMailAddress",
     		"value" => $serverConfig->getReturnMailAddress()
     	));
-    	$this->createAdd("return_name","HTMLInput",array(
+    	$this->addInput("return_name", array(
 			"name" => "returnName",
     		"value" => $serverConfig->getReturnName()
     	));
-    	$this->createAdd("signature","HTMLTextArea",array(
+    	$this->addTextArea("signature", array(
 			"name" => "signature",
     		"text" => $serverConfig->getSignature()
     	));
-    	$this->createAdd("mail_encoding","HTMLSelect",array(
+    	$this->addSelect("mail_encoding", array(
     		"name" => "encoding",
     		"selected" => $serverConfig->getEncoding() ,
     		"options" => array(
@@ -229,17 +247,17 @@ class IndexPage extends WebPage{
     	));
 
     	/*ファイル設定*/
-    	$this->createAdd("upload_root_dir","HTMLLabel",array(
+    	$this->addLabel("upload_root_dir", array(
     		"text" => SOY_INQUIRY_UPLOAD_ROOT_DIR
     	));
 
-    	$this->createAdd("upload_dir","HTMLInput",array(
+    	$this->addInput("upload_dir", array(
     		"name" => "uploadDir",
     		"value" => $serverConfig->getUploadDir()
     	));
 
     	/* 管理側URL */
-    	$this->createAdd("admin_url","HTMLInput",array(
+    	$this->addInput("admin_url", array(
     		"name" => "adminUrl",
     		"value" => SOY2PageController::createLink("",true)
     	));
@@ -247,17 +265,16 @@ class IndexPage extends WebPage{
 
     private function buildTestSendForm(){
 
-    	$this->createAdd("test_form","HTMLForm");
+    	$this->addForm("test_form");
 
-		$this->createAdd("test_mail_address","HTMLLabel",array(
+		$this->addLabel("test_mail_address", array(
 			"name" => "test_mail_address",
 			"value" => "",
 		));
 
     }
 
-    private function testSend($to){
-
+    private function testSend(string $to){
     	$serverConfig = SOY2DAOFactory::create("SOYInquiry_ServerConfigDAO")->get();
 
     	$title = "SOY Inquiry テストメール ".date("Y-m-d H:i:s");
@@ -271,7 +288,6 @@ class IndexPage extends WebPage{
 
     	$serverConfig->getReturnMailAddress();
 		$mailLogic->sendMail($to,$title,$body,"テストメール送信先");
-
     }
 
     /**

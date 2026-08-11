@@ -14,6 +14,9 @@ class EnqueteColumn extends SOYInquiry_ColumnBase{
 	//フォームに自由に挿入する属性
 	private $attribute;
 
+	public $isLinkageSOYMail;
+	public $isLinkageSOYShop;
+
 	/**
 	 * ユーザに表示するようのフォーム
 	 * @param array

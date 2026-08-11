@@ -8,6 +8,9 @@ class SOYCMSBlogEntryPageColumn extends SOYInquiry_ColumnBase{
 	//連携用のcms:id
 	private $cms_id;
 
+	public $isLinkageSOYMail;
+	public $isLinkageSOYShop;
+
     /**
 	 * ユーザに表示するようのフォーム
 	 * @param array

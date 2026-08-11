@@ -21,6 +21,9 @@ class PrivacyPolicyColumn extends SOYInquiry_ColumnBase{
 	//値の保存（出力）はしない
 	protected $noPersistent = true;
 
+	public $isLinkageSOYMail;
+	public $isLinkageSOYShop;
+
     function getCols(){
     	return $this->cols;
     }

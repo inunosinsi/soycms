@@ -15,6 +15,9 @@ class DateColumn extends SOYInquiry_ColumnBase{
 	//HTML5のrequired属性を利用するか？
 	private $requiredProp = false;
 
+	public $isLinkageSOYMail;
+	public $isLinkageSOYShop;
+
     /**
 	 * ユーザに表示するようのフォーム
 	 * @param array
@@ -87,7 +90,7 @@ class DateColumn extends SOYInquiry_ColumnBase{
 
 		//設定したattributeを挿入
 		if(isset($this->attribute) && strlen($this->attribute) > 0){
-			$attribute = str_replace("&quot;","\"",$this->attribute);	//"が消えてしまうから、htmlspecialcharsができない
+			$attribute = str_replace("&quot;","\"",$this->attribute);	// ダブルクオーテーションが消えてしまうから、htmlspecialcharsができない
 			$attributes[] = trim($attribute);
 		}
 

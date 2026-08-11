@@ -3,6 +3,9 @@
 SOY2HTMLFactory::importWebPage("_common.FormPageBase");
 class TemplatePage extends FormPageBase{
 
+	private $id;
+	private $form;
+
     function __construct($args) {
     	if(count($args)<1)CMSApplication::jump("Form");
     	$this->id = $args[0];
@@ -10,8 +13,7 @@ class TemplatePage extends FormPageBase{
     	parent::__construct();
 
     	try{
-			$dao = SOY2DAOFactory::create("SOYInquiry_FormDAO");
-    		$this->form = $dao->getById($this->id);
+    		$this->form = SOY2DAOFactory::create("SOYInquiry_FormDAO")->getById($this->id);
     	}catch(Exception $e){
     		CMSApplication::jump("Form");
     	}

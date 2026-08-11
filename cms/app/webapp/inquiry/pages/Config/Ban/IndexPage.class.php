@@ -8,10 +8,12 @@ class IndexPage extends WebPage {
 			$excludeList = (isset($ban["excludeList"]) && strlen($ban["excludeList"])) ? $ban["excludeList"] : null;
 			$cnt = (isset($ban["count"]) && is_numeric($ban["count"])) ? (int)$ban["count"] : 30;
 			$release = (isset($ban["release"]) && is_numeric($ban["release"])) ? (int)$ban["release"] : 3;
+			$isSpamCheck = (isset($ban["spam_check"]) && (int)$ban["spam_check"] === 1) ? 1 : 0;
 
 			SOYInquiry_DataSets::put("execlude_ip_address_list", $excludeList);
 			SOYInquiry_DataSets::put("form_ban_count", $cnt);
 			SOYInquiry_DataSets::put("form_ban_release", $release);
+			SOYInquiry_DataSets::put("spam_check", $isSpamCheck);
 
 			CMSApplication::jump("Config.Ban?updated");
 			exit;
@@ -49,6 +51,13 @@ class IndexPage extends WebPage {
 			"value" => SOYInquiry_DataSets::get("form_ban_release", 3),
 			"style" => "width:80px;",
 			"attr:required" => "required"
+		));
+
+		$this->addCheckBox("spam_check", array(
+			"name" => "Ban[spam_check]",
+			"value" => 1,
+			"selected" => ((int)SOYInquiry_DataSets::get("spam_check", 0) === 1),
+			"label" => "スパム判定を有効にする"
 		));
 	}
 }

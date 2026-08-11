@@ -58,6 +58,8 @@ class SOYInquiry_Column{
 		"SelectBox" => "セレクトボックス",
 		"Date" => "日付",
 		"DateWithoutDay" => "日付(日なし)",
+		"DateWithoutYear" => "日付(年なし)",
+		"Calendar" => "カレンダー",
 		"Prefecture" => "都道府県",
 		"Address" => "住所",
 		"AddressJs" => "住所(JS版)",
@@ -296,6 +298,8 @@ class SOYInquiry_ColumnBase implements ISOYInquiry_Column{
 	protected $errorMessage = "";
 	protected $formObject = null;
 	protected $inquiry;
+	protected $isLinkageSOYMail;
+	protected $isLinkageSOYShop;
 	protected $SOYMailTo = SOYMailConverter::SOYMAIL_NONE;
 	protected $SOYShopFrom = SOYShopConnector::SOYSHOP_NONE;
 	protected $replacement;

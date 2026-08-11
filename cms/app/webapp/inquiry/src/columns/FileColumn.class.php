@@ -11,6 +11,9 @@ class FileColumn extends SOYInquiry_ColumnBase{
 
 	const KB_SIZE = 1024;
 
+	public $isLinkageSOYMail;
+	public $isLinkageSOYShop;
+
 	/**
 	 * ユーザに表示するようのフォーム
 	 * @param array

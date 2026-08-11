@@ -68,6 +68,9 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 	//出力する項目	詳細は_getRequiredItemsConfig()に記載
 	private $requiredItems;
 
+	public $isLinkageSOYMail;
+	public $isLinkageSOYShop;
+
 	/**
 	 * ユーザに表示するようのフォーム
 	 * @param array

@@ -12,6 +12,7 @@ class SOYInquiry_PageApplication{
 	var $form;
 	var $templateDir;
 	var $pageUrl;
+	private $config;
 
 	function init(){
 		CMSApplication::main(array($this, "main"));
@@ -69,11 +70,16 @@ class SOYInquiry_PageApplication{
 
 	/**
 	 * フォーム出力のメイン処理
+	 * @param string
+	 * @return string
 	 */
-	function getForm($formId){
+	function getForm(string $formId){
+
+		SOY2::import("util.RequestValidatorUtil");
+		$isBlock = RequestValidatorUtil::validate();
 
 		//フォームの使用を禁止しているユーザであるか？
-		if(!isset($_GET["block"]) && SOY2Logic::createInstance("logic.InquiryLogic")->checkBanIpAddress()){
+		if(!$isBlock && SOY2Logic::createInstance("logic.InquiryLogic")->checkBanIpAddress()){
 			SOY2PageController::redirect($this->pageUrl . "?block");
 			exit;
 		}
@@ -106,7 +112,7 @@ class SOYInquiry_PageApplication{
 		$this->templateDir = $templateDir;
 
 		//ブロックしている時の表示
-		if(isset($_GET["block"])){
+		if($isBlock){
 			ob_start();
 			if(file_exists($templateDir . "ban.php")){
 				include_once($templateDir . "ban.php");
@@ -152,6 +158,11 @@ class SOYInquiry_PageApplication{
 				header("HTTP/1.1 404 Not Found");
 			}
 			exit;
+		//カレンダーカラムのJS
+		}else if(isset($_GET["calendar_js"])){
+			header('Content-Type: application/javascript; charset=utf-8');
+			echo SOY2Logic::createInstance("logic.CalendarColumnLogic", array("columnId" => (int)$_GET["calendar_js"]))->buildJsCode();
+			exit;
 
 		//送信完了画面表示
 		}else if(isset($_GET["complete"])){
@@ -181,9 +192,12 @@ class SOYInquiry_PageApplication{
 				return $html;
 			}
 		}
-		
+
+		//フォームに戻る
+		if(isset($_POST["form"]) || isset($_POST["form_x"])){
+			$errors = $this->checkPostData($_POST["data"], $columns);	
 		//確定：値の保存、メール送信
-		if(isset($_POST["send"]) || isset($_POST["send_x"])){
+		}else if(isset($_POST["send"]) || isset($_POST["send_x"])){
 			$this->checkBanMailAddress($_POST["data"], $columns);
 
 			//Google reCAPTCHA v3を利用している場合はここで調べる
@@ -244,11 +258,6 @@ class SOYInquiry_PageApplication{
 				//確認画面を表示させる
 				$_POST["confirm"] = 1;
 			}
-		}
-		
-		//フォームに戻る
-		if(isset($_POST["form"]) || isset($_POST["form_x"])){
-			$errors = $this->checkPostData($_POST["data"], $columns);
 		}
 		
 		//テスト：郵便番号検索を含む
@@ -368,10 +377,21 @@ class SOYInquiry_PageApplication{
 					$mailAddress = null;
 				}
 
-				//メールアドレスカラムがあって、メールアドレスが空の場合は強制的にお問い合わせを止める
-				if(strlen($mailAddress) === 0){
-					SOY2PageController::redirect($this->pageUrl . "?block");
-					exit;
+				//メールアドレスカラムがある場合のチェック
+				if(is_string($mailAddress)){
+					// メールアドレスが空の場合は強制的にお問い合わせを止める
+					if(strlen($mailAddress) === 0){
+						SOY2PageController::redirect($this->pageUrl . "?block");
+						exit;
+					}
+
+					// スパム判定
+					SOY2::import("domain.SOYInquiry_DataSets");
+					if((int)SOYInquiry_DataSets::get("spam_check", 0) === 1 && SOY2Logic::createInstance("logic.InquiryLogic")->isSpamMailAddress($mailAddress)){
+						SOY2Logic::createInstance("logic.InquiryLogic", array("form" => $this->form))->banIPAddress($_SERVER["REMOTE_ADDR"]);
+						SOY2PageController::redirect($this->pageUrl . "?block");
+						exit;
+					}
 				}
 
 				//禁止したドメインによる制御
@@ -608,7 +628,15 @@ class SOYInquiry_FormComponent extends HTMLLabel{
 
 	function execute(){
 		parent::execute();
-		$html = $this->application->getForm($this->getAttribute("app:formid"));
+		$formId = $this->getAttribute("app:formid");
+		if(defined("SOYCMS_PUBLISH_LANGUAGE") && SOYCMS_PUBLISH_LANGUAGE != "jp"){
+			try{
+				$formId = SOY2DAOFactory::create("SOYInquiry_FormDAO")->getByFormId($formId."_".SOYCMS_PUBLISH_LANGUAGE)->getFormId();
+			}catch(Exception $e){
+				//
+			}
+		}
+		$html = $this->application->getForm($formId);
 		$this->setHtml($html);
 	}
 	function getApplication() {

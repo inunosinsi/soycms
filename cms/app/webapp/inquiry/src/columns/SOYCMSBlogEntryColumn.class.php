@@ -11,6 +11,9 @@ class SOYCMSBlogEntryColumn extends SOYInquiry_ColumnBase{
 	//HTML5のrequired属性を利用するか？
 	private $requiredProp = false;
 
+	public $isLinkageSOYMail;
+	public $isLinkageSOYShop;
+
     /**
 	 * ユーザに表示する用のフォーム
 	 * @param array
@@ -18,7 +21,7 @@ class SOYCMSBlogEntryColumn extends SOYInquiry_ColumnBase{
 	 */
 	function getForm(array $attrs=array()){
 		$title = $this->getValue();
-		if(is_null($title)) $title = self::_getEntryTitle();
+		if(is_null($title) || (is_string($title) && !strlen($title))) $title = self::_getEntryTitle();
 		if(strlen($title)) $title = htmlspecialchars($title, ENT_QUOTES, "UTF-8");
 
 		//ページIDを記録しておく

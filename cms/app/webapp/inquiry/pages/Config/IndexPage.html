@@ -70,7 +70,7 @@
 							</tr>
 
 							<tr>
-								<th rowspan="2">認証</th>
+								<th rowspan="3">認証</th>
 								<td>
 									<input name="isUseSMTPAuth" type="hidden" value="0" />
 									<input soy:id="is_use_smtp_auth" type="checkbox" id="is_use_smtp_auth" />
@@ -94,6 +94,24 @@
 									<input name="isUsePopBeforeSMTP" type="hidden" value="0" />
 									<input soy:id="is_use_pop_before_smtp" type="checkbox" name="" />
 									<label for="is_use_pop_before_smtp">「POP/IMAP before SMTP」を使用する</label>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input name="isUseGmailApiAuth" type="hidden" value="0" />
+									<input soy:id="is_use_gmail_api_auth" type="checkbox" name="" />
+									<label for="is_use_gmail_api_auth">「Gmail API(OAuth2.0認証)」を使用する</label>
+									<!-- soy:id="no_authenticated_oauth" -->
+									<div class="alert alert-success">
+										お問い合わせフォームを設置するサイトで<strong>Gmail API(OAuth2.0認証)プラグイン</strong>をインストールして、OAuth2.0認証を行ってください
+									</div>
+									<!-- /soy:id="no_authenticated_oauth" -->
+									<!-- soy:id="is_authenticated_oauth" -->
+									<div class="alert alert-info">
+										Gmail API(OAuth2.0認証)：<strong>認証済み</strong><br>
+										<small>--返信先メールアドレスの設定は未対応--</small>
+									</div>
+									<!-- /soy:id="is_authenticated_oauth" -->
 								</td>
 							</tr>
 						</table>
@@ -263,7 +281,7 @@
 	function toggleSMTP() {
 		var ids = [
 			"send_server_address", "send_server_port", "send_server_user", "send_server_password", "is_use_ssl_send_server",
-			"is_use_pop_before_smtp", "is_use_smtp_auth",
+			"is_use_pop_before_smtp", "is_use_gmail_api_auth", "is_use_smtp_auth",
 			"receive_server_type_pop", "receive_server_type_imap", "receive_server_address", "receive_server_port", "receive_server_user", "receive_server_password", "is_use_ssl_receive_server"
 		];
 		if ($("#send_server_type_smtp").prop("checked")) {
@@ -273,6 +291,7 @@
 			disableUseSSL();
 			togglePOPIMAPSetting();
 			toggleSMTPAUTHSetting();
+			toggleGmailApiSetting();
 		} else {
 			$.each(ids, function(id, value) {
 				$("#" + value).prop("disabled", "disabled");
@@ -286,6 +305,7 @@
 			$("#send_server_password").prop("disabled", "");
 
 			$("#is_use_pop_before_smtp").prop("checked", false);
+			$("#is_use_gmail_api_auth").prop("checked", false);
 			togglePOPIMAPSetting();
 		} else {
 			$("#send_server_user").prop("disabled", "disabled");
@@ -295,7 +315,7 @@
 
 	function togglePOPIMAPSetting() {
 		var ids = ["receive_server_type_pop", "receive_server_type_imap", "receive_server_address", "receive_server_port", "receive_server_user", "receive_server_password", "is_use_ssl_receive_server"];
-		if ($("#is_use_pop_before_smtp").prop("checked")) {
+		if ($("#is_use_pop_before_smtp").prop("checked") || $("#is_use_gmail_api_auth").prop("checked")) {
 			$.each(function(id, value) {
 				$("#" + value).prop("disabled", false);
 			});
@@ -304,6 +324,27 @@
 			disableUseIMAP();
 
 			$("#is_use_smtp_auth").prop("checked", false);
+			$("#is_use_gmail_api_auth").prop("checked", false);
+			toggleSMTPAUTHSetting();
+		} else {
+			$.each(ids, function(id, value) {
+				$("#" + value).prop("disabled", "disabled");
+			});
+		}
+	}
+
+	function toggleGmailApiAuthSetting() {
+		var ids = ["receive_server_type_pop", "receive_server_type_imap", "receive_server_address", "receive_server_port", "receive_server_user", "receive_server_password", "is_use_ssl_receive_server"];
+		if ($("#is_use_pop_before_smtp").prop("checked") || $("#is_use_smtp_auth").prop("checked")) {
+			$.each(function(id, value) {
+				$("#" + value).prop("disabled", false);
+			});
+
+			disableUseSSL();
+			disableUseIMAP();
+
+			$("#is_use_smtp_auth").prop("checked", false);
+			$("#is_use_pop_before_smtp").prop("checked", false);
 			toggleSMTPAUTHSetting();
 		} else {
 			$.each(ids, function(id, value) {

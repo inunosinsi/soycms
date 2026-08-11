@@ -2,6 +2,9 @@
 
 class CustomfieldAdvancedColumn extends SOYInquiry_ColumnBase{
 
+	public $isLinkageSOYMail;
+	public $isLinkageSOYShop;
+
     /**
 	 * ユーザに表示するようのフォーム
 	 */
