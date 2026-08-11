@@ -14,7 +14,7 @@ class NewImageListComponent extends HTMLList{
 		));
 
 		$this->addLabel("memo", array(
-			"html" => nl2br($entity->getMemo())
+			"html" => nl2br(htmlspecialchars($entity->getMemo(), ENT_QUOTES, "UTF-8"))
 		));
 
 		$this->addLink("name", array(
