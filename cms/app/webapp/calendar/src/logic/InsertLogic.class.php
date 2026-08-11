@@ -4,39 +4,28 @@ class InsertLogic extends SOY2LogicBase{
 	
 	/**
 	 * @param array, int<timestamp>, int, array<曜日の配列>
+	 * $cntは使用しなくなった
 	 */
-	function insertSchedules(array $items, int $endDate, int $cnt, array $ws){
-		
+	function insertSchedules(array $items, int $endDate, int $cnt, array $ws){		
 		$_arr = array();
-	 	for($i = 0; $i < $cnt; $i++){
-	 		$month = $items["month"] + $i;
-	 		$year = $items["year"];
-	 		if($month > 12){
-	 			$month = $month-12;
-	 			$year++;
-	 		}
-				 		
-	 		$lastDate = soycalendar_get_last_date_timestamp($year, $month);
-				 		
-	 		//開始日の最終日と終了日を比較する。最終日よりも終了日が大きい場合はその月の最後までインサートする。
-	 		$lastDay = ($endDate > $lastDate) ? $items["day"] : date("j", $endDate);
-						
-			//2週目以降のループは0からスタートする。
-			$day = ($i == 0) ? $items["day"] : 1;
-						
-			for($j = $day; $j <= $lastDay; $j++){
-				$schedule = soycalendar_get_schedule($year, $month, $j);	
-				if($schedule > $lastDate) continue;
-				
-				//曜日のチェック
-				if(is_bool(array_search(date("D", $schedule), $ws))) continue;
 
-				$values = $items;
-				$values["scheduleDate"] = $schedule;
+		$titleId = $items["titleId"];
+		$startDate = soycalendar_get_schedule_by_array($items);
 
-				$_arr[] = $values;
+		$_date = $startDate;
+
+		for(;;){
+			if(is_numeric(array_search(date("D", $_date), $ws))) {
+				$_arr[] = array(
+					"scheduleDate" => $_date,
+					"titleId" => $titleId,
+					"start" => $items["start"],
+					"end" => $items["end"]
+				);
 			}
-	 	}
+			$_date = strtotime("+1day", $_date);
+			if($_date > $endDate) break;
+		}
 
 		// 一括で登録する
 		if(count($_arr)){

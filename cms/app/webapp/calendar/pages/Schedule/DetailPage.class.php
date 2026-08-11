@@ -9,8 +9,11 @@ class DetailPage extends WebPage{
 	function doPost(){
 
 		if(soy2_check_token()){
-			if(isset($_POST["confirm"])){
-				$item = $_POST["item"];
+			if(isset($_POST["confirm"]) && isset($_POST["item"]["start_calendar"]) && strlen($_POST["item"]["start_calendar"])){
+				$item = soycalendar_split_array_by_text($_POST["item"]["start_calendar"]);
+				foreach(array("titleId", "start", "end") as $idx){
+					$item[$idx] = $_POST["item"][$idx];	
+				}				
 				$startDate = soycalendar_get_schedule_by_array($item);
 				
 				$logic = SOY2Logic::createInstance("logic.InsertLogic");
@@ -18,10 +21,9 @@ class DetailPage extends WebPage{
 				//繰り返し登録	繰り返し登録は新規登録の時のみ
 				//if(false){	//まずは一回のみの登録
 				if($this->id === 0 && isset($_POST["repeat"]["confirm"])){
-					$endDate = soycalendar_get_schedule_by_array($_POST["end"]);
+					$end = soycalendar_split_array_by_text($_POST["item"]["end_calendar"]);
+					$endDate = soycalendar_get_schedule_by_array($end);
 					if($endDate > $startDate) {
-						$end = $_POST["end"];
-						
 						switch($_POST["repeat"]["type"]){
 							case 3:
 								$cnt = $end["month"] - $item["month"] + 1;
@@ -33,7 +35,7 @@ class DetailPage extends WebPage{
 
 						$ws = ((int)$_POST["repeat"]["type"] === 1) ? self::_getDayFlag() : $_POST["repeat"]["day"];
 						$logic->insertSchedules($item, $endDate, $cnt, $ws);
-						CMSApplication::jump();
+						CMSApplication::jump("Schedule.Detail?year=".$item["year"]."&month=".$item["month"]."&day=".$item["day"]);
 					}
 				}
 
@@ -44,9 +46,8 @@ class DetailPage extends WebPage{
 					if($startDate <= soycalendar_get_last_date_timestamp($item["year"],$item["month"])){	// この行でありえない日付(2/31等)を除く
 						$item["scheduleDate"] = $startDate;
 						if($logic->save($item, $this->id)){
-							CMSApplication::jump();
+							CMSApplication::jump("Schedule.Detail?year=".$item["year"]."&month=".$item["month"]."&day=".$item["day"]);
 						}
-						
 					}
 				}else{	//更新
 					if($logic->save($item, $this->id)){
@@ -91,22 +92,13 @@ class DetailPage extends WebPage{
     		"selected" => $itemObj->getTitleId()
     	));
 
-		
-    	$this->addSelect("year", array(
-    		"name" => "item[year]",
-    		"options" => CalendarAppUtil::getYearArray(),
-    		"selected" => date("Y", $itemObj->getScheduleDate())
+    	$this->addInput("start_calendar", array(
+    		"name" => "item[start_calendar]",
+    		"value" => (isset($_GET["year"])) ? soycalendar_format_date_text($_GET) : "",
+    		"required" => true,
+    		"readonly" => true
     	));
-    	$this->addSelect("month", array(
-    		"name" => "item[month]",
-    		"options" => range(1,12),
-    		"selected" => date("n", $itemObj->getScheduleDate())
-    	));
-    	$this->addSelect("day", array(
-    		"name" => "item[day]",
-    		"options" => range(1,31),
-    		"selected" => date("j", $itemObj->getScheduleDate())
-    	));
+
     	$this->addInput("start", array(
     		"name" => "item[start]",
     		"value" => $itemObj->getStart(),
@@ -142,6 +134,14 @@ class DetailPage extends WebPage{
 
     	$end = self::_getYnjArrayOnEnd();
 
+		$this->addInput("end_calendar", array(
+    		"name" => "item[end_calendar]",
+    		"value" => (isset($_GET["year"])) ? soycalendar_format_date_text($_GET) : "",
+    		"required" => true,
+    		"readonly" => true
+    	));
+
+/**
     	$this->addSelect("end_year", array(
     		"name" => "end[year]",
     		"options" => CalendarAppUtil::getYearArray(),
@@ -157,11 +157,16 @@ class DetailPage extends WebPage{
     		"options" => range(1,31),
     		"selected" => $end["day"]
     	));
+**/
 
     	self::_buildCheckboxList();
 
+		$y = (isset($_GET["year"])) ? (int)$_GET["year"] : date("Y");
+		$m = (isset($_GET["month"])) ? (int)$_GET["month"] : date("n");
+
     	$this->addLabel("calendar", array(
-    		"html" => SOY2Logic::createInstance("logic.CalendarLogic")->getCurrentCalendar(true)
+    		/**"html" => SOY2Logic::createInstance("logic.CalendarLogic")->getCurrentCalendar(true)**/
+    		"html" => SOY2Logic::createInstance("logic.CalendarLogic")->getCalendar($y, $m, true)
     	));
     }
 

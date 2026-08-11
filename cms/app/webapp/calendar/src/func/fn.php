@@ -38,6 +38,39 @@ function soycalendar_get_schedule_by_array(array $arr){
 }
 
 /**
+ * @param array(year, month, day)
+ * @return string<yy/mm/dd>
+ */
+function soycalendar_format_date_text(array $arr){
+	if(!isset($arr["year"]) || !isset($arr["month"]) || !isset($arr["day"])) return "";
+	return date("Y/m/d", soycalendar_get_schedule_by_array($arr));
+}
+
+/**
+ * @param string<yy/mm/dd>
+ * @return array(year, month, day)
+ */
+function soycalendar_split_array_by_text(string $dateTxt){
+	$arr = explode("/", $dateTxt);
+	//整形
+	$_tmp = array();
+	foreach($arr as $idx => $v){
+		switch($idx){
+			case 0:
+				$_tmp["year"] = (int)$arr[$idx];
+				break;
+			case 1:
+				$_tmp["month"] = (int)$arr[$idx];
+				break;
+			case 2:
+				$_tmp["day"] = (int)$arr[$idx];
+				break;
+		}
+	}
+	return $_tmp;
+}
+
+/**
  * @param int<timestamp>
  * @return array("year", "month", "day", "w")
  */

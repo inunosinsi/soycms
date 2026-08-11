@@ -38,11 +38,7 @@
 								<th>日時</th>
 								<td>
 									<div class="form-inline">
-										<select soy:id="year" class="form-control"></select>&nbsp;年
-										&nbsp;
-										<select soy:id="month" class="form-control"></select>&nbsp;月
-										&nbsp;
-										<select soy:id="day" class="form-control"></select>&nbsp;日
+										<input type="text" class="form-control datepicker" soy:id="start_calendar">
 										&nbsp;&nbsp;
 										<input type="text" class="form-control" soy:id="start">&nbsp;～&nbsp;<input type="text" class="form-control" soy:id="end">
 									</div>
@@ -97,11 +93,7 @@
 								<th>終了</th>
 								<td>
 									<div class="form-inline">
-										<select soy:id="end_year" class="form-control"></select>&nbsp;年
-										&nbsp;
-										<select soy:id="end_month" class="form-control"></select>&nbsp;月
-										&nbsp;
-										<select soy:id="end_day" class="form-control"></select>&nbsp;日
+										<input type="text" class="form-control datepicker" soy:id="end_calendar">
 									</div>
 									※繰返しが<strong>毎日</strong>と<strong>毎週</strong>の時は、その月の最後の日より先の日は登録されません
 								</td>
@@ -138,3 +130,10 @@
 		</div>
 	</div>
 </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/i18n/jquery.ui.datepicker-ja.min.js"></script>
+<script>
+$( function() {$( ".datepicker" ).datepicker({
+	dateFormat: "yy/mm/dd"
+});} );
+</script>

@@ -5,9 +5,11 @@ class RemovePage extends WebPage{
 	private $error=false;
 
 	function doPost(){
+		$start = soycalendar_split_array_by_text($_POST["start"]["start_calendar"]);
+		$startDate = soycalendar_get_schedule_by_array($start);
 
-		$startDate = soycalendar_get_schedule_by_array($_POST["start"]);
-		$endDate = soycalendar_get_schedule_by_array($_POST["end"]);
+		$end = soycalendar_split_array_by_text($_POST["end"]["end_calendar"]);
+		$endDate = soycalendar_get_schedule_by_array($end);
 
 		if(soy2_check_token() && $endDate >= $startDate){
 			$titleId = (isset($_POST["titleId"]) && (int)$_POST["titleId"] > 0) ? (int)$_POST["titleId"] : 0;
@@ -31,37 +33,18 @@ class RemovePage extends WebPage{
 
     	$this->addForm("form");
 
-		$yRange = range(CalendarAppUtil::getFirstItemScheduleDateYear(), date("Y")+1);
-    	$this->addSelect("year", array(
-    		"name" => "start[year]",
-    		"options" => $yRange,
-    		"selected" => date("Y")
-    	));
-    	$this->addSelect("month", array(
-    		"name" => "start[month]",
-    		"options" => range(1,12),
-    		"selected" => date("n")
-    	));
-    	$this->addSelect("day", array(
-    		"name" => "start[day]",
-    		"options" => range(1,31),
-    		"selected" => date("j")
+    	$this->addInput("start_calendar", array(
+    		"name" => "start[start_calendar]",
+    		"value" => date("Y/m/d"),
+    		"required" => true,
+    		"readonly" => true
     	));
 
-    	$this->addSelect("end_year", array(
-    		"name" => "end[year]",
-    		"options" => $yRange,
-    		"selected" => date("Y")
-    	));
-    	$this->addSelect("end_month", array(
-    		"name" => "end[month]",
-    		"options" => range(1,12),
-    		"selected" => date("n")
-    	));
-    	$this->addSelect("end_day", array(
-    		"name" => "end[day]",
-    		"options" => range(1,31),
-    		"selected" => date("j")
+    	$this->addInput("end_calendar", array(
+    		"name" => "end[end_calendar]",
+    		"value" => date("Y/m/d"),
+    		"required" => true,
+    		"readonly" => true
     	));
 
     	$this->addSelect("title", array(

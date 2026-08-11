@@ -27,17 +27,9 @@
 					<div class="form-group">
 						<div class="form-inline">
 							日程 :
-							<select soy:id="year" class="form-control"></select>&nbsp;年
-							&nbsp;
-							<select soy:id="month" class="form-control"></select>&nbsp;月
-							&nbsp;
-							<select soy:id="day" class="form-control"></select>&nbsp;日
+							<input type="text" class="form-control datepicker" soy:id="start_calendar">
 							&nbsp;&nbsp;～&nbsp;&nbsp;
-							<select soy:id="end_year" class="form-control"></select>&nbsp;年
-							&nbsp;
-							<select soy:id="end_month" class="form-control"></select>&nbsp;月
-							&nbsp;
-							<select soy:id="end_day" class="form-control"></select>&nbsp;日
+							<input type="text" class="form-control datepicker" soy:id="end_calendar">
 						</div>
 					</div>
 
@@ -58,3 +50,10 @@
 		</div>
 	</div>
 </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/i18n/jquery.ui.datepicker-ja.min.js"></script>
+<script>
+$( function() {$( ".datepicker" ).datepicker({
+	dateFormat: "yy/mm/dd"
+});} );
+</script>

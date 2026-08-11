@@ -380,7 +380,7 @@ class CalendarLogic extends SOY2LogicBase{
 		if($isToday) $classes[] = "today";
 		if(in_array(date("Ymd",$todayTime),$this->holiday)) $classes[] = "holiday";
 		if($isNextMonth) $classes[] = " other";
-		if(isset($attribute)) $classes[] = $attribute;
+		if(isset($attribute)) $classes[] = htmlspecialchars($attribute, ENT_QUOTES, "UTF-8");
 
 		$html = array();
 		$html[] = (count($classes)) ? "<td class=\"" . implode(" ", $classes) . "\">" : "<td>";
@@ -482,7 +482,7 @@ class CalendarLogic extends SOY2LogicBase{
 				if($this->isManagerMode) $html[] = "<a href=\"".$_SERVER["SCRIPT_NAME"]."/calendar/Schedule/Detail/".$schedule->getId()."\">";
 
 				$html[] = "<span class=\"" . implode(" ", self::_getScheduleClassList($schedule->getId(), "title")) . "\">";
-				$html[] = $titles[$schedule->getTitleId()];
+				$html[] = htmlspecialchars($titles[$schedule->getTitleId()], ENT_QUOTES, "UTF-8");
 				$html[] = "</span>\n";
 				if($isMobile) $html[] = "&nbsp;";
 				if(strlen($schedule->getStart()) > 0){
