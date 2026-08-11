@@ -9,7 +9,7 @@ class PageListComponent extends HTMLList{
 		$this->addCheckBox("page", array(
 			"name" => "display_config[]",
 			"value" => $key,
-			"selected" => (isset($this->displayConfig[$key]) && $this->displayConfig[$key] == 1),
+			"selected" => (!is_null($key) && isset($this->displayConfig[$key]) && $this->displayConfig[$key] == 1),
 			"label" => (isset($entity)) ? $entity : ""
 		));
 	}

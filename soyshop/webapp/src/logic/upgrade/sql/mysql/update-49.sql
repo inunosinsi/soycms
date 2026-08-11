@@ -1,0 +1,1 @@
+ALTER TABLE soyshop_orders ADD COLUMN status TINYINT NOT NULL DEFAULT 0 AFTER item_name;

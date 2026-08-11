@@ -1,0 +1,1 @@
+//util.SOYInquiryConnectUtilに移行

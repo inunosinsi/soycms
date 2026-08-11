@@ -1,0 +1,85 @@
+<div class="table-responsive">
+	<form soy:id="search_form">
+		<table class="table table-striped">
+			<caption>お問い合わせ検索</caption>
+			<col width="180px">
+			<tr>
+				<th>お問い合わせ番号</th>
+				<td><input type="search" soy:id="search_tracking_number"></td>
+				<th>顧客名</th>
+				<td><input type="search" soy:id="search_user_name"></td>
+			</tr>
+			<tr>
+				<th>メールアドレス</th>
+				<td><input type="search" soy:id="search_mail_address"></td>
+				<th>状態</th>
+				<td>
+					<input type="checkbox" soy:id="search_is_confirm">&nbsp;
+					<input type="checkbox" soy:id="search_no_confirm">
+				</td>
+			</tr>
+			<tr>
+				<th>本文</th>
+				<td colspan="3">
+					<input type="search" soy:id="search_content" style="width:95%;">
+				</td>
+			</tr>
+			<tr>
+				<th>お問い合わせ日時</th>
+				<td colspan="3">
+					<input type="search" class="date_picker_start" soy:id="search_create_date_start">～<input type="search" class="date_picker_end" soy:id="search_create_date_end">
+				</td>
+			</tr>
+		</table>
+		<div class="text-center">
+			<input type="submit" class="btn btn-primary btn-lg" value="検索">&nbsp;&nbsp;
+			<a soy:id="reset_link" class="btn btn-warning btn-lg">リセット</a>
+		</div>
+	</form>
+</div>
+
+<div class="table-responsive">
+	<table class="table table-striped">
+		<caption>お問い合わせ on マイページ</caption>
+		<thead>
+			<tr >
+				<th>お問い合わせ番号</th>
+				<th>お問い合わせ日時</th>
+				<th>顧客名</th>
+				<th>状態</th>
+				<th>&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- soy:id="inquiry_list" -->
+			<tr>
+				<td ><!-- soy:id="tracking_number" /--></td>
+				<td ><!-- soy:id="create_date" /--></td>
+				<td><a soy:id="user_link"><!-- soy:id="user_name" /--></a></td>
+				<td ><!-- soy:id="is_confirm" /--></td>
+				<td>
+					<a soy:id="mail_detail_link" class="btn btn-primary">詳細</a>
+				</td>
+			</tr>
+			<!-- /soy:id="inquiry_list" -->
+		</tbody>
+	</table>
+</div>
+
+<div class="pull-right">
+	<div class="pager_item">
+		<form soy:id="pager_jump">
+			<select soy:id="pager_select"></select>
+			<noscript><input type="submit" value="移動"/></noscript>
+			<a soy:id="prev_pager">&lt;</a>
+			<!-- soy:id="pager_list" -->
+			<a soy:id="target_link">1</a>
+			<!-- /soy:id="pager_list" -->
+			<a soy:id="next_pager">&gt;</a>
+			<span soy:id="count_start">1</span> - <span soy:id="count_end">20</span> / <span soy:id="count_max">100000</span>
+		</form>
+	</div>
+</div>
+
+<script soy:id="data_picker_ja_js"></script>
+<script soy:id="data_picker_js"></script>

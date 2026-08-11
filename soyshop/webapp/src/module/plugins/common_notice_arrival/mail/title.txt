@@ -1,0 +1,1 @@
+[#SHOP_NAME#] #ITEM_NAME#を入荷しました。

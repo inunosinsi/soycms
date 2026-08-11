@@ -1,0 +1,108 @@
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				メールの送信　<!-- soy:id="mail_type_text" /-->
+				<small class="pull-right" soy:display="storage">
+					<a href="javascript:void(0);" data-toggle="modal" data-target="#storageModal" class="btn btn-default btn-xs">ストレージ</a>
+				</small>
+			</div>
+
+			<div class="panel-body">
+				<form soy:id="form">
+
+					<!-- soy:display="on_confirm" -->
+					<div class="table-responsive">
+						<table class="table table-striped">
+							<caption>以下の内容で送信しますか？</caption>
+							<tr>
+								<th style="width:200px;">送信先</th>
+								<td>
+									<?php echo $page["send_to"]; ?>
+								</td>
+							</tr>
+							<tr>
+								<th style="width:200px;">件名</th>
+								<td>
+									<?php echo $page["mail_title"]; ?>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<div class="table-responsive">
+						<table class="table table-striped">
+							<tr>
+								<th>本文</th>
+							</tr>
+							<tr class="last_row">
+								<td>
+									<pre><?php echo $page["mail_content"]; ?></pre>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<input type="hidden" soy:id="mail_value" />
+
+					<div class="text-center">
+						<input type="submit" name="send" class="btn btn-primary btn-lg" value="送信実行" />
+					</div>
+
+					<br>
+
+					<div class="alert alert-info">修正する場合は以下から修正して下さい</div>
+					<!-- /soy:display="on_confirm" -->
+
+					<div class="alert alert-danger" soy:display="error">メールの送信に失敗しました</div>
+					<div class="table-responsive">
+						<table class="table table-striped">
+							<tr>
+								<th style="width:200px;">送信先</th>
+								<td>
+									<input soy:id="send_to" type="text" class="form-control">
+								</td>
+							</tr>
+							<tr>
+								<th style="width:200px;">件名</th>
+								<td>
+									<input soy:id="mail_title" class="form-control">
+								</td>
+							</tr>
+						</table>
+
+						<table class="table table-striped">
+							<tr>
+								<th>本文</th>
+							</tr>
+							<tr class="last_row">
+								<td>
+									<textarea soy:id="mail_content" class="editor form-control" style="height:600px;"></textarea>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="text-center">
+						<input type="submit" soy:id="send_button" class="btn btn-primary btn-lg" value="送信" />
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="storageModal">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">ストレージ</h5>
+			</div>
+			<div class="modal-body">
+				<iframe src="<!-- soy:id="storage_url" /-->" style="width:100%;height:400px;"></iframe>
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="storageModalClose" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,59 @@
+<div class="alert alert-success" soy:display="updated">更新しました</div>
+
+<h4>Facebookカタログ用XML出力プラグイン</h4>
+<form soy:id="form">
+	<div class="form-group">
+		<label>ショップ名</label>
+		<input type="text" class="form-control" soy:id="shop_name">
+	</div>
+
+	<div class="form-group">
+		<label>ショップの説明</label>
+		<textarea soy:id="shop_description" class="form-control"></textarea>
+	</div>
+
+	<div class="form-group">
+		<label>ブランド(商品毎に設定できます)</label>
+		<input type="text" class="form-control" soy:id="brand">
+	</div>
+
+	<div class="form-group">
+		<label>基本送料(商品毎に設定できます)</label>
+		<div class="form-inline">
+			<input type="number" class="form-control" soy:id="shipping_price">&nbsp;JPY
+		</div>
+	</div>
+
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="更新">
+	</div>
+</form>
+
+<br>
+
+<h4>設定方法</h4>
+<ul id="fb_ul">
+	<li>カタログマネージャ用XML表示ページ用のテンプレートを用意します。<br>
+		表示用テンプレートは<strong>フリーページで作成</strong>し、作成したテンプレートに<strong>&lt;!-- cms:id="facebook_catalog_manager.xml" /--&gt;</strong>のみを記述してください。
+	</li>
+
+	<li>カタログマネージャ用XMLの表示ページを作成します。<br>
+		上記で作成したテンプレートを元に、カタログマネージャ用XMLの表示ページを追加する。この時、URLには必ず<strong>facebook_catalog_manager.xml</strong>を入れてください。
+	</li>
+	<li>FacebookページショップやInstagramショッピングで出品したい商品の編集画面を開き、出品にチェックを入れます。</li>
+	<li>
+		Facebook for Businessのカタログマネージャでカタログを作成します。<br>
+		<a href="https://www.facebook.com/business/help/1275400645914358?id=725943027795860" target="_blank" rel="noopener">カタログマネージャでFacebookカタログを作成する | Facebook Businessヘルプセンター</a>
+	</li>
+	<li><strong>スケジュール設定したフィードを利用</strong>で<strong soy:id="xml_url"></strong>を登録します。</li>
+	<li>設定方法の詳しい記述は<a href="https://saitodev.co/article/3133" target="_blank" rel="noopener">SOY ShopでFacebookページショップと連携する - saitodev.co</a>をご覧ください。</li>
+</ul>
+
+<style>
+	#fb_ul{
+		list-style-type: disc;
+	}
+	#fb_ul li{
+		margin-top:10px;
+	}
+</style>

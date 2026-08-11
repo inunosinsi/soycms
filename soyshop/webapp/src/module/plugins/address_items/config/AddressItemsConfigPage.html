@@ -1,0 +1,37 @@
+<div class="alert alert-success" soy:display="updated">更新しました</div>
+<div class="alert alert-info">必須はユーザ側のページのみ機能します。</div>
+
+<div class="table-responsive">
+	<form soy:id="form">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>&nbsp;</th>
+					<th>項目名</th>
+					<th class="text-center">必須</th>
+					<th>例文</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- soy:id="address_list" -->
+				<tr>
+					<td class="text-center" soy:id="item_number"></td>
+					<td>
+						<input type="text" class="form-control" soy:id="label">
+					</td>
+					<td class="text-center">
+						<input type="checkbox" soy:id="required">
+					</td>
+					<td>
+						<input type="text" class="form-control" soy:id="example">
+					</td>
+				</tr>
+				<!-- /soy:id="address_list" -->
+			</tbody>
+		</table>
+
+		<div class="text-center">
+			<input type="submit" name="update" class="btn btn-primary btn-lg" value="更新">
+		</div>
+	</form>
+</div>

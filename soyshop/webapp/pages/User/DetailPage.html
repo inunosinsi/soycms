@@ -1,0 +1,507 @@
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<!-- soy:id="user_label" /-->情報詳細
+				<small class="pull-right">
+					<!-- soy:id="user_title_button_list" -->
+					<!-- soy:id="button_html" /-->
+					<!-- /soy:id="user_title_button_list" -->
+
+					<!-- soy:display="orderable_button" -->
+					<a soy:id="order_list_link" class="btn btn-warning btn-xs">この
+						<!-- soy:id="user_label*" /-->の注文履歴 (
+						<!-- soy:id="order_count" /-->)
+						<!-- soy:display="cancel_count" -->(
+						<!-- soy:id="order_cancel_count" /-->)
+						<!-- /soy:display="cancel_count" -->
+					</a>
+					<a soy:id="order_register_link" class="btn btn-success btn-xs">商品を注文する</a>
+					<!-- soy:display="order_cart_link" --><a soy:id="order_cart_link" class="btn btn-info btn-xs">公開側で注文する</a><!-- /soy:display="order_cart_link" -->
+					<!-- /soy:display="orderable_button" -->
+
+					<!-- soy:display="log_in_button" -->
+					<a soy:id="mypage_login_link" class="btn btn-default btn-xs">代わりにログイン</a>
+					<!-- /soy:display="log_in_button" -->
+				</small>
+			</div>
+			<div class="panel-body">
+				<div class="alert alert-success" soy:display="sended">メールを送信しました</div>
+				<div class="alert alert-success" soy:display="update_message">更新しました</div>
+				<div class="alert alert-danger" soy:display="notice_tmp_register">仮登録の
+					<!-- soy:id="user_label*" /-->です。
+				</div>
+				<div class="alert alert-danger" soy:display="notice_no_publish">非公開の
+					<!-- soy:id="user_label*" /-->です。
+				</div>
+				<div class="alert alert-danger" soy:display="user_code_error">既に登録されている
+					<!-- soy:id="user_label*" /-->コードです。
+				</div>
+
+				<form soy:id="detail_form">
+					<div class="table-responsive">
+						<table class="table table-striped">
+							<col style="width:200px;" />
+							<tr>
+								<th>ID</th>
+								<td>
+									<!-- soy:id="id" /-->
+								</td>
+							</tr>
+							<tr soy:display="mailAddress">
+								<th>メールアドレス</th>
+								<td>
+									<!-- soy:id="mail_address" /-->
+									<a href="" soy:id="mail_edit_link" class="btn btn-default">変更</a>
+								</td>
+							</tr>
+							<tr soy:display="accountId">
+								<th soy:id="account_id_item_name">ログインID</th>
+								<td>
+									<input soy:id="account_id" type="text" style="width:95%;" />
+								</td>
+							</tr>
+							<tr soy:display="userCode">
+								<th>
+									<!-- soy:id="user_label*" /-->コード
+								</th>
+								<td>
+									<input soy:id="user_code" type="text" style="width:50%;">
+								</td>
+							</tr>
+							<tr>
+								<th>パスワード</th>
+								<td>
+									<!-- soy:id="password_is_registered" -->パスワード登録済み
+									<!-- /soy:id="password_is_registered" -->
+									<!-- soy:id="password_is_not_registered" -->パスワード未登録
+									<!-- /soy:id="password_is_not_registered" -->
+									<a href="" soy:id="password_edit_link" class="btn btn-default" id="change_password_button">変更</a>
+								</td>
+							</tr>
+
+							<tr soy:display="name">
+								<th>氏名</th>
+								<td>
+									<input soy:id="name" type="text" style="width:95%;" />
+								</td>
+							</tr>
+
+							<tr soy:display="reading">
+								<th>フリガナ</th>
+								<td>
+									<input soy:id="furigana" type="text" style="width:95%;" />
+								</td>
+							</tr>
+
+							<tr soy:display="honorific">
+								<th>敬称</th>
+								<td>
+									<input soy:id="honorific" type="text" style="width:30%;" />
+								</td>
+							</tr>
+
+							<tr soy:display="nickname">
+								<th>ニックネーム</th>
+								<td>
+									<input soy:id="nickname" type="text" style="width:95%;" />
+								</td>
+							</tr>
+
+							<tr>
+								<th>プロフィール画像</th>
+								<td>
+									<img soy:id="image">
+									<input type="hidden" soy:id="image_path" />
+									<!-- soy:id="is_image" --><input type="checkbox" soy:id="delete_image"><br>
+									<!-- /soy:id="is_image" -->
+									<input type="file" name="image" />
+								</td>
+							</tr>
+
+							<tr soy:display="gender">
+								<th>性別</th>
+								<td>
+									<input soy:id="gender_male" type="radio" id="radio_sex_male" />
+									<label for="radio_sex_male">男</label>
+									<input soy:id="gender_female" type="radio" id="radio_sex_female" />
+									<label for="radio_sex_female">女</label>
+								</td>
+							</tr>
+
+							<tr soy:display="birthday">
+								<th>生年月日</th>
+								<td>
+									<input soy:id="birth_year" type="number" size="5">年
+									<input soy:id="birth_month" type="number" size="3">月
+									<input soy:id="birth_day" type="number" size="3">日
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<div class="table-responsive">
+						<table class="table table-striped">
+							<col style="width:200px;" />
+							<tr soy:display="zipCode">
+								<th>郵便番号</th>
+								<td>
+									<input soy:id="zip_code" type="text" size="20" class="input-zip" />&nbsp;
+									<a href="javascript:void(0);" class="search-btn btn btn-primary btn-sm">検索</a>
+								</td>
+							</tr>
+
+							<!-- soy:display="address" -->
+							<tr>
+								<th>住所</th>
+								<td>
+									<table style="width:60%;">
+										<tr>
+											<td colspan="2">
+												<select soy:id="area" id="area" class="input-pref">
+													<option value="">▼選択</option>
+												</select>
+											</td>
+										</tr>
+										<!-- soy:id="address1_show" -->
+										<tr>
+											<th soy:id="address1_label"></th>
+											<td>
+												<input soy:id="address1" type="text" class="form-control input-city" id="address1">
+											</td>
+										</tr>
+										<!-- /soy:id="address1_show" -->
+										<!-- soy:id="address2_show" -->
+										<tr>
+											<th soy:id="address2_label"></th>
+											<td>
+												<input soy:id="address2" type="text" class="form-control input-town" id="address2">
+											</td>
+										</tr>
+										<!-- /soy:id="address2_show" -->
+										<!-- soy:id="address3_show" -->
+										<tr>
+											<th soy:id="address3_label"></th>
+											<td>
+												<input soy:id="address3" type="text" class="form-control" id="address3">
+											</td>
+										</tr>
+										<!-- /soy:id="address3_show" -->
+										<!-- soy:id="address4_show" -->
+										<tr>
+											<th soy:id="address4_label"></th>
+											<td>
+												<input soy:id="address4" type="text" class="form-control" id="address4">
+											</td>
+										</tr>
+										<!-- /soy:id="address4_show" -->
+										<!-- soy:id="advenced_address_list" -->
+										<tr>
+											<td colspan="2">
+												<!-- soy:id="form" /-->
+											</td>
+										</tr>
+										<!-- /soy:id="advenced_address_list" -->
+									</table>
+								</td>
+							</tr>
+							<!-- /soy:display="address" -->
+
+							<tr soy:display="telephoneNumber">
+								<th>電話番号</th>
+								<td>
+									<input soy:id="tel_number" type="text" size="30" />
+								</td>
+							</tr>
+
+							<tr soy:display="faxNumber">
+								<th>FAX番号</th>
+								<td>
+									<input soy:id="fax_number" type="text" size="30" />
+								</td>
+							</tr>
+
+							<tr soy:display="cellphoneNumber">
+								<th>携帯電話番号</th>
+								<td>
+									<input soy:id="ketai_number" type="text" size="30" />
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<!-- soy:display="office_items" -->
+					<div class="table-responsive">
+						<table class="table table-striped">
+							<col style="width:200px;" />
+							<tr>
+								<th>法人名（勤務先など）</th>
+								<td>
+									<input soy:id="office" type="text" style="width:60%;" />
+								</td>
+							</tr>
+							<tr>
+								<th>法人所在地郵便番号</th>
+								<td>
+									<input soy:id="office_post_number" type="text" style="width:60%;" />
+								</td>
+							</tr>
+							<tr>
+								<th>法人所在地</th>
+								<td>
+									<select soy:id="office_area">
+										<option value="">▼選択</option>
+									</select>
+									<input soy:id="office_address1" type="text" style="width:60%;" /><br>
+									<input soy:id="office_address2" type="text" style="width:60%;" />
+								</td>
+							</tr>
+							<tr>
+								<th>法人電話番号</th>
+								<td>
+									<input soy:id="office_tel_number" type="text" style="width:60%;" />
+								</td>
+							</tr>
+							<tr>
+								<th>法人FAX番号</th>
+								<td>
+									<input soy:id="office_fax_number" type="text" style="width:60%;" />
+								</td>
+							</tr>
+						</table>
+					</div>
+					<!-- /soy:display="office_items" -->
+
+					<div class="table-responsive">
+						<table class="table table-striped">
+							<col style="width:200px;" />
+							<tr soy:display="url">
+								<th>URL</th>
+								<td>
+									<input soy:id="url" type="text" style="width:95%;" />
+								</td>
+							</tr>
+							<tr>
+								<th>属性</th>
+								<td>
+									<div class="form-inline">
+										<!-- soy:id="user_attribute_label_1" /-->：<input type="text" soy:id="attribute1" class="form-control">
+									</div>
+									<div class="form-inline">
+										<!-- soy:id="user_attribute_label_2" /-->：<input type="text" soy:id="attribute2" class="form-control">
+									</div>
+									<div class="form-inline">
+										<!-- soy:id="user_attribute_label_3" /-->：<input type="text" soy:id="attribute3" class="form-control">
+									</div>
+								</td>
+							</tr>
+							<!-- soy:display="has_user_customfield" -->
+							<!-- soy:id="user_customfield_list" -->
+							<tr>
+								<th>
+									<!-- soy:id="customfield_name" /-->
+								</th>
+								<td>
+									<!-- soy:id="customfield_form" /-->
+								</td>
+							</tr>
+							<!-- /soy:id="user_customfield_list" -->
+							<!-- /soy:display="has_user_customfield" -->
+							<tr soy:display="active_soymail_connector">
+								<th>メール配信(SOY Mail)</th>
+								<td>
+									<input type="checkbox" soy:id="not_send" />
+									<label for="not_send">メール配信をしない</label>
+								</td>
+							</tr>
+							<tr soy:display="user_custom_search_field">
+								<th>公開状態</th>
+								<td>
+									<input type="radio" soy:id="is_publish">&nbsp;
+									<input type="radio" soy:id="no_publish">
+								</td>
+							</tr>
+							<tr>
+								<th>備考</th>
+								<td>
+									<textarea soy:id="memo" class="form-control"></textarea>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<div class="table-responsive" soy:display="profile_items">
+						<table class="table table-striped">
+							<col style="width:200px;" />
+							<tr>
+								<th>プロフィールページ</th>
+								<td>
+									<input soy:id="is_profile_display" type="checkbox" />
+								</td>
+							</tr>
+							<tr>
+								<th>プロフィールID</th>
+								<td>
+									<input soy:id="profile_id" type="text" />
+									<!-- soy:display="profile_confirm"-->&nbsp;<a soy:id="profile_confirm_link" class="btn btn-default">確認</a><!-- /soy:display="profile_confirm"-->
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<div class="table-responsive">
+						<table class="table table-striped">
+							<col style="width:200px;" />
+							<tr>
+								<th>登録年月日</th>
+								<td>
+									<span soy:id="register_date"></span>
+								</td>
+							</tr>
+							<tr>
+								<th>本登録年月日</th>
+								<td>
+									<span soy:id="real_register_date"></span>
+									<!-- soy:display="display_real_register" -->
+									<input type="checkbox" soy:id="real_register_check">
+									<!-- /soy:display="display_real_register" -->
+								</td>
+							</tr>
+							<tr>
+								<th>更新年月日</th>
+								<td>
+									<span soy:id="update_date"></span>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<!-- soy:id="address_list" -->
+					<div class="table-responsive">
+						<table class="table table-striped">
+							<caption>お届け先
+								<!-- soy:id="address_index" /-->
+							</caption>
+							<col style="width:200px;" />
+							<tr>
+								<th>法人名(勤務先)</th>
+								<td>
+									<input soy:id="send_office" type="text" value="" />
+								</td>
+							</tr>
+
+							<tr>
+								<th>氏名</th>
+								<td>
+									<input soy:id="send_name" type="text" value="" />
+								</td>
+							</tr>
+
+							<tr>
+								<th>フリガナ</th>
+								<td>
+									<input soy:id="send_reading" type="text" value="" />
+								</td>
+							</tr>
+
+							<tr>
+								<th>郵便番号</th>
+								<td>
+									<input soy:id="send_zip_code" type="text" value="" />
+								</td>
+							</tr>
+
+							<tr>
+								<th>住所</th>
+								<td>
+									<select soy:id="send_area">
+										<option value=""></option>
+									</select>
+									<input soy:id="send_address1" type="text" value="" /><br>
+									<input soy:id="send_address2" type="text" value="" />
+								</td>
+							</tr>
+
+							<tr>
+								<th>電話番号</th>
+								<td>
+									<input soy:id="send_tel_number" type="text" value="" />
+								</td>
+							</tr>
+						</table>
+					</div>
+					<!-- /soy:id="address_list" -->
+
+					<!-- soy:display="point" -->
+					<div class="table-responsive">
+						<table class="table table-striped">
+							<caption>ポイント</caption>
+							<col style="width:200px;" />
+							<tr>
+								<th>ポイント</th>
+								<td>
+									<input soy:id="point" type="text">&nbsp;pt
+								</td>
+							</tr>
+							<tr>
+								<th>ポイントの有効期限</th>
+								<td>
+									<!-- soy:id="time_limit" /-->&nbsp;
+								</td>
+							</tr>
+						</table>
+					</div>
+					<!-- /soy:display="point" -->
+
+					<!-- soy:display="ticket" -->
+					<div class="table-responsive">
+						<table class="table table-striped">
+							<caption>
+								<!-- soy:id="ticket_label" -->チケット
+								<!-- /soy:id="ticket_label" -->
+							</caption>
+							<col style="width:200px;" />
+							<tr>
+								<th>
+									<!-- soy:id="ticket_label*" -->チケット
+									<!-- /soy:id="ticket_label*" -->
+								</th>
+								<td>
+									<input soy:id="ticket_count" type="text">&nbsp;
+									<!-- soy:id="ticket_unit" -->枚
+									<!-- /soy:id="ticket_unit" -->
+								</td>
+							</tr>
+						</table>
+					</div>
+					<!-- /soy:display="ticket" -->
+
+					<!-- soy:display="app_limit_function" -->
+					<div class="text-center">
+						<input type="submit" name="conduct" class="btn btn-primary btn-lg" value="更新" />
+					</div>
+					<!-- /soy:display="app_limit_function" -->
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="storageModal">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">ストレージ</h5>
+			</div>
+			<div class="modal-body">
+				<iframe src="<!-- soy:id=" storage_url" /-->" style="width:100%;height:400px;"></iframe>
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="storageModalClose" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" soy:id="zip2address_js"></script>
+<!--住所検索-->

@@ -1,0 +1,30 @@
+<div class="alert alert-info" role="alert">振込先情報の登録</div>
+
+<section>
+	<form soy:id="form">
+		<div class="form-group">
+			<label>金融機関名</label>
+			<input type="text" class="form-control" soy:id="bank_name">
+		</div>
+		<div class="form-group">
+			<label>支店名</label>
+			<input type="text" class="form-control" soy:id="branch_name">
+		</div>
+		<div class="form-group">
+			<label>預金種別</label>
+			<select soy:id="deposit_type"><option></option></select>
+		</div>
+		<div class="form-group">
+			<label>口座番号</label>
+			<input type="text" class="form-control" soy:id="account_number">
+		</div>
+		<div class="form-group">
+			<label>口座名義</label>
+			<input type="text" class="form-control" soy:id="account_holder">
+		</div>
+
+		<div class="text-center">
+			<input type="submit" class="btn btn-primary btn-lg" value="確認">
+		</div>
+	</form>
+</section>

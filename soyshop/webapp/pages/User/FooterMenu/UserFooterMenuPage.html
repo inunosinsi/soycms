@@ -1,0 +1,43 @@
+<!-- soy:display="app_limit_function" -->
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">その他</div>
+			<div class="panel-body">
+				<dl>
+					<!-- soy:display="custom_plugin" -->
+					<dt>
+						<a soy:link="User.CustomField">カスタム項目設定</a>
+					</dt>
+					<dd>ユーザの追加項目を編集します。</dd>
+					<!-- /soy:display="custom_plugin" -->
+					<dt>
+						<a soy:link="User.Setting"><!-- soy:id="user_label" /-->属性の一括設定</a>
+					</dt>
+					<dd>ユーザ属性を一括で設定します。</dd>
+					<dt>
+						<a soy:link="User.Export">CSVエクスポート</a>
+					</dt>
+					<dd>ユーザ情報をCSV出力します。</dd>
+					<dt>
+						<a soy:link="User.Import">CSVインポート</a>
+					</dt>
+					<dd>ユーザ情報をCSVから入力します。</dd>
+					<!-- soy:id="function_list" -->
+					<dt soy:id="function_title">エクスポートの種類を選択してください</dt>
+					<dd>
+						<!-- soy:id="function_description" /-->&nbsp;<a class="btn btn-default" target="_blank" soy:id="action_link">実行</a>
+					</dd>
+					<!-- /soy:id="function_list" -->
+					<!-- soy:id="info_list" -->
+					<dt soy:id="info_title">プラグイン</dt>
+					<dd>
+						<!-- soy:id="info_description" /-->
+					</dd>
+					<!-- /soy:id="info_list" -->
+				</dl>
+			</div>
+		</div>
+	</div><!-- /block_body -->
+</div>
+<!-- /soy:display="app_limit_function" -->

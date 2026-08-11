@@ -151,9 +151,9 @@ class RoleLogic extends SOY2LogicBase {
 					$res = $this->updateChainSiteRole($key);
 					break;
 				//app権限をapp操作者にした場合、何もしない
-				case 2;
-				default;
-					$res = true;;
+				case 2:
+				default:
+					$res = true;
 			}
 		}
 

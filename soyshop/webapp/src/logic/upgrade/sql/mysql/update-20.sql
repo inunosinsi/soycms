@@ -1,0 +1,1 @@
+ALTER TABLE soyshop_order_attribute ADD COLUMN order_extra_values TEXT AFTER order_value2;

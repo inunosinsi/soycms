@@ -1,0 +1,1 @@
+ALTER TABLE soyshop_user ADD COLUMN is_error INTEGER default 0;

@@ -1,0 +1,22 @@
+<nav aria-label="breadcrumb">
+	<ol class="breadcrumb">
+		<li class="breadcrumb-item active" aria-current="page">ホーム</li>
+	</ol>
+</nav>
+
+<h2>掲示板</h2>
+
+<!-- soy:id="group_list" -->
+<div class="card border-secondary mt-3">
+	<div class="card-body">
+		<div class="card-title"><a soy:id="group_detail_link"><!-- soy:id="name" -->グループ名<!-- /soy:id="name" --></a></div>
+		<div class="card-text">
+			<!-- soy:id="is_abstract" --><hr><!-- soy:id="abstract" -->概要<!-- /soy:id="abstract" --><hr><!-- /soy:id="is_abstract" -->
+			<div class="text-muted">
+				トピック数：<!-- soy:id="topic_count" /-->&nbsp;
+				最近投稿されたトピック：<a soy:id="latest_post_topic_link">---</a>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /soy:id="group_list" -->

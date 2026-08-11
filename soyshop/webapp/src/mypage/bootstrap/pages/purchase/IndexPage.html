@@ -1,0 +1,48 @@
+<div class="alert alert-info" role="alert"><!-- soy:id="user_name" -->曽井　太郎<!-- /soy:id="user_name" -->さんの買取履歴一覧</div>
+
+<!-- soy:display="no_purchase" -->
+<p class="alert alert-info" role="alert">買取履歴がありません。</p>
+<!-- /soy:display="no_purchase" -->
+
+<!-- soy:display="has_purchase" -->
+<table class="table table-striped">
+    <thead class="thead-dark">
+		<tr>
+			<th>買取番号</th>
+			<th>時刻</th>
+			<th>状態</th>
+			<th>&nbsp;</th>
+		</tr>
+    </thead>
+
+    <tbody>
+		<!-- soy:id="purchase_list" -->
+		<tr>
+			<td><a soy:id="purchase_number">soy-1234</a></td>
+			<td soy:id="log_date">2019-12-24 23:59:59</td>
+			<td soy:id="status">受付中</td>
+			<td class="operation">
+				<a href="" soy:id="detail_link" class="btn btn-primary">詳細</a>
+			</td>
+		</tr>
+		<!-- /soy:id="purchase_list" -->
+    </tbody>
+</table>
+
+<!-- soy:id="has_multi_page" -->
+<nav>
+	<ul class="pagination justify-content-center">
+		<!-- soy:id="has_prev" -->
+		<li class="page-item"><a class="page-link" soy:id="prev_pager">前へ</a></li>
+		<!-- /soy:id="has_prev" -->
+
+		<!-- cms:ignore --><li class="page-item"><a class="page-link" href="#">1</a></li>
+		<li class="page-item"><!-- soy:id="current_page" /-->/<!-- soy:id="last_page" /--></li><!-- /cms:ignore -->
+
+		<!-- soy:id="has_next" -->
+		<li class="page-item"><a class="page-link" soy:id="next_pager">次へ</a></li>
+		<!-- /soy:id="has_next" -->
+	</ul>
+</nav>
+<!-- /soy:id="has_multi_page" -->
+<!-- /soy:display="has_purchase" -->

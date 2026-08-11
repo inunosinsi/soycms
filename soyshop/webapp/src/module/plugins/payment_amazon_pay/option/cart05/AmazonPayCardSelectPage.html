@@ -1,0 +1,59 @@
+<div class="error narrow" soy:display="error">
+	<p soy:id="error_message">エラーを出力します</p>
+</div>
+<div id="walletWidgetDiv" style="height:250px"></div>
+<script type='text/javascript'>
+// get access token
+function getURLParameter(name, source) {
+    return decodeURIComponent((new RegExp('[?|&amp;|#]' + name + '=' +
+                    '([^&;]+?)(&|#|;|$)').exec(source) || [, ""])[1].replace(/\+/g, '%20')) || null;
+}
+
+var accessToken = getURLParameter("access_token", location.hash);
+if (typeof accessToken === 'string' && accessToken.match(/^Atza/)) {
+    document.cookie = "amazon_Login_accessToken=" + accessToken + ";path=/;secure";
+}
+
+window.onAmazonLoginReady = function() {
+	amazon.Login.setClientId("<!-- soy:id="client_id" /-->");
+};
+
+window.onAmazonPaymentsReady = function() {
+	showWalletWidget(null);
+};
+
+function showWalletWidget(orderReferenceId) {
+	// Wallet
+	new OffAmazonPayments.Widgets.Wallet({
+		sellerId: '<!-- soy:id="merchant_id" /-->',
+		amazonOrderReferenceId: orderReferenceId,
+		onReady: function(orderReference) {
+			document.getElementById("orderReferenceId").value = orderReference.getAmazonOrderReferenceId();
+		},
+		onPaymentSelect: function() {
+			//console.log(arguments);
+		},
+		design: {
+			designMode: 'responsive'
+		},
+		onError: function(error) {
+			// エラー処理
+			// エラーが発生した際にonErrorハンドラーを使って処理することをお勧めします。
+			// @see https://payments.amazon.com/documentation/lpwa/201954960
+			//console.log('OffAmazonPayments.Widgets.Wallet', error.getErrorCode(), error.getErrorMessage());
+			document.getElementById("amazonPayErrorCode").value = error.getErrorCode();
+			document.getElementById("amazonPayErrorMessage").value = error.getErrorMessage();
+		}
+	}).bind("walletWidgetDiv");
+}
+
+</script>
+<script type="text/javascript" soy:id="widget_js" async></script>
+
+<form soy:id="form" method="POST" id="amazon_pay_form">
+		<input type="hidden" id="amazonPayErrorCode" name="amazonPayErrorCode">
+		<input type="hidden" id="amazonPayErrorMessage" name="amazonPayErrorMessage">
+		<input type="hidden" id="orderReferenceId" name="orderReferenceId">
+		<input type="submit" value="購入する">
+	<a soy:id="back_link">戻る</a>
+</form>

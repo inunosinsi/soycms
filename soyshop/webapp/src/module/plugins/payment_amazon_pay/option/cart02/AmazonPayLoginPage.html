@@ -1,0 +1,42 @@
+<div style="text-align: center; border: 1px solid #bbb;border-radius: 3px;padding:5px;margin:5px;">
+	<div id="AmazonPayButton"></div>
+	<label style="font-size: 14px;line-height: 23px;">
+		Amazonアカウントにご登録の住所・クレジット<br>カード情報を利用して、簡単にご注文が出来ます。<br>
+	</label>
+</div>
+
+<script type='text/javascript'>
+// get access token
+function getURLParameter(name, source) {
+		return decodeURIComponent((new RegExp('[?|&amp;|#]' + name + '=' +
+										'([^&;]+?)(&|#|;|$)').exec(source) || [, ""])[1].replace(/\+/g, '%20')) || null;
+}
+
+var accessToken = getURLParameter("access_token", location.hash);
+if (typeof accessToken === 'string' && accessToken.match(/^Atza/)) {
+		document.cookie = "amazon_Login_accessToken=" + accessToken + ";path=/;secure";
+}
+
+window.onAmazonLoginReady = function() {
+	amazon.Login.setClientId("<!-- soy:id="client_id" /-->");
+};
+
+window.onAmazonPaymentsReady = function() {
+	showLoginButton();
+};
+
+function showLoginButton() {
+	var authRequest;
+	OffAmazonPayments.Button("AmazonPayButton", "<!-- soy:id="merchant_id" /-->", {
+		type:	"PwA",
+		color: "Gold",
+		size:	"medium",
+
+		authorization: function() {
+			loginOptions = {scope: "profile", popup: true};
+			authRequest = amazon.Login.authorize (loginOptions, "<!-- soy:id="redirect_url" /-->");
+		}
+	});
+}
+</script>
+<script type="text/javascript" soy:id="widget_js" async></script>

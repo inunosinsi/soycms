@@ -1,0 +1,87 @@
+<div class="alert alert-success" soy:display="updated">変更しました</div>
+
+<div style="margin-bottom:5px;">
+	<a soy:id="back_link" class="btn btn-default"></a>
+</div>
+
+<form soy:id="form">
+	<div class="table-responsive">
+		<table class="table table-striped" style="width:580px;">
+			<caption>営業日・定休日の設定</caption>
+			<tr>
+				<th class="col-lg-1">
+					毎週
+				</th>
+				<td>
+					<!-- soy:id="week_holiday_list" -->
+					<input type="checkbox" soy:id="dow" /><!-- soy:id="label" /-->
+					<!-- /soy:id="week_holiday_list" -->
+				</td>
+			</tr>
+			<!-- soy:id="day_of_week_list" -->
+			<tr>
+				<th>
+					<!-- soy:id="day_label" /-->
+				</th>
+				<td>
+					<!-- soy:id="week_list" -->
+					<input type="checkbox" soy:id="day"/>
+					<!-- /soy:id="week_list" -->
+				</td>
+			</tr>
+			<!-- /soy:id="day_of_week_list" -->
+		</table>
+	</div>
+
+	<div class="form-group">
+		<label>定休日設定：月日指定<span class="option">(一行ごとに08/01のように記述してください)</span></label>
+		<textarea soy:id="md" class="minieditor form-control"></textarea>
+	</div>
+
+	<div class="form-group">
+		<label>定休日設定：年月日指定<span class="option">(一行ごとに2010/08/01のように記述してください)</span></label>
+		<textarea soy:id="ymd" class="minieditor form-control"></textarea>
+	</div>
+
+	<div class="form-group">
+		<label>営業日設定<span class="option">(定休日設定より優先される営業日です。一行ごとに2010/08/01のように記述してください)</span></label>
+		<textarea soy:id="business_day" class="minieditor form-control"></textarea>
+	</div>
+
+	<div class="form-group">
+		<label>その他の設定<span class="option">(定休日設定より優先される営業日です。一行ごとに2010/08/01のように記述してください)</span></label>
+		<textarea soy:id="other_day" class="minieditor form-control"></textarea>
+	</div>
+
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" name="update" value="変更">
+	</div>
+</form>
+
+<h4><a href="javascript:void(0);" class="btn btn-default" onclick="$('.class_example').toggle();">クラス名一覧</a></h4>
+<div class="table-responsive">
+	<table class="table table-striped class_example" style="display:none; width:300px;">
+		<thead>
+			<tr>
+				<th>クラス名</th><th>箇所</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>sun</td><td>日曜日</td>
+			</tr>
+			<tr>
+				<td>sat</td><td>土曜日</td>
+			</tr>
+			<tr>
+				<td>today</td><td>本日</td>
+			</tr>
+			<tr>
+				<td>close</td><td>定休日</td>
+			</tr>
+			<tr>
+				<td>other</td><td>その他</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

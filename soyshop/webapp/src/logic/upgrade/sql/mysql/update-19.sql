@@ -1,0 +1,1 @@
+ALTER TABLE soyshop_user ADD COLUMN profile_id VARCHAR(50);

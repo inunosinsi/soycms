@@ -1,0 +1,1 @@
+ALTER TABLE soyshop_item ADD INDEX idx_shop_item_search (item_is_open, is_disabled, open_period_start, open_period_end);

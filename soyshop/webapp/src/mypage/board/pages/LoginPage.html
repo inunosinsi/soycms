@@ -1,0 +1,40 @@
+<form soy:id="login_form">
+	<h2>ログイン</h2>
+
+	<div class="form-group">
+		<label for="mail_address">メールアドレス</label>
+		<input type="text" class="form-control" soy:id="login_id">
+	</div>
+
+	<div class="form-group">
+		<label for="password">パスワード</label>
+		<input type="password" class="form-control" soy:id="login_password">
+	</div>
+
+	<div class="form-check">
+		<input type="checkbox" soy:id="auto_login" id="auto_login_check">&nbsp;<label for="auto_login_check">次回から自動的にログインする</label>
+	</div>
+
+	<!-- soy:display="has_error" -->
+	<p soy:id="login_error" class="alert alert-danger" role="alert">ご入力のメールアドレスでは登録されていません。</p>
+	<!-- /soy:display="has_error" -->
+
+	<div class="text-center">
+		<input type="submit" name="login" class="btn btn-primary btn-lg" value="ログイン">
+	</div>
+	<div class="text-center">
+		<a soy:id="remind_link" class="btn btn-default">パスワードをお忘れの方はこちら</a>
+	</div>
+</form>
+
+<!-- soy:display="social_login" -->
+<ul>
+<li soy:id="social_login_list"><!-- soy:id="button" /--></li>
+</ul>
+<!-- /soy:display="social_login" -->
+
+
+<div class="alert alert-info mt-3" role="alert">アカウントの作成</div>
+<p class="text-center">
+	<a soy:id="register_link" class="btn btn-primary btn-lg">アカウントの作成画面へ</a>
+</p>

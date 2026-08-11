@@ -1,0 +1,73 @@
+<div class="alert alert-success" soy:display="updated">変更しました</div>
+
+<div class="alert alert-info">当プラグインを利用する場合は<a href="https://pay.amazon.co.jp/" target="_blank" rel="noopener" style="font-weight:bold;text-decoration:underline;">Amazon Pay | 簡単で安心なオンライン決済を | アマゾンペイ</a>で導入申込みを行ってからご利用ください</div>
+
+<form soy:id="form">
+	<div class="form-group">
+		<label>テストモード</label><br>
+		<input type="checkbox" soy:id="sandbox">
+	</div>
+
+	<div class="form-group">
+		<label>テスト出品者ID</label>
+		<input type="text" class="form-control" soy:id="test_merchant_id" />
+	</div>
+
+	<div class="form-group">
+		<label>テストアクセスキーID</label>
+		<input type="text" class="form-control" soy:id="test_access_key_id" />
+	</div>
+
+	<div class="form-group">
+		<label>テストシークレットアクセスキーID</label>
+		<input type="text" class="form-control" soy:id="test_secret_access_key" />
+	</div>
+
+	<div class="form-group">
+		<label>テストクライアントID/store ID</label>
+		<input type="text" class="form-control" soy:id="test_client_id" />
+	</div>
+
+	<div class="form-group">
+		<label>テストクライアントシークレット</label>
+		<input type="text" class="form-control" soy:id="test_client_secret" />
+	</div>
+
+	<div class="form-group">
+		<label>本番出品者ID</label>
+		<input type="text" class="form-control" soy:id="production_merchant_id" />
+	</div>
+
+	<div class="form-group">
+		<label>本番アクセスキーID</label>
+		<input type="text" class="form-control" soy:id="production_access_key_id" />
+	</div>
+
+	<div class="form-group">
+		<label>本番シークレットアクセスキーID</label>
+		<input type="text" class="form-control" soy:id="production_secret_access_key" />
+	</div>
+
+	<div class="form-group">
+		<label>本番クライアントID/store ID</label>
+		<input type="text" class="form-control" soy:id="production_client_id" />
+	</div>
+
+	<div class="form-group">
+		<label>本番クライアントシークレット</label>
+		<input type="text" class="form-control" soy:id="production_client_secret" />
+	</div>
+
+
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="変更">
+	</div>
+
+</form>
+
+<br>
+
+<div class="alert alert-info">
+	Amazon Payの管理画面のクライアントID/Store ID設定の管理のページでリターンURLの項目は下記の値を登録してください。<br>
+	<strong soy:id="redirect_url"></strong>
+</div>

@@ -1,0 +1,44 @@
+<div class="alert alert-success" soy:display="updated">追加しました</div>
+<div class="alert alert-success" soy:display="removed">削除しました</div>
+<div class="alert alert-danger" soy:display="failed">失敗しました</div>
+
+<form soy:id="form">
+	<div class="form-group">
+		<label>入金科目を追加する</label>
+		<div class="form-inline">
+			<input type="text" soy:id="deposit_subject_input" class="form-control" style="width:100px !important;">
+			<input type="submit" class="btn btn-primary" value="追加">
+		</div>
+	</div>
+</form>
+
+<!-- soy:display="list" -->
+<form soy:id="order_form">
+	<div class="table-responsive">
+		<table class="table table-striped" style="width:330px;float:left;">
+			<caption>登録した入金科目</caption>
+			<thead >
+				<tr>
+					<th nowrap>科目名</th>
+					<th nowrap>表示順</th>
+					<th nowrap>&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- soy:id="subject_list" -->
+				<tr>
+					<td soy:id="subject" nowrap></td>
+					<td ><input type="number" soy:id="display_order" class="form-control" style="width:80px;"></td>
+					<td>
+						<a soy:id="remove_link" class="btn btn-danger">削除</a>
+					</td>
+				</tr>
+				<!-- /soy:id="subject_list" -->
+			</tbody>
+		</table>
+	</div>
+	<div class="text-left">
+		<input type="submit" class="btn btn-primary btn-lg" value="表示順の変更">
+	</div>
+</form>
+<!-- /soy:display="list" -->

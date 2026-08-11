@@ -1,0 +1,137 @@
+<div class="alert alert-success" soy:display="updated">更新しました。</div>
+<div class="alert alert-danger" soy:display="failed">失敗しました。</div>
+
+<div class="alert alert-info">トピックをまとめるグループを作成します。</div>
+
+<div class="text-left">
+	<a class="btn btn-primary" href="javascript:void(0);" data-toggle="modal" data-target="#groupModal">グループの新規作成</a>
+</div>
+
+<!-- soy:display="groups" -->
+<br>
+
+<form soy:id="edit_form">
+	<div class="table-responsive">
+		<table class="table table-striped">
+			<caption>グループ</caption>
+			<thead>
+				<tr>
+					<th>グループ名</th>
+					<th>トピック数</th>
+					<th>概要</th>
+					<th>表示順</th>
+					<th>
+						編集&nbsp;
+						<a class="btn btn-default btn-sm" href="javascript:void(0);" onclick="$(this).hide();$('.delete_btn').css('visibility','visible');">削除</a>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- soy:id="group_list" -->
+				<tr>
+					<td soy:id="name"></td>
+					<td soy:id="topic_count"></td>
+					<td soy:id="abstract"></td>
+					<td><input type="number" soy:id="display_order"></td>
+					<td>
+						<a soy:id="detail_link" class="btn btn-primary">編集</a>&nbsp;
+						<a soy:id="remove_link" class="btn btn-danger delete_btn">削除</a>
+					</td>
+				</tr>
+				<!-- /soy:id="group_list" -->
+			</tbody>
+		</table>
+	</div>
+
+	<div class="text-center">
+		<input type="submit" name="sort" class="btn btn-primary btn-lg" value="並び順の変更">
+	</div>
+</form>
+<!-- /soy:display="groups" -->
+
+<br>
+
+<div class="alert alert-info">各種通知メールの設定</div>
+
+<form soy:id="mail_form">
+	<div class="table-responsive">
+		<table class="table table-striped" style="table-layout:auto;">
+			<caption>通知メールフッタ</caption>
+			<tr class="last_row">
+				<td>
+					<textarea id="mail_content" soy:id="mail_footer" class="editor form-control" style="height:400px;"></textarea>
+				</td>
+				<td class="mail_replace_word_panel">
+					<a href="javascript:void(0);" class="btn btn-default" onclick="$(this).parent().addClass('actived');$(this).hide();">&lt;&lt;</a>
+					<div class="word_list">
+						<h5>置換文字列</h5>
+						<ul>
+
+						</ul>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="変更">
+	</div>
+</form>
+
+<br>
+
+<div class="alert alert-info">Google Analytics等の設定</div>
+<div class="form-group">
+	<label>Google Search Consoleに登録するXML</label><br>
+	<pre soy:id="sitemap_xml"></pre>
+	<a href="https://search.google.com/search-console" target="_blank" rel="noopener">Google Search Console</a>
+</div>
+<div class="form-group">
+	<label>Google Analyticsに登録</label><br>
+	Google Analyticsプラグインを有効にして、各種設定を行ってください。
+	<!-- soy:display="google_analytics" --><a class="btn btn-info btn-xs" soy:id="google_analytics_link" style="pointer-events: none;">インストール済み</a><!-- /soy:display="google_analytics" -->
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="groupModal">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">グループの追加</h5>
+			</div>
+			<div class="modal-body">
+				<form soy:id="create_form" id="create_form">
+					<label>グループ名</label>
+					<input type="text" name="Group[name]" class="form-control">
+
+			        <input type="hidden" name="create" value="create">
+			        <div class="text-right" style="margin-top:15px;">
+			            <a class="btn btn-primary" href="javascript:void(0);" onclick="$('#create_form').trigger('submit');">追加</a>
+			        </div>
+			    </form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="groupModal" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+.delete_btn{
+	visibility:hidden;
+}
+.mail_replace_word_panel{
+	vertical-align:top;
+	width:80px;
+	text-align:center;
+}
+.mail_replace_word_panel .word_list{
+	display:none;
+	text-align:left;
+}
+.actived .word_list{
+	display:block;
+	width:140px;
+}
+</style>

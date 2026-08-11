@@ -1,0 +1,13 @@
+
+返信はマイページのお問い合わせからお願いします。
+#MYPAGE_LOGIN#
+
+-----------------------------------------
+#SHOP_NAME#
+#SITE_URL#
+#COMPANY_NAME#
+#COMPANY_MAILADDRESS#
+住所: #COMPANY_ADDRESS1#
+　　  #COMPANY_ADDRESS2#
+TEL: #COMPANY_TELEPHONE#
+FAX: #COMPANY_FAX#

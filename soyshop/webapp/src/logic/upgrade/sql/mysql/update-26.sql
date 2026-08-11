@@ -1,0 +1,1 @@
+ALTER TABLE soyshop_coupon_history CHANGE private price INTEGER NOT NULL DEFAULT 0;

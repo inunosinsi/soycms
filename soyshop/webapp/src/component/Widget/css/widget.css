@@ -1,0 +1,18 @@
+#memo_widget{
+	position:fixed;
+	left:0px;
+	bottom:0px;
+	width:250px;
+	z-index:999999 !important;
+}
+#memo_widget button{
+	width:100%;
+}
+
+#memo_widget_textarea{
+	display:none;
+}
+
+#memo_widget_textarea textarea{
+	height:300px;
+}

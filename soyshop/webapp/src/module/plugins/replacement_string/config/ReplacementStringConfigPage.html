@@ -1,0 +1,49 @@
+<div class="alert alert-success" soy:display="updated">更新しました</div>
+
+<form soy:id="form">
+<dl>
+  <dt>置換文字列の登録</dt>
+  <dd class="form-inline">
+		置換文字列 : <input type="text" name="symbol" class="form-control" required="required">&nbsp;
+		変換する文字列 : <input type="text" name="string" class="form-control" required="required">&nbsp;
+		<input type="submit" name="add" class="btn btn-primary" value="登録">
+  </dd>
+</dl>
+</form>
+
+<!-- soy:display="has_symbol_list" -->
+<form soy:id="change_form">
+<dl>
+  <dt>登録済み置換文字列</dt>
+  <dd>
+    <table class="table table-striped">
+  		<thead>
+  			<tr >
+  				<th>置換文字列</th>
+  				<th>変換する文字列</th>
+				<!-- soy:id="lang_list" -->
+				<th>他言語(<!-- soy:id="lang" /-->)</th>
+				<!-- /soy:id="lang_list" -->
+  				<th>&nbsp;</th>
+  			</tr>
+  		</thead>
+  		<tbody>
+  			<!-- soy:id="string_list" -->
+  			<tr>
+  				<td  soy:id="symbol"></td>
+  				<td>
+  					<input type="text" class="form-control" soy:id="string_input">&nbsp;
+  				</td>
+				<!-- soy:id="string_multi_language_inputs" /-->
+				<td>
+            		<input type="submit" name="change" class="btn btn-primary" value="変更">&nbsp;
+            		<a class="btn btn-danger" soy:id="remove_link">削除</a>
+          		</td>
+  			</tr>
+  			<!-- /soy:id="string_list" -->
+  		</tbody>
+  	</table>
+  </dd>
+</dl>
+</form>
+<!-- /soy:display="has_symbol_list" -->

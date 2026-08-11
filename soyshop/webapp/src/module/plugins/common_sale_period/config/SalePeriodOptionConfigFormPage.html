@@ -1,0 +1,118 @@
+<div class="alert alert-success" soy:display="updated">更新しました</div>
+
+<form soy:id="form">
+
+<div class="form-group">
+	<label>セール終了前通知設定</label>
+	<div class="form-inline">
+		<input type="number" soy:id="sale_end_date" class="form-control">日前にメールを送信する。
+		<a href="javascript:void(0);" onclick="$('.config_example').toggle();" class="btn btn-info">設定方法を確認する</a><br>
+		<div class="config_example">
+			<h4>&nbsp;jobの実行</h4>
+<pre>php.exe <!-- soy:id="job_path" /-->
+※exe.phpと<!-- soy:id="site_id" /-->の間には半角スペースが必要です</pre>
+		</div>
+	</div>
+</div>
+
+<div class="form-group">
+	<label>セール終了前通知メール件名</label>
+	<div>
+		<input soy:id="mail_end_title" class="form-control">
+		<div class="alert alert-warning">※#ITEM_NAME#と#SHOP_NAME#が使用できます。</div>
+	</div>
+</div>
+
+<table class="table table-striped" style="table-layout:auto;">
+	<caption>セール終了前通知メール本文</caption>
+	<tr class="last_row">
+		<td>
+			<textarea id="mail_content" soy:id="mail_end_content" class="editor form-control" style="height:400px;"></textarea>
+		</td>
+		<td class="mail_replace_word_panel">
+			<a href="javascript:void(0);" class="btn btn-default" onclick="$(this).parent().addClass('actived');$(this).hide();">&lt;&lt;</a>
+			<div class="word_list">
+				<h5>置換文字列</h5>
+				<ul>
+					<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#ITEM_NAME#');">商品名</a></li>
+					<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#SALE_END#');">セール終了日</a></li>
+					<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#NAME#');">氏名</a></li>
+					<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#READING#');">フリガナ</a></li>
+					<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#MAILADDRESS#');">メールアドレス</a></li>
+					<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#BIRTH_YEAR#');">誕生日(年)</a></li>
+					<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#BIRTH_MONTH#');">誕生日(月)</a></li>
+					<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#BIRTH_DAY#');">誕生日(日)</a></li>
+					<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#SHOP_NAME#');">ショップ名</a></li>
+					<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#COMPANY_NAME#');">会社名</a></li>
+					<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#COMPANY_ADDRESS1#');">会社郵便番号</a></li>
+					<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#COMPANY_ADDRESS2#');">会社住所</a></li>
+					<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#COMPANY_TELEPHONE#');">会社電話番号</a></li>
+					<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#COMPANY_FAX#');">会社FAX番号</a></li>
+					<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#COMPANY_MAILADDRESS#');">会社メールアドレス</a></li>
+					<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#SITE_URL#');">サイトURL</a></li>
+				</ul>
+			</div>
+		</td>
+	</tr>
+</table>
+
+<div class="text-center">
+	<input type="submit" class="btn btn-primary btn-lg" value="変更">
+</div>
+
+</form>
+
+<br>
+
+<div class="alert alert-info">block&#58;id="item"内で使用できるcms&#58;id</div>
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>cms&#58;id</th>
+			<th>使用できるタグ</th>
+			<th>詳細</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>item_price_extend</td>
+			<td>全て</td>
+			<td>セール期間設定を加味した商品の価格を出力します。</td>
+		</tr>
+		<tr>
+			<td>on_sale_extend</td>
+			<td>全て</td>
+			<td>セール期間設定を加味したセール期間中に表示される箇所になります。</td>
+		</tr>
+		<tr>
+			<td>not_on_sale_extend</td>
+			<td>全て</td>
+			<td>セール期間設定を加味したセール期間外に表示される箇所になります。</td>
+		</tr>
+		<tr>
+			<td>sale_start_date</td>
+			<td>全て</td>
+			<td>セール開始日を出力します。(cms:formatが使えます。例:cms:format="H年m月d日")</td>
+		</tr>
+		<tr>
+			<td>sale_end_date</td>
+			<td>全て</td>
+			<td>セール終了日を出力します。(cms:formatが使えます。例:cms:format="H年m月d日")</td>
+		</tr>
+</table>
+
+<style type="text/css">
+.mail_replace_word_panel{
+	vertical-align:top;
+	width:50px;
+	text-align:center;
+}
+.mail_replace_word_panel .word_list{
+	display:none;
+	text-align:left;
+}
+.actived .word_list{
+	display:block;
+	width:180px;
+}
+</style>

@@ -1,0 +1,34 @@
+<div class="alert alert-info">
+	<a href="https://www.google.com/recaptcha/intro/v3.html" target="_blank" rel="noopener">reCAPTCHA: Easy on Humans, Hard on Bots</a>のAdmin consoleでreCAPTCHA v3の手続きを進め、サイトキーとシークレットキーを取得します。
+</div>
+
+<form soy:id="form">
+	<div class="form-group">
+		<label>サイトキー</label>
+		<input type="text" class="form-control" soy:id="site_key">
+	</div>
+
+	<div class="form-group">
+		<label>シークレットキー</label>
+		<input type="text" class="form-control" soy:id="secret_key" style="width:80%;">
+	</div>
+
+	<div class="form-group">
+		<label>お問い合わせページとして用いるページの選択</label><br>
+		<select soy:id="page_id"><option></option></select>
+	</div>
+
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="更新">
+	</div>
+</form>
+
+<br>
+
+<div class="alert alert-warning">テンプレートをご自身でカスタマイズされた場合は下記のconfirm.phpを下記のように変更して下さい。</div>
+<pre>
+&lt;form method="post" <strong>id="soy_inquiry_form"</strong>&gt;
+</pre>
+※&lt;form&gt;タグにid="soy_inquiry_form"を追加<br>
+フォームのテンプレートのカスタマイズに関しては下記の記事をご覧ください。<br>
+<div style="margin-bottom:5px;"><a href="https://saitodev.co/article/11" target="_blank" rel="noopener">スマホ対応のお問い合わせフォームを作ってみた - saitodev.co</a></div>

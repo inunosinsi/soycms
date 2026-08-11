@@ -20,7 +20,7 @@ class DisplayErrorPlugin extends DisplayPlugin{
 	public static function check($soyValue){
 		$array = self::$errors;
 
-		return (isset($array[$soyValue])) ? (boolean)$array[$soyValue] : false; //default is hidden
+		return (isset($array[$soyValue])) ? (bool)$array[$soyValue] : false; //default is hidden
 	}
 
 	public static function setErrors($errors){
@@ -28,6 +28,6 @@ class DisplayErrorPlugin extends DisplayPlugin{
 	}
 
 	public static function setError($key,$value){
-		self::$errors[$key] = (boolean)$value;
+		self::$errors[$key] = (bool)$value;
 	}
 }

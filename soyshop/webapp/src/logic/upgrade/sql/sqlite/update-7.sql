@@ -1,0 +1,1 @@
+ALTER TABLE soyshop_orders ADD COLUMN is_addition integer default 0;

@@ -1,0 +1,1 @@
+ALTER TABLE soyshop_order ADD INDEX idx_status_date (order_status, payment_status, order_date DESC);

@@ -1,0 +1,48 @@
+<div class="alert alert-success" soy:display="successed">ブラウザの登録を行いました</div>
+<div class="alert alert-success" soy:display="released">ブラウザの登録を解除しました</div>
+<div class="alert alert-success" soy:display="updated">更新しました</div>
+
+<form soy:id="register_form">
+	<div class="alert alert-info">アクセスを許可するブラウザの登録</div>
+	<!-- soy:display="is_register" -->
+	<div class="alert alert-success">
+		現在アクセスしているブラウザは当プラグインに登録されています。
+		<input type="submit" name="release" class="btn btn-danger" value="解除">
+	</div>
+	<!-- /soy:display="is_register" -->
+
+	<!-- soy:display="no_register" -->
+	<div class="form-group">
+		現在開いているブラウザを登録する：<input type="submit" name="register" class="btn btn-primary" value="登録">
+	</div>
+	<!-- /soy:display="no_register" -->
+</form>
+
+<br>
+<form soy:id="form">
+	<div class="alert alert-info">アクセス制限の鍵の有効期限の設定</div>
+	<div class="form-group">
+		<div class="form-inline">
+			<input type="number" class="form-control" soy:id="day" style="width:100px;">日間、アクセス制限を許可したブラウザが該当するページにアクセスしなかった場合に鍵を削除する。
+		</div>
+		<div style="margin-top:3px;">
+			<input type="submit" class="btn btn-primary" name="update" value="変更">
+		</div>
+	</div>
+	<div class="alert alert-warning">ブラウザに登録した鍵はアクセス制限のページにアクセスする度に鍵毎更新されます。</div>
+	<br>
+	<div class="alert alert-info">アクセス制限をかけるページの設定</div>
+
+	<div class="form-group">
+		<label>ページ別設定</label>
+		<ul>
+			<!-- soy:id="page_list" -->
+			<li><input type="checkbox" soy:id="page"></li>
+			<!-- /soy:id="page_list" -->
+		</ul>
+	</div>
+
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" name="update" value="変更">
+	</div>
+</form>

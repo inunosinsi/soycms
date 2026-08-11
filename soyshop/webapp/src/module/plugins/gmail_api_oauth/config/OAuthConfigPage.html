@@ -1,0 +1,43 @@
+<!-- soy:display="permission_notice" -->
+<div class="alert alert-danger">
+	client_secret.jsonの保存用のディレクトリの書き込み権限がありません。<br>
+	<!-- soy:id="run_user" /--> が <!-- soy:id="token_dir" /--> に書き込めるようにしてください。
+</div>
+<!-- /soy:display="permission_notice" -->
+
+<div class="alert alert-info">
+	<a href="https://cloud.google.com/" target="_blank" rel="noopener" style="text-decoration:underline;">Google Cloud</a>でクライアントIDを作成する際、承認済みのリダイレクトのURIで下記のコールバックURLを登録します。<br>
+	設定に関しては：<a href="https://saitodev.co/soycms/soyinquiry/tutorial/235" target="_blank" rel="noopener" style="text-decoration:underline;">Gmail API(OAuth2.0認証)経由で通知メールを送信する - SOY Inquiryを使ってみよう</a>をご覧ください。
+</div>
+
+
+
+<form soy:id="form">
+	<div class="form-group">
+		<label>コールバックURL</label><br>
+		<strong soy:id="callback_url"></strong>
+	</div>
+
+	<div class="form-group">
+		<label>client_secret.json</label>
+		<div class="form-inline">
+			<input type="file" name="client_secret" class="form-control" accept=".json">&nbsp;
+		</div>
+		<!-- soy:display="is_client_secret" -->
+		<div class="alert alert-success">
+			client_secret.jsonは登録済みです：
+			<!-- soy:display="no_gmail_token" -->
+			<a soy:id="authenticate_button" class="btn btn-primary" target="_blank" rel="noopener">認証する</a>
+			<!-- /soy:display="no_gmail_token" -->
+			<!-- soy:display="is_gmail_token" -->
+			<a soy:id="authenticate_button*" class="btn btn-danger" target="_blank" rel="noopener">認証済み</a>
+			<!-- /soy:display="is_gmail_token" -->
+		</div>
+		<!-- /soy:display="is_client_secret" -->
+	</div>
+
+	
+	<div class="text-center">
+		<input type="submit" name="update" class="btn btn-primary btn-lg" value="更新">
+	</div>
+</form>

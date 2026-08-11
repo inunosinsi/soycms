@@ -1,0 +1,40 @@
+<script src="https://js.pay.jp/v2/pay.js"></script>
+<style>
+/* 必要に応じてフォームの外側のデザインを用意します */
+div.payjs-outer {
+	border: thin solid #198fcc;
+}
+</style>
+<div id="payjp_v2_form" class="payjs-outer"><!-- ここにフォームが生成されます --></div>
+<button onclick="onSubmit(event)">支払う</button>&nbsp;
+<a soy:id="back_link">戻る</a>
+<input type="hidden" soy:id="key_hidden">
+<span id="error"></span>
+
+<form soy:id="form" id="payjp_post_form"><input type="hidden" id="token" name="token" value=""></form>
+
+<script>
+// 公開鍵を登録し、起点となるオブジェクトを取得します
+var payjp = Payjp(document.getElementById("payjp_public_key").value);
+
+// elementsを取得します。ページ内に複数フォーム用意する場合は複数取得ください
+var elements = payjp.elements();
+
+// element(入力フォームの単位)を生成します
+var cardElement = elements.create('card');
+
+// elementをDOM上に配置します
+cardElement.mount('#payjp_v2_form');
+
+function onSubmit(event) {
+	payjp.createToken(cardElement).then(function(r) {
+		if(r.error){
+			document.getElementById('error').innerText = r.error.message;
+		}else{
+			//r.id
+			document.getElementById('token').value = r.id;
+			document.getElementById("payjp_post_form").submit();
+		}
+	});
+}
+</script>

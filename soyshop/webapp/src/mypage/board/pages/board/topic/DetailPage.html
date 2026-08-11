@@ -1,0 +1,96 @@
+<nav aria-label="breadcrumb">
+	<ol class="breadcrumb">
+		<li class="breadcrumb-item"><a soy:id="top_link">ホーム</a></li>
+		<li class="breadcrumb-item"><a soy:id="group_link"><!-- soy:id="group_name" -->グループ名<!-- /soy:id="group_name" -->の掲示板</a></li>
+		<li class="breadcrumb-item active" aria-current="page"><!-- soy:id="topic_label" -->トピックラベル<!-- /soy:id="topic_label" --></li>
+	</ol>
+</nav>
+
+<h2><!-- soy:id="topic_label*" -->トピックラベル<!-- /soy:id="topic_label*" --> <!-- soy:display="show_post_button" --><a href="#post_last" class="btn btn-primary btn-sm">投稿する</a><!-- /soy:display="show_post_button" --></h2>
+
+<!-- soy:id="post_list" -->
+<div class="card border-secondary mt-3" soy:id="post_id">
+	<div class="card-header">
+		<span class="text-left text-muted">
+		投稿者：<a soy:id="user_detail_link">投稿者名等</a>&nbsp;
+		投稿日時：<!-- soy:id="create_date" -->2020-01-01 00:00:00<!-- /soy:id="create_date" -->
+		</span>
+
+		<small class="float-right" soy:id="show_edit_link">
+			<a soy:id="edit_link" class="btn btn-secondary btn-sm">編集</a>
+		</small>
+	</div>
+	<div class="card-body">
+		<div class="card-text" soy:id="content">With supporting text below as a natural lead-in to additional content.</div>
+	</div>
+	<!-- soy:id="is_card_footer" -->
+	<div class="card-footer">
+		<!-- soy:id="is_images" -->
+		<div class="row align-items-start mb-3">
+			<!-- soy:id="image_list" -->
+			<div class="col"><!-- soy:id="is_image" --><a soy:id="modal_link"><img soy:id="image"></a><!-- /soy:id="is_image" --></div>
+			<!-- /soy:id="image_list" -->
+		</div>
+		<!-- /soy:id="is_images" -->
+		<!-- soy:id="is_signature" -->
+		<div class="text-muted">
+			<!-- soy:id="signature" -->署名<!-- /soy:id="signature" -->
+		</div>
+		<!-- /soy:id="is_signature" -->
+	</div>
+	<!-- /soy:id="is_card_footer" -->
+</div>
+<!-- /soy:id="post_list" -->
+
+<span id="post_last"></span>
+
+<!-- soy:display="no_logged_in" -->
+<div class="text-center mt-5">
+	<a soy:id="login_page_link" class="btn btn-info btn-lg">ログインして投稿する</a>
+</div>
+<!-- /soy:display="no_logged_in" -->
+
+<!-- soy:display="is_logged_in" -->
+<form soy:id="post_form" id="post_form" enctype="multipart/form-data">
+	<div class="card mt-3">
+		<div class="card-body">
+			<div class="mb-1">
+				<a href="javascript:void(0);" class="btn btn-outline-dark btn-sm" id="insert_code">コード</a>
+				<a href="javascript:void(0);" class="btn btn-outline-dark btn-sm" id="insert_quote">引用</a>
+				<a href="javascript:void(0);" class="btn btn-outline-dark btn-sm" id="insert_b">太字</a>
+			</div>
+			<textarea class="editor form-control" id="editor" soy:id="content" style="height:200px;" required="required"></textarea>
+			<script soy:id="advanced_textarea_js"></script>
+			<div class="alert alert-info">
+				<a data-toggle="collapse" href="#usageHtmlTagCollapse" role="button" aria-expanded="false" aria-controls="usageHtmlTagCollapse">使用可のHTMLタグ</a>
+				<div class="collapse" id="usageHtmlTagCollapse">
+					<!-- soy:id="usage_html_tags" /--><br>
+					HTMLタグの使用方法については<a href="https://developer.mozilla.org/ja/docs/Web/HTML" target="_blank">HTML: HyperText Markup Language | MDN</a>をご覧ください。
+				</div>
+			</div>
+		</div>
+		<div class="card-footer">
+			<!-- soy:display="image" -->
+			<div class="row align-items-start mb-3">
+				<!-- soy:id="image_list" -->
+					<div class="col upload-image">
+						<!-- soy:id="is_image" -->
+						<a soy:id="modal_link"><img soy:id="image"></a>
+						<button type="button" class="close" aria-label="Close" soy:id="remove_onclick">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<!-- /soy:id="is_image" -->
+					</div>
+				<!-- /soy:id="image_list" -->
+			</div>
+			<!-- /soy:display="image" -->
+			<!-- soy:id="upload_form_component" /-->
+		</div>
+	</div>
+	<div class="text-right mt-3">
+		<input type="submit" class="btn btn-primary btn-lg" name="confirm" value="投稿内容の確認">
+	</div>
+</form>
+<!-- /soy:display="is_logged_in" -->
+
+<!-- soy:id="image_modal" /-->

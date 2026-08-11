@@ -1,0 +1,43 @@
+<ul>
+	<li soy:display="is_open">
+		<a soy:id="item_site_link" target="_blank" rel="noopener">確認ページ</a>
+	</li>
+	<li soy:display="no_open">
+		<a soy:id="item_confirm_link" target="_blank" rel="noopener">非公開商品のプレビュー</a>
+	</li>
+	<li soy:display="filemanager">
+		<a href="javascript:void(0);" data-toggle="modal" data-target="#filemanagerModal">ファイルマネージャ</a>
+	</li>
+	<li>
+		前の商品:<a soy:id="prev_item_link">商品名</a><br />
+		次の商品:<a soy:id="next_item_link">商品名</a>
+	</li>
+	<li soy:display="is_open2">
+		<a soy:id="item_order_link">この商品を注文する</a>
+	</li>
+	<li soy:display="is_open3">
+		<a soy:id="insert_cart_link" target="_blank" rel="noopener">この商品を公開側のカートに入れる</a>
+	</li>
+	<li soy:display="can_copy">
+		<a onclick="return confirm('この商品を複製しますか？')" soy:id="copy_link">この商品を複製する</a>
+	</li>
+	<li>
+		<a onclick="return confirm('この商品を削除しますか？')" soy:id="item_remove_link">この商品を削除する</a>
+	</li>
+</ul>
+
+<div class="modal" tabindex="-1" role="dialog" id="filemanagerModal">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">ファイルマネージャ</h5>
+			</div>
+			<div class="modal-body">
+				<iframe soy:id="file_manager_url" style="width:100%;height:428px;"></iframe>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>

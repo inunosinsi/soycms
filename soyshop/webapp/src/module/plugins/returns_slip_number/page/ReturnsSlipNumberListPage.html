@@ -1,0 +1,155 @@
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">返送伝票番号一覧</div>
+			<div class="panel-body">
+				<div class="alert alert-success" soy:display="updated">更新しました</div>
+				<div class="alert alert-success" soy:display="successed">変更しました。</div>
+				<div class="alert alert-success" soy:display="removed">削除しました。</div>
+				<div class="alert alert-danger" soy:display="failed">失敗しました</div>
+				<div class="error" soy:display="invalid">不正なCSV/TSVファイルです。ファイルをご確認下さい。</div>
+
+				<div class="search_area_dd" soy:id="search_area">
+					<form soy:id="search_form">
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<caption>検索</caption>
+								<tr>
+									<th>商品名</th>
+									<td><input type="search" class="form-control" soy:id="search_item_name"></td>
+									<th>顧客名</th>
+									<td><input type="search" class="form-control" soy:id="search_user_name"></td>
+								</tr>
+								<tr>
+									<th>状態</th>
+									<td colspan="3">
+										<input type="checkbox" soy:id="no_return">&nbsp;
+										<input type="checkbox" soy:id="is_return">
+									</td>
+								</tr>
+								<!-- soy:id="custom_search_item_list" -->
+								<tr>
+									<th soy:id="label">拡張ポイントからラベルを出力</th>
+									<td soy:id="form" colspan="3">拡張ポイントからフォームを出力</td>
+								</tr>
+								<!-- /soy:id="custom_search_item_list" -->
+							</table>
+						</div>
+
+						<div class="text-center">
+							<input type="submit" name="execute" class="btn btn-primary btn-lg" value="検索">&nbsp;&nbsp;
+							<input type="submit" name="reset" class="btn btn-warning btn-lg" value="リセット">
+						</div>
+					</form>
+				</div>
+
+				<br>
+
+				<!-- soy:display="no_slip_number" -->
+				<div class="alert alert-info">返送待ちの伝票はありません。</div>
+				<!-- /soy:display="no_slip_number" -->
+
+				<!-- soy:display="is_slip_number" -->
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<caption>返送伝票番号一覧</caption>
+						<thead>
+							<tr >
+								<th>伝票番号</th>
+								<th>注文日時</th>
+								<th>注文番号</th>
+								<th>顧客名</th>
+								<th>状態</th>
+								<th>
+									<a class="btn btn-default fr" href="javascript:void(0);" onclick="$(this).hide();$('.delete_btn').css('visibility','visible');">削除</a>
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- soy:id="slip_number_list" -->
+							<tr>
+								<td soy:id="slip_number" ></td>
+								<td soy:id="order_date" ></td>
+								<td ><a soy:id="tracking_number"></a></td>
+								<td ><a soy:id="user_name"></a></td>
+								<td soy:id="status" ></td>
+								<td>
+									<a soy:id="return_link" class="btn btn-default">返送</a>
+									<a soy:id="remove_link" class="btn btn-default delete_btn">削除</a>
+								</td>
+							</tr>
+							<!-- /soy:id="slip_number_list" -->
+						</tbody>
+					</table>
+				</div>
+
+				<br>
+
+				<div class="alert alert-info">CSVエクスポート</div>
+				<form soy:id="export_form" id="export_form">
+					<div class="form-group">
+						<label>未返送分のCSVエクスポート</label>
+						<input type="submit" name="export" class="btn btn-primary" value="出力">
+					</div>
+				</form>
+
+				<br>
+
+				<div class="alert alert-info">CSVインポート</div>
+				<form soy:id="import_form">
+					<div class="form-group">
+						<label>未返送分の一括変更</label>
+						<div class="form-inline">
+							<input type="file" name="csv" class="form-control">&nbsp;
+							<label><input type="radio" name="charset" value="Shift_JIS" checked="checked">Shift_JIS</label>&nbsp;
+							<label><input type="radio" name="charset" value="UTF-8">UTF-8</label>&nbsp;
+							<input type="submit" name="import" class="btn btn-primary" value="一括変更">
+						</div>
+					</div>
+				</form>
+
+				<!-- soy:id="extension_html" /-->
+
+				<!-- /soy:display="is_slip_number" -->
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+	dt.search_btn_dt {
+		text-decoration: underline;
+		cursor: pointer;
+	}
+	div.search_area_dd {}
+
+	#standard_form_area{
+		/**display:none;**/
+	}
+	.content {
+		margin:2px 0 5px 23px;
+	}
+	.delete_btn{
+		visibility:hidden;
+	}
+</style>
+
+<script>
+	(function() {
+		// document.querySelector(".search_btn_dt").addEventListener("click", function() {
+		// 	sarea = document.querySelector(".search_area_dd");
+		// 	if (sarea.style.display == "none") {
+		// 		sarea.style.display = "inline";
+		// 	} else {
+		// 		sarea.style.display = "none";
+		// 	}
+		// });
+	})();
+
+	$("#export_form").attr("target", "download_frame");
+    $("#export_form").submit(function() {
+        setTimeout(function() {
+            location.reload();
+        }, 1000);
+    });
+</script>

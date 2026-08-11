@@ -1,0 +1,87 @@
+<div class="alert alert-success" soy:display="updated">変更しました</div>
+<div class="alert alert-info"><a soy:link="Config.ShopConfig" style="text-decoration:underline;">基本設定</a>の<strong>顧客情報の入力フォームの設定</strong>で<strong>敬称</strong>にチェックを入れると、CSV出力時の敬称を変更できます。</div>
+
+<form soy:id="form">
+	<div class="form-group">
+		<label>カートで表記する配送方法名</label>
+		<div class="form-inline">
+			<input type="text" class="form-control" soy:id="name">
+		</div>
+	</div>
+	<div class="form-group">
+		<label>カートで表記する配送方法説明</label>
+		<textarea class="form-control" soy:id="description"></textarea>
+	</div>
+	<div class="form-group">
+		<label>一個口の送料</label>
+		<div class="form-inline">
+			<input type="number" class="form-control" soy:id="fee_per_pack">&nbsp;円
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label>送料無料設定</label>
+		<div class="form-inline">
+			購入金額合計が
+			<input type="number" class="form-control" soy:id="shipping_free">&nbsp;円以上の場合は送料無料
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label>個口設定</label>
+		<div class="table-responsive">
+			<table class="table table-striped" style="width:450px;" id="fee_per_pack_config_table">
+				<thead>
+					<tr>
+						<th>カートに入れた商品の個数</th>
+						<th>個口</th>
+					</tr>
+				</thead>
+				<tfoot>
+					<tr>
+						<td colspan="2">
+							<a class="btn btn-success" href="javascript:void(0);" onclick="add_fee_form();">入力欄の追加</a>
+						</td>
+					</tr>
+				</tfoot>
+				<tbody>
+					<!-- soy:id="fee_per_pack_config" -->
+					<tr>
+						<td>
+							<input type="number" class="form-control" soy:id="pack">	
+						</td>
+						<td>
+							<input type="number" class="form-control" soy:id="fee">
+						</td>
+					</tr>
+					<!-- /soy:id="fee_per_pack_config" -->
+					<tr>
+						<td>
+							<input type="number" class="form-control" name="Config[fee_per_pack][pack][]">
+						</td>
+						<td>
+							<input type="number" class="form-control" name="Config[fee_per_pack][fee][]">
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="更新">
+	</div>
+</form>
+
+<script>
+var add_fee_form = function(){
+	var target = $("#fee_per_pack_config_table tbody");
+	$("input", $("<tr>"+($("tr:first",target).html())+"</tr>").appendTo(target)).attr("value","");
+
+	if($("#fee_per_pack_config_table tbody tr").size() == 2){
+		$("#fee_per_pack_config_table tbody tr a").each(function(){
+			$(this).show();
+		});
+	}
+}
+</script>

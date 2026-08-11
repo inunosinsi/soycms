@@ -1,0 +1,29 @@
+<table class="bank_info">
+	<caption>振込先情報</caption>
+	<tr>
+		<th>金融機関名</th>
+		<td><input type="text" class="form-control" soy:id="bank_name"></td>
+	</tr>
+	<tr>
+		<th>支店名</th>
+		<td><input type="text" class="form-control" soy:id="branch_name"></td>
+	</tr>
+	<tr>
+		<th>預金種別</th>
+		<td><select soy:id="deposit_type"><option></option></select></td>
+	</tr>
+	<tr>
+		<th>口座番号</th>
+		<td><input type="text" class="form-control" soy:id="account_number"></td>
+	</tr>
+	<tr>
+		<th>口座名義</th>
+		<td><input type="text" class="form-control" soy:id="account_holder"></td>
+	</tr>
+</table>
+
+<style>
+table.bank_info input{
+	width: 98%;
+}
+</style>

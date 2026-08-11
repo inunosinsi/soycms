@@ -1,0 +1,61 @@
+<nav aria-label="breadcrumb">
+	<ol class="breadcrumb">
+		<li class="breadcrumb-item"><a soy:id="top_link">ホーム</a></li>
+		<li class="breadcrumb-item active" aria-current="page"><!-- soy:id="name" -->グループ名<!-- /soy:id="name" -->の掲示板</li>
+	</ol>
+</nav>
+
+<h2><!-- soy:id="name*" -->グループ名<!-- /soy:id="name*" -->の掲示板</h2>
+
+<!-- soy:display="group_description" -->
+<div class="alert alert-info"><!-- soy:id="group_description" -->グループの説明文<!-- /soy:id="group_description" --></div>
+<!-- /soy:display="group_description" -->
+
+<div class="text-left mt-3">
+	<!-- soy:display="no_logged_in" -->
+	<a class="btn btn-info" href="javascript:void(0);" soy:id="login_page_link">ログインしてトピックの新規作成</a>
+	<!-- /soy:display="no_logged_in" -->
+	<!-- soy:display="is_logged_in" -->
+	<a class="btn btn-primary" href="javascript:void(0);" data-toggle="modal" data-target="#topicModal">トピックの新規作成</a>
+	<!-- /soy:display="is_logged_in" -->
+</div>
+
+<div class="alert alert-warning mt-3" soy:display="no_topic">トピックは作成されていません。</div>
+
+<!-- soy:id="topic_list" -->
+<div class="card border-secondary mt-3">
+	<div class="card-body">
+		<h5 class="card-title"><a soy:id="topic_detail_link"><!-- soy:id="label" -->トピック名<!-- /soy:id="label" --> (<!-- soy:id="post_count" -->3<!-- /soy:id="post_count" -->)</a></h5>
+		<p class="card-text">
+			初回投稿者：<a soy:id="first_post_user">最初の投稿者</a>&nbsp;
+			最終投稿者：<a soy:id="last_post_user">最初の投稿者</a>&nbsp;
+			最終投稿日時：<!-- soy:id="last_post_date" -->2021-01-01 00:00:00<!-- /soy:id="last_post_date" -->
+		</p>
+		<div class="text-center"><a href="#" class="btn btn-primary" soy:id="topic_detail_link*">トピック詳細を開く</a></div>
+	</div>
+</div>
+<!-- /soy:id="topic_list" -->
+
+<div class="modal" tabindex="-1" role="dialog" id="topicModal">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">トピックの新規作成</h5>
+			</div>
+			<div class="modal-body">
+				<form soy:id="create_form" id="create_form">
+					<label>トピック名</label>
+					<input type="text" name="Topic[label]" class="form-control">
+
+			        <input type="hidden" name="create" value="create">
+			        <div class="text-right" style="margin-top:15px;">
+			            <a class="btn btn-primary" href="javascript:void(0);" onclick="$('#create_form').trigger('submit');">追加</a>
+			        </div>
+			    </form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="topicModal" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>

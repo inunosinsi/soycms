@@ -1,0 +1,116 @@
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">カートの設定</div>
+			<div class="panel-body">
+				<div class="alert alert-success" soy:display="updated">更新しました</div>
+				<form soy:id="update_form">
+					<div class="form-group">
+						<label for="">カートのタイトル</label>
+						<input type="text" class="form-control" soy:id="cart_title">
+					</div>
+
+					<!-- soy:id="extension_cart_name_input" /-->
+
+					<div class="form-group">
+						<label for="">顧客情報のフォームの設定</label><br>
+						<a soy:link="Config.ShopConfig#customer_form_config">顧客情報のフォームの設定(基本設定)</a>
+					</div>
+
+					<div class="form-group">
+						<label for="">SSLを使用する</label><br>
+						<input type="hidden" name="cart_ssl" value="0" />
+						<input type="checkbox" soy:id="cart_is_ssl" onclick="$('#cart_use_ssl').toggle(this.checked);" />
+
+						<div id="cart_use_ssl" soy:id="cart_ssl_url_input">
+							<h4>[SSL]サイトのURL</h4>
+							<input type="text" soy:id="cart_ssl_url" class="form-control">
+						</div>
+						<div class="alert alert-warning">カートのURLのドメインが通常ページと異なる時のみ設定が必要</div>
+					</div>
+
+					<br>
+
+					<div class="alert alert-info">カート設定<!-- soy:display="is_enabled_util_mobile_check" -->（PC用）<!-- /soy:display="is_enabled_util_mobile_check" --></div>
+					<div class="form-group">
+						<label>カートページのURI</label>
+						<div class="form-inline">
+							<input type="text" soy:id="cart_url" class="form-control">
+						</div>
+						
+
+						<label>カートの種類の選択</label>
+						<div class="form-inline">
+							<select soy:id="cart_application" class="form-control"></select>
+						</div>
+						※カート機能を封じる場合は<strong>none</strong>を選択してください。
+
+						<br>
+
+						<label>文字コード</label>
+						<div class="form-inline">
+							<select soy:id="cart_charset" class="form-control"></select>
+						</div>
+					</div>
+
+					<!-- soy:display="is_enabled_util_mobile_check_1" -->
+					<br>
+
+					<div class="alert alert-info">カート設定（モバイル用）</div>
+					<div class="form-group">
+							
+						<label>カートページのURI</label>
+						<div class="form-inline">
+							<input type="text" soy:id="mobile_cart_url" class="form-control">
+						</div>
+
+						<label>カートの種類の選択</label>
+						<div class="form-inline">
+							<select soy:id="mobile_cart_application" class="form-control"></select>
+						</div>
+						※カート機能を封じる場合は<strong>none</strong>を選択してください。
+
+						<label>文字コード</label>
+						<div class="form-inline">
+							<select soy:id="mobile_cart_charset" class="form-control"></select>
+						</div>
+					</div>
+
+					<br>
+
+					<div class="alert alert-info">カート設定(スマートフォン用)</div>
+					<div class="form-group">
+							<label>カートページのURI</label>
+							<div class="form-inline">
+								<input type="text" soy:id="smartphone_cart_url" class="form-control">
+							</div>
+
+							<label>カートの種類の選択</label>
+							<div class="form-inline">
+								<select soy:id="smartphone_cart_application" class="form-control"></select>
+							</div>
+							※カート機能を封じる場合は<strong>none</strong>を選択してください。
+
+							<br>
+
+							<label>文字コード</label>
+							<div class="form-inline">
+								<select soy:id="smartphone_cart_charset" class="form-control"></select>
+							</div>
+						</dd>
+					</div>
+					<!-- /soy:display="is_enabled_util_mobile_check_1" -->
+
+					<div class="text-center">
+						<input type="submit" class="btn btn-primary btn-lg" value="更新">
+					</div>
+
+				</form>
+
+				<!-- soy:display="is_not_enabled_util_mobile_check" -->
+				<div class="alert alert-info" style="margin-top:15px;">※携帯電話やスマートフォンで使用するカートを分けたい場合は、<a soy:link="Plugin.List">プラグイン管理</a>で「携帯自動振り分けプラグイン」をインストールしてください。</div>
+				<!-- /soy:display="is_not_enabled_util_mobile_check" -->
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,90 @@
+<div class="text-left">
+	<a soy:link="Config.Detail?plugin=tag_cloud" class="btn btn-default">戻る</a>&nbsp;
+	<a href="javascript:void(0);" class="btn btn-primary" data-toggle="modal" data-target="#tagCategoryModal">カテゴリの新規作成</a>
+</div>
+
+<br>
+
+<div class="alert alert-warning">
+	<strong>カテゴリの設定方法</strong><br>
+	カテゴリを新規作成した後、各タグをドラック＆ドロップすることで分類できます。
+</div>
+
+<!-- soy:id="category_div_list" -->
+<div class="alert alert-info">
+	<!-- soy:id="label" -->未分類<!-- /soy:id="label" -->&nbsp;
+	<a href="javascript:void(0);" class="btn btn-default btn-sm" soy:id="remove_link">削除</a>
+</div>
+<div soy:id="category_tag_area" style="min-height:40px;">
+	<!-- soy:id="category_div_tag_list" -->
+	<a href="javascript:void(0);" class="btn btn-default tag_cloud_anchor draggable" soy:id="tag">タグ</a>
+	<!-- /soy:id="category_div_tag_list" -->
+</div>
+<br>
+<!-- /soy:id="category_div_list" -->
+
+<div style="display:none;">
+	<form soy:id="form">
+		<input type="hidden" id="word_id" name="word_id" value="">
+		<input type="hidden" id="category_id" name="category_id" value="">
+		<input type="submit" id="post_button" name="post">
+	</form>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="tagCategoryModal">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">項目の追加</h5>
+			</div>
+			<div class="modal-body">
+				<form soy:id="create_form" id="create_form">
+		            <div class="form-group">
+						<label>カテゴリ名</label>
+		            	<input name="label" type="text" class="form-control" required="required">
+		            </div>
+			        <div class="text-center">
+			            <a class="btn btn-primary" href="javascript:void(0);" onclick="$('#create_form').trigger('submit');">追加</a>
+			        </div>
+			    </form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="tagCategoryModalClose" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+.tag_cloud_anchor{
+	margin:3px;
+}
+</style>
+
+<script>
+$(function() {
+	$(".draggable").draggable();
+
+	var category_id_list = [<!-- soy:id="category_id_list_js" /-->];
+	for(var i = 0; i < category_id_list.length; i++){
+		$("#category_tag_area_" + category_id_list[i]).droppable({
+			accept : ".draggable",
+			drop : function(event , ui){
+				var categoryId = parseInt(event.target.id.replace("category_tag_area_", ""));
+				var wordId = parseInt(ui.draggable[0].id.replace("tag_", ""));
+
+				//POSTする
+				if(!isNaN(categoryId) && !isNaN(wordId)){
+					$("#word_id").val(wordId);
+					$("#category_id").val(categoryId);
+					$("#post_button").click();
+				}
+			}
+		});
+	}
+});
+</script>
+
+<script>
+
+</script>

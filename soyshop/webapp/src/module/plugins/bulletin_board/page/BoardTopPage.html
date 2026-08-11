@@ -1,0 +1,38 @@
+<div class="alert alert-info" soy:display="no_post">新着の投稿はありません</div>
+
+<!-- soy:display="is_post" -->
+<div class="table-responsive">
+	<table class="table table-striped">
+		<caption>新着の投稿</caption>
+		<thead>
+			<tr>
+				<th>投稿日時</th>
+				<th>投稿者</th>
+				<th>トピック</th>
+				<th>公開状況</th>
+				<th>&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- soy:id="post_list" -->
+			<tr>
+				<td soy:id="create_date"></td>
+				<td><a soy:id="user_name"></a></td>
+				<td soy:id="topic_label"></td>
+				<td soy:id="is_open"></td>
+				<td>
+					<a soy:id="detail_link" class="btn btn-primary">詳細</a>
+				</td>
+			</tr>
+			<!-- /soy:id="post_list" -->
+		</tbody>
+	</table>
+</div>
+<!-- /soy:display="is_post" -->
+
+<!-- soy:display="more_post" -->
+<div class="alert alert-info">
+	新着の投稿が15件以上あります	-&gt;
+	<a soy:link="Extension.bulletin_board">投稿一覧ページを開く</a>
+</div>
+<!-- /soy:display="more_post" -->
