@@ -18,7 +18,7 @@ class ImageListComponent extends HTMLList{
 		));
 		
 		$this->addLabel("memo", array(
-			"html" => nl2br(htmlspecialchars($entity->getMemo(), ENT_QUOTES, "UTF-8"))
+			"html" => soygallery_sanitize_html($entity->getMemo())
 		));
 		
 		$this->addLabel("is_public", array(

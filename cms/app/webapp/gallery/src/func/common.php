@@ -131,3 +131,30 @@ function soygallery_get_image_views_by_gId(int $gId){
 		return array();
 	}
 }
+
+/**
+ * HTMLから悪意のあるコード（XSS等）を除外する
+ *
+ * @param string|null $html ユーザー入力のHTML文字列
+ * @param array $allowedTags 許可するタグのリスト
+ * @return string サニタイズ済みの安全なHTML
+ */
+function soygallery_sanitize_html(string $html, array $allowedTags = ['p', 'b', 'strong', 'i', 'em', 'a', 'ul', 'ol', 'li', 'br']) {
+	if (empty($html)) return '';
+	if(!class_exists("HTMLPurifier_Config")) require_once __DIR__ . '/vendor/autoload.php';
+
+	$cfg = HTMLPurifier_Config::createDefault();
+
+	// キャッシュディレクトリのエラーを回避（キャッシュ無効化）
+	$cfg->set('Cache.DefinitionImpl', null);
+
+	// 許可するタグと属性をホワイトリストで指定
+	$allowedElements = implode(',', $allowedTags);
+	$cfg->set('HTML.Allowed', "{$allowedElements},a[href|title]");
+
+	// リンクの属性補強（セキュリティ向上）
+	$cfg->set('HTML.Nofollow', true); // 外部リンクに rel="nofollow" を自動付与
+
+	$purifier = new HTMLPurifier($cfg);
+	return $purifier->purify($html);
+}
