@@ -9,7 +9,7 @@ class InvoiceListComponent extends HTMLList{
 	private $itemDao;
 
 	protected function populateItem($entity){
-		$order = self::orderLogic()->getById($this->orderId);
+		$order = (is_numeric($this->orderId)) ? self::orderLogic()->getById($this->orderId) : new SOYShop_Order();
 
 		/*** 注文概要 ***/
 		self::buildOrderArea($order);
@@ -30,7 +30,7 @@ class InvoiceListComponent extends HTMLList{
 		self::buildClaimedArea($order);
 
 		// /*** 注文商品 ***/
-		$items = self::getItemOrders($order->getItems(), $order->getId());
+		$items = (is_numeric($order->getId())) ? self::getItemOrders($order->getItems(), $order->getId()) : array();
 		//商品が10個以上の場合はその他にしてまとめる
 		$otherNum = 9;
 		if(count($items) > $otherNum){
@@ -209,7 +209,7 @@ class InvoiceListComponent extends HTMLList{
 		));
 	}
 
-	protected function getItemOrders($itemOrders, $orderId){
+	protected function getItemOrders(array $itemOrders, int $orderId){
 		//ordersが空の時は再度取得する
 		if(count($itemOrders) === 0){
 			//一件しか取得できないのがちらほらあるので、再度コンストラクトすることにした

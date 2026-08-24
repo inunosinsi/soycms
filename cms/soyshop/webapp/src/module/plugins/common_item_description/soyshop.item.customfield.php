@@ -32,7 +32,7 @@ class CommonItemDescriptionField extends SOYShopItemCustomFieldBase{
 		$values = soy2_unserialize(SOYShop_DataSets::get("item_description", ""));
 		$ids = soy2_unserialize(soyshop_get_item_attribute_value($item->getId(), self::FIELD_ID, "string"));
 		
-		if(count($values)){
+		if(is_array($values) && count($values)){
 			for($i = 0; $i < count($values); $i++){
 				$flg = false;
 				if(count($ids)){
@@ -59,6 +59,7 @@ class CommonItemDescriptionField extends SOYShopItemCustomFieldBase{
 	 */
 	function onOutput($htmlObj, SOYShop_Item $item){
 		$ids = (is_numeric($item->getId())) ? soy2_unserialize(soyshop_get_item_attribute_value($item->getId(), self::FIELD_ID, "string")) : array();
+		if(!is_array($ids)) $ids = array();
 
 		$htmlObj->addModel("is_item_description", array(
 			"soy2prefix" => "block",

@@ -125,11 +125,25 @@ class DiscountFreeCouponLogic extends SOY2LogicBase{
 		return self::_getDiscountPrice($code, $this->cart->getItemPrice());
 	}
 
-	function getDiscountPriceByCodeWithTotalPrice(string $code, int $total){
-		return self::_getDiscountPrice($code, $total);
+	/**
+	 * @param string
+	 * @param int
+	 * @param int
+	 * @return int
+	 */
+	function getDiscountPriceByCodeWithTotalPrice(string $code, int $total, int $userId=0){
+		return self::_getDiscountPrice($code, $total, $userId);
 	}
 
-	private function _getDiscountPrice(string $code, int $total){
+	/**
+	 * @param string
+	 * @param int
+	 * @param int
+	 * @return int
+	 */
+	private function _getDiscountPrice(string $code, int $total, int $userId=0){
+		if(!self::checkUsable($code, $userId)) return 0;
+	
 		$coupon = self::getCouponByCode(trim($code));
 		if(is_null($coupon->getId())) return 0;
 

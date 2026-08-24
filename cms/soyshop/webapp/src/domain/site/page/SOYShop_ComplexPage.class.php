@@ -140,7 +140,7 @@ class SOYShop_ComplexPageBlock{
 		return $this->countEnd;
 	}
 	function setCountEnd($countEnd) {
-		if(strlen($countEnd) > 0)$countEnd = (int)$countEnd;
+		if(strlen($countEnd) > 0) $countEnd = (int)$countEnd;
 		$this->countEnd = $countEnd;
 	}
 

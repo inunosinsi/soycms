@@ -1,6 +1,7 @@
 <?php
 if(file_exists(dirname(SOYSHOP_ROOT)."/common/db/inquiry.db")){
-	SOY2Logic::createInstance("logic.plugin.SOYShopPluginLogic")->installModule("0_inquiry_failure_to_check");
+	$pluginId = "0_inquiry_failure_to_check";
+	SOY2Logic::createInstance("logic.plugin.SOYShopPluginLogic")->installModule($pluginId);
 
 	// 順番の変更
 	$pluginDao = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");

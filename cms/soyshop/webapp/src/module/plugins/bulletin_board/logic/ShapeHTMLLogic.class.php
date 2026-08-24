@@ -432,7 +432,7 @@ class ShapeHTMLLogic extends SOY2LogicBase {
 			switch($tag){
 				//閉じタグありのHTMLタグの場合
 				case "script":
-				case "style";
+				case "style":
 					for(;;){
 						preg_match('/\&lt;' . $tag . '.*?\&gt;.*?\&lt;\/' . $tag . '\&gt;/mis', $this->html, $tmp);
 						if(!isset($tmp[0]) || !strlen($tmp[0])) break;

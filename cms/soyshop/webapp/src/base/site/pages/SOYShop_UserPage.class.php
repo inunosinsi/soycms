@@ -35,7 +35,7 @@ class SOYShop_UserPage extends SOYShopPageBase{
 				$param = "?".session_name() . "=" . session_id();
 			}
 
-			$args = implode($this->args,"/");
+			$args = (is_array($this->args) && count($this->args)) ? implode("/", $this->args) : "";
 			SOY2PageController::redirect(soyshop_get_mypage_url() . "/" . $args.$param);
 			exit;
 		}

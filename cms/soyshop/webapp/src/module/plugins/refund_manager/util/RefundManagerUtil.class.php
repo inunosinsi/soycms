@@ -71,6 +71,7 @@ class RefundManagerUtil {
 				$isProcessed = 0;
 			}
 		}
+		if(!is_array($values)) $values = array();
 		return array($values, $isProcessed);
 	}
 
@@ -85,6 +86,7 @@ class RefundManagerUtil {
 			$values = array();
 			$isProcessed = 0;
 		}
+		if(!is_array($values)) $values = array();
 		return array($values, $isProcessed);
 	}
 }

@@ -48,7 +48,7 @@ if(isset($_REQUEST["a"])) {
 				//個数は-1以上の整数
 				$count = max(-1, (int)$count);
 
-				$res = $cart->addItem($item, $count, $replaceIdx);
+				$res = $cart->addItem((int)$item, $count, $replaceIdx);
 				if(!$res) continue;
 
 				SOYShopPlugin::invoke("soyshop.item.option", array(
@@ -84,7 +84,7 @@ if(isset($_REQUEST["a"])) {
 			}
 			break;
 
-		case "shoooot";//カートを一つの商品で満たす
+		case "shoooot"://カートを一つの商品で満たす
 			//追加
 			foreach($_item as $key => $item){
 				$count = 1;

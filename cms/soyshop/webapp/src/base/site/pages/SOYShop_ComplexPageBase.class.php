@@ -32,7 +32,7 @@ class SOYShop_ComplexPageBase extends SOYShopPageBase{
 		$isAnd = $block->isAndCustomFieldCordination();
 
 		//表示件数が無記入だった場合、1～10件を表示する
-		if(strlen($block->getCountStart()) === 0 && strlen($block->getCountEnd()) === 0){
+		if(strlen((string)$block->getCountStart()) === 0 && strlen((string)$block->getCountEnd()) === 0){
 			$countStart = 1;
 			$countEnd = 10;
 		}else{

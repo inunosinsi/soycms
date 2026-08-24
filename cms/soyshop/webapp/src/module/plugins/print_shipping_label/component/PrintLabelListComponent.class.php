@@ -3,6 +3,7 @@
 class PrintLabelListComponent extends HTMLList{
 	
 	private $company;
+	private $shopname;
 	
 	protected function populateItem($order){
 		
@@ -18,7 +19,7 @@ class PrintLabelListComponent extends HTMLList{
 		//お届け先情報
 		$addrs = $order->getAddressArray();
 		
-		list($zip1, $zip2) = self::convertZipCode($addrs["zipCode"]);
+		list($zip1, $zip2) = (is_string($addrs["zipCode"])) ? self::convertZipCode($addrs["zipCode"]) : array("", "");
 		
 		$this->addLabel("zip_code1", array(
 			"text" => $zip1
@@ -29,15 +30,15 @@ class PrintLabelListComponent extends HTMLList{
 		));
 		
 		$this->addLabel("tel", array(
-			"text" => self::convertTel($addrs["telephoneNumber"])
+			"text" => (is_string($addrs["telephoneNumber"])) ? self::convertTel($addrs["telephoneNumber"]) : ""
 		)); 
 		
 		$this->addLabel("address", array(
-			"html" => self::convertAddress($addrs)
+			"html" => (is_array($addrs)) ? self::convertAddress($addrs) : ""
 		));
 		$this->addLabel("customer", array(
 			"text" => $addrs["name"],
-			"style" => (mb_strlen($addrs["name"]) > 9) ? "font-size:0.8em;!important;" : ""
+			"style" => (is_string($addrs["name"]) && mb_strlen($addrs["name"]) > 9) ? "font-size:0.8em;!important;" : ""
 		));
 		
 		list($zip1, $zip2) = self::convertZipCode($this->company["address1"]);
@@ -66,11 +67,11 @@ class PrintLabelListComponent extends HTMLList{
 		$dates = self::getDateArray($order->getAttributeList());
 		
 		$this->addLabel("date_m", array(
-			"text" => (strlen($dates[1])) ? (int)$dates[1] : ""
+			"text" => (is_string($dates[1]) && strlen($dates[1])) ? (int)$dates[1] : ""
 		));
 
 		$this->addLabel("date_d", array(
-			"text" => (strlen($dates[2])) ? (int)$dates[2] : ""
+			"text" => (is_string($dates[2]) && strlen($dates[2])) ? (int)$dates[2] : ""
 		));
 		
 		$product = (isset($_POST["ShippingProduct"])) ? nl2br($_POST["ShippingProduct"]) : "";
@@ -78,8 +79,9 @@ class PrintLabelListComponent extends HTMLList{
 		$this->addLabel("product", array(
 			"html" => $product
 		));
-		
-		$selectedTime = self::getSelectedTime($order->getAttributeList());
+
+		$attrList = $order->getAttributeList();
+		$selectedTime = (is_array($attrList)) ? self::getSelectedTime($attrList) : null;
 		
 		//配送時間でどこに○をするか？
 		foreach(array("am", "12", "14", "16", "18", "20") as $i => $val){
@@ -127,7 +129,7 @@ class PrintLabelListComponent extends HTMLList{
 		return ShippingLabelUtil::TYPE_HATSUBARAI;
 	}
 	
-	private function convertZipCode($zipcode){
+	private function convertZipCode(string $zipcode){
 		$zipcode = str_replace(array("-", "ー", "ー"), "", $zipcode);
 		$zipcode = mb_convert_kana($zipcode, "a");
 		
@@ -139,13 +141,13 @@ class PrintLabelListComponent extends HTMLList{
 		return array($zip1, $zip2);
 	}
 	
-	private function convertTel($tel){
+	private function convertTel(string $tel){
 		$tel = str_replace(array("-", "ー", "ー"), "", $tel);
 		return mb_convert_kana($tel, "a");
 	}
 	
-	private function convertAddress($addrs){
-		$pref = SOYShop_Area::getAreaText($addrs["area"]);
+	private function convertAddress(array $addrs){
+		$pref = (is_numeric($addrs["area"])) ? SOYShop_Area::getAreaText($addrs["area"]) : "";
 		return $pref . htmlspecialchars($addrs["address1"], ENT_QUOTES, "UTF-8") . htmlspecialchars($addrs["address2"], ENT_QUOTES, "UTF-8");
 	}
 	
@@ -159,7 +161,7 @@ class PrintLabelListComponent extends HTMLList{
 	 * 5:18時〜
 	 * 6:20時〜
 	 */
-	private function getSelectedTime($attrs){
+	private function getSelectedTime(array $attrs){
 		$time = self::getDeliveryTime($attrs);
 		if(strpos($time, "午前中") === 0) return 1;
 		
@@ -206,8 +208,10 @@ class PrintLabelListComponent extends HTMLList{
 		}
 		
 		//指定日なしの処理
-		if(!is_numeric($date[0]) && strlen($_POST["insert_unspecified"])){
-			$date = explode("-", $_POST["insert_unspecified"]);
+		if(!is_numeric($date[0])){
+			if(isset($_POST["insert_unspecified"]) && strlen((string)$_POST["insert_unspecified"])){
+				$date = explode("-", $_POST["insert_unspecified"]);
+			}
 		}
 		
 		return $date;
@@ -224,11 +228,11 @@ class PrintLabelListComponent extends HTMLList{
 		return "";
 	}
 	
-	function setCompany($company){
+	function setCompany(array $company){
 		$this->company = $company;
 	}
 	
-	function setShopname($shopname){
+	function setShopname(string $shopname){
 		$this->shopname = $shopname;
 	}
 }

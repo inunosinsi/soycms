@@ -38,7 +38,7 @@ class CommonCustomerVoice extends SOYShopItemCustomFieldBase{
 		$html[] = "<br><div class=\"alert alert-info\">お客様の声</div>";
 
 		$counter = 1;
-		if(count($values)){
+		if(is_array($values) && count($values)){
 			for($i = 0; $i < count($values); $i++){
 
 				$html[] = "<div class=\"form-group\">";
@@ -66,7 +66,7 @@ class CommonCustomerVoice extends SOYShopItemCustomFieldBase{
 
 		$htmlObj->addModel("is_voice_list", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"visible" => (count($values) > 0)
+			"visible" => (is_array($values) && count($values) > 0)
 		));
 
 		$htmlObj->createAdd("voice_list", "CommonCustomerVoiceList", array(

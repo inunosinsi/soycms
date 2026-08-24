@@ -15,8 +15,13 @@ class RelativeItemUtil{
 		SOYShop_DataSets::put("relative_item.config", $values);
 	}
 
+	/**
+	 * @param int
+	 * @return array
+	 */
 	public static function getCodesByItemId(int $itemId){
-		return soy2_unserialize(soyshop_get_item_attribute_value($itemId, self::FIELD_ID, "string"));
+		$data = soy2_unserialize(soyshop_get_item_attribute_value($itemId, self::FIELD_ID, "string"));
+		return (is_array($data)) ? $data : array();
 	}
 
 	public static function save(int $itemId, array $arr){

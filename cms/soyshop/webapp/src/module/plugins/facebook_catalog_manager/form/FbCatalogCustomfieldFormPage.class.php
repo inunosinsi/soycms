@@ -35,19 +35,19 @@ class FbCatalogCustomfieldFormPage extends WebPage {
 			));
 		}
 
-		$cnf = FbCatalogManagerUtil::getConfig();
+		$cfg = FbCatalogManagerUtil::getConfig();
 
-		$itemCnf = soy2_unserialize(soyshop_get_item_attribute_value($this->itemId, FbCatalogManagerUtil::FIELD_ID_ITEM_INFO, "string"));
+		$itemCfg = soy2_unserialize(soyshop_get_item_attribute_value($this->itemId, FbCatalogManagerUtil::FIELD_ID_ITEM_INFO, "string"));
 
 		//画像
 		$this->createAdd("fb_catalog_image","_common.Item.ImageSelectComponent", array(
 			"domId" => "fb_catalog_image",
 			"name" => "FbCatalogManager[" . FbCatalogManagerUtil::FIELD_ID_ITEM_INFO . "][image]",
-			"value" => (isset($itemCnf["image"]) && is_string($itemCnf["image"]) && strlen($itemCnf["image"])) ? soyshop_convert_file_path_on_admin($itemCnf["image"]) : ""
+			"value" => (isset($itemCfg["image"]) && is_string($itemCfg["image"]) && strlen($itemCfg["image"])) ? soyshop_convert_file_path_on_admin($itemCfg["image"]) : ""
 		));
 
-		$brand = (isset($itemCnf["brand"])) ? $itemCnf["brand"] : null;
-		if(is_null($brand) && isset($cnf["brand"])) $brand = $cnf["brand"];
+		$brand = (isset($itemCfg["brand"])) ? $itemCfg["brand"] : null;
+		if(is_null($brand) && isset($cfg["brand"])) $brand = $cfg["brand"];
 		$this->addInput("brand", array(
 			"name" => "FbCatalogManager[" . FbCatalogManagerUtil::FIELD_ID_ITEM_INFO . "][brand]",
 			"value" => $brand
@@ -56,18 +56,18 @@ class FbCatalogCustomfieldFormPage extends WebPage {
 		$this->addSelect("condition", array(
 			"name" => "FbCatalogManager[" . FbCatalogManagerUtil::FIELD_ID_ITEM_INFO . "][condition]",
 			"options" => FbCatalogManagerUtil::getConditionList(),
-			"selected" => (isset($itemCnf["condition"])) ? $itemCnf["condition"] : false
+			"selected" => (isset($itemCfg["condition"])) ? $itemCfg["condition"] : false
 		));
 
 		$this->addInput("shipping_price", array(
 			"name" => "FbCatalogManager[" . FbCatalogManagerUtil::FIELD_ID_ITEM_INFO . "][shippingPrice]",
-			"value" => self::_getShippingPrice($itemCnf, $cnf),
+			"value" => self::_getShippingPrice($itemCfg, $cfg),
 			"style" => "width:80px;"
 		));
 
 		$this->addTextArea("shop_description", array(
 			"name" => "FbCatalogManager[" . FbCatalogManagerUtil::FIELD_ID_ITEM_INFO . "][shopDescription]",
-			"value" => (isset($itemCnf["shopDescription"])) ? $itemCnf["shopDescription"] : ""
+			"value" => (isset($itemCfg["shopDescription"])) ? $itemCfg["shopDescription"] : ""
 		));
 
 		$this->addInput("ajax_path", array(
@@ -84,10 +84,10 @@ class FbCatalogCustomfieldFormPage extends WebPage {
 		return soy2_unserialize(soyshop_get_item_attribute_value($itemId, FbCatalogManagerUtil::FIELD_ID_TAXONOMY, "string"));
 	}
 
-	private function _getShippingPrice($itemCnf, $cnf){
-		if(isset($itemCnf["shippingPrice"]) && is_numeric($itemCnf["shippingPrice"])) return $itemCnf["shippingPrice"];
+	private function _getShippingPrice($itemCfg, $cfg){
+		if(isset($itemCfg["shippingPrice"]) && is_numeric($itemCfg["shippingPrice"])) return $itemCfg["shippingPrice"];
 
-		return (isset($cnf["shippingPrice"])) ? (int)$cnf["shippingPrice"] : 0;
+		return (isset($cfg["shippingPrice"])) ? (int)$cfg["shippingPrice"] : 0;
 	}
 
 

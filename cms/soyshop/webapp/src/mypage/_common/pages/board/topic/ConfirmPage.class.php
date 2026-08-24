@@ -45,8 +45,8 @@ class ConfirmPage extends MainMyPagePageBase{
 		SOY2::import("util.SOYShopPluginUtil");
 		if(!SOYShopPluginUtil::checkIsActive("bulletin_board")) $this->jumpToTop();
 
-		$post = $this->getMyPage()->getAttribute("soyboard_post_content");
-		$content = trim(BulletinBoardUtil::shapeHTML($post["content"]));
+		$post = (string)$this->getMyPage()->getAttribute("soyboard_post_content");
+		$content = (isset($post["content"]) && is_string($post["content"])) ? trim(BulletinBoardUtil::shapeHTML($post["content"])) : "";
 		if(!strlen($content)) $this->jumpToTop();
 
 		$topic = SOY2Logic::createInstance("module.plugins.bulletin_board.logic.TopicLogic")->getById((int)$post["topic_id"], true);
