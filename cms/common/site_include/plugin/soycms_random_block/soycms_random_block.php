@@ -20,7 +20,7 @@ class SOYCMS_Random_Block_Plugin{
             "type" => Plugin::TYPE_BLOCK,
 			"description"=>"プラグインブロックで記事をランダムに表示します",
 			"author"=>"齋藤毅",
-			"url"=>"https://saitodev.co",
+			"url"=>"https://saitodev.co/article/409",
 			"mail"=>"tsuyoshi@saitodev.co",
 			"version"=>"0.9"
 		));

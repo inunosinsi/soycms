@@ -6,6 +6,7 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Symfony\\Polyfill\\Php83\\' => array($vendorDir . '/symfony/polyfill-php83'),
     'Symfony\\Contracts\\Service\\' => array($vendorDir . '/symfony/service-contracts'),
     'Symfony\\Contracts\\HttpClient\\' => array($vendorDir . '/symfony/http-client-contracts'),
     'Symfony\\Component\\HttpClient\\' => array($vendorDir . '/symfony/http-client'),
@@ -16,4 +17,6 @@ return array(
     'Nyholm\\Psr7\\' => array($vendorDir . '/nyholm/psr7/src'),
     'Http\\Discovery\\' => array($vendorDir . '/php-http/discovery/src'),
     'GeminiAPI\\' => array($vendorDir . '/gemini-api-php/client/src'),
+    'Composer\\CaBundle\\' => array($vendorDir . '/composer/ca-bundle/src'),
+    'Abraham\\TwitterOAuth\\' => array($vendorDir . '/abraham/twitteroauth/src'),
 );

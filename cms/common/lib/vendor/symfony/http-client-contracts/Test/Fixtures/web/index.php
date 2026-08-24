@@ -116,6 +116,14 @@ switch (parse_url($vars['REQUEST_URI'], \PHP_URL_PATH)) {
 
         return;
 
+    case '/304/etag':
+        if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
+            header('ETag: "abc123"', true, 304);
+            exit;
+        }
+        header('ETag: "abc123"');
+        break;
+
     case '/307':
         header('Location: http://localhost:8057/post', true, 307);
         break;
@@ -199,6 +207,17 @@ switch (parse_url($vars['REQUEST_URI'], \PHP_URL_PATH)) {
         ]);
 
         exit;
+
+    case '/custom':
+        if (isset($_GET['status'])) {
+            http_response_code((int) $_GET['status']);
+        }
+        if (isset($_GET['headers']) && is_array($_GET['headers'])) {
+            foreach ($_GET['headers'] as $header) {
+                header($header);
+            }
+        }
+        break;
 }
 
 header('Content-Type: application/json', true);

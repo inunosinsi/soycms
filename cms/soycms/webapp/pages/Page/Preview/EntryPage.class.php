@@ -230,15 +230,15 @@ class EntryPage extends CMSEntryEditorPageBase{
 			"value" => ($this->id) ? CMSMessageManager::get("SOYCMS_UPDATE")  : CMSMessageManager::get("SOYCMS_CREATE"),
 			"name"=>"modify",
 			"type"=>"submit",
-			"disabled" => ((boolean)!UserInfoUtil::hasEntryPublisherRole() && $entry->getIsPublished())
+			"disabled" => ((bool)!UserInfoUtil::hasEntryPublisherRole() && $entry->getIsPublished())
 		));
 
 		$this->createAdd("create_button","HTMLInput",array(
-			"visible" => ((boolean)$this->id || is_null($this->id)),
+			"visible" => ((bool)$this->id || is_null($this->id)),
 			"type"=>"submit",
 			"name" => "as_new",
 			"value"=>CMSMessageManager::get("SOYCMS_SAVE_AS_A_NEW_ENTRY"),
-			"onclick"=> ((boolean)!UserInfoUtil::hasEntryPublisherRole()) ? 'return confirm_open();' : ""
+			"onclick"=> ((bool)!UserInfoUtil::hasEntryPublisherRole()) ? 'return confirm_open();' : ""
 		));
 
 		$list = SOY2HTMLFactory::createInstance("LabelList",array(

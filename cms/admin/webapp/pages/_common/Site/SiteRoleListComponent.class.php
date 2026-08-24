@@ -21,7 +21,7 @@ class SiteRoleListComponent extends HTMLList{
 	protected function populateItem($entity, $key){
 
 		$this->addLabel("site_name", array(
-			"text"	=> $this->site[$key],
+			"text"	=> (!is_null($key) && isset($this->site[$key])) ? $this->site[$key] : "",
 		));
 
 

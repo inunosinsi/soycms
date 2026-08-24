@@ -13,6 +13,7 @@ namespace Symfony\Component\HttpClient;
 
 use Symfony\Component\HttpClient\Exception\InvalidArgumentException;
 use Symfony\Component\HttpClient\Exception\TransportException;
+use Symfony\Component\HttpClient\Internal\Dechunker;
 use Symfony\Component\HttpClient\Response\StreamableInterface;
 use Symfony\Component\HttpClient\Response\StreamWrapper;
 use Symfony\Component\Mime\MimeTypes;
@@ -169,13 +170,14 @@ trait HttpClientTrait
             unset($options['auth_basic'], $options['auth_bearer']);
 
             // Parse base URI
-            if (\is_string($options['base_uri'])) {
-                $options['base_uri'] = self::parseUrl($options['base_uri']);
+            if (\is_string($baseUri = $options['base_uri'] ?? null)) {
+                $baseUri = self::parseUrl($baseUri);
             }
+            unset($options['base_uri']);
 
             // Validate and resolve URL
             $url = self::parseUrl($url, $options['query']);
-            $url = self::resolveUrl($url, $options['base_uri'], $defaultOptions['query'] ?? []);
+            $url = self::resolveUrl($url, $baseUri, $defaultOptions['query'] ?? []);
         }
 
         // Finalize normalization of options
@@ -354,10 +356,13 @@ trait HttpClientTrait
                     }
                 }
             });
+            $caster = null;
 
-            $body = http_build_query($body, '', '&');
+            if ('' === $body = http_build_query($body, '', '&')) {
+                return '';
+            }
 
-            if ('' === $body || !$streams && !str_contains($normalizedHeaders['content-type'][0] ?? '', 'multipart/form-data')) {
+            if (!$streams && !str_contains($normalizedHeaders['content-type'][0] ?? '', 'multipart/form-data')) {
                 if (!str_contains($normalizedHeaders['content-type'][0] ?? '', 'application/x-www-form-urlencoded')) {
                     $normalizedHeaders['content-type'] = ['Content-Type: application/x-www-form-urlencoded'];
                 }
@@ -505,14 +510,15 @@ trait HttpClientTrait
 
     private static function dechunk(string $body): string
     {
-        $h = fopen('php://temp', 'w+');
-        stream_filter_append($h, 'dechunk', \STREAM_FILTER_WRITE);
-        fwrite($h, $body);
-        $body = stream_get_contents($h, -1, 0);
-        rewind($h);
-        ftruncate($h, 0);
+        $dechunker = new Dechunker();
 
-        if (fwrite($h, '-') && '' !== stream_get_contents($h, -1, 0)) {
+        try {
+            $body = $dechunker->dechunk($body);
+        } catch (TransportException) {
+            $dechunker = null;
+        }
+
+        if (!$dechunker?->isFinished()) {
             throw new TransportException('Request body has broken chunked encoding.');
         }
 
@@ -650,7 +656,7 @@ trait HttpClientTrait
         $tail = '';
 
         if (false === $parts = parse_url(\strlen($url) !== strcspn($url, '?#') ? $url : $url.$tail = '#')) {
-            throw new InvalidArgumentException(sprintf('Malformed URL "%s".', $url));
+            throw new InvalidArgumentException(\sprintf('Malformed URL "%s".', $url));
         }
 
         if ($query) {
@@ -693,11 +699,11 @@ trait HttpClientTrait
 
             if (str_contains($parts[$part], '%')) {
                 // https://tools.ietf.org/html/rfc3986#section-2.3
-                $parts[$part] = preg_replace_callback('/%(?:2[DE]|3[0-9]|[46][1-9A-F]|5F|[57][0-9A]|7E)++/i', fn ($m) => rawurldecode($m[0]), $parts[$part]);
+                $parts[$part] = preg_replace_callback('/%(?:2[DE]|3[0-9]|[46][1-9A-F]|5F|[57][0-9A]|7E)++/i', static fn ($m) => rawurldecode($m[0]), $parts[$part]);
             }
 
             // https://tools.ietf.org/html/rfc3986#section-3.3
-            $parts[$part] = preg_replace_callback("#[^-A-Za-z0-9._~!$&/'()[\]*+,;=:@{}%]++#", fn ($m) => rawurlencode($m[0]), $parts[$part]);
+            $parts[$part] = preg_replace_callback("#[^-A-Za-z0-9._~!$&/'()[\]*+,;=:@{}%]++#", static fn ($m) => rawurlencode($m[0]), $parts[$part]);
         }
 
         return [

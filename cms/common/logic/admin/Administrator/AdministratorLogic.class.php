@@ -287,7 +287,7 @@ class AdministratorLogic extends Administrator implements SOY2LogicInterface{
 		try{
 			$admin = $dao->getById($id);
 
-			return (boolean)$admin->getIsDefaultUser();
+			return (bool)$admin->getIsDefaultUser();
 		}catch(Exception $e){
 			return false;
 		}

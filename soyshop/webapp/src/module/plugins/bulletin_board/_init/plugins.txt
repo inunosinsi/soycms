@@ -1,3 +1,0 @@
-bulletin_board
-common_sitemap_xml
-user_custom_search_field

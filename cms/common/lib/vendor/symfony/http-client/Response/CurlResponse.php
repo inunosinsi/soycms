@@ -49,6 +49,7 @@ final class CurlResponse implements ResponseInterface, StreamableInterface
         ?callable $resolveRedirect = null,
         ?int $curlVersion = null,
         ?string $originalUrl = null,
+        private ?string $ntlmOriginKey = null,
     ) {
         if ($ch instanceof \CurlHandle) {
             $this->handle = $ch;
@@ -79,7 +80,7 @@ final class CurlResponse implements ResponseInterface, StreamableInterface
 
         if (!$info['response_headers']) {
             // Used to keep track of what we're waiting for
-            curl_setopt($ch, \CURLOPT_PRIVATE, \in_array($method, ['GET', 'HEAD', 'OPTIONS', 'TRACE'], true) && 1.0 < (float) ($options['http_version'] ?? 1.1) ? 'H2' : 'H0'); // H = headers + retry counter
+            curl_setopt($ch, \CURLOPT_PRIVATE, \in_array($method, ['GET', 'HEAD', 'OPTIONS', 'TRACE', 'QUERY'], true) && 1.0 < (float) ($options['http_version'] ?? 1.1) ? 'H2' : 'H0'); // H = headers + retry counter
         }
 
         curl_setopt($ch, \CURLOPT_HEADERFUNCTION, static function ($ch, string $data) use (&$info, &$headers, $options, $multi, $id, &$location, $resolveRedirect, $logger): int {
@@ -126,9 +127,14 @@ final class CurlResponse implements ResponseInterface, StreamableInterface
             curl_setopt($ch, \CURLOPT_NOPROGRESS, false);
             curl_setopt($ch, \CURLOPT_PROGRESSFUNCTION, static function ($ch, $dlSize, $dlNow) use ($onProgress, &$info, $url, $multi, $debugBuffer) {
                 try {
+                    $info['debug'] ??= '';
                     rewind($debugBuffer);
-                    $debug = ['debug' => stream_get_contents($debugBuffer)];
-                    $onProgress($dlNow, $dlSize, $url + curl_getinfo($ch) + $info + $debug);
+                    if (fstat($debugBuffer)['size']) {
+                        $info['debug'] .= stream_get_contents($debugBuffer);
+                        rewind($debugBuffer);
+                        ftruncate($debugBuffer, 0);
+                    }
+                    $onProgress($dlNow, $dlSize, $url + curl_getinfo($ch) + $info);
                 } catch (\Throwable $e) {
                     $multi->handlesActivity[(int) $ch][] = null;
                     $multi->handlesActivity[(int) $ch][] = $e;
@@ -200,7 +206,6 @@ final class CurlResponse implements ResponseInterface, StreamableInterface
     {
         if (!$info = $this->finalInfo) {
             $info = array_merge($this->info, curl_getinfo($this->handle));
-            $info['url'] = $this->info['url'] ?? $info['url'];
             $info['redirect_url'] = $this->info['redirect_url'] ?? null;
 
             // workaround curl not subtracting the time offset for pushed responses
@@ -209,14 +214,18 @@ final class CurlResponse implements ResponseInterface, StreamableInterface
                 $info['starttransfer_time'] = 0.0;
             }
 
+            $info['debug'] ??= '';
             rewind($this->debugBuffer);
-            $info['debug'] = stream_get_contents($this->debugBuffer);
+            if (fstat($this->debugBuffer)['size']) {
+                $info['debug'] .= stream_get_contents($this->debugBuffer);
+                rewind($this->debugBuffer);
+                ftruncate($this->debugBuffer, 0);
+            }
+            $this->info = array_merge($this->info, $info);
             $waitFor = curl_getinfo($this->handle, \CURLINFO_PRIVATE);
 
             if ('H' !== $waitFor[0] && 'C' !== $waitFor[0]) {
                 curl_setopt($this->handle, \CURLOPT_VERBOSE, false);
-                rewind($this->debugBuffer);
-                ftruncate($this->debugBuffer, 0);
                 $this->finalInfo = $info;
             }
         }
@@ -269,11 +278,11 @@ final class CurlResponse implements ResponseInterface, StreamableInterface
     /**
      * @param CurlClientState $multi
      */
-    private static function perform(ClientState $multi, ?array &$responses = null): void
+    private static function perform(ClientState $multi, ?array $responses = null): void
     {
         if ($multi->performing) {
             if ($responses) {
-                $response = current($responses);
+                $response = $responses[array_key_first($responses)];
                 $multi->handlesActivity[(int) $response->handle][] = null;
                 $multi->handlesActivity[(int) $response->handle][] = new TransportException(\sprintf('Userland callback cannot use the client nor the response while processing "%s".', curl_getinfo($response->handle, \CURLINFO_EFFECTIVE_URL)));
             }
@@ -300,6 +309,10 @@ final class CurlResponse implements ResponseInterface, StreamableInterface
                 $id = (int) $ch = $info['handle'];
                 $waitFor = @curl_getinfo($ch, \CURLINFO_PRIVATE) ?: '_0';
 
+                if (isset($responses[$id]) && self::retryNtlmOnFreshConnection($multi, $ch, $responses[$id]->ntlmOriginKey, $result)) {
+                    continue;
+                }
+
                 if (\in_array($result, [\CURLE_SEND_ERROR, \CURLE_RECV_ERROR, /* CURLE_HTTP2 */ 16, /* CURLE_HTTP2_STREAM */ 92], true) && $waitFor[1] && 'C' !== $waitFor[0]) {
                     curl_multi_remove_handle($multi->handle, $ch);
                     $waitFor[1] = (string) ((int) $waitFor[1] - 1); // decrement the retry counter
@@ -313,6 +326,7 @@ final class CurlResponse implements ResponseInterface, StreamableInterface
 
                 if (\CURLE_RECV_ERROR === $result && 'H' === $waitFor[0] && 400 <= ($responses[(int) $ch]->info['http_code'] ?? 0)) {
                     $multi->handlesActivity[$id][] = new FirstChunk();
+                    curl_setopt($ch, \CURLOPT_PRIVATE, 'C'.$waitFor[1]);
                 }
 
                 $multi->handlesActivity[$id][] = null;
@@ -400,7 +414,7 @@ final class CurlResponse implements ResponseInterface, StreamableInterface
                 $info['peer_certificate_chain'] = array_map('openssl_x509_read', array_column($certinfo, 'Cert'));
             }
 
-            if (300 <= $info['http_code'] && $info['http_code'] < 400) {
+            if (300 <= $info['http_code'] && $info['http_code'] < 400 && null !== $options) {
                 if (curl_getinfo($ch, \CURLINFO_REDIRECT_COUNT) === $options['max_redirects']) {
                     curl_setopt($ch, \CURLOPT_FOLLOWLOCATION, false);
                 } elseif (303 === $info['http_code'] || ('POST' === $info['http_method'] && \in_array($info['http_code'], [301, 302], true))) {
@@ -422,13 +436,23 @@ final class CurlResponse implements ResponseInterface, StreamableInterface
 
         $info['redirect_url'] = null;
 
-        if (300 <= $statusCode && $statusCode < 400 && null !== $location) {
+        if (300 <= $statusCode && $statusCode < 400 && null !== $location && null !== $options) {
             if ($noContent = 303 === $statusCode || ('POST' === $info['http_method'] && \in_array($statusCode, [301, 302], true))) {
                 $info['http_method'] = 'HEAD' === $info['http_method'] ? 'HEAD' : 'GET';
                 curl_setopt($ch, \CURLOPT_CUSTOMREQUEST, $info['http_method']);
             }
 
-            if (null === $info['redirect_url'] = $resolveRedirect($ch, $location, $noContent)) {
+            try {
+                $info['redirect_url'] = $resolveRedirect($ch, $location, $noContent);
+            } catch (TransportException $e) {
+                // Exceptions must be reported through the response, they cannot escape a curl callback
+                $multi->handlesActivity[$id][] = null;
+                $multi->handlesActivity[$id][] = $e;
+
+                return 0;
+            }
+
+            if (null === $info['redirect_url']) {
                 $options['max_redirects'] = curl_getinfo($ch, \CURLINFO_REDIRECT_COUNT);
                 curl_setopt($ch, \CURLOPT_FOLLOWLOCATION, false);
                 curl_setopt($ch, \CURLOPT_MAXREDIRS, $options['max_redirects']);
@@ -437,7 +461,7 @@ final class CurlResponse implements ResponseInterface, StreamableInterface
 
         if (401 === $statusCode && isset($options['auth_ntlm']) && 0 === strncasecmp($headers['www-authenticate'][0] ?? '', 'NTLM ', 5)) {
             // Continue with NTLM auth
-        } elseif ($statusCode < 300 || 400 <= $statusCode || null === $location || curl_getinfo($ch, \CURLINFO_REDIRECT_COUNT) === $options['max_redirects']) {
+        } elseif ($statusCode < 300 || 400 <= $statusCode || null === $location || null === $options || curl_getinfo($ch, \CURLINFO_REDIRECT_COUNT) === $options['max_redirects']) {
             // Headers and redirects completed, time to get the response's content
             $multi->handlesActivity[$id][] = new FirstChunk();
 
@@ -457,5 +481,42 @@ final class CurlResponse implements ResponseInterface, StreamableInterface
         $location = null;
 
         return \strlen($data);
+    }
+
+    /**
+     * Handles servers that do not persist NTLM authentication across requests on a reused
+     * TCP connection (e.g. IIS with authPersistNonNTLM=false). On such servers, libcurl
+     * still considers the pooled socket authenticated client-side and skips the handshake,
+     * but the server returns a fresh 401 + NTLM challenge that libcurl cannot pick up on
+     * the same request, so the caller sees an unauthenticated 401.
+     *
+     * The discriminator is CURLINFO_NUM_CONNECTS == 0: no new connection was opened for
+     * this request, so the socket came from the pool. A 401 + NTLM challenge on a brand
+     * new socket is the legitimate first leg of libcurl's in-request 3-way handshake and
+     * must NOT trigger this path.
+     *
+     * When detected, the deauthenticated socket is closed, the request is retried once on
+     * a fresh one, and the origin is recorded so subsequent requests to it skip the pool
+     * from the start.
+     */
+    private static function retryNtlmOnFreshConnection(CurlClientState $multi, \CurlHandle $ch, ?string $originKey, int $result): bool
+    {
+        if (null === $originKey
+            || \CURLE_OK !== $result
+            || 401 !== curl_getinfo($ch, \CURLINFO_RESPONSE_CODE)
+            || 0 === (curl_getinfo($ch, \CURLINFO_HTTPAUTH_AVAIL) & \CURLAUTH_NTLM)
+            || 0 !== curl_getinfo($ch, \CURLINFO_NUM_CONNECTS)
+            || isset($multi->ntlmRequiresFreshConnection[$originKey])
+        ) {
+            return false;
+        }
+
+        $multi->ntlmRequiresFreshConnection[$originKey] = true;
+        $multi->logger?->info(\sprintf('Discarding NTLM-deauthenticated connection to "%s" and retrying on a fresh one', $originKey));
+        curl_setopt($ch, \CURLOPT_FORBID_REUSE, true);
+        curl_multi_remove_handle($multi->handle, $ch);
+        curl_setopt($ch, \CURLOPT_FRESH_CONNECT, true);
+
+        return 0 === curl_multi_add_handle($multi->handle, $ch);
     }
 }

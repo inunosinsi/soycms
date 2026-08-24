@@ -1,0 +1,46 @@
+<html>
+
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head soy:page="_common.HeaderPage">
+
+<body>
+	<div class="container">
+		<div class="main-div">
+			<div class="form-heading">&nbsp;</div>
+
+			<form soy:id="AuthForm" name="AuthForm" action="" method="post">
+				<img soy:id="biglogo" alt="logo" />
+
+				<div class="panel">
+					<div class="panel-body">
+						<div class="alert alert-danger" soy:id="message">エラーメッセージ</div>
+						<div class="form-group">
+							<label>ログインID（管理者ID）</label>
+							<input id="login-id" class="form-control" type="text" soy:id="username">
+						</div>
+						<div class="form-group">
+							<label>パスワード <span soy:id="reminder"></span soy:id="reminder"></label>
+							<input type="password" class="form-control" soy:id="password" />
+						</div>
+					</div>
+					<div class="text-center">
+						<input class="btn btn-primary btn-lg btn-block" type="submit" name="login" value="ログイン" />
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- soy:page="_common.FooterPage" /-->
+
+<script type="text/JavaScript">
+if (top != self) { top.location.href =self.location.href }
+
+$(function(){
+	$("#login-id").focus();
+});
+
+</script>
+</body>
+
+</html>

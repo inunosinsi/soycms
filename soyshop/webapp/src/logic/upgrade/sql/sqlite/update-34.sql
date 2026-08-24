@@ -1,1 +1,0 @@
-ALTER TABLE soyshop_user ADD COLUMN is_publish INTEGER DEFAULT 1;

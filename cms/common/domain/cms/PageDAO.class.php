@@ -87,7 +87,7 @@ abstract class PageDAO extends SOY2DAO{
 		$query = $this->getQuery();
 		$result = $this->executeQuery($query,$this->getBinds());
 
-		return (boolean)count($result);
+		return (bool)count($result);
 
 	}
 

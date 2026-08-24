@@ -1,1 +1,0 @@
-ALTER TABLE soyshop_order ADD INDEX idx_order_tracking_number (tracking_number);

@@ -199,11 +199,11 @@ class CustomField{
 	}
 
 	function hasOption(){
-		return (boolean)($this->getType() == "radio" || $this->getType() == "select" || $this->getType() == "pair");
+		return (bool)($this->getType() == "radio" || $this->getType() == "select" || $this->getType() == "pair");
 	}
 
 	function hasExtra(){
-		return (boolean)($this->getType() == "image");
+		return (bool)($this->getType() == "image");
 	}
 
 	/**

@@ -58,6 +58,10 @@ class SOYAppUtil {
 		}
 	}
 
+	public static function switchAdminDsn(){
+		return self::switchAdminMode();
+	}
+
 	private static function switchAdminMode(){
 		$old = array();
 
@@ -70,6 +74,10 @@ class SOYAppUtil {
 		SOY2DAOConfig::pass(ADMIN_DB_PASS);
 
 		return $old;
+	}
+
+	public static function resetAdminDsn($old){
+		self::resetAdminMode($old);
 	}
 
 	private static function resetAdminMode($old){

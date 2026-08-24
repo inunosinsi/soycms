@@ -28,7 +28,7 @@ class SOYCMSThumbnailPlugin{
 			"author"=>"日本情報化農業研究所",
 			"url"=>"http://www.n-i-agroinformatics.com/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.6.2"
+			"version"=>"1.7"
 		));
 
 		if(CMSPlugin::activeCheck($this->getId())){
@@ -111,6 +111,8 @@ class SOYCMSThumbnailPlugin{
 		$entryId = (get_class($obj) == "CMSBlogPage" && isset($obj->entry)) ? $obj->entry->getId() : 0;
 		$filepath = ($entryId > 0) ? soycms_get_entry_attribute_value($entryId, ThumbnailPluginUtil::TRIMMING_IMAGE, "string") : "";
 		if($entryId > 0 && !strlen($filepath)) $filepath = soycms_get_entry_attribute_value($entryId, ThumbnailPluginUtil::UPLOAD_IMAGE, "string");
+
+		$filepath = soycms_avif2jpeg($filepath);
 
 		if(strlen($filepath)){
 			$http = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") ? "https" : "http";

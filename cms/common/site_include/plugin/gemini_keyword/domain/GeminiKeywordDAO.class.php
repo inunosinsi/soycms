@@ -1,4 +1,3 @@
-
 <?php
 SOY2::import("site_include.plugin.gemini_keyword.domain.GeminiKeyword");
 /**

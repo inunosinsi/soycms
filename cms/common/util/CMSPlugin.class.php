@@ -190,7 +190,7 @@ class CMSPlugin {
 	static function readActiveCheckCache(){
 		$path = self::activeCheckCacheFilePath();
 		if(!file_exists($path)) self::createActiveCheckCache();	//キャッシュファイルを生成する
-		return unserialize(file_get_contents($path));
+		return soy2_unserialize(file_get_contents($path));
 	}
 	/**
 	 * プラグインの有効状態のキャッシュを作成
@@ -501,7 +501,7 @@ class CMSPlugin {
 	 * プラグイン情報の保存
 	 */
 	static function savePluginConfig(string $id, $obj){
-		return file_put_contents(self::getSiteDirectory().'/.plugin/'.$id.'.config', serialize($obj));
+		return file_put_contents(self::getSiteDirectory().'/.plugin/'.$id.'.config', soy2_serialize($obj));
 	}
 
 	/**
@@ -511,7 +511,7 @@ class CMSPlugin {
 	static function loadPluginConfig(string $id){
 		$fname = self::getSiteDirectory().'/.plugin/'.$id.'.config';
 		if(file_exists($fname)){
-			$res = unserialize(file_get_contents($fname));
+			$res = soy2_unserialize(file_get_contents($fname));
 			return (!is_bool($res)) ? $res : null;
 		}else{
 			return null;

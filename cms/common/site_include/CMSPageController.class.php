@@ -130,6 +130,8 @@ class CMSPageController extends SOY2PageController{
 			}else if(CMSPlugin::activeCheck("gemini_keyword")){
 				SOY2::import("site_include.plugin.gemini_keyword.util.GeminiKeywordUtil");
 				if(GeminiKeywordUtil::getPageIdSettedGeminiKeywordBlock() != $_SERVER["SOYCMS_PAGE_ID"] || !GeminiKeywordUtil::checkIsKeywordExists($args[0])) $this->onNotFound();
+			}else if(CMSPlugin::activeCheck("reviewing_entries")){
+				if(count($args) > 1) $this->onNotFound();
 			// ページャの場合
 			}else{
 				preg_match('/^page-\d+/', $args[0], $tmp);
@@ -266,8 +268,13 @@ class CMSPageController extends SOY2PageController{
 		if(!isset($_SERVER["SOYCMS_PAGE_URI"])) $_SERVER["SOYCMS_PAGE_URI"] = "";
 		if(!isset($_SERVER["SOYCMS_PAGE_ID"])) $_SERVER["SOYCMS_PAGE_ID"] = 0;
 
+		// log
+		SOY2::import("util.AccessLogUtil");
+		if(AccessLogUtil::isLoggingOn()) soycms_write_notfound_log();
+
 		$page = soycms_get_hash_table_dao("page")->getErrorPage();
 		$this->pageType = $page->getPageType();
+
 
 		SOY2::import('site_include.CMSPage');
 		$this->webPage = &SOY2HTMLFactory::createInstance("CMSPage", array(

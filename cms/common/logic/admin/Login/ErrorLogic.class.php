@@ -34,6 +34,10 @@ class ErrorLogic extends SOY2LogicBase{
 						
 		//警告メールを送信する
 		if($obj->getCount() >= self::ERROR_CNT && $obj->getCount() % self::ERROR_CNT === 0){
+			// ブラックリストのlockoutに登録
+			SOY2::import("util.CMSAccessRestrictionsUtil");
+			CMSAccessRestrictionsUtil::saveConfig(CMSAccessRestrictionsUtil::MODE_LOCKOUT, $ip);
+		
 			try{
 				$accounts = SOY2DAOFactory::create("admin.AdministratorDAO")->get();
 			}catch(Exception $e){
@@ -46,9 +50,12 @@ class ErrorLogic extends SOY2LogicBase{
 				if(!is_null($from) && strlen($from)){
 					$mailLogic = SOY2Logic::createInstance("logic.mail.MailLogic");	
 					$title = "総当たり攻撃を受けている可能性があります。";
-					$body = "総当たり攻撃を受けている可能性があります。\n管理画面にログインして詳細を確認してください。";	
+					$body = "総当たり攻撃を受けている可能性があります。";	
 					$body .= "\n\nドメイン:" . $_SERVER["HTTP_HOST"];
 					$body .= "\nID：" . $_POST["Auth"]["name"] . "でログインを試みられています。";
+					$body .= "\nIPアドレス：" . $ip;
+					$body .= "\nhttps://saitodev.co/soycms/soycms/tutorial/142 に記載されている内容を参考にして、";
+					$body .= "IPアドレスによるアクセス制限で上記IPアドレスをブラックリストに登録することをおすすめします。";
 					
 					foreach($accounts as $account){
 						if($account->getIsDefaultUser() && strlen($account->getEmail())){
@@ -132,4 +139,3 @@ class ErrorLogic extends SOY2LogicBase{
 		return $dao;
 	}
 }
-?>

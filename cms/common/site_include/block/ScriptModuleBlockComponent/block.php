@@ -16,6 +16,9 @@ class ScriptModuleBlockComponent implements BlockComponent{
 	private $blockId;
 	private $isCallEventFunc = self::ON;	//公開側でHTMLの表示の際にカスタムフィールドの拡張ポイントを読み込むか？
 
+	private $displayCountFrom;
+	private $displayCountTo;
+
 	/**
 	 * @return SOY2HTML
 	 * 設定画面用のHTMLPageComponent

@@ -16,6 +16,7 @@ class CheckLogic extends SOY2LogicBase {
 
 	function getConfig(string $mode="CustomField"){
 		$obj = CMSPlugin::loadPluginConfig($mode);
+		if(is_null($obj) || !property_exists($obj, "customFields")) return array();
 		if(!count($obj->customFields)) return array();
 
 		$fields = array();

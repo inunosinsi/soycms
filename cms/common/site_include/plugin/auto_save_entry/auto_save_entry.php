@@ -16,7 +16,7 @@ class AutoSaveEntryPlugin{
 			"type" => Plugin::TYPE_ENTRY,
 			"description"=>"記事の簡易的なバックアップを定期的に行う",
 			"author"=>"齋藤毅",
-			"url"=>"http://saitodev.co/",
+			"url"=>"http:https://saitodev.co/article/60",
 			"mail"=>"tsuyoshi@saitodev.co",
 			"version"=>"0.6"
 		));

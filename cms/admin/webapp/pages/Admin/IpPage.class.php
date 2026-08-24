@@ -7,8 +7,12 @@ class IpPage extends WebPage{
 		if(!soy2_check_token()){
 			SOY2PageController::jump("Admin.Ip");
 		}
-		
+
+		CMSAccessRestrictionsUtil::setTwoFactorAuthConfig((isset($_POST["two_factor"])));
+		CMSAccessRestrictionsUtil::setRestrictIpDirectAccessConfig((isset($_POST["ip_direct"])));
 		CMSAccessRestrictionsUtil::saveConfig(CMSAccessRestrictionsUtil::MODE_PERMANENT, $_POST["ipaddress"]);
+		CMSAccessRestrictionsUtil::saveConfig(CMSAccessRestrictionsUtil::MODE_BLACKLIST, $_POST["blacklist"]);
+		CMSAccessRestrictionsUtil::saveConfig(CMSAccessRestrictionsUtil::MODE_USER_AGENT, $_POST["blacklist_useragent"]);
 		SOY2PageController::jump("Admin.Ip?updated");
 	}
 
@@ -59,6 +63,32 @@ class IpPage extends WebPage{
 			"name" => "ipaddress",
 			"value" => CMSAccessRestrictionsUtil::readConfig(CMSAccessRestrictionsUtil::MODE_PERMANENT),
 			"attr:placeholder" => "アクセスを許可したいIPアドレスを改行区切りで指定します。"
+		));
+
+		$this->addCheckBox("two_factor_auth", array(
+			"name" => "two_factor",
+			"value" => 1,
+			"selected" => CMSAccessRestrictionsUtil::checkIsTwoFactorAuth(),
+			"label" => "二段階認証を有効にする"
+		));
+
+		$this->addCheckBox("ip_direct", array(
+			"name" => "ip_direct",
+			"value" => 1,
+			"selected" => CMSAccessRestrictionsUtil::checkIsRestrictIpDirectAccess(),
+			"label" => "IPアドレスを直接入力したアクセスを禁止する"
+		));
+		
+		$this->addTextArea("blacklist", array(
+			"name" => "blacklist",
+			"value" => CMSAccessRestrictionsUtil::readConfig(CMSAccessRestrictionsUtil::MODE_BLACKLIST),
+			"attr:placeholder" => "アクセスを拒否したいIPアドレスを改行区切りで指定します。"
+		));
+		
+		$this->addTextArea("blacklist_useragent", array(
+			"name" => "blacklist_useragent",
+			"value" => CMSAccessRestrictionsUtil::readConfig(CMSAccessRestrictionsUtil::MODE_USER_AGENT),
+			"attr:placeholder" => "アクセスを拒否したいユーザーエージェントを改行区切りで指定します。"
 		));
 	}
 }

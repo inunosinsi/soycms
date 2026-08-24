@@ -181,6 +181,67 @@ function checker_fn_update_cms_tag_list(){
 			}
 		}
 	}
+	
+	// ラベルカスタムフィールド
+	if(!class_exists("LabelCustomFieldPlugin")) SOY2::import("site_include.plugin.LabelCustomFieldPlugin.LabelCustomFieldPlugin", "php");
+	$labObj = CMSPlugin::loadPluginConfig("LabelCustomFieldPlugin");
+	if($labObj instanceof LabelCustomFieldPlugin && is_array($labObj->customFields) && count($labObj->customFields)){
+		foreach($labObj->customFields as $_fieldObj){
+			$tags[] = $_fieldObj->getId();
+			$tags[] = $_fieldObj->getId()."_visible";
+			$tags[] = $_fieldObj->getId()."_is_empty";
+			$tags[] = $_fieldObj->getId()."_is_not_empty";
+			$tags[] = "is_".$_fieldObj->getId();
+			$tags[] = "no_".$_fieldObj->getId();
+			switch($_fieldObj->getType()){
+				case "textarea":
+					$tags[] = $_fieldObj->getId()."_br_mode";
+					break;
+				case "pair":
+					for($i = 0; $i <= 10; $i++){
+						$tags[] = $_fieldObj->getId()."_pair_".$i;
+						$tags[] = $_fieldObj->getId()."_pair_".$i."_visible";
+					}
+					break;
+				case "list":
+					$tags[] = $_fieldObj->getId()."_list";
+					foreach(array(
+						"li",
+						"li_raw",
+						"value",
+						"image", 
+						"is_image", 
+						"no_image",
+						"target_link",
+						"image_link", 
+						"image_text"
+					) as $soytag){
+						if(is_bool(array_search($soytag, $tags))) $tags[] = $soytag;
+					}					
+					break;
+				case "dllist":
+				case "dllisttext":
+					$tags[] = $_fieldObj->getId()."_dllist";
+					$tags[] = $_fieldObj->getId()."_dl_list";
+					foreach(array(
+						"label",
+						"dt",
+						"dt_raw",
+						"value",
+						"dd",
+						"dd_raw",
+						"image", 
+						"is_image", 
+						"no_image", 
+						"image_text"
+					) as $soytag){
+						if(is_bool(array_search($soytag, $tags))) $tags[] = $soytag;
+					}
+					break;
+			}
+		}
+	}
+
 
 	// 記事概要自動生成プラグイン(Gemini)
 	$tags[] = "gemini_abstract";
@@ -190,6 +251,24 @@ function checker_fn_update_cms_tag_list(){
 
 	// cms:id="apps"
 	$tags[] = "apps";
+
+	// SOY Mail
+	foreach(array("error_message", "mailaddress", "honeypot") as $tag){
+		$tags[] = $tag;
+	}
+
+	// SOY Calendar
+	foreach(array("prev_calendar", "current_calendar", "next_calendar") as $tag){
+		$tags[] = $tag;
+	}
+	for($i = 1; $i <= 10; $i++){
+		$tags[] = "specify_calender_".$i;
+	}
+
+	// SOY Gallery
+	foreach(array("id", "filename", "thumbnail_filename", "thumbnail_link", "url_link", "memo", "sort", "prev_pager", "pager_list", "next_pager") as $tag){
+		$tags[] = $tag;
+	}
 	
 	if(count($tags)) file_put_contents($tagFilePath, implode("\n", $tags));
 }

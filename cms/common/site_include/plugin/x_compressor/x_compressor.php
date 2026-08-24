@@ -5,6 +5,8 @@ class CompressorPlugin{
 
 	const PLUGIN_ID = "x_compressor";
 
+	private $isRemoveEmptyAlt=0;
+
 	//挿入するページ
 	var $config_per_page = array();
 	var $config_per_blog = array();
@@ -21,7 +23,7 @@ class CompressorPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/3193",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.8"
+			"version"=>"0.8.1"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
@@ -90,7 +92,7 @@ class CompressorPlugin{
 			$line = self::_deleteSpace($line);
 
 			//imgのaltの値が空である場合は削除
-			if(strpos($line, "alt=\"\"") !== false){
+			if((int)$this->isRemoveEmptyAlt === 1 && strpos($line, "alt=\"\"") !== false){
 				$line = str_replace("alt=\"\"", "", $line);
 			}
 
@@ -181,6 +183,14 @@ class CompressorPlugin{
 		$form->execute();
 		return $form->getObject();
 	}
+
+	function getIsRemoveEmptyAlt(){
+		return (int)$this->isRemoveEmptyAlt;
+	}
+	function setIsRemoveEmptyAlt(int $isRemoveEmptyAlt){
+		$this->isRemoveEmptyAlt = $isRemoveEmptyAlt;
+	}
+	
 
 	public static function register(){
 		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);

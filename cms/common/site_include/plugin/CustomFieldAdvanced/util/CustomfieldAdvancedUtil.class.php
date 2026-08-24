@@ -47,6 +47,7 @@ class CustomfieldAdvancedUtil {
 			}
 
 			if(count($res)){
+				if(!class_exists("CustomField")) include_once(dirname(__DIR__)."/entity.php");
 				foreach($res as $v){
 					if(!isset($v["entry_id"]) || !is_numeric($v["entry_id"])) continue;
 					$entryId = (int)$v["entry_id"];

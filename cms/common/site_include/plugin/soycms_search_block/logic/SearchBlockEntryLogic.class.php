@@ -46,10 +46,15 @@ class SearchBlockEntryLogic extends SOY2LogicBase {
 			try{
 				$results = $dao->executeQuery($sql, $binds);
 			}catch(Exception $e){
-				return array();
+				$results = array();
 			}
 			
-			if(!count($results)) return array();
+			if(!count($results)) {
+				// 攻撃の可能性もあるので404に登録する
+				SOY2::import("util.AccessLogUtil");
+				if(AccessLogUtil::isLoggingOn()) soycms_write_notfound_log();
+				return array();
+			}
 
 			foreach($results as $key => $row){
 				if(isset($row["id"]) && (int)$row["id"]){

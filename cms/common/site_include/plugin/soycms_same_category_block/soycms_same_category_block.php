@@ -19,7 +19,7 @@ class SOYCMSSameCategoryBlockPlugin{
 			"type" => Plugin::TYPE_BLOCK,
 			"description"=>"プラグインブロックで同一カテゴリの記事一覧を表示します。記事詳細ページでのみ動作します。",
 			"author"=>"齋藤毅",
-			"url"=>"https://saitodev.co",
+			"url"=>"https://saitodev.co/article/1223",
 			"mail"=>"tsuyoshi@saitodev.co",
 			"version"=>"0.12"
 		));

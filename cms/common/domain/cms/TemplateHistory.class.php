@@ -12,6 +12,13 @@ class TemplateHistory {
 	 * @column page_id
 	 */
 	private $pageId;
+
+	private $author;
+
+	/**
+	 * @column user_id
+	 */
+	private $userId;
 	
 	private $contents;
 	
@@ -28,6 +35,18 @@ class TemplateHistory {
 	}
 	function getPageId() {
 		return $this->pageId;
+	}
+	function getAuthor(){
+		return $this->author;
+	}
+	function setAuthor($author){
+		$this->author;
+	}
+	function getUserId(){
+		return $this->userId;
+	}
+	function setUserId($userId){
+		$this->userId = $userId;
 	}
 	function setPageId($pageId) {
 		$this->pageId = $pageId;

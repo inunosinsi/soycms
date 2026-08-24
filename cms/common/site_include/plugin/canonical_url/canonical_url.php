@@ -7,6 +7,7 @@ class CanonicalUrlPlugin{
 	private $isTrailingSlash = 1;	//URLの末尾にスラッシュを付けるか？
 	private $isWww = 1;
 	private $isShortLink = 1;		//shortlinkのメタタグを自動挿入するか？
+	private $isQuery = 0;			//サイト内検索のクエリをカノニカルタグに追加するか？
 
 	function getId(){
 		return self::PLUGIN_ID;
@@ -21,7 +22,7 @@ class CanonicalUrlPlugin{
 			"author"=>"齋藤 毅",
 			"url"=>"https://saitodev.co/",
 			"mail"=>"info@saitodev.co",
-			"version"=>"1.2"
+			"version"=>"1.3"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
@@ -55,8 +56,16 @@ class CanonicalUrlPlugin{
 		$pageLogic = SOY2Logic::createInstance("logic.site.Page.PageLogic");
 		$canonicalUrl = self::_decorateUrl($pageLogic->buildCanonicalUrl());
 
+		// 検索クエリを加える
+		if((int)$this->isQuery === 1 && isset($_GET["q"])){
+			$q = trim($_GET["q"]);
+			if(strlen($q)){
+				$canonicalUrl .= "?q=".rawurlencode($q);
+			}
+		}
+
 		$tags = array();
-		$tags[] = "<link rel=\"canonical\" href=\"" . $canonicalUrl . "\">";
+		$tags[] = "<link rel=\"canonical\" href=\"".$canonicalUrl."\">";
 
 		//shortlinkがあれば
 		if($this->isShortLink){
@@ -157,6 +166,13 @@ class CanonicalUrlPlugin{
 	}
 	function setIsShortLink($isShortLink){
 		$this->isShortLink = $isShortLink;
+	}
+
+	function getIsQuery(){
+		return $this->isQuery;
+	}
+	function setIsQuery(int $isQuery){
+		$this->isQuery = $isQuery;
 	}
 
 	public static function register(){

@@ -4,6 +4,13 @@ SOY2::import("util.CMSAccessRestrictionsUtil");
 // 一時設定やトークンファイルの生存時間を調べて、古ければ削除
 CMSAccessRestrictionsUtil::organizeConfigFiles();
 
+// IPアドレス直接入力によるアクセスを禁止
+if(CMSAccessRestrictionsUtil::checkIsRestrictIpDirectAccess()){
+	if(filter_var($_SERVER['HTTP_HOST'], FILTER_VALIDATE_IP)){
+		CMSAdminPageController::outputOnNotFound();
+	}
+}
+
 // IPアドレスによるアクセス制限
 if(!CMSAccessRestrictionsUtil::checkAllowIpAddress()){
 	$dir = dirname(dirname(__FILE__)) . "/common/";
@@ -19,5 +26,20 @@ if(!CMSAccessRestrictionsUtil::checkAllowIpAddress()){
 		CMSAdminPageController::jump("");
 	}
 
+	// ログインしていたら強制ログアウト
+	if(UserInfoUtil::isLoggined()){
+		UserInfoUtil::logout();
+	}
+
+	//2段階認証
+	if(CMSAccessRestrictionsUtil::checkIsTwoFactorAuth()){
+		//何もしない
+	}else{
+		CMSAdminPageController::outputOnNotFound();
+	}
+}
+
+// ユーザーエージェントによるアクセス制限
+if(!CMSAccessRestrictionsUtil::checkAllowUserAgent()){
 	CMSAdminPageController::outputOnNotFound();
 }

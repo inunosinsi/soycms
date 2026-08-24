@@ -404,7 +404,7 @@ class PageLogic extends SOY2LogicBase{
 			}
 		}
 
-		if(strlen($this->page->getUri())){
+		if($this->page instanceof Page && is_string($this->page->getUri()) && strlen($this->page->getUri())){
 			$url .= "/" . $this->page->getUri();
 		}
 		return $url;

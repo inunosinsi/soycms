@@ -1,5 +1,0 @@
-<?php
-define("SOYSHOP_ID","shop");
-define("SOYSHOP_SITE_DIRECTORY",str_replace("\\","/",$_SERVER["DOCUMENT_ROOT"]) . "shop/");
-define("SOYSHOP_SITE_URL","http://localhost:8081/shop/");
-?>

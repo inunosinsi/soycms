@@ -3,8 +3,11 @@
 	上記のプラグインと併用しなければ、表示速度の低速化を招きますので、ページの設定は上記のプラグインと合わせてご利用ください。<br>
 	HTML内でJavaScriptを直接記述する場合は、事前にコードの圧縮を行っておくことをオススメします。
 </div>
-<h4 class="mt-5">検索結果のページはチェックをいれても圧縮の対象外です</h4>
 <form soy:id="form">
+	<label>
+		<input type="checkbox" soy:id="is_remove_empty_alt">
+	</label>
+	<h4 class="mt-5">検索結果のページはチェックをいれても圧縮の対象外です</h4>
 	<ul>
 		<li soy:id="page_list" style="list-style:none">
 			<input type="checkbox" soy:id="page_item">

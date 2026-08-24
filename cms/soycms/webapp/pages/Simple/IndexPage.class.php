@@ -2,6 +2,7 @@
 
 class IndexPage extends CMSWebPageBase{
 
+	private $labelList;
 	var $blogIds;
 
 	function __construct(){

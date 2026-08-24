@@ -49,8 +49,14 @@ if(defined("SOYCMS_ASP_MODE")){
 
 //ログインチェック
 if(!UserInfoUtil::isLoggined()){
+	SOY2::import("util.CMSAccessRestrictionsUtil");
+	
 	SOY2ActionConfig::ActionDir(SOY2ActionConfig::ActionDir() . "login/");
-	SOY2HTMLConfig::PageDir(dirname(__FILE__) . "/pages/Login/");
+	if(CMSAccessRestrictionsUtil::checkAllowIpAddress()){
+		SOY2HTMLConfig::PageDir(dirname(__FILE__) . "/pages/Login/");
+	}else{
+		SOY2HTMLConfig::PageDir(dirname(__FILE__) . "/pages/Auth/");
+	}
 }else{
 	SOY2ActionConfig::ActionDir(SOY2ActionConfig::ActionDir() . "admin/");
 	SOY2HTMLConfig::PageDir(dirname(__FILE__) . "/pages/");

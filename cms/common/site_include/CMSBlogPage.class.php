@@ -212,6 +212,10 @@ class CMSBlogPage extends CMSPage{
 				$this->title = $pageFormat;
 
 				$_SERVER["BLOG_PAGE_MODE"] = BlogPage::MODE_ENTRY;
+
+				if(date("Ymd", $this->entry->getCdate()) != date("Ymd", $this->entry->getUdate())){
+					header("Last-Modified: " . gmdate("D, d M Y H:i:s T", $this->entry->getUdate()));
+				}
 				break;
 
 			case CMSBlogPage::MODE_CATEGORY_ARCHIVE:

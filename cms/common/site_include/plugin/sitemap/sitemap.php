@@ -49,7 +49,7 @@ class SitemapPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.9"
+			"version"=>"1.9.1"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
@@ -434,16 +434,7 @@ class SitemapPlugin{
 
 	private function _isTrailingSlash(){
 		static $is;
-		if(is_bool($is)) return $is;
-
-		if(CMSPlugin::activeCheck("canonical_url")){
-			if(!class_exists("CanonicalUrlPlugin")) SOY2::import("site_include.plugin.canonical_url.canonical_url", ".php");
-			$cnf = soy2_unserialize(file_get_contents(_SITE_ROOT_ . "/.plugin/canonical_url.config"));
-			$is = ($cnf->getIsTrailingSlash() == 1);
-		}else{	//カノニカルプラグインが無効の場合は何もしない
-			$is = true;
-		}
-
+		if(is_null($is)) $is = (CMSPlugin::activeCheck("canonical_url") && CMSPlugin::loadPluginConfig("canonical_url")->getIsTrailingSlash() == 1);
 		return $is;
 	}
 

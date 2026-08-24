@@ -84,7 +84,7 @@ class SiteList extends HTMLList{
 		$host = $array["host"];
 		if(isset($array["port"]))$host .=   ":" . $array["port"];
 
-		if(strlen($host) > 30){
+		if(is_string($host) && strlen($host) > 30){
 			$host = mb_strimwidth($host, 0, 30, "...");
 		}
 

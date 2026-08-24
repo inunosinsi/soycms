@@ -160,7 +160,7 @@ class SearchPage extends CMSWebPageBase{
 
 		if(count($labelIds) == 0 || !is_numeric(implode("",$labelIds))){
 			$this->addScript("parameters",array(
-				"lang"=>"text/JavaScript",
+				/**"lang"=>"text/JavaScript",**/
 				"script"=>'var listPanelURI = "'.SOY2PageController::createLink("Entry.ListPanel").'"'
 			));
 		}else{

@@ -113,6 +113,8 @@ create table Page(
 create table TemplateHistory(
 	id integer primary key AUTO_INCREMENT,
 	page_id integer references Page(id),
+	author varchar(255),
+	user_id INTEGER UNSIGNED,
 	contents LONGTEXT,
 	update_date INTEGER
 )ENGINE = InnoDB;

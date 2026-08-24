@@ -21,6 +21,7 @@ function soycms_get_site_id_by_frontcontroller(){
 	// 管理画面側でも動作する為の処理
 	if(!defined("_SITE_ROOT_") && class_exists("UserInfoUtil")){
 		$siteRoot = UserInfoUtil::getSite()->getPath();
+		define("_SITE_ROOT_", $siteRoot);
 	}else{
 		$siteRoot = _SITE_ROOT_;
 	}
@@ -34,8 +35,10 @@ function soycms_get_site_id_by_frontcontroller(){
 			$siteRoot = rtrim($siteRoot, "/");
 			$siteId = trim(trim(substr($siteRoot, strrpos($siteRoot, "/"))), "/");
 		}
+		if(is_numeric(strpos($siteId, "/"))) $siteId = trim($siteId, "/");
 		return $siteId;
 	}
+	return "";
 }
 
 /**

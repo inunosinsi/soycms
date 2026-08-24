@@ -2,7 +2,7 @@
 
 class CanonicalUrlConfigPage extends WebPage {
 
-	private $configObj;
+	private $pluginObj;
 
 	function __construct(){
 
@@ -15,6 +15,9 @@ class CanonicalUrlConfigPage extends WebPage {
 
 			$isShortLink = (isset($_POST["is_short_link"]) && (int)$_POST["is_short_link"] === 1) ? 1 : 0;
 			$this->pluginObj->setIsShortLink($isShortLink);
+
+			$isQuery = (isset($_POST["is_query"]) && (int)$_POST["is_query"] === 1) ? 1 : 0;
+			$this->pluginObj->setIsQuery($isQuery);
 
 			CMSPlugin::savePluginConfig($this->pluginObj->getId(), $this->pluginObj);
 			CMSPlugin::redirectConfigPage();
@@ -59,6 +62,13 @@ class CanonicalUrlConfigPage extends WebPage {
 			"value" => 1,
 			"selected" => ($this->pluginObj->getIsShortLink() == 1),
 			"label" => "shortlinkメタタグを挿入する"
+		));
+
+		$this->addCheckBox("is_query", array(
+			"name" => "is_query",
+			"value" => 1,
+			"selected" => ($this->pluginObj->getIsQuery() == 1),
+			"label" => "サイト内検索のクエリを追加する"
 		));
 	}
 

@@ -1,7 +1,7 @@
 <?php
 CustomIconFieldPlugin::registerPlugin();
 
-class CustomIconFieldPlugin{
+class CustomIconFieldPlugin {
 
 	const PLUGIN_ID = "SOYCMS_CUSTOM_ICON_FIELD_PLUGIN";
 

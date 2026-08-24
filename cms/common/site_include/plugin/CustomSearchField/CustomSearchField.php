@@ -17,7 +17,7 @@ class CustomSearchFieldPlugin{
 			"type" => Plugin::TYPE_ENTRY,
 			"description" => "",
 			"author" => "齋藤毅",
-			"url" => "https://saitodev.co",
+			"url" => "https://saitodev.co/article/2178",
 			"mail" => "tsuyoshi@saitodev.co",
 			"version"=>"0.14"
 		));

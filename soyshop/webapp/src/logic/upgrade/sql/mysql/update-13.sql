@@ -1,1 +1,0 @@
-ALTER TABLE soyshop_category_attribute ADD COLUMN category_value2 TEXT;

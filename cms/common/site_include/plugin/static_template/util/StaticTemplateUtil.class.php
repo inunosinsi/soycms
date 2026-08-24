@@ -46,6 +46,7 @@ class StaticTemplateUtil {
 	 */
 	public static function buildFieldId(int $pageId, string $blogPageType=""){
 		$fieldId = StaticTemplatePlugin::FIELD_ID."_".(string)$pageId;
+		if(!isset($_SERVER["REQUEST_URI"])) return "";
 		$reqUri = $_SERVER["REQUEST_URI"]; 
 		if(soy2_strpos($reqUri, "?") > 0){
 			$reqUri = substr($reqUri, 0, strpos($reqUri, "?"));

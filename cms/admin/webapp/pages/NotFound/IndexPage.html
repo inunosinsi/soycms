@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head soy:page="_common.HeaderPage">
+
+<body>
+
+	<div id="wrapper">
+		<!-- Navigation -->
+		<nav  class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" soy:page="_common.UpperMenuPage"><!-- --></nav>
+		<div id="page-wrapper">
+			<div class="row">
+				<div class="col-lg-12">
+					<h1 class="page-header">アクセスログ(404)</h1>
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<ul class="nav nav-pills">
+								<li><a soy:link="NotFound">アクセスログ(404)</a></li>
+								<li><a soy:link="NotFound.Suspicious">疑わしいアクセスのIPアドレス</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-12">
+					<div class="panel panel-yellow">
+						<div class="panel-heading">
+							アクセスログ(404)
+						</div>
+						<!-- soy:display="is_logging" -->
+						<div class="panel-body">
+							<div class="table-responsive">
+								<table class="table table-striped table-nowrap">
+									<caption>アクセスログ(404)</caption>
+									<thead>
+										<tr>
+											<th>アクセス日時</th>
+											<th>アクセス元IPアドレス</th>
+											<th>URI</th>
+										</tr>
+									</thead>
+
+									<tbody>
+										<!-- soy:id="log_list" -->
+										<tr>
+											<td soy:id="cdate"></td>
+											<td soy:id="ipv4"></td>
+											<td style="overflow-x:hidden;"><span soy:id="uri"></span></td>
+										</tr>
+										<!-- /soy:id="log_list" -->
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<!-- /soy:display="is_logging" -->
+						<div class="panel-body">
+							<!-- soy:display="permission_notice" -->
+							<div class="alert alert-danger">
+								IPアドレス設定のディレクトリの書き込み権限がありません。<br>
+								<!-- soy:id="run_user" /--> が <!-- soy:id="log_dir" /--> に書き込めるようにしてください。
+							</div>
+							<!-- /soy:display="permission_notice" -->
+							<form soy:id="form">
+								<div class="form-group">
+									<input type="checkbox" soy:id="loggin_on">
+								</div>
+								<div class="form-group form-inline">
+									<label>ログの収集件数</label>
+									<input type="number" soy:id="log_count">件
+								</div>
+								<div class="text-center">
+									<input type="submit" class="btn btn-primary btn-lg" value="更新する">
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
+
+
+		</div>
+		<!-- /#page-wrapper -->
+		<!-- soy:page="_common.FooterPage" /-->
+	</div>
+	<!-- /#wrapper -->
+
+
+</body>
+
+</html>

@@ -27,7 +27,7 @@ class CLSPlugin{
 			"type" => Plugin::TYPE_OPTIMIZE,
 			"description"=>"Cumulative Layout Shift対策で画像のサイズを取得してHTMLタグを生成しなおす。",
 			"author"=>"齋藤毅",
-			"url"=>"",
+			"url"=>"https://saitodev.co/article/3424",
 			"mail"=>"tsuyoshi@saitodev.co",
 			"version"=>"0.8"
 		));

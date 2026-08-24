@@ -69,15 +69,15 @@ abstract class LoginErrorLogDAO extends SOY2DAO{
 	}
 	
 	//ログの削除:参照速度を上げるため
-	function clean($cnt){
-		//期限のハードコーディング
-		$sql = "DELETE FROM LoginErrorLog ".
-				"WHERE count <  ". $cnt . " ".
-				"AND successed = 0 ".
-				"AND update_date < " . strtotime("-1 month");
-				
+	function clean(int $cnt=0){
+		// $cntは使用しなくなった
+	
+		//期限のハードコーディング				
 		try{
-			$res = $this->executeUpdateQuery($sql, array());
+			$this->executeUpdateQuery(
+				"DELETE FROM LoginErrorLog ".
+				"WHERE update_date < " . strtotime("-2 hour")
+			);
 		}catch(Exception $e){
 			//
 		}
@@ -102,4 +102,3 @@ abstract class LoginErrorLogDAO extends SOY2DAO{
 		return array($query, $binds);
 	}
 }
-?>

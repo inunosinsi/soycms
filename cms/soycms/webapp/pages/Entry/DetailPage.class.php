@@ -332,15 +332,15 @@ class DetailPage extends CMSEntryEditorPageBase{
 			"value" => ($this->id) ? CMSMessageManager::get("SOYCMS_UPDATE") : CMSMessageManager::get("SOYCMS_CREATE"),
 			"name"=>"modify",
 			"type"=>"submit",
-			"disabled" => ((boolean)!UserInfoUtil::hasEntryPublisherRole() && $entry->getIsPublished())
+			"disabled" => ((bool)!UserInfoUtil::hasEntryPublisherRole() && $entry->getIsPublished())
 		));
 
 		$this->addInput("create_button", array(
-			"visible" => false,//(boolean)$this->id, 新規保存は廃止
+			"visible" => false,//(bool)$this->id, 新規保存は廃止
 			"type"	=>"submit",
 			"name"	=> "as_new",
 			"value"   =>CMSMessageManager::get("SOYCMS_SAVE_AS_A_NEW_ENTRY"),
-			"onclick" => ((boolean)UserInfoUtil::hasEntryPublisherRole()) ? 'return confirm_open();' : "",
+			"onclick" => ((bool)UserInfoUtil::hasEntryPublisherRole()) ? 'return confirm_open();' : "",
 		));
 
 		$this->createAdd("label_categories", "_component.Entry.CategorizedLabelListComponent", array(

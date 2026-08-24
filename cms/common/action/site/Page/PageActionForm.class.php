@@ -66,7 +66,7 @@ class PageActionForm extends SOY2ActionForm{
      * 今日以降
      */
     function setOpenPeriodStart($openPeriodStart) {
-    	$tmpDate = (strlen($openPeriodStart)) ? strtotime($openPeriodStart) : false;
+    	$tmpDate = (is_string($openPeriodStart) && strlen($openPeriodStart)) ? strtotime($openPeriodStart) : false;
     	if($tmpDate === false){
     		$this->openPeriodStart = null;
     	}else{
@@ -82,7 +82,7 @@ class PageActionForm extends SOY2ActionForm{
      * 今日以降
      */
     function setOpenPeriodEnd($openPeriodEnd) {
-    	$tmpDate = (strlen($openPeriodEnd)) ? strtotime($openPeriodEnd) : false;
+    	$tmpDate = (is_string($openPeriodEnd) && strlen($openPeriodEnd)) ? strtotime($openPeriodEnd) : false;
     	if($tmpDate === false){
     		$this->openPeriodEnd = null;	
     	}else{
@@ -121,4 +121,3 @@ class PageActionForm extends SOY2ActionForm{
     	$this->icon = $icon;
     }
 }
-?>

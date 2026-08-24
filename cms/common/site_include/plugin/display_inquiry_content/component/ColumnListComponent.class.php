@@ -11,7 +11,7 @@ class ColumnListComponent extends HTMLList {
 			"text" => (isset($entity)) ? $entity : ""
 		));
 
-		$fieldId = (isset($this->connects[$key])) ? $this->connects[$key] : "";
+		$fieldId = (!is_null($key) && isset($this->connects[$key])) ? $this->connects[$key] : "";
 		$this->addLabel("create_date_annotation", array(
 			"html" => ($key == "create_date" && strlen($fieldId)) ? self::getAnnotation($fieldId) : ""
 		));

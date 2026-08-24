@@ -52,6 +52,12 @@ class SOY2{
 		$files = scandir($dirPath);
 		foreach($files as $file){
 			if(preg_match('/.php$/',$file) && is_readable($dirPath.$file)){
+				/**
+				 *  一部サーバで、._から始まるファイル名のPHPファイルが生成されてしまう為の対策
+				 */
+				$_pos = strpos($file, "._");
+				if(is_numeric($_pos) && $_pos === 0) continue;
+				
 				include_once($dirPath.$file);
 			}
 		}
@@ -841,7 +847,7 @@ abstract class SOY2ActionFormValidator{
 		if(!class_exists($class)){
 			throw new Exception("[SOY2ActionFormValidator]".$class." is not defined.");
 		}
-		$obj = json_decode($json);
+		$obj = (is_string($json)) ? json_decode($json) : array();
 		$validator = new $class($obj,$param);
 		$validator->_isRequire = (isset($obj->require)) ? $obj->require : false;
 		if(!empty($obj->message)){
@@ -1681,7 +1687,7 @@ class SOY2DAO{
 			$isUseLimitQuery = true;
 		}
 		if(SOY2DAOConfig::getOption("keep_statement") !== null){
-			$keepStatement = (boolean)SOY2DAOConfig::getOption("keep_statement");
+			$keepStatement = (bool)SOY2DAOConfig::getOption("keep_statement");
 		}
 		$pdo = $this->getDataSource();
 		try{
@@ -1797,7 +1803,7 @@ class SOY2DAO{
 			$sql = $sql->getQuery();
 		}
 		if(SOY2DAOConfig::getOption("keep_statement") !== null){
-			$keepStatement = (boolean)SOY2DAOConfig::getOption("keep_statement");
+			$keepStatement = (bool)SOY2DAOConfig::getOption("keep_statement");
 		}
 		if(!is_null($this->_keepStatement)){
 			$keepStatement = $this->_keepStatement;
@@ -1916,7 +1922,7 @@ class SOY2DAO{
 	 * setter keep statement
 	 */
 	function setKeepStatement($flag){
-		$this->_keepStatement = (boolean)$flag;
+		$this->_keepStatement = (bool)$flag;
 	}
 	/**
 	 * テーブル名を取得する
@@ -2995,7 +3001,7 @@ class SOY2DAOFactoryImpl extends SOY2DAOFactory {
 					$column->isPrimary = true;
 					break;
 			}
-			$readOnly = (boolean)self::getAnnotation(self::ANNOTATION_READ_ONLY,$propertyComment);
+			$readOnly = (bool)self::getAnnotation(self::ANNOTATION_READ_ONLY,$propertyComment);
 			$column->readOnly = $readOnly;
 			$entityInfo->columns[strtolower($column->prop)] = $column;
 		}
@@ -3383,7 +3389,7 @@ abstract class SOY2HTML extends SOY2HTMLBase{
 	 * setter soy_visible
 	 */
 	function setVisible($value){
-		$this->_soy2_visible = (boolean)$value;
+		$this->_soy2_visible = (bool)$value;
 	}
 	/**
 	 * getter soy_visible
@@ -4105,7 +4111,7 @@ class SOY2HTMLFactory extends SOY2HTMLBase{
 		foreach($templates as $str){
 			if(!preg_match($regex,$str,$tmp))continue;
 			$tag = $tmp[1];
-			$isEnded = (boolean)(strlen($tmp[2]) OR $tag[0] == "/");
+			$isEnded = (bool)(strlen($tmp[2]) OR $tag[0] == "/");
 			$soyId = $tmp[3];
 			if($isEnded && isset($tmpSoyIds[$soyId])){
 				$childSoyIds = array();
@@ -4281,7 +4287,7 @@ class HTMLLabel extends SOY2HTML{
 		$this->width = $width;
 	}
 	function setIsFolding($flag){
-		$this->isFolding = (boolean)$flag;
+		$this->isFolding = (bool)$flag;
 	}
 	function setFoldingTag($tag){
 		$this->foldingTag = $tag;
@@ -4396,7 +4402,7 @@ class HTMLHead extends SOY2HTML{
 		return htmlspecialchars((string)$this->title,ENT_QUOTES,SOY2HTML::ENCODING);
 	}
 	function setIsEraseHead($boolean){
-		$this->isEraseHead = (boolean)$boolean;
+		$this->isEraseHead = (bool)$boolean;
 	}
 	function getIsEraseHead(){
 		return $this->isEraseHead;
@@ -5761,7 +5767,7 @@ class HTMLList_LoopModel extends HTMLModel{
 	private $counter;
 	function getStartTag(){
 		$step = (int)$this->getAttribute("step");
-		$func ='<?php $'.$this->getId().'_loop_visible = !(boolean)'.$step.';' .
+		$func ='<?php $'.$this->getId().'_loop_visible = !(bool)'.$step.';' .
 				'if('.$step.')$'.$this->getId().'_loop_visible=(($'.$this->getPageParam().'_counter+1) % '.$step.' === 0); ' .
 		 		'if($'.$this->getId().'_loop_visible){ ?>';
 		$res = $func . parent::getStartTag();
@@ -6182,7 +6188,7 @@ class HTMLCheckBox extends HTMLInput {
 		$this->isBoolean = $flag;
 	}
 	function isBoolean(){
-		return (boolean)$this->isBoolean;
+		return (bool)$this->isBoolean;
 	}
 }
 /**
@@ -8136,7 +8142,7 @@ class SOY2Mail_SendMailLogic extends SOY2Mail implements SOY2Mail_SenderInterfac
 			$to = str_replace("\n", "\r\n", $to);
 			$headersText = implode("\r\n",$headers);
 		}
-		$sendmail_params  = "-f".$from->getAddress();
+		$sendmail_params  = "-f ".escapeshellarg(trim((string)$from->getAddress()));
 		mail($to, $title, $body, $headersText, $sendmail_params);
 		if(count($bccRecipients) >0){
 			$headers[] = "X-To: ".$sendTo->getString();
@@ -8864,20 +8870,60 @@ class SOY2SessionValue{
 	}
 }
 /**
- * serializeしたあとにaddslashesを行う
+ * serializeしたあとにaddslashesを行う（HMAC署名付き）
  *
- * @param $var 配列やインスタンスなど
+ * @param mixed $var 配列やインスタンスなど
+ * @return string
  */
 function soy2_serialize($var){
-	return addslashes(serialize($var));
+	$serialized = serialize($var);
+
+	// HMAC（署名）を生成して付与
+	$secretKey = defined('SOY2_SECRET_KEY') ? SOY2_SECRET_KEY : 'soy2';
+	$hmac = hash_hmac('sha256', $serialized, $secretKey);
+	return addslashes($hmac . ':' . $serialized);
 }
 /**
- * stripslashesしてからunserializeを行う
+ * stripslashesしてからunserializeを行う（旧形式の互換性対応付き）
  *
- * @param $string soy2_serializeの出力する文字列
+ * @param string $string soy2_serializeの出力する文字列
+ * @return mixed
  */
 function soy2_unserialize(string $string){
-	return (strlen($string)) ? unserialize(stripslashes($string)) : array();
+	// allowed_classes の判定処理（静的保持）
+	static $allowed;
+	if(is_null($allowed)){
+		$allowed = array();
+		if(file_exists(__DIR__."/allowedClasses.php")) include(__DIR__."/allowedClasses.php");
+		if(!is_array($allowed) || !count($allowed)) $allowed = false;
+	}
+	$rawString = stripslashes($string);
+
+	//署名(HMAC)
+    $parts = explode(':', $rawString, 2);
+    $secretKey = defined('SOY2_SECRET_KEY') ? SOY2_SECRET_KEY : 'soy2';
+
+	// 区切り文字 ':' が含まれ、かつ先頭が64文字のハッシュ値（sha256）っぽいかチェック
+	$hasHmac = (count($parts) === 2 && strlen($parts[0]) === 64 && ctype_xdigit($parts[0]));
+
+	if($hasHmac){	// --- 【新形式（HMACあり）の処理】 ---
+		list($hmac, $serialized) = $parts;
+		$calculatedHmac = hash_hmac('sha256', $serialized, $secretKey);
+
+ 		// 改ざんチェック（不正なら即拒否）
+		if (!hash_equals($calculatedHmac, $hmac)) return null;
+		$data = unserialize($serialized, array("allowed_classes" => $allowed));
+	}else{
+		// --- 【旧形式（HMACなし）の処理】 ---
+		$data = unserialize($rawString, array("allowed_classes" => $allowed));
+	}
+
+	// __PHP_Incomplete_Classの場合はnullを返す
+	if (is_object($data) && $data instanceof __PHP_Incomplete_Class) {
+		return null;
+	}
+
+	return $data;
 }
 /**
  * soy2_scanfiles
@@ -8934,6 +8980,8 @@ function soy2_require(string $file, bool $isThrowException=false){
  * @param $dir ディレクトリ
  */
 function soy2_scandir(string $dir){
+	if(!is_dir($dir)) return array();
+
 	$res = array();
 	$files = scandir($dir);
 	foreach($files as $row){

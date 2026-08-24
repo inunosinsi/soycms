@@ -19,7 +19,8 @@ class GeminiAbstractUtil {
 			$res = $dao->executeQuery(
 				"SELECT id, page_config FROM Page ".
 				"WHERE page_type = ".Page::PAGE_TYPE_BLOG . " ".
-				"AND isPublished = ".Page::PAGE_ACTIVE
+				"AND isPublished = ".Page::PAGE_ACTIVE . " ".
+				"AND isTrash != 1"
 			);
 		}catch(Exception $e){
 			$res = array();
@@ -74,9 +75,12 @@ class GeminiAbstractUtil {
 		$entry = soycms_get_hash_table_dao("entry")->getById($entryId);
 		
 		$content = "<h1>".$entry->getTitle()."</h1>";
+		$content .= "<p>作成日時:".date("Y-m-d H:i:s", $entry->getCdate())."</p>";
 		$content .= $entry->getContent();
 		$content .= $entry->getMore();
-		return $content."の内容を".$count."文字で要約してください";
+		return "あなたは優秀なWebマーケターです。ユーザーが入力したブログ記事の内容を読み取り、要約を作成してください。".
+				"タスクは以下のとおりです。\n\n".
+				"1. 「".$content."」を読み、".$count."文字で要約を作成。";
 	}
 
 	/**

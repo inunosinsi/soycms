@@ -12,4 +12,3 @@ class MeasurePage extends CMSWebPageBase{
 		SOY2PageController::jump("Site.Login.Notice");
 	}
 }
-?>

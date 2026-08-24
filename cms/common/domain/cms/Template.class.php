@@ -79,7 +79,7 @@ class Template {
 	}
 
 	function isActive(){
-		return (boolean)$this->active;
+		return (bool)$this->active;
 	}
 
 	function getFileList() {

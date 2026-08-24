@@ -525,10 +525,7 @@ class CustomFieldPlugin{
 		}
 
 		$obj = CMSPlugin::loadPluginConfig(CustomFieldPlugin::PLUGIN_ID);
-		if(is_null($obj)){
-			$obj = new CustomFieldPlugin();
-		}
-
+		if(is_null($obj)) $obj = new CustomFieldPlugin();
 		CMSPlugin::addPlugin(CustomFieldPlugin::PLUGIN_ID,array($obj,"init"));
 
 	}

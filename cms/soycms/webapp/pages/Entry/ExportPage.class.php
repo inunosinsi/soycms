@@ -102,7 +102,14 @@ class ExportPage extends CMSWebPageBase {
 		$this->logic = $logic;
 
         $dao = SOY2DAOFactory::create("cms.EntryDAO");
-
+        try{
+        	$res = $dao->executeQuery("SELECT COUNT(id) FROM Entry");
+        	$total = (isset($res[0]["COUNT(id)"])) ? (int)$res[0]["COUNT(id)"] : 0;
+        }catch(Exception $e){
+        	$total = 0;
+        }
+        
+        
         $format = $_POST["format"];
         $item = $_POST["item"];
 
@@ -113,6 +120,13 @@ class ExportPage extends CMSWebPageBase {
         if(isset($format["separator"])) $logic->setSeparator($format["separator"]);
         if(isset($format["quote"])) $logic->setQuote($format["quote"]);
         if(isset($format["charset"])) $logic->setCharset($format["charset"]);
+
+		if(isset($_POST["Label"]) && is_array($_POST["Label"]) && count($_POST["Label"])){
+			$GLOBALS["ENTRY_EXPORT_ENTRY_IDS"] = soycms_get_hash_table_dao("entry_label")->getEntryIdsByLabelIds($_POST["Label"]);
+			if(!count($GLOBALS["ENTRY_EXPORT_ENTRY_IDS"])){
+				self::outputFile(array(), $displayLabel);
+			}
+		}
 
         //出力する項目にセット
         $logic->setItems($item);
@@ -126,9 +140,10 @@ class ExportPage extends CMSWebPageBase {
         $step = 0;
         $dao->setLimit($limit);
 
-        do{
-            if(connection_aborted())exit;
+        $lines = array();
 
+		$loop = (int)($total/$limit)+1;
+		for($i = 0; $i < $loop; $i++){
             $dao->setOffset($step * $limit);
             $step++;
 
@@ -140,44 +155,26 @@ class ExportPage extends CMSWebPageBase {
             }
 
 			//ラベルはここで精査する
-			if(count($entries) && isset($_POST["Label"]) && count($_POST["Label"])) $entries = self::refineByEntryLabels($entries);
+			if(count($entries) && isset($GLOBALS["ENTRY_EXPORT_ENTRY_IDS"])) $entries = self::refineByEntryLabels($entries);
 
             //CSV(TSV)に変換
-            $lines = self::itemToCSV($entries);
+            if(count($entries)){
+	            $lines = array_merge($lines, self::itemToCSV($entries));
+	        }
+        }
 
-            //出力
-            self::outputFile($lines, $displayLabel);
-
-        }while(count($entries) >= $limit);
+		//出力
+		self::outputFile($lines, $displayLabel);
 
         exit;
 	}
 
 	private function refineByEntryLabels(array $entries){
-		static $dao, $labelCount;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("cms.EntryLabelDAO");
-		if(is_null($labelCount)) $labelCount = count($_POST["Label"]);
-
 		$list = array();
 		foreach($entries as $entry){
-			try{
-				$labels = $dao->getByEntryId($entry->getId());
-			}catch(Exception $e){
-				continue;
-			}
-
-			if(!count($labels)) continue;
-
-			//指定のラベルをすべて含むか？指定したラベルの個数とヒットの件数が一致するか？で調べる
-			$cnt = 0;
-			foreach($labels as $labelId => $label){
-				$res = array_search($labelId, $_POST["Label"]);
-				if(isset($res) && is_numeric($res)) $cnt++;
-			}
-
-			if($cnt === $labelCount) $list[] = $entry;
+			if(is_bool(array_search($entry->getId(), $GLOBALS["ENTRY_EXPORT_ENTRY_IDS"]))) continue;
+			$list[] = $entry;
 		}
-
 		return $list;
 	}
 

@@ -26,11 +26,10 @@ class UpdateAction extends SOY2Action{
 
 		$this->dao = SOY2DAOFactory::create("cms.PageDAO");
 		$entity = $this->dao->getById($this->id);
-		$old = $entity;
+		$old = clone $entity;
 
 		SOY2::cast($entity,$form);
 		$entity->setId($this->id);
-
 
 		//ループしていないかチェック
 		if($this->checkParentPageId($entity,$entity->getId()) != true){

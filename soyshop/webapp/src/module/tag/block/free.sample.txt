@@ -1,7 +1,0 @@
-&lt;h1 <strong>cms:id="free_title"</strong>&gt;タイトル&lt;/h1&gt;
-<strong>&lt;!-- cms:id="free_content" --&gt;</strong>
-&lt;p&gt;本文本文本文本文本文本文&lt;/p&gt;
-&lt;p&gt;本文本文本文本文本文本文&lt;/p&gt;
-&lt;p&gt;本文本文本文本文本文本文&lt;/p&gt;
-&lt;p&gt;本文本文本文本文本文本文&lt;/p&gt;
-<strong>&lt;!-- /cms:id="free_content" --&gt;</strong>

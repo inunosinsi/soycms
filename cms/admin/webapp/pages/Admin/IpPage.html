@@ -52,11 +52,25 @@
 								管理画面のアクセスを許可するIPアドレスの設定を行います。<br>
 								IPアドレスの設定を行う前に<a href="https://saitodev.co/soycms/soycms/tutorial/142" target="_blank" rel="noopener" style="text-decoration:underline;font-weight:bold;">IPアドレスによる管理画面のアクセス制限の設定 - SOY CMSを使ってみよう</a>をご確認ください。
 							</div>
-							<div style="font-size:2em;">アクセス中のIPアドレス : <strong soy:id="remote_addr"></strong></div>
 							<form soy:id="form">
+								<div style="font-size:2em;">アクセス中のIPアドレス : <strong soy:id="remote_addr"></strong></div>
+								<div><strong>ホワイトリスト</strong></div>
 								<div style="margin-bottom:25px;">
 									<textarea class="form-control" rows="10" soy:id="ipaddress"></textarea>
 									<div class="alert alert-warning">アクセスを許可したいIPアドレスを改行区切りで指定します。</div>
+									<input type="checkbox" soy:id="two_factor_auth"><br>
+									<input type="checkbox" soy:id="ip_direct">
+								</div>
+
+								<div><strong>ブラックリスト(IPアドレス)</strong></div>
+								<div style="margin-bottom:25px;">
+									<textarea class="form-control" rows="5" soy:id="blacklist"></textarea>
+									<div class="alert alert-danger">アクセスを拒否したいIPアドレスを改行区切りで指定します。</div>
+								</div>
+								<div><strong>ブラックリスト(ユーザーエージェント)</strong></div>
+								<div style="margin-bottom:25px;">
+									<textarea class="form-control" rows="5" soy:id="blacklist_useragent"></textarea>
+									<div class="alert alert-danger">アクセスを拒否したいユーザーエージェントを改行区切りで指定します。</div>
 								</div>
 								<input id="update_button" class="btn btn-primary btn-lg btn-block" type="submit" value="更新">
 							</form>

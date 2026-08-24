@@ -127,7 +127,7 @@ class Block {
 	}
 
 	function setIsUse($value){
-		$this->isUse = (boolean)$value;
+		$this->isUse = (bool)$value;
 	}
 }
 

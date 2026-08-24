@@ -18,7 +18,7 @@ class ReplacementStringPlugin{
 			"type" => Plugin::TYPE_PAGE,
 			"description"=>"各ページで使用できる置換文字列を追加します",
 			"author"=>"齋藤毅",
-			"url"=>"https://saitodev.co",
+			"url"=>"https://saitodev.co/article/1254",
 			"mail"=>"tsuyoshi@saitodev.co",
 			"version"=>"0.7"
 		));

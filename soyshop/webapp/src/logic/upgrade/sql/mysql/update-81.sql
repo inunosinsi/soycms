@@ -1,9 +1,0 @@
-ALTER TABLE soyshop_item_attribute MODIFY COLUMN item_id INTEGER NOT NULL;
-ALTER TABLE soyshop_item_attribute MODIFY COLUMN item_field_id VARCHAR(255) NOT NULL;
-ALTER TABLE soyshop_item_attribute MODIFY COLUMN item_value TEXT NOT NULL;
-ALTER TABLE soyshop_category_attribute MODIFY COLUMN category_id INTEGER NOT NULL;
-ALTER TABLE soyshop_category_attribute MODIFY COLUMN category_field_id VARCHAR(255) NOT NULL;
-ALTER TABLE soyshop_category_attribute MODIFY COLUMN category_value TEXT NOT NULL;
-ALTER TABLE soyshop_user_attribute MODIFY COLUMN user_id INTEGER NOT NULL;
-ALTER TABLE soyshop_user_attribute MODIFY COLUMN user_field_id VARCHAR(255) NOT NULL;
-ALTER TABLE soyshop_user_attribute MODIFY COLUMN user_value TEXT NOT NULL;

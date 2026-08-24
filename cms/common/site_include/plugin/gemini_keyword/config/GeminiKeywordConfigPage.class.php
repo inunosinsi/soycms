@@ -5,10 +5,13 @@ class GeminiKeywordConfigPage extends WebPage{
 	
 	function __construct(){
 		SOY2::import("domain.cms.DataSets");
+		SOY2::import("site_include.plugin.soycms_search_block.util.SearchBlockUtil");
 	}
 	
 	function doPost(){
 		if(soy2_check_token()){
+			SearchBlockUtil::saveSecurityConfig($_POST["Security"]);
+		
 			$logic = SOY2Logic::createInstance("logic.ai.GeminiApiLogic");
 			$logic->saveApiKey($_POST["Config"]["gemini_api_key"]);
 
@@ -22,6 +25,7 @@ class GeminiKeywordConfigPage extends WebPage{
 	function execute(){
 		parent::__construct();
 		self::_buildGeminiConfigArea();
+		self::_buildSecurityConfigArea();
 	}
 
 	private function _buildGeminiConfigArea(){
@@ -55,6 +59,41 @@ class GeminiKeywordConfigPage extends WebPage{
 
 		$this->addLabel("site_id", array(
 			"text" => $siteId
+		));
+	}
+
+	private function _buildSecurityConfigArea(){
+		$cfg = SearchBlockUtil::getSecurityConfig();
+
+		$this->addCheckBox("is_strip_tags", array(
+			"type" => "checkbox",
+			"name" => "Security[is_strip_tags]",
+			"value" => SearchBlockUtil::ON,
+			"label" => "検索クエリからHTMLタグを削除する",
+			"selected" => (isset($cfg["is_strip_tags"]) && (int)$cfg["is_strip_tags"] === SearchBlockUtil::ON)
+		));
+
+		$this->addCheckBox("deny_url", array(
+			"type" => "checkbox",
+			"name" => "Security[deny_url]",
+			"value" => SearchBlockUtil::ON,
+			"label" => "検索クエリでURLを禁止",
+			"selected" => (isset($cfg["deny_url"]) && (int)$cfg["deny_url"] === SearchBlockUtil::ON)
+		));
+
+		$this->addCheckBox("deny_path", array(
+			"type" => "checkbox",
+			"name" => "Security[deny_path]",
+			"value" => SearchBlockUtil::ON,
+			"label" => "検索クエリでファイルパスを禁止",
+			"selected" => (isset($cfg["deny_path"]) && (int)$cfg["deny_path"] === SearchBlockUtil::ON)
+		));
+
+		$this->addInput("limit_char", array(
+			"type" => "number",
+			"name" => "Security[limit_char]",
+			"value" => (isset($cfg["limit_char"])) ? (int)$cfg["limit_char"] : 0,
+			"style" => "width:60px;"
 		));
 	}
 

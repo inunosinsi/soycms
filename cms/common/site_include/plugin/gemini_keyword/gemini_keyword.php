@@ -18,7 +18,7 @@ class GeminiKeywordPlugin {
 			"author"=> "齋藤毅",
 			"url"=> "https://saitodev.co/article/6163",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.8"
+			"version"=>"0.10.1"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -133,8 +133,11 @@ class GeminiKeywordPlugin {
 	}
 
 	private function _getQueryByUri(){
-		if(isset($_GET["q"]) && strlen(trim($_GET["q"])) > 0){
-			return htmlspecialchars(trim($_GET["q"]), ENT_QUOTES, "UTF-8");
+		SOY2::import("site_include.plugin.soycms_search_block.util.SearchBlockUtil");
+	
+		if(isset($_GET["q"])){
+			$q = trim($_GET["q"]);
+			return SearchBlockUtil::sanitize($q);
 		}
 	
 		$uri = trim((string)soycms_get_page_object((int)$_SERVER["SOYCMS_PAGE_ID"])->getUri());
@@ -144,7 +147,7 @@ class GeminiKeywordPlugin {
 		if(!strlen($q)) return "";
 
 		if(soy2_strpos($q, "/") > 0) $q = substr($q, 0, soy2_strpos($q, "/"));
-		return rawurldecode($q);
+		return SearchBlockUtil::sanitize(rawurldecode($q));
 	}
 
 	function returnPluginId(){

@@ -257,13 +257,15 @@ foreach($pages as $key => $page){
 		</div>
 	</div>';
 	
-	$value = htmlspecialchars(@$this->keywords[$page->getId()],ENT_QUOTES);
+	$keyword = (isset($this->keywords[$page->getId()])) ? (string)$this->keywords[$page->getId()] : "";
+	$value = htmlspecialchars($keyword,ENT_QUOTES);
 	
 	echo '<div class="section"><p class="sub">キーワード(<a href="#help_show_keyword" onclick="show_help();">?</a>)</p>';
 	echo "<input class=\"text\" name=\"keyword[".$page->getId()."]\" value=\"$value\"/>";	
 	echo '</div>';
 	
-	$value = htmlspecialchars(@$this->description[$page->getId()],ENT_QUOTES);
+	$description = (isset($this->description[$page->getId()])) ? (string)$this->description[$page->getId()] : "";
+	$value = htmlspecialchars($description,ENT_QUOTES);
 	
 	echo '<div class="section"><p class="sub">概要(<a href="#help_show_description" onclick="show_help();">?</a>)</p>';
 	echo "<input class=\"text\" name=\"description[".$page->getId()."]\" value=\"$value\"/>";

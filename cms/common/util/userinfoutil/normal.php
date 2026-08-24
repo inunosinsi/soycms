@@ -45,6 +45,7 @@ class UserInfoUtil implements IUserInfoUtil{
 
 		$session = SOY2ActionSession::getUserSession();
 		$session->setAttribute("Site",$site);
+		$session->setAttribute("siteId", $site->getSiteId());
 		$session->setAttribute("isSiteAdministrator",$siteRole->isSiteAdministrator());
 		$session->setAttribute("isEntryAdministor",$siteRole->isEntryAdministrator());
 		$session->setAttribute("isEntryPublisher",$siteRole->isEntryPublisher());
@@ -123,8 +124,8 @@ class UserInfoUtil implements IUserInfoUtil{
      * 現在ログインしているユーザが一般管理者以上かどうか
      */
     public static function hasSiteAdminRole(){
-    	$isSiteAdministrator = (boolean)SOY2ActionSession::getUserSession()->getAttribute("isSiteAdministrator");
-    	$isDefaultUser = (boolean)self::isDefaultUser();
+    	$isSiteAdministrator = (bool)SOY2ActionSession::getUserSession()->getAttribute("isSiteAdministrator");
+    	$isDefaultUser = (bool)self::isDefaultUser();
     	return ($isSiteAdministrator || $isDefaultUser);
     }
 
@@ -132,7 +133,7 @@ class UserInfoUtil implements IUserInfoUtil{
      * 現在ログインしているユーザがエントリー公開権限を持っているか
      */
     public static function hasEntryPublisherRole(){
-		return (boolean)SOY2ActionSession::getUserSession()->getAttribute("isEntryPublisher");
+		return (bool)SOY2ActionSession::getUserSession()->getAttribute("isEntryPublisher");
     }
 
 	/**
@@ -140,7 +141,7 @@ class UserInfoUtil implements IUserInfoUtil{
 	 * （１つのサイト/アプリにしかログイン権限がないということ）
 	 */
     public static function hasOnlyOneRole(){
-    	return (boolean)SOY2ActionSession::getUserSession()->getAttribute("hasOnlyOneRole");
+    	return (bool)SOY2ActionSession::getUserSession()->getAttribute("hasOnlyOneRole");
     }
 
     /**

@@ -31,11 +31,11 @@ class OutlinePage extends CMSWebpageBase{
 
 		$this->createAdd("contents","HTMLLabel",array(
 			"html"=>$entry->getContent(),
-			"visible" => (boolean) strlen($entry->getContent())
+			"visible" => (bool) strlen($entry->getContent())
 		));
 		$this->createAdd("more","HTMLLabel",array(
 			"html"=>$entry->getMore(),
-			"visible" => (boolean) strlen($entry->getMore())
+			"visible" => (bool) strlen($entry->getMore())
 		));
 
 		//ラベル

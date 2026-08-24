@@ -103,6 +103,11 @@ class BuildMetaLogic extends SOY2LogicBase {
 			$filepath = ($entryId > 0) ? soycms_get_entry_attribute_value($entryId, ThumbnailPluginUtil::TRIMMING_IMAGE, "string") : "";
 			if($entryId > 0 && !strlen($filepath)) $filepath = soycms_get_entry_attribute_value($entryId, ThumbnailPluginUtil::UPLOAD_IMAGE, "string");
 		}
+
+		// avif形式の画像は指定できない
+		if(is_numeric(strpos($filepath, ".avif"))){
+			$filepath = soycms_avif2jpeg($filepath);
+		}
 		
 		if(strlen($filepath)){
 			$http = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") ? "https" : "http";

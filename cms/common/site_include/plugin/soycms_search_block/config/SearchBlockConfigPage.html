@@ -30,7 +30,7 @@
 
 <div class="alert alert-success">他ページに設置する検索フォームの記述例</div>
 <pre>&lt;form method="GET" action="<strong>{検索結果ページのURL}</strong>"&gt;
-&lt;input type="search" name="<strong>q</strong>"&gt;
+&lt;input type="search" name="q" <strong>cms:id="search_keyword_input"</strong>&gt;
 &lt;input type="submit" value="検索"&gt;
 &lt;/form&gt;</pre>
 
@@ -50,9 +50,45 @@
 
 <br>
 
-<div class="alert alert-info">Gemini APIで類似キーワードを取得</div>
-
 <form soy:id="form">
+	<div class="alert alert-info">検索クエリの正規化</div>
+
+	<div class="form-group">
+		<label>カタカナ</label>
+		<div class="form-inline">
+			<input type="radio" soy:id="no_normalize_katakana">
+			<input type="radio" soy:id="normalize_katakana_half_to_full">
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label>数字</label>
+		<div class="form-inline">
+			<input type="radio" soy:id="no_normalize_number">
+			<input type="radio" soy:id="normalize_number_half_to_full">
+			<input type="radio" soy:id="normalize_number_full_to_half">
+		</div>
+	</div>
+
+	<br>
+
+	<div class="alert alert-info">セキュリティの設定</div>
+
+	<div class="form-group">
+		<input type="checkbox" soy:id="is_strip_tags"><br>
+		<input type="checkbox" soy:id="deny_url"><br>
+		<input type="checkbox" soy:id="deny_path">
+	</div>
+
+	<div class="form-group">
+		<label>検索クエリの文字数</label>
+		<div class="form-inline">
+			<input type="number" soy:id="limit_char">&nbsp;文字
+		</div>
+	</div>
+
+	<div class="alert alert-info">Gemini APIで類似キーワードを取得</div>
+
 	<div class="form-group">
 		<div class="form-inline">
 			<label>Gemini APIキー</label>

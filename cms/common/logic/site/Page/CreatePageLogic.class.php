@@ -2,13 +2,13 @@
 
 class CreatePageLogic extends SOY2LogicBase{
 	
-    function create(Page $page,$tempname = ""){
+    function create(Page $page, $tempname=""){
     	
     	switch($page->getPageType()){
-    		case Page::PAGE_TYPE_BLOG:
-    			
+    		case Page::PAGE_TYPE_BLOG:    			
+
     			//テンプレートを指定していた場合
-    			if(strlen($tempname) != 0){
+    			if(is_string($tempname) && strlen($tempname) != 0){
 			    	//$contents = $this->getTemplateContents($tempname."/");
 	    			$templateDAO = SOY2DAOFactory::create("cms.TemplateDAO");
 	    			$template = $templateDAO->getById($tempname);
@@ -53,7 +53,7 @@ class CreatePageLogic extends SOY2LogicBase{
     		default:
 
     			//テンプレートを指定していた場合
-				if(strlen($tempname) != 0){
+				if(is_string($tempname) && strlen($tempname) != 0){
 			    	$contents = $this->getTemplateContents($tempname);
     			}else{
     				$contents = $this->getDefaultTemplateContents($page->getPageType());

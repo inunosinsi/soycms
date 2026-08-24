@@ -35,9 +35,11 @@ class IndexPage extends CMSWebPageBase{
 		parent::__construct();
 
 		include_once(SOY2HTMLConfig::PageDir() . "_component/Label/LabelListComponent.class.php");
+		SOY2::import("util.LabelAccordionUtil");
 		$labels = self::getLabelLists();
 		$this->createAdd("label_lists", "_component.Label.LabelsListComponent", array(
 			"list" => $labels,
+			"accordionConfig" => LabelAccordionUtil::read()
 		));
 
 		$this->addInput("update_display_order", array(
@@ -66,6 +68,11 @@ class IndexPage extends CMSWebPageBase{
 			"script"=>'var reNameLink = "'.SOY2PageController::createLink("Label.Rename").'";' .
 					'var reDesciptionLink = "'.SOY2PageController::createLink("Label.ReDescription").'";' .
 					'var ChangeLabelIconLink = "'.SOY2PageController::createLink("Label.ChangeLabelIcon").'";'
+		));
+
+		$this->addInput("change_icon_accordion_config_path", array(
+			"value" => SOY2PageController::createLink("Label.ChangeLabelAccordion"),
+			"id" => "change_icon_accordion_config_path"
 		));
 
 		//アイコンリスト
@@ -104,11 +111,8 @@ class IndexPage extends CMSWebPageBase{
 	 * ラベルに使えるアイコンの一覧を返す
 	 */
 	private function getLabelIconList(){
-
-		$files = scandir(CMS_LABEL_ICON_DIRECTORY);
-
 		$return = array();
-		foreach($files as $file){
+		foreach(scandir(CMS_LABEL_ICON_DIRECTORY) as $file){
 			if($file[0] == ".")continue;
 			if(!preg_match('/jpe?g|gif|png$/i',$file))continue;
 			if($file == "default.gif")continue;

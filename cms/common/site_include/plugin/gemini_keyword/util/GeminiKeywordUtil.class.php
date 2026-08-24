@@ -18,7 +18,8 @@ class GeminiKeywordUtil {
 			$res = $dao->executeQuery(
 				"SELECT id, page_config FROM Page ".
 				"WHERE page_type = ".Page::PAGE_TYPE_BLOG . " ".
-				"AND isPublished = ".Page::PAGE_ACTIVE
+				"AND isPublished = ".Page::PAGE_ACTIVE . " ".
+				"AND isTrash != 1"
 			);
 		}catch(Exception $e){
 			$res = array();
@@ -73,12 +74,16 @@ class GeminiKeywordUtil {
 		$entry = soycms_get_hash_table_dao("entry")->getById($entryId);
 		
 		$content = "<h1>".$entry->getTitle()."</h1>";
+		$content .= "<p>作成日時:".date("Y-m-d H:i:s", $entry->getCdate())."</p>";
 		$content .= $entry->getContent();
 		$content .= $entry->getMore();
-		return $content."の内容から検索用のキーワードを取得して一覧にしてください。".
-			"各キーワードの読み方のひらがなとカタカナも追加してください。".
-			"結果はキーワード、ひらがな、カタカナの順でカンマ区切り。".
-			"キーワードは重要度が高い順。";
+		return "あなたは優秀なWebマーケターです。ユーザーが入力したブログ記事の内容を読み取り、検索用のキーワードを取得して一覧にしてください。".
+			"タスクは以下のとおりです。\n\n".
+			"1. 「".$content."」を読み、検索用のキーワードを抽出。\n".
+			"2. キーワードは一単語ずつ。\n".
+			"3. 各キーワードの読み方のひらがなとカタカナを追加。\n".
+			"4. 結果はキーワード、ひらがな、カタカナの順でカンマ区切り。\n".
+			"5. キーワードは重要度が高い順。";
 	}
 
 	/**
@@ -237,7 +242,28 @@ class GeminiKeywordUtil {
 	 */
 	public static function getKeywordsByEntryId(int $entryId){
 		SOY2::import("site_include.plugin.gemini_keyword.domain.GeminiKeywordRelationDAO");
-		return SOY2DAOFactory::create("GeminiKeywordRelationDAO")->getByEntryId($entryId);
+		$keywords = SOY2DAOFactory::create("GeminiKeywordRelationDAO")->getByEntryId($entryId);
+		//おかしなものは除いておく
+		if(count($keywords)){
+			$_keywords = array();
+			foreach($keywords as $keyword){
+				$keyword = trim($keyword);
+				
+				if(is_numeric(strpos($keyword, "重要度順"))) continue;
+				if(is_numeric(strpos($keyword, "href"))) continue;
+				if(is_numeric(strpos($keyword, "承知"))) continue;
+				if(is_numeric(strpos($keyword, "*"))) continue;
+				
+				// 数字のみを除外
+				if((int)$keyword > 0) continue;
+				if(strlen($keyword) && $keyword == 0) continue;
+				
+				$_keywords[] = $keyword;
+			}
+			$keywords = $_keywords;
+		}
+		
+		return $keywords;
 	}
 
 

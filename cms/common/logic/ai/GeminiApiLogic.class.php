@@ -5,6 +5,7 @@
 require SOY2::rootDir().'lib/vendor/autoload.php';
 
 use GeminiAPI\Client;
+use GeminiAPI\Resources\ModelName;
 use GeminiAPI\Resources\Parts\TextPart;
 
 class GeminiApiLogic extends SOY2LogicBase {
@@ -15,22 +16,20 @@ class GeminiApiLogic extends SOY2LogicBase {
 		SOY2::import("domain.cms.DataSets");
 	}
 
-	function executePrompt(string $prompt){
-		$client = new Client(self::getApiKey());
+	/**
+	 * @param string, string
+	 * @return string
+	 */
+	function executePrompt(string $prompt, string $apiKey=""){
+		if(!strlen($apiKey)) $apiKey = self::getApiKey();
+		$client = new Client($apiKey);
 		try{
-			$resp = $client->geminiPro15()->generateContent(
-				new TextPart($prompt)
+			$resp = $client->generativeModel("gemini-2.5-flash")->generateContent(
+			    new TextPart($prompt),
 			);
 			return $resp->text();
 		}catch(Exception $e){
-			try{
-				$resp = $client->geminiPro()->generateContent(
-					new TextPart($prompt)
-				);
-				return $resp->text();
-			}catch(Exception $e){
-				//	
-			}
+			// Gemini-2.0以下のバージョンは廃止になったため、2.5-flashの実行のみにする
 		}
 		return "";
 	}

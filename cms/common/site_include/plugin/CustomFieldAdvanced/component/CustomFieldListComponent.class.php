@@ -90,7 +90,7 @@ class CustomFieldListComponent extends HTMLList {
 			"link" => "javascript:void(0)",
 			"text" => "高度な設定",
 			"onclick" => '$(\'#field_config_'.$entity->getId().'\').toggle();',
-			"class" => (!$entity->getShowInput() || is_numeric($entity->getLabelId()) || strlen($entity->getEntryIds()) ||count($entity->getLabelIds())|| $entity->getDefaultValue() || $entity->getEmptyValue() || $entity->getDescription() || $entity->getFixedLabelId() || strlen($entity->getOption()) || $entity->getAddTagOutsideBlock() || $entity->getIsImageUploadForm()) ? "btn btn-warning" : "btn btn-info",
+			"class" => (!$entity->getShowInput() || is_numeric($entity->getLabelId()) || strlen((string)$entity->getEntryIds()) ||count($entity->getLabelIds())|| $entity->getDefaultValue() || $entity->getEmptyValue() || $entity->getDescription() || $entity->getFixedLabelId() || strlen((string)$entity->getOption()) || $entity->getAddTagOutsideBlock() || $entity->getIsImageUploadForm()) ? "btn btn-warning" : "btn btn-info",
 			"attr:id" => "toggle_config_" . $entity->getId()
 		));
 

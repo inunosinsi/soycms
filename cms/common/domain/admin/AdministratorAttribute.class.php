@@ -177,10 +177,10 @@ class AdministratorAttributeConfig {
 		$this->config["option"] = $option;
 	}
 	function hasOption(){
-		return (boolean)($this->getType() == "checkboxes" || $this->getType() == "radio" || $this->getType() == "select");
+		return (bool)($this->getType() == "checkboxes" || $this->getType() == "radio" || $this->getType() == "select");
 	}
 	function hasExtra(){
-		return (boolean)($this->getType() == "image");
+		return (bool)($this->getType() == "image");
 	}
 
 	function getFormName(){
@@ -196,7 +196,7 @@ class AdministratorAttributeConfig {
 		return "custom_field_" .$this->getFieldId() . "_extra_" . $extraOutput;
 	}
 	function isIndex(){
-		return (boolean)$this->config["isIndex"];
+		return (bool)$this->config["isIndex"];
 	}
 
 	function getForm($value, $extraValues = null){

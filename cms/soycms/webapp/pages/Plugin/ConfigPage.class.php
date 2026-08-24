@@ -22,19 +22,19 @@ class ConfigPage extends CMSWebPageBase{
 		));
 
 		$this->addLink("plugin_email", array(
-			"text"=> (strlen($plugin->getMail())) ? $plugin->getMail() : "-",
+			"text"=> (is_string($plugin->getMail()) && strlen($plugin->getMail())) ? $plugin->getMail() : "-",
 			"link"=> "mailto:" . $plugin->getMail(),
 			"target"=>"_blank"
 		));
 
 		$this->addLink("plugin_url", array(
-			"text"=> (strlen($plugin->getUrl())) ? $plugin->getUrl() : "-",
+			"text"=> (is_string($plugin->getUrl()) && strlen($plugin->getUrl())) ? $plugin->getUrl() : "-",
 			"link"=> $plugin->getUrl(),
 			"target"=>"_blank"
 		));
 
 		$this->addLabel("plugin_author", array(
-			"text"=> (strlen($plugin->getAuthor())) ? $plugin->getAuthor() : "-"
+			"text"=> (is_string($plugin->getAuthor()) && strlen($plugin->getAuthor())) ? $plugin->getAuthor() : "-"
 		));
 
 		$this->addLabel("plugin_description", array(
@@ -42,7 +42,7 @@ class ConfigPage extends CMSWebPageBase{
 		));
 
 		$this->addLabel("plugin_version", array(
-			"text"=> (strlen($plugin->getVersion())) ? $plugin->getVersion() : "-"
+			"text"=> (is_string($plugin->getVersion()) && strlen($plugin->getVersion())) ? $plugin->getVersion() : "-"
 		));
 
 		$this->addForm("plugin_config_form", array(

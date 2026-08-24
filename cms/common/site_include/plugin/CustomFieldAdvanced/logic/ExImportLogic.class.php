@@ -57,7 +57,7 @@ class ExImportLogic extends ExImportLogicBase{
 					"output"  => @$item[7],
 					"defaultValue"  => @$item[9],
 					"emptyValue"  => @$item[11],
-					"hideIfEmpty"  => (boolean)@$item[10],
+					"hideIfEmpty"  => (bool)@$item[10],
 					"description" => @$item[8]
 			)));
 		}

@@ -7,6 +7,7 @@ abstract class TemplateHistoryDAO extends SOY2DAO{
 
 	/**
 	 * @return id
+	 * @trigger onInsert
 	 */
 	abstract function insert(TemplateHistory $bean);
 	abstract function update(TemplateHistory $bean);
@@ -51,5 +52,14 @@ abstract class TemplateHistoryDAO extends SOY2DAO{
 		}
 		return true;
 	}
+
+	/**
+	 * @final
+	 */
+	function onInsert($query,$binds){
+		$binds[':userId'] = UserInfoUtil::getUserId();
+		$binds[':author'] = UserInfoUtil::getUserName();
+		//$binds[':cdate'] = time();
+		return array($query,$binds);
+	}
 }
-?>

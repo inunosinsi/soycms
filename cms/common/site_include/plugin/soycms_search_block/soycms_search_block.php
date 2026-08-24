@@ -19,9 +19,9 @@ class SOYCMS_Search_Block_Plugin{
 			"type" => Plugin::TYPE_BLOCK,
 			"description"=>"プラグインブロックでブログ記事の検索結果を表示します",
 			"author"=>"齋藤毅",
-			"url"=>"https://saitodev.co",
+			"url"=>"https://saitodev.co/article/409",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.8"
+			"version"=>"1.9"
 		));
 
 		if(CMSPlugin::activeCheck($this->getId())){
@@ -58,13 +58,25 @@ class SOYCMS_Search_Block_Plugin{
 		$limit = PluginBlockUtil::getLimitByPageId($pageId, $soyId);
 		if(!is_numeric($limit) || $limit === 0) $limit = 1000;	//安全装置
 
-		$query = (isset($_GET["q"]) && strlen(trim($_GET["q"]))) ? htmlspecialchars(trim($_GET["q"]), ENT_QUOTES, "UTF-8") : "";
+		SOY2::import("site_include.plugin.soycms_search_block.util.SearchBlockUtil");
+		$query = (isset($_GET["q"]) && strlen(trim($_GET["q"]))) ? SearchBlockUtil::normalize($_GET["q"]) : "";
 
 		$geminilogic = SOY2Logic::createInstance("logic.ai.GeminiApiLogic");
 
+		if(strlen($query) && strlen($geminilogic->getApiKey())){
+			$query = implode(",", $logic->getRelativeQueries($query));
+		}
+
 		$obj->addLabel("search_keyword", array(
 			"soy2prefix" => "cms",
-			"text" => (strlen($query) && strlen($geminilogic->getApiKey())) ? implode(",", $logic->getRelativeQueries($query)) : $query
+			"text" => $query
+		));
+
+		$obj->addInput("search_keyword_input", array(
+			"soy2prefix" => "cms",
+			"attr:type" => "search",
+			"name" => "q",
+			"value" => htmlspecialchars($query, ENT_QUOTES, "UTF-8")
 		));
 
 		$args = $logic->getArgs();
@@ -112,10 +124,11 @@ class SOYCMS_Search_Block_Plugin{
 	}
 
 	function onLoad(){
-
 		//検索クエリが空文字の場合は検索をやめる
 		if(!isset($_GET["q"]) || strlen(trim($_GET["q"])) === 0) return array();
-		$query = htmlspecialchars(trim($_GET["q"]), ENT_QUOTES, "UTF-8");
+
+		SOY2::import("site_include.plugin.soycms_search_block.util.SearchBlockUtil");
+		$query = SearchBlockUtil::normalize($_GET["q"]);
 
 		//検索結果ブロックプラグインのUTILクラスを利用する
 		SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");

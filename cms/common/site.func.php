@@ -37,6 +37,53 @@ function execute_site_static_cache(){
  * キャッシュがあればそれを出力する
  */
 function execute_site(){
+	// IPアドレスによるアクセス拒否 速度の節約の為にパスを直書き
+	foreach(array("malicious", "blacklist") as $f){
+		if(!file_exists(__DIR__."/config/ip/".$f)) continue;
+		$ips = explode("\n", trim(file_get_contents(__DIR__."/config/ip/".$f)));
+		if(!count($ips)) continue;
+
+		foreach($ips as $ip){
+			$ip = trim($ip);
+			if($_SERVER["REMOTE_ADDR"] == $ip){
+				http_response_code(403);
+				echo "Access Denied.";
+				exit;
+			}
+
+			//*印がある場合
+			if(is_numeric(strpos($ip, ".*"))){
+				$ip = substr($ip, 0, strpos($ip, ".*"));
+				$res = strpos($_SERVER["REMOTE_ADDR"], $ip);
+				if(is_numeric($res) && $res === 0){
+					http_response_code(403);
+					echo "Access Denied.";
+					exit;
+				}
+			}
+		}
+	}
+
+	// ユーザーエージェントによるアクセス制限
+	foreach(array("useragent") as $f){
+		if(!isset($_SERVER['HTTP_USER_AGENT']) || !file_exists(__DIR__."/config/ip/".$f)) continue;
+		$agents = explode("\n", trim(file_get_contents(__DIR__."/config/ip/".$f)));
+		if(!count($agents)) continue;
+
+		$userAgent = strtolower($_SERVER['HTTP_USER_AGENT']);
+
+		foreach($agents as $agent){
+			$agent = trim($agent);
+			if(!strlen($agent)) continue;
+
+			if(is_numeric(strpos($userAgent, strtolower($agent)))){
+				http_response_code(403);
+				echo "Access Denied.";
+				exit;
+			}
+		}
+	}
+
 	include_once("site_include/SOYCMSOutputContents.class.php");
 	$obj = new SOYCMSOutputContents();
 	$obj->execute();
@@ -56,7 +103,7 @@ function static_cache_execute(){
 	$hash = md5($pathInfo);
 	for($i = 0; $i < 10; ++$i){
 		$dir .= substr($hash, 0, 1) . "/";
-		if(!is_dir($dir) && !file_exists($dir)) mkdir($dir);
+		if(!is_dir($dir) && !file_exists($dir)) @mkdir($dir);
 		$hash = substr($hash, 1);
 	}
 

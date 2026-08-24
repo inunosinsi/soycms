@@ -2,7 +2,8 @@
     "require": {
         "gemini-api-php/client": "^1.4",
         "symfony/http-client": "^7.1",
-        "nyholm/psr7": "^1.8"
+        "nyholm/psr7": "^1.8",
+        "abraham/twitteroauth": "^7.0"
     },
     "config": {
         "allow-plugins": {

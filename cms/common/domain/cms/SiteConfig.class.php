@@ -119,7 +119,7 @@ class SiteConfig {
      * 日付毎にディレクトリを作成するかどうか
      */
     function isCreateDefaultUploadDirectory(){
-    	return (boolean)$this->getConfigValue("createUploadDirectoryByDate");
+    	return (bool)$this->getConfigValue("createUploadDirectoryByDate");
     }
 
     /**
@@ -133,7 +133,7 @@ class SiteConfig {
      * 管理側にログインしている時のみ表示するかどうか
      */
     function isShowOnlyAdministrator(){
-    	return (boolean)$this->getConfigValue("isShowOnlyAdministrator");
+    	return (bool)$this->getConfigValue("isShowOnlyAdministrator");
     }
 
     /**
@@ -303,7 +303,7 @@ class SiteConfig {
      * 日付毎にディレクトリを作成するかどうか
      */
     public function useLabelCategory(){
-    	return (boolean)$this->getConfigValue("useLabelCategory");
+    	return (bool)$this->getConfigValue("useLabelCategory");
     }
     /**
      * 日付毎にディレクトリを作成するかどうかのフラグを保存

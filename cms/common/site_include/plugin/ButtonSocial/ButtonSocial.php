@@ -22,6 +22,9 @@ class ButtonSocialPlugin{
 	//Array<ページID => Array<ページタイプ => 0 | 1>> fb_rootを表示するは1
 	public $config_per_blog = array();
 
+	private $logic;
+	private $entryAttributeDao;
+
 	function init(){
 		SOY2::import("site_include.plugin.ButtonSocial.util.ButtonSocialUtil");
 
@@ -32,7 +35,7 @@ class ButtonSocialPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/soycms/",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.6"
+			"version"=>"1.7.1"
 		));
 
 		CMSPlugin::addPluginConfigPage($this->getId(),array(

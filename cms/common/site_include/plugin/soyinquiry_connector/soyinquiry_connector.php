@@ -20,7 +20,7 @@ class SOYInquiryConnectorPlugin{
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co",
 			"mail" => "tsuyoshi@saitodev.co",
-			"version" => "0.1"
+			"version" => "0.2"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
@@ -97,6 +97,7 @@ class SOYInquiryConnectorPlugin{
 	private function _getSiteId(){
 		static $siteId;
 		if(is_null($siteId)){
+			if(!defined("_SITE_ROOT_")) define("_SITE_ROOT_", UserInfoUtil::getSite()->getPath());
 			$siteAlias = trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/");
 
 			$old = CMSUtil::switchDsn();

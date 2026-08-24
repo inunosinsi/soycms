@@ -30,7 +30,7 @@ class PageCustomFieldPlugin{
 			"type" => Plugin::TYPE_PAGE,
 			"description" => "",
 			"author" => "齋藤毅",
-			"url" => "",
+			"url" => "https://saitodev.co/article/4709",
 			"mail" => "info@saitodev.co",
 			"version"=>"0.8"
 		));

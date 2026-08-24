@@ -109,6 +109,28 @@ abstract class EntryLabelDAO extends SOY2DAO{
 	}
 
 	/**
+	 * @param array
+	 * @return array
+	 */
+	function getEntryIdsByLabelIds(array $labelIds){
+		try{
+			$res = $this->executeQuery(
+				"SELECT entry_id FROM EntryLabel ".
+				"WHERE label_id IN (".implode(",", $labelIds).")"	
+			);
+		}catch(Exception $e){
+			$res = array();
+		}
+		if(!count($res)) return array();
+
+		$entryIds = array();
+		foreach($res as $v){
+			$entryIds[] = $v["entry_id"];
+		}
+		return $entryIds;
+	}
+
+	/**
 	 * @query #labelId# = :labelId AND #entryId# =:entryId
 	 */
 	abstract function updateDisplayOrder($entryId,$labelId,$displayOrder);

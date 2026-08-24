@@ -1,1 +1,0 @@
-drop table soyshop_mail_address_token;

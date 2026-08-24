@@ -1,0 +1,157 @@
+<div style="margin:0 0 10px 0;">
+<a href="#configure" class="btn btn-success">マップの出力方法</a>
+<a href="#osm_id" class="btn btn-info">OSM IDタグ一覧</a>
+</div>
+
+<div class="alert alert-success">中心地点の設定</div>
+<form soy:id="form">
+	<div class="form-group form-inline">
+		<label>ズーム</label>
+		<select soy:id="osm_zoom" class="form-control"></select>
+		<label>緯度</label>
+		<input type="text" soy:id="osm_lat" class="form-control">
+		<label>経度</label>
+		<input type="text" soy:id="osm_lng" class="form-control">
+		<input type="submit" class="btn btn-primary" name="OSM_Update" value="更新">
+	</div>
+	<div><a href="https://www.openstreetmap.org/" target="_blank" rel="noopener">OpenStreetMapを開く</a></div>
+</form>
+
+<br>
+
+<div class="alert alert-success">アイコンの登録</div>
+<form soy:id="upload_form">
+<div class="form-group form-inline">
+	<label>ピン用のアイコンの登録</label>
+	<input type="file" name="icon[]" class="form-control" multiple accept="image/*">&nbsp;
+	<input type="submit" class="btn btn-primary" value="アップロード">
+</div>
+
+<!-- soy:display="icon_configure" -->
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>&nbsp;</th>
+				<th>ファイル名</th>
+				<th>ラベル</th>
+				<th>&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- soy:id="icon_list" --->
+			<tr>
+				<td><img soy:id="thumbnail"></td>
+				<td soy:id="file_name">abc</td>
+				<td><input type="text" soy:id="label" class="form-control"></td>
+				<td><a href="javascript:void(0);" soy:id="delete_link" class="btn btn-danger">削除</a></td>
+			</tr>
+			<!-- /soy:id="icon_list" --->
+		</tbody>
+	</table>
+
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" name="update" value="更新">
+	</div>
+</div>
+
+<br>
+<!-- /soy:display="icon_configure" -->
+</form>
+
+
+<div class="alert alert-success" id="configure">OpenStreetMapの設置方法</div>
+<label>1. OpenStreetMapのライブラリ(Leaflet)の読み込み</label>
+<p><a href="https://leafletjs.com/" target="_blank" rel="noopener">Leaflet - a JavaScript library for interactive maps</a></p>
+<p>&lt;/body&gt;の直下に</p>
+<pre>&lt;!-- cms:module="openstreetmap.osm_lib" --&gt;&lt;!-- /cms:module="openstreetmap.osm_lib" --&gt;</pre>
+<p>を挿入する。</p>
+<br>
+<label>2. 地図の出力用のコードの追加</label>
+<p>上記で挿入したCMSモジュールの下の行に</p>
+<pre>&lt;!-- cms:module="openstreetmap.osm_init" --&gt;&lt;!-- /cms:module="openstreetmap.osm_init" --&gt;</pre>
+<p>を挿入する。</p>
+<br>
+<label>3. 地図を出力したい箇所にコードを追加</label>
+<p>bodyタグ内で地図を出力したい箇所に</p>
+<pre>&lt;div id="map"&gt;&lt;/div&gt;</pre>
+<p>を挿入する。</p>
+<br>
+<label>4. 地図を出力用のCSSを追加する</label>
+<p>例：headタグ内にstyleタグを挿入</p>
+<pre>&lt;style&gt;
+html,
+body{height:100%;}
+#map {
+	z-index:1;
+	width:100%;
+	height:100%;
+}
+&lt;/style&gt;</pre>
+<br>
+<label>5. スクリプト用のコードを追加</label>
+<p>2の&lt;cms:module="openstreetmap.osm_init"タグの下に</p>
+<pre>&lt;!-- cms:module="openstreetmap.osm_script" --&gt;$blogUri=<strong>blog</strong>&lt;!-- /cms:module="openstreetmap.osm_script" --&gt;</pre>
+<p>を挿入する。</p>
+<p>$blogUri=<strong>文字列</strong>の箇所にはブログページを作成した時に指定したアドレスを入れます。</p>
+<p>※アドレスが空の場合は / (スラッシュ)を指定してください。</p>
+<br>
+<div class="alert alert-info" id="osm_id">ブログブロック内(b_block:id="entry"やb_block:id="entry_list")で使用できるタグ一覧</div>
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>osm:id</th>
+				<th>タグ</th>
+				<th>説明</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>osm_lat</td>
+				<td>すべて</td>
+				<td>記事に登録した緯度(latitude)を出力</td>
+			</tr>
+				<tr>
+				<td>osm_lng</td>
+				<td>すべて</td>
+				<td>記事に登録した経度(longitude)を出力</td>
+			</tr>
+			<tr>
+				<td>osm_label</td>
+				<td>すべて</td>
+				<td>記事に登録したラベルを出力</td>
+			</tr>
+			<tr>
+				<td>osm_icon</td>
+				<td>img</td>
+				<td>記事に登録したアイコンの画像を出力</td>
+			</tr>
+			<tr>
+				<td>osm_icon_filename</td>
+				<td>すべて</td>
+				<td>記事に登録したアイコンのファイル名を出力</td>
+			</tr>
+			<tr>
+				<td>osm_icon_path</td>
+				<td>すべて</td>
+				<td>アイコン画像のファイルパスを出力</td>
+			</tr>
+			<tr>
+				<td>osm_icon_label</td>
+				<td>すべて</td>
+				<td>アイコンに登録したラベルを出力</td>
+			</tr>
+			<tr>
+				<td>osm_icon_hash</td>
+				<td>すべて</td>
+				<td>アイコンのファイル名から作成したハッシュ値を出力</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+		</tbody>
+	</table>
+</div>

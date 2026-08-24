@@ -98,6 +98,9 @@ class ListPage extends CMSUpdatePageBase{
 
 		parent::__construct();
 
+		//レビュープラグインが有効であるか？
+		DisplayPlugin::toggle("review_page", CMSPlugin::activeCheck("reviewing_entries"));
+
 		//IDが0だった場合はIndexへ
 		if(count($this->labelIds)<1){
 			$this->jump("Entry"."?offset=".$this->offset."&limit=".$this->limit);

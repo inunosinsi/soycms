@@ -1,3 +1,0 @@
-ALTER TABLE soyshop_category MODIFY COLUMN category_alias VARCHAR NOT NULL UNIQUE;
-ALTER TABLE soyshop_category MODIFY COLUMN category_order INTEGER NOT NULL DEFAULT 0;
-ALTER TABLE soyshop_category MODIFY COLUMN category_is_open INTEGER NOT NULL DEFAULT 1;

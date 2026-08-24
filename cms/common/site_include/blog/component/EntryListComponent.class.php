@@ -99,6 +99,12 @@ class EntryListComponent extends HTMLList{
 			"soy2prefix"=>"cms",
 		));
 
+		
+		$this->addModel("is_updated", array(
+			"visible" => ((int)date("Ymd", (int)$entry->getCdate()) !== (int)date("Ymd", (int)$entry->getUdate()) && (int)$entry->getUdate() > (int)$entry->getCdate()),
+			"soy2prefix" => "cms"	
+		));
+
 		$this->createAdd("update_time","DateLabel",array(
 			"text"=>$entry->getUdate(),
 			"soy2prefix"=>"cms",

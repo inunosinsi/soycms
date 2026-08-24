@@ -32,7 +32,7 @@ class CmsTagChecker{
 			"author"=> "齋藤毅",
 			"url" => "https://saitodev.co/article/5056",
 			"mail" => "tsuyoshi@saitodev.co",
-			"version"=>"0.5"
+			"version"=>"0.6"
 		));
 
 		if(!defined("_SITE_ROOT_")){
@@ -128,12 +128,13 @@ class CmsTagChecker{
 
 					// 未定義のタグであるか？
 					if($tagType == "cms:id"){
-						foreach(array("_visible", "_empty", "_is_empty") as $pat){
+						foreach(array("_visible", "_is_empty", "_empty") as $pat){
 							if(preg_match('/'.$pat.'$/', $tagName)) {
 								$_tagName = str_replace($pat, "", $tagName);
 								if(is_bool(array_search($_tagName, $cmsIdTags))){
 									$notUsed[] = $tagType."=\"".$_tagName."\"";
 								}
+								break;
 							}
 						}
 					}

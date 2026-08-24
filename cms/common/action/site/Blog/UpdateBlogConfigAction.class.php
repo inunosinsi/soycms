@@ -9,7 +9,6 @@ class UpdateBlogConfigAction extends SOY2Action{
 	}
 
     protected function execute(SOY2ActionRequest &$request,SOY2ActionForm &$form,SOY2ActionResponse &$response){
-
     	//生成フラグの変換
 
     	if(
@@ -26,7 +25,8 @@ class UpdateBlogConfigAction extends SOY2Action{
     	$dao = soycms_get_hash_table_dao("blog_page");
     	$page = $dao->getById($this->id);
 		$old = $page;
-    	
+
+		if(property_exists($form, "categoryLabelList") && is_null($form->categoryLabelList)) $form->categoryLabelList = array();    	
 		$page = SOY2::cast($page,$form);
 		
     	//カテゴリ未選択の場合は、pageオブジェクトも未選択にする
@@ -210,32 +210,32 @@ class UpdateBlogConfigActionForm extends SOY2ActionForm{
     	return $this->generateTopFlag;
     }
     function setGenerateTopFlag($generateTopFlag) {
-    	$this->generateTopFlag = (boolean)$generateTopFlag;
+    	$this->generateTopFlag = (bool)$generateTopFlag;
     }
     function getGenerateMonthFlag() {
     	return $this->generateMonthFlag;
     }
     function setGenerateMonthFlag($generateMonthFlag) {
-    	$this->generateMonthFlag = (boolean)$generateMonthFlag;
+    	$this->generateMonthFlag = (bool)$generateMonthFlag;
     }
     function getGenerateCategoryFlag() {
     	return $this->generateCategoryFlag;
     }
     function setGenerateCategoryFlag($generateCategoryFlag) {
-    	$this->generateCategoryFlag = (boolean)$generateCategoryFlag;
+    	$this->generateCategoryFlag = (bool)$generateCategoryFlag;
     }
     function getGenerateRssFlag() {
     	return $this->generateRssFlag;
     }
     function setGenerateRssFlag($generateRssFlag) {
-    	$this->generateRssFlag = (boolean)$generateRssFlag;
+    	$this->generateRssFlag = (bool)$generateRssFlag;
     }
 
     function getGenerateEntryFlag() {
     	return $this->generateEntryFlag;
     }
     function setGenerateEntryFlag($generateEntryFlag) {
-    	$this->generateEntryFlag = (boolean)$generateEntryFlag;
+    	$this->generateEntryFlag = (bool)$generateEntryFlag;
     }
 
     function getTopTitleFormat() {

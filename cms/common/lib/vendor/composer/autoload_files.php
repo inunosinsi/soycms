@@ -7,4 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     '6e3fae29631ef280660b3cdad06f25a8' => $vendorDir . '/symfony/deprecation-contracts/function.php',
+    '662a729f963d39afe703c9d9b7ab4a8c' => $vendorDir . '/symfony/polyfill-php83/bootstrap.php',
 );

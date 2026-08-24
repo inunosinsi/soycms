@@ -113,6 +113,8 @@ create table Page(
 create table TemplateHistory(
 	id integer primary key AUTOINCREMENT,
 	page_id integer references Page(id),
+	user_id integer,
+	author varchar,
 	contents varchar(4000),
 	update_date date
 );

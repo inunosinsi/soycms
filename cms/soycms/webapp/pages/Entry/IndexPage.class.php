@@ -9,6 +9,9 @@ class IndexPage extends CMSUpdatePageBase{
 
 		parent::__construct();
 
+		//レビュープラグインが有効であるか？
+		DisplayPlugin::toggle("review_page", CMSPlugin::activeCheck("reviewing_entries"));
+
 		//記事テーブルのCSS
 		HTMLHead::addLink("entrytree",array(
 			"rel" => "stylesheet",

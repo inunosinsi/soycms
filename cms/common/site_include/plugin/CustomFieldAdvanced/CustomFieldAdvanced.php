@@ -766,7 +766,7 @@ class CustomFieldPluginAdvanced{
 		$attrValues = array();
 		foreach($customFields as $fieldId => $fieldValue){
 			// データがない場合、初回など。初期値を入れる
-			$attrValues[$fieldId] = (isset($fieldValues[$fieldId])) ? $fieldValues[$fieldId]: array("value" => $fieldValue->getDefaultValue(), "extraValues" => null);
+			$attrValues[$fieldId] = (isset($fieldValues[$fieldId])) ? $fieldValues[$fieldId] : array("value" => $fieldValue->getDefaultValue(), "extraValues" => null);
 		}
 
 		return $attrValues;

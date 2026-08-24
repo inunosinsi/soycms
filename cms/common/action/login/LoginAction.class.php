@@ -42,6 +42,9 @@ class LoginAction extends SOY2Action{
     		return SOY2Action::SUCCESS;
     	}
 
+    	// ログインの失敗のログをとる
+    	SOY2Logic::createInstance("logic.admin.Login.ErrorLogic")->save();
+
     	$this->setErrorMessage('loginfailed','ログインに失敗しました。');
     	$this->setAttribute('username',$auth['name']);
     	return SOY2Action::FAILED;

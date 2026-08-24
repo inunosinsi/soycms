@@ -30,7 +30,7 @@ class CalendarPlugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.6.1"
+			"version"=>"1.6.2"
 		));
 
 		if(CMSPlugin::activeCheck($this->getId())){
@@ -90,9 +90,9 @@ class CalendarPlugin{
 			$monthEnd = mktime(0,0,0,$month+1,1,$year);
 
 			$monthLink = "";
-			if(!$blog->getGenerateMonthFlag())throw new Exception();
+			if(!$blog->getGenerateMonthFlag()) throw new Exception();
 
-			if(defined("CMS_PREVIEW_MODE")){
+			if(defined("CMS_PREVIEW_MODE") && CMS_PREVIEW_MODE){
 				$monthLink = SOY2PageController::createLink("Page.Preview") ."/". $blog->getId() ."?uri=/". $blog->getMonthPageUri()."/";
 				$entryLink = SOY2PageController::createLink("Page.Preview") ."/". $blog->getId() ."?uri=/". $blog->getEntryPageUri()."/";
 			}else{

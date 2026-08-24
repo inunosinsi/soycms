@@ -50,7 +50,7 @@ class SOYCMS_SpamBlockerPlugin{
 	function config_page(){
 
 		if(isset($_POST["save"])){
-			$this->useKeyword = (boolean)$_POST["useKeyword"];
+			$this->useKeyword = (bool)$_POST["useKeyword"];
 			$this->keyword = $_POST["keyword"];
 			$this->name = $_POST["name"];
 			$this->prohibitionWords = explode("\n",$_POST["prohibitionWords"]);

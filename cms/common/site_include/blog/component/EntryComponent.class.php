@@ -225,6 +225,11 @@ class EntryComponent extends SOYBodyComponentBase{
 			"defaultFormat"=>"H:i"
 		));
 
+		$this->addModel("is_updated", array(
+			"visible" => ((int)date("Ymd", (int)$entry->getCdate()) !== (int)date("Ymd", (int)$entry->getUdate()) && (int)$entry->getUdate() > (int)$entry->getCdate()),
+			"soy2prefix" => "cms"	
+		));
+
 		$this->addLink("entry_link", array(
 			"soy2prefix"=>"cms",
 			"link" => $link

@@ -1,2 +1,0 @@
-ショップURL: #SITE_URL#
-管理画面URL: #ADMIN_URL#

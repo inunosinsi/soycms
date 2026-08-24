@@ -15,6 +15,9 @@ class HTMLCompressorConfigPage extends WebPage {
 			$this->pluginObj->config_per_page = (isset($_POST["config_per_page"])) ? $_POST["config_per_page"] : array();
 			$this->pluginObj->config_per_blog = (isset($_POST["config_per_blog"])) ? $_POST["config_per_blog"] : array();
 
+			$isRemoveEmptyAlt = (isset($_POST["Config"]["is_remove_empty_alt"])) ? (int)$_POST["Config"]["is_remove_empty_alt"] : 0;
+			$this->pluginObj->setIsRemoveEmptyAlt($isRemoveEmptyAlt);
+
 			CMSUtil::notifyUpdate();
 			CMSPlugin::savePluginConfig($this->pluginObj->getId(), $this->pluginObj);
 			CMSPlugin::redirectConfigPage();
@@ -29,6 +32,13 @@ class HTMLCompressorConfigPage extends WebPage {
 		));
 
 		$this->addForm("form");
+
+		$this->addCheckBox("is_remove_empty_alt", array(
+			"name" => "Config[is_remove_empty_alt]",
+			"value" => 1,
+			"selected" => ($this->pluginObj->getIsRemoveEmptyAlt() === 1),
+			"label" => "imgタグのalt属性が空の時にalt属性ごと削除する"
+		));
 
 		//挿入するページの指定
 		$this->createAdd("page_list","PageListComponent",array(

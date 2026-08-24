@@ -1,1 +1,0 @@
-ALTER TABLE soyshop_item_review ADD INDEX idx_review_item_approval (item_id, is_approved, evaluation);

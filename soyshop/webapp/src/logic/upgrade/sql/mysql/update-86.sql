@@ -1,1 +1,0 @@
-ALTER TABLE soyshop_user MODIFY COLUMN user_code VARCHAR(54) UNIQUE;
