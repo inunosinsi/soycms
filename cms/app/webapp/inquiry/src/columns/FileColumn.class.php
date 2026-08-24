@@ -276,7 +276,7 @@ class FileColumn extends SOYInquiry_ColumnBase{
 			"size" => $size
 		));
 
-		$new_value = base64_encode(serialize($this->getValue()));
+		$new_value = base64_encode(soy2_serialize($this->getValue()));
 		$_POST["data"][$this->getColumnId()] = $new_value;
 
 		return true;

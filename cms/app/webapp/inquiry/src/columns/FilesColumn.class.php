@@ -201,7 +201,7 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 			}
 
 			$this->setValue($values);
-			$_POST["data"][$this->getColumnId()] = base64_encode(serialize($this->getValue()));
+			$_POST["data"][$this->getColumnId()] = base64_encode(soy2_serialize($this->getValue()));
 
 			// エラーがあった場合は処理を止める
 			if(count($values)){

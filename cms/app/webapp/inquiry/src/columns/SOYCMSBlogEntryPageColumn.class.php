@@ -94,7 +94,7 @@ class SOYCMSBlogEntryPageColumn extends SOYInquiry_ColumnBase{
 				$className = get_class($object);
 				$childClassName = $className."__child__";
 				$propNameLength = strlen($propertyName);
-				$copy = unserialize(strtr(serialize($object), array(
+				$copy = soy2_unserialize(strtr(soy2_serialize($object), array(
 					"O:".strlen($className).":\"".$className."\"" => "O:8:\"StdClass\"",
 					"s:".(strlen($className) + $propNameLength + 2).":\"\0".$className."\0".$propertyName."\"" => "s:".$propNameLength.":\"".$propertyName."\"",
 					"s:".($propNameLength + 3).":\"\0*\0".$propertyName."\"" => "s:".$propNameLength.":\"".$propertyName."\"",

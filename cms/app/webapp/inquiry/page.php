@@ -636,7 +636,7 @@ class SOYInquiry_FormComponent extends HTMLLabel{
 				//
 			}
 		}
-		$html = $this->application->getForm($formId);
+		$html = (is_string($formId) && strlen($formId)) ? $this->application->getForm($formId) : "";
 		$this->setHtml($html);
 	}
 	function getApplication() {
