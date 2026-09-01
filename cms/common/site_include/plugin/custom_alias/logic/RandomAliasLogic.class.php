@@ -17,15 +17,15 @@ class RandomAliasLogic extends SOY2LogicBase {
 		return $list;
 	}
 
-	function buildLabelCheckboxes(array $list, array $cnf){
+	function buildLabelCheckboxes(array $list, array $cfg){
 		if(!count($list)) return "";
 
 		$html = array();
 		foreach($list as $labelId => $caption){
-			if(count($cnf) && is_numeric(array_search($labelId, $cnf))){
-				$html[] = "<label><input type=\"checkbox\" name=\"RandomCnf[label][]\" value=\"" . $labelId . "\" checked=\"checked\">" . $caption . "</label> ";
+			if(count($cfg) && is_numeric(array_search($labelId, $cfg))){
+				$html[] = "<label><input type=\"checkbox\" name=\"RandomCfg[label][]\" value=\"" . $labelId . "\" checked=\"checked\">" . $caption . "</label> ";
 			}else{
-				$html[] = "<label><input type=\"checkbox\" name=\"RandomCnf[label][]\" value=\"" . $labelId . "\">" . $caption . "</label> ";
+				$html[] = "<label><input type=\"checkbox\" name=\"RandomCfg[label][]\" value=\"" . $labelId . "\">" . $caption . "</label> ";
 			}
 		}
 		return implode("\n", $html);

@@ -26,7 +26,7 @@ class CustomAliasPlugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.15"
+			"version"=>"1.16"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID, array(
@@ -99,21 +99,29 @@ class CustomAliasPlugin{
 	}
 
 	function onEntryCopy($ids){
+		$newAlias = null;
+	
 		$mode = self::_mode();
 		switch($mode){
 			case CustomAliasUtil::MODE_ID:
 			case CustomAliasUtil::MODE_HASH:
 				$newId = $ids[1];
 				$entry = soycms_get_entry_object($newId);
-				$alias = self::_generateAlias($entry, $mode, $newId);
-				if(strlen($alias)){
-					$entry->setAlias($alias);
-					$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
-					$logic->update($entry);
-				}
+				$newAlias = self::_generateAlias($entry, $mode, $newId);
 				break;
 			default:
 				//何もしない
+		}
+
+		// 手動モード
+		if(is_null($newAlias) && $mode == CustomAliasUtil::MODE_MANUAL){
+			$newAlias = self::_generateAliasByManualMode($entry);
+		}
+
+		if(isset($newAlias) && strlen($newAlias)){
+			$entry->setAlias($newAlias);
+			$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
+			$logic->update($entry);
 		}
 	}
 
@@ -127,7 +135,15 @@ class CustomAliasPlugin{
 				$newAlias = self::_generateAlias($entry, $mode);
 				break;
 			default:
-				if(isset($_POST["alias"]) && strlen($_POST["alias"])) $newAlias = trim($_POST["alias"]);
+				// 何もしない
+		}
+
+		$inputAlias = (isset($_POST["alias"]) && strlen(trim($_POST["alias"]))) ? trim($_POST["alias"]) : "";
+		if(is_null($newAlias) && strlen($inputAlias)) $newAlias = $inputAlias;
+
+		// 手動モードで入力内容が空の場合
+		if(is_null($newAlias) && $mode == CustomAliasUtil::MODE_MANUAL){
+			$newAlias = self::_generateAliasByManualMode($entry);
 		}
 
 		if(isset($newAlias) && is_string($newAlias) && strlen($newAlias)){
@@ -141,18 +157,26 @@ class CustomAliasPlugin{
 		}
 	}
 
+	private function _generateAliasByManualMode(Entry $entry, int $newId=0){
+		$cfg = CustomAliasUtil::getAdvancedConfig(CustomAliasUtil::MODE_MANUAL);
+		if((int)$cfg["mode"] === CustomAliasUtil::AUTO_INSERT_TITLE) return null;
+
+		// 現時点ではIDモードのみ対応
+		return self::_generateAlias($entry, (string)CustomAliasUtil::MODE_ID, $newId);
+	}
+
 	private function _generateAlias(Entry $entry, int $mode, int $newId=0){
 		switch($mode){
 			case CustomAliasUtil::MODE_ID:
-				$cnf = CustomAliasUtil::getAdvancedConfig(CustomAliasUtil::MODE_ID);
+				$cfg = CustomAliasUtil::getAdvancedConfig(CustomAliasUtil::MODE_ID);
 				//記事複製時を加味
 				$alias = ($newId > 0) ? (string)$newId : (string)$entry->getId();
-				if(isset($cnf["prefix"]) && strlen($cnf["prefix"])){
-					$alias = $cnf["prefix"] . $alias;
+				if(isset($cfg["prefix"]) && strlen($cfg["prefix"])){
+					$alias = $cfg["prefix"] . $alias;
 				}
 
-				if(isset($cnf["postfix"]) && strlen($cnf["postfix"])){
-					$alias .= $cnf["postfix"];
+				if(isset($cfg["postfix"]) && strlen($cfg["postfix"])){
+					$alias .= $cfg["postfix"];
 				}
 				return $alias;
 

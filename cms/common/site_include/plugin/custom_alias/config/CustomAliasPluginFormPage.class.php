@@ -14,12 +14,16 @@ class CustomAliasPluginFormPage extends WebPage{
 				if(isset($_POST["custom_alias_prefix"])) $this->pluginObj->setPrefix($_POST["custom_alias_prefix"]);
 				if(isset($_POST["custom_alias_postfix"])) $this->pluginObj->setPostfix($_POST["custom_alias_postfix"]);
 
-				if(isset($_POST["IdCnf"])){
-					CustomAliasUtil::saveAdvancedConfig(CustomAliasUtil::MODE_ID, $_POST["IdCnf"]);
+				if(isset($_POST["manualCfg"])){
+					CustomAliasUtil::saveAdvancedConfig(CustomAliasUtil::MODE_MANUAL, $_POST["manualCfg"]);
 				}
 
-				if(isset($_POST["RandomCnf"])){
-					CustomAliasUtil::saveAdvancedConfig(CustomAliasUtil::MODE_RANDOM, $_POST["RandomCnf"]);
+				if(isset($_POST["IdCfg"])){
+					CustomAliasUtil::saveAdvancedConfig(CustomAliasUtil::MODE_ID, $_POST["IdCfg"]);
+				}
+
+				if(isset($_POST["RandomCfg"])){
+					CustomAliasUtil::saveAdvancedConfig(CustomAliasUtil::MODE_RANDOM, $_POST["RandomCfg"]);
 				}
 
 				CMSPlugin::savePluginConfig($this->pluginObj->getId(),$this->pluginObj);
@@ -70,6 +74,7 @@ class CustomAliasPluginFormPage extends WebPage{
 		parent::__construct();
 
 		self::_buildConfigForm();
+		self::_buildManualConfigForm();
 		self::_buildIdConfigForm();
 		self::_buildRandomConfigForm();
 		self::_buildChangeForm();
@@ -85,6 +90,13 @@ class CustomAliasPluginFormPage extends WebPage{
 		$this->addInput("custom_alias_postfix", array(
 			"name" => "custom_alias_postfix",
 			"value" => $this->pluginObj->getPostfix(),
+		));
+
+		$this->addCheckBox("mode_manual", array(
+			"name" => "mode",
+			"value" => CustomAliasUtil::MODE_MANUAL,
+			"selected" => (self::_mode() == CustomAliasUtil::MODE_MANUAL),
+			"label" => "手動"
 		));
 
 		$this->addCheckBox("mode_manual", array(
@@ -126,20 +138,54 @@ class CustomAliasPluginFormPage extends WebPage{
 		return $mode;
 	}
 
-	private function _buildRandomConfigForm(){
-		$cnf = CustomAliasUtil::getAdvancedConfig(CustomAliasUtil::MODE_RANDOM);
+	private function _buildManualConfigForm(){
+		$cfg = CustomAliasUtil::getAdvancedConfig(CustomAliasUtil::MODE_MANUAL);
 
-		$this->addInput("random_cnf_lenfth", array(
-			"name" => "RandomCnf[length]",
-			"value" => (isset($cnf["length"])) ? $cnf["length"] : 12,
+		$this->addCheckBox("mode_manual_title", array(
+			"name" => "manualCfg[mode]",
+			"value" => CustomAliasUtil::AUTO_INSERT_TITLE,
+			"selected" => ((int)$cfg["mode"] === CustomAliasUtil::AUTO_INSERT_TITLE),
+			"label" => "記事名を自動挿入"
+		));
+
+		$this->addCheckBox("mode_manual_id", array(
+			"name" => "manualCfg[mode]",
+			"value" => CustomAliasUtil::AUTO_INSERT_ID,
+			"selected" => ((int)$cfg["mode"] === CustomAliasUtil::AUTO_INSERT_ID),
+			"label" => "IDモードで生成した値を自動挿入(IDモードの高度な設定の設定内容を使用します)"
+		));
+	}
+
+	private function _buildIdConfigForm(){
+		$cfg = CustomAliasUtil::getAdvancedConfig(CustomAliasUtil::MODE_ID);
+
+		$this->addInput("id_cfg_prefix", array(
+			"name" => "IdCfg[prefix]",
+			"value" => (isset($cfg["prefix"])) ? $cfg["prefix"] : "",
+			"style" =>"width:200px;"
+		));
+
+		$this->addInput("id_cfg_postfix", array(
+			"name" => "IdCfg[postfix]",
+			"value" => (isset($cfg["postfix"])) ? $cfg["postfix"] : "",
+			"style" =>"width:200px;"
+		));
+	}
+
+	private function _buildRandomConfigForm(){
+		$cfg = CustomAliasUtil::getAdvancedConfig(CustomAliasUtil::MODE_RANDOM);
+
+		$this->addInput("random_cfg_lenfth", array(
+			"name" => "RandomCfg[length]",
+			"value" => (isset($cfg["length"])) ? $cfg["length"] : 12,
 			"style" =>"width:80px;"
 		));
 
 		foreach(array(CustomAliasUtil::INCLUDE_DIGIT => "数字", CustomAliasUtil::INCLUDE_LOWER => "小文字", CustomAliasUtil::INCLUDE_UPPER => "大文字") as $idx => $l){
 			$this->addCheckBox("include_" . $idx, array(
-				"name" => "RandomCnf[include][]",
+				"name" => "RandomCfg[include][]",
 				"value" => $idx,
-				"selected" => (isset($cnf["include"]) && is_numeric(array_search($idx, $cnf["include"]))),
+				"selected" => (isset($cfg["include"]) && is_numeric(array_search($idx, $cfg["include"]))),
 				"label" => $l
 			));
 		}
@@ -149,27 +195,11 @@ class CustomAliasPluginFormPage extends WebPage{
 		$list = $logic->getLabelList();
 		DisplayPlugin::toggle("random_labels", count($list));
 
-		$labelCheckedList = (isset($cnf["label"]) && is_array($cnf["label"])) ? $cnf["label"] : array();
+		$labelCheckedList = (isset($cfg["label"]) && is_array($cfg["label"])) ? $cfg["label"] : array();
 
-		//name="RandomCnf[label][]"でチェックボックスを作る
+		//name="RandomCfg[label][]"でチェックボックスを作る
 		$this->addLabel("random_checkbox", array(
 			"html" => (count($list)) ? $logic->buildLabelCheckboxes($list, $labelCheckedList) : ""
-		));
-	}
-
-	private function _buildIdConfigForm(){
-		$cnf = CustomAliasUtil::getAdvancedConfig(CustomAliasUtil::MODE_ID);
-
-		$this->addInput("id_cnf_prefix", array(
-			"name" => "IdCnf[prefix]",
-			"value" => (isset($cnf["prefix"])) ? $cnf["prefix"] : "",
-			"style" =>"width:200px;"
-		));
-
-		$this->addInput("id_cnf_postfix", array(
-			"name" => "IdCnf[postfix]",
-			"value" => (isset($cnf["postfix"])) ? $cnf["postfix"] : "",
-			"style" =>"width:200px;"
 		));
 	}
 

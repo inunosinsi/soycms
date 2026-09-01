@@ -8915,7 +8915,25 @@ function soy2_unserialize(string $string){
 		$data = unserialize($serialized, array("allowed_classes" => $allowed));
 	}else{
 		// --- 【旧形式（HMACなし）の処理】 ---
-		$data = unserialize($rawString, array("allowed_classes" => $allowed));
+		// 1. まず stripslashes 済みの文字列で試行
+		$data = @unserialize($rawString, array("allowed_classes" => $allowed));
+
+		// 2. 失敗した場合は stripslashes 前の元の文字列で試行
+		if ($data === false && $rawString !== $string) {
+			$data = @unserialize($string, array("allowed_classes" => $allowed));
+		}
+
+		// 3. それでも失敗した場合はバイト数の不一致を自動補正して再試行
+		if ($data === false) {
+			$fixedString = preg_replace_callback(
+				'/s:(\d+):"(.*?)";/s',
+				function ($matches) {
+					return 's:' . strlen($matches[2]) . ':"' . $matches[2] . '";';
+				},
+				$rawString
+			);
+			$data = @unserialize($fixedString, array("allowed_classes" => $allowed));
+		}
 	}
 
 	// __PHP_Incomplete_Classの場合はnullを返す

@@ -7,6 +7,10 @@ class CustomAliasUtil {
 	const MODE_HASH = 2;	//常に記事タイトルをhash値
 	const MODE_RANDOM = 3;	//エイリアスをランダム値
 
+	// MODE_MANUALの時の設定
+	const AUTO_INSERT_TITLE = 1;	// 記事名の自動挿入
+	const AUTO_INSERT_ID = 2;		// IDモードで自動挿入
+
 	const INCLUDE_DIGIT = "digit";	//半角数字を含む
 	const INCLUDE_LOWER = "lower";	//半角小文字を含む
 	const INCLUDE_UPPER = "upper";	//半角大文字を含む
@@ -17,13 +21,13 @@ class CustomAliasUtil {
 	}
 
 	public static function generateRandomString(){
-		$cnf = self::_getAdvancedConfig(self::MODE_RANDOM);
-		$len = (isset($cnf["length"]) && is_numeric($cnf["length"])) ? $cnf["length"] : 12;
+		$cfg = self::_getAdvancedConfig(self::MODE_RANDOM);
+		$len = (isset($cfg["length"]) && is_numeric($cfg["length"])) ? $cfg["length"] : 12;
 
 		$chars = "";
-		if(isset($cnf["include"]) && is_numeric(array_search(self::INCLUDE_DIGIT, $cnf["include"]))) $chars .= "0123456789";
-		if(isset($cnf["include"]) && is_numeric(array_search(self::INCLUDE_LOWER, $cnf["include"]))) $chars .= "abcdefghijklmnopqrstuvwxyz";
-		if(isset($cnf["include"]) && is_numeric(array_search(self::INCLUDE_UPPER, $cnf["include"]))) $chars .= "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		if(isset($cfg["include"]) && is_numeric(array_search(self::INCLUDE_DIGIT, $cfg["include"]))) $chars .= "0123456789";
+		if(isset($cfg["include"]) && is_numeric(array_search(self::INCLUDE_LOWER, $cfg["include"]))) $chars .= "abcdefghijklmnopqrstuvwxyz";
+		if(isset($cfg["include"]) && is_numeric(array_search(self::INCLUDE_UPPER, $cfg["include"]))) $chars .= "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 		if(!strlen($chars)) return "";
 
@@ -44,7 +48,11 @@ class CustomAliasUtil {
 	}
 
 	public static function getAdvancedConfig(string $mode){
-		return self::_getAdvancedConfig($mode);
+		$cfg = self::_getAdvancedConfig($mode);
+		if((int)$mode === self::MODE_MANUAL){
+			if(!isset($cfg["mode"])) $cfg["mode"] = self::MODE_MANUAL;
+		}
+		return $cfg;
 	}
 
 	private static function _getAdvancedConfig(string $mode){

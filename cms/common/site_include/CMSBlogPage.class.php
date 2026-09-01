@@ -957,7 +957,7 @@ class CMSBlogPage extends CMSPage{
 		
 		//表示順の投入
 		try{
-			$entryLabel = soycms_get_hash_table_dao("entry_label")->getByParam($blogLabelId,$entry->getId());
+			$entryLabel = soycms_get_hash_table_dao("entry_label")->getByParam($blogLabelId, $entry->getId());
 		}catch(Exception $e){
 			$entryLabel = new EntryLabel();
 		}

@@ -18,15 +18,15 @@ class CustomAliasFormComponent {
 
 		switch($mode){
 			case CustomAliasUtil::MODE_RANDOM:
-				$cnf = CustomAliasUtil::getAdvancedConfig(CustomAliasUtil::MODE_RANDOM);
-				if(isset($cnf["label"]) && is_array($cnf["label"]) && count($cnf["label"])){
+				$cfg = CustomAliasUtil::getAdvancedConfig(CustomAliasUtil::MODE_RANDOM);
+				if(isset($cfg["label"]) && is_array($cfg["label"]) && count($cfg["label"])){
 					//ラベル毎に使用モード
 					$html[] = "<input value=\"" . $alias . "\" id=\"custom_alias_input\" name=\"alias\" type=\"text\" class=\"form-control\" style=\"width:40%;\">";
 					if(!strlen($alias)){
 						$html[] = "<input value=\"" . CustomAliasUtil::generateRandomString() . "\" id=\"custom_alias_random_value\" type=\"hidden\">";
 						$html[] = "<input value=\"" . $alias . "\" id=\"custom_alias_setting_value\" type=\"hidden\">";	//不要なコードだけれども、いつか使うかもしれないから念のために残しておく
 						$html[] = "<script>";
-						$html[] = "var random_alias_config = [" . implode(",", $cnf["label"]) . "];";
+						$html[] = "var random_alias_config = [" . implode(",", $cfg["label"]) . "];";
 						$html[] = file_get_contents(dirname(dirname(__FILE__)) . "/js/random.js");
 						$html[] = "</script>";
 					}

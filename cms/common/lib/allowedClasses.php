@@ -9,15 +9,27 @@
  */
 function soycms_get_unserialize_allowed_classes_cache_filepath(){
 	if(defined("_SITE_ROOT_")){	// SOY CMSの場合
-		$dir = _SITE_ROOT_."/.cache/";
+		$_dir = _SITE_ROOT_."/.cache/";
 	}else if(defined("SOYSHOP_SITE_DIRECTORY")){
-		$dir = SOYSHOP_SITE_DIRECTORY.".cache/";
+		$_dir = SOYSHOP_SITE_DIRECTORY.".cache/";
 	}else{
 		$siteId = (string)SOY2ActionSession::getUserSession()->getAttribute("siteId");
 		if(!strlen($siteId)) return "";
-		$dir = $_SERVER["DOCUMENT_ROOT"]."/".$siteId."/.cache/";		
+		
+		// サブドメイン対策でdepth=3
+		$fs = soy2_scanfiles($_SERVER["DOCUMENT_ROOT"], 3);
+		foreach($fs as $f){
+			//フロントコントローラを探して、ファイルが格納されているディレクトリを探す
+			if(soy2_strpos($f, "/".$siteId."/index.php") > 0){
+				$_dir = dirname($f);
+				break;
+			}
+		}
+			
+		$_dir .= "/.cache/";
 	}
-	return $dir."unserialize_allowed_classes";
+
+	return (file_exists($_dir)) ? $_dir."unserialize_allowed_classes" : "";
 }
 
 /**

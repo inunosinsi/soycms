@@ -379,22 +379,21 @@ class EntryLogic extends SOY2LogicBase{
 	function getBlogEntry(int $blogLabelId, $entryId){
 		$dao = soycms_get_hash_table_dao("entry");
 
+		$entry = new Entry();
 		if(defined("CMS_PREVIEW_ALL")){
 			if(is_numeric($entryId)){
 				try{
 					$entry = $dao->getById($entryId);
 				}catch(Exception $e){
-					try{
-						$entry = $dao->getByAlias($entryId);
-					}catch(Exception $e){
-						$entry = new Entry();
-					}
+					//
 				}
-			}else{
+			}
+
+			if(!is_numeric($entry->getId())){
 				try{
 					$entry = $dao->getByAlias($entryId);
 				}catch(Exception $e){
-					$entry = new Entry();
+					//
 				}
 			}
 		}else{
@@ -402,18 +401,16 @@ class EntryLogic extends SOY2LogicBase{
 				try{
 					$entry = $dao->getOpenEntryByIdAndBlogLabelId((int)$entryId, $blogLabelId, SOYCMS_NOW);
 				}catch(Exception $e){
-					//記事IDで取得できなければ、エイリアスの方でも取得を試みる
-					try{
-						$entry = $dao->getOpenEntryByAliasAndBlogLabelId((string)$entryId, $blogLabelId, SOYCMS_NOW);
-					}catch(Exception $e){
-						$entry = new Entry();
-					}
+					//
 				}
-			}else{
+			}
+			
+			//記事IDで取得できなければ、エイリアスの方でも取得を試みる
+			if(!is_numeric($entry->getId())){
 				try{
 					$entry = $dao->getOpenEntryByAliasAndBlogLabelId((string)$entryId, $blogLabelId, SOYCMS_NOW);
 				}catch(Exception $e){
-					$entry = new Entry();
+					//
 				}
 			}
 		}
