@@ -253,7 +253,7 @@ class BlogPage extends Page{
 	function _getTemplate(){
 		// 文字列はa:3から始まる
 		$tmp = (is_string($this->getTemplate()) && preg_match('/a:[\d]/', $this->getTemplate()) === 1) ? $this->getTemplate() : "";
-		$array = (strlen($tmp)) ? unserialize($tmp) : array();
+		$array = (strlen($tmp)) ? soy2_unserialize($tmp) : array();
 		if(is_array($array) && count($array)) return $array;
 
 		return array(

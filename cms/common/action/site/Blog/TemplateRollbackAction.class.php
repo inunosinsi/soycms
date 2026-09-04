@@ -22,13 +22,13 @@ class TemplateRollbackAction extends SOY2Action {
 		$entity = $logic->getById($this->pageId);
 		$history = $logic->getHistoryById($form->historyId);
 		
-		$ent_contents = unserialize($entity->getTemplate());
-		$hist_contents = unserialize($history->getContents());
+		$ent_contents = soy2_unserialize($entity->getTemplate());
+		$hist_contents = soy2_unserialize($history->getContents());
 		
 		
 		$ent_contents[$this->mode] = $hist_contents[$this->mode];
 		
-		$entity->setTemplate(serialize($ent_contents));
+		$entity->setTemplate(soy2_serialize($ent_contents));
 		
 		try{
 			$logic->update($entity);

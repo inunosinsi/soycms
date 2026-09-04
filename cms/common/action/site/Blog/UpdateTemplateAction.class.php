@@ -23,20 +23,20 @@ class UpdateTemplateAction extends SOY2Action{
     	$templateArray = $page->_getTemplate();
     	switch($this->mode){
     		case "entry":
-    			$templateArray[BlogPage::TEMPLATE_ENTRY] = $template;
+    			$templateArray[BlogPage::TEMPLATE_ENTRY] = trim($template);
     			break;
     		case "popup":
-    			$templateArray[BlogPage::TEMPLATE_POPUP] = $template;
+    			$templateArray[BlogPage::TEMPLATE_POPUP] = trim($template);
     			break;
     		case "top":
-    			$templateArray[BlogPage::TEMPLATE_TOP] = $template;
+    			$templateArray[BlogPage::TEMPLATE_TOP] = trim($template);
     			break;
     		case "archive":
     		default:
-    			$templateArray[BlogPage::TEMPLATE_ARCHIVE] = $template;
+    			$templateArray[BlogPage::TEMPLATE_ARCHIVE] = trim($template);
     	}
 
-		$page->setTemplate(serialize($templateArray));
+		$page->setTemplate(soy2_serialize($templateArray));
 		$dao->update($page);
 
 		//CMS:PLUGIN callEventFunction

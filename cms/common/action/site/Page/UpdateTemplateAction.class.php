@@ -15,7 +15,7 @@ class UpdateTemplateAction extends SOY2Action {
 		
 		$logic = SOY2Logic::createInstance("logic.site.Page.PageLogic");
 		$entity = $logic->getById($this->id);
-		$entity->setTemplate($_POST["template"]);
+		$entity->setTemplate(trim($_POST["template"]));
 		
 		try{
 			$logic->update($entity);

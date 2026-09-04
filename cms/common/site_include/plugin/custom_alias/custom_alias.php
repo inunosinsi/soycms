@@ -26,7 +26,7 @@ class CustomAliasPlugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.16"
+			"version"=>"1.16.1"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID, array(
@@ -100,13 +100,14 @@ class CustomAliasPlugin{
 
 	function onEntryCopy($ids){
 		$newAlias = null;
+
+		$newId = $ids[1];
+		$entry = soycms_get_entry_object($newId);
 	
 		$mode = self::_mode();
 		switch($mode){
 			case CustomAliasUtil::MODE_ID:
 			case CustomAliasUtil::MODE_HASH:
-				$newId = $ids[1];
-				$entry = soycms_get_entry_object($newId);
 				$newAlias = self::_generateAlias($entry, $mode, $newId);
 				break;
 			default:

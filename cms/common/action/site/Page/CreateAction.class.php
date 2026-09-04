@@ -46,5 +46,3 @@ class CreateAction extends SOY2Action{
     }
     
 }
-
-?>

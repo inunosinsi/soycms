@@ -31,11 +31,11 @@ class ApplyTemplateAction extends SOY2Action{
 	    			if(is_null($this->mode)){
 	    				$currentTemplate = $contents;
 	    			}else{
-		    			$currentTemplate = unserialize($pageObj->getTemplate());
+		    			$currentTemplate = soy2_unserialize($pageObj->getTemplate());
 	    				$currentTemplate[$this->mode] = $contents[$this->mode];
 	    			}
 
-	    			$pageObj->setTemplate(serialize($currentTemplate));
+	    			$pageObj->setTemplate(soy2_serialize($currentTemplate));
 	    			$pagelogic->update($pageObj);
 	    			break;
 	    		default:

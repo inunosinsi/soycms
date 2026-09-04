@@ -19,14 +19,14 @@ class SaveTemplateAction extends SOY2Action {
     		
     		if($this->type){
     			$tempArray = $page->getTemplate();
-    			$tempArray = unserialize($tempArray);
+    			$tempArray = soy2_unserialize($tempArray);
     			
-    			$tempArray[$this->type] = $template;
+    			$tempArray[$this->type] = trim($template);
     			
-    			$page->setTemplate(serialize($tempArray));
+    			$page->setTemplate(soy2_serialize($tempArray));
     			
     		}else{
-    			$page->setTemplate($template);
+    			$page->setTemplate(trim($template));
     		}
     		$pageDAO->update($page);
     		
