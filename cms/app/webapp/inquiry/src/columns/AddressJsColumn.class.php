@@ -77,6 +77,7 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 	 * @return string
 	 */
 	function getForm($attrs=array()){
+		$columnId = (string)$this->getId();
 		$attributes = array();
 		foreach($attrs as $key => $value){
 			$attributes[] = htmlspecialchars($key, ENT_QUOTES, "UTF-8") . "=\"".htmlspecialchars($value, ENT_QUOTES, "UTF-8")."\"";
@@ -98,21 +99,21 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 		if($this->zipDivide){
 			$zip1 = (isset($values["zip1"])) ? htmlspecialchars($values["zip1"], ENT_QUOTES, "UTF-8") : null;
 			$zip2 = (isset($values["zip2"])) ? htmlspecialchars($values["zip2"], ENT_QUOTES, "UTF-8") : null;
-			$html[] = '<input type="text" size="7" class="input-zip1" name="data['.$this->getColumnId().'][zip1]" value="'.$zip1.'"' . $required . ' pattern="\d{0,3}" style="ime-mode:inactive;">';
+			$html[] = '<input type="text" size="7" class="input-zip1-'.$columnId.'" name="data['.$this->getColumnId().'][zip1]" value="'.$zip1.'"' . $required . ' pattern="\d{0,3}" style="ime-mode:inactive;">';
 			$html[] = '-';
-			$html[] = '<input type="text" size="7" class="input-zip2" name="data['.$this->getColumnId().'][zip2]" value="'.$zip2.'"' . $required . ' pattern="\d{0,4}" style="ime-mode:inactive;">';
+			$html[] = '<input type="text" size="7" class="input-zip2-'.$columnId.'" name="data['.$this->getColumnId().'][zip2]" value="'.$zip2.'"' . $required . ' pattern="\d{0,4}" style="ime-mode:inactive;">';
 		}else{
 			$zip = (isset($values["zip"])) ? htmlspecialchars($values["zip"], ENT_QUOTES, "UTF-8") : null;
-			$html[] = '<input type="text" size="10" class="input-zip" name="data['.$this->getColumnId().'][zip]" value="'.$zip.'"' . $required . '>';
+			$html[] = '<input type="text" size="10" class="input-zip-'.$columnId.'" name="data['.$this->getColumnId().'][zip]" value="'.$zip.'"' . $required . '>';
 		}
 
 		if(!$this->autoSearchMode){	//自動検索モードではない時はボタンを表示
-			$html[] = '<a href="javascript:void(0);" class="btn btn-primary search-btn">住所検索</a></td>';
+			$html[] = '<a href="javascript:void(0);" class="btn btn-primary search-btn-'.$columnId.'">住所検索</a></td>';
 		}
 		$html[] = '</tr>';
 		$html[] = '<tr>';
 		$html[] = '<td nowrap>都道府県</td>';
-		$html[] = '<td><select class="input-pref" name="data['.$this->getColumnId().'][prefecture]">';
+		$html[] = '<td><select class="input-pref-'.$columnId.'" name="data['.$this->getColumnId().'][prefecture]">';
 		$html[] = '<option value="">選択してください</option>';
 		foreach($this->prefecture as $id => $pref){
 			if(isset($values["prefecture"]) && $pref == $values["prefecture"]){
@@ -128,7 +129,7 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 			$addr1 = (isset($values["address1"])) ? htmlspecialchars($values["address1"], ENT_QUOTES, "UTF-8") : "";
 			$html[] = '<tr>
 						<td>市区町村</td>
-						<td><input class="input-city" type="text" size="37" name="data['.$this->getColumnId().'][address1]" value="'.$addr1.'"></td>
+						<td><input class="input-city-'.$columnId.'" type="text" size="37" name="data['.$this->getColumnId().'][address1]" value="'.$addr1.'"></td>
 					</tr>';
 		}
 		
@@ -136,7 +137,7 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 			$addr2 = (isset($values["address2"])) ? htmlspecialchars($values["address2"], ENT_QUOTES, "UTF-8") : "";
 			$html[] = '<tr>
 						<td>番地</td>
-						<td><input class="input-town" type="text" size="37" name="data['.$this->getColumnId().'][address2]" value="'.$addr2.'"></td>
+						<td><input class="input-town-'.$columnId.'" type="text" size="37" name="data['.$this->getColumnId().'][address2]" value="'.$addr2.'"></td>
 					</tr>';
 		}
 		
@@ -156,7 +157,15 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 		if(defined("_SITE_ROOT_") && file_exists(_SITE_ROOT_ . "/js/zip2address.js")){
 			$html[] = file_get_contents(_SITE_ROOT_ . "/js/zip2address.js");
 		}else{
-			$html[] = file_get_contents(dirname(dirname(dirname(__FILE__))) . "/js/zip2address.js");
+			// 一回だけzip2address_common.jsを読み込む
+			if(!defined("SOYINQUIRY_INCLUDED_ZIP2ADDRESS_COMMON")){
+				$html[] = file_get_contents(dirname(dirname(__DIR__)) . "/js/zip2address_common.js");
+				define("SOYINQUIRY_INCLUDED_ZIP2ADDRESS_COMMON", 1);
+			}
+			$js = file_get_contents(dirname(dirname(__DIR__)) . "/js/zip2address.js");
+			$js = str_replace("##COLUMN_ID##", $columnId, $js);
+			
+			$html[] = $js;
 		}
 		$html[] = "</script>";
 
