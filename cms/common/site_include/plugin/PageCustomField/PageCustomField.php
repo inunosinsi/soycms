@@ -32,7 +32,7 @@ class PageCustomFieldPlugin{
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co/article/4709",
 			"mail" => "info@saitodev.co",
-			"version"=>"0.8"
+			"version"=>"0.8.1"
 		));
 
 		//プラグイン アクティブ
@@ -115,7 +115,7 @@ class PageCustomFieldPlugin{
 				$arr = (is_string($v) && strlen($v)) ? soy2_unserialize($v) : array();
 				$isChange = false;
 				switch($mode){
-					case self::MODE_INSERT;
+					case self::MODE_INSERT:
 						if(is_numeric(array_search($changeValue, $arr))) break;
 						$arr[] = $changeValue;
 						$attr->setValue(soy2_serialize($arr));

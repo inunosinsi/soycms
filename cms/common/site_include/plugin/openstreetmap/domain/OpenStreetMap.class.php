@@ -10,6 +10,7 @@ class OpenStreetMap {
 	private $entryId;
 	private $latitude;
 	private $longitude;
+	private $zoom = 17;
 	private $label;
 	private $icon;
 
@@ -32,6 +33,13 @@ class OpenStreetMap {
 	}
 	function setLongitude($longitude){
 		$this->longitude = $longitude;
+	}
+
+	function getZoom(){
+		return $this->zoom;
+	}
+	function setZoom($zoom){
+		$this->zoom = $zoom;
 	}
 
 	function getLabel(){

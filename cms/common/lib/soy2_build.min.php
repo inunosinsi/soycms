@@ -1981,7 +1981,7 @@ class SOY2DAO{
 class SOY2DAOException extends Exception{
 	private $pdoException;
 	private $query;
-	function __construct(string $msg, Exception $e=null){
+	function __construct(string $msg, ?Exception $e=null){
 		$this->pdoException = $e;
 		parent::__construct($msg);
 	}

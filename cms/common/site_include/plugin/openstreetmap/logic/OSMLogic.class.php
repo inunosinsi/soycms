@@ -16,6 +16,7 @@ class OSMLogic extends SOY2LogicBase {
 		// entry_id以外の値がすべてnullだった場合は削除
 		$isDelete = true;
 		foreach($posts as $idx => $_post){
+			if($idx === "zoom") continue;	// zoomは除く
 			if(!is_null($_post)) {
 				$isDelete = false;
 				break;

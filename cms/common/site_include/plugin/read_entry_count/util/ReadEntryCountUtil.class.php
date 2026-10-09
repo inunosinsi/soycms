@@ -77,6 +77,7 @@ class ReadEntryCountUtil {
 		if(!soycms_check_is_root_site_by_frontcontroller()) $url .= soycms_get_site_id_by_frontcontroller() . "/";
 
 		foreach($pages as $pageId => $page){
+			if(is_null($page->getBlogLabelId())) continue;
 			if(strlen($page->getUri())){
 				$list[$page->getBlogLabelId()] = $url . $page->getUri() . "/" . $page->getEntryPageUri() . "/";
 			//ページのURLが空文字の場合

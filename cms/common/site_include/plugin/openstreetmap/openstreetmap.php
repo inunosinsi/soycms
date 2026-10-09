@@ -22,7 +22,7 @@ class OSMPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/6578",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.2"
+			"version"=>"0.5.1"
 		));
 		
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
