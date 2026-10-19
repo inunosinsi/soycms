@@ -77,7 +77,7 @@ class SOYGallery_ImageView{
 	}
 
 	function getMemo(){
-		return $this->memo;
+		return (is_string($this->memo)) ? $this->memo : "";
 	}
 	function setMemo($memo){
 		$this->memo = $memo;

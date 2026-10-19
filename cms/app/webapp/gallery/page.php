@@ -288,7 +288,7 @@ class GalleryComponent extends HTMLList{
 
 		$this->addLabel("memo", array(
 			"soy2prefix" => $prefix,
-			"html" => soygallery_sanitize_html($entity->getMemo())
+			"html" => soygallery_sanitize_html((string)$entity->getMemo())
 		));
 
 		$this->addLabel("sort", array(

@@ -14,7 +14,7 @@ class NewImageListComponent extends HTMLList{
 		));
 
 		$this->addLabel("memo", array(
-			"html" => soygallery_sanitize_html($entity->getMemo())
+			"html" => soygallery_sanitize_html((string)$entity->getMemo())
 		));
 
 		$this->addLink("name", array(

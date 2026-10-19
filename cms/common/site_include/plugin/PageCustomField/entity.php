@@ -424,7 +424,7 @@ class PageCustomField{
 					case "class":
 						$p = "20";
 						break;
-					case "id";
+					case "id":
 						$p = "10";
 						break;
 					default:
