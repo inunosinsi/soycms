@@ -35,7 +35,7 @@ class IndexPage extends CMSUpdatePageBase{
 
 		$userInfo = $result->getAttribute("admin");
 
-		$name =  $userInfo->getName();
+		$name =  (string)$userInfo->getName();
 
 		$this->addLabel("name", array(
 			"text" => (strlen($name) > 0) ? $name : CMSMessageManager::get("ADMIN_NO_SETTING")

@@ -117,15 +117,15 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null, bool $isCa
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
 
-
+	$listPrice = (int)$item->getAttribute("list_price");
 	$htmlObj->addModel("item_list_price_visible", array(
-		"visible" => ((int)$item->getAttribute("list_price") > 0),
+		"visible" => ($listPrice > 0),
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
 
 	//定価
 	$htmlObj->addLabel("item_list_price", array(
-		"text" => soyshop_display_price($item->getAttribute("list_price")),
+		"text" => soyshop_display_price($listPrice),
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
 
@@ -149,23 +149,23 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null, bool $isCa
 
 	//定価から表示価格の割引率
 	$htmlObj->addLabel("item_discount_percentage", array(
-		"text" => ($item->getSellingPrice() > 0 && $item->getAttribute("list_price") > 0) ? soyshop_display_price(100 - ($item->getSellingPrice() / $item->getAttribute("list_price") * 100)) : 0,
+		"text" => ($item->getSellingPrice() > 0 && $listPrice > 0) ? soyshop_display_price(100 - ($item->getSellingPrice() / $listPrice * 100)) : 0,
 		"soy2prefix" => SOYSHOP_SITE_PREFIX,
-		"visible" => ($item->getSellingPrice() > 0 && $item->getAttribute("list_price") > 0)
+		"visible" => ($item->getSellingPrice() > 0 && $listPrice > 0)
 	));
 
 	//定価から通常価格の割引率
 	$htmlObj->addLabel("item_normal_discount_percentage", array(
-		"text" => ($item->getPrice() > 0 && $item->getAttribute("list_price") > 0) ? soyshop_display_price(100 - ($item->getPrice() / $item->getAttribute("list_price") * 100)) : 0,
+		"text" => ($item->getPrice() > 0 && $listPrice > 0) ? soyshop_display_price(100 - ($item->getPrice() / $listPrice * 100)) : 0,
 		"soy2prefix" => SOYSHOP_SITE_PREFIX,
-		"visible" => ($item->getPrice() > 0 && $item->getAttribute("list_price") > 0)
+		"visible" => ($item->getPrice() > 0 && $listPrice > 0)
 	));
 
 	//定価からセール価格の割引率
 	$htmlObj->addLabel("item_sale_discount_percentage", array(
-		"text" => ($item->getSalePrice() > 0 && $item->getAttribute("list_price") > 0) ? soyshop_display_price(100 - ($item->getSalePrice() / $item->getAttribute("list_price") * 100)) : 0,
+		"text" => ($item->getSalePrice() > 0 && $listPrice > 0) ? soyshop_display_price(100 - ($item->getSalePrice() / $listPrice * 100)) : 0,
 		"soy2prefix" => SOYSHOP_SITE_PREFIX,
-		"visible" => ($item->getSalePrice() > 0 && $item->getAttribute("list_price") > 0)
+		"visible" => ($item->getSalePrice() > 0 && $listPrice > 0)
 	));
 
 	//在庫数

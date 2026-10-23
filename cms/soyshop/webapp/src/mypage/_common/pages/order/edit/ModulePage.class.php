@@ -20,7 +20,7 @@ class ModulePage extends MainMyPagePageBase{
 
 			$histories = array();
 			foreach($changes as $moduleId => $values){
-				if(!count($values)) continue;
+				if(!is_array($values) || !count($values)) continue;
 				foreach($values as $v){
 					$historyText = $this->getHistoryText($v["label"], $v["old"], $v["new"]);
 					$orderLogic->addHistory($this->orderId, $historyText, "", $author);

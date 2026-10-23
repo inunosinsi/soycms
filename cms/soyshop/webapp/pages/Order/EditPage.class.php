@@ -116,7 +116,8 @@ class EditPage extends WebPage{
 								$updateCount = (int)$newCount - (int)$itemOrder->getItemCount();
 							}
 
-							$orderAttributes = (count($itemOrder->getAttributeList()) > 0) ? $itemOrder->getAttributeList() : self::getOptionIndex();
+							$attrs = (is_array($itemOrder->getAttributeList())) ? $itemOrder->getAttributeList() : array();
+							$orderAttributes = (count($attrs) > 0) ? $attrs : self::getOptionIndex();
 
 							//商品オプションの比較
 							foreach($newAttributes as $index => $attribute){

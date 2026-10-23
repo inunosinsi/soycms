@@ -139,11 +139,12 @@ class OrderLogic extends SOY2LogicBase{
 
     	for($i = 0;;++$i){
 	    	$seed = $order->getId() . $order->getOrderDate() . $i;
-   	 		$hash = base_convert(md5($seed), 16, 10);
+   	 		$dec = hexdec(substr(md5($seed), 0, 7));
+   	 		$hash = (string)(10000000 + ($dec % 90000000));
     		if($order->getId() < 100000){
-    			$trackingnum = substr($hash, 2, 4) . "-" . substr($hash, 6, 4);
+    			$trackingnum = substr($hash, 0, 4) . "-" . substr($hash, 4, 4);
     		}else{
-    			$trackingnum = substr($hash, 2, 4) . "-" . substr($hash, 6, 4) . "-" . substr($hash, 10, 4);
+    			$trackingnum = substr($hash, 0, 4) . "-" . substr($hash, 4, 4) . "-" . substr($hash, 2, 4);
     		}
 
    			$trackingnum = $order->getUserId() . "-" . $trackingnum;

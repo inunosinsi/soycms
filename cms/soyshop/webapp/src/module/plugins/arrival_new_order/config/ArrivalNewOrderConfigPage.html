@@ -4,9 +4,26 @@
 	<a target="_blank" rel="noopener" href="https://saitodev.co/article/3896" style="text-decoration:underline;">SOY Shopでクレジットカード支払いが正常に終了しなかった注文を通知する機能を追加しました - saitodev.co</a>
 </div>
 <form soy:id="form">
-	<label for="">エラー通知設定</label><br>
-	<input type="checkbox" soy:id="error_wait"><br>
-	<input type="checkbox" soy:id="error_confirm">
+	<div class="form-group">
+		<label for="">エラー通知設定</label><br>
+		<input type="checkbox" soy:id="error_wait"><br>
+		<input type="checkbox" soy:id="error_confirm">
+	</div>
+
+	<div class="form-group">
+		<label for="">新着画面の表示設定</label><br>
+
+		<div class="form-inline">
+			<label>表示件数</label>
+			<input type="number" soy:id="arrival_count" class="form-control" style="width:80px;">&nbsp;件
+		</div>
+
+		<div class="form-inline">
+			<label>表示期間</label>
+			<input type="number" soy:id="arrival_period" class="form-control" style="width:80px;">&nbsp;月分
+		</div>
+	</div>
+	
 	
 	<div class="text-center">
 		<input type="submit" class="btn btn-primary btn-lg" value="変更" />

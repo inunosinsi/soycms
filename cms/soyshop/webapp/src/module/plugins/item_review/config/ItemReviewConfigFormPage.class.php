@@ -7,12 +7,14 @@ class ItemReviewConfigFormPage extends WebPage{
     function __construct() {
     	SOY2DAOFactory::importEntity("SOYShop_DataSets");
     	SOY2::import("module.plugins.item_review.util.ItemReviewUtil");
+    	SOY2::import("module.plugins.arrival_new_order.fn.fn", ".php");
     }
 
     function doPost(){
 
     	if(soy2_check_token() && isset($_POST["Config"])){
 			ItemReviewUtil::saveConfig($_POST["Config"]);
+			soyshop_save_arrival_config("item_review", $_POST["Arrival"]);
     		$this->configObj->redirect("updated");
     	}
 		$this->configObj->redirect("failed");
@@ -109,6 +111,18 @@ class ItemReviewConfigFormPage extends WebPage{
 			"name" => "Config[review_count]",
 			"value" => (isset($config["review_count"]) && strlen($config["review_count"])) ? (int)$config["review_count"] : "",
 			"style" => "width:80px;"
+		));
+
+		$cfgs = soyshop_get_arrival_config("item_review");
+		
+		$this->addInput("arrival_count", array(
+			"name" => "Arrival[count]",
+			"value" => (isset($cfgs["count"]) && is_numeric($cfgs["count"])) ? $cfgs["count"] : 15
+		));
+
+		$this->addInput("arrival_period", array(
+			"name" => "Arrival[period]",
+			"value" => (isset($cfgs["period"]) && is_numeric($cfgs["period"])) ? $cfgs["period"] : 12
 		));
     }
 

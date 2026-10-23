@@ -12,6 +12,7 @@ class DiscountFreeCouponConfigFormPage extends WebPage{
 		SOY2::import("module.plugins.discount_free_coupon.domain.SOYShop_CouponDAO");
 		SOY2::import("module.plugins.discount_free_coupon.util.DiscountFreeCouponUtil");
 		SOY2::import("module.plugins.discount_free_coupon.component.CouponListComponent");
+		SOY2::import("module.plugins.arrival_new_order.fn.fn", ".php");
 		$this->dao = SOY2DAOFactory::create("SOYShop_CouponDAO");
 		$this->categoryLogic = SOY2Logic::createInstance("module.plugins.discount_free_coupon.logic.CouponCategoryLogic");
 	}
@@ -19,6 +20,10 @@ class DiscountFreeCouponConfigFormPage extends WebPage{
 	function doPost(){
 
 		if(soy2_check_token()){
+			//新着の表示に関して
+			if(isset($_POST["Arrival"])){
+				soyshop_save_arrival_config("discount_free_coupon", $_POST["Arrival"]);
+			}
 
 			if(isset($_POST["csv"])){
 
@@ -397,6 +402,18 @@ class DiscountFreeCouponConfigFormPage extends WebPage{
 			"value" => DiscountFreeCouponUtil::DISPLAY_ITEM_ALWAYS,
 			"selected" => (isset($cnf["displayAlways"]) && (int)$cnf["displayAlways"] === DiscountFreeCouponUtil::DISPLAY_ITEM_ALWAYS),
 			"label" => "管理画面の注文詳細でクーポンコードの入力フォームを常に表示する"
+		));
+
+		$cfgs = soyshop_get_arrival_config("discount_free_coupon");
+		
+		$this->addInput("arrival_count", array(
+			"name" => "Arrival[count]",
+			"value" => (isset($cfgs["count"]) && is_numeric($cfgs["count"])) ? $cfgs["count"] : 15
+		));
+
+		$this->addInput("arrival_period", array(
+			"name" => "Arrival[period]",
+			"value" => (isset($cfgs["period"]) && is_numeric($cfgs["period"])) ? $cfgs["period"] : 12
 		));
 	}
 

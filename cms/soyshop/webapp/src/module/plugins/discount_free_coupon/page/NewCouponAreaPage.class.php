@@ -4,19 +4,23 @@ class NewCouponAreaPage extends WebPage{
 
 	private $configObj;
 
-	function __construct(){}
+	function __construct(){
+		SOY2::import("module.plugins.arrival_new_order.fn.fn", ".php");
+	}
 
 	function execute(){
 		parent::__construct();
 
 		$histories = self::_get();
 
+		$cfgs = soyshop_get_arrival_config("discount_free_coupon");
+
 		$cnt = count($histories);
-		DisplayPlugin::toggle("more_coupon_history", ($cnt > 5));
+		DisplayPlugin::toggle("more_coupon_history", ($cnt > $cfgs["count"]));
 		DisplayPlugin::toggle("has_coupon_history", ($cnt > 0));
 		DisplayPlugin::toggle("no_coupon_history", ($cnt === 0));
 
-		if($cnt > 5) $histories = array_slice($histories, 0, 5);
+		if($cnt > $cfgs["count"]) $histories = array_slice($histories, 0, $cfgs["count"]);
 
 		list($couponIds, $userIds, $orderIds) = self::_getCouponIdsAndUserIdsAndOrderIds($histories);
 		$this->createAdd("coupon_history_list", "_common.Coupon.CouponHistoryComponent", array(
@@ -25,18 +29,36 @@ class NewCouponAreaPage extends WebPage{
 			"trackingNumberList" => ($cnt > 0) ? SOY2Logic::createInstance("logic.order.OrderLogic")->getTrackingNumberListByIds($orderIds) : array(),
 			"couponNameList" => ($cnt > 0) ? SOY2Logic::createInstance("module.plugins.discount_free_coupon.logic.DiscountFreeCouponLogic")->getCouponNameListByIds($couponIds) : array()
 		));
+
+		$this->addLabel("display_count", array(
+			"text" => $cfgs["count"]	
+		));
 	}
 
 	private function _get(){
 		SOY2::import("module.plugins.discount_free_coupon.domain.SOYShop_CouponHistoryDAO");
 		$dao = SOY2DAOFactory::create("SOYShop_CouponHistoryDAO");
-		$dao->setLimit(6);
+
+		$cfgs = soyshop_get_arrival_config("discount_free_coupon");
 
 		try{
-			return $dao->get();
+			$res = $dao->executeQuery(
+				"SELECT user_id, order_id, coupon_id, create_date, price FROM soyshop_coupon_history ".
+				"WHERE create_date > :date ".
+				"ORDER BY create_date DESC ".
+				"LIMIT ".$cfgs["count"],
+				array(":date" => strtotime("-".$cfgs["period"]."month"))
+			);
 		}catch(Exception $e){
 			return array();
 		}
+		if(!count($res)) return array();
+
+		$_arr = array();
+		foreach($res as $v){
+			$_arr[] = $dao->getObject($v);
+		}
+		return $_arr;
 	}
 
 	private function _getCouponIdsAndUserIdsAndOrderIds(array $histories){

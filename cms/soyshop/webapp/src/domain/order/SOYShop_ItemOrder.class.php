@@ -152,7 +152,8 @@ class SOYShop_ItemOrder {
     	$this->attributes = $attributes;
     }
     function getAttributeList(){
-		return soy2_unserialize((string)$this->attributes);
+		$attrs = soy2_unserialize((string)$this->attributes);
+		return (is_array($attrs)) ? $attrs : array();;
     }
     function getAttribute($key) {
     	$attributes = $this->getAttributeList();
@@ -210,12 +211,12 @@ class SOYShop_ItemOrder {
 	}
 
 	private function _isConvertParentNameConfig(){
-		static $cnf;
-		if(is_null($cnf)) {
+		static $cfg;
+		if(is_null($cfg)) {
 			SOY2::import("domain.config.SOYShop_ShopConfig");
-			$cnf = ((int)SOYShop_ShopConfig::load()->getChangeParentItemNameOnAdmin() === 1);
+			$cfg = ((int)SOYShop_ShopConfig::load()->getChangeParentItemNameOnAdmin() === 1);
 		}
-		return $cnf;
+		return $cfg;
 	}
 
 	public static function getStatusList(){

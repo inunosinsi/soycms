@@ -253,8 +253,8 @@
 <br><br>
 
 <section>
-	<div class="alert alert-info">クーポンの設定</div>
 	<form soy:id="config_form">
+		<div class="alert alert-info">クーポンの設定</div>
 		<span id="coupon_config"></span>
 
 		<div class="form-group">
@@ -273,6 +273,19 @@
 			<label>注文詳細のクーポンの入力項目</label>
 			<div class="form-inline">
 				<input type="checkbox" soy:id="config_display_always">
+			</div>
+		</div>
+
+		<label>新着画面の表示設定</label>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>表示件数</label>
+				<input type="number" soy:id="arrival_count" class="form-control" style="width:80px;">&nbsp;件
+			</div>
+	
+			<div class="form-inline">
+				<label>表示期間</label>
+				<input type="number" soy:id="arrival_period" class="form-control" style="width:80px;">&nbsp;月分
 			</div>
 		</div>
 

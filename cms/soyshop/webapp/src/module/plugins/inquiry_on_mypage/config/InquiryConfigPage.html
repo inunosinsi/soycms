@@ -1,6 +1,20 @@
 <div class="alert alert-success" soy:display="updated">更新しました</div>
 
 <form soy:id="form">
+	<div class="form-group">
+		<label for="">新着画面の表示設定</label><br>
+
+		<div class="form-inline">
+			<label>表示件数</label>
+			<input type="number" soy:id="arrival_count" class="form-control" style="width:80px;">&nbsp;件
+		</div>
+
+		<div class="form-inline">
+			<label>表示期間</label>
+			<input type="number" soy:id="arrival_period" class="form-control" style="width:80px;">&nbsp;月分
+		</div>
+	</div>
+
 	<dl>
 		<dt>管理画面の設定</dt>
 		<dd>

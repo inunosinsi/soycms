@@ -23,7 +23,7 @@ class InquiryLogic extends SOY2LogicBase {
 
 	function addInquiry(SOYShop_Inquiry $inquiry){
 		$inquiry->setTrackingNumber(self::getTrackingNumber());
-
+		
 		$this->inqDao->begin();
 		try{
 			$id = $this->inqDao->insert($inquiry);
@@ -37,14 +37,15 @@ class InquiryLogic extends SOY2LogicBase {
 		}catch(Exception $e){
 			return null;
 		}
-
+		
 		$mailLogId = self::send($inquiry);
 		$inquiry->setMailLogId($mailLogId);
-
+		
 		try{
 			$this->inqDao->update($inquiry);
 			$this->inqDao->commit();
 		}catch(Exception $e){
+			$this->inqDao->rollback();
 			return null;
 		}
 
@@ -54,8 +55,10 @@ class InquiryLogic extends SOY2LogicBase {
 	private function getTrackingNumber(){
 
 		for($i = 0; ; $i++){
-			$hash = base_convert(md5($this->user->getId() . time() . $i), 16, 10);
-			$trackingnum = substr($hash, 6, 4) . "-" . substr($hash, 10, 4);
+			$seed = $this->user->getId() . time() . $i;
+			$dec = hexdec(substr(md5($seed), 0, 7));
+			$hash = (string)(10000000 + ($dec % 90000000));
+			$trackingnum = substr($hash, 0, 4) . "-" . substr($hash, 4, 4);
 			$trackingnum = $this->user->getId() . "-" . $trackingnum;
 
 			try{

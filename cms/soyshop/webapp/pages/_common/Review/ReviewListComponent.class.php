@@ -19,7 +19,7 @@ class ReviewListComponent extends HTMLList{
 		$itemId = (is_numeric($entity->getItemId())) ? (int)$entity->getItemId() : 0;
 		$this->addLink("item_name", array(
 			"link" => SOY2PageController::createLink("Item.Detail." . $itemId),
-			"text" => ($entity instanceof SOYShop_ItemReview && isset($this->itemNameList[$itemId])) ? $this->itemNameList[$itemId] : ""
+			"text" => ($entity instanceof SOYShop_ItemReview && isset($this->itemNameList[$itemId])) ? $this->itemNameList[$itemId] : soyshop_get_item_object($itemId)->getName()
 		));
 
 		$userId = (is_numeric($entity->getUserId())) ? (int)$entity->getUserId() : 0;

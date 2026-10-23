@@ -74,14 +74,14 @@ class SOYShop_Inquiry {
 	}
 
 	function getRequirement(){
-		return $this->requirement;
+		return (is_string($this->requirement)) ? $this->requirement : "";
 	}
 	function setRequirement($requirement){
 		$this->requirement = $requirement;
 	}
 
 	function getContent(){
-		return $this->content;
+		return (is_string($this->content)) ? $this->content : "";
 	}
 	function setContent($content){
 		$this->content = $content;
