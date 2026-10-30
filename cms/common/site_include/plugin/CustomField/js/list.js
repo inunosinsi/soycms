@@ -56,10 +56,46 @@ function list_field_move_up(formId, idx){
 				$("." + formId + "_"+ele+"_" + idx).val(tmp);
 			}
 		});
+		// 移動したらプレビューボタンを強制非表示にする（空白に置き換え）
+		list_field_hide_preview_button(formId, up);
+		list_field_hide_preview_button(formId, idx);
 	}
 }
 
+function list_field_move_down(formId, idx){
+	var maxIdx = $("#"+formId+"_count").val();
+    if(idx < maxIdx){
+        var down = idx + 1;
+        var tmp = $("." + formId + "_" + down).val();
+        $("." + formId + "_" + down).val($("." + formId + "_" + idx).val());
+        $("." + formId + "_" + idx).val(tmp);
+
+        // extraValueの値の並べ替え
+        ["alt", "url", "target"].forEach(function(ele){
+            tmp = $("." + formId + "_"+ele+"_" + down).val();
+            if(tmp != undefined){
+                $("." + formId + "_"+ele+"_" + down).val($("." + formId + "_"+ele+"_" + idx).val());
+                $("." + formId + "_"+ele+"_" + idx).val(tmp);
+            }
+        });
+        // 移動したらプレビューボタンを強制非表示にする（空白に置き換え）
+        list_field_hide_preview_button(formId, idx);
+        list_field_hide_preview_button(formId, down);
+    }
+}
+
 function list_field_delete(formId, idx){
-	$("." + formId + "_" + idx).val("");
-	$("." + formId + "_" + idx + "_div").hide();
+    $("." + formId + "_" + idx).val("");
+    $("." + formId + "_" + idx).closest(".form-inline").remove();
+}
+
+// プレビューボタンをタグごと完全に削除する関数
+function list_field_hide_preview_button(formId, idx) {
+    var $input = $("." + formId + "_" + idx);
+    var $row = $input.closest(".form-inline");
+    var $previewBtn = $row.find("a.btn-warning");
+    
+    if($previewBtn.length > 0) {
+        $previewBtn.remove(); // タグごと削除
+    }
 }

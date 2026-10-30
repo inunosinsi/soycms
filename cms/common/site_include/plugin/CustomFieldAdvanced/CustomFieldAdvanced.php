@@ -43,7 +43,7 @@ class CustomFieldPluginAdvanced{
 			"author" => "日本情報化農業研究所",
 			"url" => "http://www.n-i-agroinformatics.com/",
 			"mail" => "soycms@soycms.net",
-			"version"=>"1.21"
+			"version"=>"1.21.1"
 		));
 
 		//プラグイン アクティブ
@@ -310,7 +310,7 @@ class CustomFieldPluginAdvanced{
 						//後方互換
 						if(isset($extraValues["pair"]) && is_array($extraValues["pair"])) $extraValues = $extraValues["pair"];
 
-						if(count($extraValues)){
+						if(is_array($extraValues) && count($extraValues)){
 							foreach($extraValues as $idx => $pairValues){
 								$_hash = (is_string($fieldValue) && strlen($fieldValue)) ? CustomfieldAdvancedUtil::createHash($fieldValue) : null;
 								$pairValue = (isset($_hash) && isset($pairValues[$_hash])) ? $pairValues[$_hash] : "";

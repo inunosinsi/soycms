@@ -50,13 +50,49 @@ function dllist_field_move_up(formId, idx){
 			$("." + formId + "_" + up + "_" + l).val($("." + formId + "_" + idx + "_" + l).val());
 			$("." + formId + "_" + idx + "_" + l).val(tmp);
 		}
+
+		// 移動したらプレビューボタンを強制非表示にする（空白に置き換え）
+		dllist_field_hide_preview_button(formId, up);
+		dllist_field_hide_preview_button(formId, idx);
+	}
+}
+
+function dllist_field_move_down(formId, idx){
+	var maxIdx = $("#" + formId + "_count").val();
+	if(idx < maxIdx){
+		var down = idx + 1;
+		var types = ["label", "value"];
+		for(var i = 0; i < types.length; i++){
+			var l = types[i];
+			var selectorDown = "." + formId + "_" + down + "_" + l;
+			var selectorIdx = "." + formId + "_" + idx + "_" + l;
+			
+			var tmp = $(selectorDown).val();
+			$(selectorDown).val($(selectorIdx).val());
+			$(selectorIdx).val(tmp);
+		}
+
+		// 移動したらプレビューボタンを強制非表示にする（空白に置き換え）
+        dllist_field_hide_preview_button(formId, idx);
+        dllist_field_hide_preview_button(formId, down);
 	}
 }
 
 function dllist_field_delete(formId, idx){
-	var types = ["label", "value"];
+var types = ["label", "value"];
 	for(var i = 0; i <= types.length; i++){
 		$("." + formId + "_" + idx + "_" + types[i]).val("");
 	}
-	$("." + formId + "_" + idx).hide();
+	$("." + formId + "_" + idx).closest(".form-inline").hide();
+}
+
+// プレビューボタンをタグごと完全に削除する関数
+function dllist_field_hide_preview_button(formId, idx) {
+    // labelのクラス名（例: .custom_field_dtli_0_label）を起点にして行を取得する
+    var $row = $("." + formId + "_" + idx + "_label").closest(".form-inline");
+    var $previewBtn = $row.find("a.btn-warning");
+        
+    if($previewBtn.length > 0) {
+        $previewBtn.remove(); // タグごと完全に削除する場合
+    }
 }
