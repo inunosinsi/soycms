@@ -5,7 +5,6 @@ class LabelCustomFieldListComponent extends HTMLList {
 	function populateItem($entity, $i){
 		static $i = 0;
 		$i++;
-
 		/* 情報表示用 */
 		$this->addLabel("label", array(
 			"text"=>$entity->getLabel(),
