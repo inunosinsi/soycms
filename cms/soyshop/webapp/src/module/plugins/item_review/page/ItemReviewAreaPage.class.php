@@ -46,7 +46,7 @@ class ItemReviewAreaPage extends WebPage{
 			return array();
 		}
 
-		if(!count($res)) return arary();
+		if(!count($res)) return array();
 
 		$_arr = array();
 		foreach($res as $v){

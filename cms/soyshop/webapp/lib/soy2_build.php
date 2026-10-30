@@ -9204,9 +9204,10 @@ function soy2_serialize($var){
  * stripslashesしてからunserializeを行う（旧形式の互換性対応付き）
  *
  * @param string $string soy2_serializeの出力する文字列
+ * @param string array等のデータ型を文字列で指定
  * @return mixed
  */
-function soy2_unserialize(string $string){
+function soy2_unserialize(string $string, string $returnDataType="array"){
 	// allowed_classes の判定処理（静的保持）
 	static $allowed;
 	if(is_null($allowed)){
@@ -9215,6 +9216,15 @@ function soy2_unserialize(string $string){
 		if(!is_array($allowed) || !count($allowed)) $allowed = false;
 	}
 	$rawString = stripslashes($string);
+
+	// unserializeに失敗したときに返す値
+	switch($returnDataType){
+		case "array":
+			$retVal = array();
+			break;
+		default:
+			$retVal = null;
+	}
 
 	//署名(HMAC)
     $parts = explode(':', $rawString, 2);
@@ -9228,7 +9238,7 @@ function soy2_unserialize(string $string){
 		$calculatedHmac = hash_hmac('sha256', $serialized, $secretKey);
 
  		// 改ざんチェック（不正なら即拒否）
-		if (!hash_equals($calculatedHmac, $hmac)) return null;
+		if (!hash_equals($calculatedHmac, $hmac)) return $retVal;
 		$data = unserialize($serialized, array("allowed_classes" => $allowed));
 	}else{
 		// --- 【旧形式（HMACなし）の処理】 ---
@@ -9253,9 +9263,9 @@ function soy2_unserialize(string $string){
 		}
 	}
 
-	// __PHP_Incomplete_Classの場合はnullを返す
+	// __PHP_Incomplete_Classの場合は指定した型のデータを返す
 	if (is_object($data) && $data instanceof __PHP_Incomplete_Class) {
-		return null;
+		return $retVal;
 	}
 
 	return $data;
