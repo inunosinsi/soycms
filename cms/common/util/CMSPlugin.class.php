@@ -255,8 +255,7 @@ class CMSPlugin {
 	static function addPlugin(string $id, array $initFunc){
 		$instance =& CMSPlugin::getInstance();
 
-		//if(is_array($initFunc) && !method_exists($initFunc[0],$initFunc[1])) return;
-		if(is_array($initFunc) && (!is_object($initFunc[0]) && !is_string($initFunc[0]) || !method_exists($initFunc[0],$initFunc[1]))) return;
+		if(is_array($initFunc) && !method_exists($initFunc[0],$initFunc[1])) return;
 		if(!is_array($initFunc) && !function_exists($initFunc)) return;
 
 		$instance->_plugins[$id] = array();

@@ -92,6 +92,8 @@ if(soycms_is_unserialize_allowed_classes_cache_file()){
 			/** SOY CMS **/
 			"Site",
 			"CustomField",	//これは自動で読み込めない
+			"ConfigFieldPlugin",
+			"CustomFieldPlugin",
 			"LabelCustomField",
 
 			/** SOY Shop **/

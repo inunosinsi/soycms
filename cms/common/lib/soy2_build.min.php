@@ -8583,7 +8583,7 @@ function soy2_unserialize(string $string, string $returnDataType="array"){
 		if ($data === false && $rawString !== $string) {
 			$data = @unserialize($string, array("allowed_classes" => $allowed));
 		}
-
+		
 		// 3. それでも失敗した場合はバイト数の不一致を自動補正して再試行
 		if ($data === false) {
 			$fixedString = preg_replace_callback(
