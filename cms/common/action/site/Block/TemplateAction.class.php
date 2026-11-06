@@ -59,4 +59,3 @@ class TemplateAction extends SOY2Action{
 		return SOY2Action::SUCCESS;
 	}
 }
-?>

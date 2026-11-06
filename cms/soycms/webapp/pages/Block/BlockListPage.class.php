@@ -35,7 +35,7 @@ class BlockListPage extends CMSWebPageBase{
 		parent::execute();
 	}
 
-	function getBlockList($id){
+	function getBlockList(int $id){
 		/*
 		 * ブロックのリストを返す
 		 * テンプレートに書かれていて、追加されていないもの→unSetUpBlocks

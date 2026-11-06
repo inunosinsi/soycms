@@ -5,11 +5,13 @@ class BlockLogic extends SOY2LogicBase{
 	/**
 	 * PageIdよりTemplateのsoy:idをすべて取得し、返す
 	 */
-	function getSoyIds($id){
+	function getSoyIds(int $id){
 		$dao = SOY2DAOFactory::create("cms.PageDAO");
 		$page = $dao->getById($id);
-		$template = $page->getTemplate();
-		
+
+		// soy2_serializeする時にaddslashesをするので、その解除をここで行う
+		$template = stripslashes((string)$page->getTemplate());
+
 		$regex = '/<[^>]*\sblock:id=\"([a-zA-Z][a-zA-Z0-9_]+)\"\s?[^>]*>/i';
 		$ids = array();
 		$match = array();

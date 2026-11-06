@@ -5,10 +5,13 @@ class CustomFieldListComponent extends HTMLList {
 	private $labels = array();
 
 	function populateItem($entity){
+		// 誤ってスペース有りの変数名を作ってしまった時の対処
+		$idWithUnderscore = str_replace(array(" ", "　"), "_", $entity->getId());
+	
 		/* 情報表示用 */
 		$this->addLabel("label", array(
-			"text"=>$entity->getLabel(),
-			"id" => "label_text_" . $entity->getId(),
+			"text" => $entity->getLabel(),
+			"id" => "label_text_" . $idWithUnderscore,
 		));
 
 		$this->addLabel("id", array(
@@ -17,7 +20,7 @@ class CustomFieldListComponent extends HTMLList {
 
 		$this->addLabel("type", array(
 			"text"=> (is_string($entity->getType()) && isset(CustomField::$TYPES[$entity->getType()])) ? CustomField::$TYPES[$entity->getType()] : "",
-			"id" => "type_text_" . $entity->getId(),
+			"id" => "type_text_" . $idWithUnderscore,
 		));
 
 		$this->addLabel("display_form", array(
@@ -28,37 +31,37 @@ class CustomFieldListComponent extends HTMLList {
 		/* カスタムフィールド設定変更用 */
 		$this->addLink("toggle_update", array(
 			"link" => "javascript:void(0)",
-			"onclick" => '$(\'#label_input_'.$entity->getId().'\').show();' .
-						'$(\'#label_text_'.$entity->getId().'\').hide();' .
-						'$(\'#type_select_'.$entity->getId().'\').show();' .
-						'$(\'#type_text_'.$entity->getId().'\').hide();' .
-						'$(\'#update_link_'.$entity->getId().'\').show();' .
+			"onclick" => '$(\'#label_input_'.$idWithUnderscore.'\').show();' .
+						'$(\'#label_text_'.$idWithUnderscore.'\').hide();' .
+						'$(\'#type_select_'.$idWithUnderscore.'\').show();' .
+						'$(\'#type_text_'.$idWithUnderscore.'\').hide();' .
+						'$(\'#update_link_'.$idWithUnderscore.'\').show();' .
 						'$(this).hide();'
 		));
 
 		$this->addLink("update_link", array(
 			"link" => "javascript:void(0)",
-			"id" => "update_link_" . $entity->getId(),
-			"onclick" => '$(\'#update_submit_'.$entity->getId().'\').click();' .
+			"id" => "update_link_" . $idWithUnderscore,
+			"onclick" => '$(\'#update_submit_'.$idWithUnderscore.'\').click();' .
 						'return false;'
 		));
 
 		$this->addInput("update_submit", array(
 			"name" => "update_submit",
 			"value" => $entity->getId(),
-			"attr:id" => "update_submit_".$entity->getId()
+			"attr:id" => "update_submit_".$idWithUnderscore
 		));
 
 		$this->addInput("label_input", array(
 			"name" => "label",
-			"id" => "label_input_" . $entity->getId(),
+			"id" => "label_input_" . $idWithUnderscore,
 			"value" => $entity->getLabel(),
 		));
 
 		$this->addSelect("type_select", array(
 			"name" => "type",
 			"options" => CustomField::$TYPES,
-			"id" => "type_select_" . $entity->getId(),
+			"id" => "type_select_" . $idWithUnderscore,
 			"selected" => $entity->getType(),
 		));
 
@@ -75,27 +78,27 @@ class CustomFieldListComponent extends HTMLList {
 		$this->addInput("delete_submit", array(
 			"name" => "delete_submit",
 			"value" => $fieldIdForDeletion,
-			"id" => "delete_submit_".$fieldIdForDeletion
+			"id" => "delete_submit_".$idWithUnderscore
 		));
 
 		$this->addLink("delete", array(
 			"text"=>"削除",
 			"link"=>"javascript:void(0);",
-			"onclick"=>'if(confirm("delete \"'.$entity->getLabel().'\"?")){$(\'#delete_submit_'.$fieldIdForDeletion.'\').click();}return false;',
-			"attr:id" => "delete_btn_".$fieldIdForDeletion
+			"onclick"=>'if(confirm("delete \"'.$entity->getLabel().'\"?")){$(\'#delete_submit_'.$idWithUnderscore.'\').click();}return false;',
+			"attr:id" => "delete_btn_".$idWithUnderscore
 		));
 
 		/* 高度な設定 */
 		$this->addLink("toggle_config", array(
 			"link" => "javascript:void(0)",
 			"text" => "高度な設定",
-			"onclick" => '$(\'#field_config_'.$entity->getId().'\').toggle();',
+			"onclick" => '$(\'#field_config_'.$idWithUnderscore.'\').toggle();',
 			"class" => (!$entity->getShowInput() || is_numeric($entity->getLabelId()) || strlen((string)$entity->getEntryIds()) ||count($entity->getLabelIds())|| $entity->getDefaultValue() || $entity->getEmptyValue() || $entity->getDescription() || $entity->getFixedLabelId() || strlen((string)$entity->getOption()) || $entity->getAddTagOutsideBlock() || $entity->getIsImageUploadForm()) ? "btn btn-warning" : "btn btn-info",
-			"attr:id" => "toggle_config_" . $entity->getId()
+			"attr:id" => "toggle_config_" . $idWithUnderscore
 		));
 
 		$this->addModel("field_config", array(
-			"id" => "field_config_" . $entity->getId()
+			"id" => "field_config_" . $idWithUnderscore
 		));
 
 		$this->addCheckBox("is_search_item", array(
@@ -180,7 +183,7 @@ class CustomFieldListComponent extends HTMLList {
 			"name" => "config[addTagOutsideBlock]",
 			"value" => 1,
 			"selected" => $entity->getAddTagOutsideBlock(),
-			"label" => "b_block:id=\"is_" . $entity->getId() . "\"とb_block:id=\"no_" . $entity->getId() . "\"を追加する"
+			"label" => "b_block:id=\"is_" . $idWithUnderscore . "\"とb_block:id=\"no_" . $entity->getId() . "\"を追加する"
 		));
 
 		$this->addLabel("label_name", array(
@@ -199,7 +202,7 @@ class CustomFieldListComponent extends HTMLList {
 		$this->addTextArea("option", array(
 			"name" => "config[option]",
 			"value" => $entity->getOption(),
-			"attr:id" => "option_form_" . $entity->getId()
+			"attr:id" => "option_form_" . $idWithUnderscore
 		));
 
 		//ペアフィールド用
@@ -289,15 +292,15 @@ class CustomFieldListComponent extends HTMLList {
 
 		$this->addInput("update_advance", array(
 			"value"=>"設定保存",
-			"onclick"=>'$(\'#update_advance_submit_'.$entity->getId().'\').click();return false;',
-			"attr:id" => "update_advance_submit_btn_" . $entity->getId()
+			"onclick"=>'$(\'#update_advance_submit_'.$idWithUnderscore.'\').click();return false;',
+			"attr:id" => "update_advance_submit_btn_" . $idWithUnderscore
 		));
 
 		$this->addInput("update_advance_submit", array(
 			"name" => "update_advance",
 			"value" => $entity->getId(),
-			"id" => "update_advance_submit_".$entity->getId(),
-			"attr:id" => "update_advance_submit_" . $entity->getId()
+			"id" => "update_advance_submit_".$idWithUnderscore,
+			"attr:id" => "update_advance_submit_" . $idWithUnderscore
 		));
 	}
 
