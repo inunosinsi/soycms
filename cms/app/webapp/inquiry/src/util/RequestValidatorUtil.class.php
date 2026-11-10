@@ -24,7 +24,8 @@ class RequestValidatorUtil {
 			"form_value",
 			"captcha_value",
 			"send",
-			"form"
+			"form",
+			"language"
 		);
 
 		foreach($_GET as $key => $v){
