@@ -1,6 +1,8 @@
 <?php
 
 class UtilMultiLanguageConfigFormPage extends WebPage{
+
+	private $pluginObj;
 	
 	function __construct(){
 		SOY2::import("site_include.plugin.util_multi_language.util.SOYCMSUtilMultiLanguageUtil");
@@ -110,7 +112,7 @@ class UtilMultiLanguageConfigFormPage extends WebPage{
 		}
 	}
 	
-	function setPluginObj($pluginObj){
+	function setPluginObj(UtilMultiLanguagePlugin $pluginObj){
 		$this->pluginObj = $pluginObj;
 	}
 }

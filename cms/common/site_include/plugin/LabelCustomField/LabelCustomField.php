@@ -19,9 +19,6 @@ class LabelCustomFieldPlugin{
 
 	private $displayLogic;
 
-	// どこで使用しているか？は不明だが、エラーが出るので加えておく
-	private $dao;
-
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID, array(
 			"name" => "ラベルカスタムフィールド",
