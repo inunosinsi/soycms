@@ -41,7 +41,6 @@ class HTMLPurifier_AttrTypes
         $this->info['IAlign']   = self::makeEnum('top,middle,bottom,left,right');
         $this->info['LAlign']   = self::makeEnum('top,bottom,left,right');
         $this->info['FrameTarget'] = new HTMLPurifier_AttrDef_HTML_FrameTarget();
-        $this->info['ContentEditable'] = new HTMLPurifier_AttrDef_HTML_ContentEditable();
 
         // unimplemented aliases
         $this->info['ContentType'] = new HTMLPurifier_AttrDef_Text();
@@ -77,7 +76,7 @@ class HTMLPurifier_AttrTypes
         }
 
         if (!isset($this->info[$type])) {
-            throw new Exception('Cannot retrieve undefined attribute type ' . $type);
+            trigger_error('Cannot retrieve undefined attribute type ' . $type, E_USER_ERROR);
             return;
         }
         return $this->info[$type]->make($string);

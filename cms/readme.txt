@@ -12,6 +12,8 @@ appとsoyshopのディレクトリをcommon,admin,soycmsと同じディレクト
 
 /** リリース **/
 ※リリースノートで記載のないバージョンは新しいバージョンのPHPの対応の際に発生した不具合の修正になります
+2.15.5
+	- phpoffice/phpspreadsheet を 1.30.6 にアップグレード（脆弱性対応）
 2.15.0
 	◯修正
 	- soy2_unserializeにあった脆弱性を修正

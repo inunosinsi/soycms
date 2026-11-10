@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace ZipStream;
 
 /**
- * @api
+ * This class is only for inheriting
  */
-abstract class Exception extends \Exception {}
+abstract class Exception extends \Exception
+{
+}

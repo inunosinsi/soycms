@@ -25,7 +25,12 @@ class HTMLPurifier_AttrDef_HTML_LinkTypes extends HTMLPurifier_AttrDef
             'rev' => 'AllowedRev'
         );
         if (!isset($configLookup[$name])) {
-            throw new Exception('Unrecognized attribute name for link relationship.');
+            trigger_error(
+                'Unrecognized attribute name for link ' .
+                'relationship.',
+                E_USER_ERROR
+            );
+            return;
         }
         $this->name = $configLookup[$name];
     }

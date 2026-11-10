@@ -57,12 +57,11 @@ class HTMLPurifier_URIFilter_SafeIframe extends HTMLPurifier_URIFilter
             return true;
         }
         // check if we actually have some whitelists enabled
-        if ($this->regexp !== null) {
-            return preg_match($this->regexp, $uri->toString());
+        if ($this->regexp === null) {
+            return false;
         }
-        // check if the host is in a whitelist for safe iframe hosts
-        $safeHosts = $config->get('URI.SafeIframeHosts');
-        return $safeHosts !== null && isset($safeHosts[$uri->host]);
+        // actually check the whitelists
+        return preg_match($this->regexp, $uri->toString());
     }
 }
 

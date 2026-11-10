@@ -1,6 +1,6 @@
 CSS.MaxImgLength
 TYPE: string/null
-DEFAULT: null
+DEFAULT: '1200px'
 VERSION: 3.1.1
 --DESCRIPTION--
 <p>

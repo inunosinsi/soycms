@@ -88,9 +88,6 @@ class DataSeriesValues extends Properties
     /** @var ?Layout */
     private $labelLayout;
 
-    /** @var TrendLine[] */
-    private $trendLines = [];
-
     /**
      * Create a new DataSeriesValues object.
      *
@@ -324,13 +321,13 @@ class DataSeriesValues extends Properties
         if (is_array($this->fillColor)) {
             $array = [];
             foreach ($this->fillColor as $chartColor) {
-                $array[] = $this->chartColorToString($chartColor);
+                $array[] = self::chartColorToString($chartColor);
             }
 
             return $array;
         }
 
-        return $this->chartColorToString($this->fillColor);
+        return self::chartColorToString($this->fillColor);
     }
 
     /**
@@ -348,13 +345,13 @@ class DataSeriesValues extends Properties
                 if ($fillString instanceof ChartColor) {
                     $this->fillColor[] = $fillString;
                 } else {
-                    $this->fillColor[] = $this->stringToChartColor($fillString);
+                    $this->fillColor[] = self::stringToChartColor($fillString);
                 }
             }
         } elseif ($color instanceof ChartColor) {
             $this->fillColor = $color;
-        } else {
-            $this->fillColor = $this->stringToChartColor($color);
+        } elseif (is_string($color)) {
+            $this->fillColor = self::stringToChartColor($color);
         }
 
         return $this;
@@ -496,7 +493,7 @@ class DataSeriesValues extends Properties
                 if (($dimensions[0] == 1) || ($dimensions[1] == 1)) {
                     $this->dataValues = Functions::flattenArray($newDataValues);
                 } else {
-                    $newArray = array_values(array_shift(/** @scrutinizer ignore-type */ $newDataValues));
+                    $newArray = array_values(array_shift($newDataValues));
                     foreach ($newArray as $i => $newDataSet) {
                         $newArray[$i] = [$newDataSet];
                     }
@@ -539,7 +536,7 @@ class DataSeriesValues extends Properties
     }
 
     /**
-     * Smooth Line. Must be specified for both DataSeries and DataSeriesValues.
+     * Smooth Line.
      *
      * @var bool
      */
@@ -579,17 +576,5 @@ class DataSeriesValues extends Properties
         $this->labelLayout = $labelLayout;
 
         return $this;
-    }
-
-    public function setTrendLines(array $trendLines): self
-    {
-        $this->trendLines = $trendLines;
-
-        return $this;
-    }
-
-    public function getTrendLines(): array
-    {
-        return $this->trendLines;
     }
 }

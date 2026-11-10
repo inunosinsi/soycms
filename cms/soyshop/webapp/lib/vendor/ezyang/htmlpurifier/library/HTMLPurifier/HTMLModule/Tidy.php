@@ -112,8 +112,9 @@ class HTMLPurifier_HTMLModule_Tidy extends HTMLPurifier_HTMLModule
             return;
         }
         if (!isset($this->fixesForLevel[$this->defaultLevel])) {
-            throw new Exception(
-                'Default level ' . $this->defaultLevel . ' does not exist'
+            trigger_error(
+                'Default level ' . $this->defaultLevel . ' does not exist',
+                E_USER_ERROR
             );
             return;
         }
@@ -161,7 +162,8 @@ class HTMLPurifier_HTMLModule_Tidy extends HTMLPurifier_HTMLModule
                     $e->$type = $fix;
                     break;
                 default:
-                    throw new Exception("Fix type $type not supported");
+                    trigger_error("Fix type $type not supported", E_USER_ERROR);
+                    break;
             }
         }
     }
@@ -219,7 +221,6 @@ class HTMLPurifier_HTMLModule_Tidy extends HTMLPurifier_HTMLModule
      */
     public function makeFixes()
     {
-        return array();
     }
 }
 

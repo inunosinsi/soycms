@@ -4,7 +4,6 @@ namespace PhpOffice\PhpSpreadsheet\Calculation\LookupRef;
 
 use PhpOffice\PhpSpreadsheet\Calculation\ArrayEnabled;
 use PhpOffice\PhpSpreadsheet\Calculation\Information\ExcelError;
-use PhpOffice\PhpSpreadsheet\Cell\AddressHelper;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 class Address
@@ -73,9 +72,6 @@ class Address
 
         $sheetName = self::sheetName($sheetName);
 
-        if (is_int($referenceStyle)) {
-            $referenceStyle = (bool) $referenceStyle;
-        }
         if ((!is_bool($referenceStyle)) || $referenceStyle === self::REFERENCE_STYLE_A1) {
             return self::formatAsA1($row, $column, $relativity, $sheetName);
         }
@@ -83,7 +79,7 @@ class Address
         return self::formatAsR1C1($row, $column, $relativity, $sheetName);
     }
 
-    private static function sheetName(string $sheetName): string
+    private static function sheetName(string $sheetName)
     {
         if ($sheetName > '') {
             if (strpos($sheetName, ' ') !== false || strpos($sheetName, '[') !== false) {
@@ -117,8 +113,7 @@ class Address
         if (($relativity == self::ADDRESS_ROW_RELATIVE) || ($relativity == self::ADDRESS_RELATIVE)) {
             $row = "[{$row}]";
         }
-        [$rowChar, $colChar] = AddressHelper::getRowAndColumnChars();
 
-        return "{$sheetName}$rowChar{$row}$colChar{$column}";
+        return "{$sheetName}R{$row}C{$column}";
     }
 }

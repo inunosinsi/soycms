@@ -11,6 +11,7 @@ use PhpOffice\PhpSpreadsheet\Reader\Gnumeric\Styles;
 use PhpOffice\PhpSpreadsheet\Reader\Security\XmlScanner;
 use PhpOffice\PhpSpreadsheet\ReferenceHelper;
 use PhpOffice\PhpSpreadsheet\RichText\RichText;
+use PhpOffice\PhpSpreadsheet\Settings;
 use PhpOffice\PhpSpreadsheet\Shared\File;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
@@ -79,15 +80,17 @@ class Gnumeric extends BaseReader
      */
     public function canRead(string $filename): bool
     {
-        $data = null;
-        if (File::testFileNoThrow($filename)) {
-            $data = $this->gzfileGetContents($filename);
-            if (strpos($data, self::NAMESPACE_GNM) === false) {
-                $data = '';
+        // Check if gzlib functions are available
+        if (File::testFileNoThrow($filename) && function_exists('gzread')) {
+            // Read signature data (first 3 bytes)
+            $fh = fopen($filename, 'rb');
+            if ($fh !== false) {
+                $data = fread($fh, 2);
+                fclose($fh);
             }
         }
 
-        return !empty($data);
+        return isset($data) && $data === chr(0x1F) . chr(0x8B);
     }
 
     private static function matchXml(XMLReader $xml, string $expectedLocalName): bool
@@ -107,13 +110,9 @@ class Gnumeric extends BaseReader
     public function listWorksheetNames($filename)
     {
         File::assertFile($filename);
-        if (!$this->canRead($filename)) {
-            throw new Exception($filename . ' is an invalid Gnumeric file.');
-        }
 
         $xml = new XMLReader();
-        $contents = $this->gzfileGetContents($filename);
-        $xml->xml($contents);
+        $xml->xml($this->securityScanner->scanFile('compress.zlib://' . realpath($filename)), null, Settings::getLibXmlLoaderOptions());
         $xml->setParserProperty(2, true);
 
         $worksheetNames = [];
@@ -140,13 +139,9 @@ class Gnumeric extends BaseReader
     public function listWorksheetInfo($filename)
     {
         File::assertFile($filename);
-        if (!$this->canRead($filename)) {
-            throw new Exception($filename . ' is an invalid Gnumeric file.');
-        }
 
         $xml = new XMLReader();
-        $contents = $this->gzfileGetContents($filename);
-        $xml->xml($contents);
+        $xml->xml($this->securityScanner->scanFile('compress.zlib://' . realpath($filename)), null, Settings::getLibXmlLoaderOptions());
         $xml->setParserProperty(2, true);
 
         $worksheetInfo = [];
@@ -190,23 +185,13 @@ class Gnumeric extends BaseReader
      */
     private function gzfileGetContents($filename)
     {
+        $file = @gzopen($filename, 'rb');
         $data = '';
-        $contents = @file_get_contents($filename);
-        if ($contents !== false) {
-            if (substr($contents, 0, 2) === "\x1f\x8b") {
-                // Check if gzlib functions are available
-                if (function_exists('gzdecode')) {
-                    $contents = @gzdecode($contents);
-                    if ($contents !== false) {
-                        $data = $contents;
-                    }
-                }
-            } else {
-                $data = $contents;
+        if ($file !== false) {
+            while (!gzeof($file)) {
+                $data .= gzread($file, 1024);
             }
-        }
-        if ($data !== '') {
-            $data = $this->getSecurityScannerOrThrow()->scan($data);
+            gzclose($file);
         }
 
         return $data;
@@ -260,13 +245,10 @@ class Gnumeric extends BaseReader
     {
         $this->spreadsheet = $spreadsheet;
         File::assertFile($filename);
-        if (!$this->canRead($filename)) {
-            throw new Exception($filename . ' is an invalid Gnumeric file.');
-        }
 
         $gFileData = $this->gzfileGetContents($filename);
 
-        $xml2 = simplexml_load_string($gFileData);
+        $xml2 = simplexml_load_string($this->securityScanner->scan($gFileData), 'SimpleXMLElement', Settings::getLibXmlLoaderOptions());
         $xml = self::testSimpleXml($xml2);
 
         $gnmXML = $xml->children(self::NAMESPACE_GNM);
@@ -290,7 +272,7 @@ class Gnumeric extends BaseReader
             //        name in line with the formula, not the reverse
             $this->spreadsheet->getActiveSheet()->setTitle($worksheetName, false, false);
 
-            $visibility = $sheet->attributes()['Visibility'] ?? 'GNM_SHEET_VISIBILITY_VISIBLE';
+            $visibility = $sheetOrNull->attributes()['Visibility'] ?? 'GNM_SHEET_VISIBILITY_VISIBLE';
             if ((string) $visibility !== 'GNM_SHEET_VISIBILITY_VISIBLE') {
                 $this->spreadsheet->getActiveSheet()->setSheetState(Worksheet::SHEETSTATE_HIDDEN);
             }
@@ -381,7 +363,7 @@ class Gnumeric extends BaseReader
         if ($sheet !== null && isset($sheet->MergedRegions)) {
             foreach ($sheet->MergedRegions->Merge as $mergeCells) {
                 if (strpos((string) $mergeCells, ':') !== false) {
-                    $this->spreadsheet->getActiveSheet()->mergeCells($mergeCells, Worksheet::MERGE_CELL_CONTENT_HIDE);
+                    $this->spreadsheet->getActiveSheet()->mergeCells($mergeCells);
                 }
             }
         }

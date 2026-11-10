@@ -2,7 +2,6 @@
 
 namespace PhpOffice\PhpSpreadsheet\Cell;
 
-use PhpOffice\PhpSpreadsheet\Calculation\Functions;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
@@ -24,13 +23,13 @@ abstract class Coordinate
     const DEFAULT_RANGE = 'A1:A1';
 
     /**
-     * Convert string coordinate to [0 => int column index, 1 => int row index].
+     * Coordinate from string.
      *
      * @param string $cellAddress eg: 'A1'
      *
      * @return array{0: string, 1: string} Array containing column and row (indexes 0 and 1)
      */
-    public static function coordinateFromString($cellAddress): array
+    public static function coordinateFromString($cellAddress)
     {
         if (preg_match(self::A1_COORDINATE_REGEX, $cellAddress, $matches)) {
             return [$matches['col'], $matches['row']];
@@ -44,7 +43,7 @@ abstract class Coordinate
     }
 
     /**
-     * Convert string coordinate to [0 => int column index, 1 => int row index, 2 => string column string].
+     * Get indexes from a string coordinates.
      *
      * @param string $coordinates eg: 'A1', '$B$12'
      *
@@ -263,7 +262,7 @@ abstract class Coordinate
     /**
      * Column index from string.
      *
-     * @param ?string $columnAddress eg 'A'
+     * @param string $columnAddress eg 'A'
      *
      * @return int Column index (A = 1)
      */
@@ -273,7 +272,6 @@ abstract class Coordinate
         //    caching using a static within the method is faster than a class static,
         //        though it's additional memory overhead
         static $indexCache = [];
-        $columnAddress = $columnAddress ?? '';
 
         if (isset($indexCache[$columnAddress])) {
             return $indexCache[$columnAddress];
@@ -351,19 +349,6 @@ abstract class Coordinate
      */
     public static function extractAllCellReferencesInRange($cellRange): array
     {
-        if (substr_count($cellRange, '!') > 1) {
-            throw new Exception('3-D Range References are not supported');
-        }
-
-        [$worksheet, $cellRange] = Worksheet::extractSheetTitle($cellRange, true);
-        $quoted = '';
-        if ($worksheet > '') {
-            $quoted = Worksheet::nameRequiresQuotes($worksheet) ? "'" : '';
-            if (substr($worksheet, 0, 1) === "'" && substr($worksheet, -1, 1) === "'") {
-                $worksheet = substr($worksheet, 1, -1);
-            }
-            $worksheet = str_replace("'", "''", $worksheet);
-        }
         [$ranges, $operators] = self::getCellBlocksFromRangeString($cellRange);
 
         $cells = [];
@@ -379,12 +364,7 @@ abstract class Coordinate
 
         $cellList = array_merge(...$cells);
 
-        return array_map(
-            function ($cellAddress) use ($worksheet, $quoted) {
-                return ($worksheet !== '') ? "{$quoted}{$worksheet}{$quoted}!{$cellAddress}" : $cellAddress;
-            },
-            self::sortCellReferenceArray($cellList)
-        );
+        return self::sortCellReferenceArray($cellList);
     }
 
     private static function processRangeSetOperators(array $operators, array $cells): array
@@ -412,10 +392,8 @@ abstract class Coordinate
         //    Sort the result by column and row
         $sortKeys = [];
         foreach ($cellList as $coordinate) {
-            $column = '';
-            $row = 0;
             sscanf($coordinate, '%[A-Z]%d', $column, $row);
-            $key = (--$row * 16384) + self::columnIndexFromString((string) $column);
+            $key = (--$row * 16384) + self::columnIndexFromString($column);
             $sortKeys[$key] = $coordinate;
         }
         ksort($sortKeys);
@@ -461,7 +439,7 @@ abstract class Coordinate
             $currentColumnIndex = $startColumnIndex;
             $currentRow = $startRow;
 
-            self::validateRange($cellBlock, $startColumnIndex, $endColumnIndex, (int) $currentRow, (int) $endRow);
+            self::validateRange($cellBlock, $startColumnIndex, $endColumnIndex, $currentRow, $endRow);
 
             // Loop cells
             while ($currentColumnIndex < $endColumnIndex) {
@@ -508,7 +486,7 @@ abstract class Coordinate
 
             [$column, $row] = self::coordinateFromString($coord);
             $row = (int) (ltrim($row, '$'));
-            $hashCode = $column . '-' . ((is_object($value) && method_exists($value, 'getHashCode')) ? $value->getHashCode() : $value);
+            $hashCode = $column . '-' . (is_object($value) ? $value->getHashCode() : $value);
 
             if (!isset($hashedValues[$hashCode])) {
                 $hashedValues[$hashCode] = (object) [

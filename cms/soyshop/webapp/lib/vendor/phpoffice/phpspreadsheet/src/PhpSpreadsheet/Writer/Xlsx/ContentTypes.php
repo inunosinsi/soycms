@@ -2,11 +2,9 @@
 
 namespace PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-use PhpOffice\PhpSpreadsheet\Reader\Xlsx\Namespaces;
 use PhpOffice\PhpSpreadsheet\Shared\File;
 use PhpOffice\PhpSpreadsheet\Shared\XMLWriter;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Worksheet\Drawing as WorksheetDrawing;
 use PhpOffice\PhpSpreadsheet\Worksheet\MemoryDrawing;
 use PhpOffice\PhpSpreadsheet\Writer\Exception as WriterException;
 
@@ -34,7 +32,7 @@ class ContentTypes extends WriterPart
 
         // Types
         $objWriter->startElement('Types');
-        $objWriter->writeAttribute('xmlns', Namespaces::CONTENT_TYPES);
+        $objWriter->writeAttribute('xmlns', 'http://schemas.openxmlformats.org/package/2006/content-types');
 
         // Theme
         $this->writeOverrideContentType($objWriter, '/xl/theme/theme1.xml', 'application/vnd.openxmlformats-officedocument.theme+xml');
@@ -133,23 +131,18 @@ class ContentTypes extends WriterPart
             $extension = '';
             $mimeType = '';
 
-            $drawing = $this->getParentWriter()->getDrawingHashTable()->getByIndex($i);
-            if ($drawing instanceof WorksheetDrawing && $drawing->getPath() !== '') {
-                $extension = strtolower($drawing->getExtension());
-                if ($drawing->getIsUrl()) {
-                    $mimeType = image_type_to_mime_type($drawing->getType());
-                } else {
-                    $mimeType = $this->getImageMimeType($drawing->getPath());
-                }
-            } elseif ($drawing instanceof MemoryDrawing) {
-                $extension = strtolower($drawing->getMimeType());
+            if ($this->getParentWriter()->getDrawingHashTable()->getByIndex($i) instanceof \PhpOffice\PhpSpreadsheet\Worksheet\Drawing) {
+                $extension = strtolower($this->getParentWriter()->getDrawingHashTable()->getByIndex($i)->getExtension());
+                $mimeType = $this->getImageMimeType($this->getParentWriter()->getDrawingHashTable()->getByIndex($i)->getPath());
+            } elseif ($this->getParentWriter()->getDrawingHashTable()->getByIndex($i) instanceof MemoryDrawing) {
+                $extension = strtolower($this->getParentWriter()->getDrawingHashTable()->getByIndex($i)->getMimeType());
                 $extension = explode('/', $extension);
                 $extension = $extension[1];
 
-                $mimeType = $drawing->getMimeType();
+                $mimeType = $this->getParentWriter()->getDrawingHashTable()->getByIndex($i)->getMimeType();
             }
 
-            if ($mimeType !== '' && !isset($aMediaContentTypes[$extension])) {
+            if (!isset($aMediaContentTypes[$extension])) {
                 $aMediaContentTypes[$extension] = $mimeType;
 
                 $this->writeDefaultContentType($objWriter, $extension, $mimeType);
@@ -168,7 +161,7 @@ class ContentTypes extends WriterPart
         for ($i = 0; $i < $sheetCount; ++$i) {
             if (count($spreadsheet->getSheet($i)->getHeaderFooter()->getImages()) > 0) {
                 foreach ($spreadsheet->getSheet($i)->getHeaderFooter()->getImages() as $image) {
-                    if ($image->getPath() !== '' && !isset($aMediaContentTypes[strtolower($image->getExtension())])) {
+                    if (!isset($aMediaContentTypes[strtolower($image->getExtension())])) {
                         $aMediaContentTypes[strtolower($image->getExtension())] = $this->getImageMimeType($image->getPath());
 
                         $this->writeDefaultContentType($objWriter, strtolower($image->getExtension()), $aMediaContentTypes[strtolower($image->getExtension())]);

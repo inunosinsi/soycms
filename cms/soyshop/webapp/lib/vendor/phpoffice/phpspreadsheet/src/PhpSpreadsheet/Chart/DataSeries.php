@@ -94,7 +94,7 @@ class DataSeries
     private $plotCategory = [];
 
     /**
-     * Smooth Line. Must be specified for both DataSeries and DataSeriesValues.
+     * Smooth Line.
      *
      * @var bool
      */

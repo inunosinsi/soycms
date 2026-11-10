@@ -4,6 +4,7 @@ namespace PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 
 use PhpOffice\PhpSpreadsheet\Document\Properties as DocumentProperties;
 use PhpOffice\PhpSpreadsheet\Reader\Security\XmlScanner;
+use PhpOffice\PhpSpreadsheet\Settings;
 use SimpleXMLElement;
 
 class Properties
@@ -32,7 +33,9 @@ class Properties
     {
         // okay to omit namespace because everything will be processed by xpath
         $obj = simplexml_load_string(
-            $this->securityScanner->scan($propertyData)
+            $this->securityScanner->scan($propertyData),
+            'SimpleXMLElement',
+            Settings::getLibXmlLoaderOptions()
         );
 
         return self::nullOrSimple($obj);
@@ -69,9 +72,6 @@ class Properties
             }
             if (isset($xmlCore->Manager)) {
                 $this->docProps->setManager((string) $xmlCore->Manager);
-            }
-            if (isset($xmlCore->HyperlinkBase)) {
-                $this->docProps->setHyperlinkBase((string) $xmlCore->HyperlinkBase);
             }
         }
     }

@@ -24,18 +24,15 @@ class ChartColor
     /** @var ?int */
     private $alpha;
 
-    /** @var ?int */
-    private $brightness;
-
     /**
      * @param string|string[] $value
      */
-    public function __construct($value = '', ?int $alpha = null, ?string $type = null, ?int $brightness = null)
+    public function __construct($value = '', ?int $alpha = null, ?string $type = null)
     {
         if (is_array($value)) {
             $this->setColorPropertiesArray($value);
         } else {
-            $this->setColorProperties($value, $alpha, $type, $brightness);
+            $this->setColorProperties($value, $alpha, $type);
         }
     }
 
@@ -75,23 +72,10 @@ class ChartColor
         return $this;
     }
 
-    public function getBrightness(): ?int
-    {
-        return $this->brightness;
-    }
-
-    public function setBrightness(?int $brightness): self
-    {
-        $this->brightness = $brightness;
-
-        return $this;
-    }
-
     /**
      * @param null|float|int|string $alpha
-     * @param null|float|int|string $brightness
      */
-    public function setColorProperties(?string $color, $alpha = null, ?string $type = null, $brightness = null): self
+    public function setColorProperties(?string $color, $alpha = null, ?string $type = null): self
     {
         if (empty($type) && !empty($color)) {
             if (substr($color, 0, 1) === '*') {
@@ -115,11 +99,6 @@ class ChartColor
         } elseif (is_numeric($alpha)) {
             $this->setAlpha((int) $alpha);
         }
-        if ($brightness === null) {
-            $this->setBrightness(null);
-        } elseif (is_numeric($brightness)) {
-            $this->setBrightness((int) $brightness);
-        }
 
         return $this;
     }
@@ -129,8 +108,7 @@ class ChartColor
         return $this->setColorProperties(
             $color['value'] ?? '',
             $color['alpha'] ?? null,
-            $color['type'] ?? null,
-            $color['brightness'] ?? null
+            $color['type'] ?? null
         );
     }
 
@@ -155,8 +133,6 @@ class ChartColor
             $retVal = $this->type;
         } elseif ($propertyName === 'alpha') {
             $retVal = $this->alpha;
-        } elseif ($propertyName === 'brightness') {
-            $retVal = $this->brightness;
         }
 
         return $retVal;

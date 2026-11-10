@@ -61,7 +61,7 @@ class FormulaParser
     /**
      * Create a new FormulaParser.
      *
-     * @param ?string $formula Formula to parse
+     * @param string $formula Formula to parse
      */
     public function __construct($formula = '')
     {
@@ -137,8 +137,7 @@ class FormulaParser
         // Helper variables
         $tokens1 = $tokens2 = $stack = [];
         $inString = $inPath = $inRange = $inError = false;
-        $nextToken = null;
-        //$token = $previousToken = null;
+        $token = $previousToken = $nextToken = null;
 
         $index = 1;
         $value = '';
@@ -219,7 +218,7 @@ class FormulaParser
             // scientific notation check
             if (strpos(self::OPERATORS_SN, $this->formula[$index]) !== false) {
                 if (strlen($value) > 1) {
-                    if (preg_match('/^[1-9]{1}(\.\d+)?E{1}$/', $this->formula[$index]) != 0) {
+                    if (preg_match('/^[1-9]{1}(\\.\\d+)?E{1}$/', $this->formula[$index]) != 0) {
                         $value .= $this->formula[$index];
                         ++$index;
 
@@ -528,11 +527,11 @@ class FormulaParser
             } else {
                 $previousToken = null;
             }
-            //if (isset($tokens2[$i + 1])) {
-            //    $nextToken = $tokens2[$i + 1];
-            //} else {
-            //    $nextToken = null;
-            //}
+            if (isset($tokens2[$i + 1])) {
+                $nextToken = $tokens2[$i + 1];
+            } else {
+                $nextToken = null;
+            }
 
             if ($token === null) {
                 continue;
