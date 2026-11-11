@@ -55,8 +55,12 @@ class SOYShop_ItemAttribute {
 		$this->extraValues = $extraValues;
 	}
 
+	/**
+	　* @return array
+	 */
 	function getExtraValuesArray() {
-		return soy2_unserialize((string)$this->extraValues);
+		$_arr = soy2_unserialize((string)$this->extraValues);
+		return (is_array($_arr)) ? $_arr : array();
 	}
 	function setExtraValuesArray($extraValues) {
 		if(

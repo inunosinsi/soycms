@@ -89,8 +89,12 @@ class SOYShop_OrderAttribute {
 		$this->extraValues = $extraValues;
 	}
 
+	/**
+	 * @return array
+	 */
 	function getExtraValuesArray() {
-		return soy2_unserialize((string)$this->extraValues);
+		$_arr = soy2_unserialize((string)$this->extraValues);
+		return (is_array($_arr)) ? $_arr : array();
 	}
 	function setExtraValuesArray($extraValues) {
 		if(is_array($extraValues)){
@@ -135,7 +139,7 @@ class SOYShop_OrderAttributeConfig{
 	 * @return array
 	 * @param boolean is map
 	 */
-	public static function load($flag = false){
+	public static function load(bool $flag=false){
 		$array = SOYShop_DataSets::get(self::DATASETS_KEY, array());
 
 		if(!$flag) return $array;

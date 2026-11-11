@@ -88,7 +88,7 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 
 		foreach($list as $fieldId => $config){
 			$value = (isset($array[$fieldId])) ? $array[$fieldId]->getValue() : null;
-			$extraValues = (isset($array[$fieldId])) ? $array[$fieldId]->getExtraValuesArray() : null;
+			$extraValues = (isset($array[$fieldId])) ? $array[$fieldId]->getExtraValuesArray() : array();
 
 			$html[] = $config->getForm($value, $extraValues);
 
