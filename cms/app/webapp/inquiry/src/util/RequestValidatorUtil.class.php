@@ -10,6 +10,9 @@ class RequestValidatorUtil {
 		if(!is_array($_GET) || !count($_GET)) return false;
 		if(isset($_GET["block"])) return true;
 
+		// $_GET["test"]がある時は住所検索
+		if(isset($_GET["test"])) return false;
+
 		$whiteList = array(
 			"confirm",
 			"complete",
