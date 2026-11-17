@@ -372,68 +372,77 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	 * 月毎のエントリー数を数え上げる
 	 */
 	function getCountMonth(array $labelIds){
-
+		if(!count($labelIds)) return array();
+	
 		$labelIds = array_map(function($val) { return (int)$val; }, $labelIds);
-
-		$binds = array(":now"=>SOYCMS_NOW);
-
-
+		$labelStr = implode(",", $labelIds);
+	
+		$dao = new SOY2DAO();
+	
+		// 1. 最小・最大の日付範囲を取得
 		$spanSQL = 'SELECT max(cdate) as max, min(cdate) as min ' .
 				'FROM Entry inner join EntryLabel on(Entry.id = EntryLabel.entry_id) ' .
-				'WHERE EntryLabel.label_id in (' . implode(",",$labelIds) .') ' .
+				'WHERE EntryLabel.label_id in (' . $labelStr . ') ' .
 				'AND Entry.isPublished = 1 ' .
 				'AND (Entry.openPeriodEnd > :now AND Entry.openPeriodStart <= :now)';
-
-		$result = $this->executeQuery($spanSQL,$binds);
-
+	
+		$result = $dao->executeQuery($spanSQL, array(":now" => SOYCMS_NOW));
+	
 		$max = (isset($result[0]['max'])) ? $result[0]['max'] : Entry::PERIOD_END;
 		$min = (isset($result[0]['min'])) ? $result[0]['min'] : Entry::PERIOD_START;
-
-		$maxMonth = date('m',$max);
-		$maxYear = date('Y',$max);
-		$minMonth = date('m',$min);
-		$minYear = date('Y',$min);
-
-		$ret_val = array();
-		$countSQL =
-				'SELECT count(Entry.id) as total ' .
+	
+		$maxMonth = (int)date('m', $max);
+		$maxYear = (int)date('Y', $max);
+		$minMonth = (int)date('m', $min);
+		$minYear = (int)date('Y', $min);
+	
+		// 2. 該当期間のデータをまとめて取得（GROUP BYで月ごとに集計）
+		$countSQL = 'SELECT ' .
+				'FROM_UNIXTIME(Entry.cdate, "%Y") as entry_year, ' .
+				'FROM_UNIXTIME(Entry.cdate, "%m") as entry_month, ' .
+				'count(Entry.id) as total ' .
 				'FROM Entry inner join EntryLabel on(Entry.id = EntryLabel.entry_id) ' .
-				'WHERE EntryLabel.label_id in (' . implode(",",$labelIds) .') ' .
+				'WHERE EntryLabel.label_id in (' . $labelStr . ') ' .
 				'AND Entry.isPublished = 1 ' .
-				'AND (Entry.openPeriodEnd > :now AND Entry.openPeriodStart <= :now)' .
-				'AND (Entry.cdate BETWEEN :begin AND :end)';
-
-		for($y = $minYear; $y <= $maxYear; $y++){
-			$span_min = ($y == $minYear)?$minMonth:1;
-			$span_max = ($y == $maxYear)?$maxMonth:12;
-
-
-			for($m = $span_min;  $m<=$span_max; $m++){
-				$begin = mktime(0,0,0,$m,1,$y);
-				$end   = mktime(0,0,0,$m+1,1,$y);
-
-				$result = $this->executeQuery($countSQL,array(
-					":begin"=>$begin,
-					":end"=>$end-1,
-					":now"=>SOYCMS_NOW
-				));
-
-				$ret_val[mktime (1, 1, 1, $m, 1, $y)] = (isset($result[0]['total'])) ? $result[0]['total'] : 0;
-			}
-
+				'AND (Entry.openPeriodEnd > :now AND Entry.openPeriodStart <= :now) ' .
+				'GROUP BY entry_year, entry_month';
+	
+		$results = $dao->executeQuery($countSQL, array(":now" => SOYCMS_NOW));
+	
+		// 高速検索用の連想配列にマッピング (key: "YYYY-MM")
+		$countsMap = array();
+		foreach($results as $row){
+			$key = $row['entry_year'] . '-' . sprintf('%02d', (int)$row['entry_month']);
+			$countsMap[$key] = (int)$row['total'];
 		}
-
-		//降順に並び替え
-		$ret_val = array_reverse($ret_val,true);
-
+	
+		$ret_val = array();
+	
+		// 3. ループで全月を走査し、データがない月は0を埋める
+		for($y = $minYear; $y <= $maxYear; $y++){
+			$span_min = ($y == $minYear) ? $minMonth : 1;
+			$span_max = ($y == $maxYear) ? $maxMonth : 12;
+	
+			for($m = $span_min; $m <= $span_max; $m++){
+				$key = $y . '-' . sprintf('%02d', $m);
+				$total = isset($countsMap[$key]) ? $countsMap[$key] : 0;
+	
+				$ret_val[mktime(1, 1, 1, $m, 1, $y)] = $total;
+			}
+		}
+	
+		// 降順に並び替え
+		$ret_val = array_reverse($ret_val, true);
+	
 		return $ret_val;
 	}
 
 	function getMonth(array $labelIds){
+		if(!count($labelIds)) return array();
+
 		$labelIds = array_map(function($val) { return (int)$val; }, $labelIds);
 
-		$binds = array(":now"=>SOYCMS_NOW);
-
+		$dao = new SOY2DAO();
 
 		$spanSQL = 'SELECT max(cdate) as max, min(cdate) as min ' .
 				'FROM Entry inner join EntryLabel on(Entry.id = EntryLabel.entry_id) ' .
@@ -441,7 +450,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 				'AND Entry.isPublished = 1 ' .
 				'AND (Entry.openPeriodEnd > :now AND Entry.openPeriodStart <= :now)';
 
-		$result = $this->executeQuery($spanSQL,$binds);
+		$result = $dao->executeQuery($spanSQL, array(":now"=>SOYCMS_NOW));
 
 		$max = (isset($result[0]['max'])) ? $result[0]['max'] : Entry::PERIOD_END;
 		$min = (isset($result[0]['min'])) ? $result[0]['min'] : Entry::PERIOD_START;
@@ -473,53 +482,61 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	 * 年毎のエントリー数を数え上げる
 	 */
 	function getCountYear(array $labelIds){
-
+		if(!count($labelIds)) return array();
+	
 		$labelIds = array_map(function($val) { return (int)$val; }, $labelIds);
-
-		$binds = array(":now"=>SOYCMS_NOW);
-
-
+		$labelStr = implode(",", $labelIds);
+	
+		$dao = new SOY2DAO();
+	
+		// 1. 最小・最大の日付範囲を取得
 		$spanSQL = 'SELECT max(cdate) as max, min(cdate) as min ' .
 				'FROM Entry inner join EntryLabel on(Entry.id = EntryLabel.entry_id) ' .
-				'WHERE EntryLabel.label_id in (' . implode(",",$labelIds) .') ' .
+				'WHERE EntryLabel.label_id in (' . $labelStr . ') ' .
 				'AND Entry.isPublished = 1 ' .
 				'AND (Entry.openPeriodEnd > :now AND Entry.openPeriodStart <= :now)';
-
-		$result = $this->executeQuery($spanSQL,$binds);
-
+	
+		$result = $dao->executeQuery($spanSQL, array(":now" => SOYCMS_NOW));
+	
 		$max = (isset($result[0]['max'])) ? $result[0]['max'] : Entry::PERIOD_END;
 		$min = (isset($result[0]['min'])) ? $result[0]['min'] : Entry::PERIOD_START;
-
-		$maxYear = date('Y',$max);
-		$minYear = date('Y',$min);
-
-		$ret_val = array();
-		$countSQL =
-				'SELECT count(Entry.id) as total ' .
+	
+		$maxYear = (int)date('Y', $max);
+		$minYear = (int)date('Y', $min);
+	
+		// 2. 該当期間のデータをまとめて取得（GROUP BYで年ごとに集計）
+		$countSQL = 'SELECT ' .
+				'FROM_UNIXTIME(Entry.cdate, "%Y") as entry_year, ' .
+				'count(Entry.id) as total ' .
 				'FROM Entry inner join EntryLabel on(Entry.id = EntryLabel.entry_id) ' .
-				'WHERE EntryLabel.label_id in (' . implode(",",$labelIds) .') ' .
+				'WHERE EntryLabel.label_id in (' . $labelStr . ') ' .
 				'AND Entry.isPublished = 1 ' .
-				'AND (Entry.openPeriodEnd > :now AND Entry.openPeriodStart <= :now)' .
-				'AND (Entry.cdate BETWEEN :begin AND :end)';
-
-		for($y = $minYear; $y <= $maxYear; $y++){
-			$begin = mktime(0,0,0,1,1,$y);
-			$end   = mktime(0,0,0,1,1,$y+1);
-
-			$result = $this->executeQuery($countSQL,array(
-				":begin"=>$begin,
-				":end"=>$end-1,
-				":now"=>SOYCMS_NOW
-			));
-
-			$ret_val[mktime (1, 1, 1, 1, 1, $y)] = (isset($result[0]['total'])) ? $result[0]['total'] : 0;
+				'AND (Entry.openPeriodEnd > :now AND Entry.openPeriodStart <= :now) ' .
+				'GROUP BY entry_year';
+	
+		$results = $dao->executeQuery($countSQL, array(":now" => SOYCMS_NOW));
+	
+		// 高速検索用の連想配列にマッピング (key: "YYYY")
+		$countsMap = array();
+		foreach($results as $row){
+			$key = (string)$row['entry_year'];
+			$countsMap[$key] = (int)$row['total'];
 		}
-
-		//降順に並び替え
-		$ret_val = array_reverse($ret_val,true);
-
+	
+		$ret_val = array();
+	
+		// 3. ループで全年を走査し、データがない年は0を埋める
+		for($y = $minYear; $y <= $maxYear; $y++){
+			$key = (string)$y;
+			$total = isset($countsMap[$key]) ? $countsMap[$key] : 0;
+	
+			$ret_val[mktime(1, 1, 1, 1, 1, $y)] = $total;
+		}
+	
+		// 降順に並び替え
+		$ret_val = array_reverse($ret_val, true);
+	
 		return $ret_val;
-
 	}
 
 

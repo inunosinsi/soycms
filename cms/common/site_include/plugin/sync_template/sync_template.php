@@ -1,39 +1,26 @@
 <?php
-/*
- * テンプレート同期プラグイン
- */
-
-define('SYNC_TEMPLATE_PLUGIN_NAME',"sync_template");
-
-//初期化
-$obj = CMSPlugin::loadPluginConfig(SYNC_TEMPLATE_PLUGIN_NAME);
-if(is_null($obj)){
-	$obj = new SyncTemplatePlugin();
-	$obj->useExtPhpIfPhpAllowed = defined("SOYCMS_ALLOW_PHP_SCRIPT") && SOYCMS_ALLOW_PHP_SCRIPT;
-	$obj->zeroPaddingWidth = 2;
-}
-CMSPlugin::addPlugin(SYNC_TEMPLATE_PLUGIN_NAME,array($obj,"init"));
+SyncTemplatePlugin::registerPlugin();
 
 class SyncTemplatePlugin{
 
-	var $output_date = "-";
-	var $sync_date = "-";
-	var $targetDir = "";
-	var $autoImport = false;
-	var $convertURL = false;
-	var $ignoreTimestamp = false;
-	//拡張子を.phpにするかどうか
-	var $useExtPhpIfPhpAllowed = false;
-	//出力ファイル名の先頭のIDの0埋め
-	var $zeroPaddingWidth = 0;
-	private $blogPageDAO;
+	const PLUGIN_ID = "sync_template";
 
-	const TARGET_DIR = "export";
+	private $output_date = "-";
+	private $sync_date = "-";
+	private $targetDir = "";
+	private $autoImport = false;
+	private $convertURL = false;
+	private $ignoreTimestamp = false;
+	//拡張子を.phpにするかどうか
+	private $useExtPhpIfPhpAllowed = false;
+	//出力ファイル名の先頭のIDの0埋め
+	private $zeroPaddingWidth = 0;
+
 	const EXT_HTML = ".html";
 	const EXT_PHP  = ".php";
 
 	function getId(){
-		return SYNC_TEMPLATE_PLUGIN_NAME;
+		return self::PLUGIN_ID;
 	}
 
 	function init(){
@@ -48,6 +35,8 @@ class SyncTemplatePlugin{
 			"version"=>"1.5.1"
 		));
 
+		SOY2::import("site_include.plugin.sync_template.util.SyncTemplateUtil");
+
 		CMSPlugin::addPluginConfigPage($this->getId(),array(
 			$this,"config_page"
 		));
@@ -59,11 +48,11 @@ class SyncTemplatePlugin{
 	}
 
 	function config_page($message){
-		$this->checkDir();
+		SyncTemplateUtil::checkDirectory();
 
 		//export
 		if(@$_POST["export"]){
-			$res = $this->makeDir();
+			$res = SyncTemplateUtil::makeDirectory();
 			if(!$res){
 				return '<p>出力先のディレクトリを作成することが出来ません。</p>';
 			}
@@ -77,18 +66,12 @@ class SyncTemplatePlugin{
 			CMSPlugin::redirectConfigPage();
 			exit;
 		}
-
-		//config
-		if(@$_POST["config"]){
-			$this->updateConfig($_POST["config"]);
-			exit;
-		}
-
+		
 		//config
 		if(@$_POST["delete"]){
-			$this->delete();
+			SyncTemplateUtil::delete();
 			if(@$_POST["delete_dir"]){
-				$this->deleteDir();
+				SyncTemplateUtil::deleteDirectory();
 			}
 			CMSPlugin::redirectConfigPage();
 			exit;
@@ -121,57 +104,11 @@ class SyncTemplatePlugin{
 		return $html;
 	}
 
-	/**
-	 * ディレクトリを作る
-	 */
-	function makeDir(){
-		$this->targetDir = $this->getSiteDirectory().self::TARGET_DIR;
-		$res = false;
-
-		if(!file_exists($this->targetDir)){
-			$res = mkdir($this->targetDir);
-			if($res){
-				chmod($this->targetDir, 0777);
-				if(is_writable($this->targetDir)){
-					file_put_contents($this->targetDir."/.htaccess", "Deny from all");
-					$res = true;
-				}else{
-					$res = false;
-				}
-			}
-		}else{
-			$res = true;
-		}
-
-		return $res;
-	}
-
-	/**
-	 * 出力先ディレクトリにアクセス拒否の.htaccessを作る
-	 */
-	function checkDir(){
-		$this->targetDir = $this->getSiteDirectory().self::TARGET_DIR;
-		$res = false;
-
-		if(file_exists($this->targetDir)){
-			if(is_dir($this->targetDir) && is_writable($this->targetDir)){
-				$res = true;
-				if(!file_exists($this->targetDir."/.htaccess")){
-					file_put_contents($this->targetDir."/.htaccess", "Deny from all");
-				}
-			}else{
-				$res = false;
-			}
-		}
-
-		return $res;
-
-	}
 	function export(){
 		$convert = $this->convertURL;
 		$this->exportTemplates($convert);
 		$this->output_date = time();
-		CMSPlugin::savePluginConfig(SYNC_TEMPLATE_PLUGIN_NAME,$this);
+		CMSPlugin::savePluginConfig(self::PLUGIN_ID,$this);
 		CMSPlugin::redirectConfigPage();
 	}
 
@@ -182,12 +119,12 @@ class SyncTemplatePlugin{
 		if(class_exists("SOY2Debug")) SOY2Debug::trace($_POST);
 
 //		if(empty($imports)){
-//			$imports = scandir($this->getSiteDirectory().self::TARGET_DIR);
+//			$imports = scandir(SyncTemplateUtil::getSiteDirectory().SyncTemplateUtil::TARGET_DIR);
 //		}
 
 		$this->importTemplates($imports,$convert);
 		$this->sync_date = time();
-		CMSPlugin::savePluginConfig(SYNC_TEMPLATE_PLUGIN_NAME,$this);
+		CMSPlugin::savePluginConfig(self::PLUGIN_ID,$this);
 		CMSPlugin::redirectConfigPage();
 	}
 
@@ -197,56 +134,13 @@ class SyncTemplatePlugin{
 		if(count($targetFiles) >0){
 			$this->importTemplates($targetFiles,$this->convertURL);
 			$this->sync_date = time();
-			CMSPlugin::savePluginConfig(SYNC_TEMPLATE_PLUGIN_NAME,$this);
+			CMSPlugin::savePluginConfig(self::PLUGIN_ID,$this);
 			return true;
 		}
 	}
 
-	/**
-	 * 書き出されているファイルを削除する
-	 */
-	function delete(){
-		$export_dir = $this->getSiteDirectory().self::TARGET_DIR;
-		if(is_dir($export_dir)){
-			foreach(scandir($export_dir) as $file){
-				if($file[0] == ".")continue;
-				unlink($export_dir."/".$file);
-			}
-		}
-	}
-
-	/**
-	 * 出力ディレクトリを削除する
-	 */
-	function deleteDir(){
-		$export_dir = $this->getSiteDirectory().self::TARGET_DIR;
-		@unlink($export_dir."/.htaccess");
-		@rmdir($export_dir);
-	}
-
-	/**
-	 * 出力ディレクトリが削除可能か
-	 */
-	function isDirDeletable(){
-		$export_dir = $this->getSiteDirectory().self::TARGET_DIR;
-		$parent_dir = dirname($export_dir);
-		return is_dir($export_dir) && is_writable($parent_dir) && is_executable($parent_dir);
-	}
-
-	function countExportedFiles(){
-		$count = 0;
-		$export_dir = $this->getSiteDirectory().self::TARGET_DIR;
-		if(is_dir($export_dir)){
-			foreach(scandir($export_dir) as $file){
-				if($file[0] == ".")continue;
-				$count++;
-			}
-		}
-		return $count;
-	}
-
-	function exportTemplates($convert = false){
-		 $targetDir = $this->getSiteDirectory().self::TARGET_DIR;
+	function exportTemplates(bool $convert=false){
+		 $targetDir = SyncTemplateUtil::targetDirectory();
 
 		 $siteConfig = soycms_get_site_config_object();
 
@@ -254,7 +148,6 @@ class SyncTemplatePlugin{
 		 $pages = $pageDao->get();
 
 		 foreach($pages as $page){
-
 		 	//TOPページ
 		 	if(strlen($page->getUri())<1){
 		 		$page->setUri("/");
@@ -320,9 +213,9 @@ class SyncTemplatePlugin{
 
 	function importTemplates($imports,$convert = false){
 
-		$targetDir = $this->getSiteDirectory().SyncTemplatePlugin::TARGET_DIR;
-		$this->pageDAO = SOY2DAOFactory::create("cms.PageDAO");
-		$this->blogPageDAO = SOY2DAOFactory::create("cms.BlogPageDAO");
+		$targetDir = SyncTemplateUtil::targetDirectory();
+		$pageDao = soycms_get_hash_table_dao("page");
+		$blogPageDao = soycms_get_hash_table_dao("blog_page");
 
 		$config = soycms_get_site_config_object();
 
@@ -337,7 +230,7 @@ class SyncTemplatePlugin{
 			$id = (int)preg_replace("/^([0-9]+).*/",'$1',$import);
 
 			try{
-				$page = $this->pageDAO->getById($id);
+				$page = $pageDao->getById($id);
 			}catch(Exception $e){
 				continue;
 			}
@@ -350,9 +243,6 @@ class SyncTemplatePlugin{
 				$this->importTemplate($page,$filepath,$convert,$config);
 			}
 		}
-
-		$this->pageDAO = null;
-		unset($this->pageDAO);
 	}
 
 	function importTemplate($page,$filepath,$convert,$config){
@@ -370,7 +260,7 @@ class SyncTemplatePlugin{
 		$template = $config->convertFromSiteCharset($template);
 
 		$page->setTemplate($template);
-		$this->pageDAO->update($page);
+		soycms_get_hash_table_dao("page")->update($page);
 	}
 
 	function importBlogTemplate($page,$key,$filepath,$convert,$config){
@@ -399,14 +289,14 @@ class SyncTemplatePlugin{
 //			}
 //		}
 		$page->setTemplate(serialize($old_template));
-		$this->blogPageDAO->update($page);
+		soycms_get_hash_table_dao("blog_page")->update($page);
 	}
 
 	/**
 	 * 変更のあったファイルを配列にして返す
 	 */
 	function getModifiedFiles(){
-		$targetDir = $this->getSiteDirectory().self::TARGET_DIR;
+		$targetDir = SyncTemplateUtil::targetDirectory();
 		$templates = array();
 		$dupulicatedIds = array();//IDの重複回数
 		$output_date = max($this->output_date,$this->sync_date);
@@ -476,28 +366,41 @@ class SyncTemplatePlugin{
 		return $templates;
 	}
 
-	/**
-	 * 公開側でも呼び出せるようにしておく
-	 */
-	function getSiteDirectory(){
-		if(defined("_SITE_ROOT_")){
-			return _SITE_ROOT_."/";
-		}elseif(class_exists("UserInfoUtil")){
-			return UserInfoUtil::getSiteDirectory();
-		}else{
-			return "";
-		}
+	function getConvertURL(){
+		return $this->convertURL;
+	}
+	function setConvertURL($convertURL){
+		$this->convertURL = $convertURL;
 	}
 
-	/**
-	 * 設定を保存して再読込
-	 */
-	function updateConfig($settings){
-		$this->convertURL = $settings["convert_url"] ? true : false;
-		$this->autoImport = $settings["auto_import"] ? true : false;
-		$this->useExtPhpIfPhpAllowed = $settings["useExtPhpIfPhpAllowed"] ? true : false;
-		$this->zeroPaddingWidth = (int)$settings["zeroPaddingWidth"];
-		CMSPlugin::savePluginConfig(SYNC_TEMPLATE_PLUGIN_NAME,$this);
-		CMSPlugin::redirectConfigPage();
+	function getAutoImport(){
+		return $this->autoImport;
+	}
+	function setAutoImport($autoImport){
+		$this->autoImport = $autoImport;
+	}
+	
+	function getUseExtPhpIfPhpAllowed(){
+		return $this->useExtPhpIfPhpAllowed;
+	}
+	function setUseExtPhpIfPhpAllowed($useExtPhpIfPhpAllowed){
+		$this->useExtPhpIfPhpAllowed = $useExtPhpIfPhpAllowed;
+	}
+
+	function getZeroPaddingWidth(){
+		return $this->zeroPaddingWidth;
+	}
+	function setZeroPaddingWidth($zeroPaddingWidth){
+		$this->zeroPaddingWidth = $zeroPaddingWidth;
+	}
+
+	public static function registerPlugin(){
+		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
+		if(is_null($obj)){
+			$obj = new SyncTemplatePlugin();
+			$obj->useExtPhpIfPhpAllowed = defined("SOYCMS_ALLOW_PHP_SCRIPT") && SOYCMS_ALLOW_PHP_SCRIPT;
+			$obj->zeroPaddingWidth = 2;
+		}
+		CMSPlugin::addPlugin(self::PLUGIN_ID,array($obj,"init"));
 	}
 }

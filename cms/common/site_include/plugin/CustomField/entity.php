@@ -636,7 +636,7 @@ class CustomField{
 	}
 
 	function getPairForm(){
-		$v = trim($this->option);
+		$v = trim((string)$this->option);
 		if(!strlen($v)) return "";
 
 		$html = array();

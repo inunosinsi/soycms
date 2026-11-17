@@ -512,7 +512,7 @@ class CMSPlugin {
 		$fname = self::getSiteDirectory().'/.plugin/'.$id.'.config';
 		if(file_exists($fname)){
 			$res = soy2_unserialize(file_get_contents($fname));
-			return (!is_bool($res)) ? $res : null;
+			return (is_object($res)) ? $res : null;
 		}else{
 			return null;
 		}

@@ -79,8 +79,8 @@
 <form method="post">
 <fieldset>
 	<legend>ファイルの削除</legend>
-	<input type="submit" name="delete" id="delete_files" value="書き出されたファイルを削除する" <?php if($this->countExportedFiles() ==0){ echo 'disabled="disabled"';} ?> />
-	<input type="checkbox" name="delete_dir" id="delete_dir" value="1" onclick="if(this.checked){ $('#delete_files').prop('disabled', false);}" <?php if($this->isDirDeletable() == false){ echo 'disabled="disabled"';} ?> /><label for="delete_dir">ディレクトリも削除する</label>
+	<input type="submit" name="delete" id="delete_files" value="書き出されたファイルを削除する" <?php if(SyncTemplateUtil::countExportedFiles() ==0){ echo 'disabled="disabled"';} ?> />
+	<input type="checkbox" name="delete_dir" id="delete_dir" value="1" onclick="if(this.checked){ $('#delete_files').prop('disabled', false);}" <?php if(SyncTemplateUtil::isDirDeletable() == false){ echo 'disabled="disabled"';} ?> /><label for="delete_dir">ディレクトリも削除する</label>
 </fieldset>
 </form>
 </div>
