@@ -5,7 +5,7 @@ class CommonUserCustomfieldModule extends SOYShopUserCustomfield{
 	private $list;
 
 	//読み込み準備
-	function prepare(){
+	private function prepare(){
 		if(!$this->list){
 			SOY2::import("domain.user.SOYShop_UserAttribute");
 			$this->list = SOYShop_UserAttributeConfig::load();
@@ -13,7 +13,7 @@ class CommonUserCustomfieldModule extends SOYShopUserCustomfield{
 	}
 
 	function clear($app){
-		$this->prepare();
+		self::prepare();
 
 		if(count($this->list)){
 			foreach($this->list as $field){
@@ -27,7 +27,7 @@ class CommonUserCustomfieldModule extends SOYShopUserCustomfield{
 	 */
 	function doPost($param){
 
-		$this->prepare();
+		self::prepare();
 		$app = $this->getApp();
 
 		//paramの再配列
@@ -101,7 +101,7 @@ class CommonUserCustomfieldModule extends SOYShopUserCustomfield{
 	 */
 	function getForm($app, int $userId){
 		//出力する内容を格納する
-		$this->prepare();
+		self::prepare();
 		if(!count($this->list)) return array();
 
 		$array = array();
@@ -146,7 +146,7 @@ class CommonUserCustomfieldModule extends SOYShopUserCustomfield{
 	 * @param integer $userId
 	 */
 	function buildNamedForm($app, SOYBodyComponentBase $pageObj, $userId=null){
-		$this->prepare();
+		self::prepare();
 		if(!count($this->list)) return;
 
 		foreach($this->list as $config){
@@ -255,7 +255,7 @@ class CommonUserCustomfieldModule extends SOYShopUserCustomfield{
 	}
 
 	function hasError($param){
-		$this->prepare();
+		self::prepare();
 		$app = $this->getApp();
 
 		//paramの再配列
@@ -310,7 +310,7 @@ class CommonUserCustomfieldModule extends SOYShopUserCustomfield{
 	 * @param MyPageLogic || CartLogic $app
 	 */
 	function confirm($app){
-		$this->prepare();
+		self::prepare();
 		if(!count($this->list)) return array();
 
 		//出力する内容を格納する
@@ -346,7 +346,7 @@ class CommonUserCustomfieldModule extends SOYShopUserCustomfield{
 	 * @param integer $userId
 	 */
 	function register($app, $userId){
-		$this->prepare();
+		self::prepare();
 		if(!count($this->list)) return;
 
 		foreach($this->list as $obj){

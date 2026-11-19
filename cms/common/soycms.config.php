@@ -1,8 +1,8 @@
 <?php
 define("SOYCMS_DB_TYPE","sqlite");
-define("SOYCMS_VERSION","3.25.18");
-define("SOYCMS_BUILD","2026-11-17T12:20:45+09:00");
-define("SOYCMS_RAW",20261117122045);	//Apache Ant(JDK17)対策 ここでしか使わない定数
+define("SOYCMS_VERSION","3.25.19");
+define("SOYCMS_BUILD","2026-11-19T13:15:19+09:00");
+define("SOYCMS_RAW",20261119131519);	//Apache Ant(JDK17)対策 ここでしか使わない定数
 define("SOYCMS_BUILD_TIME", mktime(substr(SOYCMS_RAW, 8, 2), substr(SOYCMS_RAW, 10, 2), substr(SOYCMS_RAW, 12), substr(SOYCMS_RAW, 4, 2), substr(SOYCMS_RAW, 6, 2), substr(SOYCMS_RAW, 0, 4)));
 define("SOYCMS_REVISION","45154");
 define("SOYCMS_AUTOLOGIN_EXPIRE", 30);

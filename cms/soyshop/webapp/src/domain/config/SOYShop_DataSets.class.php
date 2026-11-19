@@ -42,7 +42,7 @@ class SOYShop_DataSets {
 	public static function put(string $class, $obj){
 		$data = new SOYShop_DataSets();
 		$data->setClassName($class);
-		$data->setObject(serialize($obj));
+		$data->setObject(soy2_serialize($obj));
 
 		$dao = soyshop_get_hash_table_dao("data_sets");
 
@@ -80,7 +80,7 @@ class SOYShop_DataSets {
 			if(count($res)){
 				foreach($res as $arr){
 					$classTable[] = $arr["class_name"];
-					$dataTable[] = unserialize($arr["object_data"]);
+					$dataTable[] = soy2_unserialize($arr["object_data"]);
 				}
 			}
 			unset($res);
@@ -107,7 +107,7 @@ class SOYShop_DataSets {
 					foreach($res as $arr){
 						if(is_numeric(array_search($arr["class_name"], $classTable))) continue;
 						$classTable[] = $arr["class_name"];
-						$dataTable[] = unserialize($arr["object_data"]);
+						$dataTable[] = soy2_unserialize($arr["object_data"]);
 					}
 				}
 				// 一括取得で設定データを取得できなかった場合はdataTableに$onNullを入れておく
@@ -119,7 +119,7 @@ class SOYShop_DataSets {
 			}
 
 			try{
-				return unserialize(soyshop_get_hash_table_dao("data_sets")->getByClass($className)->getObject());
+				return soy2_unserialize(soyshop_get_hash_table_dao("data_sets")->getByClass($className)->getObject());
 			}catch(Exception $e){
 				if($onNull !== false) return $onNull;
 				throw $e;

@@ -100,7 +100,12 @@ if(soycms_is_unserialize_allowed_classes_cache_file()){
 			"MyPageLogic",
 			"CartLogic",
 			"AdminCartLogic",
-			"SOYShop_ComplexPageBlock"
+			"SOYShop_ComplexPageBlock",
+
+			"SOYShop_ItemAttributeConfig",
+			"SOYShop_UserAttributeConfig",
+			"SOYShop_OrderDateAttributeConfig",
+			"SOYShop_OrderDateAttributeConfig"
 		);
 
 		if(!defined("SOY2_UNSERIALIZE_CMS_COMMON")){
