@@ -103,6 +103,7 @@ if(soycms_is_unserialize_allowed_classes_cache_file()){
 			"SOYShop_ComplexPageBlock",
 
 			"SOYShop_ItemAttributeConfig",
+			"SOYShop_CategoryAttributeConfig",
 			"SOYShop_UserAttributeConfig",
 			"SOYShop_OrderDateAttributeConfig",
 			"SOYShop_OrderDateAttributeConfig"
