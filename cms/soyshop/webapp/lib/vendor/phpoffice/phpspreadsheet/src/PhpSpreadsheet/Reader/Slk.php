@@ -226,7 +226,7 @@ class Slk extends BaseReader
         $key = false;
         foreach ($temp as &$value) {
             //    Only count/replace in alternate array entries
-            $key = !$key;
+            $key = $key === false;
             if ($key) {
                 preg_match_all('/(R(\[?-?\d*\]?))(C(\[?-?\d*\]?))/', $value, $cellReferences, PREG_SET_ORDER + PREG_OFFSET_CAPTURE);
                 //    Reverse the matches array, otherwise all our offsets will become incorrect if we modify our way
@@ -254,7 +254,7 @@ class Slk extends BaseReader
                     if ($columnReference[0] == '[') {
                         $columnReference = (int) $column + (int) trim($columnReference, '[]');
                     }
-                    $A1CellReference = Coordinate::stringFromColumnIndex($columnReference) . $rowReference;
+                    $A1CellReference = Coordinate::stringFromColumnIndex((int) $columnReference) . $rowReference;
 
                     $value = substr_replace($value, $A1CellReference, $cellReference[0][1], strlen($cellReference[0][0]));
                 }
@@ -380,7 +380,7 @@ class Slk extends BaseReader
             } elseif ($char == 'S') {
                 $styleData['fill']['fillType'] = \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_PATTERN_GRAY125;
             } elseif ($char == 'M') {
-                if (preg_match('/M([1-9]\\d*)/', $styleSettings, $matches)) {
+                if (preg_match('/M([1-9]\d*)/', $styleSettings, $matches)) {
                     $fontStyle = $matches[1];
                 }
             }
@@ -468,7 +468,7 @@ class Slk extends BaseReader
 
     private function processPColors(string $rowDatum, array &$formatArray): void
     {
-        if (preg_match('/L([1-9]\\d*)/', $rowDatum, $matches)) {
+        if (preg_match('/L([1-9]\d*)/', $rowDatum, $matches)) {
             $fontColor = $matches[1] % 8;
             $formatArray['font']['color']['argb'] = self::COLOR_ARRAY[$fontColor];
         }

@@ -1,22 +1,36 @@
 # PhpSpreadsheet
 
 [![Build Status](https://github.com/PHPOffice/PhpSpreadsheet/workflows/main/badge.svg)](https://github.com/PHPOffice/PhpSpreadsheet/actions)
-[![Code Quality](https://scrutinizer-ci.com/g/PHPOffice/PhpSpreadsheet/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/PHPOffice/PhpSpreadsheet/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/PHPOffice/PhpSpreadsheet/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/PHPOffice/PhpSpreadsheet/?branch=master)
+[![Code Coverage](https://coveralls.io/repos/github/PHPOffice/PhpSpreadsheet/badge.svg?branch=master)](https://coveralls.io/github/PHPOffice/PhpSpreadsheet?branch=master)
 [![Total Downloads](https://img.shields.io/packagist/dt/PHPOffice/PhpSpreadsheet)](https://packagist.org/packages/phpoffice/phpspreadsheet)
 [![Latest Stable Version](https://img.shields.io/github/v/release/PHPOffice/PhpSpreadsheet)](https://packagist.org/packages/phpoffice/phpspreadsheet)
-[![License](https://img.shields.io/github/license/PHPOffice/PhpSpreadsheet)](https://packagist.org/packages/phpoffice/phpspreadsheet)
+[![License](https://poser.pugx.org/phpoffice/phpspreadsheet/license)](https://packagist.org/packages/phpoffice/phpspreadsheet)
 [![Join the chat at https://gitter.im/PHPOffice/PhpSpreadsheet](https://img.shields.io/badge/GITTER-join%20chat-green.svg)](https://gitter.im/PHPOffice/PhpSpreadsheet)
 
 PhpSpreadsheet is a library written in pure PHP and offers a set of classes that
 allow you to read and write various spreadsheet file formats such as Excel and LibreOffice Calc.
 
-## PHP version support
+This branch (1.30.x) is *not* the latest version of PhpSpreadsheet, and may therefore lack features and bug fixes found in the latest version.
 
-LTS: Support for PHP versions will only be maintained for a period of six months beyond the
-[end of life of that PHP version](https://www.php.net/eol.php).
+## This Branch Is Now Out Of Support
 
-Currently the required PHP minimum version is PHP __7.3__.
+Although I had hoped to maintain this branch a little longer,
+the volume of AI-generated security advisories has made it impossible to maintain branches other than master.
+After this release, no further changes,
+including security patches, will be applied to this branch.
+You are encouraged to upgrade to the master branch (release 5)
+as soon as possible.
+
+Of particular note is that this branch should not run under Php 8.5, and will *not* be updated to avoid deprecation notices which will be introduced with Php 8.5.
+
+## PHP Version Support
+
+LTS: For maintained branches, support for PHP versions will only be maintained for a period of six months beyond the
+[end of life](https://www.php.net/supported-versions) of that PHP version.
+
+Currently the required PHP minimum version is PHP __7.4__, and we [will support that version](https://www.php.net/eol.php) until 28th June 2023.
+However, since this branch is no longer maintained, that policy is not enforced.
+The PHP maximum version supported by this release is PHP __8.4__.
 
 See the `composer.json` for other requirements.
 
@@ -29,14 +43,14 @@ composer require phpoffice/phpspreadsheet
 ```
 
 If you are building your installation on a development machine that is on a different PHP version to the server where it will be deployed, or if your PHP CLI version is not the same as your run-time such as `php-fpm` or Apache's `mod_php`, then you might want to add the following to your `composer.json` before installing:
-```json lines
+```json
 {
     "require": {
-        "phpoffice/phpspreadsheet": "^1.23"
+        "phpoffice/phpspreadsheet": "^1.28"
     },
     "config": {
         "platform": {
-            "php": "7.3"
+            "php": "7.4"
         }
     }
 }
@@ -71,21 +85,65 @@ or the appropriate PDF Writer wrapper for the library that you have chosen to in
 
 #### Chart Export
 
-For Chart export, we support, which you will also need to install yourself
- - jpgraph/jpgraph
+For Chart export, we support following packages, which you will also need to install yourself using `composer require`
+ - [jpgraph/jpgraph](https://packagist.org/packages/jpgraph/jpgraph) (this package was abandoned at version 4.0. 
+   You can manually download the latest version that supports PHP 8 and above from [jpgraph.net](https://jpgraph.net/))
+ - [mitoteam/jpgraph](https://packagist.org/packages/mitoteam/jpgraph) - up to date fork with modern PHP versions support and some bugs fixed.
 
 and then configure PhpSpreadsheet using:
 ```php
+// to use jpgraph/jpgraph
 Settings::setChartRenderer(\PhpOffice\PhpSpreadsheet\Chart\Renderer\JpGraph::class);
+//or
+// to use mitoteam/jpgraph
+Settings::setChartRenderer(\PhpOffice\PhpSpreadsheet\Chart\Renderer\MtJpGraphRenderer::class);
 ```
 
-You can `composer/require` the github version of jpgraph, but this was abandoned at version 4.0; or manually download the latest version that supports PHP 8 and above from [jpgraph.net](https://jpgraph.net/)
+One or the other of these libraries is necessary if you want to generate HTML or PDF files that include charts; or to render a Chart to an Image format from within your code.
+They are not necessary to define charts for writing to `Xlsx` files.
+Other file formats don't support writing Charts.
 
 ## Documentation
 
 Read more about it, including install instructions, in the [official documentation](https://phpspreadsheet.readthedocs.io). Or check out the [API documentation](https://phpoffice.github.io/PhpSpreadsheet).
 
 Please ask your support questions on [StackOverflow](https://stackoverflow.com/questions/tagged/phpspreadsheet), or have a quick chat on [Gitter](https://gitter.im/PHPOffice/PhpSpreadsheet).
+
+## Patreon
+
+I am now running a [Patreon](https://www.patreon.com/MarkBaker) to support the work that I do on PhpSpreadsheet.
+
+Supporters will receive access to articles about working with PhpSpreadsheet, and how to use some of its more advanced features.
+
+Posts already available to Patreon supporters:
+ - The Dating Game
+   - A  look at how MS Excel (and PhpSpreadsheet) handle date and time values.
+- Looping the Loop
+    - Advice on Iterating through the rows and cells in a worksheet.
+
+And for Patrons at levels actively using PhpSpreadsheet:
+ - Behind the Mask
+   - A look at Number Format Masks.
+
+The Next Article (currently Work in Progress):
+ - Formula for Success
+   - How to debug formulae that don't produce the expected result.
+
+
+My aim is to post at least one article each month, taking a detailed look at some feature of MS Excel and how to use that feature in PhpSpreadsheet, or on how to perform different activities in PhpSpreadsheet.
+
+Planned posts for the future include topics like:
+ - Tables
+ - Structured References
+ - AutoFiltering
+ - Array Formulae
+ - Conditional Formatting
+ - Data Validation
+ - Value Binders
+ - Images
+ - Charts
+
+After a period of six months exclusive to Patreon supporters, articles will be incorporated into the public documentation for the library.
 
 ## PHPExcel vs PhpSpreadsheet ?
 

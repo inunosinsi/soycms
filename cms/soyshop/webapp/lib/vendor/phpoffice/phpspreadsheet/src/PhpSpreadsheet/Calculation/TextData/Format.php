@@ -2,13 +2,16 @@
 
 namespace PhpOffice\PhpSpreadsheet\Calculation\TextData;
 
+use Composer\Pcre\Preg;
 use DateTimeInterface;
 use PhpOffice\PhpSpreadsheet\Calculation\ArrayEnabled;
+use PhpOffice\PhpSpreadsheet\Calculation\Calculation;
 use PhpOffice\PhpSpreadsheet\Calculation\DateTimeExcel;
 use PhpOffice\PhpSpreadsheet\Calculation\Exception as CalcExp;
 use PhpOffice\PhpSpreadsheet\Calculation\Functions;
 use PhpOffice\PhpSpreadsheet\Calculation\Information\ExcelError;
 use PhpOffice\PhpSpreadsheet\Calculation\MathTrig;
+use PhpOffice\PhpSpreadsheet\RichText\RichText;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Shared\StringHelper;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
@@ -126,8 +129,11 @@ class Format
         $value = Helpers::extractString($value);
         $format = Helpers::extractString($format);
 
-        if (!is_numeric($value) && Date::isDateTimeFormatCode($format)) {
-            $value = DateTimeExcel\DateValue::fromString($value);
+        if (!is_numeric($value) && Date::isDateTimeFormatCode($format) && !Preg::isMatch('/^\s*\d+(\s+\d+)+\s*$/', $value)) {
+            $value1 = DateTimeExcel\DateValue::fromString($value);
+            $value2 = DateTimeExcel\TimeValue::fromString($value);
+            /** @var float|int|string */
+            $value = (is_numeric($value1) && is_numeric($value2)) ? ($value1 + $value2) : (is_numeric($value1) ? $value1 : (is_numeric($value2) ? $value2 : $value));
         }
 
         return (string) NumberFormat::toFormattedString($value, $format);
@@ -138,7 +144,7 @@ class Format
      *
      * @return mixed
      */
-    private static function convertValue($value)
+    private static function convertValue($value, bool $spacesMeanZero = false)
     {
         $value = $value ?? 0;
         if (is_bool($value)) {
@@ -146,6 +152,12 @@ class Format
                 $value = (int) $value;
             } else {
                 throw new CalcExp(ExcelError::VALUE());
+            }
+        }
+        if (is_string($value)) {
+            $value = trim($value);
+            if ($spacesMeanZero && $value === '') {
+                $value = 0;
             }
         }
 
@@ -179,6 +191,9 @@ class Format
                 '',
                 trim($value, " \t\n\r\0\x0B" . StringHelper::getCurrencyCode())
             );
+            if ($numberValue === '') {
+                return ExcelError::VALUE();
+            }
             if (is_numeric($numberValue)) {
                 return (float) $numberValue;
             }
@@ -206,6 +221,38 @@ class Format
         }
 
         return (float) $value;
+    }
+
+    /**
+     * TEXT.
+     *
+     * @param mixed $value The value to format
+     *                         Or can be an array of values
+     * @param mixed $format
+     *
+     * @return array|string
+     *         If an array of values is passed for either of the arguments, then the returned result
+     *            will also be an array with matching dimensions
+     */
+    public static function valueToText($value, $format = false)
+    {
+        if (is_array($value) || is_array($format)) {
+            return self::evaluateArrayArguments([self::class, __FUNCTION__], $value, $format);
+        }
+
+        $format = (bool) $format;
+
+        if (is_object($value) && $value instanceof RichText) {
+            $value = $value->getPlainText();
+        }
+        if (is_string($value)) {
+            $value = ($format === true) ? Calculation::wrapResult($value) : $value;
+            $value = str_replace("\n", '', $value);
+        } elseif (is_bool($value)) {
+            $value = Calculation::getLocaleBoolean($value ? 'TRUE' : 'FALSE');
+        }
+
+        return (string) $value;
     }
 
     /**
@@ -243,7 +290,7 @@ class Format
         }
 
         try {
-            $value = self::convertValue($value);
+            $value = self::convertValue($value, true);
             $decimalSeparator = self::getDecimalSeparator($decimalSeparator);
             $groupSeparator = self::getGroupSeparator($groupSeparator);
         } catch (CalcExp $e) {
@@ -251,12 +298,12 @@ class Format
         }
 
         if (!is_numeric($value)) {
-            $decimalPositions = preg_match_all('/' . preg_quote($decimalSeparator) . '/', $value, $matches, PREG_OFFSET_CAPTURE);
+            $decimalPositions = preg_match_all('/' . preg_quote($decimalSeparator, '/') . '/', $value, $matches, PREG_OFFSET_CAPTURE);
             if ($decimalPositions > 1) {
                 return ExcelError::VALUE();
             }
-            $decimalOffset = array_pop($matches[0])[1];
-            if (strpos($value, $groupSeparator, $decimalOffset) !== false) {
+            $decimalOffset = array_pop($matches[0])[1] ?? null;
+            if ($decimalOffset === null || strpos($value, $groupSeparator, $decimalOffset) !== false) {
                 return ExcelError::VALUE();
             }
 

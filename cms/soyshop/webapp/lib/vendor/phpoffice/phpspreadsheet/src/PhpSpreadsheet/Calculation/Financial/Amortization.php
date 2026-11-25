@@ -80,6 +80,7 @@ class Amortization
         $amortiseCoeff = self::getAmortizationCoefficient($rate);
 
         $rate *= $amortiseCoeff;
+        $rate = (float) (string) $rate; // ugly way to avoid rounding problem
         $fNRate = round($yearFrac * $rate * $cost, 0);
         $cost -= $fNRate;
         $fRest = $cost - $salvage;
@@ -171,8 +172,9 @@ class Amortization
         $yearFrac = $yearFracx;
 
         if (
-            ($basis == FinancialConstants::BASIS_DAYS_PER_YEAR_ACTUAL) &&
-            ($yearFrac < 1) && (Functions::scalar(DateTimeExcel\Helpers::isLeapYear($purchasedYear)))
+            $basis == FinancialConstants::BASIS_DAYS_PER_YEAR_ACTUAL
+            && $yearFrac < 1
+            && DateTimeExcel\Helpers::isLeapYear(Functions::scalar($purchasedYear))
         ) {
             $yearFrac *= 365 / 366;
         }

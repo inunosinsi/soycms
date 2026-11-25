@@ -91,7 +91,8 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-09-18T08:09:33+00:00"
+            "time": "2024-09-18T08:09:33+00:00",
+            "published-time": "2024-09-18T08:10:31+00:00"
         }
     ],
     "packages-dev": [],
@@ -102,5 +103,5 @@
     "prefer-lowest": false,
     "platform": {},
     "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.11.0"
 }

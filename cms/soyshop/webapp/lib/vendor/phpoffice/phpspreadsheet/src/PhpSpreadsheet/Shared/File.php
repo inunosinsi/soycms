@@ -2,6 +2,7 @@
 
 namespace PhpOffice\PhpSpreadsheet\Shared;
 
+use Composer\Pcre\Preg;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\Reader\Exception as ReaderException;
 use ZipArchive;
@@ -63,7 +64,7 @@ class File
                 $zip = new ZipArchive();
                 $res = $zip->open($zipFile);
                 if ($res === true) {
-                    $returnValue = ($zip->getFromName($archiveFile) !== false);
+                    $returnValue = $zip->statName($archiveFile) !== false;
                     $zip->close();
 
                     return $returnValue;
@@ -79,34 +80,24 @@ class File
     /**
      * Returns canonicalized absolute pathname, also for ZIP archives.
      */
-    public static function realpath(string $filename): string
+    public static function realpath(string $filename, bool $trimLeadingSlash = false): string
     {
-        // Returnvalue
-        $returnValue = '';
-
-        // Try using realpath()
-        if (file_exists($filename)) {
-            $returnValue = realpath($filename) ?: '';
+        if ($trimLeadingSlash && substr($filename, 0, 1) === '/') { // Apache POI
+            $filename = substr($filename, 1);
         }
+        $pathArray = Preg::split('~[/\\\]~', $filename);
+        while (in_array('..', $pathArray, true) && $pathArray[0] !== '..') {
+            $iMax = count($pathArray);
+            for ($i = 1; $i < $iMax; ++$i) {
+                if ($pathArray[$i] === '..') {
+                    array_splice($pathArray, $i - 1, 2);
 
-        // Found something?
-        if ($returnValue === '') {
-            $pathArray = explode('/', $filename);
-            while (in_array('..', $pathArray) && $pathArray[0] != '..') {
-                $iMax = count($pathArray);
-                for ($i = 0; $i < $iMax; ++$i) {
-                    if ($pathArray[$i] == '..' && $i > 0) {
-                        unset($pathArray[$i], $pathArray[$i - 1]);
-
-                        break;
-                    }
+                    break;
                 }
             }
-            $returnValue = implode('/', $pathArray);
         }
 
-        // Return
-        return $returnValue;
+        return implode('/', $pathArray);
     }
 
     /**
@@ -141,10 +132,32 @@ class File
     }
 
     /**
+     * Blocks phar:// and similar RCE-bearing wrappers.
+     * Note that many protocols, including http and zip, will already
+     * return false for is_file.
+     * A whitelist of protocols may be added if needed in future.
+     * data: is intentionally allowed; callers needing strict
+     * on-disk-only semantics must validate $filename themselves.
+     */
+    public static function prohibitWrappers(string $filename): void
+    {
+        if (
+            Preg::IsMatch('~^phar://~i', $filename)
+            || (Preg::isMatch('/^([\w.\s\x00-\x1f]+):/', $filename) && !Preg::isMatch('/^([\w.]+):/', $filename))
+            || Preg::isMatch('~^[\w.]+://.*phar:~is', $filename)
+        ) {
+            throw new Exception(
+                "Disallowed stream wrapper: {$filename}"
+            );
+        }
+    }
+
+    /**
      * Assert that given path is an existing file and is readable, otherwise throw exception.
      */
     public static function assertFile(string $filename, string $zipMember = ''): void
     {
+        self::prohibitWrappers($filename);
         if (!is_file($filename)) {
             throw new ReaderException('File "' . $filename . '" does not exist.');
         }
@@ -156,16 +169,22 @@ class File
         if ($zipMember !== '') {
             $zipfile = "zip://$filename#$zipMember";
             if (!self::fileExists($zipfile)) {
-                throw new ReaderException("Could not find zip member $zipfile");
+                // Has the file been saved with Windoze directory separators rather than unix?
+                $zipfile = "zip://$filename#" . str_replace('/', '\\', $zipMember);
+                if (!self::fileExists($zipfile)) {
+                    throw new ReaderException("Could not find zip member $zipfile");
+                }
             }
         }
     }
 
     /**
      * Same as assertFile, except return true/false and don't throw Exception.
+     * Will nevertheless throw if filename uses invalid protocol, e.g. phar.
      */
     public static function testFileNoThrow(string $filename, ?string $zipMember = null): bool
     {
+        self::prohibitWrappers($filename);
         if (!is_file($filename)) {
             return false;
         }
@@ -180,6 +199,14 @@ class File
             return self::validateZipFirst4($filename);
         }
 
-        return self::fileExists("zip://$filename#$zipMember");
+        $zipfile = "zip://$filename#$zipMember";
+        if (self::fileExists($zipfile)) {
+            return true;
+        }
+
+        // Has the file been saved with Windoze directory separators rather than unix?
+        $zipfile = "zip://$filename#" . str_replace('/', '\\', $zipMember);
+
+        return self::fileExists($zipfile);
     }
 }
