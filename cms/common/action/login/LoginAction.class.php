@@ -35,7 +35,7 @@ class LoginAction extends SOY2Action{
 			/**
 			 * 転送先が指定されている場合はそこへ遷移する
 			 */
-			if(strlen($redirect) >0 && CMSAdminPageController::isAllowedPath($redirect)){
+			if(is_string($redirect) && strlen($redirect) >0 && CMSAdminPageController::isAllowedPath($redirect)){
 				SOY2PageController::redirect($redirect);
 			}
 
