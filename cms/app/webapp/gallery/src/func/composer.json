@@ -1,5 +1,9 @@
 {
     "require": {
         "ezyang/htmlpurifier": "^4.19"
+    },
+    "config": {
+        "platform": {
+        }
     }
 }
